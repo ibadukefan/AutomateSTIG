@@ -1647,6 +1647,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LegalNoticeCaption"
+      },
+      "description": "Windows Server 2022 title for legal banner dialog box must be configured with the appropriate text.",
+      "expected": {
+        "pattern": "^(?:DoD\\ Notice\\ and\\ Consent\\ Banner|US\\ Department\\ of\\ Defense\\ Warning\\ Statement)$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254458"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
         "type": "registry",
         "value_name": "scremoveoption"

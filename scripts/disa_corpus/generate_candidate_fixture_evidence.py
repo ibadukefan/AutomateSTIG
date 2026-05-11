@@ -47,11 +47,20 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
             fail_fixture['registry'] = {key: _alternate_value(expected_value)}
             evidence_type = 'registry_value_equals'
         elif expected.get('type') == 'matches':
-            literals = [int(value) for value in re.findall(r'(?<!\\d)([-+]?\d+)(?!\\d)', expected.get('pattern', ''))]
-            if not literals:
-                raise ValueError(f"{candidate['vuln_id']}: registry matches evidence requires numeric literals")
-            pass_fixture['registry'] = {key: literals[0]}
-            fail_fixture['registry'] = {key: max(literals) + 1}
+            pattern = expected.get('pattern', '')
+            literals = [int(value) for value in re.findall(r'(?<!\\d)([-+]?\d+)(?!\\d)', pattern)]
+            if literals:
+                pass_fixture['registry'] = {key: literals[0]}
+                fail_fixture['registry'] = {key: max(literals) + 1}
+            else:
+                string_match = re.fullmatch(r'\^\(\?:(?P<alternatives>.+)\)\$', pattern)
+                if not string_match:
+                    raise ValueError(f"{candidate['vuln_id']}: registry matches evidence requires numeric literals or anchored string alternatives")
+                string_literals = [re.sub(r'\\(.)', r'\1', value) for value in string_match.group('alternatives').split('|')]
+                if not string_literals or any(not value for value in string_literals):
+                    raise ValueError(f"{candidate['vuln_id']}: registry matches evidence has no string literals")
+                pass_fixture['registry'] = {key: string_literals[0]}
+                fail_fixture['registry'] = {key: _alternate_value(string_literals[0])}
             evidence_type = 'registry_value_matches'
         else:
             raise ValueError(f"{candidate['vuln_id']}: registry candidate only supports equals or matches evidence")

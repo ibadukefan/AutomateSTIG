@@ -359,6 +359,35 @@ def _windows_platform(stig_id: str) -> bool:
     return 'windows' in lower or 'ms_windows' in lower
 
 
+def _windows_legal_notice_caption_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'Value\s+Name:\s*LegalNoticeCaption\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Automated\s+tools\s+may\s+only\s+search\s+for\s+the\s+titles\s+defined\s+above', content, re.IGNORECASE):
+        return None
+    allowed_titles = ['DoD Notice and Consent Banner', 'US Department of Defense Warning Statement']
+    if not all(f'"{title}"' in content for title in allowed_titles):
+        return None
+    hives = [next(group for group in match if group).strip() for match in re.findall(r'Registry[ \t]+Hive(?::[ \t]*([^\n\r]+)|([A-Z][^\n\r]+))', content, re.IGNORECASE)]
+    paths = [next(group for group in match if group).strip().strip('\\/') for match in re.findall(r'Registry[ \t]+Path(?::[ \t]*([^:\n\r][^\n\r]*)|(\\[^\n\r]+))', content, re.IGNORECASE)]
+    if len(hives) != 1 or len(paths) != 1:
+        return None
+    normalized_path = re.sub(r'\\+', r'\\', paths[0]).rstrip('\\/')
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'registry',
+            'path': f"{_registry_hive_abbrev(hives[0])}\\{normalized_path}",
+            'value_name': 'LegalNoticeCaption',
+        },
+        'expected': {'type': 'matches', 'pattern': f"^(?:{'|'.join(re.escape(title) for title in allowed_titles)})$"},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_legal_notice_text_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -4043,6 +4072,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_admission_candidate = _kubernetes_validating_admission_webhook_candidate(rule, stig_id)
     if kubernetes_admission_candidate:
         return kubernetes_admission_candidate
+    windows_legal_notice_caption_candidate = _windows_legal_notice_caption_candidate(rule, stig_id)
+    if windows_legal_notice_caption_candidate:
+        return windows_legal_notice_caption_candidate
     windows_legal_notice_text_candidate = _windows_legal_notice_text_candidate(rule, stig_id)
     if windows_legal_notice_text_candidate:
         return windows_legal_notice_text_candidate

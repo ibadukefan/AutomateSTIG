@@ -18,6 +18,20 @@
       "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
         "type": "registry",
+        "value_name": "LegalNoticeCaption"
+      },
+      "description": "Windows Server 2019 title for legal banner dialog box must be configured with the appropriate text.",
+      "expected": {
+        "pattern": "^(?:DoD\\ Notice\\ and\\ Consent\\ Banner|US\\ Department\\ of\\ Defense\\ Warning\\ Statement)$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205632"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
         "value_name": "InactivityTimeoutSecs"
       },
       "description": "Windows Server 2019 machine inactivity limit must be set to 15 minutes or less, locking the system with the screen saver.",

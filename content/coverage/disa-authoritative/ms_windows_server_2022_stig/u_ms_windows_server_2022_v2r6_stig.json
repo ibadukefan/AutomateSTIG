@@ -3450,16 +3450,17 @@
       "vuln_id": "V-254457"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254458",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254458r958390_rule",
       "severity": "low",
       "title": "Windows Server 2022 title for legal banner dialog box must be configured with the appropriate text.",
-      "tracking_issue": "TODO-V-254458",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254458"

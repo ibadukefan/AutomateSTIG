@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 181,
+  "candidate_checks": 182,
   "cases": [
     {
       "check": {
@@ -3182,6 +3182,33 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LegalNoticeCaption"
+      },
+      "description": "Windows Server 2022 title for legal banner dialog box must be configured with the appropriate text.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:DoD\\ Notice\\ and\\ Consent\\ Banner|US\\ Department\\ of\\ Defense\\ Warning\\ Statement)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeCaption": "unexpected-DoD Notice and Consent Banner"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeCaption": "DoD Notice and Consent Banner"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254458"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
         "type": "registry",
         "value_name": "scremoveoption"
@@ -4887,5 +4914,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 181
+  "validated_candidates": 182
 }

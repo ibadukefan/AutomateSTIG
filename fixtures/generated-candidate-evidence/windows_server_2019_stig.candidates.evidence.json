@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 179,
+  "candidate_checks": 180,
   "cases": [
     {
       "check": {
@@ -27,6 +27,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205631"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LegalNoticeCaption"
+      },
+      "description": "Windows Server 2019 title for legal banner dialog box must be configured with the appropriate text.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:DoD\\ Notice\\ and\\ Consent\\ Banner|US\\ Department\\ of\\ Defense\\ Warning\\ Statement)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeCaption": "unexpected-DoD Notice and Consent Banner"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeCaption": "DoD Notice and Consent Banner"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205632"
     },
     {
       "check": {
@@ -4833,5 +4860,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 179
+  "validated_candidates": 180
 }
