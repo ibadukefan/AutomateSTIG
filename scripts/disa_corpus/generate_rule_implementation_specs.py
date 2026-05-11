@@ -527,6 +527,13 @@ def _windows_audit_policy_candidate(rule: dict) -> dict | None:
     return None
 
 
+def _positive_integer_range_pattern(maximum: int) -> str:
+    if maximum < 1:
+        raise ValueError('maximum must be positive')
+    alternatives = [str(value) for value in range(1, maximum + 1)]
+    return f"^(?:{'|'.join(alternatives)})$"
+
+
 def _windows_security_policy_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -553,12 +560,44 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             policy_text,
             re.IGNORECASE,
         )
-        if kerberos_less_or_equal and not re.search(r'\bbut\s+not\s+"?0"?|not\s+"?0"?', kerberos_less_or_equal.group(0), re.IGNORECASE):
+        if kerberos_less_or_equal:
+            if re.search(r'\bbut\s+not\s+"?0"?|not\s+"?0"?', kerberos_less_or_equal.group(0), re.IGNORECASE):
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows',
+                    'check': {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': kerberos_less_or_equal.group(1).strip()},
+                    'expected': {'type': 'matches', 'pattern': _positive_integer_range_pattern(int(kerberos_less_or_equal.group(2)))},
+                    'description': rule.get('title', ''),
+                }
             return {
                 'vuln_id': rule.get('vuln_id', ''),
                 'platform': 'windows',
                 'check': {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': kerberos_less_or_equal.group(1).strip()},
                 'expected': {'type': 'less_or_equal', 'value': int(kerberos_less_or_equal.group(2))},
+                'description': rule.get('title', ''),
+            }
+        kerberos_nonzero_upper_bound = re.search(
+            r'If\s+the\s+value\s+for\s+"([^"]+)"\s+is\s+"0"\s+or\s+greater\s+than\s+"(\d+)"\s+[^.\n]*,\s+this\s+is\s+a\s+finding',
+            policy_text,
+            re.IGNORECASE,
+        )
+        if not kerberos_nonzero_upper_bound:
+            kerberos_nonzero_upper_bound = re.search(
+                r'If\s+the\s+value\s+for\s+"([^"]+)"\s+is\s+greater\s+than\s+"(\d+)"\s+[^.\n]*\s+or\s+is\s+set\s+to\s+"0",\s+this\s+is\s+a\s+finding',
+                policy_text,
+                re.IGNORECASE,
+            )
+        if kerberos_nonzero_upper_bound and re.search(
+            rf'Kerberos\s+Policy\s*>>\s*{re.escape(kerberos_nonzero_upper_bound.group(1).strip())}\s+to\s+a\s+maximum\s+of\s+"{re.escape(kerberos_nonzero_upper_bound.group(2))}"[^.\n]*\b(?:but\s+not|not)\s+"0"',
+            policy_text,
+            re.IGNORECASE,
+        ):
+            maximum = int(kerberos_nonzero_upper_bound.group(2))
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': kerberos_nonzero_upper_bound.group(1).strip()},
+                'expected': {'type': 'matches', 'pattern': _positive_integer_range_pattern(maximum)},
                 'description': rule.get('title', ''),
             }
 

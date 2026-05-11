@@ -2341,31 +2341,33 @@
       "vuln_id": "V-278133"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278134",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278134r1182073_rule",
       "severity": "medium",
       "title": "Windows Server 2025 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less.",
-      "tracking_issue": "TODO-V-278134",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278134"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278135",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278135r1182075_rule",
       "severity": "medium",
       "title": "Windows Server 2025 Kerberos user ticket lifetime must be limited to 10 hours or less.",
-      "tracking_issue": "TODO-V-278135",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278135"

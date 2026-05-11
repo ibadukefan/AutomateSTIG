@@ -1744,31 +1744,33 @@
       "vuln_id": "V-254386"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254387",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-254387 from source identifier xccdf_mil.disa.stig_group_V-254387.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-254387r1051102_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less.",
-      "tracking_issue": "TODO-V-254387",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/5459c32c9f0d5581bc9f6d28c451a3ab0b63e4db7c444d5b4c83ca878772f33d/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-254387"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254388",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-254388 from source identifier xccdf_mil.disa.stig_group_V-254388.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-254388r1051103_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Kerberos user ticket lifetime must be limited to 10 hours or less.",
-      "tracking_issue": "TODO-V-254388",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/5459c32c9f0d5581bc9f6d28c451a3ab0b63e4db7c444d5b4c83ca878772f33d/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-254388"

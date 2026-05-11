@@ -5515,16 +5515,19 @@ If the "Maximum lifetime for user ticket renewal" is greater than "7" days, this
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': 'Maximum lifetime for user ticket renewal'})
         self.assertEqual(candidate['expected'], {'type': 'less_or_equal', 'value': 7})
 
-    def test_skips_windows_kerberos_policy_less_or_equal_when_nonzero_minimum_is_required(self):
+    def test_infers_windows_kerberos_policy_nonzero_upper_bound_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254388',
             'title': 'Windows Server 2022 Kerberos user ticket lifetime must be limited to 10 hours or less.',
             'check_content': '''Navigate to Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy.
 
-If the value for "Maximum lifetime for user ticket" is greater than "10" hours or is set to "0", this is a finding.''',
+If the value for "Maximum lifetime for user ticket" is "0" or greater than "10" hours, this is a finding.''',
             'fix_text': 'Configure the policy value in the Default Domain Policy for Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy >> Maximum lifetime for user ticket to a maximum of "10" hours but not "0", which equates to "Ticket doesn\'t expire".',
         }, 'MS_Windows_Server_2022_STIG')
-        self.assertIsNone(candidate)
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': 'Maximum lifetime for user ticket'})
+        self.assertEqual(candidate['expected'], {'type': 'matches', 'pattern': '^(?:1|2|3|4|5|6|7|8|9|10)$'})
 
     def test_infers_linux_nmcli_wireless_interface_absent_candidate(self):
         candidate = mod.infer_candidate_check({
