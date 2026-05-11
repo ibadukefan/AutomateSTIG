@@ -89,6 +89,25 @@ By using this IS (which includes any device attached to this IS), you consent to
             'description': 'Windows Server title for legal banner dialog box must be configured with the appropriate text.',
         })
 
+    def test_infers_windows_legal_notice_caption_dod_uppercase_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278208',
+            'title': 'Windows Server 2025 title for legal banner dialog box must be configured with the appropriate text.',
+            'check_content': 'If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE \nRegistry Path: \\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\\n\nValue Name: LegalNoticeCaption\n\nValue Type: REG_SZ\nValue: See message title options below\n\n"DOD Notice and Consent Banner", "US Department of Defense Warning Statement", or an organization-defined equivalent. \n\nIf an organization-defined title is used, it can in no case contravene or modify the language of the banner text required in WN25-SO-000150.\n\nAutomated tools may only search for the titles defined above. If an organization-defined title is used, a manual review will be required.',
+            'fix_text': 'Configure the policy value for Interactive Logon: Message title for users attempting to log on.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-278208',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System',
+                'value_name': 'LegalNoticeCaption',
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:DOD\\ Notice\\ and\\ Consent\\ Banner|US\\ Department\\ of\\ Defense\\ Warning\\ Statement)$'},
+            'description': 'Windows Server 2025 title for legal banner dialog box must be configured with the appropriate text.',
+        })
+
     def test_infers_kubernetes_validating_admission_webhook_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242436',

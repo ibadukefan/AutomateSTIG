@@ -367,9 +367,11 @@ def _windows_legal_notice_caption_candidate(rule: dict, stig_id: str) -> dict | 
         return None
     if not re.search(r'Automated\s+tools\s+may\s+only\s+search\s+for\s+the\s+titles\s+defined\s+above', content, re.IGNORECASE):
         return None
-    allowed_titles = ['DoD Notice and Consent Banner', 'US Department of Defense Warning Statement']
-    if not all(f'"{title}"' in content for title in allowed_titles):
+    dod_title_match = re.search(r'"(DoD|DOD)\s+Notice\s+and\s+Consent\s+Banner"', content)
+    defense_warning_title = 'US Department of Defense Warning Statement'
+    if not dod_title_match or f'"{defense_warning_title}"' not in content:
         return None
+    allowed_titles = [f'{dod_title_match.group(1)} Notice and Consent Banner', defense_warning_title]
     hives = [next(group for group in match if group).strip() for match in re.findall(r'Registry[ \t]+Hive(?::[ \t]*([^\n\r]+)|([A-Z][^\n\r]+))', content, re.IGNORECASE)]
     paths = [next(group for group in match if group).strip().strip('\\/') for match in re.findall(r'Registry[ \t]+Path(?::[ \t]*([^:\n\r][^\n\r]*)|(\\[^\n\r]+))', content, re.IGNORECASE)]
     if len(hives) != 1 or len(paths) != 1:

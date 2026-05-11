@@ -2088,6 +2088,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LegalNoticeCaption"
+      },
+      "description": "Windows Server 2025 title for legal banner dialog box must be configured with the appropriate text.",
+      "expected": {
+        "pattern": "^(?:DOD\\ Notice\\ and\\ Consent\\ Banner|US\\ Department\\ of\\ Defense\\ Warning\\ Statement)$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278208"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
         "type": "registry",
         "value_name": "scremoveoption"

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 211,
+  "candidate_checks": 212,
   "cases": [
     {
       "check": {
@@ -4039,6 +4039,33 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LegalNoticeCaption"
+      },
+      "description": "Windows Server 2025 title for legal banner dialog box must be configured with the appropriate text.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:DOD\\ Notice\\ and\\ Consent\\ Banner|US\\ Department\\ of\\ Defense\\ Warning\\ Statement)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeCaption": "unexpected-DOD Notice and Consent Banner"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeCaption": "DOD Notice and Consent Banner"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278208"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
         "type": "registry",
         "value_name": "scremoveoption"
@@ -5690,5 +5717,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 211
+  "validated_candidates": 212
 }
