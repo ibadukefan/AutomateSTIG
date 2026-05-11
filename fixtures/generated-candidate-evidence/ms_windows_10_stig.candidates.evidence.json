@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 202,
+  "candidate_checks": 203,
   "cases": [
     {
       "check": {
@@ -3695,6 +3695,33 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LegalNoticeCaption"
+      },
+      "description": "The Windows dialog box title for the legal banner must be configured.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:DoD\\ Notice\\ and\\ Consent\\ Banner|US\\ Department\\ of\\ Defense\\ Warning\\ Statement)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeCaption": "unexpected-DoD Notice and Consent Banner"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeCaption": "DoD Notice and Consent Banner"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220922"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
         "type": "registry",
         "value_name": "CachedLogonsCount"
@@ -5452,5 +5479,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 202
+  "validated_candidates": 203
 }

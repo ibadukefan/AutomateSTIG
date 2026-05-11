@@ -89,6 +89,25 @@ By using this IS (which includes any device attached to this IS), you consent to
             'description': 'Windows Server title for legal banner dialog box must be configured with the appropriate text.',
         })
 
+    def test_infers_windows_legal_notice_caption_legacy_title_above_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220922',
+            'title': 'The Windows dialog box title for the legal banner must be configured.',
+            'check_content': 'If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\\n\nValue Name: LegalNoticeCaption\n\nValue Type: REG_SZ\nValue: See message title above\n\n"DoD Notice and Consent Banner", "US Department of Defense Warning Statement" or a site-defined equivalent, this is a finding. If a site-defined title is used, it can in no case contravene or modify the language of the banner text required in WN10-SO-000075.',
+            'fix_text': 'Configure the policy value for Interactive logon: Message title for users attempting to log on to "DoD Notice and Consent Banner", "US Department of Defense Warning Statement", or a site-defined equivalent.',
+        }, 'MS_Windows_10_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-220922',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System',
+                'value_name': 'LegalNoticeCaption',
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:DoD\\ Notice\\ and\\ Consent\\ Banner|US\\ Department\\ of\\ Defense\\ Warning\\ Statement)$'},
+            'description': 'The Windows dialog box title for the legal banner must be configured.',
+        })
+
     def test_infers_windows_legal_notice_caption_dod_uppercase_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278208',

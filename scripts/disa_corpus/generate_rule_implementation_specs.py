@@ -365,7 +365,11 @@ def _windows_legal_notice_caption_candidate(rule: dict, stig_id: str) -> dict | 
     content = rule.get('check_content', '') or ''
     if not re.search(r'Value\s+Name:\s*LegalNoticeCaption\b', content, re.IGNORECASE):
         return None
-    if not re.search(r'Automated\s+tools\s+may\s+only\s+search\s+for\s+the\s+titles\s+defined\s+above', content, re.IGNORECASE):
+    legacy_title_above = re.search(r'Value\s*:\s*See\s+message\s+title\s+above\b', content, re.IGNORECASE)
+    if not (
+        re.search(r'Automated\s+tools\s+may\s+only\s+search\s+for\s+the\s+titles\s+defined\s+above', content, re.IGNORECASE)
+        or legacy_title_above
+    ):
         return None
     dod_title_match = re.search(r'"(DoD|DOD)\s+Notice\s+and\s+Consent\s+Banner"', content)
     defense_warning_title = 'US Department of Defense Warning Statement'

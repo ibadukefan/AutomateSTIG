@@ -3056,16 +3056,17 @@
       "vuln_id": "V-253445"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-253446",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-253446r958586_rule",
       "severity": "low",
       "title": "The Windows message title for the legal notice must be configured.",
-      "tracking_issue": "TODO-V-253446",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
         "content/disa-corpus/artifacts/e8077d4d1cd3eb9c7594737701f2f3d323d1ba5f1e88738616f35e5c7800ee92/U_MS_Windows_11_V2R3_STIG.zip"
       ],
       "vuln_id": "V-253446"
