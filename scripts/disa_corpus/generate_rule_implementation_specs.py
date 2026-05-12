@@ -2866,6 +2866,41 @@ def _grep_sample_line_candidate(rule: dict, stig_id: str, command: str, command_
     }
 
 
+def _macos_policy_banner_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _macos_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-259431', 'V-268431'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    if not re.search(r'/Library/Security/PolicyBanner\.rtfd', combined):
+        return None
+    if not re.search(r'text\s+is\s+not\s+worded\s+exactly\s+this\s+way,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    text_match = re.search(
+        r'The\s+banner\s+text\s+of\s+the\s+document\s+must\s+read:\s*[\r\n]+\s*["“](?P<text>You\s+are\s+accessing\s+a\s+U\.S\.\s+Government\s+\(USG\)\s+Information\s+System\s+\(IS\).*?See\s+User\s+Agreement\s+for\s+details\.)["”]',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not text_match:
+        return None
+    expected_text = text_match.group('text').strip().strip('"“”')
+    if any(token in expected_text for token in ('`', '$(', '&&', '<<')):
+        return None
+    command = '/bin/sh -c \'p=/Library/Security/PolicyBanner.rtfd; [ -e "$p" ] && /usr/bin/textutil -convert txt -stdout "$p" 2>/dev/null\''
+    if re.search(r'permissions?\s+for\s+["“]PolicyBanner\.rtfd["”]\s+are\s+not\s+["“]644["”]', content, re.IGNORECASE):
+        command = '/bin/sh -c \'p=/Library/Security/PolicyBanner.rtfd; [ -e "$p" ] && [ "$(/usr/bin/stat -f %Lp "$p")" = 644 ] && /usr/bin/textutil -convert txt -stdout "$p" 2>/dev/null\''
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'macos',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': expected_text},
+        'description': rule.get('title', ''),
+    }
+
+
 def _macos_osascript_true_heredoc_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _macos_platform(stig_id):
         return None
@@ -3969,6 +4004,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    macos_policy_banner_candidate = _macos_policy_banner_candidate(rule, stig_id)
+    if macos_policy_banner_candidate:
+        return macos_policy_banner_candidate
     macos_osascript_true_candidate = _macos_osascript_true_heredoc_candidate(rule, stig_id)
     if macos_osascript_true_candidate:
         return macos_osascript_true_candidate

@@ -99,6 +99,45 @@ By using this IS (which includes any device attached to this IS), you consent to
             'description': 'Windows Server required legal notice must be configured to display before console logon.',
         })
 
+    def test_infers_macos_policy_banner_exact_text_and_mode_candidate(self):
+        text = '''You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only. By using this IS (which includes any device attached to this IS), you consent to the following conditions:
+
+-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.
+
+-At any time, the USG may inspect and seize data stored on this IS.
+
+-Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG authorized purpose.
+
+-This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.
+
+-Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.'''
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-268431',
+            'title': 'The macOS system must display the Standard Mandatory DOD Notice and Consent Banner at the login window.',
+            'check_content': f'''Verify the macOS system is configured to display a policy banner with the following command:
+
+/bin/ls -ld /Library/Security/PolicyBanner.rtf* | /usr/bin/wc -l | /usr/bin/tr -d ' '
+
+If the command does not return "1", this is a finding.
+
+If the permissions for "PolicyBanner.rtfd" are not "644", this is a finding.
+
+The banner text of the document must read:
+
+"{text}"
+
+If the text is not worded exactly this way, this is a finding.''',
+            'fix_text': 'Configure the macOS system to display a policy banner by creating an RTF file containing the required text. Name the file "PolicyBanner.rtfd" and place it in "/Library/Security/". Update the permissions of the "/Library/Security/PolicyBanner.rtfd" file with the following command: /usr/bin/sudo /bin/chmod 644 /Library/Security/PolicyBanner.rtfd',
+        }, 'Apple_macOS_15_STIG')
+        expected_command = "/bin/sh -c 'p=/Library/Security/PolicyBanner.rtfd; [ -e \"$p\" ] && [ \"$(/usr/bin/stat -f %Lp \"$p\")\" = 644 ] && /usr/bin/textutil -convert txt -stdout \"$p\" 2>/dev/null'"
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-268431',
+            'platform': 'macos',
+            'check': {'type': 'command_output', 'command': expected_command},
+            'expected': {'type': 'equals', 'value': text},
+            'description': 'The macOS system must display the Standard Mandatory DOD Notice and Consent Banner at the login window.',
+        })
+
     def test_infers_windows_network_logon_exact_allowlist_with_punctuated_principals(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278183',
