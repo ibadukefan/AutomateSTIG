@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; parent=policies.get('DisabledCiphers') or {}; print(str(parent.get('TLS_RSA_WITH_3DES_EDE_CBC_SHA')).lower())\"",
+      "type": "command_output"
+    },
+    "description": "Firefox deprecated ciphers must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-251571"
+  },
   "check_content_excerpt": "Type \"about:policies\" in the browser address bar.\n\nIf \"DisabledCiphers\" is not displayed under Policy Name or the Policy Value is not \"TLS_RSA_WITH_3DES_EDE_CBC_SHA\" with a value of  \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Windows group policy:\n1. Open the group policy editor tool with \"gpedit.msc\".\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Disabled Ciphers\nPolicy Name: TLS_RSA_WITH_3DES_EDE_CBC_SHA\nPolicy State: Enabled\n\nmacOS \"plist\" file:\nAdd the following:\n<key>DisabledCiphers</key>\n  <dict>\n    <key>TLS_RSA_WITH_3DES_EDE_CBC_SHA</key>\n    <true/>\n  </dict>\n\nLinux \"policies.json\" file:\nAdd the following in the policies section:\n\"DisabledCiphers\": {\n  \"TLS_RSA_WITH_3DES_EDE_CBC_SHA\": true\n}",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-251571r960963_rule",
   "severity": "medium",

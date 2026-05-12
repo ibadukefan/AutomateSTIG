@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; permissions=policies.get('Permissions') or {}; autoplay=permissions.get('Autoplay') or {}; print(str(autoplay.get('Default')).lower())\"",
+      "type": "command_output"
+    },
+    "description": "Firefox autoplay must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "block-audio-video"
+    },
+    "platform": "linux",
+    "vuln_id": "V-251565"
+  },
   "check_content_excerpt": "Type \"about:policies\" in the browser address bar. \n\nIf \"Permissions\" is not displayed under Policy Name or the Policy Value is not \"Autoplay\" with a value of \"Default\" and \"Block-audio-video\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "block-audio-video"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Windows group policy:\n1. Open the group policy editor tool with \"gpedit.msc\".\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Permissions\\Autoplay\nPolicy Name: Default autoplay level\nPolicy State: Enabled\nPolicy Value: Block Audio and Video\n\nmacOS \"plist\" file:\nAdd the following:\n<key>Permissions</key>\n<dict>\n  <key>Autoplay</key>\n  <dict>\n    <string>block-audio-video</string>\n  </dict>\n</dict>\n \nLinux \"policies.json\" file:\nAdd the following in the policies section:\n\"Permissions\": {\n  \"Autoplay\": {\n    \"Default\": \"block-audio-video\"\n  }\n}",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-251565r960963_rule",
   "severity": "low",

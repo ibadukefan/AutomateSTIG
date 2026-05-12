@@ -194,6 +194,78 @@ Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt''',
             'description': 'Windows Server 2025 "Access this computer from the network" user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and stand-alone or nondomain-joined systems.',
         })
 
+    def test_infers_firefox_autoplay_default_block_audio_video_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251565',
+            'title': 'Firefox autoplay must be disabled.',
+            'check_content': '''Type "about:policies" in the browser address bar.
+
+If "Permissions" is not displayed under Policy Name or the Policy Value is not "Autoplay" with a value of "Default" and "Block-audio-video", this is a finding.''',
+            'fix_text': '''Linux "policies.json" file:
+Add the following in the policies section:
+"Permissions": {
+  "Autoplay": {
+    "Default": "block-audio-video"
+  }
+}''',
+        }, 'MOZ_Firefox_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-251565',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'python3 -c "import json, pathlib; p=pathlib.Path(\'/usr/lib/firefox/distribution/policies.json\'); policies=json.loads(p.read_text()).get(\'policies\', {}) if p.exists() else {}; permissions=policies.get(\'Permissions\') or {}; autoplay=permissions.get(\'Autoplay\') or {}; print(str(autoplay.get(\'Default\')).lower())"',
+            },
+            'expected': {'type': 'equals', 'value': 'block-audio-video'},
+            'description': 'Firefox autoplay must be disabled.',
+        })
+
+    def test_infers_firefox_nested_boolean_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251567',
+            'title': 'Firefox fingerprinting protection must be enabled.',
+            'check_content': '''Type "about:policies" in the browser address bar.
+
+If "EnableTrackingProtection" is not displayed under Policy Name or the Policy Value is not "Fingerprinting"  with a value of "true", this is a finding.''',
+            'fix_text': '''Linux "policies.json" file:
+Add the following in the policies section:
+"EnableTrackingProtection": {
+  "Fingerprinting": true
+}''',
+        }, 'MOZ_Firefox_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-251567',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'python3 -c "import json, pathlib; p=pathlib.Path(\'/usr/lib/firefox/distribution/policies.json\'); policies=json.loads(p.read_text()).get(\'policies\', {}) if p.exists() else {}; parent=policies.get(\'EnableTrackingProtection\') or {}; print(str(parent.get(\'Fingerprinting\')).lower())"',
+            },
+            'expected': {'type': 'equals', 'value': 'true'},
+            'description': 'Firefox fingerprinting protection must be enabled.',
+        })
+
+    def test_infers_firefox_flat_has_value_boolean_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-252908',
+            'title': 'Pocket must be disabled.',
+            'check_content': '''Type "about:policies" in the browser address bar.
+
+If "DisablePocket" is not displayed under Policy Name or the Policy Value does not have a value of "true", this is a finding.''',
+            'fix_text': '''Linux "policies.json" file:
+Add the following in the policies section:
+"DisablePocket": true''',
+        }, 'MOZ_Firefox_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-252908',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'python3 -c "import json, pathlib; p=pathlib.Path(\'/usr/lib/firefox/distribution/policies.json\'); policies=json.loads(p.read_text()).get(\'policies\', {}) if p.exists() else {}; print(str(policies.get(\'DisablePocket\')).lower())"',
+            },
+            'expected': {'type': 'equals', 'value': 'true'},
+            'description': 'Pocket must be disabled.',
+        })
+
     def test_infers_adobe_dc_repair_installation_dual_registry_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-213133',

@@ -586,10 +586,104 @@ def _firefox_policy_boolean_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'firefox' not in stig_id.lower():
         return None
     vuln_id = rule.get('vuln_id', '')
-    if vuln_id not in {'V-251564', 'V-251566', 'V-251578', 'V-251580'}:
+    if vuln_id not in {'V-251564', 'V-251565', 'V-251566', 'V-251567', 'V-251568', 'V-251571', 'V-251572', 'V-251577', 'V-251578', 'V-251580', 'V-252908', 'V-252909'}:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    if vuln_id == 'V-251565':
+        if not re.search(
+            r'If\s+["“]Permissions["”]\s+is\s+not\s+displayed\s+under\s+Policy\s+Name\s+or\s+the\s+Policy\s+Value\s+is\s+not\s+["“]Autoplay["”]\s+with\s+a\s+value\s+of\s+["“]Default["”]\s+and\s+["“]Block-audio-video["”],\s+this\s+is\s+a\s+finding\.',
+            content,
+            re.IGNORECASE,
+        ):
+            return None
+        if not re.search(
+            r'Linux\s+["“]policies\.json["”]\s+file:.*?["“]Permissions["”]\s*:\s*\{.*?["“]Autoplay["”]\s*:\s*\{.*?["“]Default["”]\s*:\s*["“]block-audio-video["”]',
+            fix_text,
+            re.IGNORECASE | re.DOTALL,
+        ):
+            return None
+        command = (
+            'python3 -c "import json, pathlib; '
+            "p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); "
+            "policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; "
+            "permissions=policies.get('Permissions') or {}; "
+            "autoplay=permissions.get('Autoplay') or {}; "
+            "print(str(autoplay.get('Default')).lower())\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'block-audio-video'},
+            'description': rule.get('title', ''),
+        }
+    nested_bool_match = re.search(
+        r'If\s+["“]([A-Za-z0-9_.-]+)["”]\s+is\s+not\s+displayed\s+under\s+Policy\s+Name\s+or\s+the\s+Policy\s+Value\s+(?:is\s+not|does\s+not\s+have)\s+["“]([A-Za-z0-9_.-]+)["”]\s+(?:with\s+a\s+value\s+of|set\s+to)\s+["“]?(true|false)["”]?',
+        content,
+        re.IGNORECASE,
+    )
+    if nested_bool_match:
+        policy_name = nested_bool_match.group(1)
+        child_name = nested_bool_match.group(2)
+        expected = nested_bool_match.group(3).lower()
+        if not re.search(
+            r'Linux\s+["“]policies\.json["”]\s+file:.*?["“]'
+            + re.escape(policy_name)
+            + r'["”]\s*:\s*\{.*?["“]'
+            + re.escape(child_name)
+            + r'["”]\s*:\s*'
+            + expected
+            + r'\b',
+            fix_text,
+            re.IGNORECASE | re.DOTALL,
+        ):
+            return None
+        command = (
+            'python3 -c "import json, pathlib; '
+            "p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); "
+            "policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; "
+            f"parent=policies.get('{policy_name}') or {{}}; "
+            f"print(str(parent.get('{child_name}')).lower())\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': expected},
+            'description': rule.get('title', ''),
+        }
+    flat_has_value_match = re.search(
+        r'If\s+["“]([A-Za-z0-9_.-]+)["”]\s+is\s+not\s+displayed\s+under\s+Policy\s+Name\s+or\s+the\s+Policy\s+Value\s+does\s+not\s+have\s+a\s+value\s+of\s+["“]?(true|false)["”]?',
+        content,
+        re.IGNORECASE,
+    )
+    if flat_has_value_match:
+        policy_name = flat_has_value_match.group(1)
+        expected = flat_has_value_match.group(2).lower()
+        if not re.search(
+            r'Linux\s+["“]policies\.json["”]\s+file:.*?["“]'
+            + re.escape(policy_name)
+            + r'["”]\s*:\s*'
+            + expected
+            + r'\b',
+            fix_text,
+            re.IGNORECASE | re.DOTALL,
+        ):
+            return None
+        command = (
+            'python3 -c "import json, pathlib; '
+            "p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); "
+            "policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; "
+            f"print(str(policies.get('{policy_name}')).lower())\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': expected},
+            'description': rule.get('title', ''),
+        }
     check_match = re.search(
         r'If\s+["“]([A-Za-z0-9_.-]+)["”]\s+is\s+not\s+displayed\s+under\s+Policy\s+Name\s+or\s+the\s+Policy\s+Value\s+is\s+not\s+["“](true|false)["”],\s+this\s+is\s+a\s+finding\.',
         content,

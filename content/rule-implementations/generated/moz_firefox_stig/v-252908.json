@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('DisablePocket')).lower())\"",
+      "type": "command_output"
+    },
+    "description": "Pocket must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-252908"
+  },
   "check_content_excerpt": "Type \"about:policies\" in the browser address bar. \n\nIf \"DisablePocket\" is not displayed under Policy Name or the Policy Value does not have a value of \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Windows group policy:\n1. Open the group policy editor tool with \"gpedit.msc\".\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: Disable Pocket\nPolicy State: Enabled\n\nmacOS \"plist\" file:\n<key>DisablePocket</key>\n <true/>\n\nLinux \"policies.json\" file:\nAdd the following in the policies section:\n\"DisablePocket\": true",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-252908r960963_rule",
   "severity": "medium",
