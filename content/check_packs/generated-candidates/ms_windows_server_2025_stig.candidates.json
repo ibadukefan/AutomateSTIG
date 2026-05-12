@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Get-ADUser -Filter * -Properties PasswordNotRequired,Enabled | Where-Object { $_.Enabled -eq $true -and $_.PasswordNotRequired -eq $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter 'PasswordRequired=False and LocalAccount=True' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 accounts must require passwords.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-278004"
+    },
+    {
+      "check": {
         "name": "Fax",
         "should_be_installed": false,
         "type": "windows_feature"

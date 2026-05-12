@@ -2706,6 +2706,42 @@ def _windows_certificate_store_thumbprint_candidate(rule: dict, stig_id: str) ->
         'expected': {'type': 'contains', 'substring': expected_substring},
         'description': rule.get('title', ''),
     }
+def _windows_account_password_required_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-254257', 'V-278004'}:
+        return None
+    if not _windows_platform(stig_id):
+        return None
+    if 'accounts must require passwords' not in (rule.get('title', '') or '').lower():
+        return None
+    required_phrases = (
+        'Get-Aduser -Filter * -Properties Passwordnotrequired',
+        'Passwordnotrequired" is "True" or blank for any enabled user account, this is a finding',
+        'Get-CimInstance -Class Win32_Useraccount -Filter "PasswordRequired=False and LocalAccount=True"',
+        'PasswordRequired" status of "False", this is a finding',
+    )
+    if not all(phrase.lower() in content.lower() for phrase in required_phrases):
+        return None
+    command = (
+        'powershell -NoProfile -Command "'
+        'if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { '
+        'Get-ADUser -Filter * -Properties PasswordNotRequired,Enabled | '
+        'Where-Object { $_.Enabled -eq $true -and $_.PasswordNotRequired -eq $true -and $_.Name -notin @(\'DefaultAccount\',\'Guest\') } | '
+        'Select-Object -ExpandProperty Name '
+        '} else { '
+        'Get-CimInstance -Class Win32_UserAccount -Filter \'PasswordRequired=False and LocalAccount=True\' | '
+        'Where-Object { $_.Disabled -ne $true -and $_.Name -notin @(\'DefaultAccount\',\'Guest\') } | '
+        'Select-Object -ExpandProperty Name '
+        '}"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
 
 
 def _windows_ad_smartcard_no_listed_users_candidate(rule: dict, stig_id: str) -> dict | None:
@@ -4448,6 +4484,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         certificate_candidate = _windows_certificate_store_thumbprint_candidate(rule, stig_id)
         if certificate_candidate:
             return certificate_candidate
+
+        account_password_required_candidate = _windows_account_password_required_candidate(rule, stig_id)
+        if account_password_required_candidate:
+            return account_password_required_candidate
 
         system32_absent_app_candidate = _windows_system32_absent_application_candidate(rule, stig_id)
         if system32_absent_app_candidate:

@@ -1859,6 +1859,42 @@ If any user accounts, including administrators, are listed, this is a finding.''
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_windows_accounts_password_required_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254257',
+            'title': 'Windows Server 2022 accounts must require passwords.',
+            'check_content': '''Review the password required status for enabled user accounts.
+
+Open "PowerShell".
+
+Domain Controllers:
+
+Enter "Get-Aduser -Filter * -Properties Passwordnotrequired |FT Name, Passwordnotrequired, Enabled".
+
+Exclude disabled accounts (e.g., DefaultAccount, Guest) and Trusted Domain Objects (TDOs).
+
+If "Passwordnotrequired" is "True" or blank for any enabled user account, this is a finding.
+
+Member servers and standalone or nondomain-joined systems:
+
+Enter 'Get-CimInstance -Class Win32_Useraccount -Filter "PasswordRequired=False and LocalAccount=True" | FT Name, PasswordRequired, Disabled, LocalAccount'.
+
+Exclude disabled accounts (e.g., DefaultAccount, Guest).
+
+If any enabled user accounts are returned with a "PasswordRequired" status of "False", this is a finding.''',
+            'fix_text': 'Configure all enabled accounts to require passwords.',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254257',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': 'powershell -NoProfile -Command "if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Get-ADUser -Filter * -Properties PasswordNotRequired,Enabled | Where-Object { $_.Enabled -eq $true -and $_.PasswordNotRequired -eq $true -and $_.Name -notin @(\'DefaultAccount\',\'Guest\') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter \'PasswordRequired=False and LocalAccount=True\' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @(\'DefaultAccount\',\'Guest\') } | Select-Object -ExpandProperty Name }"',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Windows Server 2022 accounts must require passwords.',
+        })
+
     def test_infers_windows_certificate_store_thumbprint_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-220903',

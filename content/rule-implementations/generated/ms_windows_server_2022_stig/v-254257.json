@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Get-ADUser -Filter * -Properties PasswordNotRequired,Enabled | Where-Object { $_.Enabled -eq $true -and $_.PasswordNotRequired -eq $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter 'PasswordRequired=False and LocalAccount=True' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2022 accounts must require passwords.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "windows",
+    "vuln_id": "V-254257"
+  },
   "check_content_excerpt": "Review the password required status for enabled user accounts.\n\nOpen \"PowerShell\".\n\nDomain Controllers:\n\nEnter \"Get-Aduser -Filter * -Properties Passwordnotrequired |FT Name, Passwordnotrequired, Enabled\".\n\nExclude disabled accounts (e.g., DefaultAccount, Guest) and Trusted Domain Objects (TDOs).\n\nIf \"Passwordnotrequired\" is \"True\" or blank for any enabled user account, this is a finding.\n\nMember servers and standalone or nondomain-joined systems:\n\nEnter 'Get-CimInstance -Class Win32_Useraccount -Filter \"PasswordRequired=False and LocalAccount=True\" | FT Name, PasswordRequired, Disabled, LocalAccount'.\n\nExclude disabled accounts (e.g., DefaultAccount, Guest).\n\nIf any enabled user accounts are returned with a \"PasswordRequired\" status of \"False\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure all enabled accounts to require passwords.\n\nThe password required flag can be set by entering the following on a command line: \"Net user [username] /passwordreq:yes\", substituting [username] with the name of the user account.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-254257r958482_rule",
   "severity": "medium",
