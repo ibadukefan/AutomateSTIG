@@ -2141,9 +2141,54 @@ def _uint32_positive_le_pattern(maximum: int) -> str | None:
     return rf'^uint32 (?:{alternation})$'
 
 
+def _gnome_login_banner_text_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if 'Standard Mandatory DoD Notice and Consent Banner' not in content and 'Standard Mandatory DOD Notice and Consent Banner' not in content:
+        return None
+    if not re.search(r'banner\s+does\s+not\s+match\s+the\s+Standard\s+Mandatory\s+DoD\s+Notice\s+and\s+Consent\s+Banner\s+exactly', content, re.IGNORECASE):
+        return None
+    command_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>(?:gsettings\s+get\s+org\.gnome\.login-screen\s+banner-message-text|grep\s+banner-message-text\s+/etc/dconf/db/local\.d/\*))\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if not command_match:
+        return None
+    banner_match = re.search(
+        r'banner-message-text\s*=\s*\n\s*[\'“](?P<banner>You\s+are\s+accessing\s+a\s+U\.S\.\s+Government\s+\(USG\)\s+Information\s+System\s+\(IS\)\s+that\s+is\s+provided\s+for\s+USG-authorized\s+use\s+only\.[\s\S]+?See\s+User\s+Agreement\s+for\s+details\.\s?)[\'”]',
+        content,
+        re.IGNORECASE,
+    )
+    if not banner_match:
+        banner_match = re.search(
+            r'banner-message-text\s*=\s*\n\s*[\'“](?P<banner>You\s+are\s+accessing\s+a\s+U\.S\.\s+Government\s+\(USG\)\s+Information\s+System\s+\(IS\)\s+that\s+is\s+provided\s+for\s+USG-authorized\s+use\s+only\.[^\'”\n]+)[\'”]',
+            content,
+            re.IGNORECASE,
+        )
+    if not banner_match:
+        return None
+    banner = banner_match.group('banner')
+    if f"banner-message-text='{banner}'" not in fix_text:
+        return None
+    command = _normalize_command(command_match.group('command'))
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'contains', 'substring': banner},
+        'description': rule.get('title', ''),
+    }
+
+
 def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
+    login_banner_candidate = _gnome_login_banner_text_candidate(rule, stig_id)
+    if login_banner_candidate:
+        return login_banner_candidate
     content = rule.get('check_content', '') or ''
     picture_uri_command = re.search(
         r'^\s*\$\s*(?P<command>(?:sudo\s+)?gsettings\s+get\s+org\.gnome\.desktop\.screensaver\s+picture-uri)\s*$',

@@ -179,6 +179,70 @@ Select "Disabled" under "Actions".''',
             'description': 'Windows Server 2025 FTP servers must be configured to prevent anonymous logons.',
         })
 
+    def test_infers_linux_gnome_login_banner_exact_text_candidate(self):
+        banner = 'You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\\nBy using this IS (which includes any device attached to this IS), you consent to the following conditions: '
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270174',
+            'title': 'RHEL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon.',
+            'check_content': f'''Check that the operating system displays the exact Standard Mandatory DOD Notice and Consent Banner text with the command:
+
+$ gsettings get org.gnome.login-screen banner-message-text
+
+banner-message-text=
+'{banner}'
+
+If the banner does not match the Standard Mandatory DOD Notice and Consent Banner exactly, this is a finding.''',
+            'fix_text': f'''Add the following lines to the [org/gnome/login-screen] section of the "/etc/dconf/db/local.d/01-banner-message":
+
+banner-message-text='{banner}'
+
+Run the following command to update the database:
+
+$ sudo dconf update''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270174',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'gsettings get org.gnome.login-screen banner-message-text',
+            },
+            'expected': {'type': 'contains', 'substring': banner},
+            'description': 'RHEL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon.',
+        })
+
+    def test_infers_linux_dconf_login_banner_exact_text_candidate(self):
+        banner = 'You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\\nBy using this IS (which includes any device attached to this IS), you consent to the following conditions: '
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248528',
+            'title': 'OL 8 must display the Standard Mandatory DoD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon.',
+            'check_content': f'''Check that the operating system displays the exact Standard Mandatory DoD Notice and Consent Banner text with the command:
+
+$ sudo grep banner-message-text /etc/dconf/db/local.d/*
+
+banner-message-text=
+'{banner}'
+
+If the banner does not match the Standard Mandatory DoD Notice and Consent Banner exactly, this is a finding.''',
+            'fix_text': f'''Add the following lines to the [org/gnome/login-screen] section of the "/etc/dconf/db/local.d/01-banner-message":
+
+banner-message-text='{banner}'
+
+Run the following command to update the database:
+
+$ sudo dconf update''',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-248528',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'grep banner-message-text /etc/dconf/db/local.d/*',
+            },
+            'expected': {'type': 'contains', 'substring': banner},
+            'description': 'OL 8 must display the Standard Mandatory DoD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon.',
+        })
+
     def test_infers_windows_secondary_logon_service_disabled_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-253289',
