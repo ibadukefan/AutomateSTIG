@@ -127,16 +127,17 @@
       "vuln_id": "V-259044"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259045",
+      "check_pack": "generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259045r961116_rule",
       "severity": "medium",
       "title": "The vCenter Lookup service must be configured to limit data exposure between applications.",
-      "tracking_issue": "TODO-V-259045",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
         "content/disa-corpus/artifacts/825130530366e146f4914987b7b6af9d693f6ba8d237b3a59f61577b1abeb753/U_VMW_vSphere_8-0_Y25M07_STIG.zip"
       ],
       "vuln_id": "V-259045"
@@ -466,31 +467,33 @@
       "vuln_id": "V-259066"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259067",
+      "check_pack": "generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259067r961863_rule",
       "severity": "medium",
       "title": "The vCenter Lookup service must disable \"ALLOW_BACKSLASH\".",
-      "tracking_issue": "TODO-V-259067",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
         "content/disa-corpus/artifacts/825130530366e146f4914987b7b6af9d693f6ba8d237b3a59f61577b1abeb753/U_VMW_vSphere_8-0_Y25M07_STIG.zip"
       ],
       "vuln_id": "V-259067"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259068",
+      "check_pack": "generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259068r961863_rule",
       "severity": "medium",
       "title": "The vCenter Lookup service must enable \"ENFORCE_ENCODING_IN_GET_WRITER\".",
-      "tracking_issue": "TODO-V-259068",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
         "content/disa-corpus/artifacts/825130530366e146f4914987b7b6af9d693f6ba8d237b3a59f61577b1abeb753/U_VMW_vSphere_8-0_Y25M07_STIG.zip"
       ],
       "vuln_id": "V-259068"

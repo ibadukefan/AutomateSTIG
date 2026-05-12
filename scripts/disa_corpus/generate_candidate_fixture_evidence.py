@@ -190,7 +190,16 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
                 pass_fixture['command_outputs'] = {command: '700'}
                 fail_fixture['command_outputs'] = {command: '701'}
             else:
-                raise ValueError(f"{candidate['vuln_id']}: command_output matches evidence requires supported deterministic regex")
+                empty_or_literal = re.fullmatch(r'\^\(\?:\|(?P<literal>.+)\)\$', pattern)
+                if empty_or_literal:
+                    literal = re.sub(r'\\(.)', r'\1', empty_or_literal.group('literal'))
+                    if '=' not in literal:
+                        raise ValueError(f"{candidate['vuln_id']}: command_output empty-or-literal evidence requires key=value literal")
+                    key, _ = literal.split('=', 1)
+                    pass_fixture['command_outputs'] = {command: literal}
+                    fail_fixture['command_outputs'] = {command: f'{key}=unexpected'}
+                else:
+                    raise ValueError(f"{candidate['vuln_id']}: command_output matches evidence requires supported deterministic regex")
             evidence_type = 'command_output_matches'
         else:
             raise ValueError(f"{candidate['vuln_id']}: command_output candidate only supports equals, not_equals, contains, or matches evidence")

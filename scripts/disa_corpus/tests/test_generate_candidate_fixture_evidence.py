@@ -230,6 +230,19 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
         self.assertEqual(case['pass_fixture']['command_outputs'][command], 'dns=none')
         self.assertEqual(case['fail_fixture']['command_outputs'][command], 'dns=unexpected')
 
+    def test_generates_command_output_empty_or_literal_line_fixture_evidence(self):
+        command = "sh -c \"grep '^org.apache.catalina.connector.ALLOW_BACKSLASH=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\""
+        candidate = {
+            'vuln_id': 'V-259067',
+            'platform': 'generic',
+            'description': 'Lookup service absent or expected property',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'matches', 'pattern': r'^(?:|org\.apache\.catalina\.connector\.ALLOW_BACKSLASH=false)$'},
+        }
+        case = mod.build_case(candidate)
+        self.assertEqual(case['pass_fixture']['command_outputs'][command], 'org.apache.catalina.connector.ALLOW_BACKSLASH=false')
+        self.assertEqual(case['fail_fixture']['command_outputs'][command], 'org.apache.catalina.connector.ALLOW_BACKSLASH=unexpected')
+
     def test_builds_command_output_not_equals_fixture_case(self):
         case = mod.build_case({
             'vuln_id': 'V-256404',

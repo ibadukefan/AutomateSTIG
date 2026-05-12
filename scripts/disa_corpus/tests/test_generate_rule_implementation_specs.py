@@ -960,6 +960,36 @@ If there are no results, or if the "org.apache.catalina.startup.EXIT_ON_INIT_FAI
             'description': 'The vCenter Lookup service must be configured to fail to a known safe state if system initialization fails.',
         })
 
+    def test_infers_vcenter_lookup_service_absent_or_expected_property_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259067',
+            'title': 'The vCenter Lookup service must disable "ALLOW_BACKSLASH".',
+            'check_content': '''At the command line, run the following command:
+
+# grep ALLOW_BACKSLASH /usr/lib/vmware-lookupsvc/conf/catalina.properties
+
+Example result:
+
+org.apache.catalina.connector.ALLOW_BACKSLASH=false
+
+If the "org.apache.catalina.connector.ALLOW_BACKSLASH" setting does not exist, this is not a finding.
+
+If the "org.apache.catalina.connector.ALLOW_BACKSLASH" is not set to "false", this is a finding.''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259067',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c \"grep '^org.apache.catalina.connector.ALLOW_BACKSLASH=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\"",
+            },
+            'expected': {
+                'type': 'matches',
+                'pattern': r'^(?:|org\.apache\.catalina\.connector\.ALLOW_BACKSLASH=false)$',
+            },
+            'description': 'The vCenter Lookup service must disable "ALLOW_BACKSLASH".',
+        })
+
     def test_infers_postgresql_shared_preload_libraries_pgaudit_contains_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233600',

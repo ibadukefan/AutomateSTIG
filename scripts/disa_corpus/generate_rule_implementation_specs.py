@@ -1402,8 +1402,7 @@ def _vcenter_lookup_service_grep_property_candidate(rule: dict, stig_id: str) ->
         return None
     if 'xmllint' in content.lower():
         return None
-    if re.search(r'does\s+not\s+exist,?\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
-        return None
+    absent_is_not_finding = re.search(r'does\s+not\s+exist,?\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE)
     grep_matches = list(re.finditer(
         r'^\s*#\s*(?P<command>grep\s+(?P<token>[A-Za-z0-9_.-]+)\s+(?P<path>/usr/lib/vmware-lookupsvc/conf/catalina\.properties))\s*$',
         content,
@@ -1427,6 +1426,22 @@ def _vcenter_lookup_service_grep_property_candidate(rule: dict, stig_id: str) ->
     key, expected_value = expected_line.split('=', 1)
     if key != token and token not in key:
         return None
+    if absent_is_not_finding:
+        absent_or_mismatch_finding = re.search(
+            rf'If\s+(?:the\s+)?["“]{re.escape(key)}["”]\s+(?:setting\s+)?(?:is\s+)?not\s+set\s+to\s+["“]{re.escape(expected_value)}["”],?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        if not absent_or_mismatch_finding:
+            return None
+        command = f"sh -c \"grep '^{key}=' {grep_matches[0].group('path')} || true\""
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'matches', 'pattern': rf'^(?:|{re.escape(expected_line)})$'},
+            'description': rule.get('title', ''),
+        }
     finding = re.search(
         rf'If\s+there\s+are\s+no\s+results,?\s+or\s+if\s+the\s+["“]{re.escape(key)}["”]\s+is\s+not\s+set\s+to\s+["“]{re.escape(expected_value)}["”],?\s+this\s+is\s+a\s+finding',
         content,

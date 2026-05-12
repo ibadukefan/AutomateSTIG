@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 14,
+  "candidate_checks": 17,
   "cases": [
     {
       "check": {
@@ -130,6 +130,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259044"
+    },
+    {
+      "check": {
+        "command": "sh -c \"grep '^org.apache.catalina.connector.RECYCLE_FACADES=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must be configured to limit data exposure between applications.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^(?:|org\\.apache\\.catalina\\.connector\\.RECYCLE_FACADES=true)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"grep '^org.apache.catalina.connector.RECYCLE_FACADES=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\"": "org.apache.catalina.connector.RECYCLE_FACADES=unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"grep '^org.apache.catalina.connector.RECYCLE_FACADES=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\"": "org.apache.catalina.connector.RECYCLE_FACADES=true"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259045"
     },
     {
       "check": {
@@ -366,6 +392,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259066"
+    },
+    {
+      "check": {
+        "command": "sh -c \"grep '^org.apache.catalina.connector.ALLOW_BACKSLASH=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must disable \"ALLOW_BACKSLASH\".",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^(?:|org\\.apache\\.catalina\\.connector\\.ALLOW_BACKSLASH=false)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"grep '^org.apache.catalina.connector.ALLOW_BACKSLASH=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\"": "org.apache.catalina.connector.ALLOW_BACKSLASH=unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"grep '^org.apache.catalina.connector.ALLOW_BACKSLASH=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\"": "org.apache.catalina.connector.ALLOW_BACKSLASH=false"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259067"
+    },
+    {
+      "check": {
+        "command": "sh -c \"grep '^org.apache.catalina.connector.response.ENFORCE_ENCODING_IN_GET_WRITER=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must enable \"ENFORCE_ENCODING_IN_GET_WRITER\".",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^(?:|org\\.apache\\.catalina\\.connector\\.response\\.ENFORCE_ENCODING_IN_GET_WRITER=true)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"grep '^org.apache.catalina.connector.response.ENFORCE_ENCODING_IN_GET_WRITER=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\"": "org.apache.catalina.connector.response.ENFORCE_ENCODING_IN_GET_WRITER=unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"grep '^org.apache.catalina.connector.response.ENFORCE_ENCODING_IN_GET_WRITER=' /usr/lib/vmware-lookupsvc/conf/catalina.properties || true\"": "org.apache.catalina.connector.response.ENFORCE_ENCODING_IN_GET_WRITER=true"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259068"
     }
   ],
   "production_claim": false,
@@ -373,5 +451,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
-  "validated_candidates": 14
+  "validated_candidates": 17
 }
