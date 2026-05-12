@@ -1818,6 +1818,19 @@
     },
     {
       "check": {
+        "command": "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $4 < 1 {print $1 \" \" $4}' /etc/passwd /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "OL 8 passwords for new users or password changes must have a 24 hours/one day minimum password lifetime restriction in \"/etc/shadow\".",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248694"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "PASS_MIN_DAYS 1",
@@ -1843,6 +1856,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-248696"
+    },
+    {
+      "check": {
+        "command": "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && ($5 > 60 || $5 <= 0) {print $1 \" \" $5}' /etc/passwd /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "OL 8 user account passwords must be configured so that existing passwords are restricted to a 60-day maximum lifetime.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248697"
     },
     {
       "check": {

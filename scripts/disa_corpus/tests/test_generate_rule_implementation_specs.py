@@ -274,6 +274,56 @@ If any interactive user password hash does not begin with "$6$", this is a findi
             'description': 'RHEL 9 must employ FIPS 140-3 approved cryptographic hashing algorithms for all stored passwords.',
         })
 
+    def test_infers_linux_shadow_minimum_password_lifetime_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230364',
+            'title': 'RHEL 8 passwords must have a 24 hours/1 day minimum password lifetime restriction in /etc/shadow.',
+            'check_content': '''Check whether the minimum time period between password changes for each user account is one day or greater.
+
+$ sudo awk -F: '$4 < 1 {print $1 " " $4}' /etc/shadow
+
+If any results are returned that are not associated with a system account, this is a finding.''',
+            'fix_text': '''Configure non-compliant accounts to enforce a 24 hours/1 day minimum password lifetime:
+
+$ sudo chage -m 1 [user]''',
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230364',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $4 < 1 {print $1 \" \" $4}' /etc/passwd /etc/shadow",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 8 passwords must have a 24 hours/1 day minimum password lifetime restriction in /etc/shadow.',
+        })
+
+    def test_infers_linux_shadow_maximum_password_lifetime_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230367',
+            'title': 'RHEL 8 user account passwords must be configured so that existing passwords are restricted to a 60-day maximum lifetime.',
+            'check_content': '''Check whether the maximum time period for existing passwords is restricted to 60 days with the following commands:
+
+$ sudo awk -F: '$5 > 60 {print $1 " " $5}' /etc/shadow
+
+$ sudo awk -F: '$5 <= 0 {print $1 " " $5}' /etc/shadow
+
+If any results are returned that are not associated with a system account, this is a finding.''',
+            'fix_text': '''Configure non-compliant accounts to enforce a 60-day maximum password lifetime restriction.
+
+$ sudo chage -M 60 [user]''',
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230367',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && ($5 > 60 || $5 <= 0) {print $1 \" \" $5}' /etc/passwd /etc/shadow",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 8 user account passwords must be configured so that existing passwords are restricted to a 60-day maximum lifetime.',
+        })
+
     def test_infers_sles_mfa_required_packages_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234854',
@@ -718,7 +768,7 @@ Universal method:
 
 Windows method:
 1. Start "regedit".
-2. Navigate to "HKLM\\Software\\Policies\\Google\\Chrome\\".
+2. Navigate to "HKLM\\Software\\Policies\\Google\\Chrome\".
 3. If the "DownloadRestrictions" value name does not exist or its value data is set to "0", this is a finding.''',
             'fix_text': '''Windows group policy:
 1. Open the group policy editor tool with gpedit.msc.
@@ -942,7 +992,7 @@ If the "telnet" application exists, this is a finding.''',
             'platform': 'windows',
             'check': {
                 'type': 'command_output',
-                'command': 'powershell -NoProfile -Command "Test-Path \\\"$env:windir\\System32\\telnet.exe\\\""',
+                'command': 'powershell -NoProfile -Command "Test-Path \\"$env:windir\\System32\\telnet.exe\\""',
             },
             'expected': {'type': 'equals', 'value': 'False'},
             'description': 'The Telnet Client must not be installed on the system.',
@@ -959,7 +1009,7 @@ Navigate to the Windows\\System32 directory.
 If the "TFTP" application exists, this is a finding.''',
             'fix_text': 'Remove the TFTP Client from the system.',
         }, 'MS_Windows_10_STIG')
-        self.assertEqual(candidate['check']['command'], 'powershell -NoProfile -Command "Test-Path \\\"$env:windir\\System32\\tftp.exe\\\""')
+        self.assertEqual(candidate['check']['command'], 'powershell -NoProfile -Command "Test-Path \\"$env:windir\\System32\\tftp.exe\\""')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'False'})
 
     def test_infers_windows_system32_snmp_absent_candidate(self):
@@ -978,7 +1028,7 @@ If the "SNMP" application exists, this is a finding.''',
             'platform': 'windows',
             'check': {
                 'type': 'command_output',
-                'command': 'powershell -NoProfile -Command "Test-Path \\\"$env:windir\\System32\\snmp.exe\\\""',
+                'command': 'powershell -NoProfile -Command "Test-Path \\"$env:windir\\System32\\snmp.exe\\""',
             },
             'expected': {'type': 'equals', 'value': 'False'},
             'description': 'Simple Network Management Protocol (SNMP) must not be installed on the system.',

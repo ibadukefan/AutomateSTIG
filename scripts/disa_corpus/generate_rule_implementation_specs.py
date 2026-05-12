@@ -1292,6 +1292,49 @@ def _linux_interactive_shadow_sha512_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _linux_shadow_password_lifetime_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    combined = '\n'.join(part for part in (title, content, fix_text) if part)
+    if '/etc/shadow' not in content:
+        return None
+    if not re.search(r'not\s+associated\s+with\s+a\s+system\s+account', content, re.IGNORECASE):
+        return None
+
+    minimum_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$4\s*<\s*(\d+)\s*\{print\s+\$1\s+\"\s+\"\s+\$4\}'\s+/etc/shadow", content, re.IGNORECASE)
+    if minimum_match and re.search(r'\bchage\s+-m\s+' + re.escape(minimum_match.group(1)) + r'\b', fix_text, re.IGNORECASE):
+        threshold = int(minimum_match.group(1))
+        if threshold != 1 or not re.search(r'minimum\s+password\s+lifetime|minimum\s+time\s+period\s+between\s+password\s+changes|24\s+hours/1\s+day', combined, re.IGNORECASE):
+            return None
+        command = '''awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $4 < 1 {print $1 " " $4}' /etc/passwd /etc/shadow'''
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+
+    maximum_over_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$5\s*>\s*(\d+)\s*\{print\s+\$1\s+\"\s+\"\s+\$5\}'\s+/etc/shadow", content, re.IGNORECASE)
+    maximum_nonpositive_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$5\s*<=\s*0\s*\{print\s+\$1\s+\"\s+\"\s+\$5\}'\s+/etc/shadow", content, re.IGNORECASE)
+    if maximum_over_match and maximum_nonpositive_match and re.search(r'\bchage\s+-M\s+' + re.escape(maximum_over_match.group(1)) + r'\b', fix_text, re.IGNORECASE):
+        threshold = int(maximum_over_match.group(1))
+        if threshold != 60 or not re.search(r'maximum\s+password\s+lifetime|maximum\s+time\s+period\s+for\s+existing\s+passwords|60-day', combined, re.IGNORECASE):
+            return None
+        command = '''awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && ($5 > 60 || $5 <= 0) {print $1 " " $5}' /etc/passwd /etc/shadow'''
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+    return None
+
+
 def _sles_mfa_required_packages_candidate(rule: dict, stig_id: str) -> dict | None:
     packages = ['pam_pkcs11', 'mozilla-nss', 'mozilla-nss-tools', 'pcsc-ccid', 'pcsc-lite', 'pcsc-tools', 'opensc', 'coolkey']
     if rule.get('vuln_id', '') != 'V-234854' or stig_id != 'SLES_15_STIG':
@@ -5018,6 +5061,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     if tomcat_systemd_boolean_property_candidate:
         return tomcat_systemd_boolean_property_candidate
 
+    linux_shadow_password_lifetime_candidate = _linux_shadow_password_lifetime_candidate(rule, stig_id)
+    if linux_shadow_password_lifetime_candidate:
+        return linux_shadow_password_lifetime_candidate
+
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:
         return command_candidate
@@ -5031,7 +5078,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _sles_mfa_required_packages_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _sles_mfa_required_packages_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate
