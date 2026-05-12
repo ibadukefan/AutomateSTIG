@@ -454,6 +454,38 @@ def _windows_platform(stig_id: str) -> bool:
     return 'windows' in lower or 'ms_windows' in lower
 
 
+def _ubuntu_rsyslog_remote_access_methods_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-238324', 'V-260589', 'V-270681'}:
+        return None
+    if 'ubuntu' not in stig_id.lower():
+        return None
+    title = rule.get('title', '') or ''
+    if 'must monitor remote access methods' not in title:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    if not re.search(r'grep\s+-[A-Za-z]*E[A-Za-z]*\s+', content, re.IGNORECASE):
+        return None
+    if not all(token in content for token in ('authpriv', 'daemon')):
+        return None
+    if not re.search(r'/etc/rsyslog(?:\.\*|\.d/)', content, re.IGNORECASE):
+        return None
+    if not all(token in combined for token in ('authpriv.*', 'daemon.*')):
+        return None
+    if not re.search(r'not\s+configured\s+to\s+be\s+logged\s+in\s+at\s+least\s+one\s+of\s+the\s+config\s+files', content, re.IGNORECASE):
+        return None
+    command = "sh -c 'grep -Ehr \"^(auth\\.\\*,authpriv\\.\\*|auth,authpriv\\.\\*|daemon\\.\\*)[[:space:]]+\" /etc/rsyslog.* /etc/rsyslog.d/* 2>/dev/null | awk '\"'\"'BEGIN{auth=0;daemon=0} /^[[:space:]]*#/ {next} /^(auth\\.\\*,authpriv\\.\\*|auth,authpriv\\.\\*)[[:space:]]+/ {auth=1} /^daemon\\.\\*[[:space:]]+/ {daemon=1} END{if(auth && daemon) print \"configured\"}'\"'\"''"
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'configured'},
+        'description': title,
+    }
+
+
 def _windows_legal_notice_caption_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -4587,6 +4619,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'is_false'},
                 'description': rule.get('title', ''),
             }
+
+    ubuntu_rsyslog_candidate = _ubuntu_rsyslog_remote_access_methods_candidate(rule, stig_id)
+    if ubuntu_rsyslog_candidate:
+        return ubuntu_rsyslog_candidate
 
     gsettings_candidate = _gsettings_candidate(rule, stig_id)
     if gsettings_candidate:

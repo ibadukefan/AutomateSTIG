@@ -647,6 +647,33 @@ If the DNS key under main does not exist or is not set to "none" or "default", t
             'description': 'OL 9 must configure a DNS processing mode set be Network Manager.',
         })
 
+    def test_infers_ubuntu_rsyslog_remote_access_methods_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270681',
+            'title': 'Ubuntu 24.04 LTS must monitor remote access methods.',
+            'check_content': '''Verify that Ubuntu 24.04 LTS monitors all remote access methods with the following command:
+
+$  grep -E -r '^(auth,authpriv\\.\\*|daemon\\.\\*)' /etc/rsyslog.*
+/etc/rsyslog.d/50-default.conf:auth,authpriv.* /var/log/auth.log
+/etc/rsyslog.d/50-default.conf:daemon.* /var/log/messages
+
+If "auth.*", "authpriv.*", or "daemon.*" are not configured to be logged in at least one of the config files, this is a finding.''',
+            'fix_text': '''Configure rsyslog to log remote access methods by adding or updating:
+
+auth,authpriv.* /var/log/auth.log
+daemon.* /var/log/messages''',
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270681',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c 'grep -Ehr \"^(auth\\.\\*,authpriv\\.\\*|auth,authpriv\\.\\*|daemon\\.\\*)[[:space:]]+\" /etc/rsyslog.* /etc/rsyslog.d/* 2>/dev/null | awk '\"'\"'BEGIN{auth=0;daemon=0} /^[[:space:]]*#/ {next} /^(auth\\.\\*,authpriv\\.\\*|auth,authpriv\\.\\*)[[:space:]]+/ {auth=1} /^daemon\\.\\*[[:space:]]+/ {daemon=1} END{if(auth && daemon) print \"configured\"}'\"'\"''",
+            },
+            'expected': {'type': 'equals', 'value': 'configured'},
+            'description': 'Ubuntu 24.04 LTS must monitor remote access methods.',
+        })
+
     def test_infers_ubuntu_graphical_session_lock_multi_gsettings_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270678',

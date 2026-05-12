@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'grep -Ehr \"^(auth\\.\\*,authpriv\\.\\*|auth,authpriv\\.\\*|daemon\\.\\*)[[:space:]]+\" /etc/rsyslog.* /etc/rsyslog.d/* 2>/dev/null | awk '\"'\"'BEGIN{auth=0;daemon=0} /^[[:space:]]*#/ {next} /^(auth\\.\\*,authpriv\\.\\*|auth,authpriv\\.\\*)[[:space:]]+/ {auth=1} /^daemon\\.\\*[[:space:]]+/ {daemon=1} END{if(auth && daemon) print \"configured\"}'\"'\"''",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 22.04 LTS must monitor remote access methods.",
+    "expected": {
+      "type": "equals",
+      "value": "configured"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260589"
+  },
   "check_content_excerpt": "Verify that Ubuntu 22.04 LTS monitors all remote access methods by using the following command:  \n  \n     $  grep -Er '^(auth\\.\\*,authpriv\\.\\*|daemon\\.\\*)' /etc/rsyslog.* \n     /etc/rsyslog.d/50-default.conf:auth.*,authpriv.* /var/log/secure \n     /etc/rsyslog.d/50-default.conf:daemon.* /var/log/messages \n  \nIf \"auth.*\", \"authpriv.*\", or \"daemon.*\" are not configured to be logged in at least one of the config files, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "configured"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to monitor all remote access methods. \n \nAdd or modify the following line in the \"/etc/rsyslog.d/50-default.conf\" file: \n \nauth.*,authpriv.* /var/log/secure  \ndaemon.* /var/log/messages  \n \nRestart \"rsyslog.service\" for the changes to take effect by using the following command:  \n  \n     $ sudo systemctl restart rsyslog.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-260589r958406_rule",
   "severity": "medium",
