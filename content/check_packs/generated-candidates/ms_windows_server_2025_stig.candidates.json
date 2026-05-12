@@ -147,6 +147,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $value=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.ftpServer/security/authentication/anonymousAuthentication' -Name enabled -ErrorAction SilentlyContinue).Value; if ($value -eq $false) { 'Disabled' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 FTP servers must be configured to prevent anonymous logons.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278027"
+    },
+    {
+      "check": {
         "command": "Confirm-SecureBootUEFI",
         "type": "command_output"
       },

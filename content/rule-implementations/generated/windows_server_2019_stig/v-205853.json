@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $value=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.ftpServer/security/authentication/anonymousAuthentication' -Name enabled -ErrorAction SilentlyContinue).Value; if ($value -eq $false) { 'Disabled' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2019 FTP servers must be configured to prevent anonymous logons.",
+    "expected": {
+      "type": "equals",
+      "value": "Disabled"
+    },
+    "platform": "windows",
+    "vuln_id": "V-205853"
+  },
   "check_content_excerpt": "If FTP is not installed on the system, this is NA.\n\nOpen \"Internet Information Services (IIS) Manager\".\n\nSelect the server.\n\nDouble-click \"FTP Authentication\".\n\nIf the \"Anonymous Authentication\" status is \"Enabled\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Disabled"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the FTP service to prevent anonymous logons.\n\nOpen \"Internet Information Services (IIS) Manager\".\n\nSelect the server.\n\nDouble-click \"FTP Authentication\".\n\nSelect \"Anonymous Authentication\".\n\nSelect \"Disabled\" under \"Actions\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-205853r991589_rule",
   "severity": "medium",

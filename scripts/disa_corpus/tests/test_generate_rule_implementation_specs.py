@@ -69,6 +69,42 @@ By using this IS (which includes any device attached to this IS), you consent to
             'description': 'Windows Server required legal notice must be configured to display before console logon.',
         })
 
+    def test_infers_windows_ftp_anonymous_authentication_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278027',
+            'title': 'Windows Server 2025 FTP servers must be configured to prevent anonymous logons.',
+            'check_content': '''If FTP is not installed on the system, this is not applicable.
+
+Open Internet Information Services (IIS) Manager.
+
+Select the server.
+
+Double-click "FTP Authentication".
+
+If the "Anonymous Authentication" status is "Enabled", this is a finding.''',
+            'fix_text': '''Configure the FTP service to prevent anonymous logons.
+
+Open "Internet Information Services (IIS) Manager".
+
+Select the server.
+
+Double-click "FTP Authentication".
+
+Select "Anonymous Authentication".
+
+Select "Disabled" under "Actions".''',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-278027',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $value=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.ftpServer/security/authentication/anonymousAuthentication' -Name enabled -ErrorAction SilentlyContinue).Value; if ($value -eq $false) { 'Disabled' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Disabled'},
+            'description': 'Windows Server 2025 FTP servers must be configured to prevent anonymous logons.',
+        })
+
     def test_infers_kubernetes_manifest_flag_presence_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242402',
