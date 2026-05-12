@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq \"CIM Server\"} | ForEach-Object { \"$($_.Policy)`n$($_.Running)\" }",
+      "type": "command_output"
+    },
+    "description": "The ESXi Common Information Model (CIM) service must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "off\nFalse"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256448"
+  },
   "check_content_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Services.\n\nLocate the \"CIM Server\" service and verify the \"Daemon\" is \"Stopped\" and the \"Startup Policy\" is set to \"Start and stop manually\".\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq \"CIM Server\"}\n\nIf the \"CIM Server\" service does not have a \"Policy\" of \"off\" or is running, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "off\nFalse"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Services.\n\nSelect the \"CIM Server\" service. If the service is started, click \"Stop\". \n\nClick \"Edit Startup Policy...\". Select \"Start and stop manually\". Click \"OK\".\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq \"CIM Server\"} | Set-VMHostService -Policy Off\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq \"CIM Server\"} | Stop-VMHostService",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256448r1051419_rule",
   "severity": "medium",

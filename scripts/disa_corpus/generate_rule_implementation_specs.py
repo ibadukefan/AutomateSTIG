@@ -2584,6 +2584,45 @@ def _esxi_syslog_persistent_log_output_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _esxi_disabled_vmhost_service_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'esxi' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    command_match = re.search(
+        r'(?m)^\s*(?:PS>\s*)?Get-VMHost\s*\|\s*Get-VMHostService\s*\|\s*Where\s*\{\s*\$?_\.Label\s+-eq\s+["“](?P<label>[^"”]+)["”]\s*\}\s*$',
+        content,
+        re.IGNORECASE,
+    )
+    if not command_match:
+        return None
+    label = command_match.group('label').strip()
+    if not label or any(char in label for char in ('`', '$', '|', ';', '\\')):
+        return None
+    quoted_label = re.escape(label)
+    if not re.search(
+        rf'If\s+the\s+(?:["“]{quoted_label}["”]|{quoted_label})\s+service\s+does\s+not\s+have\s+a\s+["“]Policy["”]\s+of\s+["“]off["”]\s+or\s+is\s+running,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    if not re.search(rf'Where\s*\{{\s*\$?_\.Label\s+-eq\s+["“]{quoted_label}["”]\s*\}}\s*\|\s*Set-VMHostService\s+-Policy\s+Off\b', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(rf'Where\s*\{{\s*\$?_\.Label\s+-eq\s+["“]{quoted_label}["”]\s*\}}\s*\|\s*Stop-VMHostService\b', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        f'Get-VMHost | Get-VMHostService | Where-Object {{$_.Label -eq "{label}"}} | '
+        'ForEach-Object { "$($_.Policy)`n$($_.Running)" }'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'off\nFalse'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _esxi_advanced_setting_exact_value_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'esxi' not in stig_id.lower():
         return None
@@ -4451,6 +4490,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     esxi_syslog_persistent_log_output_candidate = _esxi_syslog_persistent_log_output_candidate(rule, stig_id)
     if esxi_syslog_persistent_log_output_candidate:
         return esxi_syslog_persistent_log_output_candidate
+
+    esxi_disabled_service_candidate = _esxi_disabled_vmhost_service_candidate(rule, stig_id)
+    if esxi_disabled_service_candidate:
+        return esxi_disabled_service_candidate
 
     esxi_advanced_setting_candidate = _esxi_advanced_setting_exact_value_candidate(rule, stig_id)
     if esxi_advanced_setting_candidate:

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 30,
+  "candidate_checks": 32,
   "cases": [
     {
       "check": {
@@ -471,6 +471,32 @@
     },
     {
       "check": {
+        "command": "Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq \"slpd\"} | ForEach-Object { \"$($_.Policy)`n$($_.Running)\" }",
+        "type": "command_output"
+      },
+      "description": "The ESXi host OpenSLP service must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "off\nFalse"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq \"slpd\"} | ForEach-Object { \"$($_.Policy)`n$($_.Running)\" }": "unexpected-off\nFalse"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq \"slpd\"} | ForEach-Object { \"$($_.Policy)`n$($_.Running)\" }": "off\nFalse"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256435"
+    },
+    {
+      "check": {
         "command": "esxcli system syslog config get|grep 509",
         "type": "command_output"
       },
@@ -757,6 +783,32 @@
     },
     {
       "check": {
+        "command": "Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq \"CIM Server\"} | ForEach-Object { \"$($_.Policy)`n$($_.Running)\" }",
+        "type": "command_output"
+      },
+      "description": "The ESXi Common Information Model (CIM) service must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "off\nFalse"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq \"CIM Server\"} | ForEach-Object { \"$($_.Policy)`n$($_.Running)\" }": "unexpected-off\nFalse"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq \"CIM Server\"} | ForEach-Object { \"$($_.Policy)`n$($_.Running)\" }": "off\nFalse"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256448"
+    },
+    {
+      "check": {
         "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep ciphers",
         "type": "command_output"
       },
@@ -787,5 +839,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_7-0_esxi_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
-  "validated_candidates": 30
+  "validated_candidates": 32
 }

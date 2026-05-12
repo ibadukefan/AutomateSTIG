@@ -236,6 +236,19 @@
     },
     {
       "check": {
+        "command": "Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq \"slpd\"} | ForEach-Object { \"$($_.Policy)`n$($_.Running)\" }",
+        "type": "command_output"
+      },
+      "description": "The ESXi host OpenSLP service must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "off\nFalse"
+      },
+      "platform": "generic",
+      "vuln_id": "V-256435"
+    },
+    {
+      "check": {
         "command": "esxcli system syslog config get|grep 509",
         "type": "command_output"
       },
@@ -376,6 +389,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-256447"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq \"CIM Server\"} | ForEach-Object { \"$($_.Policy)`n$($_.Running)\" }",
+        "type": "command_output"
+      },
+      "description": "The ESXi Common Information Model (CIM) service must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "off\nFalse"
+      },
+      "platform": "generic",
+      "vuln_id": "V-256448"
     },
     {
       "check": {

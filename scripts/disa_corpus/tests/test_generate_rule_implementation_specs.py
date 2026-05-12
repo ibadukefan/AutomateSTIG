@@ -1531,6 +1531,55 @@ If the Directory Services Type is not set to "Active Directory", this is a findi
             'description': 'The ESXi host must use Active Directory for local user authentication.',
         })
 
+    def test_infers_esxi_disabled_vmhost_service_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256448',
+            'title': 'The ESXi Common Information Model (CIM) service must be disabled.',
+            'check_content': '''From the vSphere Client, go to Hosts and Clusters.
+
+Select the ESXi Host >> Configure >> System >> Services.
+
+Locate the "CIM Server" service and verify the "Daemon" is "Stopped" and the "Startup Policy" is set to "Start and stop manually".
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following command:
+
+Get-VMHost | Get-VMHostService | Where {$_.Label -eq "CIM Server"}
+
+If the "CIM Server" service does not have a "Policy" of "off" or is running, this is a finding.''',
+            'fix_text': '''From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+Get-VMHost | Get-VMHostService | Where {$_.Label -eq "CIM Server"} | Set-VMHostService -Policy Off
+Get-VMHost | Get-VMHostService | Where {$_.Label -eq "CIM Server"} | Stop-VMHostService'''
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-256448',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq "CIM Server"} | ForEach-Object { "$($_.Policy)`n$($_.Running)" }',
+            },
+            'expected': {'type': 'equals', 'value': 'off\nFalse'},
+            'description': 'The ESXi Common Information Model (CIM) service must be disabled.',
+        })
+
+    def test_infers_esxi_disabled_vmhost_service_candidate_without_quoted_finding_label(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256435',
+            'title': 'The ESXi host OpenSLP service must be disabled.',
+            'check_content': '''From a PowerCLI command prompt while connected to the ESXi host, run the following command:
+
+Get-VMHost | Get-VMHostService | Where {$_.Label -eq "slpd"}
+
+If the slpd service does not have a "Policy" of "off" or is running, this is a finding.''',
+            'fix_text': '''Get-VMHost | Get-VMHostService | Where {$_.Label -eq "slpd"} | Set-VMHostService -Policy Off
+Get-VMHost | Get-VMHostService | Where {$_.Label -eq "slpd"} | Stop-VMHostService'''
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertEqual(candidate['vuln_id'], 'V-256435')
+        self.assertEqual(candidate['check']['command'], 'Get-VMHost | Get-VMHostService | Where-Object {$_.Label -eq "slpd"} | ForEach-Object { "$($_.Policy)`n$($_.Running)" }')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'off\nFalse'})
+
     def test_infers_esxi_syslog_persistent_log_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256408',
