@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 189,
+  "candidate_checks": 191,
   "cases": [
     {
       "check": {
@@ -26,6 +26,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-253276"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Get-Service -Name 'SimpTcp' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Simple TCP/IP Services must not be installed on the system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Get-Service -Name 'SimpTcp' -ErrorAction SilentlyContinue)) { 'Absent' }\"": "unexpected-Absent"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Get-Service -Name 'SimpTcp' -ErrorAction SilentlyContinue)) { 'Absent' }\"": "Absent"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253277"
     },
     {
       "check": {
@@ -132,6 +158,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-253288"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$svc=Get-CimInstance Win32_Service -Filter \\\"Name='seclogon'\\\" -ErrorAction SilentlyContinue; if ($svc -and $svc.StartMode -eq 'Disabled' -and $svc.State -ne 'Running') { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Secondary Logon service must be disabled on Windows 11.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$svc=Get-CimInstance Win32_Service -Filter \\\"Name='seclogon'\\\" -ErrorAction SilentlyContinue; if ($svc -and $svc.StartMode -eq 'Disabled' -and $svc.State -ne 'Running') { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$svc=Get-CimInstance Win32_Service -Filter \\\"Name='seclogon'\\\" -ErrorAction SilentlyContinue; if ($svc -and $svc.StartMode -eq 'Disabled' -and $svc.State -ne 'Running') { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253289"
     },
     {
       "check": {
@@ -5101,5 +5153,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 189
+  "validated_candidates": 191
 }

@@ -4828,14 +4828,14 @@ def _adobe_dc_repair_installation_disabled_candidate(rule: dict, stig_id: str) -
 
 
 def _windows_ftp_anonymous_authentication_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
-    vuln_id = rule.get('vuln_id', '')
-    if vuln_id not in {'V-205853', 'V-254279', 'V-278027'}:
-        return None
     if not _windows_platform(stig_id):
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
     title = rule.get('title', '') or ''
+    if vuln_id not in {'V-205853', 'V-254279', 'V-278027'}:
+        return None
     if 'FTP servers must be configured to prevent anonymous logons' not in title:
         return None
     if not re.search(r'If\s+FTP\s+is\s+not\s+installed\s+on\s+the\s+system,\s+this\s+is\s+(?:NA|not\s+applicable)', content, re.IGNORECASE):
@@ -4846,14 +4846,63 @@ def _windows_ftp_anonymous_authentication_disabled_candidate(rule: dict, stig_id
         return None
     if not re.search(r'Select\s+["“]Anonymous\s+Authentication["”].*?Select\s+["“]Disabled["”]', fix_text, re.IGNORECASE | re.DOTALL):
         return None
-    command = "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $value=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.ftpServer/security/authentication/anonymousAuthentication' -Name enabled -ErrorAction SilentlyContinue).Value; if ($value -eq $false) { 'Disabled' }\""
     return {
         'vuln_id': vuln_id,
         'platform': 'windows',
-        'check': {'type': 'command_output', 'command': command},
+        'check': {
+            'type': 'command_output',
+            'command': "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $value=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.ftpServer/security/authentication/anonymousAuthentication' -Name enabled -ErrorAction SilentlyContinue).Value; if ($value -eq $false) { 'Disabled' }\"",
+        },
         'expected': {'type': 'equals', 'value': 'Disabled'},
         'description': title,
     }
+
+
+def _windows_services_msc_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    vuln_id = rule.get('vuln_id', '')
+    title = rule.get('title', '') or ''
+    if 'Services.msc' not in combined:
+        return None
+    if vuln_id == 'V-253289':
+        if not re.search(r'Locate\s+the\s+["“]Secondary\s+Logon["”]\s+service', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Startup\s+Type["”]?\s+is\s+not\s+["“]Disabled["”]\s+or\s+the\s+["“]Status["”]\s+is\s+["“]Running["”]', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Configure\s+the\s+["“]Secondary\s+Logon["”]\s+service\s+["“]Startup\s+Type["”]\s+to\s+["“]Disabled["”]', fix_text, re.IGNORECASE):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$svc=Get-CimInstance Win32_Service -Filter \\\"Name='seclogon'\\\" -ErrorAction SilentlyContinue; if ($svc -and $svc.StartMode -eq 'Disabled' -and $svc.State -ne 'Running') { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+    if vuln_id == 'V-253277':
+        if not re.search(r'Verify\s+Simple\s+TCP/IP\s+Services\s+has\s+not\s+been\s+installed', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+["“]Simple\s+TCP/IP\s+Services["”]\s+is\s+listed,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Uninstall\s+["“]Simple\s+TCP/?IP\s+Services\b', fix_text, re.IGNORECASE):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"if (-not (Get-Service -Name 'SimpTcp' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Absent'},
+            'description': title,
+        }
+    return None
 
 
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
@@ -4966,6 +5015,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         ftp_anonymous_authentication_candidate = _windows_ftp_anonymous_authentication_disabled_candidate(rule, stig_id)
         if ftp_anonymous_authentication_candidate:
             return ftp_anonymous_authentication_candidate
+
+        services_msc_candidate = _windows_services_msc_candidate(rule, stig_id)
+        if services_msc_candidate:
+            return services_msc_candidate
 
         office_absent_or_dword_candidate = _office_registry_absent_or_dword_value_candidate(rule, stig_id)
         if office_absent_or_dword_candidate:

@@ -360,16 +360,17 @@
       "vuln_id": "V-253276"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-253277",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-253277r958478_rule",
       "severity": "medium",
       "title": "Simple TCP/IP Services must not be installed on the system.",
-      "tracking_issue": "TODO-V-253277",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
         "content/disa-corpus/artifacts/e8077d4d1cd3eb9c7594737701f2f3d323d1ba5f1e88738616f35e5c7800ee92/U_MS_Windows_11_V2R3_STIG.zip"
       ],
       "vuln_id": "V-253277"
@@ -550,16 +551,17 @@
       "vuln_id": "V-253288"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-253289",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-253289r958478_rule",
       "severity": "medium",
       "title": "The Secondary Logon service must be disabled on Windows 11.",
-      "tracking_issue": "TODO-V-253289",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
         "content/disa-corpus/artifacts/e8077d4d1cd3eb9c7594737701f2f3d323d1ba5f1e88738616f35e5c7800ee92/U_MS_Windows_11_V2R3_STIG.zip"
       ],
       "vuln_id": "V-253289"

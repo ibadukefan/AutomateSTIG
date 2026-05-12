@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Get-Service -Name 'SimpTcp' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Simple TCP/IP Services must not be installed on the system.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253277"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\telnet.exe\\\"\"",
         "type": "command_output"
       },
@@ -66,6 +79,19 @@
       },
       "platform": "windows",
       "vuln_id": "V-253288"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$svc=Get-CimInstance Win32_Service -Filter \\\"Name='seclogon'\\\" -ErrorAction SilentlyContinue; if ($svc -and $svc.StartMode -eq 'Disabled' -and $svc.State -ne 'Running') { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Secondary Logon service must be disabled on Windows 11.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253289"
     },
     {
       "check": {

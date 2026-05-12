@@ -179,6 +179,50 @@ Select "Disabled" under "Actions".''',
             'description': 'Windows Server 2025 FTP servers must be configured to prevent anonymous logons.',
         })
 
+    def test_infers_windows_secondary_logon_service_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253289',
+            'title': 'The Secondary Logon service must be disabled on Windows 11.',
+            'check_content': '''Run "Services.msc".
+
+Locate the "Secondary Logon" service.
+
+If the "Startup Type" is not "Disabled" or the "Status" is "Running", this is a finding.''',
+            'fix_text': 'Configure the "Secondary Logon" service "Startup Type" to "Disabled".',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-253289',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$svc=Get-CimInstance Win32_Service -Filter \\\"Name='seclogon'\\\" -ErrorAction SilentlyContinue; if ($svc -and $svc.StartMode -eq 'Disabled' -and $svc.State -ne 'Running') { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Secondary Logon service must be disabled on Windows 11.',
+        })
+
+    def test_infers_windows_absent_simple_tcpip_services_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253277',
+            'title': 'Simple TCP/IP Services must not be installed on the system.',
+            'check_content': '''Verify Simple TCP/IP Services has not been installed.
+
+Run "Services.msc".
+
+If "Simple TCP/IP Services" is listed, this is a finding.''',
+            'fix_text': 'Uninstall "Simple TCPIP Services (i.e. echo, daytime etc.)" from the system.',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-253277',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"if (-not (Get-Service -Name 'SimpTcp' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Absent'},
+            'description': 'Simple TCP/IP Services must not be installed on the system.',
+        })
+
     def test_infers_linux_interactive_home_directory_mode_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257890',

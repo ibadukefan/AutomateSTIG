@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"if (-not (Get-Service -Name 'SimpTcp' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+      "type": "command_output"
+    },
+    "description": "Simple TCP/IP Services must not be installed on the system.",
+    "expected": {
+      "type": "equals",
+      "value": "Absent"
+    },
+    "platform": "windows",
+    "vuln_id": "V-253277"
+  },
   "check_content_excerpt": "Verify Simple TCP/IP Services has not been installed.\n\nRun \"Services.msc\".\n\nIf \"Simple TCP/IP Services\" is listed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Absent"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Uninstall \"Simple TCPIP Services (i.e. echo, daytime etc.)\" from the system.\n\nRun \"Programs and Features\".\nSelect \"Turn Windows Features on or off\".\nDe-select \"Simple TCPIP Services (i.e. echo, daytime etc.)\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-253277r958478_rule",
   "severity": "medium",
