@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 36,
+  "candidate_checks": 37,
   "cases": [
     {
       "check": {
@@ -351,6 +351,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-235751"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "DownloadRestrictions"
+      },
+      "description": "Download restrictions must be configured.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:1|2|3|4)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DownloadRestrictions": 5
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DownloadRestrictions": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235752"
     },
     {
       "check": {
@@ -979,5 +1006,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_edge_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Edge_STIG",
-  "validated_candidates": 36
+  "validated_candidates": 37
 }

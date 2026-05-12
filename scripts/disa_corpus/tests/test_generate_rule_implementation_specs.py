@@ -142,6 +142,82 @@ If the setting client-cert-auth is not configured in the Kubernetes etcd manifes
         })
 
 
+    def test_infers_edge_download_restrictions_allowed_registry_values_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-235752',
+            'title': 'Download restrictions must be configured.',
+            'check_content': '''The policy value for "Computer Configuration/Administrative Templates/Microsoft Edge/Allow download restrictions" must be set to "Enabled" with the option value set to "BlockDangerousDownloads", "Block potentially dangerous or unwanted downloads", or "BlockMaliciousDownloads". The more restrictive option, "Block all downloads", is also acceptable.
+
+Use the Windows Registry Editor to navigate to the following key:
+HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge
+
+If the value for "DownloadRestrictions" is set to "REG_DWORD = 0", this is a finding.''',
+            'fix_text': 'Set the policy value for "Computer Configuration/Administrative Templates/Microsoft Edge/Allow download restrictions" to "Enabled" and select one of the following: "BlockDangerousDownloads", "Block potentially dangerous or unwanted downloads", "BlockAllDownloads", or "BlockMaliciousDownloads".',
+        }, 'MS_Edge_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-235752',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge',
+                'value_name': 'DownloadRestrictions',
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:1|2|3|4)$'},
+            'description': 'Download restrictions must be configured.',
+        })
+
+    def test_infers_defender_signature_due_days_one_through_seven_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213453',
+            'title': 'Microsoft Defender AV virus definition age must not exceed 7 days.',
+            'check_content': '''Procedure: Use the Windows Registry Editor to navigate to the following key:
+
+HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates
+
+Criteria: If the value "AVSignatureDue" is REG_DWORD = 7, this is not a finding.
+
+A value of 1 - 6 is also acceptable and not a finding.
+
+A value of 0 is a finding.
+A value of 8 or more is a finding.''',
+            'fix_text': 'Set the policy value to Enabled and select 7 or less, excluding 0.',
+        }, 'MS_Defender_Antivirus')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-213453',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates',
+                'value_name': 'AVSignatureDue',
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:1|2|3|4|5|6|7)$'},
+            'description': 'Microsoft Defender AV virus definition age must not exceed 7 days.',
+        })
+
+    def test_infers_defender_maps_reporting_allowed_registry_values_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213434',
+            'title': 'Microsoft Defender AV must join Microsoft MAPS.',
+            'check_content': '''Procedure: Use the Windows Registry Editor to navigate to the following key:
+
+HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet
+
+Criteria: If the value "SpynetReporting" is REG_DWORD = 1, or REG_DWORD = 2, this is not a finding.''',
+            'fix_text': 'Set the policy value to Enabled and select Advanced MAPS from the drop-down box.',
+        }, 'MS_Defender_Antivirus')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-213434',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet',
+                'value_name': 'SpynetReporting',
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:1|2)$'},
+            'description': 'Microsoft Defender AV must join Microsoft MAPS.',
+        })
+
+
     def test_infers_windows_legal_notice_caption_allowed_titles_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254458',

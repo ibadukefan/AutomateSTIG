@@ -530,16 +530,17 @@
       "vuln_id": "V-235751"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235752",
+      "check_pack": "generated-candidates/ms_edge_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235752r1156563_rule",
       "severity": "low",
       "title": "Download restrictions must be configured.",
-      "tracking_issue": "TODO-V-235752",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_edge_stig.candidates.json",
         "content/disa-corpus/artifacts/798f8fd70e4cd6e9f820fc674c2db6167174353e12be09401945b00480e25409/U_MS_Edge_V2R5_STIG.zip"
       ],
       "vuln_id": "V-235752"

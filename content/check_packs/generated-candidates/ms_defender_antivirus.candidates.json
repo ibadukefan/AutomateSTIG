@@ -74,6 +74,20 @@
       "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet",
         "type": "registry",
+        "value_name": "SpynetReporting"
+      },
+      "description": "Microsoft Defender AV must join Microsoft MAPS.",
+      "expected": {
+        "pattern": "^(?:1|2)$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-213434"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet",
+        "type": "registry",
         "value_name": "SubmitSamplesConsent"
       },
       "description": "Microsoft Defender AV must be configured to only send safe samples for MAPS telemetry.",

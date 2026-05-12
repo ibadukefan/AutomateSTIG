@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 62,
+  "candidate_checks": 63,
   "cases": [
     {
       "check": {
@@ -135,6 +135,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-213433"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet",
+        "type": "registry",
+        "value_name": "SpynetReporting"
+      },
+      "description": "Microsoft Defender AV must join Microsoft MAPS.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:1|2)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet\\SpynetReporting": 3
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet\\SpynetReporting": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213434"
     },
     {
       "check": {
@@ -1681,5 +1708,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Defender_Antivirus",
-  "validated_candidates": 62
+  "validated_candidates": 63
 }

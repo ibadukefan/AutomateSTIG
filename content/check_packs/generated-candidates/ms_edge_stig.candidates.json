@@ -184,6 +184,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "DownloadRestrictions"
+      },
+      "description": "Download restrictions must be configured.",
+      "expected": {
+        "pattern": "^(?:1|2|3|4)$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-235752"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallBlocklist\\1",
         "type": "registry",
         "value_name": "1"

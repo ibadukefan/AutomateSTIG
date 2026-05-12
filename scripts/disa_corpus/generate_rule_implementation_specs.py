@@ -137,6 +137,7 @@ def _parse_expected_registry_data(text: str):
 def _windows_defender_registry_criteria_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
     if 'defender' not in stig_id.lower():
         return None
     path_match = re.search(
@@ -146,6 +147,42 @@ def _windows_defender_registry_criteria_candidate(rule: dict, stig_id: str) -> d
     )
     if not path_match:
         return None
+    if vuln_id in {'V-213452', 'V-213453'}:
+        signature_due_match = re.search(
+            r'Criteria:\s*If\s+the\s+value\s+["“](A[Vv]SignatureDue|ASSignatureDue)["”]\s+is\s+REG_DWORD\s*=\s*7,\s+this\s+is\s+not\s+a\s+finding\.\s*\n\s*A\s+value\s+of\s+1\s*-\s*6\s+is\s+also\s+acceptable\s+and\s+not\s+a\s+finding\.\s*\n\s*A\s+value\s+of\s+0\s+is\s+a\s+finding\.\s*\n\s*A\s+value\s+of\s+8\s+or\s+more\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        if signature_due_match and re.search(r'7\s+or\s+less[^.]+excluding\s+["“]?0', content + '\n' + fix_text, re.IGNORECASE):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {
+                    'type': 'registry',
+                    'path': _normalize_registry_path(path_match.group(1)),
+                    'value_name': signature_due_match.group(1),
+                },
+                'expected': {'type': 'matches', 'pattern': '^(?:1|2|3|4|5|6|7)$'},
+                'description': rule.get('title', ''),
+            }
+    if vuln_id == 'V-213434':
+        maps_match = re.search(
+            r'Criteria:\s*If\s+the\s+value\s+["“](SpynetReporting)["”]\s+is\s+REG_DWORD\s*=\s*1,\s+or\s+REG_DWORD\s*=\s*2,\s+this\s+is\s+not\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        if maps_match and re.search(r'Advanced\s+MAPS', content + '\n' + fix_text, re.IGNORECASE):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {
+                    'type': 'registry',
+                    'path': _normalize_registry_path(path_match.group(1)),
+                    'value_name': maps_match.group(1),
+                },
+                'expected': {'type': 'matches', 'pattern': '^(?:1|2)$'},
+                'description': rule.get('title', ''),
+            }
     allowed_regsz_match = re.search(
         r'Criteria:\s*If\s+the\s+value\s+["“]([A-Za-z0-9_.-]+)["”]\s+is\s+REG_SZ\s*=\s*([0-9]+)\s*\(or\s+([0-9]+)\),\s+this\s+is\s+not\s+a\s+finding',
         content,
@@ -231,6 +268,31 @@ def _windows_run_as_different_user_context_menu_candidate(rule: dict, stig_id: s
 def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+
+    if 'edge' in stig_id.lower():
+        edge_download_restrictions = re.search(
+            r'Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n\s*(HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge)\b',
+            content,
+            re.IGNORECASE,
+        )
+        if (
+            rule.get('vuln_id') == 'V-235752'
+            and edge_download_restrictions
+            and re.search(r'Allow\s+download\s+restrictions', content, re.IGNORECASE)
+            and re.search(r'If\s+the\s+value\s+for\s+["“]DownloadRestrictions["”]\s+is\s+set\s+to\s+["“]REG_DWORD\s*=\s*0["”],?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            and all(option in fix_text for option in ('BlockDangerousDownloads', 'Block potentially dangerous or unwanted downloads', 'BlockAllDownloads', 'BlockMaliciousDownloads'))
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {
+                    'type': 'registry',
+                    'path': _normalize_registry_path(edge_download_restrictions.group(1)),
+                    'value_name': 'DownloadRestrictions',
+                },
+                'expected': {'type': 'matches', 'pattern': '^(?:1|2|3|4)$'},
+                'description': rule.get('title', ''),
+            }
 
     if 'chrome' in stig_id.lower():
         chrome_download_restrictions = re.search(
