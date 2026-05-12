@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk -F: 'NR==FNR{shell[$1]=$7; uid[$1]=$3; next} uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $2 !~ /^[!*]/ && $2 !~ /^\\$6\\$/ {print $1}' /etc/passwd /etc/shadow",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system must employ FIPS 140-2-approved cryptographic hashing algorithms for all stored passwords.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-234887"
+  },
   "check_content_excerpt": "Verify the SUSE operating system requires the shadow password suite configuration be set to encrypt interactive user passwords using a strong cryptographic hash.\n\nCheck that the interactive user account passwords are using a strong password hash with the following command:\n\n> sudo cut -d: -f2 /etc/shadow\n\n$6$kcOnRq/5$NUEYPuyL.wghQwWssXRcLRFiiru7f5JPV6GaJhNC2aK5F3PZpE/BCCtwrxRc/AInKMNX3CdMw11m9STiql12f/\n\nPassword hashes \"!\" or \"*\" indicate inactive accounts not available for logon and are not evaluated. \n\nIf any interactive user password hash does not begin with \"$6\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to encrypt all stored passwords with a strong cryptographic hash.\n\nEdit/modify the following line in the \"/etc/login.defs\" file and set \"ENCRYPT_METHOD\" to have a value of \"SHA512\".\n\nENCRYPT_METHOD SHA512\n\nLock all interactive user accounts not using SHA512 hashing until the passwords can be regenerated.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234887r1009626_rule",
   "severity": "medium",

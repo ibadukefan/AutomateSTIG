@@ -250,6 +250,68 @@ SHA_CRYPT_MAX_ROUNDS 100000''',
             'description': 'OL 9 shadow password suite must be configured to use a sufficient number of hashing rounds.',
         })
 
+    def test_infers_linux_interactive_shadow_sha512_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258231',
+            'title': 'RHEL 9 must employ FIPS 140-3 approved cryptographic hashing algorithms for all stored passwords.',
+            'check_content': '''Verify all interactive user password hashes are using a FIPS 140-3 approved cryptographic hashing algorithm with the following command:
+
+$ sudo cut -d: -f2 /etc/shadow
+
+Password hashes "!" or "*" indicate inactive accounts and are not evaluated.
+
+If any interactive user password hash does not begin with "$6$", this is a finding.''',
+            'fix_text': 'Lock all interactive user accounts not using SHA-512 until the passwords can be regenerated with a FIPS 140-3 approved cryptographic hashing algorithm.',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258231',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk -F: 'NR==FNR{shell[$1]=$7; uid[$1]=$3; next} uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $2 !~ /^[!*]/ && $2 !~ /^\\$6\\$/ {print $1}' /etc/passwd /etc/shadow",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 9 must employ FIPS 140-3 approved cryptographic hashing algorithms for all stored passwords.',
+        })
+
+    def test_infers_sles_mfa_required_packages_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234854',
+            'title': 'The SUSE operating system must have the packages required for multifactor authentication to be installed.',
+            'check_content': '''Verify the SUSE operating system has the packages required for multifactor authentication installed with the following commands:
+
+zypper info pam_pkcs11 | grep -i installed
+zypper info mozilla-nss | grep -i installed
+zypper info mozilla-nss-tools | grep -i installed
+zypper info pcsc-ccid | grep -i installed
+zypper info pcsc-lite | grep -i installed
+zypper info pcsc-tools | grep -i installed
+zypper info opensc | grep -i installed
+zypper info coolkey | grep -i installed
+
+If any of the packages required for multifactor authentication are not installed, this is a finding.''',
+            'fix_text': '''Install the packages required for multifactor authentication:
+
+zypper install pam_pkcs11
+zypper install mozilla-nss
+zypper install mozilla-nss-tools
+zypper install pcsc-ccid
+zypper install pcsc-lite
+zypper install pcsc-tools
+zypper install opensc
+zypper install coolkey''',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234854',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'missing=0; for pkg in pam_pkcs11 mozilla-nss mozilla-nss-tools pcsc-ccid pcsc-lite pcsc-tools opensc coolkey; do rpm -q "$pkg" >/dev/null 2>&1 || { echo "$pkg"; missing=1; }; done; exit 0',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The SUSE operating system must have the packages required for multifactor authentication to be installed.',
+        })
+
     def test_infers_kubernetes_manifest_flag_presence_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242402',

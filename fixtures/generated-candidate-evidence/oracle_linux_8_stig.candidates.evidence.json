@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 331,
+  "candidate_checks": 332,
   "cases": [
     {
       "check": {
@@ -79,6 +79,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248527"
+    },
+    {
+      "check": {
+        "command": "awk -F: 'NR==FNR{shell[$1]=$7; uid[$1]=$3; next} uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $2 !~ /^[!*]/ && $2 !~ /^\\$6\\$/ {print $1}' /etc/passwd /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "OL 8 must employ FIPS 140-2 approved cryptographic hashing algorithms for all stored passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: 'NR==FNR{shell[$1]=$7; uid[$1]=$3; next} uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $2 !~ /^[!*]/ && $2 !~ /^\\$6\\$/ {print $1}' /etc/passwd /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: 'NR==FNR{shell[$1]=$7; uid[$1]=$3; next} uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $2 !~ /^[!*]/ && $2 !~ /^\\$6\\$/ {print $1}' /etc/passwd /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248534"
     },
     {
       "check": {
@@ -9000,5 +9026,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 331
+  "validated_candidates": 332
 }

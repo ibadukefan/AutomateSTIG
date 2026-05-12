@@ -1264,6 +1264,57 @@ def _sysctl_candidate(rule: dict) -> dict | None:
     }
 
 
+def _linux_interactive_shadow_sha512_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    supported_vulns = {'V-258231', 'V-271628', 'V-248534', 'V-234887'}
+    if vuln_id not in supported_vulns or not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'cut\s+-d:\s+-f2\s+/etc/shadow', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Password\s+hashes\s+["“]!\s*["”]\s+or\s+["“]\*["”].*not\s+evaluated', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'interactive\s+user\s+password\s+hash\s+does\s+not\s+begin\s+with\s+["“]\$6\$?["”]', content, re.IGNORECASE):
+        return None
+    if not (
+        re.search(r'Lock\s+all\s+interactive\s+user\s+accounts\s+not\s+using\s+SHA-?512', fix_text, re.IGNORECASE)
+        or re.search(r'ENCRYPT_METHOD\s+SHA512', fix_text, re.IGNORECASE)
+    ):
+        return None
+    command = r"awk -F: 'NR==FNR{shell[$1]=$7; uid[$1]=$3; next} uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $2 !~ /^[!*]/ && $2 !~ /^\$6\$/ {print $1}' /etc/passwd /etc/shadow"
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+def _sles_mfa_required_packages_candidate(rule: dict, stig_id: str) -> dict | None:
+    packages = ['pam_pkcs11', 'mozilla-nss', 'mozilla-nss-tools', 'pcsc-ccid', 'pcsc-lite', 'pcsc-tools', 'opensc', 'coolkey']
+    if rule.get('vuln_id', '') != 'V-234854' or stig_id != 'SLES_15_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    for package in packages:
+        if not re.search(rf'\bzypper\s+info\s+{re.escape(package)}\s*\|\s*grep\s+-?i\s+installed\b', content, re.IGNORECASE):
+            return None
+        if not re.search(rf'\bzypper\s+install\s+{re.escape(package)}\b', fix_text, re.IGNORECASE):
+            return None
+    if not re.search(r'If\s+any\s+of\s+the\s+packages\s+required\s+for\s+multifactor\s+authentication\s+are\s+not\s+installed,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    command = 'missing=0; for pkg in pam_pkcs11 mozilla-nss mozilla-nss-tools pcsc-ccid pcsc-lite pcsc-tools opensc coolkey; do rpm -q "$pkg" >/dev/null 2>&1 || { echo "$pkg"; missing=1; }; done; exit 0'
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _package_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -4980,6 +5031,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _sles_mfa_required_packages_candidate):
+            candidate = infer_with_stig(rule, stig_id)
+            if candidate:
+                return candidate
         for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _dconf_media_automount_literal_candidate, _sles_firewalld_status_enabled_active_candidate, _firewalld_target_drop_candidate, _sshd_multi_directive_egrep_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _aide_audit_tool_selection_candidate, _file_permission_candidate):
             candidate = infer(rule)
             if candidate:

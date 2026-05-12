@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "missing=0; for pkg in pam_pkcs11 mozilla-nss mozilla-nss-tools pcsc-ccid pcsc-lite pcsc-tools opensc coolkey; do rpm -q \"$pkg\" >/dev/null 2>&1 || { echo \"$pkg\"; missing=1; }; done; exit 0",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system must have the packages required for multifactor authentication to be installed.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-234854"
+  },
   "check_content_excerpt": "Verify the SUSE operating system has the packages required for multifactor authentication installed.\n\nCheck for the presence of the packages required to support multifactor authentication with the following commands:\n\n> zypper info pam_pkcs11 | grep -i installed\n\n> zypper info mozilla-nss | grep -i installed\n\n> zypper info mozilla-nss-tools | grep -i installed\n\n> zypper info pcsc-ccid | grep -i installed\n\n> zypper info pcsc-lite | grep -i installed\n\n> zypper info pcsc-tools | grep -i installed\n\n> zypper info opensc | grep -i installed\n\n> zypper info coolkey | grep -i installed\n\nIf any of the packages required for multifactor authentication are not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to implement multifactor authentication by installing the required packages.\n\nInstall the packages required to support multifactor authentication with the following commands:\n\n> zypper install pam_pkcs11\n\n> zypper install mozilla-nss\n\n> zypper install mozilla-nss-tools\n\n> zypper install pcsc-ccid\n\n> zypper install pcsc-lite\n\n> zypper install pcsc-tools\n\n> zypper install opensc\n\n> zypper install coolkey\n\nAdditional information on the configuration of multifactor authentication on the SUSE operating system can be found at https://www.suse.com/communities/blog/configuring-smart-card-authentication-suse-linux-enterprise/.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234854r1009615_rule",
   "severity": "medium",
