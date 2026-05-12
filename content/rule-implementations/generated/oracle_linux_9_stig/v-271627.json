@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i sha_crypt /etc/login.defs",
+      "type": "command_output"
+    },
+    "description": "OL 9 shadow password suite must be configured to use a sufficient number of hashing rounds.",
+    "expected": {
+      "pattern": "(?ims)^(?!.*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[0-9]{1,5})\\b).*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[1-9][0-9]{5,})\\b.*$",
+      "type": "matches"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271627"
+  },
   "check_content_excerpt": "Verify that OL 9 has a minimum number of hash rounds configured with the following command:\n\n$ grep -i sha_crypt /etc/login.defs\n\nIf \"SHA_CRYPT_MIN_ROUNDS\" or \"SHA_CRYPT_MAX_ROUNDS\" is less than \"100000\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "(?ims)^(?!.*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[0-9]{1,5})\\b).*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[1-9][0-9]{5,})\\b.*$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to encrypt all stored passwords with a strong cryptographic hash.\n\nEdit/modify the following line in the \"/etc/login.defs\" file and set \"SHA_CRYPT_MIN_ROUNDS\" to a value no lower than \"100000\":\n\nSHA_CRYPT_MIN_ROUNDS 100000\nSHA_CRYPT_MAX_ROUNDS 100000",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271627r1091593_rule",
   "severity": "medium",

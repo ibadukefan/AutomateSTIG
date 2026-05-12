@@ -2507,6 +2507,19 @@
     },
     {
       "check": {
+        "command": "grep -i sha_crypt /etc/login.defs",
+        "type": "command_output"
+      },
+      "description": "OL 9 shadow password suite must be configured to use a sufficient number of hashing rounds.",
+      "expected": {
+        "pattern": "(?ims)^(?!.*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[0-9]{1,5})\\b).*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[1-9][0-9]{5,})\\b.*$",
+        "type": "matches"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271627"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "PASS_MIN_DAYS 1",

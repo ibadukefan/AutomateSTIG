@@ -105,6 +105,33 @@ Select "Disabled" under "Actions".''',
             'description': 'Windows Server 2025 FTP servers must be configured to prevent anonymous logons.',
         })
 
+    def test_infers_linux_sha_crypt_rounds_floor_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271627',
+            'title': 'OL 9 shadow password suite must be configured to use a sufficient number of hashing rounds.',
+            'check_content': '''Verify that OL 9 has a minimum number of hash rounds configured with the following command:
+
+$ grep -i sha_crypt /etc/login.defs
+
+If "SHA_CRYPT_MIN_ROUNDS" or "SHA_CRYPT_MAX_ROUNDS" is less than "100000", this is a finding.''',
+            'fix_text': '''Configure OL 9 to encrypt all stored passwords with a strong cryptographic hash.
+
+Edit/modify the following line in the "/etc/login.defs" file and set "SHA_CRYPT_MIN_ROUNDS" to a value no lower than "100000":
+
+SHA_CRYPT_MIN_ROUNDS 100000
+SHA_CRYPT_MAX_ROUNDS 100000''',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271627',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'grep -i sha_crypt /etc/login.defs'},
+            'expected': {
+                'type': 'matches',
+                'pattern': r'(?ims)^(?!.*^\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\s+(?:[0-9]{1,5})\b).*^\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\s+(?:[1-9][0-9]{5,})\b.*$',
+            },
+            'description': 'OL 9 shadow password suite must be configured to use a sufficient number of hashing rounds.',
+        })
+
     def test_infers_kubernetes_manifest_flag_presence_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242402',

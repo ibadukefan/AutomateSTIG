@@ -217,6 +217,20 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
         self.assertEqual(case['pass_fixture']['command_outputs'][command], '700')
         self.assertEqual(case['fail_fixture']['command_outputs'][command], '701')
 
+    def test_builds_command_output_matches_sha_crypt_rounds_fixture_case(self):
+        command = 'grep -i sha_crypt /etc/login.defs'
+        pattern = r'(?ims)^(?!.*^\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\s+(?:[0-9]{1,5})\b).*^\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\s+(?:[1-9][0-9]{5,})\b.*$'
+        case = mod.build_case({
+            'vuln_id': 'V-271627',
+            'platform': 'linux',
+            'description': 'SHA crypt minimum rounds',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'matches', 'pattern': pattern},
+        })
+        self.assertEqual(case['evidence_type'], 'command_output_matches')
+        self.assertEqual(case['pass_fixture']['command_outputs'][command], 'SHA_CRYPT_MIN_ROUNDS 100000')
+        self.assertEqual(case['fail_fixture']['command_outputs'][command], 'SHA_CRYPT_MIN_ROUNDS 99999')
+
     def test_generates_networkmanager_dns_allowed_value_fixture_evidence(self):
         command = 'NetworkManager --print-config | grep -E "^dns=(none|default)$"'
         candidate = {

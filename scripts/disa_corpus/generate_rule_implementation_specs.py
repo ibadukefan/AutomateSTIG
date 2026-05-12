@@ -4010,6 +4010,23 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
 
     if (
+        _linux_platform(stig_id)
+        and re.fullmatch(r'grep\s+(?:-i\s+)?sha_crypt\s+/etc/login\.defs', command, re.IGNORECASE)
+        and re.search(r'"SHA_CRYPT_MIN_ROUNDS"\s+or\s+"SHA_CRYPT_MAX_ROUNDS"\s+is\s+less\s+than\s+"100000",?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'SHA_CRYPT_MIN_ROUNDS\s+100000', fix_text, re.IGNORECASE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {
+                'type': 'matches',
+                'pattern': r'(?ims)^(?!.*^\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\s+(?:[0-9]{1,5})\b).*^\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\s+(?:[1-9][0-9]{5,})\b.*$',
+            },
+            'description': rule.get('title', ''),
+        }
+
+    if (
         stig_id == 'Tomcat_Application_Server_9_STIG'
         and command == 'grep -i shutdown $CATALINA_BASE/conf/server.xml'
         and re.search(r'^\s*<Server\s+port=["“]-1["”]\s+shutdown=["“]SHUTDOWN["”]>\s*$', content, re.MULTILINE)

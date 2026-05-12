@@ -189,6 +189,9 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
             elif pattern == r'^[0-7]00$':
                 pass_fixture['command_outputs'] = {command: '700'}
                 fail_fixture['command_outputs'] = {command: '701'}
+            elif pattern == r'(?ims)^(?!.*^\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\s+(?:[0-9]{1,5})\b).*^\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\s+(?:[1-9][0-9]{5,})\b.*$':
+                pass_fixture['command_outputs'] = {command: 'SHA_CRYPT_MIN_ROUNDS 100000'}
+                fail_fixture['command_outputs'] = {command: 'SHA_CRYPT_MIN_ROUNDS 99999'}
             else:
                 empty_or_literal = re.fullmatch(r'\^\(\?:\|(?P<literal>.+)\)\$', pattern)
                 if empty_or_literal:

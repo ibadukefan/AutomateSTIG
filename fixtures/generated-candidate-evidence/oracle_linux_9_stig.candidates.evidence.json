@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 422,
+  "candidate_checks": 423,
   "cases": [
     {
       "check": {
@@ -4930,6 +4930,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271626"
+    },
+    {
+      "check": {
+        "command": "grep -i sha_crypt /etc/login.defs",
+        "type": "command_output"
+      },
+      "description": "OL 9 shadow password suite must be configured to use a sufficient number of hashing rounds.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "(?ims)^(?!.*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[0-9]{1,5})\\b).*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[1-9][0-9]{5,})\\b.*$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i sha_crypt /etc/login.defs": "SHA_CRYPT_MIN_ROUNDS 99999"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i sha_crypt /etc/login.defs": "SHA_CRYPT_MIN_ROUNDS 100000"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271627"
     },
     {
       "check": {
@@ -11706,5 +11732,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 422
+  "validated_candidates": 423
 }
