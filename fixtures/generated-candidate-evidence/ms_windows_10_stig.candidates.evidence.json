@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 204,
+  "candidate_checks": 205,
   "cases": [
     {
       "check": {
@@ -4666,6 +4666,33 @@
     },
     {
       "check": {
+        "key": "SeSystemtimePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Change the system time user right must only be assigned to Administrators and Local Service and NT SERVICE\\autotimesvc.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-19,NT SERVICE\\autotimesvc"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSystemtimePrivilege": "unexpected-*S-1-5-32-544,*S-1-5-19,NT SERVICE\\autotimesvc"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSystemtimePrivilege": "*S-1-5-32-544,*S-1-5-19,NT SERVICE\\autotimesvc"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220961"
+    },
+    {
+      "check": {
         "key": "SeCreatePagefilePrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -5505,5 +5532,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 204
+  "validated_candidates": 205
 }

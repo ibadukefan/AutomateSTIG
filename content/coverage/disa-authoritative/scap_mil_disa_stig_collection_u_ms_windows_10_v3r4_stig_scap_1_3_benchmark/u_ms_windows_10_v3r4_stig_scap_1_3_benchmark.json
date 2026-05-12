@@ -3052,16 +3052,17 @@
       "vuln_id": "V-220960"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220961",
+      "check_pack": "generated-candidates/ms_windows_10_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-220961 from source identifier xccdf_mil.disa.stig_group_V-220961.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-220961r958726_rule",
       "severity": "medium",
       "title": "The Change the system time user right must only be assigned to Administrators and Local Service and NT SERVICE\\autotimesvc.",
-      "tracking_issue": "TODO-V-220961",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
         "content/disa-corpus/artifacts/83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-220961"

@@ -2360,6 +2360,20 @@
     },
     {
       "check": {
+        "key": "SeImpersonatePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Impersonate a client after authentication\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,RESTRICTED SERVICES\\PrintSpoolerService,*S-1-5-6"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253498"
+    },
+    {
+      "check": {
         "key": "SeLoadDriverPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"

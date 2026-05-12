@@ -69,6 +69,32 @@ By using this IS (which includes any device attached to this IS), you consent to
             'description': 'Windows Server required legal notice must be configured to display before console logon.',
         })
 
+    def test_infers_windows_network_logon_exact_allowlist_with_punctuated_principals(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278183',
+            'title': 'Windows Server 2025 "Access this computer from the network" user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and stand-alone or nondomain-joined systems.',
+            'check_content': '''This applies to member servers and stand-alone or nondomain-joined systems.
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups other than the following are granted the "Access this computer from the network" user right, this is a finding:
+- Administrators.
+- Authenticated Users.
+
+For server core installations, run the following command:
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Access this computer from the network to include only the following accounts or groups:
+- Administrators.
+- Authenticated Users.''',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-278183',
+            'platform': 'windows',
+            'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeNetworkLogonRight'},
+            'expected': {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-11'},
+            'description': 'Windows Server 2025 "Access this computer from the network" user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and stand-alone or nondomain-joined systems.',
+        })
+
     def test_infers_windows_ftp_anonymous_authentication_disabled_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278027',

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 188,
+  "candidate_checks": 189,
   "cases": [
     {
       "check": {
@@ -4558,6 +4558,33 @@
     },
     {
       "check": {
+        "key": "SeImpersonatePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Impersonate a client after authentication\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,RESTRICTED SERVICES\\PrintSpoolerService,*S-1-5-6"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeImpersonatePrivilege": "unexpected-*S-1-5-32-544,*S-1-5-19,*S-1-5-20,RESTRICTED SERVICES\\PrintSpoolerService,*S-1-5-6"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeImpersonatePrivilege": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,RESTRICTED SERVICES\\PrintSpoolerService,*S-1-5-6"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253498"
+    },
+    {
+      "check": {
         "key": "SeLoadDriverPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -5074,5 +5101,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 188
+  "validated_candidates": 189
 }

@@ -1118,12 +1118,12 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                     }
 
         exact_allowlist_match = re.search(
-            r'If\s+any\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups)\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+(?:user\s+)?right,\s+this\s+is\s+a\s+finding[:.]\s*(?P<body>(?:\n\s*(?:[-*]\s*)?[A-Za-z][^\n.]+)+)',
+            r'If\s+any\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups)\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+(?:user\s+)?right,\s+this\s+is\s+a\s+finding[:.]\s*(?:\n[ \t]*)*(?P<body>(?:\n[ \t]*(?:[-*]\s*)?[A-Za-z][^\n]+)+)',
             content,
             re.IGNORECASE,
         )
         exact_allowlist_fix = re.search(
-            r'User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:only\s+include|include\s+only)\s+the\s+following\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups):\s*(?P<body>(?:\n\s*(?:[-*]\s*)?[A-Za-z][^\n.]+)+)',
+            r'User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:only\s+include|include\s+only)\s+the\s+following\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups):\s*(?:\n[ \t]*)*(?P<body>(?:\n[ \t]*(?:[-*]\s*)?[A-Za-z][^\n]+)+)',
             fix_text,
             re.IGNORECASE,
         )
@@ -1131,17 +1131,24 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             'access this computer from the network': 'SeNetworkLogonRight',
             'allow log on locally': 'SeInteractiveLogonRight',
             'allow log on through remote desktop services': 'SeRemoteInteractiveLogonRight',
+            'change the system time': 'SeSystemtimePrivilege',
             'deny access to this computer from the network': 'SeDenyNetworkLogonRight',
             'deny log on as a batch job': 'SeDenyBatchLogonRight',
             'deny log on locally': 'SeDenyInteractiveLogonRight',
             'deny log on through remote desktop services': 'SeDenyRemoteInteractiveLogonRight',
+            'impersonate a client after authentication': 'SeImpersonatePrivilege',
         }
         exact_allowlist_principal_sids = {
             'administrators': '*S-1-5-32-544',
             'authenticated users': '*S-1-5-11',
             'enterprise domain controllers': '*S-1-5-9',
             'guests': '*S-1-5-32-546',
+            'local service': '*S-1-5-19',
+            'network service': '*S-1-5-20',
+            'nt service\\autotimesvc is added in v1909 cumulative update': 'NT SERVICE\\autotimesvc',
             'remote desktop users': '*S-1-5-32-555',
+            'restricted services\\printspoolerservice': 'RESTRICTED SERVICES\\PrintSpoolerService',
+            'service': '*S-1-5-6',
             'local account': '*S-1-5-113',
             'local account and member of administrators group': '*S-1-5-114',
         }
