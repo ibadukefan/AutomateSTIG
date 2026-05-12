@@ -226,16 +226,17 @@
       "vuln_id": "V-213132"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213133",
+      "check_pack": "generated-candidates/adobe_acrobat_pro_dc_continuous_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-213133 from source identifier xccdf_mil.disa.stig_group_V-213133.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-213133r766553_rule",
       "severity": "low",
       "title": "Adobe Acrobat Pro DC Continuous Repair Installation must be disabled.",
-      "tracking_issue": "TODO-V-213133",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/adobe_acrobat_pro_dc_continuous_stig.candidates.json",
         "content/disa-corpus/artifacts/3cac16616870afebbfac04633b341f17f45171c3621dd3c282c3ba29e1583ca2/U_Adobe_Acrobat_Pro_DC_Continuous_V2R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-213133"

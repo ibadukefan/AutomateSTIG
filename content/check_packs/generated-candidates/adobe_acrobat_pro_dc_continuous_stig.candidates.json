@@ -198,6 +198,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$paths=@('HKLM:\\Software\\Adobe\\Adobe Acrobat\\DC\\Installer','HKLM:\\SOFTWARE\\Wow6432Node\\Adobe\\Adobe Acrobat\\DC\\Installer'); $ok=$true; foreach ($p in $paths) { $v=(Get-ItemProperty -Path $p -Name 'DisableMaintenance' -ErrorAction SilentlyContinue).DisableMaintenance; if ($v -ne 1) { $ok=$false } }; if ($ok) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous Repair Installation must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-213133"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cServices",
         "type": "registry",
         "value_name": "bToggleWebConnectors"
@@ -295,7 +308,7 @@
       "vuln_id": "V-245874"
     }
   ],
-  "platform": "generic",
+  "platform": "windows",
   "stig_id": "Adobe_Acrobat_Pro_DC_Continuous_STIG",
   "version": "candidate-planned"
 }

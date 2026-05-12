@@ -156,6 +156,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$paths=@('HKLM:\\Software\\Adobe\\Acrobat Reader\\DC\\Installer','HKLM:\\SOFTWARE\\Wow6432Node\\Adobe\\Acrobat Reader\\DC\\Installer'); $ok=$true; foreach ($p in $paths) { $v=(Get-ItemProperty -Path $p -Name 'DisableMaintenance' -ErrorAction SilentlyContinue).DisableMaintenance; if ($v -ne 1) { $ok=$false } }; if ($ok) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Adobe Reader DC must disable the Adobe Repair Installation.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-213180"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cServices",
         "type": "registry",
         "value_name": "bToggleWebConnectors"
@@ -323,7 +336,7 @@
       "vuln_id": "V-213193"
     }
   ],
-  "platform": "generic",
+  "platform": "windows",
   "stig_id": "Adobe_Acrobat_Reader_DC_Continuous_Track_STIG",
   "version": "candidate-planned"
 }

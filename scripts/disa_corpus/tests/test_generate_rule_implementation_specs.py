@@ -95,6 +95,54 @@ Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt''',
             'description': 'Windows Server 2025 "Access this computer from the network" user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and stand-alone or nondomain-joined systems.',
         })
 
+    def test_infers_adobe_dc_repair_installation_dual_registry_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213133',
+            'title': 'Adobe Acrobat Pro DC Continuous Repair Installation must be disabled.',
+            'check_content': '''Verify the following registry configuration:
+
+Using the Registry Editor, navigate to the following: 
+
+For 32 bit:
+HKEY_LOCAL_MACHINE\\Software\\Adobe\\Adobe Acrobat\\DC\\Installer
+
+For 64 bit:
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Adobe\\Adobe Acrobat\\DC\\Installer
+
+Value Name: DisableMaintenance
+Type: REG_DWORD
+Value: 1
+
+If the value for DisableMaintenance is not set to “1” and Type is not configured to REG_DWORD or does not exist, this is a finding.''',
+            'fix_text': '''Configure the following registry value:
+
+For 32 bit:
+Registry Hive:
+HKEY_LOCAL_MACHINE
+Registry Path:
+\\Software\\Adobe\\Adobe Acrobat\\DC\\Installer
+
+For 64 bit:
+Registry Hive:
+HKEY_LOCAL_MACHINE
+Registry Path:
+\\SOFTWARE\\Wow6432Node\\Adobe\\Adobe Acrobat\\DC\\Installer
+
+Value Name: DisableMaintenance
+Type: REG_DWORD
+Value: 1''',
+        }, 'Adobe_Acrobat_Pro_DC_Continuous_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-213133',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$paths=@('HKLM:\\Software\\Adobe\\Adobe Acrobat\\DC\\Installer','HKLM:\\SOFTWARE\\Wow6432Node\\Adobe\\Adobe Acrobat\\DC\\Installer'); $ok=$true; foreach ($p in $paths) { $v=(Get-ItemProperty -Path $p -Name 'DisableMaintenance' -ErrorAction SilentlyContinue).DisableMaintenance; if ($v -ne 1) { $ok=$false } }; if ($ok) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Adobe Acrobat Pro DC Continuous Repair Installation must be disabled.',
+        })
+
     def test_infers_windows_ftp_anonymous_authentication_disabled_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278027',

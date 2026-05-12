@@ -4645,6 +4645,51 @@ def _windows_system32_absent_application_candidate(rule: dict, stig_id: str) -> 
     }
 
 
+def _adobe_dc_repair_installation_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-213133', 'V-213180'}:
+        return None
+    combined = '\n'.join(part for part in (rule.get('check_content', '') or '', rule.get('fix_text', '') or '') if part)
+    if not re.search(r'Adobe\s+(?:Acrobat\s+Pro|Reader)\s+DC', rule.get('title', '') + '\n' + stig_id, re.IGNORECASE):
+        return None
+    if not re.search(r'Value\s+Name:\s*DisableMaintenance\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'Type:\s*REG_DWORD\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'Value:\s*1\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'DisableMaintenance[^\n.]+not\s+set\s+to\s+["“]?1["”]?[^\n.]+finding', combined, re.IGNORECASE):
+        return None
+    normalized = combined.lower().replace('\\\\', '\\')
+    if vuln_id == 'V-213133':
+        product_paths = [
+            'Software\\Adobe\\Adobe Acrobat\\DC\\Installer',
+            'SOFTWARE\\Wow6432Node\\Adobe\\Adobe Acrobat\\DC\\Installer',
+        ]
+    else:
+        product_paths = [
+            'Software\\Adobe\\Acrobat Reader\\DC\\Installer',
+            'SOFTWARE\\Wow6432Node\\Adobe\\Acrobat Reader\\DC\\Installer',
+        ]
+    if any(path.lower() not in normalized for path in product_paths):
+        return None
+    ps_paths = ','.join(f"'HKLM:\\{path}'" for path in product_paths)
+    command = (
+        'powershell -NoProfile -Command '
+        f'"$paths=@({ps_paths}); $ok=$true; foreach ($p in $paths) '
+        "{ $v=(Get-ItemProperty -Path $p -Name 'DisableMaintenance' -ErrorAction SilentlyContinue).DisableMaintenance; "
+        "if ($v -ne 1) { $ok=$false } }; if ($ok) { 'Compliant' }"
+        '"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_ftp_anonymous_authentication_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-205853', 'V-254279', 'V-278027'}:
@@ -4764,7 +4809,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'description': rule.get('title', ''),
             }
 
-    if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'office')):
+    if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'office', 'adobe', 'acrobat')):
         hardened_unc_candidate = _windows_hardened_unc_paths_candidate(rule, stig_id)
         if hardened_unc_candidate:
             return hardened_unc_candidate
@@ -4788,6 +4833,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         office_absent_or_dword_candidate = _office_registry_absent_or_dword_value_candidate(rule, stig_id)
         if office_absent_or_dword_candidate:
             return office_absent_or_dword_candidate
+
+        adobe_repair_installation_candidate = _adobe_dc_repair_installation_disabled_candidate(rule, stig_id)
+        if adobe_repair_installation_candidate:
+            return adobe_repair_installation_candidate
 
         audit_policy_candidate = _windows_audit_policy_candidate(rule)
         if audit_policy_candidate:

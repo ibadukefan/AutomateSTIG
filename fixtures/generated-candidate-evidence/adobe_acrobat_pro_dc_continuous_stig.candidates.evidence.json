@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 21,
+  "candidate_checks": 22,
   "cases": [
     {
       "check": {
@@ -381,6 +381,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$paths=@('HKLM:\\Software\\Adobe\\Adobe Acrobat\\DC\\Installer','HKLM:\\SOFTWARE\\Wow6432Node\\Adobe\\Adobe Acrobat\\DC\\Installer'); $ok=$true; foreach ($p in $paths) { $v=(Get-ItemProperty -Path $p -Name 'DisableMaintenance' -ErrorAction SilentlyContinue).DisableMaintenance; if ($v -ne 1) { $ok=$false } }; if ($ok) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous Repair Installation must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$paths=@('HKLM:\\Software\\Adobe\\Adobe Acrobat\\DC\\Installer','HKLM:\\SOFTWARE\\Wow6432Node\\Adobe\\Adobe Acrobat\\DC\\Installer'); $ok=$true; foreach ($p in $paths) { $v=(Get-ItemProperty -Path $p -Name 'DisableMaintenance' -ErrorAction SilentlyContinue).DisableMaintenance; if ($v -ne 1) { $ok=$false } }; if ($ok) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$paths=@('HKLM:\\Software\\Adobe\\Adobe Acrobat\\DC\\Installer','HKLM:\\SOFTWARE\\Wow6432Node\\Adobe\\Adobe Acrobat\\DC\\Installer'); $ok=$true; foreach ($p in $paths) { $v=(Get-ItemProperty -Path $p -Name 'DisableMaintenance' -ErrorAction SilentlyContinue).DisableMaintenance; if ($v -ne 1) { $ok=$false } }; if ($ok) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213133"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cServices",
         "type": "registry",
         "value_name": "bToggleWebConnectors"
@@ -574,5 +600,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/adobe_acrobat_pro_dc_continuous_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Adobe_Acrobat_Pro_DC_Continuous_STIG",
-  "validated_candidates": 21
+  "validated_candidates": 22
 }
