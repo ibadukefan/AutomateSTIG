@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 40,
+  "candidate_checks": 42,
   "cases": [
     {
       "check": {
@@ -1017,6 +1017,58 @@
     },
     {
       "check": {
+        "command": "grep -i basic-auth-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must disable basic authentication to protect information in transit.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i basic-auth-file /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i basic-auth-file /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-245542"
+    },
+    {
+      "check": {
+        "command": "grep -i token-auth-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must disable token authentication to protect information in transit.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i token-auth-file /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i token-auth-file /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-245543"
+    },
+    {
+      "check": {
         "command": "grep -i encryption-provider-config /etc/kubernetes/manifests/*",
         "type": "command_output"
       },
@@ -1047,5 +1099,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 40
+  "validated_candidates": 42
 }

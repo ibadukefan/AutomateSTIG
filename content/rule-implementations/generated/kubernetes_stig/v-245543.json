@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i token-auth-file /etc/kubernetes/manifests/*",
+      "type": "command_output"
+    },
+    "description": "Kubernetes API Server must disable token authentication to protect information in transit.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-245543"
+  },
   "check_content_excerpt": "Change to the /etc/kubernetes/manifests/ directory on the Kubernetes Control Plane. Run the command:\ngrep -i token-auth-file * \n\nIf \"--token-auth-file\" is set in the Kubernetes API server manifest file, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. \n\nRemove the setting \"--token-auth-file\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-245543r961632_rule",
   "severity": "high",

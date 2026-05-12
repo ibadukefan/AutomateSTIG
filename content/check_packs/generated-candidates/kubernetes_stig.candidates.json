@@ -509,6 +509,32 @@
     },
     {
       "check": {
+        "command": "grep -i basic-auth-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must disable basic authentication to protect information in transit.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-245542"
+    },
+    {
+      "check": {
+        "command": "grep -i token-auth-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must disable token authentication to protect information in transit.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-245543"
+    },
+    {
+      "check": {
         "command": "grep -i encryption-provider-config /etc/kubernetes/manifests/*",
         "type": "command_output"
       },

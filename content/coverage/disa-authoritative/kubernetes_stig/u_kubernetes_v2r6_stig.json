@@ -1324,31 +1324,33 @@
       "vuln_id": "V-245541"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-245542",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-245542r961632_rule",
       "severity": "high",
       "title": "Kubernetes API Server must disable basic authentication to protect information in transit.",
-      "tracking_issue": "TODO-V-245542",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-245542"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-245543",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-245543r961632_rule",
       "severity": "high",
       "title": "Kubernetes API Server must disable token authentication to protect information in transit.",
-      "tracking_issue": "TODO-V-245543",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-245543"

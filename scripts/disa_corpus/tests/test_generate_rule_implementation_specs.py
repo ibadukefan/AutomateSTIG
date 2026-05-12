@@ -194,6 +194,24 @@ If the setting client-cert-auth is not configured in the Kubernetes etcd manifes
             'description': 'Kubernetes etcd must enable client authentication to secure service.',
         })
 
+    def test_infers_kubernetes_manifest_absent_flag_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-245543',
+            'title': 'Kubernetes API Server must disable token authentication to protect information in transit.',
+            'check_content': '''Change to the /etc/kubernetes/manifests/ directory on the Kubernetes Control Plane. Run the command:
+grep -i token-auth-file *
+
+If "--token-auth-file" is set in the Kubernetes API server manifest file, this is a finding.''',
+            'fix_text': 'Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Remove the setting "--token-auth-file".',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-245543',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'grep -i token-auth-file /etc/kubernetes/manifests/*'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Kubernetes API Server must disable token authentication to protect information in transit.',
+        })
+
 
     def test_infers_firefox_policies_json_boolean_candidate(self):
         candidate = mod.infer_candidate_check({

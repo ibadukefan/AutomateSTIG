@@ -752,6 +752,8 @@ def _kubernetes_manifest_grep_candidate(rule: dict, stig_id: str) -> dict | None
         expected = {'type': 'contains', 'substring': fix_value.group(1).lower()}
     elif re.search(r'\b(?:not\s+set|not\s+configured|contains\s+no\s+value)\b', finding, re.IGNORECASE) and not re.search(r'\bdoes\s+not\s+contain\b', finding, re.IGNORECASE):
         expected = {'type': 'not_equals', 'value': ''}
+    elif re.search(r'\bis\s+set\b', finding, re.IGNORECASE) and re.search(rf'\bRemove\s+the\s+setting\s+["“]--?{re.escape(flag)}["”]', fix_text, re.IGNORECASE):
+        expected = {'type': 'equals', 'value': ''}
     else:
         return None
     return {
