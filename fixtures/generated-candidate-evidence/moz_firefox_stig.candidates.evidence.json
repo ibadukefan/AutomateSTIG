@@ -1,0 +1,115 @@
+{
+  "candidate_checks": 4,
+  "cases": [
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('SearchSuggestEnabled')).lower())\"",
+        "type": "command_output"
+      },
+      "description": "Firefox search suggestions must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('SearchSuggestEnabled')).lower())\"": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('SearchSuggestEnabled')).lower())\"": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251564"
+    },
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('NetworkPrediction')).lower())\"",
+        "type": "command_output"
+      },
+      "description": "Firefox network prediction must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('NetworkPrediction')).lower())\"": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('NetworkPrediction')).lower())\"": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251566"
+    },
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('DisableFirefoxAccounts')).lower())\"",
+        "type": "command_output"
+      },
+      "description": "Firefox accounts must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('DisableFirefoxAccounts')).lower())\"": "unexpected-true"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('DisableFirefoxAccounts')).lower())\"": "true"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251578"
+    },
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('DisableFeedbackCommands')).lower())\"",
+        "type": "command_output"
+      },
+      "description": "Firefox feedback reporting must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('DisableFeedbackCommands')).lower())\"": "unexpected-true"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('DisableFeedbackCommands')).lower())\"": "true"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251580"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/moz_firefox_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "MOZ_Firefox_STIG",
+  "validated_candidates": 4
+}

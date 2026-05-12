@@ -169,6 +169,36 @@ If the setting client-cert-auth is not configured in the Kubernetes etcd manifes
         })
 
 
+    def test_infers_firefox_policies_json_boolean_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251564',
+            'title': 'Firefox search suggestions must be disabled.',
+            'check_content': '''Type "about:policies" in the browser window.
+
+If "SearchSuggestEnabled" is not displayed under Policy Name or the Policy Value is not "false", this is a finding.''',
+            'fix_text': '''Windows group policy:
+1. Open the group policy editor tool with "gpedit.msc".
+
+macOS "plist" file:
+Add the following:
+<key>SearchSuggestEnabled</key>
+<false/>
+
+Linux "policies.json" file:
+Add the following in the policies section:
+"SearchSuggestEnabled": false''',
+        }, 'MOZ_Firefox_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-251564',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'python3 -c "import json, pathlib; p=pathlib.Path(\'/usr/lib/firefox/distribution/policies.json\'); policies=json.loads(p.read_text()).get(\'policies\', {}) if p.exists() else {}; print(str(policies.get(\'SearchSuggestEnabled\')).lower())"',
+            },
+            'expected': {'type': 'equals', 'value': 'false'},
+            'description': 'Firefox search suggestions must be disabled.',
+        })
+
     def test_infers_edge_download_restrictions_allowed_registry_values_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-235752',

@@ -1,0 +1,59 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('SearchSuggestEnabled')).lower())\"",
+        "type": "command_output"
+      },
+      "description": "Firefox search suggestions must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251564"
+    },
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('NetworkPrediction')).lower())\"",
+        "type": "command_output"
+      },
+      "description": "Firefox network prediction must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251566"
+    },
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('DisableFirefoxAccounts')).lower())\"",
+        "type": "command_output"
+      },
+      "description": "Firefox accounts must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251578"
+    },
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; print(str(policies.get('DisableFeedbackCommands')).lower())\"",
+        "type": "command_output"
+      },
+      "description": "Firefox feedback reporting must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251580"
+    }
+  ],
+  "platform": "linux",
+  "stig_id": "MOZ_Firefox_STIG",
+  "version": "candidate-planned"
+}

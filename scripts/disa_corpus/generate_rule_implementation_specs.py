@@ -543,6 +543,45 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _firefox_policy_boolean_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'firefox' not in stig_id.lower():
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-251564', 'V-251566', 'V-251578', 'V-251580'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    check_match = re.search(
+        r'If\s+["“]([A-Za-z0-9_.-]+)["”]\s+is\s+not\s+displayed\s+under\s+Policy\s+Name\s+or\s+the\s+Policy\s+Value\s+is\s+not\s+["“](true|false)["”],\s+this\s+is\s+a\s+finding\.',
+        content,
+        re.IGNORECASE,
+    )
+    if not check_match or 'about:policies' not in content:
+        return None
+    policy_name = check_match.group(1)
+    expected = check_match.group(2).lower()
+    linux_policy_match = re.search(
+        r'Linux\s+["“]policies\.json["”]\s+file:.*?["“]' + re.escape(policy_name) + r'["”]\s*:\s*(true|false)\b',
+        fix_text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not linux_policy_match or linux_policy_match.group(1).lower() != expected:
+        return None
+    command = (
+        'python3 -c "import json, pathlib; '
+        "p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); "
+        "policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; "
+        f"print(str(policies.get('{policy_name}')).lower())\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': expected},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_platform(stig_id: str) -> bool:
     lower = stig_id.lower()
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
@@ -4818,6 +4857,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     vcenter_lookup_service_grep_property_candidate = _vcenter_lookup_service_grep_property_candidate(rule, stig_id)
     if vcenter_lookup_service_grep_property_candidate:
         return vcenter_lookup_service_grep_property_candidate
+
+    firefox_policy_boolean_candidate = _firefox_policy_boolean_candidate(rule, stig_id)
+    if firefox_policy_boolean_candidate:
+        return firefox_policy_boolean_candidate
 
     tomcat_systemd_boolean_property_candidate = _tomcat_systemd_boolean_property_candidate(rule, stig_id)
     if tomcat_systemd_boolean_property_candidate:
