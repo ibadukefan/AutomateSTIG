@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 152,
+  "candidate_checks": 153,
   "cases": [
     {
       "check": {
@@ -853,6 +853,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204475"
+    },
+    {
+      "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -type f -name \".*\" ! -name \".\" ! -name \"..\" -perm /037 -print; done",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all local initialization files have mode 0740 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -type f -name \".*\" ! -name \".\" ! -name \"..\" -perm /037 -print; done": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -type f -name \".*\" ! -name \".\" ! -name \"..\" -perm /037 -print; done": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204476"
     },
     {
       "check": {
@@ -4096,5 +4122,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 152
+  "validated_candidates": 153
 }

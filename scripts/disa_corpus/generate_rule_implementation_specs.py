@@ -3363,6 +3363,23 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     ssh_private_host_key_mode_candidate = _ssh_private_host_key_mode_candidate(rule, stig_id)
     if ssh_private_host_key_mode_candidate:
         return ssh_private_host_key_mode_candidate
+    local_init_files_mode = (
+        _linux_platform(stig_id)
+        and re.search(r'local\s+initialization\s+files?.*mode\s+(?:of\s+)?["“]?0?740["”]?\s+or\s+less\s+permissive', rule.get('title', '') or '', re.IGNORECASE)
+        and re.search(r'If\s+any\s+local\s+initialization\s+files?\s+have\s+a\s+mode\s+more\s+permissive\s+than\s+["“]?0?740["”]?,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'chmod\s+0?740\s+[^\n]*(?:INIT_FILE|\.\[\^\.\]\*|\.<?)', fix_text, re.IGNORECASE)
+    )
+    if local_init_files_mode:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': '''awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d "$home" ] && find "$home" -maxdepth 1 -type f -name ".*" ! -name "." ! -name ".." -perm /037 -print; done''',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     sshd_x11_forwarding_no_literal = (
         _linux_platform(stig_id)
         and re.search(r'^\s*[$#>]\s*(?:sudo\s+)?grep\s+-ir\s+x11forwarding\s+/etc/ssh/sshd_config\*\s*\|\s*grep\s+-v\s+["“]\^#["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
@@ -5269,7 +5286,12 @@ def generate_specs(coverage_root: Path, implementation_root: Path, repo_root: Pa
             if rule.get('classification') != 'unsupported':
                 continue
             enriched = dict(rule)
-            enriched.update({k: v for k, v in artifact_rules.get(rule.get('vuln_id') or rule.get('rule_id'), {}).items() if v})
+            for k, v in artifact_rules.get(rule.get('vuln_id') or rule.get('rule_id'), {}).items():
+                if not v:
+                    continue
+                if k in {'vuln_id', 'rule_id'} and enriched.get(k):
+                    continue
+                enriched[k] = v
             vuln = enriched.get('vuln_id') or enriched.get('rule_id') or 'unknown'
             out = implementation_root / stig_slug / f'{slug(vuln)}.json'
             write_json(out, spec_from_rule(manifest_path, manifest, enriched))

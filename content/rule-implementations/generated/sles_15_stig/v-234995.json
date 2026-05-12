@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -type f -name \".*\" ! -name \".\" ! -name \"..\" -perm /037 -print; done",
+      "type": "command_output"
+    },
+    "description": "All SUSE operating system local initialization files must have mode 0740 or less permissive.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-234995"
+  },
   "check_content_excerpt": "Verify that all SUSE operating system local initialization files have a mode of \"0740\" or less permissive.\n\nCheck the mode on all SUSE operating system local initialization files with the following command:\n\nNote: The example will be for the user \"doduser\", who has a home directory of \"/home/doduser\".\n\n> sudo ls -al /home/doduser/.* | more\n-rwxr-xr-x 1 doduser users 896 Mar 10 2011 .profile\n-rwxr-xr-x 1 doduser users 497 Jan 6 2007 .login\n-rwxr-xr-x 1 doduser users 886 Jan 6 2007 .something\n\nIf any local initialization files have a mode more permissive than \"0740\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the mode of SUSE operating system local initialization files to \"0740\" with the following command:\n\nNote: The example will be for the doduser user, who has a home directory of \"/home/doduser\".\n\n> sudo chmod 0740 /home/doduser/.<INIT_FILE>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234995r1184480_rule",
   "severity": "medium",

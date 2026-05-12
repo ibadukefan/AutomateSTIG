@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 165,
+  "candidate_checks": 166,
   "cases": [
     {
       "check": {
@@ -3358,6 +3358,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -type f -name \".*\" ! -name \".\" ! -name \"..\" -perm /037 -print; done",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system local initialization files must have mode 0740 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -type f -name \".*\" ! -name \".\" ! -name \"..\" -perm /037 -print; done": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -type f -name \".*\" ! -name \".\" ! -name \"..\" -perm /037 -print; done": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234995"
+    },
+    {
+      "check": {
         "command": "find / -xdev -perm -002 -type f -exec ls -ld {} \\;",
         "type": "command_output"
       },
@@ -4364,5 +4390,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 165
+  "validated_candidates": 166
 }

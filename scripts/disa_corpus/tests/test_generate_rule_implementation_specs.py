@@ -36,6 +36,36 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertIn('"vuln_id": "V-1"', text)
             self.assertNotIn('V-2', text)
 
+    def test_preserves_manifest_canonical_vuln_id_when_artifact_uses_xccdf_group_id(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            coverage = root / 'coverage' / 'sample.json'
+            coverage.parent.mkdir()
+            coverage.write_text('''{
+              "stig_id": "scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark",
+              "benchmark": "Sample",
+              "version": "V1R1",
+              "rules": [
+                {"vuln_id":"V-230543","rule_id":"xccdf_mil.disa.stig_rule_SV-230543r1_rule","title":"RHEL 8 must not allow interfaces to perform ICMP redirects by default.","classification":"unsupported","severity":"medium"}
+              ]
+            }''')
+            original = mod._artifact_rule_map
+            mod._artifact_rule_map = lambda manifest, repo_root, cache: {
+                'V-230543': {
+                    'vuln_id': 'xccdf_mil.disa.stig_group_V-230543',
+                    'rule_id': 'xccdf_mil.disa.stig_rule_SV-230543r1_rule',
+                    'fix_text': 'Add or edit the following line in a system configuration file, in the "/etc/sysctl.d/" directory:\n\nnet.ipv4.conf.default.send_redirects = 0',
+                }
+            }
+            try:
+                count = mod.generate_specs(coverage.parent, root / 'impl', root)
+            finally:
+                mod._artifact_rule_map = original
+            self.assertEqual(count, 1)
+            generated = next((root / 'impl').rglob('*.json')).read_text()
+            self.assertIn('"vuln_id": "V-230543"', generated)
+            self.assertNotIn('xccdf_mil.disa.stig_group_V-230543', generated)
+
     def test_infers_windows_legal_notice_text_registry_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254457',
@@ -1338,6 +1368,30 @@ If the "uint32" setting is missing, or is not set to "5" or less, this is a find
             'check': {'type': 'command_output', 'command': 'gsettings get org.gnome.desktop.screensaver lock-delay'},
             'expected': {'type': 'matches', 'pattern': r'^uint32 [1-5]$'},
             'description': 'RHEL 8 must initiate a session lock for graphical user interfaces when the screensaver is activated.',
+        })
+
+    def test_infers_linux_local_initialization_files_mode_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230325',
+            'title': 'All RHEL 8 local initialization files must have mode 0740 or less permissive.',
+            'check_content': '''Verify that all local initialization files have a mode of "0740" or less permissive with the following command:
+
+$ sudo ls -al /home/smithj/.[^.]* | more
+
+If any local initialization files have a mode more permissive than "0740", this is a finding.''',
+            'fix_text': '''Set the mode of the local initialization files to "0740" with the following command:
+
+$ sudo chmod 0740 /home/smithj/.<INIT_FILE>''',
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230325',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': '''awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d "$home" ] && find "$home" -maxdepth 1 -type f -name ".*" ! -name "." ! -name ".." -perm /037 -print; done''',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'All RHEL 8 local initialization files must have mode 0740 or less permissive.',
         })
 
     def test_infers_linux_audit_log_file_mode_no_output_candidate(self):

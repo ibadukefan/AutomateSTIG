@@ -439,6 +439,19 @@
     },
     {
       "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -type f -name \".*\" ! -name \".\" ! -name \"..\" -perm /037 -print; done",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all local initialization files have mode 0740 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204476"
+    },
+    {
+      "check": {
         "command": "find / -xdev -perm -002 -type f -exec ls -ld {} \\; | more",
         "type": "command_output"
       },
