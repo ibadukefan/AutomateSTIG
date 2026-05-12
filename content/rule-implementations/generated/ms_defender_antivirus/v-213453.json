@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates",
+      "type": "registry",
+      "value_name": "AVSignatureDue"
+    },
+    "description": "Microsoft Defender AV virus definition age must not exceed 7 days.",
+    "expected": {
+      "pattern": "^(?:1|2|3|4|5|6|7)$",
+      "type": "matches"
+    },
+    "platform": "windows",
+    "vuln_id": "V-213453"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >>Security Intelligence Updates >> \"Define the number of days before virus security intelligence considered out of date\" is set to \"Enabled\" and \"7\" or less is selected in the drop-down box (excluding \"0\", which is unacceptable).\n\nIf third-party antivirus protection is installed and up to date, the Windows Defender Antivirus age requirement is NA.\n\nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates\n\nCriteria: If the value \"AVSignatureDue\" is REG_DWORD = 7, this is not a finding.\n\nA value of 1 - 6 is also acceptable and not a finding.\n\nA value of 0 is a finding.\n\nA value higher than 7 is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "^(?:1|2|3|4|5|6|7)$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Signature Updates >> \"Define the number of days before virus definitions are considered out of date\" to \"Enabled\" and select \"7\" or less in the drop-down box.\n\nDo not select a value of 0. This disables the option.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-213453r961188_rule",
   "severity": "high",

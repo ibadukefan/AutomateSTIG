@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 66,
+  "candidate_checks": 68,
   "cases": [
     {
       "check": {
@@ -699,6 +699,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-213451"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates",
+        "type": "registry",
+        "value_name": "ASSignatureDue"
+      },
+      "description": "Microsoft Defender AV spyware definition age must not exceed 7 days.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:1|2|3|4|5|6|7)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates\\ASSignatureDue": 8
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates\\ASSignatureDue": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213452"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates",
+        "type": "registry",
+        "value_name": "AVSignatureDue"
+      },
+      "description": "Microsoft Defender AV virus definition age must not exceed 7 days.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:1|2|3|4|5|6|7)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates\\AVSignatureDue": 8
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates\\AVSignatureDue": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213453"
     },
     {
       "check": {
@@ -1786,5 +1840,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Defender_Antivirus",
-  "validated_candidates": 66
+  "validated_candidates": 68
 }

@@ -721,7 +721,9 @@ A value of 8 or more is a finding.''',
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-213452',
             'title': 'Microsoft Defender AV spyware definition age must not exceed 7 days.',
-            'check_content': '''Procedure: Use the Windows Registry Editor to navigate to the following key:
+            'check_content': '''Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Security Intelligence Updates >> "Define the number of days before spyware security intelligence considered out of date" is set to "Enabled" and "7" or less is selected in the drop-down box (excluding "0", which is unacceptable).
+
+Procedure: Use the Windows Registry Editor to navigate to the following key:
 
 HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates
 
@@ -732,7 +734,7 @@ A value of 1 - 6 is also acceptable and not a finding.
 A value of 0 is a finding.
 
 A value higher than 7 is a finding.''',
-            'fix_text': 'Set the policy value to Enabled and select 7 or less in the drop-down box. Do not select a value of 0.',
+            'fix_text': 'Set the policy value to Enabled and select "7" or less in the drop-down box. Do not select a value of 0.',
         }, 'MS_Defender_Antivirus')
         self.assertEqual(candidate, {
             'vuln_id': 'V-213452',

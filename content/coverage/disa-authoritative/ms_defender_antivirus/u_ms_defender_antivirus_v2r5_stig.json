@@ -418,31 +418,33 @@
       "vuln_id": "V-213451"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213452",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213452r961188_rule",
       "severity": "high",
       "title": "Microsoft Defender AV spyware definition age must not exceed 7 days.",
-      "tracking_issue": "TODO-V-213452",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/797f6bc8432b926a28346525b2578e208094c720e089f73fd6b4f1c0924461ac/U_MS_Defender_Antivirus_V2R5_STIG.zip"
       ],
       "vuln_id": "V-213452"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213453",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213453r961188_rule",
       "severity": "high",
       "title": "Microsoft Defender AV virus definition age must not exceed 7 days.",
-      "tracking_issue": "TODO-V-213453",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/797f6bc8432b926a28346525b2578e208094c720e089f73fd6b4f1c0924461ac/U_MS_Defender_Antivirus_V2R5_STIG.zip"
       ],
       "vuln_id": "V-213453"

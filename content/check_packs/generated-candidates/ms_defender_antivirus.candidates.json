@@ -365,6 +365,34 @@
       "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates",
         "type": "registry",
+        "value_name": "ASSignatureDue"
+      },
+      "description": "Microsoft Defender AV spyware definition age must not exceed 7 days.",
+      "expected": {
+        "pattern": "^(?:1|2|3|4|5|6|7)$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-213452"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates",
+        "type": "registry",
+        "value_name": "AVSignatureDue"
+      },
+      "description": "Microsoft Defender AV virus definition age must not exceed 7 days.",
+      "expected": {
+        "pattern": "^(?:1|2|3|4|5|6|7)$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-213453"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates",
+        "type": "registry",
         "value_name": "ScheduleDay"
       },
       "description": "Microsoft Defender AV must be configured to check for definition updates daily.",

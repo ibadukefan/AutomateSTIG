@@ -190,7 +190,7 @@ def _windows_defender_registry_criteria_candidate(rule: dict, stig_id: str) -> d
             content,
             re.IGNORECASE,
         )
-        if signature_due_match and re.search(r'(?:7\s+or\s+less[^.]+excluding\s+["“]?0|7\s+or\s+less.*?Do\s+not\s+select\s+a\s+value\s+of\s+0)', content + '\n' + fix_text, re.IGNORECASE | re.DOTALL):
+        if signature_due_match and re.search(r'(?:["“]?7["”]?\s+or\s+less[^.]+excluding\s+["“]?0|["“]?7["”]?\s+or\s+less.*?Do\s+not\s+select\s+a\s+value\s+of\s+0)', content + '\n' + fix_text, re.IGNORECASE | re.DOTALL):
             return {
                 'vuln_id': rule.get('vuln_id', ''),
                 'platform': 'windows',
