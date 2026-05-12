@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 296,
+  "candidate_checks": 297,
   "cases": [
     {
       "check": {
@@ -955,6 +955,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230320"
+    },
+    {
+      "check": {
+        "command": "find $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd) -maxdepth 0 -type d -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "All RHEL 8 local interactive user home directories must have mode 0750 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd) -maxdepth 0 -type d -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd) -maxdepth 0 -type d -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230321"
     },
     {
       "check": {
@@ -7971,5 +7997,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 296
+  "validated_candidates": 297
 }

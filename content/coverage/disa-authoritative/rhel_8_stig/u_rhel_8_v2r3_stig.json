@@ -1544,16 +1544,17 @@
       "vuln_id": "V-230320"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230321",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230321r1017132_rule",
       "severity": "medium",
       "title": "All RHEL 8 local interactive user home directories must have mode 0750 or less permissive.",
-      "tracking_issue": "TODO-V-230321",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/5311a0d5d7f77f0494bea07818449ec292f9914b929260009fd716671c1e057f/U_RHEL_8_V2R3_STIG.zip"
       ],
       "vuln_id": "V-230321"

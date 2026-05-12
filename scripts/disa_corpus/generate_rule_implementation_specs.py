@@ -3166,9 +3166,52 @@ def _kubernetes_fixed_file_mode_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _interactive_home_directory_mode_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    passwd_home_dirs = r"\$\(awk\s+-F:\s+['\"]\(\$3>=1000\)&&\(\$7\s+!~\s+/nologin/\)\{print\s+\$6\}['\"]\s+/etc/passwd\)"
+    has_stat_command = re.search(
+        rf"stat\s+-L\s+-c\s+['\"]%a\s+%n['\"]\s+{passwd_home_dirs}\s+2>/dev/null",
+        content,
+        re.IGNORECASE,
+    )
+    has_ls_command = re.search(
+        rf"ls\s+-ld\s+{passwd_home_dirs}",
+        content,
+        re.IGNORECASE,
+    )
+    if not has_stat_command and not has_ls_command:
+        return None
+    mode_match = re.search(
+        r'home\s+directories\s+referenced\s+in\s+["“]/etc/passwd["”]\s+do\s+not\s+have\s+a\s+mode\s+of\s+["“](?P<mode>0?[0-7]{3})["”]\s+or\s+less\s+permissive,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if not mode_match:
+        return None
+    mode = int(mode_match.group('mode'), 8)
+    prohibited_bits = 0o777 & ~mode
+    if prohibited_bits == 0:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {
+            'type': 'command_output',
+            'command': f"find $(awk -F: '($3>=1000)&&($7 !~ /nologin/){{print $6}}' /etc/passwd) -maxdepth 0 -type d -perm /{prohibited_bits:03o} -exec stat -c \"%a %n\" {{}} \\; 2>/dev/null",
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    interactive_home_mode_candidate = _interactive_home_directory_mode_candidate(rule, stig_id)
+    if interactive_home_mode_candidate:
+        return interactive_home_mode_candidate
     kubernetes_authoritative_file_candidate = _kubernetes_authoritative_file_compliance_candidate(rule, stig_id)
     if kubernetes_authoritative_file_candidate:
         return kubernetes_authoritative_file_candidate

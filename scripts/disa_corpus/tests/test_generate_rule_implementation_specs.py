@@ -179,6 +179,50 @@ Select "Disabled" under "Actions".''',
             'description': 'Windows Server 2025 FTP servers must be configured to prevent anonymous logons.',
         })
 
+    def test_infers_linux_interactive_home_directory_mode_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257890',
+            'title': 'All RHEL 9 local interactive user home directories must have mode 0750 or less permissive.',
+            'check_content': '''Verify the assigned home directory of all interactive users on RHEL 9 has a mode of "0750" or less permissive with the following command:
+
+$ stat -L -c '%a %n' $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd) 2>/dev/null
+
+If home directories referenced in "/etc/passwd" do not have a mode of "0750" or less permissive, this is a finding.''',
+            'fix_text': 'Change the mode of interactive user home directories to "0750" or less permissive.',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-257890',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "find $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd) -maxdepth 0 -type d -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'All RHEL 9 local interactive user home directories must have mode 0750 or less permissive.',
+        })
+
+    def test_infers_linux_interactive_home_directory_ls_mode_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234993',
+            'title': 'All SUSE operating system local interactive user home directories must have mode 0750 or less permissive.',
+            'check_content': '''Verify the assigned home directory of all interactive users on the SUSE operating system has a mode of "0750" or less permissive with the following command:
+
+> ls -ld $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)
+
+If home directories referenced in "/etc/passwd" do not have a mode of "0750" or less permissive, this is a finding.''',
+            'fix_text': 'Change the mode of interactive user home directories to "0750" or less permissive.',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234993',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "find $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd) -maxdepth 0 -type d -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'All SUSE operating system local interactive user home directories must have mode 0750 or less permissive.',
+        })
+
     def test_infers_linux_sha_crypt_rounds_floor_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271627',
