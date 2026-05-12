@@ -417,16 +417,17 @@
       "vuln_id": "V-242404"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242405",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242405r960960_rule",
       "severity": "medium",
       "title": "The Kubernetes manifests must be owned by root.",
-      "tracking_issue": "TODO-V-242405",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242405"
@@ -462,16 +463,17 @@
       "vuln_id": "V-242407"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242408",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242408r960960_rule",
       "severity": "medium",
       "title": "The Kubernetes manifest files must have least privileges.",
-      "tracking_issue": "TODO-V-242408",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242408"
@@ -988,76 +990,81 @@
       "vuln_id": "V-242446"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242447",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242447r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes Kube Proxy kubeconfig must have file permissions set to 644 or more restrictive.",
-      "tracking_issue": "TODO-V-242447",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242447"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242448",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242448r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes Kube Proxy kubeconfig must be owned by root.",
-      "tracking_issue": "TODO-V-242448",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242448"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242449",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242449r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes Kubelet certificate authority file must have file permissions set to 644 or more restrictive.",
-      "tracking_issue": "TODO-V-242449",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242449"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242450",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242450r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes Kubelet certificate authority must be owned by root.",
-      "tracking_issue": "TODO-V-242450",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242450"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242451",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242451r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes component PKI must be owned by root.",
-      "tracking_issue": "TODO-V-242451",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242451"
@@ -1095,31 +1102,33 @@
       "vuln_id": "V-242453"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242454",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242454r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes kubeadm.conf must be owned by root.",
-      "tracking_issue": "TODO-V-242454",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242454"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242455",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242455r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes kubeadm.conf must have file permissions set to 644 or more restrictive.",
-      "tracking_issue": "TODO-V-242455",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242455"

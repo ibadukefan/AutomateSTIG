@@ -184,6 +184,58 @@ If a line is not returned that includes enable-admission-plugins and ValidatingA
             'description': 'The Kubernetes API server must have the ValidatingAdmissionWebhook enabled.',
         })
 
+    def test_infers_kubernetes_dynamic_file_mode_candidate_from_authoritative_placeholder_path(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242447',
+            'title': 'The Kubernetes Kube Proxy kubeconfig must have file permissions set to 644 or more restrictive.',
+            'check_content': '''Check if Kube-Proxy is running and obtain --kubeconfig parameter use the following command:
+ps -ef | grep kube-proxy
+
+If Kube-Proxy exists:
+Review the permissions of the Kubernetes Kube Proxy by using the command:
+stat -c %a <location from --kubeconfig>
+
+If the file has permissions more permissive than "644", this is a finding.''',
+            'fix_text': 'Change the permissions of the Kube Proxy to "644" by executing the command:\n\nchmod 644 <location from kubeconfig>.',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242447',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c 'path=$(ps -ef | sed -n \"s/.*--kubeconfig[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$path\" ] || find \"$path\" -perm /133 -exec stat -c \"%a %n\" {} \\;'",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Kubernetes Kube Proxy kubeconfig must have file permissions set to 644 or more restrictive.',
+        })
+
+    def test_infers_kubernetes_fixed_owner_candidate_from_authoritative_default_path(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242454',
+            'title': 'The Kubernetes kubeadm.conf must be owned by root.',
+            'check_content': '''Review the Kubeadm.conf file :
+
+Get the path for Kubeadm.conf by running:
+sytstemctl status kubelet
+
+Note the configuration file installed by the kubeadm is written to
+(Default Location: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf)
+stat -c %U:%G <kubeadm.conf path> | grep -v root:root
+
+If the command returns any non root:root file permissions, this is a finding.''',
+            'fix_text': 'Change the ownership of the kubeadm.conf to root: root by executing the command:\n\nchown root:root <kubeadm.conf path>',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242454',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c 'stat -c \"%U:%G\" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 2>/dev/null | grep -v root:root'",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Kubernetes kubeadm.conf must be owned by root.',
+        })
+
     def test_infers_windows_user_right_exact_allowlist_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254418',

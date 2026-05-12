@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); ca=$(grep -i \"clientCAFile\" \"$cfg\" 2>/dev/null | sed -n \"s/.*clientCAFile:[ ]*\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$ca\" ] || stat -c \"%U:%G %n\" \"$ca\" 2>/dev/null | grep -v \"^root:root \"'",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes Kubelet certificate authority must be owned by root.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242450"
+  },
   "check_content_excerpt": "On the Control Plane, run the command:\nps -ef | grep kubelet\n\nIf the \"client-ca-file\" option exists, this is a finding. \n\nNote the path to the config file (identified by --config).\n\nRun the command:\ngrep -i clientCAFile <path_to_config_file>\n\nNote the path to the client ca file.\n\nRun the command:\nstat -c %U:%G <path_to_client_ca_file>\n\nIf the command returns any non root:root file permissions, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "On the Control Plane, run the command:\nps -ef | grep kubelet\n\nRemove the \"client-ca-file\" option.\n\nNote the path to the config file (identified by --config).\n\nRun the command:\ngrep -i clientCAFile <path_to_config_file>\n\nNote the path to the client ca file.\n\nRun the command:\nchown root:root <path_to_client_ca_file>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242450r961863_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'find /etc/kubernetes/pki -mindepth 1 -exec stat -c \"%U:%G %n\" {} \\; 2>/dev/null | grep -v \"^root:root \"'",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes component PKI must be owned by root.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242451"
+  },
   "check_content_excerpt": "Review the PKI files in Kubernetes by using the command:\n\nls -laR /etc/kubernetes/pki/\n\nIf the command returns any non root:root file permissions, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the ownership of the PKI to root: root by executing the command:\n\nchown -R root:root /etc/kubernetes/pki/",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242451r961863_rule",
   "severity": "medium",

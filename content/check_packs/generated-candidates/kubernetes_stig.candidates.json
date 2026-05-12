@@ -28,6 +28,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'find /etc/kubernetes/manifests -maxdepth 1 -type f -exec stat -c \"%U:%G %n\" {} \\; 2>/dev/null | grep -v \"^root:root \"'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes manifests must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242405"
+    },
+    {
+      "check": {
+        "command": "sh -c 'find /etc/kubernetes/manifests -maxdepth 1 -type f -perm /133 -exec stat -c \"%a %n\" {} \\; 2>/dev/null'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes manifest files must have least privileges.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242408"
+    },
+    {
+      "check": {
         "command": "grep -i profiling /etc/kubernetes/manifests/*",
         "type": "command_output"
       },
@@ -236,6 +262,71 @@
     },
     {
       "check": {
+        "command": "sh -c 'path=$(ps -ef | sed -n \"s/.*--kubeconfig[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$path\" ] || find \"$path\" -perm /133 -exec stat -c \"%a %n\" {} \\;'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes Kube Proxy kubeconfig must have file permissions set to 644 or more restrictive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242447"
+    },
+    {
+      "check": {
+        "command": "sh -c 'path=$(ps -ef | sed -n \"s/.*--kubeconfig[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$path\" ] || stat -c \"%U:%G %n\" \"$path\" 2>/dev/null | grep -v \"^root:root \"'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes Kube Proxy kubeconfig must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242448"
+    },
+    {
+      "check": {
+        "command": "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); ca=$(grep -i \"clientCAFile\" \"$cfg\" 2>/dev/null | sed -n \"s/.*clientCAFile:[ ]*\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$ca\" ] || find \"$ca\" -perm /133 -exec stat -c \"%a %n\" {} \\;'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes Kubelet certificate authority file must have file permissions set to 644 or more restrictive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242449"
+    },
+    {
+      "check": {
+        "command": "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); ca=$(grep -i \"clientCAFile\" \"$cfg\" 2>/dev/null | sed -n \"s/.*clientCAFile:[ ]*\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$ca\" ] || stat -c \"%U:%G %n\" \"$ca\" 2>/dev/null | grep -v \"^root:root \"'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes Kubelet certificate authority must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242450"
+    },
+    {
+      "check": {
+        "command": "sh -c 'find /etc/kubernetes/pki -mindepth 1 -exec stat -c \"%U:%G %n\" {} \\; 2>/dev/null | grep -v \"^root:root \"'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes component PKI must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242451"
+    },
+    {
+      "check": {
         "command": "find /etc/kubernetes/kubelet.conf -perm /133 -exec stat -c \"%a %n\" {} \\;",
         "type": "command_output"
       },
@@ -259,6 +350,32 @@
       },
       "platform": "generic",
       "vuln_id": "V-242453"
+    },
+    {
+      "check": {
+        "command": "sh -c 'stat -c \"%U:%G\" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 2>/dev/null | grep -v root:root'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes kubeadm.conf must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242454"
+    },
+    {
+      "check": {
+        "command": "sh -c 'find /etc/systemd/system/kubelet.service.d/10-kubeadm.conf -perm /133 -exec stat -c \"%a %n\" {} \\; 2>/dev/null'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes kubeadm.conf must have file permissions set to 644 or more restrictive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242455"
     },
     {
       "check": {

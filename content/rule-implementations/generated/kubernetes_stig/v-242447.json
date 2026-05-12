@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'path=$(ps -ef | sed -n \"s/.*--kubeconfig[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$path\" ] || find \"$path\" -perm /133 -exec stat -c \"%a %n\" {} \\;'",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes Kube Proxy kubeconfig must have file permissions set to 644 or more restrictive.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242447"
+  },
   "check_content_excerpt": "Check if Kube-Proxy is running and obtain --kubeconfig parameter use the following command:\nps -ef | grep kube-proxy\n\nIf Kube-Proxy exists:\nReview the permissions of the Kubernetes Kube Proxy by using the command:\nstat -c %a <location from --kubeconfig>\n\nIf the file has permissions more permissive than \"644\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the permissions of the Kube Proxy to \"644\" by executing the command:\n\nchmod 644 <location from kubeconfig>.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242447r961863_rule",
   "severity": "medium",

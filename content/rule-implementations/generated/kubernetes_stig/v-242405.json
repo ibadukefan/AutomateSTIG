@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'find /etc/kubernetes/manifests -maxdepth 1 -type f -exec stat -c \"%U:%G %n\" {} \\; 2>/dev/null | grep -v \"^root:root \"'",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes manifests must be owned by root.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242405"
+  },
   "check_content_excerpt": "On the Control Plane, change to the /etc/kubernetes/manifest directory. Run the command:\nls -l *\n\nEach manifest file must be owned by root:root.\n\nIf any manifest file is not owned by root:root, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "On the Control Plane, change to the /etc/kubernetes/manifest directory. Run the command:\nchown root:root *\n\nTo verify the change took place, run the command:\nls -l *\n\nAll the manifest files should be owned by root:root.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242405r960960_rule",
   "severity": "medium",

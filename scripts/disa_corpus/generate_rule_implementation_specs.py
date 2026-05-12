@@ -2871,6 +2871,43 @@ def _kubernetes_pki_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _kubernetes_authoritative_file_compliance_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower():
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    owner_finding = re.search(r'If\s+(?:the\s+command\s+returns\s+)?any\s+(?:non\s+)?root:root\s+file\s+permissions,?\s+this\s+is\s+a\s+finding|If\s+any\s+[^.]*file\s+is\s+not\s+owned\s+by\s+root:root,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    mode_644_finding = re.search(r'permissions\s+(?:more\s+permissive|less\s+restrictive)\s+than\s+["“]644["”],?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    if vuln_id == 'V-242447' and 'stat -c %a <location from --kubeconfig>' in content and mode_644_finding:
+        command = "sh -c 'path=$(ps -ef | sed -n \"s/.*--kubeconfig[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$path\" ] || find \"$path\" -perm /133 -exec stat -c \"%a %n\" {} \\;'"
+    elif vuln_id == 'V-242448' and 'stat -c' in content and '<location from --kubeconfig>' in content and owner_finding:
+        command = "sh -c 'path=$(ps -ef | sed -n \"s/.*--kubeconfig[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$path\" ] || stat -c \"%U:%G %n\" \"$path\" 2>/dev/null | grep -v \"^root:root \"'"
+    elif vuln_id == 'V-242449' and 'grep -i clientCAFile <path_to_config_file>' in content and mode_644_finding:
+        command = "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); ca=$(grep -i \"clientCAFile\" \"$cfg\" 2>/dev/null | sed -n \"s/.*clientCAFile:[ ]*\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$ca\" ] || find \"$ca\" -perm /133 -exec stat -c \"%a %n\" {} \\;'"
+    elif vuln_id == 'V-242450' and 'grep -i clientCAFile <path_to_config_file>' in content and owner_finding:
+        command = "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); ca=$(grep -i \"clientCAFile\" \"$cfg\" 2>/dev/null | sed -n \"s/.*clientCAFile:[ ]*\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$ca\" ] || stat -c \"%U:%G %n\" \"$ca\" 2>/dev/null | grep -v \"^root:root \"'"
+    elif vuln_id == 'V-242451' and '/etc/kubernetes/pki' in content and owner_finding:
+        command = "sh -c 'find /etc/kubernetes/pki -mindepth 1 -exec stat -c \"%U:%G %n\" {} \\; 2>/dev/null | grep -v \"^root:root \"'"
+    elif vuln_id == 'V-242454' and '/etc/systemd/system/kubelet.service.d/10-kubeadm.conf' in content and owner_finding:
+        command = "sh -c 'stat -c \"%U:%G\" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 2>/dev/null | grep -v root:root'"
+    elif vuln_id == 'V-242455' and '/etc/systemd/system/kubelet.service.d/10-kubeadm.conf' in content and mode_644_finding:
+        command = "sh -c 'find /etc/systemd/system/kubelet.service.d/10-kubeadm.conf -perm /133 -exec stat -c \"%a %n\" {} \\; 2>/dev/null'"
+    elif vuln_id == 'V-242405' and '/etc/kubernetes/manifest' in content and 'owned by root:root' in content:
+        command = "sh -c 'find /etc/kubernetes/manifests -maxdepth 1 -type f -exec stat -c \"%U:%G %n\" {} \\; 2>/dev/null | grep -v \"^root:root \"'"
+    elif vuln_id == 'V-242408' and '/etc/kubernetes/manifest' in content and 'permissions "644" or more restrictive' in content:
+        command = "sh -c 'find /etc/kubernetes/manifests -maxdepth 1 -type f -perm /133 -exec stat -c \"%a %n\" {} \\; 2>/dev/null'"
+    else:
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': title,
+    }
+
+
 def _kubernetes_fixed_file_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower():
         return None
@@ -2910,6 +2947,9 @@ def _kubernetes_fixed_file_mode_candidate(rule: dict, stig_id: str) -> dict | No
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    kubernetes_authoritative_file_candidate = _kubernetes_authoritative_file_compliance_candidate(rule, stig_id)
+    if kubernetes_authoritative_file_candidate:
+        return kubernetes_authoritative_file_candidate
     kubernetes_fixed_file_mode_candidate = _kubernetes_fixed_file_mode_candidate(rule, stig_id)
     if kubernetes_fixed_file_mode_candidate:
         return kubernetes_fixed_file_mode_candidate

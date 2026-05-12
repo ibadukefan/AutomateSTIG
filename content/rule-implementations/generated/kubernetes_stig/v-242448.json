@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'path=$(ps -ef | sed -n \"s/.*--kubeconfig[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$path\" ] || stat -c \"%U:%G %n\" \"$path\" 2>/dev/null | grep -v \"^root:root \"'",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes Kube Proxy kubeconfig must be owned by root.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242448"
+  },
   "check_content_excerpt": "Check if Kube-Proxy is running use the following command:\nps -ef | grep kube-proxy\n\nIf Kube-Proxy exists:\nReview the permissions of the Kubernetes Kube Proxy by using the command:\nstat -c   %U:%G <location from --kubeconfig>| grep -v root:root\n\nIf the command returns any non root:root file permissions, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the ownership of the Kube Proxy to root:root by executing the command:\n\nchown root:root <location from kubeconfig>.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242448r961863_rule",
   "severity": "medium",
