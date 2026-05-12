@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 216,
+  "candidate_checks": 217,
   "cases": [
     {
       "check": {
@@ -3419,6 +3419,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { $d=(Get-ADUser krbtgt -Properties PasswordLastSet).PasswordLastSet; if (((Get-Date)-$d).TotalDays -gt 180) { 'PasswordLastSetOlderThan180Days' } }\"",
+        "type": "command_output"
+      },
+      "description": "The password for the krbtgt account on a domain must be reset at least every 180 days.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { $d=(Get-ADUser krbtgt -Properties PasswordLastSet).PasswordLastSet; if (((Get-Date)-$d).TotalDays -gt 180) { 'PasswordLastSetOlderThan180Days' } }\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { $d=(Get-ADUser krbtgt -Properties PasswordLastSet).PasswordLastSet; if (((Get-Date)-$d).TotalDays -gt 180) { 'PasswordLastSetOlderThan180Days' } }\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278176"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
         "type": "registry",
         "value_name": "LocalAccountTokenFilterPolicy"
@@ -5823,5 +5849,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 216
+  "validated_candidates": 217
 }

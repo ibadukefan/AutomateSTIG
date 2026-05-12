@@ -2166,6 +2166,30 @@ If any enabled user accounts are returned with a "PasswordRequired" status of "F
             'description': 'Windows Server 2022 accounts must require passwords.',
         })
 
+    def test_infers_windows_krbtgt_password_age_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254427',
+            'title': 'The password for the krbtgt account on a domain must be reset at least every 180 days.',
+            'check_content': '''This requirement is applicable to domain controllers; it is NA for other systems.
+
+Open "Windows PowerShell".
+
+Enter "Get-ADUser krbtgt -Property PasswordLastSet".
+
+If the "PasswordLastSet" date is more than 180 days old, this is a finding.''',
+            'fix_text': 'Reset the password for the krbtgt account a least every 180 days.',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254427',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': 'powershell -NoProfile -Command "if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { $d=(Get-ADUser krbtgt -Properties PasswordLastSet).PasswordLastSet; if (((Get-Date)-$d).TotalDays -gt 180) { \'PasswordLastSetOlderThan180Days\' } }"',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The password for the krbtgt account on a domain must be reset at least every 180 days.',
+        })
+
     def test_infers_windows_certificate_store_thumbprint_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-220903',

@@ -2890,6 +2890,34 @@ def _windows_account_password_required_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _windows_krbtgt_password_age_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    if not _windows_platform(stig_id):
+        return None
+    if rule.get('vuln_id') not in {'V-205877', 'V-254427', 'V-278176'}:
+        return None
+    if not re.search(r'\bkrbtgt\b', title + '\n' + content + '\n' + fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'Get-ADUser\s+krbtgt\s+-Property\s+PasswordLastSet', content, re.IGNORECASE):
+        return None
+    if not re.search(r'PasswordLastSet[^.\n]+more\s+than\s+180\s+days\s+old[^.\n]+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Reset\s+the\s+password\s+for\s+the\s+krbtgt\s+account[^.\n]+(?:least|every)\s+180\s+days', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': 'powershell -NoProfile -Command "if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { $d=(Get-ADUser krbtgt -Properties PasswordLastSet).PasswordLastSet; if (((Get-Date)-$d).TotalDays -gt 180) { \'PasswordLastSetOlderThan180Days\' } }"',
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_ad_smartcard_no_listed_users_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -4711,6 +4739,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         account_password_required_candidate = _windows_account_password_required_candidate(rule, stig_id)
         if account_password_required_candidate:
             return account_password_required_candidate
+
+        krbtgt_password_age_candidate = _windows_krbtgt_password_age_candidate(rule, stig_id)
+        if krbtgt_password_age_candidate:
+            return krbtgt_password_age_candidate
 
         system32_absent_app_candidate = _windows_system32_absent_application_candidate(rule, stig_id)
         if system32_absent_app_candidate:

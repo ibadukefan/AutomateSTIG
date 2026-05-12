@@ -1326,6 +1326,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { $d=(Get-ADUser krbtgt -Properties PasswordLastSet).PasswordLastSet; if (((Get-Date)-$d).TotalDays -gt 180) { 'PasswordLastSetOlderThan180Days' } }\"",
+        "type": "command_output"
+      },
+      "description": "The password for the krbtgt account on a domain must be reset at least every 180 days.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-254427"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
         "type": "registry",
         "value_name": "LocalAccountTokenFilterPolicy"
