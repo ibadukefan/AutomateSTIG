@@ -30,6 +30,45 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender'; if (-not (Get-ItemProperty -Path $p -Name 'DisableAntiSpyware' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must be configured to run and scan for malware and other potentially unwanted software.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "windows",
+      "vuln_id": "V-213428"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions'; if (-not (Get-ItemProperty -Path $p -Name 'Exclusions_Paths' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must be configured to not exclude files for scanning.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "windows",
+      "vuln_id": "V-213429"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions'; if (-not (Get-ItemProperty -Path $p -Name 'Exclusions_Processes' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must be configured to not exclude files opened by specified processes.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "windows",
+      "vuln_id": "V-213430"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions",
         "type": "registry",
         "value_name": "DisableAutoExclusions"

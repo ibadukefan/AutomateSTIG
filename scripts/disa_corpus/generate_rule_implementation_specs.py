@@ -134,6 +134,43 @@ def _parse_expected_registry_data(text: str):
         return raw
 
 
+def _powershell_registry_absent_command(path: str, value_name: str) -> str:
+    ps_path = _normalize_registry_path(path).replace('HKLM\\', 'HKLM:\\').replace('HKCU\\', 'HKCU:\\')
+    return f"powershell -NoProfile -Command \"$p='{ps_path}'; if (-not (Get-ItemProperty -Path $p -Name '{value_name}' -ErrorAction SilentlyContinue)) {{ 'Absent' }}\""
+
+
+def _windows_defender_registry_absent_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if 'defender' not in stig_id.lower() or vuln_id not in {'V-213428', 'V-213429', 'V-213430'}:
+        return None
+    path_match = re.search(
+        r'Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n\s*((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r]+)',
+        content,
+        re.IGNORECASE,
+    )
+    absent_match = re.search(
+        r'Criteria:\s*If\s+the\s+value\s+["“]([A-Za-z0-9_.-]+)["”]\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding\.',
+        content,
+        re.IGNORECASE,
+    )
+    if not path_match or not absent_match:
+        return None
+    if not re.search(r'(?:Disabled|Not\s+Configured)', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': _powershell_registry_absent_command(path_match.group(1), absent_match.group(1)),
+        },
+        'expected': {'type': 'equals', 'value': 'Absent'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_defender_registry_criteria_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -149,11 +186,11 @@ def _windows_defender_registry_criteria_candidate(rule: dict, stig_id: str) -> d
         return None
     if vuln_id in {'V-213452', 'V-213453'}:
         signature_due_match = re.search(
-            r'Criteria:\s*If\s+the\s+value\s+["“](A[Vv]SignatureDue|ASSignatureDue)["”]\s+is\s+REG_DWORD\s*=\s*7,\s+this\s+is\s+not\s+a\s+finding\.\s*\n\s*A\s+value\s+of\s+1\s*-\s*6\s+is\s+also\s+acceptable\s+and\s+not\s+a\s+finding\.\s*\n\s*A\s+value\s+of\s+0\s+is\s+a\s+finding\.\s*\n\s*A\s+value\s+of\s+8\s+or\s+more\s+is\s+a\s+finding',
+            r'Criteria:\s*If\s+the\s+value\s+["“](A[Vv]SignatureDue|ASSignatureDue)["”]\s+is\s+REG_DWORD\s*=\s*7,\s+this\s+is\s+not\s+a\s+finding\.\s*\n\s*A\s+value\s+of\s+1\s*-\s*6\s+is\s+also\s+acceptable\s+and\s+not\s+a\s+finding\.\s*\n\s*A\s+value\s+of\s+0\s+is\s+a\s+finding\.\s*\n\s*A\s+value\s+(?:of\s+8\s+or\s+more|higher\s+than\s+7)\s+is\s+a\s+finding',
             content,
             re.IGNORECASE,
         )
-        if signature_due_match and re.search(r'7\s+or\s+less[^.]+excluding\s+["“]?0', content + '\n' + fix_text, re.IGNORECASE):
+        if signature_due_match and re.search(r'(?:7\s+or\s+less[^.]+excluding\s+["“]?0|7\s+or\s+less.*?Do\s+not\s+select\s+a\s+value\s+of\s+0)', content + '\n' + fix_text, re.IGNORECASE | re.DOTALL):
             return {
                 'vuln_id': rule.get('vuln_id', ''),
                 'platform': 'windows',
@@ -4638,6 +4675,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         hardened_unc_candidate = _windows_hardened_unc_paths_candidate(rule, stig_id)
         if hardened_unc_candidate:
             return hardened_unc_candidate
+
+        defender_registry_absent_candidate = _windows_defender_registry_absent_candidate(rule, stig_id)
+        if defender_registry_absent_candidate:
+            return defender_registry_absent_candidate
 
         defender_registry_criteria_candidate = _windows_defender_registry_criteria_candidate(rule, stig_id)
         if defender_registry_criteria_candidate:

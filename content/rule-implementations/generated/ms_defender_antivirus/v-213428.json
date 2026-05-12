@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender'; if (-not (Get-ItemProperty -Path $p -Name 'DisableAntiSpyware' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+      "type": "command_output"
+    },
+    "description": "Microsoft Defender AV must be configured to run and scan for malware and other potentially unwanted software.",
+    "expected": {
+      "type": "equals",
+      "value": "Absent"
+    },
+    "platform": "windows",
+    "vuln_id": "V-213428"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> \"Turn off Windows Defender Antivirus\" is set to \u201cNot Configured\u201d.\n\nFor Windows 10:\nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\n\nCriteria: If the value \"DisableAntiSpyware\" does not exist, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Absent"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "For Windows 10: Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus \"Turn off Microsoft Defender Antivirus\" to \"Not Configured\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-213428r961194_rule",
   "severity": "high",

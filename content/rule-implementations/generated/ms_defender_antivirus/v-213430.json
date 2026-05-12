@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions'; if (-not (Get-ItemProperty -Path $p -Name 'Exclusions_Processes' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+      "type": "command_output"
+    },
+    "description": "Microsoft Defender AV must be configured to not exclude files opened by specified processes.",
+    "expected": {
+      "type": "equals",
+      "value": "Absent"
+    },
+    "platform": "windows",
+    "vuln_id": "V-213430"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Exclusions >> \"Process Exclusions\" is set to \"Disabled\" or \"Not Configured\".\n  \nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions\n\nCriteria: If the value \"Exclusions_Processes\" does not exist, this is not a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Absent"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft  Defender Antivirus >> Exclusions >> \"Process Exclusions\" to \"Disabled\" or \"Not Configured\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-213430r961194_rule",
   "severity": "medium",

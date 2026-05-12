@@ -34,46 +34,49 @@
       "vuln_id": "V-213427"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213428",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213428r961194_rule",
       "severity": "high",
       "title": "Microsoft Defender AV must be configured to run and scan for malware and other potentially unwanted software.",
-      "tracking_issue": "TODO-V-213428",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/797f6bc8432b926a28346525b2578e208094c720e089f73fd6b4f1c0924461ac/U_MS_Defender_Antivirus_V2R5_STIG.zip"
       ],
       "vuln_id": "V-213428"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213429",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213429r961194_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to not exclude files for scanning.",
-      "tracking_issue": "TODO-V-213429",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/797f6bc8432b926a28346525b2578e208094c720e089f73fd6b4f1c0924461ac/U_MS_Defender_Antivirus_V2R5_STIG.zip"
       ],
       "vuln_id": "V-213429"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213430",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213430r961194_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to not exclude files opened by specified processes.",
-      "tracking_issue": "TODO-V-213430",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/797f6bc8432b926a28346525b2578e208094c720e089f73fd6b4f1c0924461ac/U_MS_Defender_Antivirus_V2R5_STIG.zip"
       ],
       "vuln_id": "V-213430"

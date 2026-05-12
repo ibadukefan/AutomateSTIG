@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 63,
+  "candidate_checks": 66,
   "cases": [
     {
       "check": {
@@ -54,6 +54,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-213427"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender'; if (-not (Get-ItemProperty -Path $p -Name 'DisableAntiSpyware' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must be configured to run and scan for malware and other potentially unwanted software.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender'; if (-not (Get-ItemProperty -Path $p -Name 'DisableAntiSpyware' -ErrorAction SilentlyContinue)) { 'Absent' }\"": "unexpected-Absent"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender'; if (-not (Get-ItemProperty -Path $p -Name 'DisableAntiSpyware' -ErrorAction SilentlyContinue)) { 'Absent' }\"": "Absent"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213428"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions'; if (-not (Get-ItemProperty -Path $p -Name 'Exclusions_Paths' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must be configured to not exclude files for scanning.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions'; if (-not (Get-ItemProperty -Path $p -Name 'Exclusions_Paths' -ErrorAction SilentlyContinue)) { 'Absent' }\"": "unexpected-Absent"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions'; if (-not (Get-ItemProperty -Path $p -Name 'Exclusions_Paths' -ErrorAction SilentlyContinue)) { 'Absent' }\"": "Absent"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213429"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions'; if (-not (Get-ItemProperty -Path $p -Name 'Exclusions_Processes' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must be configured to not exclude files opened by specified processes.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions'; if (-not (Get-ItemProperty -Path $p -Name 'Exclusions_Processes' -ErrorAction SilentlyContinue)) { 'Absent' }\"": "unexpected-Absent"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions'; if (-not (Get-ItemProperty -Path $p -Name 'Exclusions_Processes' -ErrorAction SilentlyContinue)) { 'Absent' }\"": "Absent"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213430"
     },
     {
       "check": {
@@ -1708,5 +1786,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Defender_Antivirus",
-  "validated_candidates": 63
+  "validated_candidates": 66
 }

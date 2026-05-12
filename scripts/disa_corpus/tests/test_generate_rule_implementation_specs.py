@@ -166,6 +166,27 @@ If the value for "DownloadRestrictions" is set to "REG_DWORD = 0", this is a fin
             'description': 'Download restrictions must be configured.',
         })
 
+    def test_infers_defender_policy_registry_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213428',
+            'title': 'Microsoft Defender AV must be configured to run and scan for malware and other potentially unwanted software.',
+            'check_content': '''Procedure: Use the Windows Registry Editor to navigate to the following key:
+HKLM\\Software\\Policies\\Microsoft\\Windows Defender
+
+Criteria: If the value "DisableAntiSpyware" does not exist, this is not a finding.''',
+            'fix_text': 'Set the policy value for Microsoft Defender Antivirus "Turn off Microsoft Defender Antivirus" to "Not Configured".',
+        }, 'MS_Defender_Antivirus')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-213428',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p='HKLM:\\Software\\Policies\\Microsoft\\Windows Defender'; if (-not (Get-ItemProperty -Path $p -Name 'DisableAntiSpyware' -ErrorAction SilentlyContinue)) { 'Absent' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Absent'},
+            'description': 'Microsoft Defender AV must be configured to run and scan for malware and other potentially unwanted software.',
+        })
+
     def test_infers_defender_signature_due_days_one_through_seven_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-213453',
@@ -192,6 +213,35 @@ A value of 8 or more is a finding.''',
             },
             'expected': {'type': 'matches', 'pattern': '^(?:1|2|3|4|5|6|7)$'},
             'description': 'Microsoft Defender AV virus definition age must not exceed 7 days.',
+        })
+
+    def test_infers_defender_signature_due_days_higher_than_seven_wording_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213452',
+            'title': 'Microsoft Defender AV spyware definition age must not exceed 7 days.',
+            'check_content': '''Procedure: Use the Windows Registry Editor to navigate to the following key:
+
+HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates
+
+Criteria: If the value "ASSignatureDue" is REG_DWORD = 7, this is not a finding.
+
+A value of 1 - 6 is also acceptable and not a finding.
+
+A value of 0 is a finding.
+
+A value higher than 7 is a finding.''',
+            'fix_text': 'Set the policy value to Enabled and select 7 or less in the drop-down box. Do not select a value of 0.',
+        }, 'MS_Defender_Antivirus')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-213452',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Signature Updates',
+                'value_name': 'ASSignatureDue',
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:1|2|3|4|5|6|7)$'},
+            'description': 'Microsoft Defender AV spyware definition age must not exceed 7 days.',
         })
 
     def test_infers_defender_maps_reporting_allowed_registry_values_candidate(self):
