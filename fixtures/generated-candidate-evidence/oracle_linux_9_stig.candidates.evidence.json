@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 427,
+  "candidate_checks": 428,
   "cases": [
     {
       "check": {
@@ -4390,6 +4390,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271603"
+    },
+    {
+      "check": {
+        "command": "cat /etc/sssd/sssd.conf 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "OL 9 must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "maprule = (userCertificate;binary={cert!bin})",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "cat /etc/sssd/sssd.conf 2>/dev/null": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "cat /etc/sssd/sssd.conf 2>/dev/null": "before\nmaprule = (userCertificate;binary={cert!bin})\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271606"
     },
     {
       "check": {
@@ -11836,5 +11862,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 427
+  "validated_candidates": 428
 }

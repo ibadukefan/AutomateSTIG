@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "apparmor",
+      "type": "service"
+    },
+    "description": "SUSE operating system AppArmor tool must be configured to control whitelisted applications and user home directory access control.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234848"
+  },
   "check_content_excerpt": "Verify that the SUSE operating system AppArmor tool is configured to control whitelisted applications and user home directory access control.\n\nCheck that \"pam_apparmor\" is installed on the system with the following command:\n\n> zypper info pam_apparmor | grep \"Installed\"\n\nIf the package \"pam_apparmor\" is not installed on the system, this is a finding.\n\nCheck that the \"apparmor\" daemon is running with the following command:\n\n> systemctl status apparmor.service | grep -i active\n\nActive: active (exited) since Fri 2017-01-13 01:01:01 GMT; 1day 1h ago\n\nIf something other than \"Active: active\" is returned, this is a finding.\n\nNote: \"pam_apparmor\" must have properly configured profiles. All configurations will be based on the actual system setup and organization. See the \"pam_apparmor\" documentation for more information on configuring profiles.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to blacklist all applications by default and permit by whitelist.\n\nInstall \"pam_apparmor\" (if it is not installed) with the following command:\n\n> sudo zypper in pam_apparmor\n\nEnable/activate \"Apparmor\" (if it is not already active) with the following command:\n\n> sudo systemctl enable apparmor.service\n\nStart \"Apparmor\" with the following command:\n\n> sudo systemctl start apparmor.service\n\nNote: \"pam_apparmor\" must have properly configured profiles. All configurations will be based on the actual system setup and organization. See the \"pam_apparmor\" documentation for more information on configuring profiles.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-234848r958702_rule",
   "severity": "medium",

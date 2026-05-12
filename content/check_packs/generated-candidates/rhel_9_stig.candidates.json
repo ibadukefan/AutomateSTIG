@@ -3823,6 +3823,19 @@
     },
     {
       "check": {
+        "command": "find /etc/sssd/sssd.conf /etc/sssd/conf.d/ -type f -exec cat {} \\; 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "expected": {
+        "substring": "maprule = (userCertificate;binary={cert!bin})",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258132"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "/etc/sssd/conf.d/",

@@ -1335,6 +1335,29 @@ def _linux_shadow_password_lifetime_candidate(rule: dict, stig_id: str) -> dict 
     return None
 
 
+def _linux_sssd_certmap_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    combined = content + '\n' + (rule.get('fix_text', '') or '')
+    if 'sssd.conf' not in combined or '[certmap/' not in combined:
+        return None
+    if 'maprule = (userCertificate;binary={cert!bin})' not in combined:
+        return None
+    if not re.search(r'certmap\s+section\s+does\s+not\s+exist[^.]*this\s+is\s+a\s+finding|no\s+evidence\s+of\s+certificate\s+mapping[^.]*this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+        return None
+    command = 'cat /etc/sssd/sssd.conf 2>/dev/null'
+    if re.search(r'find\s+/etc/sssd/sssd\.conf\s+/etc/sssd/conf\.d/\s+-type\s+f\s+-exec\s+cat\s+\{\}\s+\\;', content):
+        command = 'find /etc/sssd/sssd.conf /etc/sssd/conf.d/ -type f -exec cat {} \\; 2>/dev/null'
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'contains', 'substring': 'maprule = (userCertificate;binary={cert!bin})'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sles_mfa_required_packages_candidate(rule: dict, stig_id: str) -> dict | None:
     packages = ['pam_pkcs11', 'mozilla-nss', 'mozilla-nss-tools', 'pcsc-ccid', 'pcsc-lite', 'pcsc-tools', 'opensc', 'coolkey']
     if rule.get('vuln_id', '') != 'V-234854' or stig_id != 'SLES_15_STIG':
@@ -1985,7 +2008,7 @@ def _service_candidate(rule: dict) -> dict | None:
     command_end = match.end()
     if command == 'status':
         line_end = content.find('\n', match.end())
-        if line_end != -1 and re.search(r'\|\s*grep\b[^\n]*(?:active:|Active:)', content[match.end():line_end], re.IGNORECASE):
+        if line_end != -1 and re.search(r'\|\s*grep\b[^\n]*(?:active:|Active:|\bactive\b)', content[match.end():line_end], re.IGNORECASE):
             command_end = line_end
     sample_lines, _finding_text = _authoritative_sample_block_after_command(content, command_end)
     masked_is_enabled = (
@@ -2020,6 +2043,11 @@ def _service_candidate(rule: dict) -> dict | None:
                 re.search(rf'If\s+["“]?{re.escape(raw_name)}["”]?\s+is\s+["“]?inactive["”]?', content, re.IGNORECASE)
                 or re.search(r'If\s+the\s+(?:above\s+)?command\s+returns\s+(?:the\s+)?status\s+as\s+["“]inactive["”]', content, re.IGNORECASE)
             )
+        ):
+            expected_status = 'running'
+        elif (
+            any(re.match(r'Active:\s+active\b', line, re.IGNORECASE) for line in sample_lines)
+            and re.search(r'if\s+something\s+other\s+than\s+["“]Active:\s+active["”]\s+is\s+returned,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
         ):
             expected_status = 'running'
         elif re.search(r'(?:does\s+not\s+show\s+a\s+status\s+of|is\s+not)\s+["“]?(?:active|enabled)["”]?\s+and\s+["“]?running["”]?', lower) or re.search(r'is\s+not\s+enabled\s+and\s+(?:active|running)', lower):
@@ -5193,7 +5221,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _sles_mfa_required_packages_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

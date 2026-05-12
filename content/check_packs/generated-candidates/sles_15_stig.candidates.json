@@ -241,6 +241,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "apparmor",
+        "type": "service"
+      },
+      "description": "SUSE operating system AppArmor tool must be configured to control whitelisted applications and user home directory access control.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234848"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/chrony.conf",
         "pattern": "server 0.us.pool.ntp.mil maxpoll 16",

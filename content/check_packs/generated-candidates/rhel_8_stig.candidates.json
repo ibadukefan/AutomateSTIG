@@ -887,6 +887,19 @@
     },
     {
       "check": {
+        "command": "cat /etc/sssd/sssd.conf 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "expected": {
+        "substring": "maprule = (userCertificate;binary={cert!bin})",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230355"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/password-auth",
         "pattern": "pam_pwquality.so",

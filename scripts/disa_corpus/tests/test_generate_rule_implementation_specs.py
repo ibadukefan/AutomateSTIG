@@ -6923,5 +6923,59 @@ Value:  0x00001000 (4096)''',
             'description': 'Run as different user must be removed from context menus.',
         })
 
+    def test_infers_linux_sssd_certmap_mapping_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258132',
+            'title': 'RHEL 9 must map the authenticated identity to the user or group account for PKI-based authentication.',
+            'check_content': '''Verify the certificate of the user or group is mapped to the corresponding user or group in the "sssd.conf" file with the following command:
+
+$ sudo find /etc/sssd/sssd.conf /etc/sssd/conf.d/ -type f -exec cat {} \\;
+
+[certmap/testing.test/rule_name]
+matchrule =<SAN>.*EDIPI@mil
+maprule = (userCertificate;binary={cert!bin})
+domains = testing.test
+
+If the certmap section does not exist, ask the system administrator (SA) to indicate how certificates are mapped to accounts.
+If there is no evidence of certificate mapping, this is a finding.''',
+            'fix_text': '''Configure RHEL 9 to map the authenticated identity to the user or group account by adding or modifying the certmap section of the "/etc/sssd/sssd.conf" file based on the following example:
+
+[certmap/testing.test/rule_name]
+matchrule = .*EDIPI@mil
+maprule = (userCertificate;binary={cert!bin})
+domains = testing.test''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258132',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/sssd/sssd.conf /etc/sssd/conf.d/ -type f -exec cat {} \\; 2>/dev/null',
+            },
+            'expected': {'type': 'contains', 'substring': 'maprule = (userCertificate;binary={cert!bin})'},
+            'description': 'RHEL 9 must map the authenticated identity to the user or group account for PKI-based authentication.',
+        })
+
+    def test_infers_systemctl_status_active_sample_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234848',
+            'title': 'SUSE operating system AppArmor tool must be configured to control whitelisted applications and user home directory access control.',
+            'check_content': '''Check that the "apparmor" daemon is running with the following command:
+
+> systemctl status apparmor.service | grep -i active
+
+Active: active (exited) since Fri 2017-01-13 01:01:01 GMT; 1day 1h ago
+
+If something other than "Active: active" is returned, this is a finding.''',
+            'fix_text': 'Enable/activate "Apparmor" and start the service with systemctl start apparmor.service.',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234848',
+            'platform': 'linux',
+            'check': {'type': 'service', 'name': 'apparmor', 'expected_status': 'running'},
+            'expected': {'type': 'equals', 'value': 'running'},
+            'description': 'SUSE operating system AppArmor tool must be configured to control whitelisted applications and user home directory access control.',
+        })
+
 if __name__ == '__main__':
     unittest.main()

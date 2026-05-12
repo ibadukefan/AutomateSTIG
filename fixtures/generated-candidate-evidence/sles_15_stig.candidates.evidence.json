@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 166,
+  "candidate_checks": 167,
   "cases": [
     {
       "check": {
@@ -473,6 +473,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234846"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "apparmor",
+        "type": "service"
+      },
+      "description": "SUSE operating system AppArmor tool must be configured to control whitelisted applications and user home directory access control.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "apparmor": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "apparmor": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234848"
     },
     {
       "check": {
@@ -4390,5 +4417,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 166
+  "validated_candidates": 167
 }

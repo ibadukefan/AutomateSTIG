@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 390,
+  "candidate_checks": 391,
   "cases": [
     {
       "check": {
@@ -7798,6 +7798,32 @@
     },
     {
       "check": {
+        "command": "find /etc/sssd/sssd.conf /etc/sssd/conf.d/ -type f -exec cat {} \\; 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "maprule = (userCertificate;binary={cert!bin})",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/sssd/sssd.conf /etc/sssd/conf.d/ -type f -exec cat {} \\; 2>/dev/null": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/sssd/sssd.conf /etc/sssd/conf.d/ -type f -exec cat {} \\; 2>/dev/null": "before\nmaprule = (userCertificate;binary={cert!bin})\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258132"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "/etc/sssd/conf.d/",
@@ -10802,5 +10828,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 390
+  "validated_candidates": 391
 }

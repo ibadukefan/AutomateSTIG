@@ -2227,6 +2227,19 @@
     },
     {
       "check": {
+        "command": "cat /etc/sssd/sssd.conf 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "OL 9 must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "expected": {
+        "substring": "maprule = (userCertificate;binary={cert!bin})",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271606"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "pam_cert_auth = True",

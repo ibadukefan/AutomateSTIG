@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 300,
+  "candidate_checks": 301,
   "cases": [
     {
       "check": {
@@ -1730,6 +1730,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230354"
+    },
+    {
+      "check": {
+        "command": "cat /etc/sssd/sssd.conf 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "maprule = (userCertificate;binary={cert!bin})",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "cat /etc/sssd/sssd.conf 2>/dev/null": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "cat /etc/sssd/sssd.conf 2>/dev/null": "before\nmaprule = (userCertificate;binary={cert!bin})\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230355"
     },
     {
       "check": {
@@ -8075,5 +8101,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 300
+  "validated_candidates": 301
 }
