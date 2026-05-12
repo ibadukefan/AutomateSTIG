@@ -262,6 +262,45 @@ def _windows_defender_registry_criteria_candidate(rule: dict, stig_id: str) -> d
     return None
 
 
+def _apache_windows_module_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Apache_Server_2-4_Windows_Server_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if 'httpd -M' not in content:
+        return None
+    module_sets = {
+        'V-214307': ('required', ('session_module', 'usertrack_module')),
+        'V-214310': ('required', ('log_config_module',)),
+        'V-214325': ('forbidden', ('dav_module', 'dav_fs_module', 'dav_lock_module')),
+        'V-214333': ('required', ('unique_id_module',)),
+    }
+    module_spec = module_sets.get(vuln_id)
+    if not module_spec:
+        return None
+    mode, modules = module_spec
+    combined = content + '\n' + fix_text
+    if not all(module in combined for module in modules):
+        return None
+    if mode == 'required' and not re.search(r'(?:not\s+enabled|not\s+listed|does\s+not\s+exist|must\s+be\s+loaded|is\s+loaded)', content, re.IGNORECASE):
+        return None
+    if mode == 'forbidden' and not re.search(r'If\s+any\s+of\s+the\s+following\s+modules\s+are\s+present,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    operator = '-match' if mode == 'required' else '-notmatch'
+    checks = ' -and '.join(f"($m {operator} '{module}')" for module in modules)
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': f"powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if ({checks}) {{ 'Compliant' }}\"",
+        },
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_run_as_different_user_context_menu_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     vuln_id = rule.get('vuln_id', '')
@@ -5222,6 +5261,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         hardened_unc_candidate = _windows_hardened_unc_paths_candidate(rule, stig_id)
         if hardened_unc_candidate:
             return hardened_unc_candidate
+
+        apache_windows_module_candidate = _apache_windows_module_candidate(rule, stig_id)
+        if apache_windows_module_candidate:
+            return apache_windows_module_candidate
 
         defender_registry_absent_candidate = _windows_defender_registry_absent_candidate(rule, stig_id)
         if defender_registry_absent_candidate:

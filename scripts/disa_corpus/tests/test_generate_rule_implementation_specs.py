@@ -7070,5 +7070,58 @@ If something other than "Active: active" is returned, this is a finding.''',
             'description': 'SUSE operating system AppArmor tool must be configured to control whitelisted applications and user home directory access control.',
         })
 
+    def test_infers_apache_windows_required_modules_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214307',
+            'title': 'The Apache web server must perform server-side session management.',
+            'check_content': '''In a command line, navigate to "<'INSTALLED PATH'>\\bin". Run "httpd -M" to view a list of installed modules.
+
+If "mod_session" module and "mod_usertrack" are not enabled, this is a finding.
+
+session_module (shared)
+usertrack_module (shared)''',
+            'fix_text': '''Uncomment the "usertrack_module" module line and the "session_module" module in the <'INSTALL PATH'>\\conf\\httpd.conf file.
+
+Restart the Apache service.''',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214307',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -match 'session_module') -and ($m -match 'usertrack_module')) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must perform server-side session management.',
+        })
+
+    def test_infers_apache_windows_forbidden_webdav_modules_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214325',
+            'title': 'The Apache web server must have Web Distributed Authoring (WebDAV) disabled.',
+            'check_content': '''In a command line, navigate to "<'INSTALLED PATH'>\\bin". Run "httpd -M" to view a list of installed modules.
+
+If any of the following modules are present, this is a finding:
+
+dav_module
+dav_fs_module
+dav_lock_module''',
+            'fix_text': '''Edit the <'INSTALL PATH'>\\conf\\httpd.conf file and remove the following modules:
+
+dav_module
+dav_fs_module
+dav_lock_module''',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214325',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -notmatch 'dav_module') -and ($m -notmatch 'dav_fs_module') -and ($m -notmatch 'dav_lock_module')) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must have Web Distributed Authoring (WebDAV) disabled.',
+        })
+
 if __name__ == '__main__':
     unittest.main()

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -match 'log_config_module')) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The Apache web server must generate, at a minimum, log records for system startup and shutdown, system access, and system authentication events.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214310"
+  },
   "check_content_excerpt": "In a command line, navigate to \"<'INSTALLED PATH'>\\bin\". Run \"httpd -M\" to view a list of installed modules.\n\nIf the \"log_config_module\" is not enabled, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Uncomment the \"log_config_module\" module line in the <'INSTALL PATH'>\\conf\\httpd.conf file.\n\nRestart the Apache service.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214310r960879_rule",
   "severity": "medium",

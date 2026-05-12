@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -match 'session_module') -and ($m -match 'usertrack_module')) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The Apache web server must perform server-side session management.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214307"
+  },
   "check_content_excerpt": "In a command line, navigate to \"<'INSTALLED PATH'>\\bin\". Run \"httpd -M\" to view a list of installed modules.\n\nIf \"mod_session\" module and \"mod_usertrack\" are not enabled, this is a finding.\n\nsession_module (shared)\nusertrack_module (shared)",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Uncomment the \"usertrack_module\" module line and the \"session_module\" module in the <'INSTALL PATH'>\\conf\\httpd.conf file.\n\nRestart the Apache service.\n\nAdditional documentation can be found at:\n\nhttps://httpd.apache.org/docs/2.4/mod/mod_usertrack.html\n\nhttps://httpd.apache.org/docs/2.4/mod/mod_session.html",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214307r960735_rule",
   "severity": "medium",

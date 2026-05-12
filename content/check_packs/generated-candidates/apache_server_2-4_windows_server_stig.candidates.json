@@ -1,0 +1,46 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -match 'session_module') -and ($m -match 'usertrack_module')) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must perform server-side session management.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214307"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -match 'log_config_module')) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must generate, at a minimum, log records for system startup and shutdown, system access, and system authentication events.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214310"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -notmatch 'dav_module') -and ($m -notmatch 'dav_fs_module') -and ($m -notmatch 'dav_lock_module')) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must have Web Distributed Authoring (WebDAV) disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214325"
+    }
+  ],
+  "platform": "windows",
+  "stig_id": "Apache_Server_2-4_Windows_Server_STIG",
+  "version": "candidate-planned"
+}
