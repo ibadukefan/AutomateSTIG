@@ -441,6 +441,30 @@ Set the listings param-value to false.''',
             'description': 'The vCenter Lookup service directory listings parameter must be disabled.',
         })
 
+    def test_infers_vcenter_lookup_removed_webapp_directory_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259069',
+            'title': 'The vCenter Lookup service manager webapp must be removed.',
+            'check_content': '''At the command prompt, run the following command:
+
+# ls -l /var/opt/apache-tomcat/webapps/manager
+
+If the manager folder exists or contains any content, this is a finding.''',
+            'fix_text': '''At the command prompt, run the following command:
+
+# rm -rf /var/opt/apache-tomcat/webapps/manager''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259069',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/manager ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/manager 2>/dev/null)\" ] && printf Compliant'",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The vCenter Lookup service manager webapp must be removed.',
+        })
+
     def test_infers_linux_gnome_login_banner_exact_text_candidate(self):
         banner = 'You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\\nBy using this IS (which includes any device attached to this IS), you consent to the following conditions: '
         candidate = mod.infer_candidate_check({

@@ -1069,6 +1069,39 @@ def _vcenter_lookup_optional_xml_value_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _vcenter_lookup_removed_webapp_directory_candidate(rule: dict, stig_id: str) -> dict | None:
+    stig_lower = stig_id.lower()
+    if 'vsphere' not in stig_lower or 'lookup' not in stig_lower:
+        return None
+    mappings = {
+        'V-259063': '/var/opt/apache-tomcat/webapps/examples',
+        'V-259064': '/var/opt/apache-tomcat/webapps/ROOT',
+        'V-259065': '/var/opt/apache-tomcat/webapps/docs',
+        'V-259069': '/var/opt/apache-tomcat/webapps/manager',
+        'V-259070': '/var/opt/apache-tomcat/webapps/host-manager',
+    }
+    path = mappings.get(rule.get('vuln_id', ''))
+    if not path:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    basename = path.rsplit('/', 1)[-1]
+    if not re.search(rf'^\s*#\s*ls\s+-l\s+{re.escape(path)}\s*$', content, re.MULTILINE):
+        return None
+    if not re.search(rf'If\s+the\s+["“]?{re.escape(basename)}["”]?\s+(?:folder|web\s+application)\s+(?:exists\s+or\s+contains\s+any\s+content|contains\s+any\s+content),\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(rf'^\s*#\s*rm\s+-rf\s+{re.escape(path)}(?:/\*)?\s*$', fix_text, re.MULTILINE):
+        return None
+    command = f"sh -c '[ ! -e {path} ] || [ -z \"$(ls -A {path} 2>/dev/null)\" ] && printf Compliant'"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_security_policy_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -5390,6 +5423,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     vcenter_lookup_optional_xml_value_candidate = _vcenter_lookup_optional_xml_value_candidate(rule, stig_id)
     if vcenter_lookup_optional_xml_value_candidate:
         return vcenter_lookup_optional_xml_value_candidate
+    vcenter_lookup_removed_webapp_directory_candidate = _vcenter_lookup_removed_webapp_directory_candidate(rule, stig_id)
+    if vcenter_lookup_removed_webapp_directory_candidate:
+        return vcenter_lookup_removed_webapp_directory_candidate
     combined_registry_content = '\n'.join(part for part in (content, rule.get('fix_text', '') or '') if part)
     hives = [next(group for group in match if group).strip() for match in re.findall(r'Registry[ \t]+Hive(?::[ \t]*([^\n\r]+)|([A-Z][^\n\r]+))', combined_registry_content, re.IGNORECASE)]
     paths = [next(group for group in match if group).strip().strip('\\/') for match in re.findall(r'Registry[ \t]+Path(?::[ \t]*([^:\n\r][^\n\r]*)|(\\[^\n\r]+))', combined_registry_content, re.IGNORECASE)]

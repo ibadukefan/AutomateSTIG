@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 20,
+  "candidate_checks": 25,
   "cases": [
     {
       "check": {
@@ -447,6 +447,84 @@
     },
     {
       "check": {
+        "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/examples ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/examples 2>/dev/null)\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service example applications must be removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/examples ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/examples 2>/dev/null)\" ] && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/examples ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/examples 2>/dev/null)\" ] && printf Compliant'": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259063"
+    },
+    {
+      "check": {
+        "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/ROOT ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/ROOT 2>/dev/null)\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service default ROOT web application must be removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/ROOT ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/ROOT 2>/dev/null)\" ] && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/ROOT ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/ROOT 2>/dev/null)\" ] && printf Compliant'": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259064"
+    },
+    {
+      "check": {
+        "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/docs ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/docs 2>/dev/null)\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service default documentation must be removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/docs ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/docs 2>/dev/null)\" ] && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/docs ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/docs 2>/dev/null)\" ] && printf Compliant'": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259065"
+    },
+    {
+      "check": {
         "command": "find /usr/lib/vmware-lookupsvc/ -xdev -type f -a '(' -perm -o+w -o -not -user root -o -not -group root ')' -exec ls -ld {} \\;",
         "type": "command_output"
       },
@@ -522,6 +600,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259068"
+    },
+    {
+      "check": {
+        "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/manager ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/manager 2>/dev/null)\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service manager webapp must be removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/manager ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/manager 2>/dev/null)\" ] && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/manager ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/manager 2>/dev/null)\" ] && printf Compliant'": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259069"
+    },
+    {
+      "check": {
+        "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/host-manager ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/host-manager 2>/dev/null)\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service host-manager webapp must be removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/host-manager ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/host-manager 2>/dev/null)\" ] && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/host-manager ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/host-manager 2>/dev/null)\" ] && printf Compliant'": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259070"
     }
   ],
   "production_claim": false,
@@ -529,5 +659,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
-  "validated_candidates": 20
+  "validated_candidates": 25
 }

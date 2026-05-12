@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/docs ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/docs 2>/dev/null)\" ] && printf Compliant'",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service default documentation must be removed.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259065"
+  },
   "check_content_excerpt": "At the command prompt, run the following command:\n\n# ls -l /var/opt/apache-tomcat/webapps/docs\n\nIf the \"docs\" folder exists or contains any content, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "At the command prompt, run the following command:\n\n# rm -rf /var/opt/apache-tomcat/webapps/docs",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259065r960963_rule",
   "severity": "medium",

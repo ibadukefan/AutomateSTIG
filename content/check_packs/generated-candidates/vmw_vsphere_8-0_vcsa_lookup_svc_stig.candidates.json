@@ -225,6 +225,45 @@
     },
     {
       "check": {
+        "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/examples ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/examples 2>/dev/null)\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service example applications must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259063"
+    },
+    {
+      "check": {
+        "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/ROOT ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/ROOT 2>/dev/null)\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service default ROOT web application must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259064"
+    },
+    {
+      "check": {
+        "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/docs ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/docs 2>/dev/null)\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service default documentation must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259065"
+    },
+    {
+      "check": {
         "command": "find /usr/lib/vmware-lookupsvc/ -xdev -type f -a '(' -perm -o+w -o -not -user root -o -not -group root ')' -exec ls -ld {} \\;",
         "type": "command_output"
       },
@@ -261,6 +300,32 @@
       },
       "platform": "generic",
       "vuln_id": "V-259068"
+    },
+    {
+      "check": {
+        "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/manager ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/manager 2>/dev/null)\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service manager webapp must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259069"
+    },
+    {
+      "check": {
+        "command": "sh -c '[ ! -e /var/opt/apache-tomcat/webapps/host-manager ] || [ -z \"$(ls -A /var/opt/apache-tomcat/webapps/host-manager 2>/dev/null)\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service host-manager webapp must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259070"
     }
   ],
   "platform": "generic",
