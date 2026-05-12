@@ -1733,6 +1733,46 @@ If the output does not contain "pgaudit", this is a finding.''',
             'description': 'PostgreSQL must generate audit records when unsuccessful attempts to delete categorized information occur.',
         })
 
+    def test_infers_postgresql_client_min_messages_error_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233516',
+            'title': 'PostgreSQL must provide non-privileged users with error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries.',
+            'check_content': '''As the database administrator, run the following SQL:
+
+SELECT current_setting('client_min_messages');
+
+If client_min_messages is not set to error, this is a finding.''',
+            'fix_text': '''Change the client_min_messages parameter to be "error":
+
+client_min_messages = error''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "psql -tAc \"SELECT current_setting('client_min_messages');\""})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'error'})
+
+    def test_infers_postgresql_show_ssl_on_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233611',
+            'title': 'PostgreSQL must maintain the authenticity of communications sessions by guarding against man-in-the-middle attacks that guess at Session ID values.',
+            'check_content': '''To check if PostgreSQL is configured to use ssl, as the database administrator (shown here as "postgres"), run the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW ssl"
+
+If this is not set to on, this is a finding.''',
+            'fix_text': '''To configure PostgreSQL to use SSL, as a database owner (shown here as "postgres"), edit postgresql.conf:
+
+$ sudo su - postgres
+$ vi $PGDATA/postgresql.conf
+
+Change the following setting:
+
+ssl = on''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'psql -c "SHOW ssl"'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'on'})
+
     def test_infers_postgresql_pgaudit_log_literal_contains_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233551',
@@ -6442,6 +6482,29 @@ If any SIDs are granted the "SeLockMemoryPrivilege" user right, this is a findin
         }, 'MS_Windows_Server_2022_STIG')
         self.assertEqual(candidate['platform'], 'windows')
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeLockMemoryPrivilege'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_windows_deny_service_logon_blank_user_right_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254423',
+            'title': 'Windows Server 2022 Deny log on as a service user right must be configured to include no accounts or groups.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups are defined for the "Deny log on as a service" user right, this is a finding.
+
+For server core installations, run the following command:
+
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
+
+Review the text file.
+
+If any SIDs are granted the "SeDenyServiceLogonRight" user right, this is a finding.''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> "Deny log on as a service" to include no entries (blank).''',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyServiceLogonRight'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
     def test_infers_windows_user_right_fixed_service_account_allowlist_candidate(self):

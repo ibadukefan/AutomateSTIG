@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 16,
+  "candidate_checks": 18,
   "cases": [
+    {
+      "check": {
+        "command": "psql -tAc \"SELECT current_setting('client_min_messages');\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must provide non-privileged users with error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "error"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -tAc \"SELECT current_setting('client_min_messages');\"": "unexpected-error"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -tAc \"SELECT current_setting('client_min_messages');\"": "error"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233516"
+    },
     {
       "check": {
         "command": "psql -c \"SHOW pgaudit.log\"",
@@ -341,6 +367,32 @@
     },
     {
       "check": {
+        "command": "psql -c \"SHOW ssl\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must maintain the authenticity of communications sessions by guarding against man-in-the-middle attacks that guess at Session ID values.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "on",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW ssl\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW ssl\"": "before\non\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233611"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW shared_preload_libraries\"",
         "type": "command_output"
       },
@@ -423,5 +475,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 16
+  "validated_candidates": 18
 }

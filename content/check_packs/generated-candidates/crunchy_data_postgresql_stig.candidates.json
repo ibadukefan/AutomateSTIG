@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "psql -tAc \"SELECT current_setting('client_min_messages');\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must provide non-privileged users with error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries.",
+      "expected": {
+        "type": "equals",
+        "value": "error"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233516"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW pgaudit.log\"",
         "type": "command_output"
       },
@@ -168,6 +181,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-233600"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW ssl\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must maintain the authenticity of communications sessions by guarding against man-in-the-middle attacks that guess at Session ID values.",
+      "expected": {
+        "substring": "on",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233611"
     },
     {
       "check": {

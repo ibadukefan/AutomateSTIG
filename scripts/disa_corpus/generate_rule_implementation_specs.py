@@ -3643,6 +3643,35 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'contains', 'substring': 'pgaudit'},
             'description': rule.get('title', ''),
         }
+    postgresql_client_min_messages_error = (
+        'postgresql' in stig_id.lower()
+        and re.search(r"\bSELECT\s+current_setting\([\"']client_min_messages[\"']\);", content, re.IGNORECASE)
+        and re.search(r'If\s+client_min_messages\s+is\s+not\s+set\s+to\s+error,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*client_min_messages\s*=\s*error\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
+    )
+    if postgresql_client_min_messages_error:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -tAc "SELECT current_setting(\'client_min_messages\');"'},
+            'expected': {'type': 'equals', 'value': 'error'},
+            'description': rule.get('title', ''),
+        }
+    postgresql_ssl_on = (
+        'postgresql' in stig_id.lower()
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+ssl["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+this\s+is\s+not\s+set\s+to\s+on,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*ssl\s*=\s*on\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
+        and not re.search(r'\b(data\s+owner|classified|NSA-approved|strict\s+requirement|organization-defined)\b', '\n'.join((content, fix_text, rule.get('title', '') or '')), re.IGNORECASE)
+    )
+    if postgresql_ssl_on:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -c "SHOW ssl"'},
+            'expected': {'type': 'contains', 'substring': 'on'},
+            'description': rule.get('title', ''),
+        }
     pgaudit_log_commands = re.findall(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+pgaudit\.log["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
     postgresql_pgaudit_log_literal = re.search(
         r'If\s+pgaudit\.log\s+does\s+not\s+contain,?\s+["“]([^"”]+)["”],?\s+this\s+is\s+a\s+finding',
