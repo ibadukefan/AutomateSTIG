@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"debug\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"debug=\\\" $0}'\"",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service debug parameter must be disabled.",
+    "expected": {
+      "pattern": "^(?:|debug=0)$",
+      "type": "matches"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259058"
+  },
   "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '//param-name[text()=\"debug\"]/parent::init-param' -\n\nExample result:\n\n<init-param>\n      <param-name>debug</param-name>\n      <param-value>0</param-value>\n</init-param>\n\nIf the \"debug\" parameter is specified and is not \"0\", this is a finding.\n\nIf the \"debug\" parameter does not exist, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "^(?:|debug=0)$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/web.xml\n\nNavigate to all <debug> nodes that are not set to \"0\".\n\nSet the <param-value> to \"0\" in all <param-name>debug</param-name> nodes.\n\nNote: The debug setting should look like the following:\n\n<init-param>\n      <param-name>debug</param-name>\n      <param-value>0</param-value>\n</init-param>\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259058r960963_rule",
   "severity": "medium",

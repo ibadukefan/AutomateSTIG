@@ -160,6 +160,32 @@
     },
     {
       "check": {
+        "command": "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"debug\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"debug=\\\" $0}'\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service debug parameter must be disabled.",
+      "expected": {
+        "pattern": "^(?:|debug=0)$",
+        "type": "matches"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259058"
+    },
+    {
+      "check": {
+        "command": "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"listings\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"listings=\\\" $0}'\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service directory listings parameter must be disabled.",
+      "expected": {
+        "pattern": "^(?:|listings=false)$",
+        "type": "matches"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259059"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath \"//Host/@deployXML\" /usr/lib/vmware-lookupsvc/conf/server.xml",
         "type": "command_output"
       },
@@ -183,6 +209,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-259061"
+    },
+    {
+      "check": {
+        "command": "sh -c \"xmllint --xpath 'string(//Connector/@xpoweredBy)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null | awk 'NF{print \\\"xpoweredBy=\\\" $0}'\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service xpoweredBy attribute must be disabled.",
+      "expected": {
+        "pattern": "^(?:|xpoweredBy=false)$",
+        "type": "matches"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259062"
     },
     {
       "check": {

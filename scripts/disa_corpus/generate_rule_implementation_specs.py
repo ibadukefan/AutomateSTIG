@@ -849,6 +849,93 @@ def _positive_integer_range_pattern(maximum: int) -> str:
     return f"^(?:{'|'.join(alternatives)})$"
 
 
+def _windows_directory_service_max_conn_idle_time_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-254400', 'V-278147'}:
+        return None
+    if not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'\b(?:ntdsutil|dsquery)\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'\bMaxConnIdleTime\b', content, re.IGNORECASE):
+        return None
+    if not re.search(
+        r'MaxConnIdleTime\s+is\s+greater\s+than\s+["“]?300["”]?[^.]*or\s+is\s+not\s+specified,\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    ):
+        return None
+    if not re.search(r'Set\s+MaxConnIdleTime\s+to\s+300\b', fix_text, re.IGNORECASE):
+        return None
+    command = "powershell -NoProfile -Command \"$root=[ADSI]'LDAP://RootDSE'; $cfg=$root.configurationNamingContext; $p=[ADSI]('LDAP://CN=Default Query Policy,CN=Query-Policies,CN=Directory Service,CN=Windows NT,CN=Services,'+$cfg); $v=@($p.Properties['LDAPAdminLimits']) | Where-Object { $_ -match '^MaxConnIdleTime=(\\d+)$' } | Select-Object -First 1; if ($v -match '^MaxConnIdleTime=(\\d+)$' -and [int]$Matches[1] -le 300) { 'Compliant' }\""
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _vcenter_lookup_optional_xml_value_candidate(rule: dict, stig_id: str) -> dict | None:
+    stig_lower = stig_id.lower()
+    if 'vsphere' not in stig_lower or 'lookup' not in stig_lower:
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    mappings = {
+        'V-259058': {
+            'name': 'debug',
+            'value': '0',
+            'path': '/usr/lib/vmware-lookupsvc/conf/web.xml',
+            'command': "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"debug\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"debug=\\\" $0}'\"",
+        },
+        'V-259059': {
+            'name': 'listings',
+            'value': 'false',
+            'path': '/usr/lib/vmware-lookupsvc/conf/web.xml',
+            'command': "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"listings\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"listings=\\\" $0}'\"",
+        },
+        'V-259062': {
+            'name': 'xpoweredBy',
+            'value': 'false',
+            'path': '/usr/lib/vmware-lookupsvc/conf/server.xml',
+            'command': "sh -c \"xmllint --xpath 'string(//Connector/@xpoweredBy)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null | awk 'NF{print \\\"xpoweredBy=\\\" $0}'\"",
+        },
+    }
+    cfg = mappings.get(vuln_id)
+    if not cfg:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    name = re.escape(cfg['name'])
+    value = re.escape(cfg['value'])
+    if 'xmllint' not in content or cfg['path'] not in content:
+        return None
+    if not re.search(
+        rf'If\s+the\s+["“]{name}["”]\s+parameter\s+is\s+specified\s+and\s+is\s+not\s+["“]{value}["”],\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    if not re.search(
+        rf'If\s+the\s+["“]{name}["”]\s+parameter\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    if cfg['path'] not in fix_text or not re.search(r'(?:param-value|remove\s+the\s+(?:entire\s+block|"xpoweredBy"\s+attribute))', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': cfg['command']},
+        'expected': {'type': 'matches', 'pattern': rf'^(?:|{re.escape(cfg["name"] + "=" + cfg["value"])})$'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_security_policy_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -5017,6 +5104,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     windows_run_as_different_user_candidate = _windows_run_as_different_user_context_menu_candidate(rule, stig_id)
     if windows_run_as_different_user_candidate:
         return windows_run_as_different_user_candidate
+    vcenter_lookup_optional_xml_value_candidate = _vcenter_lookup_optional_xml_value_candidate(rule, stig_id)
+    if vcenter_lookup_optional_xml_value_candidate:
+        return vcenter_lookup_optional_xml_value_candidate
     combined_registry_content = '\n'.join(part for part in (content, rule.get('fix_text', '') or '') if part)
     hives = [next(group for group in match if group).strip() for match in re.findall(r'Registry[ \t]+Hive(?::[ \t]*([^\n\r]+)|([A-Z][^\n\r]+))', combined_registry_content, re.IGNORECASE)]
     paths = [next(group for group in match if group).strip().strip('\\/') for match in re.findall(r'Registry[ \t]+Path(?::[ \t]*([^:\n\r][^\n\r]*)|(\\[^\n\r]+))', combined_registry_content, re.IGNORECASE)]
@@ -5125,6 +5215,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         security_policy_candidate = _windows_security_policy_candidate(rule)
         if security_policy_candidate:
             return security_policy_candidate
+
+        directory_service_max_conn_idle_time_candidate = _windows_directory_service_max_conn_idle_time_candidate(rule, stig_id)
+        if directory_service_max_conn_idle_time_candidate:
+            return directory_service_max_conn_idle_time_candidate
 
         certificate_candidate = _windows_certificate_store_thumbprint_candidate(rule, stig_id)
         if certificate_candidate:

@@ -209,6 +209,65 @@ Select "Disabled" under "Actions".''',
             'description': 'Windows Server 2025 FTP servers must be configured to prevent anonymous logons.',
         })
 
+    def test_infers_windows_directory_service_max_conn_idle_time_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278147',
+            'title': 'Windows Server 2025 directory service must be configured to terminate LDAP-based network connections to the directory server after five minutes of inactivity.',
+            'check_content': '''This applies to domain controllers. It is not applicable for other systems.
+
+Open an elevated command prompt (run as administrator).
+Enter "ntdsutil".
+At the "ntdsutil:" prompt, enter "LDAP policies".
+At the "ldap policy:" prompt, enter "show values".
+
+If the value for MaxConnIdleTime is greater than "300" (5 minutes) or is not specified, this is a finding.
+
+Alternately, Dsquery can be used to display MaxConnIdleTime:
+dsquery * "cn=Default Query Policy,cn=Query-Policies,cn=Directory Service,cn=Windows NT,cn=Services,cn=Configuration,dc=example,dc=mil" -scope base -attr LDAPAdminLimits''',
+            'fix_text': '''Configure the directory service to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity.
+
+Open an elevated command prompt (run as administrator).
+Enter "ntdsutil".
+Set MaxConnIdleTime to 300.
+Commit Changes.''',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-278147',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$root=[ADSI]'LDAP://RootDSE'; $cfg=$root.configurationNamingContext; $p=[ADSI]('LDAP://CN=Default Query Policy,CN=Query-Policies,CN=Directory Service,CN=Windows NT,CN=Services,'+$cfg); $v=@($p.Properties['LDAPAdminLimits']) | Where-Object { $_ -match '^MaxConnIdleTime=(\\d+)$' } | Select-Object -First 1; if ($v -match '^MaxConnIdleTime=(\\d+)$' -and [int]$Matches[1] -le 300) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Windows Server 2025 directory service must be configured to terminate LDAP-based network connections to the directory server after five minutes of inactivity.',
+        })
+
+    def test_infers_vcenter_lookup_optional_xml_value_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259059',
+            'title': 'The vCenter Lookup service directory listings parameter must be disabled.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=".*"//g' | xmllint --xpath '//param-name[text()="listings"]/parent::init-param' -
+
+If the "listings" parameter is specified and is not "false", this is a finding.
+
+If the "listings" parameter does not exist, this is not a finding.''',
+            'fix_text': '''Navigate to and open /usr/lib/vmware-lookupsvc/conf/web.xml.
+
+Set the listings param-value to false.''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259059',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"listings\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"listings=\\\" $0}'\"",
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:|listings=false)$'},
+            'description': 'The vCenter Lookup service directory listings parameter must be disabled.',
+        })
+
     def test_infers_linux_gnome_login_banner_exact_text_candidate(self):
         banner = 'You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\\nBy using this IS (which includes any device attached to this IS), you consent to the following conditions: '
         candidate = mod.infer_candidate_check({

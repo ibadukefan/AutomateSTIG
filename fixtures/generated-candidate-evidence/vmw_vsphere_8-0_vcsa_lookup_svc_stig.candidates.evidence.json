@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 17,
+  "candidate_checks": 20,
   "cases": [
     {
       "check": {
@@ -317,6 +317,58 @@
     },
     {
       "check": {
+        "command": "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"debug\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"debug=\\\" $0}'\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service debug parameter must be disabled.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^(?:|debug=0)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"debug\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"debug=\\\" $0}'\"": "debug=unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"debug\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"debug=\\\" $0}'\"": "debug=0"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259058"
+    },
+    {
+      "check": {
+        "command": "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"listings\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"listings=\\\" $0}'\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service directory listings parameter must be disabled.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^(?:|listings=false)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"listings\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"listings=\\\" $0}'\"": "listings=unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"listings\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"listings=\\\" $0}'\"": "listings=false"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259059"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath \"//Host/@deployXML\" /usr/lib/vmware-lookupsvc/conf/server.xml",
         "type": "command_output"
       },
@@ -366,6 +418,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259061"
+    },
+    {
+      "check": {
+        "command": "sh -c \"xmllint --xpath 'string(//Connector/@xpoweredBy)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null | awk 'NF{print \\\"xpoweredBy=\\\" $0}'\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service xpoweredBy attribute must be disabled.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^(?:|xpoweredBy=false)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"xmllint --xpath 'string(//Connector/@xpoweredBy)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null | awk 'NF{print \\\"xpoweredBy=\\\" $0}'\"": "xpoweredBy=unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"xmllint --xpath 'string(//Connector/@xpoweredBy)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null | awk 'NF{print \\\"xpoweredBy=\\\" $0}'\"": "xpoweredBy=false"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259062"
     },
     {
       "check": {
@@ -451,5 +529,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
-  "validated_candidates": 17
+  "validated_candidates": 20
 }

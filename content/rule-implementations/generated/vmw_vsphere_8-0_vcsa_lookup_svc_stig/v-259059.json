@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(//param-name[text()=\\\"listings\\\"]/parent::init-param/param-value)' - 2>/dev/null | awk 'NF{print \\\"listings=\\\" $0}'\"",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service directory listings parameter must be disabled.",
+    "expected": {
+      "pattern": "^(?:|listings=false)$",
+      "type": "matches"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259059"
+  },
   "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '//param-name[text()=\"listings\"]/parent::init-param' -\n\nExample result:\n\nXPath set is empty\n\nIf the \"listings\" parameter is specified and is not \"false\", this is a finding.\n\nIf the \"listings\" parameter does not exist, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "^(?:|listings=false)$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/web.xml\n\nFind and remove the entire block returned in the check.\n\nExample:\n\n<init-param>\n      <param-name>listings</param-name>\n      <param-value>true</param-value>\n</init-param>\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259059r960963_rule",
   "severity": "medium",
