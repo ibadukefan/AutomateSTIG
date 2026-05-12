@@ -138,6 +138,36 @@ If the text is not worded exactly this way, this is a finding.''',
             'description': 'The macOS system must display the Standard Mandatory DOD Notice and Consent Banner at the login window.',
         })
 
+    def test_infers_macos_remote_login_banner_exact_text_candidate(self):
+        text = '''You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
+
+By using this IS (which includes any device attached to this IS), you consent to the following conditions:
+
+-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing. See User Agreement for details.'''
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-268429',
+            'title': 'The macOS system must display a policy banner at remote login.',
+            'check_content': f'''Verify the macOS system is configured to display the Standard Mandatory DOD Notice and Consent Banner before granting remote access to the operating system.
+
+Verify the operating system has the correct text listed in the "/etc/banner" file with the following command:
+
+/usr/bin/more /etc/banner
+
+The command must return the following text:
+
+"{text}"
+
+If the text is not worded exactly this way, this is a finding.''',
+            'fix_text': f'Configure the macOS system to display the Standard Mandatory DOD Notice and Consent Banner before granting remote access by creating the /etc/banner file containing exactly:\n\n"{text}"',
+        }, 'Apple_macOS_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-268429',
+            'platform': 'macos',
+            'check': {'type': 'command_output', 'command': '/usr/bin/more /etc/banner'},
+            'expected': {'type': 'equals', 'value': text},
+            'description': 'The macOS system must display a policy banner at remote login.',
+        })
+
     def test_infers_windows_network_logon_exact_allowlist_with_punctuated_principals(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278183',

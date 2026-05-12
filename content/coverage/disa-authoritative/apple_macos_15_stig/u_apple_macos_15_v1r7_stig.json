@@ -145,16 +145,17 @@
       "vuln_id": "V-268428"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-268429",
+      "check_pack": "generated-candidates/apple_macos_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-268429r1034227_rule",
       "severity": "medium",
       "title": "The macOS system must display a policy banner at remote login.",
-      "tracking_issue": "TODO-V-268429",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_15_stig.candidates.json",
         "content/disa-corpus/artifacts/c3ffd7b41d90f636f8562bc707c7d888abecf1ea927d6e50b36c95555f0ac9da/U_Apple_macOS_15_V1R7_STIG.zip"
       ],
       "vuln_id": "V-268429"

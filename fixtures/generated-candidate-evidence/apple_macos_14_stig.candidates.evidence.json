@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 128,
+  "candidate_checks": 129,
   "cases": [
     {
       "check": {
@@ -208,6 +208,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259428"
+    },
+    {
+      "check": {
+        "command": "/usr/bin/more /etc/banner",
+        "type": "command_output"
+      },
+      "description": "The macOS system must display the Standard Mandatory DOD Notice and Consent Banner at remote log on.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\n\nBy using this IS (which includes any device attached to this IS), you consent to the following conditions:\n\n-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.\n\n-At any time, the USG may inspect and seize data stored on this IS.\n\n-Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose.\n\n-This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.\n\n-Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details."
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/more /etc/banner": "unexpected-You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\n\nBy using this IS (which includes any device attached to this IS), you consent to the following conditions:\n\n-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.\n\n-At any time, the USG may inspect and seize data stored on this IS.\n\n-Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose.\n\n-This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.\n\n-Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details."
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/more /etc/banner": "You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\n\nBy using this IS (which includes any device attached to this IS), you consent to the following conditions:\n\n-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.\n\n-At any time, the USG may inspect and seize data stored on this IS.\n\n-Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose.\n\n-This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.\n\n-Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details."
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259429"
     },
     {
       "check": {
@@ -3335,5 +3361,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_14_STIG",
-  "validated_candidates": 128
+  "validated_candidates": 129
 }

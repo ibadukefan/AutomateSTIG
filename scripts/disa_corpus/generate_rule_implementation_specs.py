@@ -2901,6 +2901,43 @@ def _macos_policy_banner_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _macos_remote_login_banner_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _macos_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-259429', 'V-268429'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    if not re.search(r'/(?:etc|private/etc)/banner\b', combined):
+        return None
+    if not re.search(r'^\s*/usr/bin/more\s+/etc/banner\s*$', content, re.MULTILINE):
+        return None
+    if not (
+        re.search(r'text\s+is\s+not\s+worded\s+exactly\s+this\s+way,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        or re.search(r'text\s+in\s+the\s+["“]/etc/banner["”]\s+file\s+does\s+not\s+match\s+the\s+Standard\s+Mandatory\s+DOD\s+Notice\s+and\s+Consent\s+Banner,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    ):
+        return None
+    text_match = re.search(
+        r'The\s+command\s+must\s+return\s+the\s+following\s+text:\s*[\r\n]+\s*["“](?P<text>You\s+are\s+accessing\s+a\s+U\.S\.\s+Government\s+\(USG\)\s+Information\s+System\s+\(IS\).*?See\s+User\s+Agreement\s+for\s+details\.)["”]',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not text_match:
+        return None
+    expected_text = text_match.group('text').strip().strip('"“”')
+    if any(token in expected_text for token in ('`', '$(', '&&', '<<')):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'macos',
+        'check': {'type': 'command_output', 'command': '/usr/bin/more /etc/banner'},
+        'expected': {'type': 'equals', 'value': expected_text},
+        'description': rule.get('title', ''),
+    }
+
+
 def _macos_osascript_true_heredoc_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _macos_platform(stig_id):
         return None
@@ -4007,6 +4044,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     macos_policy_banner_candidate = _macos_policy_banner_candidate(rule, stig_id)
     if macos_policy_banner_candidate:
         return macos_policy_banner_candidate
+    macos_remote_login_banner_candidate = _macos_remote_login_banner_candidate(rule, stig_id)
+    if macos_remote_login_banner_candidate:
+        return macos_remote_login_banner_candidate
     macos_osascript_true_candidate = _macos_osascript_true_heredoc_candidate(rule, stig_id)
     if macos_osascript_true_candidate:
         return macos_osascript_true_candidate
