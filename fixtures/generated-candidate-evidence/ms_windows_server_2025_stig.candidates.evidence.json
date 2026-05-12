@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 218,
+  "candidate_checks": 221,
   "cases": [
     {
       "check": {
@@ -556,6 +556,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278040"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$log='Application'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 permissions for the Application event log must prevent access by nonprivileged accounts.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$log='Application'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$log='Application'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278043"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$log='Security'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 permissions for the Security event log must prevent access by nonprivileged accounts.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$log='Security'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$log='Security'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278044"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$log='System'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 permissions for the System event log must prevent access by nonprivileged accounts.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$log='System'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$log='System'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278045"
     },
     {
       "check": {
@@ -5875,5 +5953,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 218
+  "validated_candidates": 221
 }

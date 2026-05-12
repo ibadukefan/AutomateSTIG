@@ -5035,6 +5035,49 @@ def _windows_ftp_anonymous_authentication_disabled_candidate(rule: dict, stig_id
     }
 
 
+def _windows_event_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    policy_text = '\n'.join(part for part in (content, fix_text) if part)
+    log_match = re.search(r'permissions\s+for\s+the\s+(Application|Security|System)\s+event\s+log\s+must\s+prevent\s+access\s+by\s+non[- ]?privileged\s+accounts', title, re.IGNORECASE)
+    if not log_match:
+        return None
+    log_name = log_match.group(1).capitalize()
+    if f'{log_name}.evtx' not in policy_text:
+        return None
+    if '%SystemRoot%\\System32\\winevt\\Logs' not in policy_text:
+        return None
+    required_acl_lines = (
+        r'Eventlog\s+-\s+Full\s+Control',
+        r'SYSTEM\s+-\s+Full\s+Control',
+        r'Administrators\s+-\s+Full\s+Control',
+    )
+    if not all(re.search(line, policy_text, re.IGNORECASE) for line in required_acl_lines):
+        return None
+    if not re.search(r'If\s+the\s+permissions\s+for\s+the\s+["“]' + re.escape(f'{log_name}.evtx') + r'["”]\s+file\s+are\s+not\s+as\s+restrictive\s+as\s+the\s+default\s+permissions\s+listed\s+below,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Configure\s+the\s+permissions\s+on\s+the\s+' + re.escape(log_name) + r'\s+event\s+log\s+file', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        f'"$log=\'{log_name}\'; $line=wevtutil gl $log | Select-String -Pattern \'^\\s*logFileName:\' | Select-Object -First 1; '
+        "$p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); "
+        "$acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); "
+        "$ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; "
+        "if ($ok) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _windows_services_msc_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -5195,6 +5238,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         ftp_anonymous_authentication_candidate = _windows_ftp_anonymous_authentication_disabled_candidate(rule, stig_id)
         if ftp_anonymous_authentication_candidate:
             return ftp_anonymous_authentication_candidate
+
+        event_log_acl_candidate = _windows_event_log_file_acl_candidate(rule, stig_id)
+        if event_log_acl_candidate:
+            return event_log_acl_candidate
 
         services_msc_candidate = _windows_services_msc_candidate(rule, stig_id)
         if services_msc_candidate:

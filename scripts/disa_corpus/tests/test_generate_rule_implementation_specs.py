@@ -209,6 +209,38 @@ Select "Disabled" under "Actions".''',
             'description': 'Windows Server 2025 FTP servers must be configured to prevent anonymous logons.',
         })
 
+    def test_infers_windows_event_log_file_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254298',
+            'title': 'Windows Server 2022 permissions for the System event log must prevent access by nonprivileged accounts.',
+            'check_content': '''Navigate to the System event log file.
+
+The default location is the "%SystemRoot%\\System32\\winevt\\Logs" folder. However, the logs may have been moved to another folder.
+
+If the permissions for the "System.evtx" file are not as restrictive as the default permissions listed below, this is a finding:
+
+Eventlog - Full Control
+SYSTEM - Full Control
+Administrators - Full Control''',
+            'fix_text': '''Configure the permissions on the System event log file (System.evtx) to prevent access by nonprivileged accounts. The default permissions listed below satisfy this requirement:
+
+Eventlog - Full Control
+SYSTEM - Full Control
+Administrators - Full Control
+
+The default location is the "%SystemRoot%\\System32\\winevt\\Logs" folder.''',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254298',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$log='System'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Windows Server 2022 permissions for the System event log must prevent access by nonprivileged accounts.',
+        })
+
     def test_infers_windows_directory_service_max_conn_idle_time_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278147',

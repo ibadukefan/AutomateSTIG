@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$log='Application'; $line=wevtutil gl $log | Select-String -Pattern '^\\s*logFileName:' | Select-Object -First 1; $p=($line.Line -replace '^\\s*logFileName:\\s*',''); $p=[Environment]::ExpandEnvironmentVariables($p); $acl=Get-Acl -LiteralPath $p; $need=@('NT SERVICE\\EventLog','NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $ok=$true; foreach ($n in $need) { if (-not ($acl.Access | Where-Object { $_.IdentityReference -eq $n -and $_.FileSystemRights.ToString() -match 'FullControl' })) { $ok=$false } }; if ($ok) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2019 permissions for the Application event log must prevent access by non-privileged accounts.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-205640"
+  },
   "check_content_excerpt": "Navigate to the Application event log file.\n\nThe default location is the \"%SystemRoot%\\System32\\winevt\\Logs\" folder. However, the logs may have been moved to another folder.\n\nIf the permissions for the \"Application.evtx\" file are not as restrictive as the default permissions listed below, this is a finding:\n\nEventlog - Full Control\nSYSTEM - Full Control\nAdministrators - Full Control",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the permissions on the Application event log file (Application.evtx) to prevent access by non-privileged accounts. The default permissions listed below satisfy this requirement:\n\nEventlog - Full Control\nSYSTEM - Full Control\nAdministrators - Full Control\n\nThe default location is the \"%SystemRoot%\\System32\\winevt\\Logs\" folder.\n\nIf the location of the logs has been changed, when adding Eventlog to the permissions, it must be entered as \"NT Service\\Eventlog\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-205640r958434_rule",
   "severity": "medium",
