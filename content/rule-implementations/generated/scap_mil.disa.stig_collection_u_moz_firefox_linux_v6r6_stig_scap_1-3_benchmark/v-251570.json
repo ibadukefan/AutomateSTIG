@@ -1,8 +1,21 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; prefs=policies.get('Preferences') or {}; entry=prefs.get('extensions.htmlaboutaddons.recommendations.enabled') or {}; print('configured' if str(entry.get('Value')).lower()=='false' and str(entry.get('Status')).lower()=='locked' else '')\"",
+      "type": "command_output"
+    },
+    "description": "Firefox extension recommendations must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "configured"
+    },
+    "platform": "linux",
+    "vuln_id": "V-251570"
+  },
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,13 +23,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "configured"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Windows group policy:\n1. Open the group policy editor tool with \"gpedit.msc\".\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\\nPolicy Name: Preferences\nPolicy State: Enabled\nPolicy Value:\n{\n  \"extensions.htmlaboutaddons.recommendations.enabled\": {\n    \"Value\": false,\n    \"Status\": \"locked\"\n  }\n}\n\nmacOS \"plist\" file:\nAdd the following:\n<key>Preferences</key>\n<dict>\n  <key>extensions.htmlaboutaddons.recommendations.enabled</key>\n  <dict>\n    <key>Value</key>\n    <false/>\n    <key>Status</key>\n    <string>locked</string>\n  </dict>\n</dict>\n\nLinux \"policies.json\" file:\nAdd the following in the policies section:\n\"Preferences\": {\n\"extensions.htmlaboutaddons.recommendations.enabled\": {\n\"Value\": false,\n\"Status\": \"locked\"\n},",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "xccdf_mil.disa.stig_rule_SV-251570r1067563_rule",
   "severity": "medium",

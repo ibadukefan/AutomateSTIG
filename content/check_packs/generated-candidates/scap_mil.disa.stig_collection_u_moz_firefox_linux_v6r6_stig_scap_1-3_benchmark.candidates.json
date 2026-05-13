@@ -1,0 +1,72 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; prefs=policies.get('Preferences') or {}; entry=prefs.get('browser.contentblocking.category') or {}; print('configured' if str(entry.get('Value')).lower()=='strict' and str(entry.get('Status')).lower()=='locked' else '')\"",
+        "type": "command_output"
+      },
+      "description": "Firefox Enhanced Tracking Protection must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "configured"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251569"
+    },
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; prefs=policies.get('Preferences') or {}; entry=prefs.get('extensions.htmlaboutaddons.recommendations.enabled') or {}; print('configured' if str(entry.get('Value')).lower()=='false' and str(entry.get('Status')).lower()=='locked' else '')\"",
+        "type": "command_output"
+      },
+      "description": "Firefox extension recommendations must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "configured"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251570"
+    },
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; parent=policies.get('FirefoxHome') or {}; checks=[('Search', 'false'), ('TopSites', 'false'), ('SponsoredTopSites', 'false'), ('Pocket', 'false'), ('SponsoredPocket', 'false'), ('Highlights', 'false'), ('Snippets', 'false'), ('Locked', 'true')]; print('configured' if all(str(parent.get(k)).lower()==v for k,v in checks) else '')\"",
+        "type": "command_output"
+      },
+      "description": "The Firefox New Tab page must not show Top Sites, Sponsored Top Sites, Pocket Recommendations, Sponsored Pocket Stories, Searches, Highlights, or Snippets.",
+      "expected": {
+        "type": "equals",
+        "value": "configured"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251573"
+    },
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; parent=policies.get('EncryptedMediaExtensions') or {}; checks=[('Enabled', 'false'), ('Locked', 'true')]; print('configured' if all(str(parent.get(k)).lower()==v for k,v in checks) else '')\"",
+        "type": "command_output"
+      },
+      "description": "Firefox encrypted media extensions must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "configured"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251581"
+    },
+    {
+      "check": {
+        "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; parent=policies.get('SanitizeOnShutdown') or {}; checks=[('Cache', 'false'), ('Cookies', 'false'), ('Downloads', 'false'), ('FormData', 'false'), ('History', 'false'), ('Sessions', 'false'), ('SiteSettings', 'false'), ('OfflineApps', 'false'), ('Locked', 'true')]; print('configured' if all(str(parent.get(k)).lower()==v for k,v in checks) else '')\"",
+        "type": "command_output"
+      },
+      "description": "Firefox must be configured to not delete data upon shutdown.",
+      "expected": {
+        "type": "equals",
+        "value": "configured"
+      },
+      "platform": "linux",
+      "vuln_id": "V-252881"
+    }
+  ],
+  "platform": "linux",
+  "stig_id": "scap_mil.disa.stig_collection_U_MOZ_Firefox_Linux_V6R6_STIG_SCAP_1-3_Benchmark",
+  "version": "candidate-planned"
+}

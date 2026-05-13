@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; parent=policies.get('FirefoxHome') or {}; checks=[('Search', 'false'), ('TopSites', 'false'), ('SponsoredTopSites', 'false'), ('Pocket', 'false'), ('SponsoredPocket', 'false'), ('Highlights', 'false'), ('Snippets', 'false'), ('Locked', 'true')]; print('configured' if all(str(parent.get(k)).lower()==v for k,v in checks) else '')\"",
+      "type": "command_output"
+    },
+    "description": "The Firefox New Tab page must not show Top Sites, Sponsored Top Sites, Pocket Recommendations, Sponsored Pocket Stories, Searches, Highlights, or Snippets.",
+    "expected": {
+      "type": "equals",
+      "value": "configured"
+    },
+    "platform": "linux",
+    "vuln_id": "V-251573"
+  },
   "check_content_excerpt": "Type \"about:policies\" in the browser address bar. \n\nIf \"FirefoxHome\" is not displayed under Policy Name or the Policy Value does not have \"Search\" with a value of \"false\", this is a finding.\nIf \"FirefoxHome\" is not displayed under Policy Name or the Policy Value does not have \"TopSites\" with a value of \"false\", this is a finding.\nIf \"FirefoxHome\" is not displayed under Policy Name or the Policy Value does not have \"SponsoredTopSites\" with a value of \"false\", this is a finding.\nIf \"FirefoxHome\" is not displayed under Policy Name or the Policy Value does not have \"Pocket\" with a value of \"false\", this is a finding.\nIf \"FirefoxHome\" is not displayed under Policy Name or the Policy Value does not have \"SponsoredPocket\" with a value of \"false\", this is a finding.\nIf \"FirefoxHome\" is not displayed under Policy Name or the Policy Value does not have \"Highlights\" with a value of \"false\", this is a finding.\nIf \"FirefoxHome\" is not displayed under Policy Name or the Policy Value does not have \"Snippets\" with a value of \"false\", this is a finding.\nIf \"FirefoxHome\" is not displayed under Policy Name or the Policy Value does not have \"Locked\" with a value of \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "configured"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Windows group policy:\n1. Open the group policy editor tool with \"gpedit.msc\".\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: Customize Firefox Home\nPolicy State: Enabled\nPolicy Value: Uncheck \"Search\"\nPolicy Value: Uncheck \"Top Sites\"\nPolicy Value: Uncheck \"Sponsored Top Sites\"\nPolicy Value: Uncheck \"Recommended by Pocket\"\nPolicy Value: Uncheck \"Sponsored Pocket Stories\"\nPolicy Value: Uncheck \"Download History\"\nPolicy Value: Uncheck \"Snippets\"\nPolicy Value: Check \"Do not allow settings to be changed\"\n\nmacOS \"plist\" file:\nAdd the following:\n<key>FirefoxHome</key>\n<dict>\n<key>Search</key>\n  <false/>\n<key>TopSites</key>\n  <false/>\n<key>SponsoredTopSites</key>\n  <false/>\n<key>Pocket</key>\n  <false/>\n<key>SponsoredPocket</key>\n  <false/>\n<key>Highlights</key>\n  <false/>\n<key>Snippets</key>\n  <false/>\n<key>Locked</key>\n  <true/>\n</dict>\n\nLinux \"policies.json\" file:\nAdd the following in the policies section:\n\"FirefoxHome\": {\n  \"Search\": false,\n  \"TopSites\": false,\n  \"SponsoredTopSites\": false,\n  \"Pocket\": false,\n  \"SponsoredPocket\": false,\n  \"Highlights\": false,\n  \"Snippets\": false,\n  \"locked\": true\n}",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-251573r960963_rule",
   "severity": "medium",

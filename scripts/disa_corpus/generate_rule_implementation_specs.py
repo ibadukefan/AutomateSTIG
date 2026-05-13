@@ -786,14 +786,99 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _firefox_nested_policy_command(parent_name: str, checks: list[tuple[str, str]]) -> str:
+    checks_literal = repr(checks)
+    return (
+        'python3 -c "import json, pathlib; '
+        "p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); "
+        "policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; "
+        f"parent=policies.get('{parent_name}') or {{}}; checks={checks_literal}; "
+        "print('configured' if all(str(parent.get(k)).lower()==v for k,v in checks) else '')\""
+    )
+
+
+def _firefox_preferences_value_status_command(child_name: str, value: str) -> str:
+    return (
+        'python3 -c "import json, pathlib; '
+        "p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); "
+        "policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; "
+        "prefs=policies.get('Preferences') or {}; "
+        f"entry=prefs.get('{child_name}') or {{}}; "
+        f"print('configured' if str(entry.get('Value')).lower()=='{value}' and str(entry.get('Status')).lower()=='locked' else '')\""
+    )
+
+
+def _firefox_policy_has_linux_nested_values(fix_text: str, parent_name: str, checks: list[tuple[str, str]]) -> bool:
+    for key, expected in checks:
+        if not re.search(
+            r'Linux\s+["“]policies\.json["”]\s+file:.*?["“]'
+            + re.escape(parent_name)
+            + r'["”]\s*:\s*\{.*?["“]'
+            + re.escape(key)
+            + r'["”]\s*:\s*'
+            + re.escape(expected)
+            + r'\b',
+            fix_text,
+            re.IGNORECASE | re.DOTALL,
+        ):
+            return False
+    return True
+
+
 def _firefox_policy_boolean_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'firefox' not in stig_id.lower():
         return None
     vuln_id = rule.get('vuln_id', '')
-    if vuln_id not in {'V-251564', 'V-251565', 'V-251566', 'V-251567', 'V-251568', 'V-251571', 'V-251572', 'V-251577', 'V-251578', 'V-251580', 'V-252908', 'V-252909'}:
+    if vuln_id not in {'V-251564', 'V-251565', 'V-251566', 'V-251567', 'V-251568', 'V-251569', 'V-251570', 'V-251571', 'V-251572', 'V-251573', 'V-251577', 'V-251578', 'V-251580', 'V-251581', 'V-252881', 'V-252908', 'V-252909'}:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    firefox_specific = {
+        'V-251569': ('Preferences', [('browser.contentblocking.category', 'strict', 'locked')]),
+        'V-251570': ('Preferences', [('extensions.htmlaboutaddons.recommendations.enabled', 'false', 'locked')]),
+    }
+    if vuln_id in firefox_specific:
+        _parent_name, checks = firefox_specific[vuln_id]
+        child_name, value, status = checks[0]
+        combined = f'{content}\n{fix_text}'
+        if not all(token in combined for token in ('Preferences', child_name, value, status)):
+            return None
+        if not re.search(
+            r'Linux\s+["“]policies\.json["”]\s+file:.*?["“]Preferences["”]\s*:\s*\{.*?["“]'
+            + re.escape(child_name)
+            + r'["”]\s*:\s*\{.*?["“]Value["”]\s*:\s*["“]?'
+            + re.escape(value)
+            + r'["”]?\s*,\s*["“]Status["”]\s*:\s*["“]locked["”]',
+            fix_text,
+            re.IGNORECASE | re.DOTALL,
+        ):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': _firefox_preferences_value_status_command(child_name, value)},
+            'expected': {'type': 'equals', 'value': 'configured'},
+            'description': rule.get('title', ''),
+        }
+    firefox_multi_bool = {
+        'V-251573': ('FirefoxHome', [('Search', 'false'), ('TopSites', 'false'), ('SponsoredTopSites', 'false'), ('Pocket', 'false'), ('SponsoredPocket', 'false'), ('Highlights', 'false'), ('Snippets', 'false'), ('Locked', 'true')]),
+        'V-251581': ('EncryptedMediaExtensions', [('Enabled', 'false'), ('Locked', 'true')]),
+        'V-252881': ('SanitizeOnShutdown', [('Cache', 'false'), ('Cookies', 'false'), ('Downloads', 'false'), ('FormData', 'false'), ('History', 'false'), ('Sessions', 'false'), ('SiteSettings', 'false'), ('OfflineApps', 'false'), ('Locked', 'true')]),
+    }
+    if vuln_id in firefox_multi_bool:
+        parent_name, checks = firefox_multi_bool[vuln_id]
+        combined = f'{content}\n{fix_text}'
+        if not all(token in combined for token in (parent_name, *(key for key, _expected in checks))):
+            return None
+        if not _firefox_policy_has_linux_nested_values(fix_text, parent_name, checks):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': _firefox_nested_policy_command(parent_name, checks)},
+            'expected': {'type': 'equals', 'value': 'configured'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-251565':
         if not re.search(
             r'If\s+["“]Permissions["”]\s+is\s+not\s+displayed\s+under\s+Policy\s+Name\s+or\s+the\s+Policy\s+Value\s+is\s+not\s+["“]Autoplay["”]\s+with\s+a\s+value\s+of\s+["“]Default["”]\s+and\s+["“]Block-audio-video["”],\s+this\s+is\s+a\s+finding\.',

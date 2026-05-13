@@ -805,6 +805,51 @@ Add the following in the policies section:
             'description': 'Pocket must be disabled.',
         })
 
+    def test_infers_firefox_preferences_value_status_locked_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251569',
+            'title': 'Firefox Enhanced Tracking Protection must be enabled.',
+            'check_content': '''Type "about:policies" in the browser address bar.
+
+If "Preferences" is not displayed under Policy Name or the Policy Value does not include "browser.contentblocking.category" with a value of  "strict" and status of "locked", this is a finding.''',
+            'fix_text': '''Linux "policies.json" file:
+Add the following in the policies section:
+"Preferences": {
+  "browser.contentblocking.category": {
+    "Value": "strict",
+    "Status": "locked"
+  }
+}''',
+        }, 'MOZ_Firefox_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-251569')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'configured'})
+        self.assertIn("browser.contentblocking.category", candidate['check']['command'])
+        self.assertIn("strict", candidate['check']['command'])
+        self.assertIn("locked", candidate['check']['command'])
+
+    def test_infers_firefox_multiple_nested_boolean_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251581',
+            'title': 'Firefox encrypted media extensions must be disabled.',
+            'check_content': '''Type "about:policies" in the browser address bar.
+
+If "EncryptedMediaExtensions" is not displayed under Policy Name or the Policy Value does not have "Enabled" set to "false" or the Policy Value does not have "Locked" set to "true", this is a finding.''',
+            'fix_text': '''Linux "policies.json" file:
+Add the following in the policies section:
+"EncryptedMediaExtensions": {
+  "Enabled": false,
+  "Locked": true
+}''',
+        }, 'MOZ_Firefox_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-251581')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'configured'})
+        self.assertIn("EncryptedMediaExtensions", candidate['check']['command'])
+        self.assertIn("Enabled", candidate['check']['command'])
+        self.assertIn("Locked", candidate['check']['command'])
+
     def test_infers_adobe_dc_repair_installation_dual_registry_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-213133',

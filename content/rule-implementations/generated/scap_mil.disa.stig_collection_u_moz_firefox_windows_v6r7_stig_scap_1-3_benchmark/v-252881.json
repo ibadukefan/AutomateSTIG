@@ -1,8 +1,21 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "python3 -c \"import json, pathlib; p=pathlib.Path('/usr/lib/firefox/distribution/policies.json'); policies=json.loads(p.read_text()).get('policies', {}) if p.exists() else {}; parent=policies.get('SanitizeOnShutdown') or {}; checks=[('Cache', 'false'), ('Cookies', 'false'), ('Downloads', 'false'), ('FormData', 'false'), ('History', 'false'), ('Sessions', 'false'), ('SiteSettings', 'false'), ('OfflineApps', 'false'), ('Locked', 'true')]; print('configured' if all(str(parent.get(k)).lower()==v for k,v in checks) else '')\"",
+      "type": "command_output"
+    },
+    "description": "Firefox must be configured to not delete data upon shutdown.",
+    "expected": {
+      "type": "equals",
+      "value": "configured"
+    },
+    "platform": "linux",
+    "vuln_id": "V-252881"
+  },
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,13 +23,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "configured"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Windows group policy:\n1. Open the group policy editor tool with \"gpedit.msc\".\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Clear data when browser is closed\nPolicy Name: Cache, Cookies, Download History, Form & Search History, Browsing History, Active Logins, Site Preferences, Offline Website Data\nPolicy State: Disabled\nPolicy Name: Locked\nPolicy State: Enabled\n\nmacOS \"plist\" file:\nAdd the following:\n<key>SanitizeOnShutdown</key>\n<dict>\n  <key>Cache</key>\n  <false/>\n  <key>Cookies</key>\n  <false/>\n  <key>Downloads</key>\n  <false/>\n  <key>FormData</key>\n  <false/>\n  <key>History</key>\n  <false/>\n  <key>Sessions</key>\n  <false/>\n  <key>SiteSettings</key>\n  <false/>\n  <key>OfflineApps</key>\n  <false/>\n  <key>Locked</key>\n  <true/>\n</dict>\n\nLinux \"policies.json\" file:\nAdd the following in the policies section:\n\"SanitizeOnShutdown\": {\n  \"Cache\": false,\n  \"Cookies\": false,\n  \"Downloads\": false,\n  \"FormData\": false,\n  \"History\": false,\n  \"Sessions\": false,\n  \"SiteSettings\": false,\n  \"OfflineApps\": false,\n  \"Locked\": true \n}",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "xccdf_mil.disa.stig_rule_SV-252881r960963_rule",
   "severity": "medium",
