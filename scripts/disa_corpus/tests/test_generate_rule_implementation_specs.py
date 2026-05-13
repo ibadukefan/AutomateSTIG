@@ -175,6 +175,36 @@ Edit the "/etc/issue" file to replace the default text with the Standard Mandato
             'description': 'OL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a command line user logon.',
         })
 
+    def test_infers_linux_interactive_home_mount_option_violation_scan_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230302',
+            'title': 'RHEL 8 must prevent code from being executed on file systems that contain user home directories.',
+            'check_content': '''Verify file systems that contain user home directories are mounted with the "noexec" option.
+
+Note: If a separate file system has not been created for the user home directories (user home directories are mounted under "/"), this is automatically a finding as the "noexec" option cannot be used on the "/" system.
+
+Find the file system(s) that contain the user home directories with the following command:
+
+$ sudo awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1,$3,$6}' /etc/passwd
+
+Check the file systems that are mounted at boot time with the following command:
+
+$ sudo more /etc/fstab
+
+If a file system found in "/etc/fstab" refers to the user home directory and it does not have the "noexec" option set, this is a finding.''',
+            'fix_text': 'Configure the "/etc/fstab" to use the "noexec" option on file systems that contain user home directories for interactive users.',
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230302',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{print $1 \" \" $4}'); [ -z \"$mount\" ] && continue; target=${mount%% *}; opts=${mount#* }; if [ \"$target\" = \"/\" ] || ! printf '%s' \"$opts\" | grep -Eq '(^|,)noexec(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 8 must prevent code from being executed on file systems that contain user home directories.',
+        })
+
     def test_infers_macos_policy_banner_exact_text_and_mode_candidate(self):
         text = '''You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only. By using this IS (which includes any device attached to this IS), you consent to the following conditions:
 

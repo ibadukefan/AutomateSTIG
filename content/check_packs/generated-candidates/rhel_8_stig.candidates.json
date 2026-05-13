@@ -325,6 +325,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{print $1 \" \" $4}'); [ -z \"$mount\" ] && continue; target=${mount%% *}; opts=${mount#* }; if [ \"$target\" = \"/\" ] || ! printf '%s' \"$opts\" | grep -Eq '(^|,)nosuid(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must prevent files with the setuid and setgid bit set from being executed on file systems that contain user home directories.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230299"
+    },
+    {
+      "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{print $1 \" \" $4}'); [ -z \"$mount\" ] && continue; target=${mount%% *}; opts=${mount#* }; if [ \"$target\" = \"/\" ] || ! printf '%s' \"$opts\" | grep -Eq '(^|,)noexec(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must prevent code from being executed on file systems that contain user home directories.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230302"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fstab",
         "pattern": "| grep noexec",
