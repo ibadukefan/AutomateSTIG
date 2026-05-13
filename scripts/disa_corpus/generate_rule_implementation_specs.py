@@ -5634,7 +5634,7 @@ def _windows_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) 
         return None
     content = rule.get('check_content', '') or ''
     path_match = re.search(
-        r'Use\s+the\s+Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n+\s*((?:HKCU|HKLM)\\[^\n\r]+)',
+        r'Use\s+the\s+Windows\s+Registry(?:\s+Editor)?\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n+\s*((?:HKCU|HKLM)\\[^\n\r]+)',
         content,
         re.IGNORECASE,
     )
@@ -5653,7 +5653,7 @@ def _windows_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) 
         )
     if not expected_match:
         expected_match = re.search(
-            r'If\s+(?:the\s+)?value\s+for\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+REG_DWORD\s*=\s*(\d+),\s+this\s+is\s+not\s+a\s+finding\.',
+            r'If\s+(?:the\s+)?value\s+for\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+(?:set\s+to\s+)?["“]?REG_DWORD\s*=\s*(\d+)["”]?,\s+this\s+is\s+not\s+a\s+finding\.',
             content,
             re.IGNORECASE,
         )

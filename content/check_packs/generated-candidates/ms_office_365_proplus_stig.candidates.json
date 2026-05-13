@@ -858,6 +858,20 @@
       "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
         "type": "registry",
+        "value_name": "promptoomcustomaction"
+      },
+      "description": "When a custom action is executed that uses the Outlook object model, Outlook must automatically deny it.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223365"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
         "value_name": "promptoomaddressbookaccess"
       },
       "description": "When an untrusted program attempts to programmatically access an Address Book using the Outlook object model, Outlook must automatically deny it.",

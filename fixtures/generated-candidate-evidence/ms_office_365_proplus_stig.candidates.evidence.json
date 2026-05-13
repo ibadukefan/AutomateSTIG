@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 113,
+  "candidate_checks": 114,
   "cases": [
     {
       "check": {
@@ -1652,6 +1652,33 @@
       "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
         "type": "registry",
+        "value_name": "promptoomcustomaction"
+      },
+      "description": "When a custom action is executed that uses the Outlook object model, Outlook must automatically deny it.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoomcustomaction": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoomcustomaction": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223365"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
         "value_name": "promptoomaddressbookaccess"
       },
       "description": "When an untrusted program attempts to programmatically access an Address Book using the Outlook object model, Outlook must automatically deny it.",
@@ -3058,5 +3085,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 113
+  "validated_candidates": 114
 }

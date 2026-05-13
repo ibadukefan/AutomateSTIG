@@ -1323,16 +1323,17 @@
       "vuln_id": "V-223364"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223365",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223365r961779_rule",
       "severity": "medium",
       "title": "When a custom action is executed that uses the Outlook object model, Outlook must automatically deny it.",
-      "tracking_issue": "TODO-V-223365",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223365"
