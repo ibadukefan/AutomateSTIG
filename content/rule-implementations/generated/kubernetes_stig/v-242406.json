@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$cfg\" ] && exit 0; path=\"$cfg\"; [ -d \"$cfg\" ] && path=\"$cfg/kubelet\"; stat -c \"%U:%G %n\" \"$path\" 2>/dev/null | grep -v \"^root:root \"'",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes KubeletConfiguration file must be owned by root.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242406"
+  },
   "check_content_excerpt": "On the Kubernetes Control Plane and Worker nodes, run the command:\nps -ef | grep kubelet\n\nCheck the config file (path identified by: --config):\n\nChange to the directory identified by --config (example /etc/sysconfig/) run the command:\nls -l kubelet\n\nEach kubelet configuration file must be owned by root:root.\n\nIf any manifest file is not owned by root:root, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "On the Control Plane and Worker nodes, change to the --config directory. Run the command:\nchown root:root kubelet\n\nTo verify the change took place, run the command:\nls -l kubelet\n\nThe kubelet file should now be owned by root:root.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242406r960960_rule",
   "severity": "medium",

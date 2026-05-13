@@ -433,31 +433,33 @@
       "vuln_id": "V-242405"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242406",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242406r960960_rule",
       "severity": "medium",
       "title": "The Kubernetes KubeletConfiguration file must be owned by root.",
-      "tracking_issue": "TODO-V-242406",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242406"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242407",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242407r960960_rule",
       "severity": "medium",
       "title": "The Kubernetes KubeletConfiguration files must have file permissions set to 644 or more restrictive.",
-      "tracking_issue": "TODO-V-242407",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242407"

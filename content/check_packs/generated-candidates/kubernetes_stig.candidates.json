@@ -41,6 +41,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$cfg\" ] && exit 0; path=\"$cfg\"; [ -d \"$cfg\" ] && path=\"$cfg/kubelet\"; stat -c \"%U:%G %n\" \"$path\" 2>/dev/null | grep -v \"^root:root \"'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes KubeletConfiguration file must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242406"
+    },
+    {
+      "check": {
+        "command": "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$cfg\" ] && exit 0; path=\"$cfg\"; [ -d \"$cfg\" ] && path=\"$cfg/kubelet\"; find \"$path\" -perm /133 -exec stat -c \"%a %n\" {} \\; 2>/dev/null'",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes KubeletConfiguration files must have file permissions set to 644 or more restrictive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242407"
+    },
+    {
+      "check": {
         "command": "sh -c 'find /etc/kubernetes/manifests -maxdepth 1 -type f -perm /133 -exec stat -c \"%a %n\" {} \\; 2>/dev/null'",
         "type": "command_output"
       },

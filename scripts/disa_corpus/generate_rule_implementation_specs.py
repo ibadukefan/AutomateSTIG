@@ -288,7 +288,11 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
     else:
         if not re.search(rf'If\s+the\s+["“]{re.escape(directive)}["”]\s+directive\s+does\s+not\s+exist,\s+this\s+is\s+a\s+not\s+a\s+finding', content, re.IGNORECASE):
             return None
-        if not re.search(rf'If\s+the\s+["“]{re.escape(directive)}["”]\s+directive\s+is\s+set\s+to\s+["“]?on["”]?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        finding_patterns = (
+            rf'If\s+the\s+["“]{re.escape(directive)}["”]\s+directive\s+is\s+set\s+to\s+["“]?on["”]?,\s+this\s+is\s+a\s+finding',
+            rf'If\s+the\s+["“]{re.escape(directive)}["”]\s+directive\s+exists\s+and\s+is\s+not\s+set\s+to\s+["“]?{re.escape(value)}["”]?,\s+this\s+is\s+a\s+finding',
+        )
+        if not any(re.search(pattern, content, re.IGNORECASE) for pattern in finding_patterns):
             return None
         pattern = rf'^(?:\s*|\s*{re.escape(directive)}\s+{re.escape(value)}\s*(?:#.*)?)$'
     command = (
@@ -319,6 +323,25 @@ def _apache_windows_module_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     vuln_id = rule.get('vuln_id', '')
+    if vuln_id == 'V-214333' and 'httpd -M' not in content:
+        combined = content + '\n' + fix_text
+        if 'mod_unique_id' not in combined:
+            return None
+        if not re.search(r'If\s+it\s+does\s+not\s+exist,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        command = (
+            'powershell -NoProfile -Command '
+            '"$p=Join-Path $env:ProgramFiles \'Apache24\\conf\\httpd.conf\'; '
+            "$line=Select-String -Path $p -Pattern '^\\s*LoadModule\\s+unique_id_module\\b.*mod_unique_id' -ErrorAction SilentlyContinue | Select-Object -First 1; "
+            "if ($line) { 'Compliant' }\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if 'httpd -M' not in content:
         return None
     module_sets = {
@@ -3782,6 +3805,10 @@ def _kubernetes_authoritative_file_compliance_candidate(rule: dict, stig_id: str
         command = "sh -c 'find /etc/kubernetes/manifests -maxdepth 1 -type f -exec stat -c \"%U:%G %n\" {} \\; 2>/dev/null | grep -v \"^root:root \"'"
     elif vuln_id == 'V-242408' and '/etc/kubernetes/manifest' in content and 'permissions "644" or more restrictive' in content:
         command = "sh -c 'find /etc/kubernetes/manifests -maxdepth 1 -type f -perm /133 -exec stat -c \"%a %n\" {} \\; 2>/dev/null'"
+    elif vuln_id == 'V-242406' and '--config' in content and 'kubelet' in content.lower() and 'owned by root:root' in content:
+        command = "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$cfg\" ] && exit 0; path=\"$cfg\"; [ -d \"$cfg\" ] && path=\"$cfg/kubelet\"; stat -c \"%U:%G %n\" \"$path\" 2>/dev/null | grep -v \"^root:root \"'"
+    elif vuln_id == 'V-242407' and '--config' in content and 'kubeletconfiguration' in content.lower() and 'permissions of "644" or more restrictive' in content:
+        command = "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$cfg\" ] && exit 0; path=\"$cfg\"; [ -d \"$cfg\" ] && path=\"$cfg/kubelet\"; find \"$path\" -perm /133 -exec stat -c \"%a %n\" {} \\; 2>/dev/null'"
     else:
         return None
     return {

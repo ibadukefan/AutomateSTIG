@@ -7533,5 +7533,97 @@ Re-mount the filesystems.
             'description': 'SUSE operating system file systems that contain user home directories must be mounted to prevent files with the setuid and setgid bit set from being executed.',
         })
 
+    def test_infers_apache_windows_sslcompression_absent_or_off_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214355',
+            'title': 'The Apache web server cookies, such as session cookies, sent to the client using SSL/TLS must not be compressed.',
+            'check_content': '''Search the Apache configuration files for the "SSLCompression" directive.
+
+If the "SSLCompression" directive does not exist, this is a not a finding.
+
+If the "SSLCompression" directive exists and is not set to "Off", this is a finding.''',
+            'fix_text': 'Edit the <\'INSTALL PATH\'>\\conf\\httpd.conf file and set the SSLCompression directive to Off.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214355',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $lines=Select-String -Path $p -Pattern '^\\s*SSLCompression\\b' -ErrorAction SilentlyContinue; if ((-not $lines) -or ($lines | Where-Object { $_.Line -match '^\\s*SSLCompression\\s+off\\s*(?:#.*)?$' })) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server cookies, such as session cookies, sent to the client using SSL/TLS must not be compressed.',
+        })
+
+    def test_infers_apache_windows_mod_unique_id_httpd_conf_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214333',
+            'title': 'The Apache web server must accept only system-generated session identifiers.',
+            'check_content': '''Review the <'INSTALL PATH'>\\conf\\httpd.conf file.
+
+Verify the "mod_unique_id" is loaded.
+
+If it does not exist, this is a finding.''',
+            'fix_text': 'Uncomment the unique_id_module module line in the <\'INSTALL PATH\'>\\conf\\httpd.conf file.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214333',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*LoadModule\\s+unique_id_module\\b.*mod_unique_id' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must accept only system-generated session identifiers.',
+        })
+
+    def test_infers_kubernetes_kubelet_configuration_owner_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242406',
+            'title': 'The Kubernetes KubeletConfiguration file must be owned by root.',
+            'check_content': '''ps -ef | grep kubelet
+
+Check the config file (path identified by: --config):
+
+Change to the directory identified by --config and run:
+ls -l kubelet
+
+Each kubelet configuration file must be owned by root:root.
+
+If any manifest file is not owned by root:root, this is a finding.''',
+            'fix_text': 'Change ownership of the KubeletConfiguration file to root:root.',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242406',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$cfg\" ] && exit 0; path=\"$cfg\"; [ -d \"$cfg\" ] && path=\"$cfg/kubelet\"; stat -c \"%U:%G %n\" \"$path\" 2>/dev/null | grep -v \"^root:root \"'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Kubernetes KubeletConfiguration file must be owned by root.',
+        })
+
+    def test_infers_kubernetes_kubelet_configuration_mode_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242407',
+            'title': 'The Kubernetes KubeletConfiguration files must have file permissions set to 644 or more restrictive.',
+            'check_content': '''ps -ef | grep kubelet
+
+Check the config file (path identified by: --config):
+
+Change to the directory identified by --config and run:
+ls -l kubelet
+
+Each KubeletConfiguration file must have permissions of "644" or more restrictive.
+
+If any KubeletConfiguration file is less restrictive than "644", this is a finding.''',
+            'fix_text': 'Change permissions of the KubeletConfiguration file to 644 or more restrictive.',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242407',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$cfg\" ] && exit 0; path=\"$cfg\"; [ -d \"$cfg\" ] && path=\"$cfg/kubelet\"; find \"$path\" -perm /133 -exec stat -c \"%a %n\" {} \\; 2>/dev/null'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Kubernetes KubeletConfiguration files must have file permissions set to 644 or more restrictive.',
+        })
+
 if __name__ == '__main__':
     unittest.main()
