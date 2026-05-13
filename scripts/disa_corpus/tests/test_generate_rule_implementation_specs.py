@@ -88,6 +88,36 @@ If the value of "SSLVerifyClient" is not set to "require", this is a finding.'''
             'description': 'The Apache web server must encrypt passwords during transmission.',
         })
 
+    def test_infers_apache_windows_proxyrequests_not_on_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214320',
+            'title': 'The Apache web server must not be a proxy server.',
+            'check_content': '''If the server has been approved to be a proxy server, this requirement is Not Applicable.
+
+Open the <'INSTALL PATH'>\\conf\\httpd.conf file with an editor and search for the following directive:
+
+ProxyRequests
+
+If the ProxyRequests directive is set to "On", this is a finding.''',
+            'fix_text': '''Open the <'INSTALL PATH'>\\conf\\httpd.conf file with an editor and search for the following directive:
+
+ProxyRequests
+
+Set the directive to a value of "off".
+
+Restart the Apache service.''',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214320',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $lines=Select-String -Path $p -Pattern '^\\s*ProxyRequests\\s+On\\s*(?:#.*)?$' -ErrorAction SilentlyContinue; if (-not $lines) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must not be a proxy server.',
+        })
+
     def test_infers_apache_windows_ssl_module_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-214308',

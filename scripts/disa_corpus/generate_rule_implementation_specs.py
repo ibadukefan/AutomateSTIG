@@ -274,6 +274,28 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
         'V-214340': ('TraceEnable', 'Off', 'required'),
         'V-214355': ('SSLCompression', 'off', 'absent_or_value'),
     }
+    if vuln_id == 'V-214320':
+        combined = content + '\n' + fix_text
+        if 'ProxyRequests' not in combined:
+            return None
+        if not re.search(r'If\s+the\s+ProxyRequests\s+directive\s+is\s+set\s+to\s+["“]?On["”]?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Set\s+the\s+directive\s+to\s+a\s+value\s+of\s+["“]?off["”]?', fix_text, re.IGNORECASE):
+            return None
+        command = (
+            'powershell -NoProfile -Command '
+            '"$p=Join-Path $env:ProgramFiles \'Apache24\\conf\\httpd.conf\'; '
+            "$lines=Select-String -Path $p -Pattern '^\\s*ProxyRequests\\s+On\\s*(?:#.*)?$' -ErrorAction SilentlyContinue; "
+            "if (-not $lines) { 'Compliant' }\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+
     spec = directive_specs.get(vuln_id)
     if not spec:
         return None

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $lines=Select-String -Path $p -Pattern '^\\s*ProxyRequests\\s+On\\s*(?:#.*)?$' -ErrorAction SilentlyContinue; if (-not $lines) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The Apache web server must not be a proxy server.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214320"
+  },
   "check_content_excerpt": "If the server has been approved to be a proxy server, this requirement is Not Applicable.\n\nOpen the <'INSTALL PATH'>\\conf\\httpd.conf file with an editor and search for the following directive:\n\nProxyRequests\n\nIf the ProxyRequests directive is set to \"On\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Open the <'INSTALL PATH'>\\conf\\httpd.conf file with an editor and search for the following directive:\n\nProxyRequests\n\nSet the directive to a value of \"off\".\n\nRestart the Apache service.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214320r1051286_rule",
   "severity": "medium",

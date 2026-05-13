@@ -200,16 +200,17 @@
       "vuln_id": "V-214319"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-214320",
+      "check_pack": "generated-candidates/apache_server_2-4_windows_server_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-214320r1051286_rule",
       "severity": "medium",
       "title": "The Apache web server must not be a proxy server.",
-      "tracking_issue": "TODO-V-214320",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apache_server_2-4_windows_server_stig.candidates.json",
         "content/disa-corpus/artifacts/c6871e97d3db853502fe512e1579689c33d5883834edfddc50e7db9035214cb9/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-214320"
