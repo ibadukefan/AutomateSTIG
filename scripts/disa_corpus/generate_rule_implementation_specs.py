@@ -274,6 +274,55 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
         'V-214340': ('TraceEnable', 'Off', 'required'),
         'V-214355': ('SSLCompression', 'off', 'absent_or_value'),
     }
+    if vuln_id in {'V-214306', 'V-214341'}:
+        numeric_specs = {
+            'V-214306': {
+                'directive': 'MaxKeepAliveRequests',
+                'threshold': 100,
+                'operator': 'ge',
+                'config_path': 'Apache24\\conf\\extra\\httpd-default',
+                'check_pattern': r'Verify\s+the\s+value\s+is\s+["“]?100["”]?\s+or\s+greater',
+                'finding_pattern': r'If\s+the\s+["“]?MaxKeepAliveRequests["”]?\s+directive\s+is\s+not\s+["“]?100["”]?\s+or\s+greater,\s+this\s+is\s+a\s+finding',
+                'fix_pattern': r'Set\s+the\s+["“]?MaxKeepAliveRequests["”]?\s+directive\s+to\s+a\s+value\s+of\s+["“]?100["”]?\s+or\s+greater',
+                'ps_operator': '-ge',
+            },
+            'V-214341': {
+                'directive': 'SessionMaxAge',
+                'threshold': 600,
+                'operator': 'le',
+                'config_path': 'Apache24\\conf\\httpd.conf',
+                'check_pattern': r'Verify\s+the\s+value\s+of\s+["“]?SessionMaxAge["”]?\s+is\s+set\s+to\s+["“]?600["”]?\s+or\s+less',
+                'finding_pattern': r'If\s+the\s+["“]?SessionMaxAge["”]?\s+does\s+not\s+exist\s+or\s+is\s+set\s+to\s+more\s+than\s+["“]?600["”]?,\s+this\s+is\s+a\s+finding',
+                'fix_pattern': r'Set\s+the\s+["“]?SessionMaxAge["”]?\s+directive\s+to\s+a\s+value\s+of\s+["“]?600["”]?\s+or\s+less',
+                'ps_operator': '-le',
+            },
+        }
+        cfg = numeric_specs[vuln_id]
+        combined = content + '\n' + fix_text
+        directive = cfg['directive']
+        if directive not in combined:
+            return None
+        if not re.search(cfg['check_pattern'], content, re.IGNORECASE):
+            return None
+        if not re.search(cfg['finding_pattern'], content, re.IGNORECASE):
+            return None
+        if not re.search(cfg['fix_pattern'], fix_text, re.IGNORECASE):
+            return None
+        pattern = rf'^\s*{re.escape(directive)}\s+(\d+)\s*(?:#.*)?$'
+        command = (
+            'powershell -NoProfile -Command '
+            f'"$p=Join-Path $env:ProgramFiles \'{cfg["config_path"]}\'; '
+            f"$line=Select-String -Path $p -Pattern '{pattern}' -ErrorAction SilentlyContinue | Select-Object -First 1; "
+            f"if ($line -and [int]$line.Matches[0].Groups[1].Value {cfg['ps_operator']} {cfg['threshold']}) {{ 'Compliant' }}\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+
     if vuln_id == 'V-214320':
         combined = content + '\n' + fix_text
         if 'ProxyRequests' not in combined:

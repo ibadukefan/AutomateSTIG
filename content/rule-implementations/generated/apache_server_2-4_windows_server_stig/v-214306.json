@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\extra\\httpd-default'; $line=Select-String -Path $p -Pattern '^\\s*MaxKeepAliveRequests\\s+(\\d+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line -and [int]$line.Matches[0].Groups[1].Value -ge 100) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The Apache web server must limit the number of allowed simultaneous session requests.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214306"
+  },
   "check_content_excerpt": "With an editor, open the configuration file:\n\n<installed path>\\Apache24\\conf\\extra\\httpd-default\n\nSearch for the following directive:\n\nMaxKeepAliveRequests\n\nVerify the value is \"100\" or greater.\n\nIf the \"MaxKeepAliveRequests\" directive is not \"100\" or greater, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "With an editor, open the configuration file:\n\n<installed path>\\conf\\extra\\httpd-default\n\nSearch for the following directive:\n\nMaxKeepAliveRequests\n\nSet the \"MaxKeepAliveRequests\" directive to a value of \"100\" or greater. Add the \"MaxKeepAliveRequests\" directive if it does not exist.\n\nIt is recommended that the \"MaxKeepAliveRequests\" directive be explicitly set to prevent unexpected results if the defaults change with updated software.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214306r960735_rule",
   "severity": "medium",

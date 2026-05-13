@@ -272,6 +272,72 @@ If the value of "SSLVerifyClient" is not set to "require", this is a finding.'''
             'description': 'The Apache web server must encrypt passwords during transmission.',
         })
 
+    def test_infers_apache_windows_max_keepalive_requests_minimum_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214306',
+            'title': 'The Apache web server must limit the number of allowed simultaneous session requests.',
+            'check_content': '''With an editor, open the configuration file:
+
+<installed path>\\Apache24\\conf\\extra\\httpd-default
+
+Search for the following directive:
+
+MaxKeepAliveRequests
+
+Verify the value is "100" or greater.
+
+If the "MaxKeepAliveRequests" directive is not "100" or greater, this is a finding.''',
+            'fix_text': '''With an editor, open the configuration file:
+
+<installed path>\\conf\\extra\\httpd-default
+
+Search for the following directive:
+
+MaxKeepAliveRequests
+
+Set the "MaxKeepAliveRequests" directive to a value of "100" or greater. Add the "MaxKeepAliveRequests" directive if it does not exist.''',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214306',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\extra\\httpd-default'; $line=Select-String -Path $p -Pattern '^\\s*MaxKeepAliveRequests\\s+(\\d+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line -and [int]$line.Matches[0].Groups[1].Value -ge 100) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must limit the number of allowed simultaneous session requests.',
+        })
+
+    def test_infers_apache_windows_session_max_age_maximum_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214341',
+            'title': 'The Apache web server must set an absolute timeout for sessions.',
+            'check_content': '''Review the <'INSTALL PATH'>\\conf\\httpd.conf file.
+
+Search for the following directive:
+
+SessionMaxAge
+
+Verify the value of "SessionMaxAge" is set to "600" or less.
+
+If the "SessionMaxAge" does not exist or is set to more than "600", this is a finding.''',
+            'fix_text': '''Open the <'INSTALL PATH'>\\conf\\httpd.conf file.
+
+Set the "SessionMaxAge" directive to a value of "600" or less; add the directive if it does not exist.
+
+Restart the Apache service.''',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214341',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*SessionMaxAge\\s+(\\d+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line -and [int]$line.Matches[0].Groups[1].Value -le 600) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must set an absolute timeout for sessions.',
+        })
+
     def test_infers_apache_windows_proxyrequests_not_on_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-214320',
