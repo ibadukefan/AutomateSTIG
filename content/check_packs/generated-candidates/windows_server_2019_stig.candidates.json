@@ -2440,6 +2440,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$profiles=Get-NetFirewallProfile -ErrorAction SilentlyContinue; if ($profiles -and -not ($profiles | Where-Object { -not $_.Enabled })) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 must have a host-based firewall installed and enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214936"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Kdc",
         "type": "registry",
         "value_name": "StrongCertificateBindingEnforcement"

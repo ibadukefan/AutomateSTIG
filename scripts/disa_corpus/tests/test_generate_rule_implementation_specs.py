@@ -108,6 +108,24 @@ If the "ssl_module" is not enabled, this is a finding.''',
             'description': 'The Apache web server must use encryption strength in accordance with the categorization of data hosted by the Apache web server when remote connections are provided.',
         })
 
+    def test_infers_windows_host_firewall_enabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254265',
+            'title': 'Windows Server 2022 must have a host-based firewall installed and enabled.',
+            'check_content': 'Determine if a host-based firewall is installed and enabled on the system. If a host-based firewall is not installed and enabled on the system, this is a finding.',
+            'fix_text': 'Install and enable a host-based firewall on the system.',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254265',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$profiles=Get-NetFirewallProfile -ErrorAction SilentlyContinue; if ($profiles -and -not ($profiles | Where-Object { -not $_.Enabled })) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Windows Server 2022 must have a host-based firewall installed and enabled.',
+        })
+
     def test_infers_windows_legal_notice_text_registry_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254457',
@@ -173,6 +191,24 @@ Edit the "/etc/issue" file to replace the default text with the Standard Mandato
             'check': {'type': 'command_output', 'command': 'cat /etc/issue'},
             'expected': {'type': 'equals', 'value': text},
             'description': 'OL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a command line user logon.',
+        })
+
+    def test_infers_linux_fixed_mount_option_candidate_from_authoritative_fstab_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257873',
+            'title': 'RHEL 9 must mount /var/log/audit with the nodev option.',
+            'check_content': 'Verify /var/log/audit is mounted with the "nodev" option. If /var/log/audit is not mounted with the nodev option, this is a finding.',
+            'fix_text': 'Modify "/etc/fstab" to use the "nodev" option on the "/var/log/audit" directory.',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-257873',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "findmnt -nkT '/var/log/audit' | awk 'NR==1{print $4}' | grep -Eq '(^|,)nodev(,|$)' && printf 'Compliant'",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'RHEL 9 must mount /var/log/audit with the nodev option.',
         })
 
     def test_infers_linux_interactive_home_mount_option_violation_scan_candidate(self):

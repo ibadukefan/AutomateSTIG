@@ -376,6 +376,31 @@ def _apache_windows_module_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _windows_host_firewall_enabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (title, content, fix_text) if part)
+    if not re.search(r'\bhost-based\s+firewall\s+installed\s+and\s+enabled\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+a\s+host-based\s+firewall\s+is\s+not\s+installed\s+and\s+enabled\s+on\s+the\s+system,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Install\s+and\s+enable\s+a\s+host-based\s+firewall', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': "powershell -NoProfile -Command \"$profiles=Get-NetFirewallProfile -ErrorAction SilentlyContinue; if ($profiles -and -not ($profiles | Where-Object { -not $_.Enabled })) { 'Compliant' }\"",
+        },
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _windows_run_as_different_user_context_menu_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     vuln_id = rule.get('vuln_id', '')
@@ -1706,6 +1731,36 @@ def _sles_mfa_required_packages_candidate(rule: dict, stig_id: str) -> dict | No
         'check': {'type': 'command_output', 'command': command},
         'expected': {'type': 'equals', 'value': ''},
         'description': rule.get('title', ''),
+    }
+
+
+def _linux_fixed_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (title, content, fix_text) if part)
+    match = re.search(r'\bmust\s+mount\s+(?P<path>/[A-Za-z0-9_./-]+)\s+with\s+the\s+["“]?(?P<option>nodev|nosuid|noexec)["”]?\s+option\b', title, re.IGNORECASE)
+    if not match:
+        return None
+    mount_path = match.group('path')
+    required_option = match.group('option').lower()
+    if re.search(r'(?:removable\s+media|NFS|Network\s+File\s+System|user\s+home\s+directories)', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'/etc/fstab', combined, re.IGNORECASE):
+        return None
+    if not re.search(re.escape(mount_path), fix_text + '\n' + content):
+        return None
+    if not re.search(r'\b' + re.escape(required_option) + r'\b', fix_text + '\n' + content, re.IGNORECASE):
+        return None
+    command = f"findmnt -nkT '{mount_path}' | awk 'NR==1{{print $4}}' | grep -Eq '(^|,){required_option}(,|$)' && printf 'Compliant'"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
     }
 
 
@@ -5870,6 +5925,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
             }
 
     if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'office', 'adobe', 'acrobat')):
+        host_firewall_candidate = _windows_host_firewall_enabled_candidate(rule, stig_id)
+        if host_firewall_candidate:
+            return host_firewall_candidate
+
         hardened_unc_candidate = _windows_hardened_unc_paths_candidate(rule, stig_id)
         if hardened_unc_candidate:
             return hardened_unc_candidate
@@ -6033,7 +6092,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate
