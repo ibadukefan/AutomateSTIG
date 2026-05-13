@@ -355,6 +355,56 @@ If users home directory is not defined, this is a finding.""",
             'description': 'RHEL 9 must mount /var/log/audit with the nodev option.',
         })
 
+    def test_infers_linux_removable_media_mount_option_candidate_from_authoritative_fstab_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257857',
+            'title': 'RHEL 9 must prevent code from being executed on file systems that are used with removable media.',
+            'check_content': '''Verify RHEL 9 file systems that are used for removable media are mounted with the "noexec" option with the following command:
+
+$ more /etc/fstab
+
+UUID=2bc871e4-e2a3-4f29-9ece-3be60c835222 /mnt/usbflash vfat noauto,owner,ro,nosuid,nodev,noexec 0 0
+
+If a file system found in "/etc/fstab" refers to removable media and it does not have the "noexec" option set, this is a finding.''',
+            'fix_text': 'Configure the "/etc/fstab" to use the "noexec" option on file systems that are associated with removable media.',
+        }, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-257857')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/etc/fstab', candidate['check']['command'])
+        self.assertIn('noexec', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_sles_removable_media_mount_option_variant_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234999',
+            'title': 'SUSE operating system file systems that are used with removable media must be mounted to prevent files with the setuid and setgid bit set from being executed.',
+            'check_content': '''Verify SUSE operating system file systems used for removable media are mounted with the "nosuid" option.
+
+Check the file systems that are mounted at boot time with the following command:
+
+> more /etc/fstab
+
+UUID=2bc871e4-e2a3-4f29-9ece-3be60c835222 /mnt/usbflash vfat noauto,owner,ro,nosuid 0 0
+
+If a file system found in "/etc/fstab" refers to removable media and it does not have the "nosuid" option set, this is a finding.''',
+            'fix_text': 'Configure the SUSE operating system "/etc/fstab" file to use the "nosuid" option on file systems that are associated with removable media.',
+        }, 'SLES_15_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-234999')
+        self.assertIn('nosuid', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_rejects_removable_media_mount_option_without_authoritative_finding_sentence(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257857',
+            'title': 'RHEL 9 must prevent code from being executed on file systems that are used with removable media.',
+            'check_content': 'Review /etc/fstab for removable media entries that mention noexec.',
+            'fix_text': 'Configure the "/etc/fstab" to use the "noexec" option on file systems that are associated with removable media.',
+        }, 'RHEL_9_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_linux_interactive_home_mount_option_violation_scan_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230302',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk '!/^[[:space:]]*#/ && NF >= 4 && ($3 ~ /^(vfat|exfat|iso9660|udf|ntfs|msdos)$/ || $2 ~ \"^/(media|mnt)/\") { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"noexec\") ok=1; if (!ok) print }' /etc/fstab",
+      "type": "command_output"
+    },
+    "description": "OL 8 file systems must not execute binary files on removable media.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-248622"
+  },
   "check_content_excerpt": "Verify that file systems used for removable media are mounted with the \"noexec\" option with the following command: \n \n$ sudo more /etc/fstab \n \nUUID=2bc871e4-e2a3-4f29-9ece-3be60c835222 /mnt/usbflash vfat noauto,owner,ro,nosuid,nodev,noexec 0 0 \n \nIf a file system found in \"/etc/fstab\" refers to removable media and it does not have the \"noexec\" option set, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the \"/etc/fstab\" to use the \"noexec\" option on file systems that are associated with removable media.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248622r991589_rule",
   "severity": "medium",

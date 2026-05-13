@@ -1547,46 +1547,49 @@
       "vuln_id": "V-248620"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248621",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248621r991589_rule",
       "severity": "medium",
       "title": "OL 8 file systems must not interpret character or block special devices from untrusted file systems.",
-      "tracking_issue": "TODO-V-248621",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248621"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248622",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248622r991589_rule",
       "severity": "medium",
       "title": "OL 8 file systems must not execute binary files on removable media.",
-      "tracking_issue": "TODO-V-248622",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248622"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248623",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248623r991589_rule",
       "severity": "medium",
       "title": "OL 8 must prevent files with the setuid and setgid bit set from being executed on file systems that are used with removable media.",
-      "tracking_issue": "TODO-V-248623",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248623"

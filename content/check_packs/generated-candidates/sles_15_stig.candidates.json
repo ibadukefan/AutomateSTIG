@@ -1798,6 +1798,19 @@
     },
     {
       "check": {
+        "command": "awk '!/^[[:space:]]*#/ && NF >= 4 && ($3 ~ /^(vfat|exfat|iso9660|udf|ntfs|msdos)$/ || $2 ~ \"^/(media|mnt)/\") { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"nosuid\") ok=1; if (!ok) print }' /etc/fstab",
+        "type": "command_output"
+      },
+      "description": "SUSE operating system file systems that are used with removable media must be mounted to prevent files with the setuid and setgid bit set from being executed.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234999"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fstab",
         "pattern": "UUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid 0 0",

@@ -1216,46 +1216,49 @@
       "vuln_id": "V-230302"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230303",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230303r1017113_rule",
       "severity": "medium",
       "title": "RHEL 8 must prevent special devices on file systems that are used with removable media.",
-      "tracking_issue": "TODO-V-230303",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230303"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230304",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230304r1017114_rule",
       "severity": "medium",
       "title": "RHEL 8 must prevent code from being executed on file systems that are used with removable media.",
-      "tracking_issue": "TODO-V-230304",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230304"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230305",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230305r1017115_rule",
       "severity": "medium",
       "title": "RHEL 8 must prevent files with the setuid and setgid bit set from being executed on file systems that are used with removable media.",
-      "tracking_issue": "TODO-V-230305",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230305"

@@ -1867,6 +1867,65 @@ def _sles_mfa_required_packages_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _linux_removable_media_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    supported_vulns = {
+        'V-204481',
+        'V-230303', 'V-230304', 'V-230305',
+        'V-234999',
+        'V-248621', 'V-248622', 'V-248623',
+        'V-257857', 'V-257858', 'V-257859',
+        'V-271644', 'V-271645', 'V-271646',
+    }
+    if rule.get('vuln_id', '') not in supported_vulns:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    option_match = re.search(
+        r'file\s+systems?(?:\s+that\s+are)?\s+used\s+for\s+removable\s+media\s+are\s+mounted\s+with\s+the\s+["“](nodev|noexec|nosuid)["”]\s+option',
+        content,
+        re.IGNORECASE,
+    )
+    if not option_match:
+        return None
+    required_option = option_match.group(1).lower()
+    if not re.search(r'\b(?:sudo\s+)?more\s+/etc/fstab\b', content, re.IGNORECASE):
+        return None
+    if not re.search(
+        r'file\s+system\s+found\s+in\s+["“]/etc/fstab["”]\s+refers\s+to\s+removable\s+media\s+and\s+it\s+does\s+not\s+have\s+the\s+["“]'
+        + re.escape(required_option)
+        + r'["”]\s+option\s+set,\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    if not re.search(
+        r'/etc/fstab.*use\s+the\s+["“]'
+        + re.escape(required_option)
+        + r'["”]\s+option\s+on\s+file\s+systems\s+that\s+are\s+associated\s+with\s+removable\s+media',
+        fix_text,
+        re.IGNORECASE | re.DOTALL,
+    ):
+        return None
+    command = (
+        "awk '!/^[[:space:]]*#/ && NF >= 4 && "
+        "($3 ~ /^(vfat|exfat|iso9660|udf|ntfs|msdos)$/ || $2 ~ \"^/(media|mnt)/\") "
+        "{ ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \""
+        + required_option
+        + "\") ok=1; if (!ok) print }' /etc/fstab"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': title,
+    }
+
+
+
 def _linux_fixed_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -6304,7 +6363,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_passwd_home_directory_assigned_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_passwd_home_directory_assigned_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate
