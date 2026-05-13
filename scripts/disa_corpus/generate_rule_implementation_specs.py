@@ -1194,6 +1194,33 @@ def _windows_directory_service_max_conn_idle_time_candidate(rule: dict, stig_id:
     }
 
 
+def _ol9_crypto_policy_not_overridden_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if rule.get('vuln_id') != 'V-271479':
+        return None
+    if 'oracle_linux_9' not in stig_id.lower() and 'ol_9' not in stig_id.lower():
+        return None
+    if not re.search(r'update-crypto-policies\s+--check\s+&&\s+echo\s+PASS', content):
+        return None
+    if not re.search(r'If\s+the\s+last\s+line\s+is\s+not\s+["“]PASS["”],\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    if '/etc/crypto-policies/back-ends/' not in content or '/usr/share/crypto-policies/FIPS' not in content:
+        return None
+    if not re.search(r'paths\s+do\s+not\s+point\s+to\s+the\s+respective\s+files\s+under\s+/usr/share/crypto-policies/FIPS\s+path,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    if not re.search(r'dnf\s+-y\s+reinstall\s+crypto-policies', fix_text) or not re.search(r'update-crypto-policies\s+--set\s+FIPS', fix_text):
+        return None
+    command = 'sh -c \'update-crypto-policies --check >/dev/null && test -z "$(find /etc/crypto-policies/back-ends -maxdepth 1 -type l ! -lname "/usr/share/crypto-policies/FIPS/*" -print -quit)" && echo PASS\''
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'PASS'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _vcenter_lookup_optional_xml_value_candidate(rule: dict, stig_id: str) -> dict | None:
     stig_lower = stig_id.lower()
     if 'vsphere' not in stig_lower or 'lookup' not in stig_lower:
@@ -5985,6 +6012,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     windows_run_as_different_user_candidate = _windows_run_as_different_user_context_menu_candidate(rule, stig_id)
     if windows_run_as_different_user_candidate:
         return windows_run_as_different_user_candidate
+    ol9_crypto_policy_not_overridden_candidate = _ol9_crypto_policy_not_overridden_candidate(rule, stig_id)
+    if ol9_crypto_policy_not_overridden_candidate:
+        return ol9_crypto_policy_not_overridden_candidate
     vcenter_lookup_optional_xml_value_candidate = _vcenter_lookup_optional_xml_value_candidate(rule, stig_id)
     if vcenter_lookup_optional_xml_value_candidate:
         return vcenter_lookup_optional_xml_value_candidate

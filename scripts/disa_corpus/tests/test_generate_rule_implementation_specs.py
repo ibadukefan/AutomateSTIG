@@ -746,6 +746,52 @@ Commit Changes.''',
             'description': 'Windows Server 2025 directory service must be configured to terminate LDAP-based network connections to the directory server after five minutes of inactivity.',
         })
 
+    def test_infers_ol9_crypto_policy_not_overridden_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271479',
+            'rule_id': 'SV-271479r1092621_rule',
+            'title': 'OL 9 must not allow the cryptographic policy to be overridden.',
+            'check_content': '''Verify that OL 9 cryptographic policies are not overridden.
+
+Verify that the configured policy matches the generated policy with the following command:
+
+$ sudo update-crypto-policies --check && echo PASS
+The configured policy matches the generated policy
+PASS
+
+If the last line is not "PASS", this is a finding.
+
+List all of the crypto backends configured on the system with the following command:
+
+$ ls -l /etc/crypto-policies/back-ends/
+lrwxrwxrwx. 1 root root  40 Nov 13 16:29 bind.config -> /usr/share/crypto-policies/FIPS/bind.txt
+-rw-r--r--. 1 root root 398 Nov 13 16:29 nss.config
+lrwxrwxrwx. 1 root root  43 Nov 13 16:29 openssl.config -> /usr/share/crypto-policies/FIPS/openssl.txt
+
+If the paths do not point to the respective files under /usr/share/crypto-policies/FIPS path, this is a finding.
+
+Note: nss.config should not be hyperlinked.''',
+            'fix_text': '''Configure OL 9 to correctly implement the systemwide cryptographic policies by reinstalling the crypto-policies package contents.
+
+Reinstall crypto-policies with the following command:
+
+$ sudo dnf -y reinstall crypto-policies
+
+Set the crypto-policy to FIPS with the following command:
+
+$ sudo update-crypto-policies --set FIPS''',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271479',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'sh -c \'update-crypto-policies --check >/dev/null && test -z "$(find /etc/crypto-policies/back-ends -maxdepth 1 -type l ! -lname "/usr/share/crypto-policies/FIPS/*" -print -quit)" && echo PASS\'',
+            },
+            'expected': {'type': 'equals', 'value': 'PASS'},
+            'description': 'OL 9 must not allow the cryptographic policy to be overridden.',
+        })
+
     def test_infers_vcenter_lookup_optional_xml_value_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-259059',

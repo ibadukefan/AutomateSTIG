@@ -569,6 +569,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'update-crypto-policies --check >/dev/null && test -z \"$(find /etc/crypto-policies/back-ends -maxdepth 1 -type l ! -lname \"/usr/share/crypto-policies/FIPS/*\" -print -quit)\" && echo PASS'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must not allow the cryptographic policy to be overridden.",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271479"
+    },
+    {
+      "check": {
         "command": "rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'",
         "type": "command_output"
       },

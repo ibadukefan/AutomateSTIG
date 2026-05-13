@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 435,
+  "candidate_checks": 436,
   "cases": [
     {
       "check": {
@@ -1113,6 +1113,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271478"
+    },
+    {
+      "check": {
+        "command": "sh -c 'update-crypto-policies --check >/dev/null && test -z \"$(find /etc/crypto-policies/back-ends -maxdepth 1 -type l ! -lname \"/usr/share/crypto-policies/FIPS/*\" -print -quit)\" && echo PASS'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must not allow the cryptographic policy to be overridden.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'update-crypto-policies --check >/dev/null && test -z \"$(find /etc/crypto-policies/back-ends -maxdepth 1 -type l ! -lname \"/usr/share/crypto-policies/FIPS/*\" -print -quit)\" && echo PASS'": "unexpected-PASS"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'update-crypto-policies --check >/dev/null && test -z \"$(find /etc/crypto-policies/back-ends -maxdepth 1 -type l ! -lname \"/usr/share/crypto-policies/FIPS/*\" -print -quit)\" && echo PASS'": "PASS"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271479"
     },
     {
       "check": {
@@ -12044,5 +12070,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 435
+  "validated_candidates": 436
 }
