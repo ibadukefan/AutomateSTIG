@@ -66,6 +66,105 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertIn('"vuln_id": "V-230543"', generated)
             self.assertNotIn('xccdf_mil.disa.stig_group_V-230543', generated)
 
+    def test_infers_windows_user_right_allowlist_before_server_core_instructions(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254434',
+            'title': 'Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and standalone or nondomain-joined systems.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+Run "gpedit.msc".
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups other than the following are granted the "Access this computer from the network" user right, this is a finding:
+
+- Administrators
+- Authenticated Users
+
+For server core installations, run the following command:
+
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
+
+Review the text file.''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> "Access this computer from the network" to only include the following groups or accounts:
+
+- Administrators
+- Authenticated Users''',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254434',
+            'platform': 'windows',
+            'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeNetworkLogonRight'},
+            'expected': {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-11'},
+            'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and standalone or nondomain-joined systems.',
+        })
+
+    def test_infers_windows_secedit_sid_allowlist_user_right_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254418',
+            'title': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
+            'check_content': '''Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups other than the following are granted the "Access this computer from the network" right, this is a finding.
+
+- Administrators
+- Authenticated Users
+- Enterprise Domain Controllers
+
+For server core installations, run the following command:
+
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
+
+Review the text file.
+
+If any SIDs other than the following are granted the "SeNetworkLogonRight" user right, this is a finding.
+
+S-1-5-32-544 (Administrators)
+S-1-5-11 (Authenticated Users)
+S-1-5-9 (Enterprise Domain Controllers)''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Access this computer from the network to include only the following accounts or groups:
+
+- Administrators
+- Authenticated Users
+- Enterprise Domain Controllers''',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254418',
+            'platform': 'windows',
+            'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeNetworkLogonRight'},
+            'expected': {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-11,*S-1-5-9'},
+            'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
+        })
+
+    def test_infers_postgresql_log_timezone_utc_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233532',
+            'title': 'PostgreSQL must record time stamps, in audit records and application data that can be mapped to Coordinated Universal Time (UTC, formerly GMT).',
+            'check_content': '''As the database administrator, check the current log_timezone setting by running the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW log_timezone"
+
+log_timezone
+--------------
+UTC
+(1 row)
+
+If log_timezone is not set to the desired time zone, this is a finding.''',
+            'fix_text': '''To change log_timezone in postgresql.conf to use a different time zone for logs, as the database administrator, run the following:
+
+$ sudo su - postgres
+$ vi ${PGDATA?}/postgresql.conf
+log_timezone='UTC'
+
+Next, restart the database.''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-233532',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -tAc "SHOW log_timezone"'},
+            'expected': {'type': 'equals', 'value': 'UTC'},
+            'description': 'PostgreSQL must record time stamps, in audit records and application data that can be mapped to Coordinated Universal Time (UTC, formerly GMT).',
+        })
+
     def test_infers_apache_windows_httpd_conf_directive_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-214327',

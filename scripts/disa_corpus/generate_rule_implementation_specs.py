@@ -4444,6 +4444,22 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'contains', 'substring': 'on'},
             'description': rule.get('title', ''),
         }
+    postgresql_log_timezone_utc = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233532'
+        and re.search(r'\bCoordinated\s+Universal\s+Time\s*\(UTC', rule.get('title', '') or '', re.IGNORECASE)
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_timezone["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+log_timezone\s+is\s+not\s+set\s+to\s+the\s+desired\s+time\s+zone,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*log_timezone\s*=\s*[\'"“]?UTC[\'"”]?\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
+    )
+    if postgresql_log_timezone_utc:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -tAc "SHOW log_timezone"'},
+            'expected': {'type': 'equals', 'value': 'UTC'},
+            'description': rule.get('title', ''),
+        }
     postgresql_show_literal_settings = {
         'V-233531': {
             'setting': 'log_file_mode',

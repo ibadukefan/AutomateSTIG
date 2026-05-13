@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 26,
+  "candidate_checks": 27,
   "cases": [
     {
       "check": {
@@ -52,6 +52,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233531"
+    },
+    {
+      "check": {
+        "command": "psql -tAc \"SHOW log_timezone\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must record time stamps, in audit records and application data that can be mapped to Coordinated Universal Time (UTC, formerly GMT).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "UTC"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -tAc \"SHOW log_timezone\"": "unexpected-UTC"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -tAc \"SHOW log_timezone\"": "UTC"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233532"
     },
     {
       "check": {
@@ -683,5 +709,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 26
+  "validated_candidates": 27
 }

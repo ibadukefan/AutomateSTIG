@@ -28,6 +28,19 @@
     },
     {
       "check": {
+        "command": "psql -tAc \"SHOW log_timezone\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must record time stamps, in audit records and application data that can be mapped to Coordinated Universal Time (UTC, formerly GMT).",
+      "expected": {
+        "type": "equals",
+        "value": "UTC"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233532"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW log_file_mode\"",
         "type": "command_output"
       },
