@@ -7694,5 +7694,44 @@ If any KubeletConfiguration file is less restrictive than "644", this is a findi
             'description': 'The Kubernetes KubeletConfiguration files must have file permissions set to 644 or more restrictive.',
         })
 
+    def test_infers_tomcat_web_xml_boolean_param_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222954',
+            'title': 'DefaultServlet directory listings parameter must be disabled.',
+            'check_content': '''From the Tomcat server run the following OS command:
+
+sudo cat $CATALINA_BASE/conf/web.xml |grep -i -A10 -B2 defaultservlet
+
+The above command will include ten lines after and two lines before the occurrence of "defaultservlet". Some systems may require that the user increase the after number (A10) in order to determine the "listings" param-value.
+
+If the "listings" param-value for the "DefaultServlet" servlet class does not = "false", this is a finding.''',
+            'fix_text': 'change the "listings" <param-value> to read "false".',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222954',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'grep -i -A10 -B2 defaultservlet $CATALINA_BASE/conf/web.xml'},
+            'expected': {'type': 'contains', 'substring': '<param-name>listings</param-name>\n<param-value>false</param-value>'},
+            'description': 'DefaultServlet directory listings parameter must be disabled.',
+        })
+
+    def test_infers_windows_bluetooth_support_service_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278018',
+            'title': 'Windows Server 2025 must not have Bluetooth enabled unless required by the organization.',
+            'check_content': 'In the Windows search bar, type "Services". In the Services "Name" column look for the "Bluetooth Support Service". If this is set to "automatic", this is a finding.',
+            'fix_text': 'In the Services "Name " column, look for the "Bluetooth Support Service" and set this to "Disabled".',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-278018',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$svc=Get-CimInstance Win32_Service -Filter \\\"Name='bthserv'\\\" -ErrorAction SilentlyContinue; if (-not $svc -or $svc.StartMode -eq 'Disabled' -or $svc.StartMode -eq 'Manual') { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Windows Server 2025 must not have Bluetooth enabled unless required by the organization.',
+        })
+
 if __name__ == '__main__':
     unittest.main()

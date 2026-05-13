@@ -5601,6 +5601,71 @@ def _windows_event_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _tomcat_web_xml_boolean_param_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-222928', 'V-222953', 'V-222954'}:
+        return None
+    command_match = re.search(
+        r'(?:^|\n)\s*(?:[$#>]\s*)?(?:sudo\s+)?(?:cat\s+)?(?P<path>\$CATALINA_BASE/conf/web\.xml)\s*\|?\s*grep\s+-i\s+(?P<after>-A\d+)\s+(?P<before>-B\d+)\s+(?P<token>[A-Za-z0-9_.-]+)(?:\s+\$CATALINA_BASE/conf/web\.xml(?:\s+file\.?)?)?\s*(?:\n|$)',
+        content,
+        re.IGNORECASE,
+    )
+    if not command_match:
+        return None
+    finding_match = re.search(
+        r'If\s+(?:the\s+)?["“](?P<param>[A-Za-z0-9_.-]+)["”]\s+(?:param-value\s+)?(?:for\s+the\s+["“]DefaultServlet["”]\s+servlet\s+class\s+)?(?:does\s+not\s+=|is\s+not\s+set\s+to)\s+["“]?(?P<value>true|false|0)["”]?,?\s+this\s+is\s+a\s+finding\.',
+        content,
+        re.IGNORECASE,
+    )
+    if not finding_match:
+        return None
+    param = finding_match.group('param')
+    value = finding_match.group('value').lower()
+    token = command_match.group('token')
+    if vuln_id == 'V-222928':
+        if param.lower() not in {'hstsenable', 'hstsenabled'} or token.lower() != 'hstsenable':
+            return None
+        param = 'hstsEnabled'
+    elif token.lower() != 'defaultservlet' or param.lower() not in {'debug', 'listings'}:
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': f'grep -i {command_match.group("after")} {command_match.group("before")} {token} $CATALINA_BASE/conf/web.xml',
+        },
+        'expected': {'type': 'contains', 'substring': f'<param-name>{param}</param-name>\n<param-value>{value}</param-value>'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _windows_bluetooth_support_service_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id) or rule.get('vuln_id', '') != 'V-278018':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'Bluetooth\s+Support\s+Service', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+this\s+is\s+set\s+to\s+["“]automatic["”],?\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Bluetooth\s+Support\s+Service[^.]+set\s+this\s+to\s+["“]Disabled["”]', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': "powershell -NoProfile -Command \"$svc=Get-CimInstance Win32_Service -Filter \\\"Name='bthserv'\\\" -ErrorAction SilentlyContinue; if (-not $svc -or $svc.StartMode -eq 'Disabled' -or $svc.StartMode -eq 'Manual') { 'Compliant' }\"",
+        },
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_services_msc_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -5781,6 +5846,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         if services_msc_candidate:
             return services_msc_candidate
 
+        bluetooth_service_candidate = _windows_bluetooth_support_service_disabled_candidate(rule, stig_id)
+        if bluetooth_service_candidate:
+            return bluetooth_service_candidate
+
         office_absent_or_dword_candidate = _office_registry_absent_or_dword_value_candidate(rule, stig_id)
         if office_absent_or_dword_candidate:
             return office_absent_or_dword_candidate
@@ -5878,6 +5947,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_systemd_boolean_property_candidate = _tomcat_systemd_boolean_property_candidate(rule, stig_id)
     if tomcat_systemd_boolean_property_candidate:
         return tomcat_systemd_boolean_property_candidate
+
+    tomcat_web_xml_boolean_param_candidate = _tomcat_web_xml_boolean_param_candidate(rule, stig_id)
+    if tomcat_web_xml_boolean_param_candidate:
+        return tomcat_web_xml_boolean_param_candidate
 
     linux_shadow_password_lifetime_candidate = _linux_shadow_password_lifetime_candidate(rule, stig_id)
     if linux_shadow_password_lifetime_candidate:

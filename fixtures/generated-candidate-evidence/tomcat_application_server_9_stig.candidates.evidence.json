@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 12,
+  "candidate_checks": 14,
   "cases": [
     {
       "check": {
@@ -26,6 +26,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222951"
+    },
+    {
+      "check": {
+        "command": "grep -i -A10 -B2 defaultservlet $CATALINA_BASE/conf/web.xml",
+        "type": "command_output"
+      },
+      "description": "DefaultServlet debug parameter must be disabled.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "<param-name>debug</param-name>\n<param-value>0</param-value>",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i -A10 -B2 defaultservlet $CATALINA_BASE/conf/web.xml": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i -A10 -B2 defaultservlet $CATALINA_BASE/conf/web.xml": "before\n<param-name>debug</param-name>\n<param-value>0</param-value>\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222953"
+    },
+    {
+      "check": {
+        "command": "grep -i -A10 -B2 defaultservlet $CATALINA_BASE/conf/web.xml",
+        "type": "command_output"
+      },
+      "description": "DefaultServlet directory listings parameter must be disabled.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "<param-name>listings</param-name>\n<param-value>false</param-value>",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i -A10 -B2 defaultservlet $CATALINA_BASE/conf/web.xml": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i -A10 -B2 defaultservlet $CATALINA_BASE/conf/web.xml": "before\n<param-name>listings</param-name>\n<param-value>false</param-value>\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222954"
     },
     {
       "check": {
@@ -319,5 +371,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 12
+  "validated_candidates": 14
 }

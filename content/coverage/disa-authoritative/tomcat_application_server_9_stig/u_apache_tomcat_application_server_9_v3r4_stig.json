@@ -382,31 +382,33 @@
       "vuln_id": "V-222952"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222953",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222953r960963_rule",
       "severity": "low",
       "title": "DefaultServlet debug parameter must be disabled.",
-      "tracking_issue": "TODO-V-222953",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222953"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222954",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222954r960963_rule",
       "severity": "low",
       "title": "DefaultServlet directory listings parameter must be disabled.",
-      "tracking_issue": "TODO-V-222954",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222954"

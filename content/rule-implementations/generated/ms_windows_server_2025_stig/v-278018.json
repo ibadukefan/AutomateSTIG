@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$svc=Get-CimInstance Win32_Service -Filter \\\"Name='bthserv'\\\" -ErrorAction SilentlyContinue; if (-not $svc -or $svc.StartMode -eq 'Disabled' -or $svc.StartMode -eq 'Manual') { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2025 must not have Bluetooth enabled unless required by the organization.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278018"
+  },
   "check_content_excerpt": "In the Windows search bar, type \"Services\". In the Services \"Name\" column look for the \"Bluetooth Support Service\". If this is set to \"automatic\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Validate the site documentation to ensure the approval of use for Wi-Fi server connections. If the connection has not been approved, type \"Services\" in the Windows search bar. In the Services \"Name \" column, look for the \"Bluetooth Support Service\" and set this to \"Disabled\". Any Bluetooth devices listed or in use must be documented and approved by the information system security officer (ISSO) or authorizing official (AO).",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-278018r1180760_rule",
   "severity": "medium",

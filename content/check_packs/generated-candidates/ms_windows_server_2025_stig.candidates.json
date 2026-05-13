@@ -41,6 +41,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$svc=Get-CimInstance Win32_Service -Filter \\\"Name='bthserv'\\\" -ErrorAction SilentlyContinue; if (-not $svc -or $svc.StartMode -eq 'Disabled' -or $svc.StartMode -eq 'Manual') { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must not have Bluetooth enabled unless required by the organization.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278018"
+    },
+    {
+      "check": {
         "name": "PNRP",
         "should_be_installed": false,
         "type": "windows_feature"

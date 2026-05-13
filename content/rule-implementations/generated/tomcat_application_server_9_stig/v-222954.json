@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i -A10 -B2 defaultservlet $CATALINA_BASE/conf/web.xml",
+      "type": "command_output"
+    },
+    "description": "DefaultServlet directory listings parameter must be disabled.",
+    "expected": {
+      "substring": "<param-name>listings</param-name>\n<param-value>false</param-value>",
+      "type": "contains"
+    },
+    "platform": "generic",
+    "vuln_id": "V-222954"
+  },
   "check_content_excerpt": "From the Tomcat server run the following OS command:\n\nsudo cat $CATALINA_BASE/conf/web.xml |grep -i -A10 -B2 defaultservlet \n\nThe above command will include ten lines after and two lines before the occurrence of \"defaultservlet\". Some systems may require that the user increase the after number (A10) in order to determine the \"listings\" param-value. \n\nIf the \"listings\" param-value for the \"DefaultServlet\" servlet class does not = \"false\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "<param-name>listings</param-name>\n<param-value>false</param-value>",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server as a privileged user:\n\nEdit the $CATALINA_BASE/conf/web.xml file.\n\nExamine the <init-param> elements within the <Servletclass> element, if the \"listings\" <param-value>element is \"true\" change the \"listings\" <param-value> to read \"false\".\n\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222954r960963_rule",
   "severity": "low",

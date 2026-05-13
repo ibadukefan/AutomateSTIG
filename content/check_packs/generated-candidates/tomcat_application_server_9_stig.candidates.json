@@ -15,6 +15,32 @@
     },
     {
       "check": {
+        "command": "grep -i -A10 -B2 defaultservlet $CATALINA_BASE/conf/web.xml",
+        "type": "command_output"
+      },
+      "description": "DefaultServlet debug parameter must be disabled.",
+      "expected": {
+        "substring": "<param-name>debug</param-name>\n<param-value>0</param-value>",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222953"
+    },
+    {
+      "check": {
+        "command": "grep -i -A10 -B2 defaultservlet $CATALINA_BASE/conf/web.xml",
+        "type": "command_output"
+      },
+      "description": "DefaultServlet directory listings parameter must be disabled.",
+      "expected": {
+        "substring": "<param-name>listings</param-name>\n<param-value>false</param-value>",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222954"
+    },
+    {
+      "check": {
         "command": "find $CATALINA_HOME -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls",
         "type": "command_output"
       },
