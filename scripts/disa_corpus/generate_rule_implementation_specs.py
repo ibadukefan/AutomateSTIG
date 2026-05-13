@@ -262,6 +262,57 @@ def _windows_defender_registry_criteria_candidate(rule: dict, stig_id: str) -> d
     return None
 
 
+def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Apache_Server_2-4_Windows_Server_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    title = rule.get('title', '') or ''
+    directive_specs = {
+        'V-214327': ('SSLVerifyClient', 'require', 'required'),
+        'V-214340': ('TraceEnable', 'Off', 'required'),
+        'V-214355': ('SSLCompression', 'off', 'absent_or_value'),
+    }
+    spec = directive_specs.get(vuln_id)
+    if not spec:
+        return None
+    directive, value, mode = spec
+    combined = content + '\n' + fix_text
+    if directive not in combined:
+        return None
+    if mode == 'required':
+        if not re.search(rf'If\s+[^.]*{re.escape(directive)}[^.]*not\s+set\s+to\s+["“]?{re.escape(value)}["”]?', content, re.IGNORECASE):
+            return None
+        pattern = rf'^\s*{re.escape(directive)}\s+{re.escape(value)}\s*(?:#.*)?$'
+    else:
+        if not re.search(rf'If\s+the\s+["“]{re.escape(directive)}["”]\s+directive\s+does\s+not\s+exist,\s+this\s+is\s+a\s+not\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(rf'If\s+the\s+["“]{re.escape(directive)}["”]\s+directive\s+is\s+set\s+to\s+["“]?on["”]?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        pattern = rf'^(?:\s*|\s*{re.escape(directive)}\s+{re.escape(value)}\s*(?:#.*)?)$'
+    command = (
+        'powershell -NoProfile -Command '
+        f'"$p=Join-Path $env:ProgramFiles \'Apache24\\conf\\httpd.conf\'; '
+        f"$line=Select-String -Path $p -Pattern '{pattern}' -ErrorAction SilentlyContinue | Select-Object -First 1; "
+        "if ($line) { 'Compliant' }\""
+    )
+    if mode == 'absent_or_value':
+        command = (
+            'powershell -NoProfile -Command '
+            f'"$p=Join-Path $env:ProgramFiles \'Apache24\\conf\\httpd.conf\'; '
+            f"$lines=Select-String -Path $p -Pattern '^\\s*{re.escape(directive)}\\b' -ErrorAction SilentlyContinue; "
+            f"if ((-not $lines) -or ($lines | Where-Object {{ $_.Line -match '^\\s*{re.escape(directive)}\\s+{re.escape(value)}\\s*(?:#.*)?$' }})) {{ 'Compliant' }}\""
+        )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _apache_windows_module_candidate(rule: dict, stig_id: str) -> dict | None:
     if stig_id != 'Apache_Server_2-4_Windows_Server_STIG':
         return None
@@ -272,6 +323,7 @@ def _apache_windows_module_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     module_sets = {
         'V-214307': ('required', ('session_module', 'usertrack_module')),
+        'V-214308': ('required', ('ssl_module',)),
         'V-214310': ('required', ('log_config_module',)),
         'V-214325': ('forbidden', ('dav_module', 'dav_fs_module', 'dav_lock_module')),
         'V-214333': ('required', ('unique_id_module',)),
@@ -5585,6 +5637,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         hardened_unc_candidate = _windows_hardened_unc_paths_candidate(rule, stig_id)
         if hardened_unc_candidate:
             return hardened_unc_candidate
+
+        apache_windows_directive_candidate = _apache_windows_httpd_conf_directive_candidate(rule, stig_id)
+        if apache_windows_directive_candidate:
+            return apache_windows_directive_candidate
 
         apache_windows_module_candidate = _apache_windows_module_candidate(rule, stig_id)
         if apache_windows_module_candidate:

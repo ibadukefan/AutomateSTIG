@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -match 'ssl_module')) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must use encryption strength in accordance with the categorization of data hosted by the Apache web server when remote connections are provided.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214308"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -match 'log_config_module')) { 'Compliant' }\"",
         "type": "command_output"
       },
@@ -38,6 +51,32 @@
       },
       "platform": "windows",
       "vuln_id": "V-214325"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*SSLVerifyClient\\s+require\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must encrypt passwords during transmission.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214327"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*TraceEnable\\s+Off\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Debugging and trace information used to diagnose the Apache web server must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214340"
     }
   ],
   "platform": "windows",

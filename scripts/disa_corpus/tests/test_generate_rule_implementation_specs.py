@@ -66,6 +66,48 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertIn('"vuln_id": "V-230543"', generated)
             self.assertNotIn('xccdf_mil.disa.stig_group_V-230543', generated)
 
+    def test_infers_apache_windows_httpd_conf_directive_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214327',
+            'title': 'The Apache web server must encrypt passwords during transmission.',
+            'check_content': '''Review the <'INSTALL PATH'>\\conf\\httpd.conf file.
+
+Ensure SSL is enabled by looking at the "SSLVerifyClient" directive.
+
+If the value of "SSLVerifyClient" is not set to "require", this is a finding.''',
+            'fix_text': 'Configure the SSLVerifyClient directive in httpd.conf to require.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214327',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*SSLVerifyClient\\s+require\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must encrypt passwords during transmission.',
+        })
+
+    def test_infers_apache_windows_ssl_module_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214308',
+            'title': 'The Apache web server must use encryption strength in accordance with the categorization of data hosted by the Apache web server when remote connections are provided.',
+            'check_content': '''In a command line, navigate to "<'INSTALLED PATH'>\\bin". Run "httpd -M" to view a list of installed modules.
+
+If the "ssl_module" is not enabled, this is a finding.''',
+            'fix_text': 'Load the ssl_module in the Apache configuration.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214308',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -match 'ssl_module')) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must use encryption strength in accordance with the categorization of data hosted by the Apache web server when remote connections are provided.',
+        })
+
     def test_infers_windows_legal_notice_text_registry_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254457',
