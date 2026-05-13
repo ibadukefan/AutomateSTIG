@@ -156,6 +156,76 @@ If the "ssl_module" is not enabled, this is a finding.''',
             'description': 'Windows Server 2022 must have a host-based firewall installed and enabled.',
         })
 
+    def test_infers_windows_uefi_bios_mode_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253256',
+            'title': 'Windows 11 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS.',
+            'check_content': '''For virtual desktop implementations (VDIs) where the virtual desktop instance is deleted or refreshed upon logoff, this is NA.
+
+Verify the system firmware is configured to run in UEFI mode, not Legacy BIOS.
+
+Run "System Information".
+
+Under "System Summary", if "BIOS Mode" does not display "UEFI", this is a finding.''',
+            'fix_text': 'Configure UEFI firmware and run the system in UEFI mode, not Legacy BIOS.',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-253256',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Windows 11 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS.',
+        })
+
+    def test_infers_windows_secure_boot_enabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253257',
+            'title': 'Secure Boot must be enabled on Windows 11 systems.',
+            'check_content': '''Verify the system firmware is configured for Secure Boot.
+
+Run "System Information".
+
+Under "System Summary", if "Secure Boot State" does not display "On", this is a finding.''',
+            'fix_text': 'Enable Secure Boot in the system firmware.',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-253257',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$secure=$false; try { $secure=Confirm-SecureBootUEFI -ErrorAction Stop } catch { $secure=$false }; if ($secure) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Secure Boot must be enabled on Windows 11 systems.',
+        })
+
+    def test_infers_windows_tpm_ready_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-205848',
+            'title': 'Windows Server 2019 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use.',
+            'check_content': '''Verify domain-joined systems have a TPM enabled and ready for use.
+
+For standalone systems, this is NA.
+
+Run "tpm.msc".
+Review the sections in the center pane.
+"Status" must indicate it has been configured with a message such as "The TPM is ready for use" or "The TPM is on and ownership has been taken".''',
+            'fix_text': 'Enable and initialize a TPM that is ready for use.',
+        }, 'Windows_Server_2019_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-205848',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Windows Server 2019 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use.',
+        })
+
     def test_infers_windows_legal_notice_text_registry_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254457',

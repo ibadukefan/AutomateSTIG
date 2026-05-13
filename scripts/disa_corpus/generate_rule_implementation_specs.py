@@ -398,6 +398,66 @@ def _apache_windows_module_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _windows_firmware_state_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    if vuln_id in {'V-253256', 'V-205856', 'V-278031'}:
+        if not (
+            re.search(r'Run\s+["“]System\s+Information["”]', content, re.IGNORECASE)
+            and re.search(r'["“]BIOS\s+Mode["”]\s+does\s+not\s+display\s+["“]UEFI["”]', content, re.IGNORECASE)
+            and re.search(r'UEFI\s+mode,\s+not\s+Legacy\s+BIOS', content + '\n' + title, re.IGNORECASE)
+        ):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+    if vuln_id == 'V-253257':
+        if not (
+            re.search(r'Run\s+["“]System\s+Information["”]', content, re.IGNORECASE)
+            and re.search(r'["“]Secure\s+Boot\s+State["”]\s+does\s+not\s+display\s+["“]On["”]', content, re.IGNORECASE)
+            and re.search(r'Secure\s+Boot', content + '\n' + title, re.IGNORECASE)
+        ):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$secure=$false; try { $secure=Confirm-SecureBootUEFI -ErrorAction Stop } catch { $secure=$false }; if ($secure) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+    if vuln_id in {'V-253255', 'V-205848', 'V-277993'}:
+        if not (
+            re.search(r'Run\s+["“]tpm\.msc["”]', content, re.IGNORECASE)
+            and re.search(r'(?:TPM\s+enabled\s+and\s+ready\s+for\s+use|has\s+a\s+TPM\s+and\s+it\s+is\s+ready\s+for\s+use)', content + '\n' + title, re.IGNORECASE)
+            and re.search(r'TPM\s+is\s+ready\s+for\s+use|TPM\s+is\s+on\s+and\s+ownership\s+has\s+been\s+taken', content, re.IGNORECASE)
+        ):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+    return None
+
+
 def _windows_host_firewall_enabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -5976,6 +6036,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
             }
 
     if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'office', 'adobe', 'acrobat')):
+        firmware_state_candidate = _windows_firmware_state_candidate(rule, stig_id)
+        if firmware_state_candidate:
+            return firmware_state_candidate
+
         host_firewall_candidate = _windows_host_firewall_enabled_candidate(rule, stig_id)
         if host_firewall_candidate:
             return host_firewall_candidate

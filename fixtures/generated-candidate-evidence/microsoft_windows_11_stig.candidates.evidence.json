@@ -1,6 +1,84 @@
 {
-  "candidate_checks": 191,
+  "candidate_checks": 194,
   "cases": [
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows 11 domain-joined systems must have a Trusted Platform Module (TPM) enabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253255"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows 11 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253256"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$secure=$false; try { $secure=Confirm-SecureBootUEFI -ErrorAction Stop } catch { $secure=$false }; if ($secure) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Secure Boot must be enabled on Windows 11 systems.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$secure=$false; try { $secure=Confirm-SecureBootUEFI -ErrorAction Stop } catch { $secure=$false }; if ($secure) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$secure=$false; try { $secure=Confirm-SecureBootUEFI -ErrorAction Stop } catch { $secure=$false }; if ($secure) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253257"
+    },
     {
       "check": {
         "command": "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\snmp.exe\\\"\"",
@@ -5153,5 +5231,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 191
+  "validated_candidates": 194
 }

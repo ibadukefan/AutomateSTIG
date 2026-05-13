@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2019 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-205848"
+  },
   "check_content_excerpt": "For standalone or nondomain-joined systems, this is NA.\n\nVerify the system has a TPM and it is ready for use.\n\nRun \"tpm.msc\".\n\nReview the sections in the center pane.\n\n\"Status\" must indicate it has been configured with a message such as \"The TPM is ready for use\" or \"The TPM is on and ownership has been taken\".\n\nTPM Manufacturer Information - Specific Version = 2.0 or 1.2\n\nIf a TPM is not found or is not ready for use, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Ensure domain-joined systems have a TPM that is configured for use. (Versions 2.0 or 1.2 support Credential Guard.)\n\nThe TPM must be enabled in the firmware.\n\nRun \"tpm.msc\" for configuration options in Windows.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-205848r991589_rule",
   "severity": "medium",

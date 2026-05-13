@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$secure=$false; try { $secure=Confirm-SecureBootUEFI -ErrorAction Stop } catch { $secure=$false }; if ($secure) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Secure Boot must be enabled on Windows 11 systems.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-253257"
+  },
   "check_content_excerpt": "Verify the system firmware is configured for Secure Boot.\n\nFor virtual desktop implementations (VDIs) where the virtual desktop instance is deleted or refreshed upon logoff, this is NA.\n\nRun \"System Information\".\n\nUnder \"System Summary\", if \"Secure Boot State\" does not display \"On\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable Secure Boot in the system firmware.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-253257r1117271_rule",
   "severity": "medium",

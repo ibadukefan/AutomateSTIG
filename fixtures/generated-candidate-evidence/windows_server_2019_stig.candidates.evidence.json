@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 186,
+  "candidate_checks": 188,
   "cases": [
     {
       "check": {
@@ -3613,6 +3613,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205848"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $value=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.ftpServer/security/authentication/anonymousAuthentication' -Name enabled -ErrorAction SilentlyContinue).Value; if ($value -eq $false) { 'Disabled' }\"",
         "type": "command_output"
       },
@@ -3636,6 +3662,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205853"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205856"
     },
     {
       "check": {
@@ -5016,5 +5068,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 186
+  "validated_candidates": 188
 }

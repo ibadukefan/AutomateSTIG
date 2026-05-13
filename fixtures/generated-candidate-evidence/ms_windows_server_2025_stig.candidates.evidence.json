@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 223,
+  "candidate_checks": 225,
   "cases": [
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-277993"
+    },
     {
       "check": {
         "command": "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Get-ADUser -Filter * -Properties PasswordNotRequired,Enabled | Where-Object { $_.Enabled -eq $true -and $_.PasswordNotRequired -eq $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter 'PasswordRequired=False and LocalAccount=True' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name }\"",
@@ -366,6 +392,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278027"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278031"
     },
     {
       "check": {
@@ -6005,5 +6057,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 223
+  "validated_candidates": 225
 }

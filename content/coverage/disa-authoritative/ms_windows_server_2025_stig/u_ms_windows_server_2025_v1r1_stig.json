@@ -152,16 +152,17 @@
       "vuln_id": "V-277992"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-277993",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-277993r1182250_rule",
       "severity": "medium",
       "title": "Windows Server 2025 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use.",
-      "tracking_issue": "TODO-V-277993",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-277993"
@@ -721,16 +722,17 @@
       "vuln_id": "V-278030"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278031",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278031r1182046_rule",
       "severity": "medium",
       "title": "Windows Server 2025 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS.",
-      "tracking_issue": "TODO-V-278031",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278031"
