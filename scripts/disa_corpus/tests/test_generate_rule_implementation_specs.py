@@ -156,6 +156,24 @@ If the "ssl_module" is not enabled, this is a finding.''',
             'description': 'Windows Server 2022 must have a host-based firewall installed and enabled.',
         })
 
+    def test_infers_windows_host_firewall_is_installed_and_enabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220724',
+            'title': 'A host-based firewall must be installed and enabled on the system.',
+            'check_content': 'Determine if a host-based firewall is installed and enabled on the system.  If a host-based firewall is not installed and enabled on the system, this is a finding.\n\nThe configuration requirements will be determined by the applicable firewall STIG.',
+            'fix_text': 'Install and enable a host-based firewall on the system.',
+        }, 'MS_Windows_10_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-220724',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$profiles=Get-NetFirewallProfile -ErrorAction SilentlyContinue; if ($profiles -and -not ($profiles | Where-Object { -not $_.Enabled })) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'A host-based firewall must be installed and enabled on the system.',
+        })
+
     def test_infers_windows_uefi_bios_mode_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-253256',

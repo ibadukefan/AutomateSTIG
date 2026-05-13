@@ -465,7 +465,7 @@ def _windows_host_firewall_enabled_candidate(rule: dict, stig_id: str) -> dict |
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     combined = '\n'.join(part for part in (title, content, fix_text) if part)
-    if not re.search(r'\bhost-based\s+firewall\s+installed\s+and\s+enabled\b', combined, re.IGNORECASE):
+    if not re.search(r'\bhost-based\s+firewall\s+(?:is\s+)?installed\s+and\s+enabled\b', combined, re.IGNORECASE):
         return None
     if not re.search(r'If\s+a\s+host-based\s+firewall\s+is\s+not\s+installed\s+and\s+enabled\s+on\s+the\s+system,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
         return None
