@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"grubby --info=/boot/vmlinuz-$(uname -r) 2>/dev/null | grep -o 'mitigations=off' || true\"",
+      "type": "command_output"
+    },
+    "description": "OL 8 must not let Meltdown and Spectre exploit critical vulnerabilities in modern processors.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-248593"
+  },
   "check_content_excerpt": "Verify OL 8 is configured to enable mitigations with the following command:\n\n$ grubby --info=/boot/vmlinuz-$(uname -r) | grep mitigations\n\nIf the \"mitigations\" parameter is set to \"off\" (mitigations=off), this is a finding.\n\nNote: The default behavior of the kernel is to enable mitigations for vulnerabilities like Meltdown and Spectre based on hardware and system requirements. Therefore, if the \"mitigation\" parameter is not present or if it is set to on this is not a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Determine the default kernel:  \n \n$ sudo grubby --default-kernel \n \n/boot/vmlinuz-5.4.17-2011.1.2.el8uek.x86_64 \n\nUsing the default kernel, remove the argument that sets the Meltdown mitigations to \"off\": \n \n$ sudo grubby --update-kernel=<path-to-default-kernel>  --remove-args=mitigations=off \n \nReboot the system for the change to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248593r1069159_rule",
   "severity": "medium",

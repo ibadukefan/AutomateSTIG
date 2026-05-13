@@ -41,6 +41,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"xmllint --xpath '/Server/Listener[@className=\\\"org.apache.catalina.security.SecurityListener\\\"]' /usr/lib/vmware-lookupsvc/conf/server.xml >/dev/null 2>&1 || exit 0; umask=$(xmllint --xpath 'string(/Server/Listener[@className=\\\"org.apache.catalina.security.SecurityListener\\\"]/@minimumUmask)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); { [ -z \\\"$umask\\\" ] || [ \\\"$umask\\\" = 0007 ]; } && printf PASS\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must limit privileges for creating or modifying hosted application shared files.",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259042"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath \"//Connector[@allowTrace = 'true']\" /usr/lib/vmware-lookupsvc/conf/server.xml",
         "type": "command_output"
       },

@@ -777,6 +777,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"grubby --info=/boot/vmlinuz-$(uname -r) 2>/dev/null | grep -o 'mitigations=off' || true\"",
+        "type": "command_output"
+      },
+      "description": "OL 8 must not let Meltdown and Spectre exploit critical vulnerabilities in modern processors.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248593"
+    },
+    {
+      "check": {
         "key": "kernel.randomize_va_space",
         "type": "sysctl"
       },

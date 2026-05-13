@@ -8692,5 +8692,53 @@ If the "listings" param-value for the "DefaultServlet" servlet class does not = 
             'description': 'Windows Server 2025 must not have Bluetooth enabled unless required by the organization.',
         })
 
+    def test_infers_oracle_linux_mitigations_not_off_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248593',
+            'title': 'OL 8 must not let Meltdown and Spectre exploit critical vulnerabilities in modern processors.',
+            'check_content': '''Verify OL 8 is configured to enable mitigations with the following command:
+
+$ grubby --info=/boot/vmlinuz-$(uname -r) | grep mitigations
+
+If the "mitigations" parameter is set to "off" (mitigations=off), this is a finding.
+
+Note: The default behavior of the kernel is to enable mitigations for vulnerabilities like Meltdown and Spectre based on hardware and system requirements. Therefore, if the "mitigation" parameter is not present or if it is set to on this is not a finding.''',
+            'fix_text': 'Using the default kernel, remove the argument that sets the Meltdown mitigations to "off": grubby --update-kernel=<path-to-default-kernel> --remove-args=mitigations=off',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-248593',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "sh -c \"grubby --info=/boot/vmlinuz-$(uname -r) 2>/dev/null | grep -o 'mitigations=off' || true\""},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'OL 8 must not let Meltdown and Spectre exploit critical vulnerabilities in modern processors.',
+        })
+
+    def test_infers_vcenter_lookup_security_listener_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259042',
+            'title': 'The vCenter Lookup service must limit privileges for creating or modifying hosted application shared files.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --xpath '/Server/Listener[@className="org.apache.catalina.security.SecurityListener"]' /usr/lib/vmware-lookupsvc/conf/server.xml
+
+If the "org.apache.catalina.security.SecurityListener" listener is not present, this is a finding.
+
+If the "org.apache.catalina.security.SecurityListener" listener is configured with a "minimumUmask" and is not "0007", this is a finding.''',
+            'fix_text': '''Navigate to and open:
+
+/usr/lib/vmware-lookupsvc/conf/server.xml
+
+Navigate to the <Server> node and add or update the "org.apache.catalina.security.SecurityListener" as follows:
+
+<Listener className="org.apache.catalina.security.SecurityListener"/>''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259042',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': "sh -c \"xmllint --xpath '/Server/Listener[@className=\\\"org.apache.catalina.security.SecurityListener\\\"]' /usr/lib/vmware-lookupsvc/conf/server.xml >/dev/null 2>&1 || exit 0; umask=$(xmllint --xpath 'string(/Server/Listener[@className=\\\"org.apache.catalina.security.SecurityListener\\\"]/@minimumUmask)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); { [ -z \\\"$umask\\\" ] || [ \\\"$umask\\\" = 0007 ]; } && printf PASS\""},
+            'expected': {'type': 'equals', 'value': 'PASS'},
+            'description': 'The vCenter Lookup service must limit privileges for creating or modifying hosted application shared files.',
+        })
+
 if __name__ == '__main__':
     unittest.main()

@@ -1512,6 +1512,53 @@ def _vcenter_lookup_removed_webapp_directory_candidate(rule: dict, stig_id: str)
     }
 
 
+def _vcenter_lookup_security_listener_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'vsphere' not in stig_id.lower() or 'lookup' not in stig_id.lower():
+        return None
+    if rule.get('vuln_id') != 'V-259042':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    listener = 'org.apache.catalina.security.SecurityListener'
+    path = '/usr/lib/vmware-lookupsvc/conf/server.xml'
+    if path not in content or listener not in content or 'xmllint' not in content:
+        return None
+    if not re.search(rf'If\s+the\s+["“]{re.escape(listener)}["”]\s+listener\s+is\s+not\s+present,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'configured\s+with\s+a\s+["“]minimumUmask["”]\s+and\s+is\s+not\s+["“]0007["”],\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if path not in fix_text or listener not in fix_text:
+        return None
+    command = "sh -c \"xmllint --xpath '/Server/Listener[@className=\\\"org.apache.catalina.security.SecurityListener\\\"]' /usr/lib/vmware-lookupsvc/conf/server.xml >/dev/null 2>&1 || exit 0; umask=$(xmllint --xpath 'string(/Server/Listener[@className=\\\"org.apache.catalina.security.SecurityListener\\\"]/@minimumUmask)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); { [ -z \\\"$umask\\\" ] || [ \\\"$umask\\\" = 0007 ]; } && printf PASS\""
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'PASS'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _ol8_mitigations_not_off_candidate(rule: dict, stig_id: str) -> dict | None:
+    if rule.get('vuln_id') != 'V-248593' or 'oracle_linux_8' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if 'grubby --info=/boot/vmlinuz-$(uname -r) | grep mitigations' not in content:
+        return None
+    if not re.search(r'If\s+the\s+["“]mitigations["”]\s+parameter\s+is\s+set\s+to\s+["“]off["”]\s+\(mitigations=off\),\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if 'remove-args=mitigations=off' not in fix_text:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': "sh -c \"grubby --info=/boot/vmlinuz-$(uname -r) 2>/dev/null | grep -o 'mitigations=off' || true\""},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_security_policy_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -6649,6 +6696,14 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     vcenter_lookup_service_grep_property_candidate = _vcenter_lookup_service_grep_property_candidate(rule, stig_id)
     if vcenter_lookup_service_grep_property_candidate:
         return vcenter_lookup_service_grep_property_candidate
+
+    vcenter_lookup_security_listener_candidate = _vcenter_lookup_security_listener_candidate(rule, stig_id)
+    if vcenter_lookup_security_listener_candidate:
+        return vcenter_lookup_security_listener_candidate
+
+    ol8_mitigations_not_off_candidate = _ol8_mitigations_not_off_candidate(rule, stig_id)
+    if ol8_mitigations_not_off_candidate:
+        return ol8_mitigations_not_off_candidate
 
     firefox_policy_boolean_candidate = _firefox_policy_boolean_candidate(rule, stig_id)
     if firefox_policy_boolean_candidate:
