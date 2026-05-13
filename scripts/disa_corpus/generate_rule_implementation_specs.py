@@ -693,6 +693,28 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
                         'expected': {'type': 'matches', 'pattern': f"^(?:{'|'.join(str(value) for value in allowed_values)})$"},
                         'description': rule.get('title', ''),
                     }
+            office_single_dword_all_programs = re.search(
+                r'If\s+the\s+value\s+([A-Za-z0-9_.-]+)\s+is\s+REG_DWORD\s*=\s*(\d+)\s+for\s+all\s+installed\s+Office\s+programs,\s+this\s+is\s+not\s+a\s+finding\.',
+                content,
+                re.IGNORECASE,
+            )
+            if (
+                office_single_dword_all_programs
+                and 'office' in stig_id.lower()
+                and rule.get('vuln_id') in {'V-223287'}
+                and re.search(r'Disable\s+UI\s+extending\s+from\s+documents\s+and\s+templates', content + '\n' + fix_text, re.IGNORECASE)
+            ):
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows',
+                    'check': {
+                        'type': 'registry',
+                        'path': _normalize_registry_path(path_match.group(1)),
+                        'value_name': office_single_dword_all_programs.group(1).strip(),
+                    },
+                    'expected': {'type': 'equals', 'value': int(office_single_dword_all_programs.group(2))},
+                    'description': rule.get('title', ''),
+                }
         if not path_match and not value_match and 'Administrative Template' in content:
             admin_registry = re.search(
                 r'Using\s+the\s+registry,\s+check\s+((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^,\n\r]+),\s*Key:\s*([A-Za-z0-9_.-]+)',

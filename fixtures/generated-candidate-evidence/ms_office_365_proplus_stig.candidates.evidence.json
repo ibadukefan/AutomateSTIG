@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 114,
+  "candidate_checks": 115,
   "cases": [
     {
       "check": {
@@ -162,6 +162,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223286"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\toolbars",
+        "type": "registry",
+        "value_name": "noextensibilitycustomizationfromdocument"
+      },
+      "description": "Custom user interface (UI) code must be blocked from loading in all Office applications.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\toolbars\\noextensibilitycustomizationfromdocument": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\toolbars\\noextensibilitycustomizationfromdocument": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223287"
     },
     {
       "check": {
@@ -3085,5 +3112,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 114
+  "validated_candidates": 115
 }

@@ -98,16 +98,17 @@
       "vuln_id": "V-223286"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223287",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-223287 from source identifier xccdf_mil.disa.stig_group_V-223287.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-223287r961863_rule",
       "severity": "medium",
       "title": "Custom user interface (UI) code must be blocked from loading in all Office applications.",
-      "tracking_issue": "TODO-V-223287",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/fd2db86c088cb39ef1814b4562465294938d8f1c03cc8280a45291d5e19caa89/U_MS_Office_365_ProPlus_V3R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-223287"

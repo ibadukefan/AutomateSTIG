@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\toolbars",
+      "type": "registry",
+      "value_name": "noextensibilitycustomizationfromdocument"
+    },
+    "description": "Custom user interface (UI) code must be blocked from loading in all Office applications.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-223287"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Global Options >> Customize >> Disable UI extending from documents and templates is set to Enabled: Disallow in Word; Excel; PowerPoint; Access; Outlook; Publisher; Project; Visio; InfoPath\n\nUse the Windows Registry Editor to navigate to the following key: \n\nHKCU\\software\\policies\\microsoft\\office\\16.0\\common\\toolbars\n\nIf the value noextensibilitycustomizationfromdocument is REG_DWORD = 1 for all installed Office programs, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Global Options >> Customize >> Disable UI extending from documents and templates to Enabled: Disallow in Word; Excel; PowerPoint; Access; Outlook; Publisher; Project; Visio; InfoPath.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223287r961863_rule",
   "severity": "medium",

@@ -86,6 +86,20 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\toolbars",
+        "type": "registry",
+        "value_name": "noextensibilitycustomizationfromdocument"
+      },
+      "description": "Custom user interface (UI) code must be blocked from loading in all Office applications.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223287"
+    },
+    {
+      "check": {
         "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\Common\\Security",
         "type": "registry",
         "value_name": "UFIControls"

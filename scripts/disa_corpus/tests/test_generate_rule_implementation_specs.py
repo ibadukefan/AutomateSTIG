@@ -134,6 +134,31 @@ S-1-5-9 (Enterprise Domain Controllers)''',
             'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
         })
 
+    def test_infers_office_single_registry_dword_for_all_installed_programs_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223287',
+            'title': 'Custom user interface (UI) code must be blocked from loading in all Office applications.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Global Options >> Customize >> Disable UI extending from documents and templates is set to Enabled.
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\toolbars
+
+If the value noextensibilitycustomizationfromdocument is REG_DWORD = 1 for all installed Office programs, this is not a finding.''',
+            'fix_text': 'Set the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Global Options >> Customize >> Disable UI extending from documents and templates to Enabled: Disallow in Word; Excel; PowerPoint; Access; Outlook; Publisher; Project; Visio; InfoPath.',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-223287',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\toolbars',
+                'value_name': 'noextensibilitycustomizationfromdocument',
+            },
+            'expected': {'type': 'equals', 'value': 1},
+            'description': 'Custom user interface (UI) code must be blocked from loading in all Office applications.',
+        })
+
     def test_infers_postgresql_log_timezone_utc_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233532',
