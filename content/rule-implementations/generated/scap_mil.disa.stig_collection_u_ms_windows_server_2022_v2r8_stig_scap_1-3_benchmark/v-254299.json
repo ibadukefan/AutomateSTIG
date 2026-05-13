@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the permissions on the \"Eventvwr.exe\" file to prevent modification by any groups or accounts other than TrustedInstaller. The default permissions listed below satisfy this requirement:\n\nTrustedInstaller - Full Control\nAdministrators, SYSTEM, Users, ALL APPLICATION PACKAGES, ALL RESTRICTED APPLICATION PACKAGES - Read & Execute\n\nThe default location is the \"%SystemRoot%\\System32\" folder.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

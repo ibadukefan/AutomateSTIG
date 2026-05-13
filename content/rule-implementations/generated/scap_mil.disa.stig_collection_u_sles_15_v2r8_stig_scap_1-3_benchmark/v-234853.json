@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to remove any occurrence of \"NOPASSWD\" or \"!authenticate\" found in the \"/etc/sudoers\" file. If the system does not use passwords for authentication, the \"NOPASSWD\" tag may exist in the file.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

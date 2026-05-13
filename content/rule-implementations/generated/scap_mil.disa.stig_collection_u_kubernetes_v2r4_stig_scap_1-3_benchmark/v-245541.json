@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Follow these steps to configure streaming-connection-idle-timeout:\n1. On the Control Plane, run the command:\nps -ef | grep kubelet\n\nRemove the \"--streaming-connection-idle-timeout\" option if present.\n\nNote the path to the config file (identified by --config).\n\n2. Edit the Kubernetes Kubelet file in the --config directory on the Kubernetes Control Plane:\n\nSet the argument \"streamingConnectionIdleTimeout\" to a value of \"5m\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

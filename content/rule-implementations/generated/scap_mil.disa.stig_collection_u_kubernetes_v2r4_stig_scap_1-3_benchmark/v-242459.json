@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the permissions of the manifest files to \"644\" by executing the command:\n\nchmod -R 644 /var/lib/etcd/*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

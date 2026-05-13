@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to enforce a maximum password age of each [USER] account to 60 days. The command in the check text will give a list of users that need to be updated to be in compliance:\n\n> sudo passwd -x 60 [USER]\n\nThe DOD requirement is 60 days.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

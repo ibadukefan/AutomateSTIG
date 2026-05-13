@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Modify the postfix configuration file to restrict client connections to the local network with the following command:\n\n$ sudo postconf -e 'smtpd_client_restrictions = permit_mynetworks,reject'",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

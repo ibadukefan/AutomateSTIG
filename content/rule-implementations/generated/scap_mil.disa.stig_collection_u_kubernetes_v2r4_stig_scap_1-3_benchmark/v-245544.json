@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Set the value of \"--kubelet-client-certificate\" and \"--kubelet-client-key\" to an Approved Organizational Certificate and key pair.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

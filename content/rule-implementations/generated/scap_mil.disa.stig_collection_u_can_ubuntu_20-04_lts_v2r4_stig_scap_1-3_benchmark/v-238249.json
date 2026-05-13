@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure \"/etc/audit/audit.rules\", \"/etc/audit/rules.d/*\", and \"/etc/audit/auditd.conf\" files to have a mode of \"0640\" by using the following command: \n \n$ sudo chmod -R 0640 /etc/audit/audit*.{rules,conf} /etc/audit/rules.d/*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

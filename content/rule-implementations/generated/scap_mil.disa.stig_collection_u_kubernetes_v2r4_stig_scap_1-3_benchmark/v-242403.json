@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. \n\nSet the value of  \"--audit-policy-file\" to the path of a file with the following content:\n    \n    # Log all requests at the RequestResponse level.\n    apiVersion: audit.k8s.io/vX (Where X is the latest apiVersion)\n    kind: Policy\n    rules:\n    - level: RequestResponse\n\nNote: If the API server is running as a Pod, then the manifest will also need to be updated to mount the host system filesystem where the audit policy file resides.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 168,
+  "candidate_checks": 171,
   "cases": [
     {
       "check": {
@@ -1334,6 +1334,32 @@
     },
     {
       "check": {
+        "command": "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $4 < 1 {print $1 \" \" $4}' /etc/passwd /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must employ user passwords with a minimum lifetime of 24 hours (one day).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $4 < 1 {print $1 \" \" $4}' /etc/passwd /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $4 < 1 {print $1 \" \" $4}' /etc/passwd /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234890"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "The DOD requirement is \"60\" days or less (greater than zero, as zero days will lock the account immediately).",
@@ -1358,6 +1384,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234891"
+    },
+    {
+      "check": {
+        "command": "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && ($5 > 60 || $5 <= 0) {print $1 \" \" $5}' /etc/passwd /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must employ user passwords with a maximum lifetime of 60 days.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && ($5 > 60 || $5 <= 0) {print $1 \" \" $5}' /etc/passwd /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && ($5 > 60 || $5 <= 0) {print $1 \" \" $5}' /etc/passwd /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234892"
     },
     {
       "check": {
@@ -3280,6 +3332,32 @@
     },
     {
       "check": {
+        "command": "systemd-analyze cat-config systemd/system.conf 2>/dev/null | awk '/^# \\/etc\\/systemd\\/system\\.conf\\.d\\//{drop=1; next} drop && /^CtrlAltDelBurstAction=none$/{print \"Compliant\"; exit}'",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must disable the systemd Ctrl-Alt-Delete burst key sequence.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "systemd-analyze cat-config systemd/system.conf 2>/dev/null | awk '/^# \\/etc\\/systemd\\/system\\.conf\\.d\\//{drop=1; next} drop && /^CtrlAltDelBurstAction=none$/{print \"Compliant\"; exit}'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "systemd-analyze cat-config systemd/system.conf 2>/dev/null | awk '/^# \\/etc\\/systemd\\/system\\.conf\\.d\\//{drop=1; next} drop && /^CtrlAltDelBurstAction=none$/{print \"Compliant\"; exit}'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234990"
+    },
+    {
+      "check": {
         "command": "pwck -r",
         "type": "command_output"
       },
@@ -4443,5 +4521,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 168
+  "validated_candidates": 171
 }

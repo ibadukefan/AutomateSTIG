@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "For Windows 11 semi-annual channel, remove or disable the IE11 application. \n\nTo disable IE11 as a standalone browser:\n\nSet the policy value for \"Computer Configuration/Administrative Templates/Windows Components/Internet Explorer/Disable Internet Explorer 11 as a standalone browser\" to \"Enabled\" with the option value set to \"Never\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

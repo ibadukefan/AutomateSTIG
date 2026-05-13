@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "On the Control Plane, run the command:\nps -ef | grep kubelet\n\nRemove the \"--client-ca-file\" option if present.\n\nNote the path to the config file (identified by --config).\n\nEdit the Kubernetes Kubelet config file: \nSet the value of \"clientCAFile\" to a path containing an Approved Organizational Certificate. \n\nRestart the kubelet service using the following command:\nsystemctl daemon-reload && systemctl restart kubelet",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

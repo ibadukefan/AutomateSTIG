@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 so that all noninteractive accounts on the system do not have an interactive shell assigned to them.\n\nIf the system account needs a shell assigned for mission operations, document the need with the ISSO.\n\nRun the following command to disable the interactive shell for a specific noninteractive user account:\n\nReplace <user> with the user that has a login shell.\n\n$ sudo usermod --shell /sbin/nologin <user>\n\nDo not perform the steps in this section on the root account. Doing so will cause the system to become inaccessible.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

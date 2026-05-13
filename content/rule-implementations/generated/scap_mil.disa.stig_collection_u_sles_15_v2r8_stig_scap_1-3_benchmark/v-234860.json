@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: If the system is not networked, this requirement is Not Applicable.\n\nConfigure the SUSE operating system to implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.\n\nInstall the OpenSSH package on the SUSE operating system with the following command:\n\n> sudo zypper in openssh\n\nEnable the OpenSSH service to start automatically on reboot with the following command:\n\n> sudo systemctl enable sshd.service\n\nFor the changes to take effect immediately, start the service with the following command:\n\n> sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

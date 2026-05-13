@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to enforce 24 hours/one day or greater as the minimum password age for user accounts.\n\nChange the minimum time period between password changes for each [USER] account to \"1\" day with the command, replacing [USER] with the user account that must be changed:\n\n> sudo passwd -n 1 [USER]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

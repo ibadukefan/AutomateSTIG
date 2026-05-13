@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to disable the CtrlAltDelBurstAction by adding it to a drop file in a \"/etc/systemd/system.conf.d/\" configuration file:\n\nIf no drop file exists, create one with the following command:\n\n> sudo touch /etc/systemd/system.conf.d/55-CtrlAltDel-BurstAction\n\nEdit the file to contain the setting by adding the following text:\n\nCtrlAltDelBurstAction=none\n\nReload the daemon for this change to take effect:\n\n> sudo systemctl daemon-reexec",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -2801,16 +2801,17 @@
       "vuln_id": "V-271629"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271630",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271630 from source identifier xccdf_mil.disa.stig_group_V-271630.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271630r1091602_rule",
       "severity": "medium",
       "title": "OL 9 passwords must have a 24-hour minimum password lifetime restriction in /etc/shadow.",
-      "tracking_issue": "TODO-V-271630",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271630"

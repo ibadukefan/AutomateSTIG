@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Set the value of tls-cert-file and tls-private-key-file to path containing Approved Organizational Certificate.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> \"Deny log on locally\" to include the following.\n\nDomain Systems Only:\nEnterprise Admins Group\nDomain Admins Group\n\nPrivileged Access Workstations (PAWs) dedicated to the management of Active Directory are exempt from denying the Enterprise Admins and Domain Admins groups. (See the Windows Privileged Access Workstation STIG for PAW requirements.)\n\nAll Systems:\nGuests Group",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

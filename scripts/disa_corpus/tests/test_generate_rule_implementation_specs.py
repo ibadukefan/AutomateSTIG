@@ -1049,6 +1049,92 @@ $ sudo chage -M 60 [user]''',
             'description': 'RHEL 8 user account passwords must be configured so that existing passwords are restricted to a 60-day maximum lifetime.',
         })
 
+    def test_enriches_scap_artifact_rules_by_canonical_vuln_id(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            artifact = root / 'sample.xml'
+            artifact.write_text('''<Benchmark id="sample"><title>Sample</title>
+              <Group id="xccdf_mil.disa.stig_group_V-234890"><Rule id="xccdf_mil.disa.stig_rule_SV-234890r1_rule" severity="medium">
+                <version>SLES-15-040200</version><title>SLES password minimum</title>
+                <check><check-content>authoritative check</check-content></check>
+                <fixtext>authoritative fix</fixtext>
+              </Rule></Group>
+            </Benchmark>''')
+            manifest = {'generated_from': str(artifact)}
+            mapped = mod._artifact_rule_map(manifest, root, {})
+            self.assertIn('V-234890', mapped)
+            self.assertEqual(mapped['V-234890']['check_content'], 'authoritative check')
+
+    def test_infers_sles_shadow_minimum_password_lifetime_colon_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234890',
+            'title': 'The SUSE operating system must employ user passwords with a minimum lifetime of 24 hours (one day).',
+            'check_content': '''Check the minimum time period between password changes for each user account with the following command:
+
+> sudo awk -F: '$4 < 1 {print $1 ":" $4}' /etc/shadow
+
+If any results are returned that are not associated with a system account, this is a finding.''',
+            'fix_text': 'Change the minimum time period between password changes for each [USER] account to "1" day with the command:\n\n> sudo passwd -n 1 [USER]',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234890',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $4 < 1 {print $1 \" \" $4}' /etc/passwd /etc/shadow",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The SUSE operating system must employ user passwords with a minimum lifetime of 24 hours (one day).',
+        })
+
+    def test_infers_sles_shadow_maximum_password_lifetime_colon_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234892',
+            'title': 'The SUSE operating system must employ user passwords with a maximum lifetime of 60 days.',
+            'check_content': '''Check that the SUSE operating system enforces 60 days or less as the maximum user password age with the following command:
+
+> sudo awk -F: '$5 > 60 || $5 == "" {print $1 ":" $5}' /etc/shadow
+
+If any results are returned that are not associated with a system account, this is a finding.''',
+            'fix_text': 'Configure the SUSE operating system to enforce a maximum password age of each [USER] account to 60 days.\n\n> sudo passwd -x 60 [USER]',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234892',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && ($5 > 60 || $5 <= 0) {print $1 \" \" $5}' /etc/passwd /etc/shadow",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The SUSE operating system must employ user passwords with a maximum lifetime of 60 days.',
+        })
+
+    def test_infers_sles_ctrl_alt_del_burst_action_dropin_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234990',
+            'title': 'The SUSE operating system must disable the systemd Ctrl-Alt-Delete burst key sequence.',
+            'check_content': '''Verify the SUSE operating system is not configured to reboot the system when Ctrl-Alt-Delete is pressed seven times within two seconds with the following command:
+
+> systemd-analyze cat-config systemd/system.conf
+
+# /etc/systemd/system.conf.d/55-CtrlAltDel-BurstAction.conf
+CtrlAltDelBurstAction=none
+
+If the "CtrlAltDelBurstAction" is not set to "none", commented out, or is missing, this is a finding.
+If the setting is not configured in a drop in file, this is a finding.''',
+            'fix_text': 'Configure the system to disable the CtrlAltDelBurstAction by adding it to a drop file in a "/etc/systemd/system.conf.d/" configuration file:\n\nCtrlAltDelBurstAction=none',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234990',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': r'''systemd-analyze cat-config systemd/system.conf 2>/dev/null | awk '/^# \/etc\/systemd\/system\.conf\.d\//{drop=1; next} drop && /^CtrlAltDelBurstAction=none$/{print "Compliant"; exit}' '''.strip(),
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The SUSE operating system must disable the systemd Ctrl-Alt-Delete burst key sequence.',
+        })
+
     def test_infers_sles_mfa_required_packages_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234854',

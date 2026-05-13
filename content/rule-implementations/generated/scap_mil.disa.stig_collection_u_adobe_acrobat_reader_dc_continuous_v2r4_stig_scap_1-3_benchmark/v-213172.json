@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the following registry value:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path:\n\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cDefaultLaunchURLPerms\n\nValue Name: iURLPerms\nType: REG_DWORD\nValue: 1\n\nIf configuring system to allow access to websites, obtain documented ISSO approvals and risk acceptance and set \u201ciURLPerms\u201d to \u201c0\u201d.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
