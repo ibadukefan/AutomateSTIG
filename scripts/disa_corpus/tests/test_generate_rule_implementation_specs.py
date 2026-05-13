@@ -99,6 +99,40 @@ By using this IS (which includes any device attached to this IS), you consent to
             'description': 'Windows Server required legal notice must be configured to display before console logon.',
         })
 
+    def test_infers_linux_issue_banner_exact_text_candidate(self):
+        text = '''You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
+
+By using this IS (which includes any device attached to this IS), you consent to the following conditions:
+
+-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing. See User Agreement for details.'''
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271455',
+            'title': 'OL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a command line user logon.',
+            'check_content': f'''Verify that OL 9 displays the Standard Mandatory DOD Notice and Consent Banner before granting access to the operating system via a command line user logon.
+
+Check that a banner is displayed at the command line login screen with the following command:
+
+$ cat /etc/issue
+
+If the banner is set correctly it will return the following text:
+
+"{text}"
+
+If the banner text does not match the Standard Mandatory DOD Notice and Consent Banner exactly, or the line is commented out, this is a finding.''',
+            'fix_text': f'''Configure OL 9 to display the Standard Mandatory DOD Notice and Consent Banner before granting access to the system via command line logon.
+
+Edit the "/etc/issue" file to replace the default text with the Standard Mandatory DOD Notice and Consent Banner. The DOD-required text is:
+
+"{text}"''',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271455',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'cat /etc/issue'},
+            'expected': {'type': 'equals', 'value': text},
+            'description': 'OL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a command line user logon.',
+        })
+
     def test_infers_macos_policy_banner_exact_text_and_mode_candidate(self):
         text = '''You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only. By using this IS (which includes any device attached to this IS), you consent to the following conditions:
 

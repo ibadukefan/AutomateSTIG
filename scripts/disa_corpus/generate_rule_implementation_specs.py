@@ -3116,6 +3116,42 @@ def _macos_remote_login_banner_candidate(rule: dict, stig_id: str) -> dict | Non
     }
 
 
+def _linux_issue_banner_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-248529', 'V-271455'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    if not re.search(r'\bcat\s+/etc/issue\b', content):
+        return None
+    if '/etc/issue' not in combined:
+        return None
+    if not re.search(r'banner\s+text\s+does\s+not\s+match\s+the\s+Standard\s+Mandatory\s+DoD\s+Notice\s+and\s+Consent\s+Banner\s+exactly', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Edit\s+the\s+["“]/etc/issue["”]\s+file', fix_text, re.IGNORECASE):
+        return None
+    text_match = re.search(
+        r'will\s+return\s+the\s+following\s+text:\s*[\r\n]+\s*["“](?P<text>You\s+are\s+accessing\s+a\s+U\.S\.\s+Government\s+\(USG\)\s+Information\s+System\s+\(IS\).*?See\s+User\s+Agreement\s+for\s+details\.)["”]',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not text_match:
+        return None
+    expected_text = text_match.group('text').strip().strip('"“”')
+    if any(token in expected_text for token in ('`', '$(', '&&', '<<')):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'cat /etc/issue'},
+        'expected': {'type': 'equals', 'value': expected_text},
+        'description': rule.get('title', ''),
+    }
+
+
 def _macos_osascript_true_heredoc_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _macos_platform(stig_id):
         return None
@@ -5679,6 +5715,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     linux_shadow_password_lifetime_candidate = _linux_shadow_password_lifetime_candidate(rule, stig_id)
     if linux_shadow_password_lifetime_candidate:
         return linux_shadow_password_lifetime_candidate
+
+    linux_issue_banner_candidate = _linux_issue_banner_candidate(rule, stig_id)
+    if linux_issue_banner_candidate:
+        return linux_issue_banner_candidate
 
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:
