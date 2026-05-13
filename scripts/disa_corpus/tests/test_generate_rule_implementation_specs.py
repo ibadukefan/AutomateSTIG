@@ -1340,6 +1340,36 @@ SHA_CRYPT_MAX_ROUNDS 100000''',
             'description': 'OL 9 shadow password suite must be configured to use a sufficient number of hashing rounds.',
         })
 
+    def test_infers_linux_sha_crypt_rounds_floor_candidate_with_egrep_anchor(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234888',
+            'title': 'The SUSE operating system must employ FIPS 140-3 approved cryptographic hashing algorithms for all stored passwords.',
+            'check_content': '''Verify the SUSE operating system configures the shadow password suite configuration to encrypt passwords using a strong cryptographic hash.
+
+Check that a minimum number of hash rounds is configured by running the following command:
+
+> egrep "^SHA_CRYPT_" /etc/login.defs
+
+If only one of "SHA_CRYPT_MIN_ROUNDS" or "SHA_CRYPT_MAX_ROUNDS" is set, and this value is below "100000", this is a finding.
+
+If both "SHA_CRYPT_MIN_ROUNDS" and "SHA_CRYPT_MAX_ROUNDS" are set, and the highest value for either is below "100000", this is a finding.''',
+            'fix_text': '''Configure the SUSE operating system to encrypt all stored passwords with a strong cryptographic hash.
+
+Edit/modify the following line in the "/etc/login.defs" file and set "SHA_CRYPT_MIN_ROUNDS" to a value no lower than "100000":
+
+SHA_CRYPT_MIN_ROUNDS 100000''',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234888',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'egrep "^SHA_CRYPT_" /etc/login.defs'},
+            'expected': {
+                'type': 'matches',
+                'pattern': r'(?ims)^(?!.*^\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\s+(?:[0-9]{1,5})\b).*^\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\s+(?:[1-9][0-9]{5,})\b.*$',
+            },
+            'description': 'The SUSE operating system must employ FIPS 140-3 approved cryptographic hashing algorithms for all stored passwords.',
+        })
+
     def test_infers_linux_interactive_shadow_sha512_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258231',

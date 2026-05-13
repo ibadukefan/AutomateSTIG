@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -E \"^SHA_CRYPT_\" /etc/login.defs",
+      "type": "command_output"
+    },
+    "description": "The OL 8 shadow password suite must be configured to use a sufficient number of hashing rounds.",
+    "expected": {
+      "pattern": "(?ims)^(?!.*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[0-9]{1,5})\\b).*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[1-9][0-9]{5,})\\b.*$",
+      "type": "matches"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248535"
+  },
   "check_content_excerpt": "Check that a minimum number of hash rounds is configured by running the following command:\n\n     $ sudo grep -E \"^SHA_CRYPT_\" /etc/login.defs\n\nIf only one of \"SHA_CRYPT_MIN_ROUNDS\" or \"SHA_CRYPT_MAX_ROUNDS\" is set, and this value is below \"100000\", this is a finding.\n\nIf both \"SHA_CRYPT_MIN_ROUNDS\" and \"SHA_CRYPT_MAX_ROUNDS\" are set, and the value for either is below \"100000\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "(?ims)^(?!.*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[0-9]{1,5})\\b).*^\\s*SHA_CRYPT_(?:MIN|MAX)_ROUNDS\\s+(?:[1-9][0-9]{5,})\\b.*$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to encrypt all stored passwords with a strong cryptographic hash. \n \nEdit/modify the following line in the \"/etc/login.defs\" file and set \"SHA_CRYPT_MIN_ROUNDS\" to a value no lower than \"100000\": \n \nSHA_CRYPT_MIN_ROUNDS 100000",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248535r1044786_rule",
   "severity": "medium",

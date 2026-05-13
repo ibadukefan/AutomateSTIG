@@ -5502,8 +5502,11 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
 
     if (
         _linux_platform(stig_id)
-        and re.fullmatch(r'grep\s+(?:-i\s+)?sha_crypt\s+/etc/login\.defs', command, re.IGNORECASE)
-        and re.search(r'"SHA_CRYPT_MIN_ROUNDS"\s+or\s+"SHA_CRYPT_MAX_ROUNDS"\s+is\s+less\s+than\s+"100000",?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.fullmatch(r'(?:e?grep\s+(?:-i\s+|-E\s+)?(?:"\^SHA_CRYPT_"|sha_crypt)|grep\s+-E\s+"\^SHA_CRYPT_")\s+/etc/login\.defs', command, re.IGNORECASE)
+        and (
+            re.search(r'"SHA_CRYPT_MIN_ROUNDS"\s+or\s+"SHA_CRYPT_MAX_ROUNDS"\s+is\s+less\s+than\s+"100000",?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            or re.search(r'If\s+only\s+one\s+of\s+"SHA_CRYPT_MIN_ROUNDS"\s+or\s+"SHA_CRYPT_MAX_ROUNDS"\s+is\s+set,\s+and\s+this\s+value\s+is\s+below\s+"100000",\s+this\s+is\s+a\s+finding\.\s*If\s+both\s+"SHA_CRYPT_MIN_ROUNDS"\s+and\s+"SHA_CRYPT_MAX_ROUNDS"\s+are\s+set,\s+and\s+the\s+(?:highest\s+)?value\s+for\s+either\s+is\s+below\s+"100000",\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL)
+        )
         and re.search(r'SHA_CRYPT_MIN_ROUNDS\s+100000', fix_text, re.IGNORECASE)
     ):
         return {
