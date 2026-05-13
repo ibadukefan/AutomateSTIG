@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Get-LocalUser | Where-Object { $_.SID -like 'S-1-5-*-500' -and $_.Enabled -eq $true -and $_.PasswordLastSet -lt (Get-Date).AddDays(-60) } | Select-Object -ExpandProperty Name\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 passwords for the built-in Administrator account must be changed at least every 60 days.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-277986"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"",
         "type": "command_output"
       },

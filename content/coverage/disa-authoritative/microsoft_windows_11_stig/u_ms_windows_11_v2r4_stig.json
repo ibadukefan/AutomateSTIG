@@ -3541,16 +3541,17 @@
       "vuln_id": "V-253475"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-253476",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-253476r1051060_rule",
       "severity": "medium",
       "title": "Passwords for enabled local Administrator accounts must be changed at least every 60 days.",
-      "tracking_issue": "TODO-V-253476",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
         "content/disa-corpus/artifacts/e54bb1eadc995ee26f8976c8a516dab75c8da61dc97127488b36847f7b0943ac/U_MS_Windows_11_V2R4_STIG.zip"
       ],
       "vuln_id": "V-253476"

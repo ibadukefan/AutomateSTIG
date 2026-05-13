@@ -4135,6 +4135,38 @@ def _windows_account_password_required_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _windows_enabled_local_admin_password_age_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-220952', 'V-253476', 'V-277986'}:
+        return None
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    policy_text = f'{title}\n{content}\n{fix_text}'
+    if not re.search(r'enabled\s+local\s+Administrator\s+accounts?', policy_text, re.IGNORECASE):
+        return None
+    required_patterns = (
+        r'Get-LocalUser',
+        r'PasswordLastSet',
+        r'(?:more|greater)\s+than\s+["“]?60["”]?\s+days\s+old[^.\n]+this\s+is\s+a\s+finding',
+        r'changed?\s+at\s+least\s+every\s+60\s+days',
+    )
+    if not all(re.search(pattern, policy_text, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': 'powershell -NoProfile -Command "Get-LocalUser | Where-Object { $_.SID -like \'S-1-5-*-500\' -and $_.Enabled -eq $true -and $_.PasswordLastSet -lt (Get-Date).AddDays(-60) } | Select-Object -ExpandProperty Name"',
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_krbtgt_password_age_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -6465,6 +6497,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         account_password_required_candidate = _windows_account_password_required_candidate(rule, stig_id)
         if account_password_required_candidate:
             return account_password_required_candidate
+
+        local_admin_password_age_candidate = _windows_enabled_local_admin_password_age_candidate(rule, stig_id)
+        if local_admin_password_age_candidate:
+            return local_admin_password_age_candidate
 
         krbtgt_password_age_candidate = _windows_krbtgt_password_age_candidate(rule, stig_id)
         if krbtgt_password_age_candidate:

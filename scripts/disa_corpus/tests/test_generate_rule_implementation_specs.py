@@ -134,6 +134,32 @@ S-1-5-9 (Enterprise Domain Controllers)''',
             'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
         })
 
+    def test_infers_windows_enabled_local_admin_password_age_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253476',
+            'title': 'Passwords for enabled local Administrator accounts must be changed at least every 60 days.',
+            'check_content': '''If there are no enabled local Administrator accounts, this is Not Applicable.
+
+Review the password last set date for the enabled local Administrator account.
+
+Open PowerShell.
+
+Enter "Get-LocalUser -Name * | Select-Object *"
+
+If the PasswordLastSet date is more than 60 days old for the enabled local Administrator account, this is a finding.''',
+            'fix_text': 'Change the enabled local Administrator account password at least every 60 days.',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-253476',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': 'powershell -NoProfile -Command "Get-LocalUser | Where-Object { $_.SID -like \'S-1-5-*-500\' -and $_.Enabled -eq $true -and $_.PasswordLastSet -lt (Get-Date).AddDays(-60) } | Select-Object -ExpandProperty Name"',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Passwords for enabled local Administrator accounts must be changed at least every 60 days.',
+        })
+
     def test_infers_office_single_registry_dword_for_all_installed_programs_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223287',

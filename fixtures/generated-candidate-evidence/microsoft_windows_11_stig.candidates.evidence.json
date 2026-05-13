@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 194,
+  "candidate_checks": 195,
   "cases": [
     {
       "check": {
@@ -4283,6 +4283,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Get-LocalUser | Where-Object { $_.SID -like 'S-1-5-*-500' -and $_.Enabled -eq $true -and $_.PasswordLastSet -lt (Get-Date).AddDays(-60) } | Select-Object -ExpandProperty Name\"",
+        "type": "command_output"
+      },
+      "description": "Passwords for enabled local Administrator accounts must be changed at least every 60 days.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Get-LocalUser | Where-Object { $_.SID -like 'S-1-5-*-500' -and $_.Enabled -eq $true -and $_.PasswordLastSet -lt (Get-Date).AddDays(-60) } | Select-Object -ExpandProperty Name\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Get-LocalUser | Where-Object { $_.SID -like 'S-1-5-*-500' -and $_.Enabled -eq $true -and $_.PasswordLastSet -lt (Get-Date).AddDays(-60) } | Select-Object -ExpandProperty Name\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253476"
+    },
+    {
+      "check": {
         "path": "HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications",
         "type": "registry",
         "value_name": "NoToastApplicationNotificationOnLockScreen"
@@ -5231,5 +5257,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 194
+  "validated_candidates": 195
 }

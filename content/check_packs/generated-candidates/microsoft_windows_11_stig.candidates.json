@@ -2215,6 +2215,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Get-LocalUser | Where-Object { $_.SID -like 'S-1-5-*-500' -and $_.Enabled -eq $true -and $_.PasswordLastSet -lt (Get-Date).AddDays(-60) } | Select-Object -ExpandProperty Name\"",
+        "type": "command_output"
+      },
+      "description": "Passwords for enabled local Administrator accounts must be changed at least every 60 days.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-253476"
+    },
+    {
+      "check": {
         "path": "HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications",
         "type": "registry",
         "value_name": "NoToastApplicationNotificationOnLockScreen"
