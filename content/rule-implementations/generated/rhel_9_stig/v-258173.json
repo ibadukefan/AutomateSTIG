@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grubby --info=ALL | awk '/^args=/{ if ($0 !~ /audit_backlog_limit=/) { print $0; next } while (match($0, /audit_backlog_limit=([0-9]+)/, m)) { if (m[1] + 0 < 8192) print $0; $0=substr($0, RSTART+RLENGTH) } }'",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must allocate an audit_backlog_limit of sufficient size to capture processes that start prior to the audit daemon.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-258173"
+  },
   "check_content_excerpt": "Verify RHEL 9 allocates a sufficient audit_backlog_limit to capture processes that start prior to the audit daemon with the following command:\n\n$ sudo grubby --info=ALL | grep args | grep 'audit_backlog_limit'\n\nIf the command returns any outputs, and audit_backlog_limit is less than \"8192\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to allocate sufficient audit_backlog_limit to capture processes that start prior to the audit daemon with the following command:\n\n$ sudo grubby --update-kernel=ALL --args=audit_backlog_limit=8192",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258173r1101933_rule",
   "severity": "low",

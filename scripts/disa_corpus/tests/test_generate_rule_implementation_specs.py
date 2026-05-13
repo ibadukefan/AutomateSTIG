@@ -194,6 +194,51 @@ Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt''',
             'description': 'Windows Server 2025 "Access this computer from the network" user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and stand-alone or nondomain-joined systems.',
         })
 
+    def test_infers_rhel9_audit_backlog_limit_minimum_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258173',
+            'title': 'RHEL 9 must allocate an audit_backlog_limit of sufficient size to capture processes that start prior to the audit daemon.',
+            'check_content': '''Verify RHEL 9 allocates a sufficient audit_backlog_limit to capture processes that start prior to the audit daemon with the following command:
+
+$ sudo grubby --info=ALL | grep args | grep 'audit_backlog_limit'
+
+If the command returns any outputs, and audit_backlog_limit is less than "8192", this is a finding.''',
+            'fix_text': 'Configure RHEL 9 to allocate sufficient audit_backlog_limit to capture processes that start prior to the audit daemon with the following command:\n\n$ sudo grubby --update-kernel=ALL --args=audit_backlog_limit=8192',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258173',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "grubby --info=ALL | awk '/^args=/{ if ($0 !~ /audit_backlog_limit=/) { print $0; next } while (match($0, /audit_backlog_limit=([0-9]+)/, m)) { if (m[1] + 0 < 8192) print $0; $0=substr($0, RSTART+RLENGTH) } }'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 9 must allocate an audit_backlog_limit of sufficient size to capture processes that start prior to the audit daemon.',
+        })
+
+    def test_infers_windows_network_logon_exact_allowlist_with_blank_lines_between_bullets(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254434',
+            'title': 'Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators and Authenticated Users groups on member servers.',
+            'check_content': '''Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups other than the following are granted the "Access this computer from the network" user right, this is a finding:
+
+- Administrators
+- Authenticated Users
+
+For server core installations, run the following command:
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Access this computer from the network to include only the following accounts or groups:
+
+- Administrators
+- Authenticated Users''',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254434',
+            'platform': 'windows',
+            'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeNetworkLogonRight'},
+            'expected': {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-11'},
+            'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators and Authenticated Users groups on member servers.',
+        })
+
     def test_infers_firefox_autoplay_default_block_audio_video_policy_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251565',

@@ -2464,9 +2464,34 @@ def _gnome_login_banner_text_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _rhel9_audit_backlog_limit_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-258173' or 'rhel_9' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'grubby\s+--info=ALL\s*\|\s*grep\s+args\s*\|\s*grep\s+[\'"].*audit_backlog_limit', content):
+        return None
+    if not re.search(r'audit_backlog_limit\s+is\s+less\s+than\s+["“]8192["”]', content, re.IGNORECASE):
+        return None
+    if 'grubby --update-kernel=ALL --args=audit_backlog_limit=8192' not in fix_text:
+        return None
+    command = "grubby --info=ALL | awk '/^args=/{ if ($0 !~ /audit_backlog_limit=/) { print $0; next } while (match($0, /audit_backlog_limit=([0-9]+)/, m)) { if (m[1] + 0 < 8192) print $0; $0=substr($0, RSTART+RLENGTH) } }'"
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
+    rhel9_audit_backlog_limit_candidate = _rhel9_audit_backlog_limit_candidate(rule, stig_id)
+    if rhel9_audit_backlog_limit_candidate:
+        return rhel9_audit_backlog_limit_candidate
     login_banner_candidate = _gnome_login_banner_text_candidate(rule, stig_id)
     if login_banner_candidate:
         return login_banner_candidate
