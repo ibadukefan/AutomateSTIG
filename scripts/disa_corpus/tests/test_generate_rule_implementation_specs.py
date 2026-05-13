@@ -7396,5 +7396,36 @@ dav_lock_module''',
             'description': 'The Apache web server must have Web Distributed Authoring (WebDAV) disabled.',
         })
 
+    def test_infers_sles_interactive_home_nosuid_findmnt_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234998',
+            'title': 'SUSE operating system file systems that contain user home directories must be mounted to prevent files with the setuid and setgid bit set from being executed.',
+            'check_content': '''Verify that SUSE operating system file systems that contain user home directories are mounted with the "nosuid" option.
+
+Print the currently active file system mount options of the file system(s) that contain the user home directories with the following command:
+
+> for X in `awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd`; do findmnt -nkT $X; done | sort -r
+/home /dev/mapper/system-home ext4 rw,nosuid,relatime,data=ordered
+
+If a file system containing user home directories is not mounted with the FSTYPE OPTION nosuid, this is a finding.
+
+Note: If a separate file system has not been created for the user home directories (user home directories are mounted under "/"), this is not a finding as the "nosuid" option cannot be used on the "/" system.''',
+            'fix_text': '''Configure the SUSE operating system "/etc/fstab" file to use the "nosuid" option on file systems that contain user home directories for interactive users.
+
+Re-mount the filesystems.
+
+> sudo mount -o remount /home''',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234998',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'awk -F: \'($3>=1000)&&($7 !~ /nologin/){print $6}\' /etc/passwd | while IFS= read -r home; do [ "$home" = "/" ] && continue; findmnt -nkT "$home"; done | awk \'$1 != "/" && $4 !~ /(^|,)nosuid(,|$)/ {print}\'',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'SUSE operating system file systems that contain user home directories must be mounted to prevent files with the setuid and setgid bit set from being executed.',
+        })
+
 if __name__ == '__main__':
     unittest.main()

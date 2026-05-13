@@ -1634,6 +1634,32 @@ def _sles_mfa_required_packages_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _sles_interactive_home_nosuid_candidate(rule: dict, stig_id: str) -> dict | None:
+    if rule.get('vuln_id', '') != 'V-234998' or stig_id != 'SLES_15_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    if not re.search(r"awk\s+-F:\s+'\(\$3>=1000\)\s*&&\s*\(\$7\s*!~\s*/nologin/\)\{print\s+\$6\}'\s+/etc/passwd", content):
+        return None
+    if not re.search(r'findmnt\s+-nkT\s+\$X', content):
+        return None
+    if not re.search(r'If\s+a\s+file\s+system\s+containing\s+user\s+home\s+directories\s+is\s+not\s+mounted\s+with\s+the\s+FSTYPE\s+OPTION\s+nosuid,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'user\s+home\s+directories\s+are\s+mounted\s+under\s+["“]/["”].*?not\s+a\s+finding.*?nosuid.*?cannot\s+be\s+used\s+on\s+the\s+["“]/["”]', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'/etc/fstab', fix_text) or not re.search(r'\bnosuid\b', fix_text):
+        return None
+    command = 'awk -F: \'($3>=1000)&&($7 !~ /nologin/){print $6}\' /etc/passwd | while IFS= read -r home; do [ "$home" = "/" ] && continue; findmnt -nkT "$home"; done | awk \'$1 != "/" && $4 !~ /(^|,)nosuid(,|$)/ {print}\''
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': title,
+    }
+
+
 def _package_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -5667,7 +5693,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _sles_interactive_home_nosuid_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

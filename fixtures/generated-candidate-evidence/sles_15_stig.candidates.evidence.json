@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 167,
+  "candidate_checks": 168,
   "cases": [
     {
       "check": {
@@ -3437,6 +3437,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ \"$home\" = \"/\" ] && continue; findmnt -nkT \"$home\"; done | awk '$1 != \"/\" && $4 !~ /(^|,)nosuid(,|$)/ {print}'",
+        "type": "command_output"
+      },
+      "description": "SUSE operating system file systems that contain user home directories must be mounted to prevent files with the setuid and setgid bit set from being executed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ \"$home\" = \"/\" ] && continue; findmnt -nkT \"$home\"; done | awk '$1 != \"/\" && $4 !~ /(^|,)nosuid(,|$)/ {print}'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ \"$home\" = \"/\" ] && continue; findmnt -nkT \"$home\"; done | awk '$1 != \"/\" && $4 !~ /(^|,)nosuid(,|$)/ {print}'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234998"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fstab",
         "pattern": "UUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid 0 0",
@@ -4417,5 +4443,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 167
+  "validated_candidates": 168
 }
