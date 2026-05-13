@@ -4319,6 +4319,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         }
     postgresql_log_line_prefix_required_tokens = {
         'V-233578': ('%m', '%u', '%d', '%s'),
+        'V-233582': ('%m', '%u', '%d', '%p', '%r', '%a'),
         'V-233608': ('%m',),
     }.get(rule.get('vuln_id', ''))
     if (

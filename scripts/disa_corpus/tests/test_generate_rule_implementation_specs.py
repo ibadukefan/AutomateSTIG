@@ -7576,6 +7576,33 @@ If log_line_prefix does not contain "%m %u %d %s", this is a finding.''',
         self.assertIn('%m %u %d %s', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_postgresql_log_line_prefix_identity_tokens_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233582',
+            'title': 'PostgreSQL must produce audit records containing sufficient information to establish the identity of any user/subject or process associated with the event.',
+            'check_content': '''Check PostgreSQL settings and existing audit records to verify a user name associated with the event is being captured and stored with the audit records. If audit records exist without specific user information, this is a finding.
+
+First, as the database administrator (shown here as "postgres"), verify the current setting of log_line_prefix by running the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW log_line_prefix"
+
+If log_line_prefix does not contain %m, %u, %d, %p, %r, %a, this is a finding.''',
+            'fix_text': '''To enable username, database name, process ID, remote host/port and application name in logging, as the database administrator (shown here as "postgres"), edit the following in postgresql.conf:
+
+$ sudo su - postgres
+$ vi ${PGDATA?}/postgresql.conf
+log_line_prefix = '< %m %u %d %p %r %a >'
+
+Now, as the system administrator, reload the server with the new configuration.''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('log_line_prefix', candidate['check']['command'])
+        self.assertIn('%m %u %d %p %r %a', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_windows_security_option_candidate_from_explicit_disabled_value(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254465',

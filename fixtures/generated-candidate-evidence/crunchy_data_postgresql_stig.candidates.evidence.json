@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 25,
+  "candidate_checks": 26,
   "cases": [
     {
       "check": {
@@ -393,6 +393,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %p %r %a; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must produce audit records containing sufficient information to establish the identity of any user/subject or process associated with the event.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %p %r %a; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %p %r %a; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233582"
+    },
+    {
+      "check": {
         "command": "cat /proc/sys/crypto/fips_enabled",
         "type": "command_output"
       },
@@ -657,5 +683,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 25
+  "validated_candidates": 26
 }

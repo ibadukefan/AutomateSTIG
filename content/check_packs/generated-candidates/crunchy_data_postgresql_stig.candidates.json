@@ -197,6 +197,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %p %r %a; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must produce audit records containing sufficient information to establish the identity of any user/subject or process associated with the event.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233582"
+    },
+    {
+      "check": {
         "command": "cat /proc/sys/crypto/fips_enabled",
         "type": "command_output"
       },
