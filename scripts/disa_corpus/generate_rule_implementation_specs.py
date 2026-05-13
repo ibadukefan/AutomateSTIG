@@ -1821,6 +1821,33 @@ def _linux_interactive_shadow_sha512_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _linux_sudoers_default_include_directory_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    if rule.get('vuln_id', '') != 'V-251711':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'grep\s+include\s+/etc/sudoers', content, re.IGNORECASE):
+        return None
+    if not re.search(r'grep\s+-r\s+include\s+/etc/sudoers\.d', content, re.IGNORECASE):
+        return None
+    if '#includedir /etc/sudoers.d' not in content or '#includedir /etc/sudoers.d' not in fix_text:
+        return None
+    if not re.search(r'If\s+the\s+results\s+are\s+not\s+["“]/etc/sudoers\.d["”]\s+or\s+additional\s+files\s+or\s+directories\s+are\s+specified,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+results\s+are\s+returned,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    command = r'''awk '/^[[:space:]]*#?(include|includedir)[[:space:]]+/ { if ($0 !~ /^[[:space:]]*#includedir[[:space:]]+[/]etc[/]sudoers[.]d[[:space:]]*$/) print FILENAME ":" $0 }' /etc/sudoers 2>/dev/null; grep -R -n -E '^[[:space:]]*#?(include|includedir)[[:space:]]+' /etc/sudoers.d 2>/dev/null'''
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_shadow_password_lifetime_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -6449,7 +6476,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_passwd_home_directory_assigned_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_passwd_home_directory_assigned_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

@@ -1202,6 +1202,46 @@ If home directories referenced in "/etc/passwd" do not have a mode of "0750" or 
             'description': 'All SUSE operating system local interactive user home directories must have mode 0750 or less permissive.',
         })
 
+    def test_infers_linux_sudoers_default_include_directory_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251711',
+            'title': 'RHEL 8 must specify the default "include" directory for the /etc/sudoers file.',
+            'check_content': '''Note: If the "include" and "includedir" directives are not present in the /etc/sudoers file, this requirement is not applicable.
+
+Verify the operating system specifies only the default "include" directory for the /etc/sudoers file with the following command:
+
+$ sudo grep include /etc/sudoers
+
+#includedir /etc/sudoers.d
+
+If the results are not "/etc/sudoers.d" or additional files or directories are specified, this is a finding.
+
+Verify the operating system does not have nested "include" files or directories within the /etc/sudoers.d directory with the following command:
+
+$ sudo grep -r include /etc/sudoers.d
+
+If results are returned, this is a finding.''',
+            'fix_text': '''Configure the /etc/sudoers file to only include the /etc/sudoers.d directory.
+
+Edit the /etc/sudoers file with the following command:
+
+$ sudo visudo
+
+Add or modify the following line:
+#includedir /etc/sudoers.d''',
+        }, 'RHEL_8_STIG')
+        command = r"""awk '/^[[:space:]]*#?(include|includedir)[[:space:]]+/ { if ($0 !~ /^[[:space:]]*#includedir[[:space:]]+[/]etc[/]sudoers[.]d[[:space:]]*$/) print FILENAME ":" $0 }' /etc/sudoers 2>/dev/null; grep -R -n -E '^[[:space:]]*#?(include|includedir)[[:space:]]+' /etc/sudoers.d 2>/dev/null"""
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-251711',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': command,
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 8 must specify the default "include" directory for the /etc/sudoers file.',
+        })
+
     def test_infers_linux_sha_crypt_rounds_floor_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271627',
