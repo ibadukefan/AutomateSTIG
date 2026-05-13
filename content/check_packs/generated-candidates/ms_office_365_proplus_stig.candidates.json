@@ -142,6 +142,20 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security",
+        "type": "registry",
+        "value_name": "OpenXMLEncryption"
+      },
+      "description": "Office applications must be configured to specify encryption type in password-protected Office Open XML files.",
+      "expected": {
+        "type": "equals",
+        "value": "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
+      },
+      "platform": "windows",
+      "vuln_id": "V-223292"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\trusted locations",
         "type": "registry",
         "value_name": "allow user locations"
@@ -783,6 +797,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-223355"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "minenckey"
+      },
+      "description": "The minimum encryption key length in Outlook must be at least 168.",
+      "expected": {
+        "pattern": "^(?:1(?:6[8-9]|[7-9]\\d)|[2-9]\\d{2,}|\\d{4,})$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-223356"
     },
     {
       "check": {

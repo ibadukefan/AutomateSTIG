@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 115,
+  "candidate_checks": 117,
   "cases": [
     {
       "check": {
@@ -270,6 +270,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223290"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security",
+        "type": "registry",
+        "value_name": "OpenXMLEncryption"
+      },
+      "description": "Office applications must be configured to specify encryption type in password-protected Office Open XML files.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\OpenXMLEncryption": "unexpected-Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\OpenXMLEncryption": "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223292"
     },
     {
       "check": {
@@ -1512,6 +1539,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223355"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "minenckey"
+      },
+      "description": "The minimum encryption key length in Outlook must be at least 168.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:1(?:6[8-9]|[7-9]\\d)|[2-9]\\d{2,}|\\d{4,})$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\minenckey": 9
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\minenckey": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223356"
     },
     {
       "check": {
@@ -3112,5 +3166,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 115
+  "validated_candidates": 117
 }

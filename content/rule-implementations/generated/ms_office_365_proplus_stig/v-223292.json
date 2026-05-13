@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security",
+      "type": "registry",
+      "value_name": "OpenXMLEncryption"
+    },
+    "description": "Office applications must be configured to specify encryption type in password-protected Office Open XML files.",
+    "expected": {
+      "type": "equals",
+      "value": "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
+    },
+    "platform": "windows",
+    "vuln_id": "V-223292"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Security Settings >> Encryption type for password protected Office Open XML files is set to Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256.\n \nUse the Windows Registry Editor to navigate to the following key:\n\nHKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\n\nIf the value OpenXMLEncryption is REG_SZ = \"Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256\", this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Security Settings >> Encryption type for password protected Office Open XML files to Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223292r961128_rule",
   "severity": "medium",

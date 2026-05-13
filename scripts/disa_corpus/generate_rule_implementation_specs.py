@@ -6013,19 +6013,53 @@ def _windows_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) 
             content,
             re.IGNORECASE,
         )
-    if not expected_match:
-        return None
-    return {
-        'vuln_id': rule.get('vuln_id', ''),
-        'platform': 'windows',
-        'check': {
-            'type': 'registry',
-            'path': _normalize_registry_path(path_match.group(1)),
-            'value_name': expected_match.group(1),
-        },
-        'expected': {'type': 'equals', 'value': int(expected_match.group(2))},
-        'description': rule.get('title', ''),
-    }
+    if expected_match:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': _normalize_registry_path(path_match.group(1)),
+                'value_name': expected_match.group(1),
+            },
+            'expected': {'type': 'equals', 'value': int(expected_match.group(2))},
+            'description': rule.get('title', ''),
+        }
+    exact_reg_sz_match = re.search(
+        r'If\s+(?:the\s+)?value\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+REG_SZ\s*=\s+["“]([^"”\n]+)["”],\s+this\s+is\s+not\s+a\s+finding\.',
+        content,
+        re.IGNORECASE,
+    )
+    if exact_reg_sz_match:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': _normalize_registry_path(path_match.group(1)),
+                'value_name': exact_reg_sz_match.group(1),
+            },
+            'expected': {'type': 'equals', 'value': exact_reg_sz_match.group(2)},
+            'description': rule.get('title', ''),
+        }
+    dword_at_least_match = re.search(
+        r'If\s+(?:the\s+)?value\s+for\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+set\s+to\s+(\d+)\s+or\s+above,\s+this\s+is\s+not\s+a\s+finding\.',
+        content,
+        re.IGNORECASE,
+    )
+    if dword_at_least_match and int(dword_at_least_match.group(2)) == 168:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': _normalize_registry_path(path_match.group(1)),
+                'value_name': dword_at_least_match.group(1),
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:1(?:6[8-9]|[7-9]\\d)|[2-9]\\d{2,}|\\d{4,})$'},
+            'description': rule.get('title', ''),
+        }
+    return None
 
 
 def _office_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) -> dict | None:

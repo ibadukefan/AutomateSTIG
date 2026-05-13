@@ -8153,6 +8153,48 @@ If any accounts other than "root" have a UID of "0", this is a finding.'''
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'root'})
 
+    def test_infers_office_registry_reg_sz_exact_value_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223292',
+            'title': 'Office applications must be configured to specify encryption type in password-protected Office Open XML files.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Security Settings >> Encryption type for password protected Office Open XML files is set to Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256.
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security
+
+If the value OpenXMLEncryption is REG_SZ = "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256", this is not a finding.''',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {
+            'type': 'registry',
+            'path': 'HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security',
+            'value_name': 'OpenXMLEncryption',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256'})
+
+    def test_infers_office_registry_dword_greater_or_equal_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223356',
+            'title': 'The minimum encryption key length in Outlook must be at least 168.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Cryptography >> Minimum encryption settings is set to "Enabled" and a Minimum key size (in bits) of "168" or above.
+
+Use the Windows Registry to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security
+
+If the value for minenckey is set to 168 or above, this is not a finding.''',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {
+            'type': 'registry',
+            'path': 'HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security',
+            'value_name': 'minenckey',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'matches', 'pattern': '^(?:1(?:6[8-9]|[7-9]\\d)|[2-9]\\d{2,}|\\d{4,})$'})
+
     def test_infers_shadow_blank_password_command_returns_any_results_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258120',
