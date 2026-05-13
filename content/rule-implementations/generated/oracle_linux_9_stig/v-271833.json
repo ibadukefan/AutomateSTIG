@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk -F: '($3>=1000)&&($7 !~ /nologin/)&&($6==\"\"){print $1}' /etc/passwd",
+      "type": "command_output"
+    },
+    "description": "OL 9 local interactive users must have a home directory assigned in the /etc/passwd file.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271833"
+  },
   "check_content_excerpt": "Verify that OL 9 configures interactive users on the system have a home directory assigned with the following command:\n \n$ sudo awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1, $3, $6}' /etc/passwd\nsmithk:x:1000:1000:smithk:/home/smithk:/bin/bash\nscsaustin:x:1001:1001:scsaustin:/home/scsaustin:/bin/bash\ndjohnson:x:1002:1002:djohnson:/home/djohnson:/bin/bash\n\nInspect the output and verify that all interactive users (normally users with a user identifier [UID] greater that 1000) have a home directory defined.\n\nIf users home directory is not defined, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Create and assign home directories to all local interactive users on OL 9 that currently do not have a home directory assigned.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271833r1092607_rule",
   "severity": "medium",

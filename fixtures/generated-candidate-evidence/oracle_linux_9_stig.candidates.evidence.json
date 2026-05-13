@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 433,
+  "candidate_checks": 434,
   "cases": [
     {
       "check": {
@@ -10611,6 +10611,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /nologin/)&&($6==\"\"){print $1}' /etc/passwd",
+        "type": "command_output"
+      },
+      "description": "OL 9 local interactive users must have a home directory assigned in the /etc/passwd file.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /nologin/)&&($6==\"\"){print $1}' /etc/passwd": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /nologin/)&&($6==\"\"){print $1}' /etc/passwd": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271833"
+    },
+    {
+      "check": {
         "command": "pwck -qr",
         "type": "command_output"
       },
@@ -11992,5 +12018,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 433
+  "validated_candidates": 434
 }

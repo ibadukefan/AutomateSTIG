@@ -1964,6 +1964,35 @@ def _file_content_candidate(rule: dict) -> dict | None:
     }
 
 
+def _linux_passwd_home_directory_assigned_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if not re.fullmatch(r'V-\d+', vuln_id):
+        return None
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'home\s+directory\s+assigned\s+in\s+the\s+/etc/passwd\s+file', title, re.IGNORECASE):
+        return None
+    if not re.search(r"awk\s+-F:\s+['\"]\(\$3>=1000\).*?\{print\s+\$1,\s*\$3,\s*\$6\}['\"]\s+/etc/passwd", content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'If\s+users?\s+home\s+director(?:y|ies)\s+is\s+not\s+defined,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Create\s+and\s+assign\s+home\s+directories\s+to\s+all\s+local\s+interactive\s+users', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {
+            'type': 'command_output',
+            'command': "awk -F: '($3>=1000)&&($7 !~ /nologin/)&&($6==\"\"){print $1}' /etc/passwd",
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': title,
+    }
+
+
 def _dconf_media_automount_literal_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -6092,7 +6121,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_shadow_password_lifetime_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_passwd_home_directory_assigned_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

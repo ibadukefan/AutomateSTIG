@@ -193,6 +193,32 @@ Edit the "/etc/issue" file to replace the default text with the Standard Mandato
             'description': 'OL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a command line user logon.',
         })
 
+    def test_infers_linux_passwd_home_directory_assigned_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258051',
+            'title': 'All RHEL 9 local interactive users must have a home directory assigned in the /etc/passwd file.',
+            'check_content': """Verify that interactive users on the system have a home directory assigned with the following command:
+
+$ sudo awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1, $3, $6}' /etc/passwd
+
+smithk:x:1000:1000:smithk:/home/smithk:/bin/bash
+
+Inspect the output and verify that all interactive users (normally users with a user identifier (UID) greater that 1000) have a home directory defined.
+
+If users home directory is not defined, this is a finding.""",
+            'fix_text': 'Create and assign home directories to all local interactive users on RHEL 9 that currently do not have a home directory assigned.',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258051',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk -F: '($3>=1000)&&($7 !~ /nologin/)&&($6==\"\"){print $1}' /etc/passwd",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'All RHEL 9 local interactive users must have a home directory assigned in the /etc/passwd file.',
+        })
+
     def test_infers_linux_fixed_mount_option_candidate_from_authoritative_fstab_text(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257873',
