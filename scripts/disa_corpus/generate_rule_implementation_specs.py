@@ -1056,6 +1056,51 @@ def _kubernetes_validating_admission_webhook_candidate(rule: dict, stig_id: str)
     }
 
 
+def _kubernetes_kubelet_config_value_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    known_values = {
+        'V-242420': ('client-ca-file', 'clientCAFile', {'type': 'not_equals', 'value': ''}),
+        'V-242424': ('tls-private-key-file', 'tlsPrivateKeyFile', {'type': 'not_equals', 'value': ''}),
+        'V-242425': ('tls-cert-file', 'tlsCertFile', {'type': 'not_equals', 'value': ''}),
+        'V-242434': ('protect-kernel-defaults', 'protectKernelDefaults', {'type': 'equals', 'value': 'true'}),
+    }
+    if vuln_id not in known_values:
+        return None
+    cli_flag, config_key, expected = known_values[vuln_id]
+    if f'--{cli_flag}' not in content:
+        return None
+    if f'grep -i {config_key} <path_to_config_file>' not in content:
+        return None
+    if not re.search(r'Note\s+the\s+path\s+to\s+the\s+config\s+file\s+\(identified\s+by\s+--config\)', content, re.IGNORECASE):
+        return None
+    if not re.search(rf'Remove\s+the\s+["“]--{re.escape(cli_flag)}["”]\s+option\s+if\s+present', fix_text, re.IGNORECASE):
+        return None
+    if expected['type'] == 'equals':
+        if not re.search(rf'Set\s+["“]{re.escape(config_key)}["”]\s+to\s+["“]{re.escape(str(expected["value"]))}["”]', fix_text, re.IGNORECASE):
+            return None
+        if not re.search(rf'If\s+the\s+setting\s+["“]{re.escape(config_key)}["”]\s+is\s+not\s+set\s+or\s+is\s+set\s+to\s+false,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+    else:
+        if not re.search(rf'If\s+the\s+setting\s+["“]{re.escape(config_key)}["”]\s+is\s+not\s+set\s+or\s+contains\s+no\s+value,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+    command = (
+        f"sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--{cli_flag}'; "
+        f"then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); "
+        f"test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*{config_key}:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': expected,
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_manifest_grep_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower():
         return None
@@ -6140,6 +6185,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_admission_candidate = _kubernetes_validating_admission_webhook_candidate(rule, stig_id)
     if kubernetes_admission_candidate:
         return kubernetes_admission_candidate
+    kubernetes_kubelet_config_value_candidate = _kubernetes_kubelet_config_value_candidate(rule, stig_id)
+    if kubernetes_kubelet_config_value_candidate:
+        return kubernetes_kubelet_config_value_candidate
     kubernetes_manifest_grep_candidate = _kubernetes_manifest_grep_candidate(rule, stig_id)
     if kubernetes_manifest_grep_candidate:
         return kubernetes_manifest_grep_candidate

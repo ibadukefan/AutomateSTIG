@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--client-ca-file'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*clientCAFile:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"",
+      "type": "command_output"
+    },
+    "description": "Kubernetes Kubelet must have the SSL Certificate Authority set.",
+    "expected": {
+      "type": "not_equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242420"
+  },
   "check_content_excerpt": "On the Control Plane, run the command:\nps -ef | grep kubelet\n\nIf the \"--client-ca-file\" option exists, this is a finding.\n\nNote the path to the config file (identified by --config).\n\nRun the command:\ngrep -i clientCAFile <path_to_config_file>\n\nIf the setting \"clientCAFile\" is not set or contains no value, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "not_equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "On the Control Plane, run the command:\nps -ef | grep kubelet\n\nRemove the \"--client-ca-file\" option if present.\n\nNote the path to the config file (identified by --config).\n\nEdit the Kubernetes Kubelet config file: \nSet the value of \"clientCAFile\" to a path containing an Approved Organizational Certificate. \n\nRestart the kubelet service using the following command:\nsystemctl daemon-reload && systemctl restart kubelet",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242420r1043178_rule",
   "severity": "medium",

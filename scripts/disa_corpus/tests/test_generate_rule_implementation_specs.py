@@ -190,6 +190,40 @@ Next, restart the database.''',
             'description': 'PostgreSQL must record time stamps, in audit records and application data that can be mapped to Coordinated Universal Time (UTC, formerly GMT).',
         })
 
+    def test_infers_kubernetes_kubelet_config_value_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242434',
+            'title': 'Kubernetes Kubelet must enable kernel protection.',
+            'check_content': '''On the Control Plane, run the command:
+ps -ef | grep kubelet
+
+If the "--protect-kernel-defaults" option exists, this is a finding.
+
+Note the path to the config file (identified by --config).
+
+Run the command:
+grep -i protectKernelDefaults <path_to_config_file>
+
+If the setting "protectKernelDefaults" is not set or is set to false, this is a finding.''',
+            'fix_text': '''Remove the "--protect-kernel-defaults" option if present.
+
+Edit the Kubernetes Kubelet config file:
+Set "protectKernelDefaults" to "true".
+
+Restart the kubelet service using the following command:
+systemctl daemon-reload && systemctl restart kubelet''',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242434',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--protect-kernel-defaults'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*protectKernelDefaults:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"",
+            },
+            'expected': {'type': 'equals', 'value': 'true'},
+            'description': 'Kubernetes Kubelet must enable kernel protection.',
+        })
+
     def test_infers_apache_windows_httpd_conf_directive_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-214327',

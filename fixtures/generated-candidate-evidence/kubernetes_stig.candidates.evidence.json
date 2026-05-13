@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 44,
+  "candidate_checks": 48,
   "cases": [
     {
       "check": {
@@ -211,6 +211,32 @@
     },
     {
       "check": {
+        "command": "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--client-ca-file'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*clientCAFile:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Kubelet must have the SSL Certificate Authority set.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--client-ca-file'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*clientCAFile:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--client-ca-file'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*clientCAFile:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242420"
+    },
+    {
+      "check": {
         "command": "grep -i root-ca-file /etc/kubernetes/manifests/*",
         "type": "command_output"
       },
@@ -260,6 +286,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242423"
+    },
+    {
+      "check": {
+        "command": "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--tls-private-key-file'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*tlsPrivateKeyFile:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Kubelet must enable tlsPrivateKeyFile for client authentication to secure service.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--tls-private-key-file'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*tlsPrivateKeyFile:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--tls-private-key-file'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*tlsPrivateKeyFile:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242424"
+    },
+    {
+      "check": {
+        "command": "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--tls-cert-file'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*tlsCertFile:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Kubelet must enable tlsCertFile for client authentication to secure service.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--tls-cert-file'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*tlsCertFile:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--tls-cert-file'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*tlsCertFile:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242425"
     },
     {
       "check": {
@@ -468,6 +546,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242433"
+    },
+    {
+      "check": {
+        "command": "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--protect-kernel-defaults'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*protectKernelDefaults:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Kubelet must enable kernel protection.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--protect-kernel-defaults'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*protectKernelDefaults:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"": "unexpected-true"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--protect-kernel-defaults'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" && sed -n 's/^[[:space:]]*protectKernelDefaults:[[:space:]]*//p' \\\"\\$cfg\\\" | head -n1\"": "true"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242434"
     },
     {
       "check": {
@@ -1151,5 +1255,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 44
+  "validated_candidates": 48
 }
