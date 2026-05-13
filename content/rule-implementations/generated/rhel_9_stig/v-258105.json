@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $4 < 1 {print $1 \" \" $4}' /etc/passwd /etc/shadow",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 passwords must have a 24 hours minimum password lifetime restriction in /etc/shadow.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-258105"
+  },
   "check_content_excerpt": "Verify that RHEL 9 has configured the minimum time period between password changes for each user account as one day or greater with the following command:\n\n$ sudo awk -F: '$4 < 1 {printf \"%s %d\\n\", $1, $4}' /etc/shadow\n\nIf any results are returned that are not associated with a system account, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure noncompliant accounts to enforce a 24 hour minimum password lifetime:\n\n$ sudo passwd -n 1 [user]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258105r1045212_rule",
   "severity": "medium",

@@ -1049,6 +1049,56 @@ $ sudo chage -M 60 [user]''',
             'description': 'RHEL 8 user account passwords must be configured so that existing passwords are restricted to a 60-day maximum lifetime.',
         })
 
+    def test_infers_linux_shadow_minimum_password_lifetime_printf_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258105',
+            'title': 'RHEL 9 passwords must have a 24 hours minimum password lifetime restriction in /etc/shadow.',
+            'check_content': '''Verify that RHEL 9 has configured the minimum time period between password changes for each user account as one day or greater with the following command:
+
+$ sudo awk -F: '$4 < 1 {printf "%s %d\\n", $1, $4}' /etc/shadow
+
+If any results are returned that are not associated with a system account, this is a finding.''',
+            'fix_text': '''Configure noncompliant accounts to enforce a 24 hour minimum password lifetime:
+
+$ sudo passwd -n 1 [user]''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258105',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && $4 < 1 {print $1 \" \" $4}' /etc/passwd /etc/shadow",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 9 passwords must have a 24 hours minimum password lifetime restriction in /etc/shadow.',
+        })
+
+    def test_infers_linux_shadow_maximum_password_lifetime_printf_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258042',
+            'title': 'RHEL 9 user account passwords must have a 60-day maximum password lifetime restriction.',
+            'check_content': '''Verify the maximum time period for existing passwords is restricted to 60 days with the following commands:
+
+$ sudo awk -F: '$5 > 60 {printf "%s %d\\n", $1, $5}' /etc/shadow
+
+$ sudo awk -F: '$5 <= 0 {printf "%s %d\\n", $1, $5}' /etc/shadow
+
+If any results are returned that are not associated with a system account, this is a finding.''',
+            'fix_text': '''Configure noncompliant accounts to enforce a 60-day maximum password lifetime restriction.
+
+passwd -x 60 [user]''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258042',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && ($5 > 60 || $5 <= 0) {print $1 \" \" $5}' /etc/passwd /etc/shadow",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 9 user account passwords must have a 60-day maximum password lifetime restriction.',
+        })
+
     def test_enriches_scap_artifact_rules_by_canonical_vuln_id(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)

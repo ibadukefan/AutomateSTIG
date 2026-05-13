@@ -1739,7 +1739,7 @@ def _linux_shadow_password_lifetime_candidate(rule: dict, stig_id: str) -> dict 
     if not re.search(r'not\s+associated\s+with\s+a\s+system\s+account', content, re.IGNORECASE):
         return None
 
-    minimum_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$4\s*<\s*(\d+)\s*\{print\s+\$1\s+(?:\"\s+\"|\":\")\s+\$4\}'\s+/etc/shadow", content, re.IGNORECASE)
+    minimum_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$4\s*<\s*(\d+)\s*\{\s*(?:print\s+\$1\s+(?:\"\s+\"|\":\")\s+\$4|printf\s+\"%s\s+%d\\n\",\s*\$1,\s*\$4)\s*\}'\s+/etc/shadow", content, re.IGNORECASE)
     if minimum_match and re.search(r'\b(?:chage\s+-m|passwd\s+-n)\s+' + re.escape(minimum_match.group(1)) + r'\b', fix_text, re.IGNORECASE):
         threshold = int(minimum_match.group(1))
         if threshold != 1 or not re.search(r'minimum\s+password\s+lifetime|minimum\s+time\s+period\s+between\s+password\s+changes|24\s+hours/1\s+day', combined, re.IGNORECASE):
@@ -1753,8 +1753,8 @@ def _linux_shadow_password_lifetime_candidate(rule: dict, stig_id: str) -> dict 
             'description': rule.get('title', ''),
         }
 
-    maximum_over_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$5\s*>\s*(\d+)(?:\s*\|\|\s*\$5\s*==\s*\"\")?\s*\{print\s+\$1\s+(?:\"\s+\"|\":\")\s+\$5\}'\s+/etc/shadow", content, re.IGNORECASE)
-    maximum_nonpositive_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$5\s*<=\s*0\s*\{print\s+\$1\s+\"\s+\"\s+\$5\}'\s+/etc/shadow", content, re.IGNORECASE)
+    maximum_over_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$5\s*>\s*(\d+)(?:\s*\|\|\s*\$5\s*==\s*\"\")?\s*\{\s*(?:print\s+\$1\s+(?:\"\s+\"|\":\")\s+\$5|printf\s+\"%s\s+%d\\n\",\s*\$1,\s*\$5)\s*\}'\s+/etc/shadow", content, re.IGNORECASE)
+    maximum_nonpositive_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$5\s*<=\s*0\s*\{\s*(?:print\s+\$1\s+\"\s+\"\s+\$5|printf\s+\"%s\s+%d\\n\",\s*\$1,\s*\$5)\s*\}'\s+/etc/shadow", content, re.IGNORECASE)
     maximum_blank_in_over_match = bool(maximum_over_match and re.search(r"\$5\s*==\s*\"\"", maximum_over_match.group(0)))
     if maximum_over_match and (maximum_nonpositive_match or maximum_blank_in_over_match) and re.search(r'\b(?:chage\s+-M|passwd\s+-x)\s+' + re.escape(maximum_over_match.group(1)) + r'\b', fix_text, re.IGNORECASE):
         threshold = int(maximum_over_match.group(1))
