@@ -4296,6 +4296,48 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    postgresql_nonzero_session_settings = {
+        'tcp_keepalives_idle',
+        'tcp_keepalives_interval',
+        'tcp_keepalives_count',
+        'statement_timeout',
+    }
+    if (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233606'
+        and all(re.search(rf'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+{setting}["”]\s*$', content, re.MULTILINE | re.IGNORECASE) for setting in postgresql_nonzero_session_settings)
+        and re.search(r'If\s+these\s+settings\s+are\s+not\s+set\s+to\s+something\s+other\s+than\s+zero,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and all(re.search(rf'^\s*{setting}\s*=\s*[1-9][0-9]*\b', fix_text, re.MULTILINE | re.IGNORECASE) for setting in postgresql_nonzero_session_settings)
+    ):
+        command = "sh -c 'for s in tcp_keepalives_idle tcp_keepalives_interval tcp_keepalives_count statement_timeout; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = 0 ] && echo \"$s=0\"; done'"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+    postgresql_log_line_prefix_required_tokens = {
+        'V-233578': ('%m', '%u', '%d', '%s'),
+        'V-233608': ('%m',),
+    }.get(rule.get('vuln_id', ''))
+    if (
+        'postgresql' in stig_id.lower()
+        and postgresql_log_line_prefix_required_tokens
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_line_prefix["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and all(token in content for token in postgresql_log_line_prefix_required_tokens)
+        and re.search(r'If\s+(?:the\s+query\s+result\s+does\s+not\s+contain|log_line_prefix\s+does\s+not\s+contain)', content, re.IGNORECASE)
+        and all(token in fix_text for token in postgresql_log_line_prefix_required_tokens)
+    ):
+        tokens = ' '.join(postgresql_log_line_prefix_required_tokens)
+        command = f"sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in {tokens}; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     postgresql_pgaudit_shared_preload_libraries = (
         'postgresql' in stig_id.lower()
         and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+shared_preload_libraries["”]\s*$', content, re.MULTILINE | re.IGNORECASE)

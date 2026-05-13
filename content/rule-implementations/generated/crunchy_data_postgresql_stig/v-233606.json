@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'for s in tcp_keepalives_idle tcp_keepalives_interval tcp_keepalives_count statement_timeout; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = 0 ] && echo \"$s=0\"; done'",
+      "type": "command_output"
+    },
+    "description": "PostgreSQL must invalidate session identifiers upon user logout or other session termination.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-233606"
+  },
   "check_content_excerpt": "As the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SHOW tcp_keepalives_idle\"\n$ psql -c \"SHOW tcp_keepalives_interval\"\n$ psql -c \"SHOW tcp_keepalives_count\"\n$ psql -c \"SHOW statement_timeout\"\n\nIf these settings are not set to something other than zero, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nAs the database administrator (shown here as \"postgres\"), edit postgresql.conf:\n\n$ sudo su - postgres\n$ vi $PGDATA/postgresql.conf\n\nSet the following parameters to organizational requirements:\n\nstatement_timeout = 10000 #milliseconds\ntcp_keepalives_idle = 10 # seconds\ntcp_keepalives_interval = 10 # seconds\ntcp_keepalives_count = 10\n\nNow, as the system administrator, restart the server with the new configuration:\n\n$ sudo systemctl restart postgresql-${PGVER?}",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233606r961113_rule",
   "severity": "medium",

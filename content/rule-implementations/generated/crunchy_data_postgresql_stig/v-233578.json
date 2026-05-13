@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %s; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'",
+      "type": "command_output"
+    },
+    "description": "PostgreSQL must produce audit records containing sufficient information to establish where the events occurred.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-233578"
+  },
   "check_content_excerpt": "First, as the database administrator (shown here as \"postgres\"), check the current log_line_prefix setting by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SHOW log_line_prefix\"\n\nIf log_line_prefix does not contain \"%m %u %d %s\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nTo check that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nFirst edit the postgresql.conf file as the database administrator (shown here as \"postgres\"):\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nExtra parameters can be added to the setting log_line_prefix to log application related information:\n\n# %a = application name\n# %u = user name\n# %d = database name\n# %r = remote host and port\n# %p = process ID\n# %m = timestamp with milliseconds\n# %i = command tag\n# %s = session startup\n# %e = SQL state\n\nFor example:\n\nlog_line_prefix = '< %m %a %u %d %r %p %i %e %s>'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n$ sudo systemctl reload postgresql-${PGVER?}",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233578r960897_rule",
   "severity": "medium",

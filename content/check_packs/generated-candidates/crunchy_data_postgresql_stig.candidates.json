@@ -184,6 +184,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %s; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must produce audit records containing sufficient information to establish where the events occurred.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233578"
+    },
+    {
+      "check": {
         "command": "cat /proc/sys/crypto/fips_enabled",
         "type": "command_output"
       },
@@ -233,6 +246,32 @@
       },
       "platform": "generic",
       "vuln_id": "V-233600"
+    },
+    {
+      "check": {
+        "command": "sh -c 'for s in tcp_keepalives_idle tcp_keepalives_interval tcp_keepalives_count statement_timeout; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = 0 ] && echo \"$s=0\"; done'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must invalidate session identifiers upon user logout or other session termination.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233606"
+    },
+    {
+      "check": {
+        "command": "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must produce audit records containing time stamps to establish when the events occurred.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233608"
     },
     {
       "check": {

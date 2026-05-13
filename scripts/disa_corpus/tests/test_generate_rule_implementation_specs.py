@@ -7530,6 +7530,52 @@ If an FTP server is installed and is not documented with the Information System 
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'yum list installed | grep ftpd'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_postgresql_session_timeout_keepalive_nonzero_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233606',
+            'title': 'PostgreSQL must invalidate session identifiers upon user logout or other session termination.',
+            'check_content': '''As the database administrator (shown here as "postgres"), run the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW tcp_keepalives_idle"
+$ psql -c "SHOW tcp_keepalives_interval"
+$ psql -c "SHOW tcp_keepalives_count"
+$ psql -c "SHOW statement_timeout"
+
+If these settings are not set to something other than zero, this is a finding.''',
+            'fix_text': '''Set the following parameters to organizational requirements:
+
+statement_timeout = 10000 #milliseconds
+tcp_keepalives_idle = 10 # seconds
+tcp_keepalives_interval = 10 # seconds
+tcp_keepalives_count = 10''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('tcp_keepalives_idle', candidate['check']['command'])
+        self.assertIn('statement_timeout', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_postgresql_log_line_prefix_required_tokens_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233578',
+            'title': 'PostgreSQL must produce audit records containing sufficient information to establish where the events occurred.',
+            'check_content': '''First, as the database administrator (shown here as "postgres"), check the current log_line_prefix setting by running the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW log_line_prefix"
+
+If log_line_prefix does not contain "%m %u %d %s", this is a finding.''',
+            'fix_text': 'Set log_line_prefix = "< %m %u %d %s >" in postgresql.conf.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('log_line_prefix', candidate['check']['command'])
+        self.assertIn('%m %u %d %s', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_windows_security_option_candidate_from_explicit_disabled_value(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254465',
