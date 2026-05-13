@@ -2921,6 +2921,62 @@ def _findmnt_option_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _nfs_fstab_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (title, content, fix_text) if part)
+    if not re.search(r'\b(?:Network\s+File\s+System|NFS)\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'cat\s+/etc/fstab\s*\|\s*grep\s+nfs', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+no\s+NFS\s+mounts\s+are\s+configured,\s+this\s+requirement\s+is\s+Not\s+Applicable', content, re.IGNORECASE):
+        return None
+
+    option_match = re.search(
+        r'has\s+the\s+["“](?P<option>nodev|nosuid|noexec)["”]\s+option\s+configured\s+for\s+all\s+NFS\s+mounts',
+        content,
+        re.IGNORECASE,
+    )
+    if option_match:
+        required_option = option_match.group('option').lower()
+        if not re.search(
+            rf'NFS\s+and\s+the\s+["“]{re.escape(required_option)}["”]\s+option\s+is\s+missing,\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        ):
+            return None
+        if not re.search(rf'use\s+the\s+["“]{re.escape(required_option)}["”]\s+option\s+on\s+file\s+systems\s+that\s+are\s+being\s+imported\s+via\s+NFS', fix_text, re.IGNORECASE):
+            return None
+        command = f"awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,){required_option}(,|$)/ {{print}}' /etc/fstab"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+
+    if re.search(r'\bNetwork\s+File\s+System\s*\(NFS\).*?configured\s+to\s+use\s+RPCSEC_GSS\b', title, re.IGNORECASE):
+        if not re.search(r'has\s+the\s+["“]sec["”]\s+option\s+configured\s+for\s+all\s+NFS\s+mounts', content, re.IGNORECASE):
+            return None
+        if not re.search(r'sec\s+option\s+without\s+the\s+["“]krb5:krb5i:krb5p["”]\s+settings.*?["“]sec["”]\s+option\s+has\s+the\s+["“]sys["”]\s+setting.*?["“]sec["”]\s+option\s+is\s+missing,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+            return None
+        if not re.search(r'Ensure\s+the\s+["“]sec["”]\s+option\s+is\s+defined\s+as\s+["“]krb5p:krb5i:krb5["”]', fix_text, re.IGNORECASE):
+            return None
+        command = "awk '!/^\\s*#/ && $3 ~ /^nfs/ && ($4 !~ /(^|,)sec=(krb5|krb5i|krb5p)(:krb5|:krb5i|:krb5p)*(,|$)/ || $4 ~ /(^|,)sec=sys(,|$)/) {print}' /etc/fstab"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+    return None
+
+
 def _fstab_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -4445,6 +4501,10 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     findmnt_candidate = _findmnt_option_candidate(rule, stig_id)
     if findmnt_candidate:
         return findmnt_candidate
+    nfs_fstab_mount_candidate = _nfs_fstab_mount_option_candidate(rule, stig_id)
+    if nfs_fstab_mount_candidate:
+        return nfs_fstab_mount_candidate
+
     fstab_mount_candidate = _fstab_mount_option_candidate(rule, stig_id)
     if fstab_mount_candidate:
         return fstab_mount_candidate

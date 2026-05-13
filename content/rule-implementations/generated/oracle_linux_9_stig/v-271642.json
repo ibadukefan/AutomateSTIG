@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)noexec(,|$)/ {print}' /etc/fstab",
+      "type": "command_output"
+    },
+    "description": "OL 9 must prevent code from being executed on file systems that are imported via Network File System (NFS).",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271642"
+  },
   "check_content_excerpt": "If no NFS mounts are configured, this requirement is Not Applicable.\n\nVerify that OL 9 has the \"noexec\" option configured for all NFS mounts with the following command:\n\n$ cat /etc/fstab | grep nfs\n192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p\n\nIf the system is mounting file systems via NFS and the \"noexec\" option is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Update each NFS mounted file system to use the \"noexec\" option on file systems that are being imported via NFS.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271642r1092593_rule",
   "severity": "medium",

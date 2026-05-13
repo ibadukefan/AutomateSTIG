@@ -5274,6 +5274,48 @@ If the /dev/shm file system is mounted without the "noexec" option, this is a fi
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'findmnt /var/log/audit'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'nosuid'})
 
+    def test_infers_linux_nfs_fstab_required_option_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271642',
+            'title': 'OL 9 must prevent code from being executed on file systems that are imported via Network File System (NFS).',
+            'check_content': '''If no NFS mounts are configured, this requirement is Not Applicable.
+
+Verify that OL 9 has the "noexec" option configured for all NFS mounts with the following command:
+
+$ cat /etc/fstab | grep nfs
+192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p
+
+If the system is mounting file systems via NFS and the "noexec" option is missing, this is a finding.''',
+            'fix_text': 'Update each NFS mounted file system to use the "noexec" option on file systems that are being imported via NFS.',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)noexec(,|$)/ {print}' /etc/fstab",
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_linux_nfs_fstab_rpcsec_gss_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271640',
+            'title': 'OL 9 must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS.',
+            'check_content': '''If no NFS mounts are configured, this requirement is Not Applicable.
+
+Verify that OL 9 has the "sec" option configured for all NFS mounts with the following command:
+
+$ cat /etc/fstab | grep nfs
+192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5p:krb5i:krb5
+
+If the system is mounting file systems via NFS and has the sec option without the "krb5:krb5i:krb5p" settings, the "sec" option has the "sys" setting, or the "sec" option is missing, this is a finding.''',
+            'fix_text': 'Ensure the "sec" option is defined as "krb5p:krb5i:krb5".',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': "awk '!/^\\s*#/ && $3 ~ /^nfs/ && ($4 !~ /(^|,)sec=(krb5|krb5i|krb5p)(:krb5|:krb5i|:krb5p)*(,|$)/ || $4 ~ /(^|,)sec=sys(,|$)/) {print}' /etc/fstab",
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_stat_mode_zero_candidate_from_path_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271804',

@@ -3335,61 +3335,65 @@
       "vuln_id": "V-271639"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271640",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271640r1091632_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS.",
-      "tracking_issue": "TODO-V-271640",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271640"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271641",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271641r1091635_rule",
       "severity": "medium",
       "title": "OL 9 must prevent special devices on file systems that are imported via Network File System (NFS).",
-      "tracking_issue": "TODO-V-271641",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271641"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271642",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271642r1092593_rule",
       "severity": "medium",
       "title": "OL 9 must prevent code from being executed on file systems that are imported via Network File System (NFS).",
-      "tracking_issue": "TODO-V-271642",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271642"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271643",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271643r1091641_rule",
       "severity": "medium",
       "title": "OL 9 must prevent files with the setuid and setgid bit set from being executed on file systems that are imported via Network File System (NFS).",
-      "tracking_issue": "TODO-V-271643",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271643"

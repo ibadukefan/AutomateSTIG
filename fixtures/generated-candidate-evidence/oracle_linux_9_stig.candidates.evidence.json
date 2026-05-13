@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 429,
+  "candidate_checks": 433,
   "cases": [
     {
       "check": {
@@ -5276,6 +5276,110 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271639"
+    },
+    {
+      "check": {
+        "command": "awk '!/^\\s*#/ && $3 ~ /^nfs/ && ($4 !~ /(^|,)sec=(krb5|krb5i|krb5p)(:krb5|:krb5i|:krb5p)*(,|$)/ || $4 ~ /(^|,)sec=sys(,|$)/) {print}' /etc/fstab",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk '!/^\\s*#/ && $3 ~ /^nfs/ && ($4 !~ /(^|,)sec=(krb5|krb5i|krb5p)(:krb5|:krb5i|:krb5p)*(,|$)/ || $4 ~ /(^|,)sec=sys(,|$)/) {print}' /etc/fstab": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk '!/^\\s*#/ && $3 ~ /^nfs/ && ($4 !~ /(^|,)sec=(krb5|krb5i|krb5p)(:krb5|:krb5i|:krb5p)*(,|$)/ || $4 ~ /(^|,)sec=sys(,|$)/) {print}' /etc/fstab": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271640"
+    },
+    {
+      "check": {
+        "command": "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)nodev(,|$)/ {print}' /etc/fstab",
+        "type": "command_output"
+      },
+      "description": "OL 9 must prevent special devices on file systems that are imported via Network File System (NFS).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)nodev(,|$)/ {print}' /etc/fstab": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)nodev(,|$)/ {print}' /etc/fstab": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271641"
+    },
+    {
+      "check": {
+        "command": "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)noexec(,|$)/ {print}' /etc/fstab",
+        "type": "command_output"
+      },
+      "description": "OL 9 must prevent code from being executed on file systems that are imported via Network File System (NFS).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)noexec(,|$)/ {print}' /etc/fstab": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)noexec(,|$)/ {print}' /etc/fstab": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271642"
+    },
+    {
+      "check": {
+        "command": "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)nosuid(,|$)/ {print}' /etc/fstab",
+        "type": "command_output"
+      },
+      "description": "OL 9 must prevent files with the setuid and setgid bit set from being executed on file systems that are imported via Network File System (NFS).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)nosuid(,|$)/ {print}' /etc/fstab": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk '!/^\\s*#/ && $3 ~ /^nfs/ && $4 !~ /(^|,)nosuid(,|$)/ {print}' /etc/fstab": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271643"
     },
     {
       "check": {
@@ -11888,5 +11992,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 429
+  "validated_candidates": 433
 }
