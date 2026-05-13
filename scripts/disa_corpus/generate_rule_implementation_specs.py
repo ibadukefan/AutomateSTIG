@@ -4069,6 +4069,58 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'contains', 'substring': 'on'},
             'description': rule.get('title', ''),
         }
+    postgresql_show_literal_settings = {
+        'V-233531': {
+            'setting': 'log_file_mode',
+            'expected': '0600',
+            'finding': r'If\s+(?:the\s+permissions\s+are\s+not\s+0?600|log_file_mode\s+is\s+not\s+0?600),\s+this\s+is\s+a\s+finding',
+            'fix': r'^\s*log_file_mode\s*=\s*0?600\s*$',
+        },
+        'V-233549': {
+            'setting': 'log_file_mode',
+            'expected': '0600',
+            'finding': r'If\s+(?:the\s+permissions\s+are\s+not\s+0?600|log_file_mode\s+is\s+not\s+0?600),\s+this\s+is\s+a\s+finding',
+            'fix': r'^\s*log_file_mode\s*=\s*0?600\s*$',
+        },
+        'V-233558': {
+            'setting': 'log_connections',
+            'expected': 'on',
+            'finding': r'If\s+log_connections\s+is\s+off,\s+this\s+is\s+a\s+finding',
+            'fix': r'^\s*log_connections\s*=\s*on\s*$',
+        },
+        'V-233596': {
+            'setting': 'password_encryption',
+            'expected': 'scram-sha-256',
+            'finding': r'If\s+password_encryption\s+is\s+not\s+["“]scram-sha-256["”],\s+this\s+is\s+a\s+finding',
+            'fix': r'^\s*password_encryption\s*=\s*[\'"“]?scram-sha-256[\'"”]?\s*$',
+        },
+        'V-233618': {
+            'setting': 'log_file_mode',
+            'expected': '0600',
+            'finding': r'If\s+(?:the\s+permissions\s+are\s+not\s+0?600|log_file_mode\s+is\s+not\s+0?600),\s+this\s+is\s+a\s+finding',
+            'fix': r'^\s*log_file_mode\s*=\s*0?600\s*$',
+        },
+    }
+    postgresql_show_literal = postgresql_show_literal_settings.get(rule.get('vuln_id', ''))
+    if (
+        'postgresql' in stig_id.lower()
+        and postgresql_show_literal
+        and re.search(
+            rf'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+{re.escape(postgresql_show_literal["setting"])}["”]\s*$',
+            content,
+            re.MULTILINE | re.IGNORECASE,
+        )
+        and re.search(postgresql_show_literal['finding'], content, re.IGNORECASE)
+        and re.search(postgresql_show_literal['fix'], fix_text, re.MULTILINE | re.IGNORECASE)
+    ):
+        setting = postgresql_show_literal['setting']
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': f'psql -c "SHOW {setting}"'},
+            'expected': {'type': 'contains', 'substring': postgresql_show_literal['expected']},
+            'description': rule.get('title', ''),
+        }
     pgaudit_log_commands = re.findall(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+pgaudit\.log["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
     postgresql_pgaudit_log_literal = re.search(
         r'If\s+pgaudit\.log\s+does\s+not\s+contain,?\s+["“]([^"”]+)["”],?\s+this\s+is\s+a\s+finding',

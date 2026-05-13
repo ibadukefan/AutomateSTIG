@@ -15,6 +15,32 @@
     },
     {
       "check": {
+        "command": "psql -c \"SHOW log_file_mode\"",
+        "type": "command_output"
+      },
+      "description": "The audit information produced by PostgreSQL must be protected from unauthorized deletion.",
+      "expected": {
+        "substring": "0600",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233531"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW log_file_mode\"",
+        "type": "command_output"
+      },
+      "description": "The audit information produced by PostgreSQL must be protected from unauthorized read access.",
+      "expected": {
+        "substring": "0600",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233549"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW pgaudit.log\"",
         "type": "command_output"
       },
@@ -38,6 +64,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-233557"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW log_connections\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when successful logons or connections occur.",
+      "expected": {
+        "substring": "on",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233558"
     },
     {
       "check": {
@@ -168,6 +207,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-233585"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW password_encryption\"",
+        "type": "command_output"
+      },
+      "description": "If passwords are used for authentication, PostgreSQL must store only hashed, salted representations of passwords.",
+      "expected": {
+        "substring": "scram-sha-256",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233596"
     },
     {
       "check": {

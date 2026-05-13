@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 18,
+  "candidate_checks": 22,
   "cases": [
     {
       "check": {
@@ -26,6 +26,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233516"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW log_file_mode\"",
+        "type": "command_output"
+      },
+      "description": "The audit information produced by PostgreSQL must be protected from unauthorized deletion.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "0600",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW log_file_mode\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW log_file_mode\"": "before\n0600\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233531"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW log_file_mode\"",
+        "type": "command_output"
+      },
+      "description": "The audit information produced by PostgreSQL must be protected from unauthorized read access.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "0600",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW log_file_mode\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW log_file_mode\"": "before\n0600\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233549"
     },
     {
       "check": {
@@ -78,6 +130,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233557"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW log_connections\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when successful logons or connections occur.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "on",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW log_connections\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW log_connections\"": "before\non\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233558"
     },
     {
       "check": {
@@ -341,6 +419,32 @@
     },
     {
       "check": {
+        "command": "psql -c \"SHOW password_encryption\"",
+        "type": "command_output"
+      },
+      "description": "If passwords are used for authentication, PostgreSQL must store only hashed, salted representations of passwords.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "scram-sha-256",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW password_encryption\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW password_encryption\"": "before\nscram-sha-256\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233596"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW shared_preload_libraries\"",
         "type": "command_output"
       },
@@ -475,5 +579,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 18
+  "validated_candidates": 22
 }

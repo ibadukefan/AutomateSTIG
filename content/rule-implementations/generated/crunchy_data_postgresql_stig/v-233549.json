@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "psql -c \"SHOW log_file_mode\"",
+      "type": "command_output"
+    },
+    "description": "The audit information produced by PostgreSQL must be protected from unauthorized read access.",
+    "expected": {
+      "substring": "0600",
+      "type": "contains"
+    },
+    "platform": "generic",
+    "vuln_id": "V-233549"
+  },
   "check_content_excerpt": "Note: The following instructions use the PGLOG environment variable. See supplementary content APPENDIX-I for instructions on configuring PGLOG.\n\nReview locations of audit logs, both internal to the database and database audit logs located at the operating system level.\n\nVerify there are appropriate controls and permissions to protect the audit information from unauthorized access.\n\n#### syslog Logging\n\nIf PostgreSQL is configured to use syslog for logging, consult organization location and permissions for syslog log files.\n\n#### stderr Logging\n\nAs the database administrator (shown here as \"postgres\"), check the current log_file_mode configuration by running the following:\n\nNote: Consult the organization's documentation on acceptable log privileges.\n\n$ sudo su - postgres\n$ psql -c \"SHOW log_file_mode\"\n\nIf log_file_mode is not 600, this is a finding.\n\nNext, verify the log files have the set permissions in ${PG_LOG?}:\n\n$ ls -l ${PGLOG?}/\ntotal 32\n-rw-------. 1 postgres postgres 0 Apr 8 00:00 postgresql-Fri.log\n-rw-------. 1 postgres postgres 8288 Apr 11 17:36 postgresql-Mon.log\n-rw-------. 1 postgres postgres 0 Apr 9 00:00 postgresql-Sat.log\n-rw-------. 1 postgres postgres 0 Apr 10 00:00 postgresql-Sun.log\n-rw-------. 1 postgres postgres 16212 Apr 7 17:05 postgresql-Thu.log\u00a0\n-rw-------. 1 postgres postgres 1130 Apr 6 17:56 postgresql-Wed.log\u00a0\n\nIf logs with 600 permissions do not exist in ${PG_LOG?}, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "0600",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER. \n\nTo ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\n#### syslog Logging\n\nIf PostgreSQL is configured to use syslog for logging, consult organization location and permissions for syslog log files.\n\n#### stderr Logging\n\nIf PostgreSQL is configured to use stderr for logging, permissions of the log files can be set in postgresql.conf.\n\nAs the database administrator (shown here as \"postgres\"), edit the following settings of logs in the postgresql.conf file:\n\nNote: Consult the organization's documentation on acceptable log privileges.\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\nlog_file_mode = 0600\n\nNext, as the system administrator, reload the server with the new configuration:\n\n$ sudo systemctl reload postgresql-${PGVER?}",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233549r960930_rule",
   "severity": "medium",

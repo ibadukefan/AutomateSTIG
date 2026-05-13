@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "psql -c \"SHOW password_encryption\"",
+      "type": "command_output"
+    },
+    "description": "If passwords are used for authentication, PostgreSQL must store only hashed, salted representations of passwords.",
+    "expected": {
+      "substring": "scram-sha-256",
+      "type": "contains"
+    },
+    "platform": "generic",
+    "vuln_id": "V-233596"
+  },
   "check_content_excerpt": "Note: The following instructions use the PGVER environment variables. See supplementary content APPENDIX-H for PGVER.\n\nTo check if password encryption is enabled, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SHOW password_encryption\"\n\nIf password_encryption is not \"scram-sha-256\", this is a finding.\n\nNext, to identify if any passwords have been stored without being hashed and salted, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -x -c \"SELECT usename, passwd FROM pg_shadow WHERE passwd IS NULL AND passwd NOT LIKE 'SCRAM-SHA-256%';\"\n\nIf any password is in plaintext, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "scram-sha-256",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nTo enable password_encryption, as the database administrator, edit postgresql.conf:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\npassword_encryption = 'scram-sha-256'\n\nInstitute a policy of not using the \"WITH UNENCRYPTED PASSWORD\" option with the CREATE ROLE/USER and ALTER ROLE/USER commands. This option overrides the setting of the password_encryption configuration parameter.\n\nAs the system administrator, restart the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl restart postgresql-${PGVER?}",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233596r998202_rule",
   "severity": "high",

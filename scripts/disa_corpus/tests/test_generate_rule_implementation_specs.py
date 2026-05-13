@@ -2118,6 +2118,75 @@ Next, as the system administrator, reload the server with the new configuration.
             'description': 'PostgreSQL must generate audit records when categorized information (e.g., classification levels/security levels) is accessed.',
         })
 
+    def test_infers_postgresql_log_file_mode_literal_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233531',
+            'title': 'The audit information produced by PostgreSQL must be protected from unauthorized deletion.',
+            'check_content': '''As the database administrator, run the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW log_file_mode"
+
+If the permissions are not 0600, this is a finding.''',
+            'fix_text': '''Configure PostgreSQL to protect audit logs from unauthorized deletion:
+
+log_file_mode = 0600''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-233531',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -c "SHOW log_file_mode"'},
+            'expected': {'type': 'contains', 'substring': '0600'},
+            'description': 'The audit information produced by PostgreSQL must be protected from unauthorized deletion.',
+        })
+
+    def test_infers_postgresql_log_connections_on_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233558',
+            'title': 'PostgreSQL must generate audit records when successful logons or connections occur.',
+            'check_content': '''As the database administrator, run the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW log_connections"
+
+If log_connections is off, this is a finding.''',
+            'fix_text': '''Configure PostgreSQL to log connections:
+
+log_connections = on''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'psql -c "SHOW log_connections"'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'on'})
+
+    def test_infers_postgresql_password_encryption_scram_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233596',
+            'title': 'If passwords are used for authentication, PostgreSQL must store only hashed, salted representations of passwords.',
+            'check_content': '''As the database administrator, run the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW password_encryption"
+
+If password_encryption is not "scram-sha-256", this is a finding.''',
+            'fix_text': '''Configure PostgreSQL to use SCRAM password encryption:
+
+password_encryption = 'scram-sha-256' ''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'psql -c "SHOW password_encryption"'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'scram-sha-256'})
+
+    def test_does_not_infer_postgresql_show_literal_without_fix_confirmation(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'PostgreSQL example.',
+            'check_content': '''$ psql -c "SHOW log_connections"
+
+If log_connections is off, this is a finding.''',
+            'fix_text': 'Review the site configuration and configure it as required.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_linux_snmp_default_community_strings_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204627',
