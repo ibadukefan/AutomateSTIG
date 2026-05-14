@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 133,
+  "candidate_checks": 138,
   "cases": [
     {
       "check": {
@@ -378,6 +378,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223294"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\VBA\\Security'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'LoadControlsInForms')) { 'Compliant' } elseif (([int]$item.'LoadControlsInForms' -eq 1)) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The load of controls in Forms3 must be blocked.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\VBA\\Security'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'LoadControlsInForms')) { 'Compliant' } elseif (([int]$item.'LoadControlsInForms' -eq 1)) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\VBA\\Security'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'LoadControlsInForms')) { 'Compliant' } elseif (([int]$item.'LoadControlsInForms' -eq 1)) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223295"
     },
     {
       "check": {
@@ -1610,6 +1636,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\Office\\16.0\\Excel\\security\\filevalidation'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'openinprotectedview')) { 'Compliant' } elseif (([int]$item.'openinprotectedview' -eq 1) -and ([int]$item.'DisableEditFromPV' -eq 1)) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Files failing file validation must be opened in Excel in Protected view mode and disallow edits.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\Office\\16.0\\Excel\\security\\filevalidation'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'openinprotectedview')) { 'Compliant' } elseif (([int]$item.'openinprotectedview' -eq 1) -and ([int]$item.'DisableEditFromPV' -eq 1)) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\Office\\16.0\\Excel\\security\\filevalidation'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'openinprotectedview')) { 'Compliant' } elseif (([int]$item.'openinprotectedview' -eq 1) -and ([int]$item.'DisableEditFromPV' -eq 1)) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223342"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview",
         "type": "registry",
         "value_name": "DisableAttachmentsInPV"
@@ -1688,6 +1740,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223345"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "authenticationservice"
+      },
+      "description": "The Exchange client authentication with Exchange servers must be enabled to use Kerberos Password Authentication.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 16
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\authenticationservice": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\authenticationservice": 16
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223346"
     },
     {
       "check": {
@@ -2769,6 +2848,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\filevalidation'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'openinprotectedview')) { 'Compliant' } elseif (([int]$item.'openinprotectedview' -eq 1) -and ([int]$item.'DisableEditFromPV' -eq 1)) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "If file validation fails, files must be opened in Protected view in PowerPoint with ability to edit disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\filevalidation'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'openinprotectedview')) { 'Compliant' } elseif (([int]$item.'openinprotectedview' -eq 1) -and ([int]$item.'DisableEditFromPV' -eq 1)) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\filevalidation'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'openinprotectedview')) { 'Compliant' } elseif (([int]$item.'openinprotectedview' -eq 1) -and ([int]$item.'DisableEditFromPV' -eq 1)) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223388"
+    },
+    {
+      "check": {
         "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\trusted locations",
         "type": "registry",
         "value_name": "AllowNetworkLocations"
@@ -3171,6 +3276,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223403"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\Office\\16.0\\Word\\security\\filevalidation'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'openinprotectedview')) { 'Compliant' } elseif (([int]$item.'openinprotectedview' -eq 1) -and ([int]$item.'DisableEditFromPV' -eq 1)) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "If file validation fails, files must be opened in Protected view in Word with ability to edit disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\Office\\16.0\\Word\\security\\filevalidation'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'openinprotectedview')) { 'Compliant' } elseif (([int]$item.'openinprotectedview' -eq 1) -and ([int]$item.'DisableEditFromPV' -eq 1)) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\Office\\16.0\\Word\\security\\filevalidation'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'openinprotectedview')) { 'Compliant' } elseif (([int]$item.'openinprotectedview' -eq 1) -and ([int]$item.'DisableEditFromPV' -eq 1)) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223404"
     },
     {
       "check": {
@@ -3583,5 +3714,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 133
+  "validated_candidates": 138
 }

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+      "type": "registry",
+      "value_name": "authenticationservice"
+    },
+    "description": "The Exchange client authentication with Exchange servers must be enabled to use Kerberos Password Authentication.",
+    "expected": {
+      "type": "equals",
+      "value": 16
+    },
+    "platform": "windows",
+    "vuln_id": "V-223346"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Account Settings >> Exchange >> Authentication with Exchange Server is set to Kerberos Password Authentication.\n \nUse the Windows Registry Editor to navigate to the following key:\n\nHKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\n\nIf the value authenticationservice is set to REG_DWORD = 16 (decimal) or 10 (hex), this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 16
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Account Settings >> Exchange >> Authentication with Exchange Server to Kerberos Password Authentication.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223346r961878_rule",
   "severity": "medium",

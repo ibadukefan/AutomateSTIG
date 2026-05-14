@@ -6956,6 +6956,111 @@ def _office_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) -
     return _windows_registry_absent_or_dword_value_candidate(rule, stig_id)
 
 
+def _powershell_registry_absent_or_dwords_command(path: str, required_values: dict[str, int], absent_value: str | None = None) -> str:
+    ps_path = _normalize_registry_path(path).replace('HKLM\\', 'HKLM:\\').replace('HKCU\\', 'HKCU:\\')
+    absent_value = absent_value or next(iter(required_values))
+    checks = ' -and '.join(
+        f"([int]$item.'{name}' -eq {value})" for name, value in required_values.items()
+    )
+    return (
+        f"powershell -NoProfile -Command \"$p='{ps_path}'; "
+        f"$item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; "
+        f"if (-not $item -or -not ($item.PSObject.Properties.Name -contains '{absent_value}')) {{ 'Compliant' }} "
+        f"elseif ({checks}) {{ 'Compliant' }}\""
+    )
+
+
+def _office_forms3_absent_or_dword_one_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'office' not in stig_id.lower() or rule.get('vuln_id') != 'V-223295':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    path_match = re.search(
+        r'Use\s+the\s+Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n+\s*((?:HKCU|HKLM)\\[^\n\r]+)',
+        content,
+        re.IGNORECASE,
+    )
+    if not path_match:
+        return None
+    if not re.search(r'If\s+the\s+value\s+LoadControlsInForms\s+is\s+REG_DWORD\s*=\s*1,\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+value\s+LoadControlsInForms\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Load\s+Controls\s+in\s+Forms3', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': _powershell_registry_absent_or_dwords_command(path_match.group(1), {'LoadControlsInForms': 1}),
+        },
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _office_file_validation_protected_view_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'office' not in stig_id.lower() or rule.get('vuln_id') not in {'V-223342', 'V-223388', 'V-223404'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    path_match = re.search(
+        r'Use\s+the\s+Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n+\s*((?:HKCU|HKLM)\\[^\n\r]+)',
+        content,
+        re.IGNORECASE,
+    )
+    if not path_match:
+        return None
+    if not re.search(r'If\s+the\s+value\s+openinprotectedview\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+both\s+the\s+value\s+for\s+openinprotectedview\s+is\s+REG_DWORD\s*=\s*1\s+and\s+the\s+value\s+for\s+DisableEditFromPV\s+is\s+set\s+to\s+REG_DWORD\s*=\s*1,\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Open\s+in\s+Protected\s+View', fix_text, re.IGNORECASE) or not re.search(r'Allow\s+edit', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': _powershell_registry_absent_or_dwords_command(
+                path_match.group(1), {'openinprotectedview': 1, 'DisableEditFromPV': 1}, 'openinprotectedview'
+            ),
+        },
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _office_exchange_kerberos_authentication_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'office' not in stig_id.lower() or rule.get('vuln_id') != 'V-223346':
+        return None
+    content = rule.get('check_content', '') or ''
+    path_match = re.search(
+        r'Use\s+the\s+Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n+\s*((?:HKCU|HKLM)\\[^\n\r]+)',
+        content,
+        re.IGNORECASE,
+    )
+    expected_match = re.search(
+        r'If\s+the\s+value\s+authenticationservice\s+is\s+set\s+to\s+REG_DWORD\s*=\s*16\s+\(decimal\)\s+or\s+10\s+\(hex\),\s+this\s+is\s+not\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if not path_match or not expected_match:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'registry',
+            'path': _normalize_registry_path(path_match.group(1)),
+            'value_name': 'authenticationservice',
+        },
+        'expected': {'type': 'equals', 'value': 16},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_exact_parameter_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE):
         return None
@@ -7660,6 +7765,18 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         office_all_installed_programs_candidate = _office_all_installed_programs_feature_control_candidate(rule, stig_id)
         if office_all_installed_programs_candidate:
             return office_all_installed_programs_candidate
+
+        office_forms3_candidate = _office_forms3_absent_or_dword_one_candidate(rule, stig_id)
+        if office_forms3_candidate:
+            return office_forms3_candidate
+
+        office_file_validation_candidate = _office_file_validation_protected_view_candidate(rule, stig_id)
+        if office_file_validation_candidate:
+            return office_file_validation_candidate
+
+        office_exchange_candidate = _office_exchange_kerberos_authentication_candidate(rule, stig_id)
+        if office_exchange_candidate:
+            return office_exchange_candidate
 
         policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
         if policy_candidate:

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p='HKCU:\\Software\\Policies\\Microsoft\\Office\\16.0\\Excel\\security\\filevalidation'; $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; if (-not $item -or -not ($item.PSObject.Properties.Name -contains 'openinprotectedview')) { 'Compliant' } elseif (([int]$item.'openinprotectedview' -eq 1) -and ([int]$item.'DisableEditFromPV' -eq 1)) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Files failing file validation must be opened in Excel in Protected view mode and disallow edits.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-223342"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> Protected View >> Set document behavior if file validation fails is set to \"Enabled: Open in Protected View\". Verify the check box for \"Allow edit\" is not selected.\n\nUse the Windows Registry Editor to navigate to the following key:\n\nHKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Excel\\security\\filevalidation\n\nIf the value openinprotectedview does not exist, this is not a finding. \n\nIf both the value for openinprotectedview is REG_DWORD = 1 and the value for DisableEditFromPV is set to REG_DWORD = 1, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> Protected View >> Set document behavior if file validation fails to \"Enabled: Open in Protected View\". \n\nUncheck the \"Allow edit\" check box.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-223342r961092_rule",
   "severity": "medium",

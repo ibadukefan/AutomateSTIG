@@ -196,6 +196,78 @@ If the value for all installed Office Programs is REG_DWORD = 1, this is not a f
         self.assertIn('winword.exe', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_office_forms3_absent_or_dword_one_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223295',
+            'title': 'The load of controls in Forms3 must be blocked.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Security Settings "Load Controls in Forms3" is set to Enabled and 1 from drop down.
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\Software\\Policies\\Microsoft\\VBA\\Security
+
+If the value LoadControlsInForms is REG_DWORD=1, this is not a finding.
+
+If the value LoadControlsInForms does not exist, this is not a finding.''',
+            'fix_text': 'Set the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Security Settings "Load Controls in Forms3" to "Enabled:1" or set it to "Disabled."',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-223295')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('LoadControlsInForms', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_office_file_validation_protected_view_and_edit_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223342',
+            'title': 'Files failing file validation must be opened in Excel in Protected view mode and disallow edits.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> Protected View >> Set document behavior if file validation fails is set to "Enabled: Open in Protected View". Verify the check box for "Allow edit" is not selected.
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Excel\\security\\filevalidation
+
+If the value openinprotectedview does not exist, this is not a finding.
+
+If both the value for openinprotectedview is REG_DWORD = 1 and the value for DisableEditFromPV is set to REG_DWORD = 1, this is not a finding.''',
+            'fix_text': '''Set the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> Protected View >> Set document behavior if file validation fails to "Enabled: Open in Protected View".
+
+Uncheck the "Allow edit" check box.''',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-223342')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('openinprotectedview', candidate['check']['command'])
+        self.assertIn('DisableEditFromPV', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_office_exchange_authentication_kerberos_dword_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223346',
+            'title': 'The Exchange client authentication with Exchange servers must be enabled to use Kerberos Password Authentication.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Account Settings >> Exchange >> Authentication with Exchange Server is set to Kerberos Password Authentication.
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security
+
+If the value authenticationservice is set to REG_DWORD = 16 (decimal) or 10 (hex), this is not a finding.''',
+            'fix_text': 'Set the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Account Settings >> Exchange >> Authentication with Exchange Server to Kerberos Password Authentication.',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-223346',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security',
+                'value_name': 'authenticationservice',
+            },
+            'expected': {'type': 'equals', 'value': 16},
+            'description': 'The Exchange client authentication with Exchange servers must be enabled to use Kerberos Password Authentication.',
+        })
+
     def test_infers_postgresql_connection_audit_settings_and_prefix_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233569',
