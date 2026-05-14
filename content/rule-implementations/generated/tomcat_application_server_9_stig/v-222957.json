@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "xmllint --xpath \"count(//Connector[translate(@xpoweredBy,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+      "type": "command_output"
+    },
+    "description": "xpoweredBy attribute must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "generic",
+    "vuln_id": "V-222957"
+  },
   "check_content_excerpt": "From the Tomcat server run the following OS command:\n\nsudo cat $CATALINA_BASE/conf/server.xml |grep -i -C4 xpoweredby.\n\nIf any connector elements contain xpoweredBy=\"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server as a privileged user, edit the $CATALINA_BASE/conf/server.xml file.\n\nExamine each <Connector> </Connector> element, if the element contains xpoweredBy=\"true\", modify the statement to read \", xpoweredBy=\"false\".\n\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222957r960963_rule",
   "severity": "low",

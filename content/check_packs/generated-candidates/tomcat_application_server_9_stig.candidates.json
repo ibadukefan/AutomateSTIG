@@ -41,6 +41,45 @@
     },
     {
       "check": {
+        "command": "xmllint --xpath \"count(//Connector[translate(@xpoweredBy,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "xpoweredBy attribute must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222957"
+    },
+    {
+      "check": {
+        "command": "sh -c 'test ! -e \"$CATALINA_BASE/webapps/examples\" && printf Absent'",
+        "type": "command_output"
+      },
+      "description": "Example applications must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222958"
+    },
+    {
+      "check": {
+        "command": "sh -c 'test ! -e \"$CATALINA_BASE/webapps/docs\" && printf Absent'",
+        "type": "command_output"
+      },
+      "description": "Documentation must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222960"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath 'name(//Realm[contains(@className,\"LockOutRealm\")])' $CATALINA_BASE/conf/server.xml 2>/dev/null",
         "type": "command_output"
       },

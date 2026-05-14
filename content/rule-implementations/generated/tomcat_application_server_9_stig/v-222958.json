@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'test ! -e \"$CATALINA_BASE/webapps/examples\" && printf Absent'",
+      "type": "command_output"
+    },
+    "description": "Example applications must be removed.",
+    "expected": {
+      "type": "equals",
+      "value": "Absent"
+    },
+    "platform": "linux",
+    "vuln_id": "V-222958"
+  },
   "check_content_excerpt": "From the Tomcat server OS type the following command:\n\nsudo ls -l $CATALINA_BASE/webapps/examples. \n\nIf the examples folder exists or contains any content, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Absent"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server OS type the following command:\n\n sudo rm -rf $CATALINA_BASE/webapps/examples",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222958r960963_rule",
   "severity": "low",

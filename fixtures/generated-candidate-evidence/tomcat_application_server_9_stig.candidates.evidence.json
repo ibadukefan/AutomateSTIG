@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 17,
+  "candidate_checks": 20,
   "cases": [
     {
       "check": {
@@ -78,6 +78,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222954"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"count(//Connector[translate(@xpoweredBy,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "xpoweredBy attribute must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"count(//Connector[translate(@xpoweredBy,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null": "unexpected-0"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"count(//Connector[translate(@xpoweredBy,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null": "0"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222957"
+    },
+    {
+      "check": {
+        "command": "sh -c 'test ! -e \"$CATALINA_BASE/webapps/examples\" && printf Absent'",
+        "type": "command_output"
+      },
+      "description": "Example applications must be removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'test ! -e \"$CATALINA_BASE/webapps/examples\" && printf Absent'": "unexpected-Absent"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'test ! -e \"$CATALINA_BASE/webapps/examples\" && printf Absent'": "Absent"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222958"
+    },
+    {
+      "check": {
+        "command": "sh -c 'test ! -e \"$CATALINA_BASE/webapps/docs\" && printf Absent'",
+        "type": "command_output"
+      },
+      "description": "Documentation must be removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'test ! -e \"$CATALINA_BASE/webapps/docs\" && printf Absent'": "unexpected-Absent"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'test ! -e \"$CATALINA_BASE/webapps/docs\" && printf Absent'": "Absent"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222960"
     },
     {
       "check": {
@@ -449,5 +527,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 17
+  "validated_candidates": 20
 }

@@ -134,6 +134,46 @@ S-1-5-9 (Enterprise Domain Controllers)''',
             'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
         })
 
+    def test_infers_tomcat_removed_example_webapp_directory_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222958',
+            'title': 'Example applications must be removed.',
+            'check_content': '''From the Tomcat server OS type the following command:
+
+sudo ls -l $CATALINA_BASE/webapps/examples.
+
+If the examples folder exists or contains any content, this is a finding.''',
+            'fix_text': '''From the Tomcat server OS type the following command:
+
+sudo rm -rf $CATALINA_BASE/webapps/examples''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222958',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'sh -c \'test ! -e "$CATALINA_BASE/webapps/examples" && printf Absent\''},
+            'expected': {'type': 'equals', 'value': 'Absent'},
+            'description': 'Example applications must be removed.',
+        })
+
+    def test_infers_tomcat_connector_true_attribute_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222957',
+            'title': 'xpoweredBy attribute must be disabled.',
+            'check_content': '''From the Tomcat server run the following OS command:
+
+sudo cat $CATALINA_BASE/conf/server.xml |grep -i -C4 xpoweredby.
+
+If any connector elements contain xpoweredBy="true", this is a finding.''',
+            'fix_text': '''Examine each <Connector> </Connector> element, if the element contains xpoweredBy="true", modify the statement to read ", xpoweredBy="false".''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222957',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'xmllint --xpath "count(//Connector[translate(@xpoweredBy,\'TRUE\',\'true\')=\'true\'])" $CATALINA_BASE/conf/server.xml 2>/dev/null'},
+            'expected': {'type': 'equals', 'value': '0'},
+            'description': 'xpoweredBy attribute must be disabled.',
+        })
+
     def test_infers_ubuntu_ssh_confirm_banner_exact_script_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270694',

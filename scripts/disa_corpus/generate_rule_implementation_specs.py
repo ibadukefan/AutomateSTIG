@@ -2922,6 +2922,63 @@ def _tomcat_systemd_boolean_property_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _tomcat_removed_webapp_directory_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    webapp_by_vuln = {
+        'V-222958': 'examples',
+        'V-222960': 'docs',
+    }
+    webapp = webapp_by_vuln.get(vuln_id)
+    if not webapp:
+        return None
+    path = f'$CATALINA_BASE/webapps/{webapp}'
+    if not re.search(r'ls\s+-l\s+' + re.escape(path) + r'\.?\s*(?:\n|$)', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+' + re.escape(webapp) + r'\s+folder\s+exists\s+or\s+contains\s+any\s+content,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'rm\s+-rf\s+' + re.escape(path), fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': f'sh -c \'test ! -e "{path}" && printf Absent\''},
+        'expected': {'type': 'equals', 'value': 'Absent'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _tomcat_connector_boolean_absent_or_false_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    attr_by_vuln = {
+        'V-222950': 'allowTrace',
+        'V-222957': 'xpoweredBy',
+    }
+    attr = attr_by_vuln.get(vuln_id)
+    if not attr:
+        return None
+    if not re.search(r'Connector', content, re.IGNORECASE) or not re.search(re.escape(attr), content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+connector\s+elements\s+contain\s+' + re.escape(attr) + r'\s*=\s*["“]?true["”]?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(re.escape(attr) + r'\s*=\s*["“]?false["”]?', fix_text + '\n' + content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': f'xmllint --xpath "count(//Connector[translate(@{attr},\'TRUE\',\'true\')=\'true\'])" $CATALINA_BASE/conf/server.xml 2>/dev/null'},
+        'expected': {'type': 'equals', 'value': '0'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_lockout_realm_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower():
         return None
@@ -6894,6 +6951,14 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_web_xml_boolean_param_candidate = _tomcat_web_xml_boolean_param_candidate(rule, stig_id)
     if tomcat_web_xml_boolean_param_candidate:
         return tomcat_web_xml_boolean_param_candidate
+
+    tomcat_removed_webapp_directory_candidate = _tomcat_removed_webapp_directory_candidate(rule, stig_id)
+    if tomcat_removed_webapp_directory_candidate:
+        return tomcat_removed_webapp_directory_candidate
+
+    tomcat_connector_boolean_candidate = _tomcat_connector_boolean_absent_or_false_candidate(rule, stig_id)
+    if tomcat_connector_boolean_candidate:
+        return tomcat_connector_boolean_candidate
 
     linux_shadow_password_lifetime_candidate = _linux_shadow_password_lifetime_candidate(rule, stig_id)
     if linux_shadow_password_lifetime_candidate:
