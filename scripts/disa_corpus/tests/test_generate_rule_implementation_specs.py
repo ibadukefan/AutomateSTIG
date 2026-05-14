@@ -3463,6 +3463,38 @@ If the login account name "SA" or "sa" appears in the query output, this is a fi
             'description': 'The SQL Server default account [sa] must have its name changed.',
         })
 
+    def test_infers_sql_server_sa_login_disabled_exact_value_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-274444',
+            'title': 'The SQL Server default account [sa] must be disabled.',
+            'check_content': '''Check SQL Server settings to determine if the [sa] (system administrator) account has been disabled by executing the following query:
+USE master;
+GO
+SELECT name, is_disabled
+FROM sys.sql_logins
+WHERE principal_id = 1;
+GO
+
+Verify that the "name" column contains the current name of the [sa] database server account.
+
+If the "is_disabled" column is not set to "1", this is a finding.''',
+            'fix_text': '''Modify the enabled flag of SQL Server's [sa] (system administrator) account by running the following script:
+USE master;
+GO
+ALTER LOGIN [sa] DISABLE;
+GO''',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-274444',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; SELECT CAST(is_disabled AS varchar(1)) FROM sys.sql_logins WHERE principal_id = 1;"',
+            },
+            'expected': {'type': 'equals', 'value': '1'},
+            'description': 'The SQL Server default account [sa] must be disabled.',
+        })
+
     def test_infers_windows_system32_telnet_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-220721',

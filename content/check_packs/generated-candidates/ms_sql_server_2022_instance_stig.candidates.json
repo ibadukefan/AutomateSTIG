@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(is_disabled AS varchar(1)) FROM sys.sql_logins WHERE principal_id = 1;\"",
+        "type": "command_output"
+      },
+      "description": "The SQL Server default account [sa] must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "generic",
+      "vuln_id": "V-274444"
+    },
+    {
+      "check": {
         "command": "sqlcmd -Q \"SET NOCOUNT ON; SELECT name FROM sys.sql_logins WHERE [name] = 'sa' OR [principal_id] = 1;\"",
         "type": "command_output"
       },

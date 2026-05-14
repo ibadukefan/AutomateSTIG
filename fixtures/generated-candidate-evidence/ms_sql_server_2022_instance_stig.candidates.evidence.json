@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 1,
+  "candidate_checks": 2,
   "cases": [
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(is_disabled AS varchar(1)) FROM sys.sql_logins WHERE principal_id = 1;\"",
+        "type": "command_output"
+      },
+      "description": "The SQL Server default account [sa] must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(is_disabled AS varchar(1)) FROM sys.sql_logins WHERE principal_id = 1;\"": "unexpected-1"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(is_disabled AS varchar(1)) FROM sys.sql_logins WHERE principal_id = 1;\"": "1"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274444"
+    },
     {
       "check": {
         "command": "sqlcmd -Q \"SET NOCOUNT ON; SELECT name FROM sys.sql_logins WHERE [name] = 'sa' OR [principal_id] = 1;\"",
@@ -33,5 +59,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_SQL_Server_2022_Instance_STIG",
-  "validated_candidates": 1
+  "validated_candidates": 2
 }

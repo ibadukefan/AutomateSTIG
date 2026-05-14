@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(is_disabled AS varchar(1)) FROM sys.sql_logins WHERE principal_id = 1;\"",
+      "type": "command_output"
+    },
+    "description": "The SQL Server default account [sa] must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "generic",
+    "vuln_id": "V-274444"
+  },
   "check_content_excerpt": "Check SQL Server settings to determine if the [sa] (system administrator) account has been disabled by executing the following query: \nUSE master;\nGO\nSELECT name, is_disabled\nFROM sys.sql_logins\nWHERE principal_id = 1;\nGO\n\nVerify that the \"name\" column contains the current name of the [sa] database server account.\n\nIf the \"is_disabled\" column is not set to \"1\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Modify the enabled flag of SQL Server's [sa] (system administrator) account by running the following script:\nUSE master; \nGO \nALTER LOGIN [sa] DISABLE; \nGO",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274444r1137654_rule",
   "severity": "medium",

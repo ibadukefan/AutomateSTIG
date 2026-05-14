@@ -7163,6 +7163,32 @@ def _sql_server_sa_login_renamed_candidate(rule: dict, stig_id: str) -> dict | N
     }
 
 
+def _sql_server_sa_login_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    if title.strip().lower() != 'the sql server default account [sa] must be disabled.':
+        return None
+    if not re.search(r'FROM\s+sys\.sql_logins\s+WHERE\s+principal_id\s*=\s*1', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+["“]is_disabled["”]\s+column\s+is\s+not\s+set\s+to\s+["“]?1["”]?,?\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    if not re.search(r'ALTER\s+LOGIN\s+\[sa\]\s+DISABLE', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': 'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; SELECT CAST(is_disabled AS varchar(1)) FROM sys.sql_logins WHERE principal_id = 1;"',
+        },
+        'expected': {'type': 'equals', 'value': '1'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_system32_absent_application_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -8015,6 +8041,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_sa_candidate = _sql_server_sa_login_renamed_candidate(rule, stig_id)
     if sql_server_sa_candidate:
         return sql_server_sa_candidate
+
+    sql_server_sa_disabled_candidate = _sql_server_sa_login_disabled_candidate(rule, stig_id)
+    if sql_server_sa_disabled_candidate:
+        return sql_server_sa_disabled_candidate
 
     tomcat_lockout_realm_candidate = _tomcat_lockout_realm_candidate(rule, stig_id)
     if tomcat_lockout_realm_candidate:

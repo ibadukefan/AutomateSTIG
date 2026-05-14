@@ -1063,16 +1063,17 @@
       "vuln_id": "V-271400"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274444",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-274444r1137654_rule",
       "severity": "medium",
       "title": "The SQL Server default account [sa] must be disabled.",
-      "tracking_issue": "TODO-V-274444",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-274444"
