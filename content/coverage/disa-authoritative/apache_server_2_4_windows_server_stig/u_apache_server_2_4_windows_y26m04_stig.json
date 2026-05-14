@@ -82,16 +82,17 @@
       "vuln_id": "V-214310"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-214311",
+      "check_pack": "generated-candidates/apache_server_2-4_windows_server_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-214311r1192938_rule",
       "severity": "medium",
       "title": "The Apache web server must produce log records containing sufficient information to establish what type of events occurred.",
-      "tracking_issue": "TODO-V-214311",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apache_server_2-4_windows_server_stig.candidates.json",
         "content/disa-corpus/artifacts/c6871e97d3db853502fe512e1579689c33d5883834edfddc50e7db9035214cb9/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-214311"
@@ -248,16 +249,17 @@
       "vuln_id": "V-214322"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-214323",
+      "check_pack": "generated-candidates/apache_server_2-4_windows_server_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-214323r960963_rule",
       "severity": "medium",
       "title": "The Apache web server must have resource mappings set to disable the serving of certain file types.",
-      "tracking_issue": "TODO-V-214323",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apache_server_2-4_windows_server_stig.candidates.json",
         "content/disa-corpus/artifacts/c6871e97d3db853502fe512e1579689c33d5883834edfddc50e7db9035214cb9/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-214323"
@@ -294,16 +296,17 @@
       "vuln_id": "V-214325"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-214326",
+      "check_pack": "generated-candidates/apache_server_2-4_windows_server_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-214326r1043177_rule",
       "severity": "medium",
       "title": "The Apache web server must be configured to use a specified IP address and port.",
-      "tracking_issue": "TODO-V-214326",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apache_server_2-4_windows_server_stig.candidates.json",
         "content/disa-corpus/artifacts/c6871e97d3db853502fe512e1579689c33d5883834edfddc50e7db9035214cb9/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-214326"
@@ -461,16 +464,17 @@
       "vuln_id": "V-214338"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-214339",
+      "check_pack": "generated-candidates/apache_server_2-4_windows_server_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-214339r961167_rule",
       "severity": "medium",
       "title": "Warning and error messages displayed to clients must be modified to minimize the identity of the Apache web server, patches, loaded modules, and directory paths.",
-      "tracking_issue": "TODO-V-214339",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apache_server_2-4_windows_server_stig.candidates.json",
         "content/disa-corpus/artifacts/c6871e97d3db853502fe512e1579689c33d5883834edfddc50e7db9035214cb9/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-214339"
@@ -643,16 +647,17 @@
       "vuln_id": "V-214350"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-214351",
+      "check_pack": "generated-candidates/apache_server_2-4_windows_server_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-214351r961446_rule",
       "severity": "medium",
       "title": "The Apache web server must generate log records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT) with a minimum granularity of one second.",
-      "tracking_issue": "TODO-V-214351",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apache_server_2-4_windows_server_stig.candidates.json",
         "content/disa-corpus/artifacts/c6871e97d3db853502fe512e1579689c33d5883834edfddc50e7db9035214cb9/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-214351"

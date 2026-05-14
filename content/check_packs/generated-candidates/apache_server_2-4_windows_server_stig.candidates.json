@@ -67,6 +67,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*LogFormat\\s+\\\"(?=.*%a)(?=.*%A)(?=.*%h)(?=.*%H)(?=.*%l)(?=.*%m)(?=.*%s)(?=.*%t)(?=.*%u)(?=.*%U)(?=.*%\\{Referer\\}i).*\\\"\\s+combined\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must produce log records containing sufficient information to establish what type of events occurred.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214311"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $lines=Select-String -Path $p -Pattern '^\\s*ProxyRequests\\s+On\\s*(?:#.*)?$' -ErrorAction SilentlyContinue; if (-not $lines) { 'Compliant' }\"",
         "type": "command_output"
       },
@@ -80,6 +93,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $bad=Select-String -Path $p -Pattern '^\\s*(?:Action|AddHandler)\\b.*\\.(?:exe|dll|com|bat|csh)\\b' -ErrorAction SilentlyContinue; if (-not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must have resource mappings set to disable the serving of certain file types.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214323"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -notmatch 'dav_module') -and ($m -notmatch 'dav_fs_module') -and ($m -notmatch 'dav_lock_module')) { 'Compliant' }\"",
         "type": "command_output"
       },
@@ -90,6 +116,19 @@
       },
       "platform": "windows",
       "vuln_id": "V-214325"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $listen=Select-String -Path $p -Pattern '^\\s*Listen\\s+([^#\\s]+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue; if ($listen -and -not ($listen | Where-Object { $_.Matches[0].Groups[1].Value -notmatch '^(?!0\\.0\\.0\\.0:|\\[::ffff:0\\.0\\.0\\.0\\]:)(?:\\d{1,3}\\.){3}\\d{1,3}:\\d+$' })) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must be configured to use a specified IP address and port.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214326"
     },
     {
       "check": {
@@ -119,6 +158,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*ErrorDocument\\s+\\d{3}\\s+\\S+' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Warning and error messages displayed to clients must be modified to minimize the identity of the Apache web server, patches, loaded modules, and directory paths.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214339"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*TraceEnable\\s+Off\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
         "type": "command_output"
       },
@@ -142,6 +194,19 @@
       },
       "platform": "windows",
       "vuln_id": "V-214341"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; $p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*LogFormat\\s+\\\"[^\\\"]*%t[^\\\"]*\\\"' -ErrorAction SilentlyContinue | Select-Object -First 1; if (($m -match 'log_config_module') -and $line) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must generate log records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT) with a minimum granularity of one second.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214351"
     },
     {
       "check": {

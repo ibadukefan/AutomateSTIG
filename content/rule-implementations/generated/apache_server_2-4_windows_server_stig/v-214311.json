@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*LogFormat\\s+\\\"(?=.*%a)(?=.*%A)(?=.*%h)(?=.*%H)(?=.*%l)(?=.*%m)(?=.*%s)(?=.*%t)(?=.*%u)(?=.*%U)(?=.*%\\{Referer\\}i).*\\\"\\s+combined\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The Apache web server must produce log records containing sufficient information to establish what type of events occurred.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214311"
+  },
   "check_content_excerpt": "Items to be logged are as shown in this sample line in the <'INSTALL PATH'>\\conf\\httpd.conf file:\n\n<IfModule log_config_module>\nLogFormat \"%a %A %h %H %l %m %s %t %u %U \\\"%{Referer}i\\\" \" combined\n</IfModule>\n\nIf the web server is not configured to capture the required audit events for all sites and virtual directories, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the \"LogFormat\" in the \"httpd.conf\" file to look like the following:\n\n<IfModule log_config_module>\nLogFormat \"%a %A %h %H %l %m %s %t %u %U \\\"%{Referer}i\\\" \" combined\n</IfModule>\n\nRestart the Apache service.\n\nNOTE: The log format may use different variables based on environment; however, it should be verified that it produces the same end result of logged elements.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214311r1192938_rule",
   "severity": "medium",

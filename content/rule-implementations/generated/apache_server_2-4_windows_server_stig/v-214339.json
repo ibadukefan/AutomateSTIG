@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*ErrorDocument\\s+\\d{3}\\s+\\S+' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Warning and error messages displayed to clients must be modified to minimize the identity of the Apache web server, patches, loaded modules, and directory paths.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214339"
+  },
   "check_content_excerpt": "Review the <'INSTALL PATH'>\\conf\\httpd.conf file.\n\nIf the \"ErrorDocument\" directive is not being used, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the <'INSTALL PATH'>\\conf\\httpd.conf file and use the \"ErrorDocument\" directive to enable custom error pages.\n\nErrorDocument 500 \"Sorry, our script crashed. Oh dear\"\nErrorDocument 500 /cgi-bin/crash-recover\nErrorDocument 500 http://error.example.com/server_error.html\nErrorDocument 404 /errors/not_found.html\nErrorDocument 401 /subscription/how_to_subscribe.html\n\nThe syntax of the ErrorDocument directive is:\n\nErrorDocument <3-digit-code> <action>\n\nRestart the Apache service.\n\nAdditional Information:\n\nhttps://httpd.apache.org/docs/2.4/custom-error.html",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214339r961167_rule",
   "severity": "medium",

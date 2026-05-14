@@ -274,6 +274,52 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
         'V-214340': ('TraceEnable', 'Off', 'required'),
         'V-214355': ('SSLCompression', 'off', 'absent_or_value'),
     }
+    if vuln_id in {'V-214311', 'V-214323', 'V-214326', 'V-214339', 'V-214351'}:
+        combined = content + '\n' + fix_text
+        if vuln_id != 'V-214351' and 'httpd.conf' not in combined:
+            return None
+        commands = {
+            'V-214311': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*LogFormat\\s+\\\"(?=.*%a)(?=.*%A)(?=.*%h)(?=.*%H)(?=.*%l)(?=.*%m)(?=.*%s)(?=.*%t)(?=.*%u)(?=.*%U)(?=.*%\\{Referer\\}i).*\\\"\\s+combined\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+            'V-214323': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $bad=Select-String -Path $p -Pattern '^\\s*(?:Action|AddHandler)\\b.*\\.(?:exe|dll|com|bat|csh)\\b' -ErrorAction SilentlyContinue; if (-not $bad) { 'Compliant' }\"",
+            'V-214326': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $listen=Select-String -Path $p -Pattern '^\\s*Listen\\s+([^#\\s]+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue; if ($listen -and -not ($listen | Where-Object { $_.Matches[0].Groups[1].Value -notmatch '^(?!0\\.0\\.0\\.0:|\\[::ffff:0\\.0\\.0\\.0\\]:)(?:\\d{1,3}\\.){3}\\d{1,3}:\\d+$' })) { 'Compliant' }\"",
+            'V-214339': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*ErrorDocument\\s+\\d{3}\\s+\\S+' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+            'V-214351': "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; $p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*LogFormat\\s+\\\"[^\\\"]*%t[^\\\"]*\\\"' -ErrorAction SilentlyContinue | Select-Object -First 1; if (($m -match 'log_config_module') -and $line) { 'Compliant' }\"",
+        }
+        guards = {
+            'V-214311': (
+                r'LogFormat\s+["“]%a\s+%A\s+%h\s+%H\s+%l\s+%m\s+%s\s+%t\s+%u\s+%U\s+\\?["“]%\{Referer\}i',
+                r'configured\s+to\s+capture\s+the\s+required\s+audit\s+events',
+            ),
+            'V-214323': (
+                r'Action["”]?\s+or\s+["“]?AddHandler',
+                r'\.exe,\s*\.dll,\s*\.com,\s*\.bat,\s*or\s*\.csh',
+            ),
+            'V-214326': (
+                r'Listen',
+                r'specify\s+both\s+an\s+IP\s+address\s+and\s+port\s+number',
+                r'0\.0\.0\.0:80|\[::ffff:0\.0\.0\.0\]:80',
+            ),
+            'V-214339': (
+                r'ErrorDocument',
+                r'directive\s+is\s+not\s+being\s+used,\s+this\s+is\s+a\s+finding',
+            ),
+            'V-214351': (
+                r'httpd\s+-M',
+                r'log_config_module',
+                r'LogFormat',
+                r'%t',
+            ),
+        }
+        if all(re.search(pattern, combined, re.IGNORECASE) for pattern in guards[vuln_id]):
+            return {
+                'vuln_id': vuln_id,
+                'platform': 'windows',
+                'check': {'type': 'command_output', 'command': commands[vuln_id]},
+                'expected': {'type': 'equals', 'value': 'Compliant'},
+                'description': title,
+            }
+        return None
+
     if vuln_id == 'V-214309':
         combined = content + '\n' + fix_text
         if 'CustomLog' not in combined or 'httpd.conf' not in combined:

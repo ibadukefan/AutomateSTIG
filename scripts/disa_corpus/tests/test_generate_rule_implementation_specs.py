@@ -696,6 +696,132 @@ Restart the Apache service.''',
             'description': 'The Apache web server must not be a proxy server.',
         })
 
+    def test_infers_apache_windows_forbidden_executable_handlers_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214323',
+            'title': 'The Apache web server must have resource mappings set to disable the serving of certain file types.',
+            'check_content': '''Review the <'INSTALL PATH'>\\conf\\httpd.conf file.
+
+If "Action" or "AddHandler" exist and they configure .exe, .dll, .com, .bat, or .csh, or any other shell as a viewer for documents, this is a finding.''',
+            'fix_text': '''Disable MIME types for .exe, .dll, .com, .bat, and .csh programs.
+
+If "Action" or "AddHandler" exist and they configure .exe, .dll, .com, .bat, or .csh, remove those references.''',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214323',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $bad=Select-String -Path $p -Pattern '^\\s*(?:Action|AddHandler)\\b.*\\.(?:exe|dll|com|bat|csh)\\b' -ErrorAction SilentlyContinue; if (-not $bad) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must have resource mappings set to disable the serving of certain file types.',
+        })
+
+    def test_infers_apache_windows_listen_specific_ip_and_port_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214326',
+            'title': 'The Apache web server must be configured to use a specified IP address and port.',
+            'check_content': '''Review the <'INSTALL PATH'>\\conf\\httpd.conf file and search for the following directive:
+
+Listen
+
+For any enabled "Listen" directives, verify they specify both an IP address and port number.
+
+If the "Listen" directive is found with only an IP address or only a port number specified, this is finding.
+
+If the IP address is all zeros (i.e., 0.0.0.0:80 or [::ffff:0.0.0.0]:80), this is a finding.
+
+If the "Listen" directive does not exist, this is a finding.''',
+            'fix_text': 'Edit the <\'INSTALL PATH\'>\\conf\\httpd.conf file and set the "Listen" directive to listen on a specific IP address and port.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214326',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $listen=Select-String -Path $p -Pattern '^\\s*Listen\\s+([^#\\s]+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue; if ($listen -and -not ($listen | Where-Object { $_.Matches[0].Groups[1].Value -notmatch '^(?!0\\.0\\.0\\.0:|\\[::ffff:0\\.0\\.0\\.0\\]:)(?:\\d{1,3}\\.){3}\\d{1,3}:\\d+$' })) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must be configured to use a specified IP address and port.',
+        })
+
+    def test_infers_apache_windows_logformat_required_fields_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214311',
+            'title': 'The Apache web server must produce log records containing sufficient information to establish what type of events occurred.',
+            'check_content': '''Items to be logged are as shown in this sample line in the <'INSTALL PATH'>\\conf\\httpd.conf file:
+
+<IfModule log_config_module>
+LogFormat "%a %A %h %H %l %m %s %t %u %U \\\"%{Referer}i\\\" " combined
+</IfModule>
+
+If the web server is not configured to capture the required audit events for all sites and virtual directories, this is a finding.''',
+            'fix_text': '''Configure the "LogFormat" in the "httpd.conf" file to look like the following:
+
+<IfModule log_config_module>
+LogFormat "%a %A %h %H %l %m %s %t %u %U \\\"%{Referer}i\\\" " combined
+</IfModule>''',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214311',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*LogFormat\\s+\\\"(?=.*%a)(?=.*%A)(?=.*%h)(?=.*%H)(?=.*%l)(?=.*%m)(?=.*%s)(?=.*%t)(?=.*%u)(?=.*%U)(?=.*%\\{Referer\\}i).*\\\"\\s+combined\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must produce log records containing sufficient information to establish what type of events occurred.',
+        })
+
+    def test_infers_apache_windows_error_document_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214339',
+            'title': 'Warning and error messages displayed to clients must be modified to minimize the identity of the Apache web server, patches, loaded modules, and directory paths.',
+            'check_content': '''Review the <'INSTALL PATH'>\\conf\\httpd.conf file.
+
+If the "ErrorDocument" directive is not being used, this is a finding.''',
+            'fix_text': 'Edit the <\'INSTALL PATH\'>\\conf\\httpd.conf file and use the "ErrorDocument" directive to enable custom error pages.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214339',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*ErrorDocument\\s+\\d{3}\\s+\\S+' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Warning and error messages displayed to clients must be modified to minimize the identity of the Apache web server, patches, loaded modules, and directory paths.',
+        })
+
+    def test_infers_apache_windows_logformat_utc_timestamp_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214351',
+            'title': 'The Apache web server must generate log records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT) with a minimum granularity of one second.',
+            'check_content': '''In a command line, navigate to "<'INSTALLED PATH'>\\bin". Run "httpd -M" to view a list of installed modules.
+
+If "log_config_module" is not listed, this is a finding.
+
+Verify the "LogFormat" directive exists.
+
+If it does not exist, this is a finding.
+
+Verify the "LogFormat" line contains the "%t" flag.
+ 
+If "%t" flag is not present, time is not mapped to UTC or GMT time, and this is a finding.''',
+            'fix_text': 'If "log_config_module" is not listed, enable this module. Determine if the "LogFormat" directive exists. If it does not exist, ensure the "LogFormat" line contains the "%t" flag.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214351',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; $p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*LogFormat\\s+\\\"[^\\\"]*%t[^\\\"]*\\\"' -ErrorAction SilentlyContinue | Select-Object -First 1; if (($m -match 'log_config_module') -and $line) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must generate log records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT) with a minimum granularity of one second.',
+        })
+
     def test_infers_apache_windows_ssl_module_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-214308',
