@@ -198,6 +198,32 @@ export superusers''',
         }, 'RHEL_9_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_oracle_database_exact_parameter_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270524',
+            'title': 'The Oracle REMOTE_OS_ROLES parameter must be set to FALSE.',
+            'check_content': '''To verify the current status of the remote_os_roles parameter use the SQL statement:
+
+From SQL*Plus:
+
+SELECT name, con_id, value AS PARAMETER_VALUE
+FROM sys.v_$parameter
+WHERE vp.name = 'remote_os_roles'
+ORDER BY 1;
+
+If the PARAMETER_VALUE is not FALSE, that is a finding.''',
+            'fix_text': '''Set the parameter to FALSE for all instances.
+
+ALTER SYSTEM SET remote_os_roles = FALSE scope=spfile;''',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270524',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT value FROM v$parameter WHERE LOWER(name) = 'remote_os_roles';\nEXIT\nSQL"},
+            'expected': {'type': 'equals', 'value': 'FALSE'},
+            'description': 'The Oracle REMOTE_OS_ROLES parameter must be set to FALSE.',
+        })
+
     def test_infers_sles_openssh_package_and_service_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234860',

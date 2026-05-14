@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT value FROM v$parameter WHERE LOWER(name) = 'sql92_security';\nEXIT\nSQL",
+      "type": "command_output"
+    },
+    "description": "The Oracle SQL92_SECURITY parameter must be set to TRUE.",
+    "expected": {
+      "type": "equals",
+      "value": "TRUE"
+    },
+    "platform": "generic",
+    "vuln_id": "V-270525"
+  },
   "check_content_excerpt": "To verify the current status of the SQL92_SECURITY parameter use the SQL statement: \n\nIf using a non-CDB database: \nFrom SQL*Plus:\n\nselect value from v$parameter where name = 'sql92_security';\n\nIf using a CDB database:\nFrom SQL*Plus:\n\ncolumn name format a20\ncolumn parameter_value format a20\n\nSELECT name, inst_id, con_id, value AS PARAMETER_VALUE \nFROM sys.gv_$parameter \nWHERE name = 'sql92_security' \nORDER BY 1;\n\nCheck Result:\n\nThe CDB database and all PDBs must be checked.\n\nIf the value returned is set to FALSE, this is a finding.\n\nIf the parameter is set to TRUE or does not exist, this is not a finding.\n\nIn any instance or container, if the PARAMETER_VALUE is not TRUE, that is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "TRUE"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable SQL92 security.\n\nFrom SQL*Plus:\n\nalter system set sql92_security = TRUE scope = spfile;\n\nThe above SQL*Plus command will set the parameter to take effect at next system startup.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270525r1112473_rule",
   "severity": "medium",

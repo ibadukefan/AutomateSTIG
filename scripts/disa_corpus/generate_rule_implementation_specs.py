@@ -6877,6 +6877,45 @@ def _office_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) -
     return _windows_registry_absent_or_dword_value_candidate(rule, stig_id)
 
 
+def _oracle_database_exact_parameter_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    allowed = {
+        'V-270524': ('remote_os_roles', 'FALSE'),
+        'V-270525': ('sql92_security', 'TRUE'),
+        'V-270535': ('_trace_files_public', 'FALSE'),
+    }
+    expected = allowed.get(vuln_id)
+    if not expected:
+        return None
+    parameter, value = expected
+    if not re.search(r'(?:^|[^A-Za-z0-9])(?:v_?\$parameter|gv_\$parameter)(?:[^A-Za-z0-9]|$)', content, re.IGNORECASE):
+        return None
+    if not re.search(rf"['\"]{re.escape(parameter)}['\"]", content, re.IGNORECASE):
+        return None
+    if not re.search(rf'PARAMETER_VALUE\s+is\s+not\s+{re.escape(value)}|value\s+returned\s+is\s+set\s+to\s+{("FALSE" if value == "TRUE" else "TRUE")}|value\s+returned\s+is\s+{("TRUE" if value == "FALSE" else "FALSE")}', content, re.IGNORECASE):
+        return None
+    if not re.search(rf'ALTER\s+SYSTEM\s+SET\s+{re.escape(parameter)}\s*=\s*{re.escape(value)}\b|remove\s+the\s+following\s+line:\s*\*\.{re.escape(parameter)}\s*=\s*{("TRUE" if value == "FALSE" else "FALSE")}', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sqlplus -s / as sysdba <<'SQL'\n"
+        "SET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\n"
+        f"SELECT value FROM v$parameter WHERE LOWER(name) = '{parameter}';\n"
+        "EXIT\n"
+        "SQL"
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': value},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_sa_login_renamed_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -7657,6 +7696,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:
         return command_candidate
+
+    oracle_database_exact_parameter_candidate = _oracle_database_exact_parameter_candidate(rule, stig_id)
+    if oracle_database_exact_parameter_candidate:
+        return oracle_database_exact_parameter_candidate
 
     sql_server_sa_candidate = _sql_server_sa_login_renamed_candidate(rule, stig_id)
     if sql_server_sa_candidate:

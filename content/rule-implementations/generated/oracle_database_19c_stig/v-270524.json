@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT value FROM v$parameter WHERE LOWER(name) = 'remote_os_roles';\nEXIT\nSQL",
+      "type": "command_output"
+    },
+    "description": "The Oracle REMOTE_OS_ROLES parameter must be set to FALSE.",
+    "expected": {
+      "type": "equals",
+      "value": "FALSE"
+    },
+    "platform": "generic",
+    "vuln_id": "V-270524"
+  },
   "check_content_excerpt": "To verify the current status of the remote_os_roles parameter use the SQL statement: \n\nIf using a non-CDB database:\n\nFrom SQL*Plus:\n \nCOLUMN name format a20 \nCOLUMN parameter_value format a20 \n\nSELECT name, con_id, value AS PARAMETER_VALUE \nFROM sys.v_$parameter \nWHERE vp.name = 'remote_os_roles' \nORDER BY 1; \n\nIf the PARAMETER_VALUE is not FALSE, that is a finding.\n\nIf using a CDB database:\n\nFrom SQL*Plus (in the CDB database):\n \nCOLUMN name format a20 \nCOLUMN parameter_value format a20 \n\nSELECT name, inst_id, con_id, value AS PARAMETER_VALUE \nFROM sys.gv_$parameter \t\nWHERE vp.name = 'remote_os_roles' \nORDER BY 1; \n\nIn the CDB database, if the PARAMETER_VALUE is not FALSE, that is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "FALSE"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the parameter to FALSE for all instances. If using Oracle Multitenant, set the value to FALSE for the container database and all pluggable databases will be set to FALSE as well. \n\nALTER SYSTEM SET remote_os_roles = FALSE scope=spfile; \n\nsid='container_name' is optional \n\nRestart the database for the change to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270524r1112471_rule",
   "severity": "medium",

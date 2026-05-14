@@ -1,0 +1,46 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT value FROM v$parameter WHERE LOWER(name) = 'remote_os_roles';\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "The Oracle REMOTE_OS_ROLES parameter must be set to FALSE.",
+      "expected": {
+        "type": "equals",
+        "value": "FALSE"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270524"
+    },
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT value FROM v$parameter WHERE LOWER(name) = 'sql92_security';\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "The Oracle SQL92_SECURITY parameter must be set to TRUE.",
+      "expected": {
+        "type": "equals",
+        "value": "TRUE"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270525"
+    },
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT value FROM v$parameter WHERE LOWER(name) = '_trace_files_public';\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "The Oracle _TRACE_FILES_PUBLIC parameter if present must be set to FALSE.",
+      "expected": {
+        "type": "equals",
+        "value": "FALSE"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270535"
+    }
+  ],
+  "platform": "generic",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "version": "candidate-planned"
+}
