@@ -41,6 +41,45 @@
     },
     {
       "check": {
+        "command": "xmllint --xpath 'name(//Realm[contains(@className,\"LockOutRealm\")])' $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "LockOutRealms must be used for management of Tomcat.",
+      "expected": {
+        "type": "equals",
+        "value": "Realm"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222980"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@failureCount)' $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "LockOutRealms failureCount attribute must be set to 5 failed logins for admin users.",
+      "expected": {
+        "type": "equals",
+        "value": "5"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222981"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@lockOutTime)' $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "LockOutRealms lockOutTime attribute must be set to 600 seconds (10 minutes) for admin users.",
+      "expected": {
+        "type": "equals",
+        "value": "600"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222982"
+    },
+    {
+      "check": {
         "command": "find $CATALINA_HOME -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls",
         "type": "command_output"
       },

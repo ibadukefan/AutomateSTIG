@@ -8851,5 +8851,42 @@ Navigate to the <Server> node and add or update the "org.apache.catalina.securit
             'description': 'The vCenter Lookup service must limit privileges for creating or modifying hosted application shared files.',
         })
 
+    def test_infers_tomcat_lockout_realm_attribute_candidates(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222981',
+            'title': 'LockOutRealms failureCount attribute must be set to 5 failed logins for admin users.',
+            'check_content': '''sudo grep -i  LockOutRealm $CATALINA_BASE/conf/server.xml.
+
+If there are no results or if the LockOutRealm failureCount setting is not configured to 5, this is a finding.''',
+            'fix_text': '''Configure the LockOutRealm failureCount.
+
+<Realm className="org.apache.catalina.realm.LockOutRealm" failureCount="5" lockOutTime="600">''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222981',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': "xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@failureCount)' $CATALINA_BASE/conf/server.xml 2>/dev/null"},
+            'expected': {'type': 'equals', 'value': '5'},
+            'description': 'LockOutRealms failureCount attribute must be set to 5 failed logins for admin users.',
+        })
+
+    def test_infers_postgresql_pg_hba_password_auth_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233519',
+            'title': 'If passwords are used for authentication, PostgreSQL must transmit only encrypted representations of passwords.',
+            'check_content': '''$ sudo su - postgres
+$ cat ${PGDATA?}/pg_hba.conf
+
+If any entries use the auth_method (last column in records) "password" or "md5", this is a finding.''',
+            'fix_text': 'Remove password and md5 entries from pg_hba.conf.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-233519',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "grep -E '^[[:space:]]*host[^#]*[[:space:]](password|md5)([[:space:]]*(#.*)?)?$' ${PGDATA?}/pg_hba.conf"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'If passwords are used for authentication, PostgreSQL must transmit only encrypted representations of passwords.',
+        })
+
 if __name__ == '__main__':
     unittest.main()

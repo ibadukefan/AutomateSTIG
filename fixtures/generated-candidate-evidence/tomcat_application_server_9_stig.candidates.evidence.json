@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 14,
+  "candidate_checks": 17,
   "cases": [
     {
       "check": {
@@ -78,6 +78,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222954"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath 'name(//Realm[contains(@className,\"LockOutRealm\")])' $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "LockOutRealms must be used for management of Tomcat.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Realm"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath 'name(//Realm[contains(@className,\"LockOutRealm\")])' $CATALINA_BASE/conf/server.xml 2>/dev/null": "unexpected-Realm"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath 'name(//Realm[contains(@className,\"LockOutRealm\")])' $CATALINA_BASE/conf/server.xml 2>/dev/null": "Realm"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222980"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@failureCount)' $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "LockOutRealms failureCount attribute must be set to 5 failed logins for admin users.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "5"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@failureCount)' $CATALINA_BASE/conf/server.xml 2>/dev/null": "unexpected-5"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@failureCount)' $CATALINA_BASE/conf/server.xml 2>/dev/null": "5"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222981"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@lockOutTime)' $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "LockOutRealms lockOutTime attribute must be set to 600 seconds (10 minutes) for admin users.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "600"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@lockOutTime)' $CATALINA_BASE/conf/server.xml 2>/dev/null": "unexpected-600"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@lockOutTime)' $CATALINA_BASE/conf/server.xml 2>/dev/null": "600"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222982"
     },
     {
       "check": {
@@ -371,5 +449,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 14
+  "validated_candidates": 17
 }

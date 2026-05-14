@@ -2922,6 +2922,43 @@ def _tomcat_systemd_boolean_property_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _tomcat_lockout_realm_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-222980', 'V-222981', 'V-222982'}:
+        return None
+    if not re.search(r'grep\s+-i\s+LockOutRealm\s+\$CATALINA_BASE/conf/server\.xml', content, re.IGNORECASE):
+        return None
+    if vuln_id == 'V-222980':
+        if not re.search(r'If\s+there\s+are\s+no\s+results\s+or\s+if\s+the\s+LockOutRealm\s+is\s+not\s+used', content, re.IGNORECASE):
+            return None
+        if not re.search(r'className=["“]org\.apache\.catalina\.realm\.LockOutRealm["”]', fix_text, re.IGNORECASE):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': "xmllint --xpath 'name(//Realm[contains(@className,\"LockOutRealm\")])' $CATALINA_BASE/conf/server.xml 2>/dev/null"},
+            'expected': {'type': 'equals', 'value': 'Realm'},
+            'description': rule.get('title', ''),
+        }
+    attribute = {'V-222981': ('failureCount', '5'), 'V-222982': ('lockOutTime', '600')}[vuln_id]
+    attr_name, expected_value = attribute
+    if not re.search(r'LockOutRealm\s+' + re.escape(attr_name) + r'\s+setting\s+is\s+not\s+configured\s+to\s+' + re.escape(expected_value), content, re.IGNORECASE):
+        return None
+    if not re.search(re.escape(attr_name) + r'=["“]' + re.escape(expected_value) + r'["”]', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': f"xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@{attr_name})' $CATALINA_BASE/conf/server.xml 2>/dev/null"},
+        'expected': {'type': 'equals', 'value': expected_value},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_auditctl_expected_rule_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     if 'tomcat' not in stig_id.lower():
@@ -4788,6 +4825,21 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    if (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233519'
+        and re.search(r'^\s*[$#>]\s*cat\s+\$\{PGDATA\?\}/pg_hba\.conf\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+any\s+entries\s+use\s+the\s+auth_method\s+\(last\s+column\s+in\s+records\)\s+["“]password["”]\s+or\s+["“]md5["”],\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'\b(?:password|md5)\b', fix_text, re.IGNORECASE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "grep -E '^[[:space:]]*host[^#]*[[:space:]](password|md5)([[:space:]]*(#.*)?)?$' ${PGDATA?}/pg_hba.conf"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+
     postgresql_nonzero_session_settings = {
         'tcp_keepalives_idle',
         'tcp_keepalives_interval',
@@ -6862,6 +6914,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_sa_candidate = _sql_server_sa_login_renamed_candidate(rule, stig_id)
     if sql_server_sa_candidate:
         return sql_server_sa_candidate
+
+    tomcat_lockout_realm_candidate = _tomcat_lockout_realm_candidate(rule, stig_id)
+    if tomcat_lockout_realm_candidate:
+        return tomcat_lockout_realm_candidate
 
     tomcat_auditctl_candidate = _tomcat_auditctl_expected_rule_candidate(rule, stig_id)
     if tomcat_auditctl_candidate:

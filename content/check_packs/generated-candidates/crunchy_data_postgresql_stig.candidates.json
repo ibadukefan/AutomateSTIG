@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "grep -E '^[[:space:]]*host[^#]*[[:space:]](password|md5)([[:space:]]*(#.*)?)?$' ${PGDATA?}/pg_hba.conf",
+        "type": "command_output"
+      },
+      "description": "If passwords are used for authentication, PostgreSQL must transmit only encrypted representations of passwords.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-233519"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW log_file_mode\"",
         "type": "command_output"
       },
@@ -352,7 +365,7 @@
       "vuln_id": "V-233622"
     }
   ],
-  "platform": "generic",
+  "platform": "linux",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
   "version": "candidate-planned"
 }

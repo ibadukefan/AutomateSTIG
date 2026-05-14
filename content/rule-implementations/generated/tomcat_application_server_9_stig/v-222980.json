@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "xmllint --xpath 'name(//Realm[contains(@className,\"LockOutRealm\")])' $CATALINA_BASE/conf/server.xml 2>/dev/null",
+      "type": "command_output"
+    },
+    "description": "LockOutRealms must be used for management of Tomcat.",
+    "expected": {
+      "type": "equals",
+      "value": "Realm"
+    },
+    "platform": "generic",
+    "vuln_id": "V-222980"
+  },
   "check_content_excerpt": "From the Tomcat server console, run the following command:\n\nsudo grep -i  LockOutRealm $CATALINA_BASE/conf/server.xml.  \n\nIf there are no results or if the LockOutRealm is not used for the Tomcat management application context, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Realm"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server console as a privileged user edit the $CATALINA_BASE/conf/server.xml file.\n\nsudo nano $CATALINA_BASE/conf/server.xml file\n\nLocate or add the LockOutRealm element. Make sure the LockOutRealm element is applied to the management application at a minimum (if the management application is in use on the system). This is done by ensuring the LockOutRealm is nested under the Engine, Host or directly within the management application Context container.\n\nEXAMPLE:\n\n      <Realm className=\"org.apache.catalina.realm.LockOutRealm\" failureCount=\"5\" lockOutTime=\"600\">\n...\n</Realm>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222980r961278_rule",
   "severity": "medium",

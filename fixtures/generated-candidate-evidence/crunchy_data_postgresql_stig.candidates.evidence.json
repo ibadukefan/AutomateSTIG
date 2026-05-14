@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 27,
+  "candidate_checks": 28,
   "cases": [
     {
       "check": {
@@ -26,6 +26,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233516"
+    },
+    {
+      "check": {
+        "command": "grep -E '^[[:space:]]*host[^#]*[[:space:]](password|md5)([[:space:]]*(#.*)?)?$' ${PGDATA?}/pg_hba.conf",
+        "type": "command_output"
+      },
+      "description": "If passwords are used for authentication, PostgreSQL must transmit only encrypted representations of passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -E '^[[:space:]]*host[^#]*[[:space:]](password|md5)([[:space:]]*(#.*)?)?$' ${PGDATA?}/pg_hba.conf": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -E '^[[:space:]]*host[^#]*[[:space:]](password|md5)([[:space:]]*(#.*)?)?$' ${PGDATA?}/pg_hba.conf": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233519"
     },
     {
       "check": {
@@ -709,5 +735,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 27
+  "validated_candidates": 28
 }

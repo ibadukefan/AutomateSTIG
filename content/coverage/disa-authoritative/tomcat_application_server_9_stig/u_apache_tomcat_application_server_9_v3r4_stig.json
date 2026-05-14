@@ -759,46 +759,49 @@
       "vuln_id": "V-222979"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222980",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222980r961278_rule",
       "severity": "medium",
       "title": "LockOutRealms must be used for management of Tomcat.",
-      "tracking_issue": "TODO-V-222980",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222980"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222981",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222981r961281_rule",
       "severity": "medium",
       "title": "LockOutRealms failureCount attribute must be set to 5 failed logins for admin users.",
-      "tracking_issue": "TODO-V-222981",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222981"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222982",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222982r961281_rule",
       "severity": "low",
       "title": "LockOutRealms lockOutTime attribute must be set to 600 seconds (10 minutes) for admin users.",
-      "tracking_issue": "TODO-V-222982",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222982"
