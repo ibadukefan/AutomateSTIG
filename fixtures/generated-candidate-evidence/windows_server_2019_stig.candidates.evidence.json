@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 188,
+  "candidate_checks": 189,
   "cases": [
     {
       "check": {
@@ -1342,6 +1342,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205733"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\SYSTEM:(OI)(CI)(F)','BUILTIN\\Administrators:(OI)(CI)(F)','BUILTIN\\Users:(OI)(CI)(RX)','BUILTIN\\Users:(CI)(AD)','BUILTIN\\Users:(CI)(IO)(WD)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 permissions for the system drive root directory (usually C:\\) must conform to minimum requirements.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\SYSTEM:(OI)(CI)(F)','BUILTIN\\Administrators:(OI)(CI)(F)','BUILTIN\\Users:(OI)(CI)(RX)','BUILTIN\\Users:(CI)(AD)','BUILTIN\\Users:(CI)(IO)(WD)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\SYSTEM:(OI)(CI)(F)','BUILTIN\\Administrators:(OI)(CI)(F)','BUILTIN\\Users:(OI)(CI)(RX)','BUILTIN\\Users:(CI)(AD)','BUILTIN\\Users:(CI)(IO)(WD)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205734"
     },
     {
       "check": {
@@ -5068,5 +5094,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 188
+  "validated_candidates": 189
 }

@@ -10007,5 +10007,32 @@ If any SIDs are granted the "SeDenyServiceLogonRight" user right, this is a find
             'description': 'Windows Server 2022 Deny log on as a service user right must be configured to include no accounts or groups (blank) on domain controllers.',
         })
 
+    def test_infers_windows_system_drive_root_icacls_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-277998',
+            'title': 'Windows Server 2025 permissions for the system drive root directory (usually C:\\) must conform to minimum requirements.',
+            'check_content': '''Alternately, use icacls:
+Open "command prompt (Admin)".
+Enter "icacls" followed by the directory:
+"icacls c:\\"
+The following results must be displayed:
+c:\\
+NT AUTHORITY\\SYSTEM:(OI)(CI)(F)
+BUILTIN\\Administrators:(OI)(CI)(F)
+BUILTIN\\Users:(OI)(CI)(RX)
+BUILTIN\\Users:(CI)(AD)
+BUILTIN\\Users:(CI)(IO)(WD)
+CREATOR OWNER:(OI)(CI)(IO)(F)
+Successfully processed 1 files; Failed processing 0 files''',
+            'fix_text': 'Maintain the default permissions for the system drive root directory.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate['vuln_id'], 'V-277998')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn("icacls 'C:\\'", candidate['check']['command'])
+        self.assertIn('BUILTIN\\Users:(CI)(IO)(WD)', candidate['check']['command'])
+
+
 if __name__ == '__main__':
     unittest.main()

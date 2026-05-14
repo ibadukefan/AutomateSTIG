@@ -694,6 +694,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\SYSTEM:(OI)(CI)(F)','BUILTIN\\Administrators:(OI)(CI)(F)','BUILTIN\\Users:(OI)(CI)(RX)','BUILTIN\\Users:(CI)(AD)','BUILTIN\\Users:(CI)(IO)(WD)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 permissions for the system drive root directory (usually C:\\) must conform to minimum requirements.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-205734"
+    },
+    {
+      "check": {
         "key": "SeMachineAccountPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"

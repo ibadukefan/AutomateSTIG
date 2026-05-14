@@ -7446,6 +7446,39 @@ def _windows_local_volume_filesystem_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _windows_system_drive_root_icacls_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-205734', 'V-277998'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (content, fix_text, rule.get('title', '') or '') if part)
+    required_acl_lines = [
+        r'NT AUTHORITY\SYSTEM:(OI)(CI)(F)',
+        r'BUILTIN\Administrators:(OI)(CI)(F)',
+        r'BUILTIN\Users:(OI)(CI)(RX)',
+        r'BUILTIN\Users:(CI)(AD)',
+        r'BUILTIN\Users:(CI)(IO)(WD)',
+        r'CREATOR OWNER:(OI)(CI)(IO)(F)',
+    ]
+    if not re.search(r'permissions\s+for\s+the\s+system\s+drive\s+root\s+directory', rule.get('title', '') or '', re.IGNORECASE):
+        return None
+    if not re.search(r'icacls["”]?\s+(?:c:\\|c:\\\\)', combined, re.IGNORECASE):
+        return None
+    if not all(line in combined for line in required_acl_lines):
+        return None
+    command = "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\SYSTEM:(OI)(CI)(F)','BUILTIN\\Administrators:(OI)(CI)(F)','BUILTIN\\Users:(OI)(CI)(RX)','BUILTIN\\Users:(CI)(AD)','BUILTIN\\Users:(CI)(IO)(WD)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\""
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_grub_superusers_nondefault_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -7595,6 +7628,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         local_volume_filesystem_candidate = _windows_local_volume_filesystem_candidate(rule, stig_id)
         if local_volume_filesystem_candidate:
             return local_volume_filesystem_candidate
+
+        system_drive_root_icacls_candidate = _windows_system_drive_root_icacls_candidate(rule, stig_id)
+        if system_drive_root_icacls_candidate:
+            return system_drive_root_icacls_candidate
 
         hardened_unc_candidate = _windows_hardened_unc_paths_candidate(rule, stig_id)
         if hardened_unc_candidate:

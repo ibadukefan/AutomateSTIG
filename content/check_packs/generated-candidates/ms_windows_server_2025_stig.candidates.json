@@ -41,6 +41,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\SYSTEM:(OI)(CI)(F)','BUILTIN\\Administrators:(OI)(CI)(F)','BUILTIN\\Users:(OI)(CI)(RX)','BUILTIN\\Users:(CI)(AD)','BUILTIN\\Users:(CI)(IO)(WD)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 permissions for the system drive root directory (usually C:\\) must conform to minimum requirements.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-277998"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Get-ADUser -Filter * -Properties PasswordNotRequired,Enabled | Where-Object { $_.Enabled -eq $true -and $_.PasswordNotRequired -eq $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter 'PasswordRequired=False and LocalAccount=True' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name }\"",
         "type": "command_output"
       },
