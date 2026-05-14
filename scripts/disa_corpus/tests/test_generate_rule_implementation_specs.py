@@ -196,6 +196,38 @@ If the value for all installed Office Programs is REG_DWORD = 1, this is not a f
         self.assertIn('winword.exe', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_postgresql_connection_audit_settings_and_prefix_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233569',
+            'title': 'PostgreSQL must generate audit records when concurrent logons/connections by the same user from different workstations occur.',
+            'check_content': '''First, as the database administrator, verify that log_connections and log_disconnections are enabled by running the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW log_connections"
+$ psql -c "SHOW log_disconnections"
+
+If either is off, this is a finding.
+
+Next, verify that log_line_prefix contains sufficient information by running the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW log_line_prefix"
+
+If log_line_prefix does not contain at least %m %u %d %c, this is a finding.''',
+            'fix_text': '''Edit the following parameters as such:
+log_connections = on
+log_disconnections = on
+log_line_prefix = '< %m %u %d %c: >' ''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233569')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('log_connections', candidate['check']['command'])
+        self.assertIn('log_disconnections', candidate['check']['command'])
+        self.assertIn('SHOW log_line_prefix', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_grub_superusers_nondefault_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257789',

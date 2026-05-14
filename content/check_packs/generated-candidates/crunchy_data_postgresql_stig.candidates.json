@@ -184,6 +184,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; for s in log_connections log_disconnections; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = on ] || bad=\"$bad $s=$v\"; done; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %c; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when concurrent logons/connections by the same user from different workstations occur.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233569"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW shared_preload_libraries\"",
         "type": "command_output"
       },
@@ -233,6 +246,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-233578"
+    },
+    {
+      "check": {
+        "command": "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate time stamps, for audit records and application data, with a minimum granularity of one second.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233581"
     },
     {
       "check": {

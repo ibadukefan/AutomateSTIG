@@ -5439,6 +5439,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         }
     postgresql_log_line_prefix_required_tokens = {
         'V-233578': ('%m', '%u', '%d', '%s'),
+        'V-233581': ('%m',),
         'V-233582': ('%m', '%u', '%d', '%p', '%r', '%a'),
         'V-233608': ('%m',),
     }.get(rule.get('vuln_id', ''))
@@ -5452,6 +5453,30 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     ):
         tokens = ' '.join(postgresql_log_line_prefix_required_tokens)
         command = f"sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in {tokens}; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+    postgresql_connection_audit_settings = {
+        'V-233569': ('%m', '%u', '%d', '%c'),
+        'V-233604': ('%m', '%u', '%d', '%c'),
+    }.get(rule.get('vuln_id', ''))
+    if (
+        'postgresql' in stig_id.lower()
+        and postgresql_connection_audit_settings
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_connections["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_disconnections["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_line_prefix["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+either\s+(?:setting\s+)?is\s+off,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'If\s+log_line_prefix\s+does\s+not\s+contain\s+at\s+least\s+%m\s+%u\s+%d\s+%c,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*log_connections\s*=\s*on\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'^\s*log_disconnections\s*=\s*on\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
+        and all(token in fix_text for token in postgresql_connection_audit_settings)
+    ):
+        command = "sh -c 'bad=\"\"; for s in log_connections log_disconnections; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = on ] || bad=\"$bad $s=$v\"; done; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %c; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; printf %s \"$bad\"'"
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'generic',
