@@ -594,16 +594,17 @@
       "vuln_id": "V-238244"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238249",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238249 from source identifier xccdf_mil.disa.stig_group_V-238249.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238249r958444_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must be configured so that audit configuration files are not write-accessible by unauthorized users.",
-      "tracking_issue": "TODO-V-238249",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238249"

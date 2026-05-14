@@ -2431,6 +2431,92 @@ def _file_content_candidate(rule: dict) -> dict | None:
     }
 
 
+def _linux_audit_configuration_file_modes_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-238249':
+        return None
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    policy_text = '\n'.join(part for part in (content, fix_text) if part)
+    required_paths = ('/etc/audit/audit.rules', '/etc/audit/rules.d/*', '/etc/audit/auditd.conf')
+    if not all(path in policy_text for path in required_paths):
+        return None
+    if not re.search(r'audit\s+configuration\s+files\s+are\s+not\s+write-accessible', title, re.IGNORECASE):
+        return None
+    has_finding = re.search(r'mode\s+more\s+permissive\s+than\s+["“]0640["”].*?this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL)
+    has_fix = re.search(r'chmod\s+-R\s+0640\s+/etc/audit/audit\*\.\{rules,conf\}\s+/etc/audit/rules\.d/\*', fix_text, re.IGNORECASE)
+    if not (has_finding and has_fix):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {
+            'type': 'command_output',
+            'command': 'find /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d -type f -perm /0137 -print 2>/dev/null',
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': title,
+    }
+
+
+def _linux_faillock_conf_exact_setting_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    canonical_vuln = re.search(r'V-\d+', vuln_id)
+    if not canonical_vuln:
+        return None
+    allowed_vulns = {
+        'V-230333', 'V-230335', 'V-230337', 'V-230341', 'V-230343', 'V-230345',
+        'V-258054', 'V-258055', 'V-258056', 'V-258057', 'V-258060', 'V-258070',
+    }
+    if canonical_vuln.group(0) not in allowed_vulns:
+        return None
+    title = rule.get('title', '') or ''
+    if 'faillock' not in (rule.get('check_content', '') + '\n' + rule.get('fix_text', '')).lower():
+        return None
+    if not re.search(r'unsuccessful\s+logon|account\s+lock', title, re.IGNORECASE):
+        return None
+    fix_text = rule.get('fix_text', '') or ''
+    match = re.search(
+        r'/etc/security/faillock\.conf["”]?\s+file\s+to\s+match\s+the\s+following\s+line:\s*(?P<line>[^\n\r]+(?:\s*=\s*[^\n\r]+)?)',
+        fix_text,
+        re.IGNORECASE,
+    )
+    if not match:
+        return None
+    line = match.group('line').strip().strip('"“”')
+    allowed_lines = {
+        'deny': '3',
+        'fail_interval': '900',
+        'unlock_time': '0',
+        'dir': '/var/log/faillock',
+    }
+    bare_flags = {'even_deny_root', 'audit', 'silent'}
+    assignment = re.fullmatch(r'(?P<key>deny|fail_interval|unlock_time|dir)\s*=\s*(?P<value>\S+)', line)
+    if assignment:
+        key = assignment.group('key')
+        value = assignment.group('value')
+        if allowed_lines.get(key) != value:
+            return None
+        regex = rf'^[[:space:]]*{re.escape(key)}[[:space:]]*=[[:space:]]*{re.escape(value)}[[:space:]]*$'
+    elif line in bare_flags:
+        regex = rf'^[[:space:]]*{re.escape(line)}[[:space:]]*$'
+    else:
+        return None
+    command = f"awk 'BEGIN{{ok=0}} /^[[:space:]]*#/ {{next}} /{regex}/ {{ok=1}} END{{if(ok) print \"Compliant\"}}' /etc/security/faillock.conf"
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _linux_passwd_home_directory_assigned_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -6782,7 +6868,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_passwd_home_directory_assigned_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_passwd_home_directory_assigned_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 135,
+  "candidate_checks": 136,
   "cases": [
     {
       "check": {
@@ -666,6 +666,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238248"
+    },
+    {
+      "check": {
+        "command": "find /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d -type f -perm /0137 -print 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must be configured so that audit configuration files are not write-accessible by unauthorized users.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d -type f -perm /0137 -print 2>/dev/null": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d -type f -perm /0137 -print 2>/dev/null": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238249"
     },
     {
       "check": {
@@ -3722,5 +3748,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 135
+  "validated_candidates": 136
 }

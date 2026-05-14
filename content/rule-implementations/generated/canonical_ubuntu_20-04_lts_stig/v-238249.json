@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d -type f -perm /0137 -print 2>/dev/null",
+      "type": "command_output"
+    },
+    "description": "The Ubuntu operating system must be configured so that audit configuration files are not write-accessible by unauthorized users.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-238249"
+  },
   "check_content_excerpt": "Verify that \"/etc/audit/audit.rules\", \"/etc/audit/rules.d/*\", and \"/etc/audit/auditd.conf\" files have a mode of \"0640\" or less permissive by using the following command: \n \n$ sudo ls -al /etc/audit/ /etc/audit/rules.d/ \n \n/etc/audit/: \n \n-rw-r-----   1 root root   804 Nov 25 11:01 auditd.conf \n \n-rw-r-----   1 root root  9128 Dec 27 09:56 audit.rules \n \n-rw-r-----   1 root root  9373 Dec 27 09:56 audit.rules.prev \n \n-rw-r-----   1 root root   127 Feb  7  2018 audit-stop.rules \n \ndrwxr-x---   2 root root  4096 Dec 27 09:56 rules.d \n \n/etc/audit/rules.d/: \n \n-rw-r----- 1 root root 10357 Dec 27 09:56 stig.rules \n \nIf \"/etc/audit/audit.rule\",\"/etc/audit/rules.d/*\", or \"/etc/audit/auditd.conf\" file have a mode more permissive than \"0640\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure \"/etc/audit/audit.rules\", \"/etc/audit/rules.d/*\", and \"/etc/audit/auditd.conf\" files to have a mode of \"0640\" by using the following command: \n \n$ sudo chmod -R 0640 /etc/audit/audit*.{rules,conf} /etc/audit/rules.d/*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-238249r958444_rule",
   "severity": "medium",

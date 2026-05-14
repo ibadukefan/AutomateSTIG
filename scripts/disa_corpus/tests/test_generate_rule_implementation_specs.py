@@ -654,6 +654,50 @@ If users home directory is not defined, this is a finding.""",
             'description': 'All RHEL 9 local interactive users must have a home directory assigned in the /etc/passwd file.',
         })
 
+    def test_infers_ubuntu_audit_configuration_file_modes_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238249',
+            'title': 'The Ubuntu operating system must be configured so that audit configuration files are not write-accessible by unauthorized users.',
+            'check_content': '''Verify that "/etc/audit/audit.rules", "/etc/audit/rules.d/*", and "/etc/audit/auditd.conf" files have a mode of "0640" or less permissive by using the following command:
+
+$ sudo ls -al /etc/audit/ /etc/audit/rules.d/
+
+If "/etc/audit/audit.rule","/etc/audit/rules.d/*", or "/etc/audit/auditd.conf" file have a mode more permissive than "0640", this is a finding.''',
+            'fix_text': 'Configure "/etc/audit/audit.rules", "/etc/audit/rules.d/*", and "/etc/audit/auditd.conf" files to have a mode of "0640" by using the following command:\n\n$ sudo chmod -R 0640 /etc/audit/audit*.{rules,conf} /etc/audit/rules.d/*',
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-238249',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "find /etc/audit/audit.rules /etc/audit/auditd.conf /etc/audit/rules.d -type f -perm /0137 -print 2>/dev/null",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Ubuntu operating system must be configured so that audit configuration files are not write-accessible by unauthorized users.',
+        })
+
+    def test_infers_rhel_scap_faillock_conf_exact_setting_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-258054',
+            'title': 'RHEL 9 must automatically lock an account when three unsuccessful logon attempts occur.',
+            'check_content': '',
+            'fix_text': '''Configure RHEL 9 to lock an account when three unsuccessful logon attempts occur.
+
+Add/modify the "/etc/security/faillock.conf" file to match the following line:
+
+deny = 3''',
+        }, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate, {
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-258054',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk 'BEGIN{ok=0} /^[[:space:]]*#/ {next} /^[[:space:]]*deny[[:space:]]*=[[:space:]]*3[[:space:]]*$/ {ok=1} END{if(ok) print \"Compliant\"}' /etc/security/faillock.conf",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'RHEL 9 must automatically lock an account when three unsuccessful logon attempts occur.',
+        })
+
     def test_infers_linux_fixed_mount_option_candidate_from_authoritative_fstab_text(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257873',
