@@ -92,6 +92,31 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
+    def test_infers_office_registry_exact_reg_sz_with_set_to_phrase(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223291',
+            'title': 'Office applications must be configured to specify encryption type in password-protected Office 97-2003 files.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Security Settings >> Encryption type for password protected Office 97-2003 files is set to Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256.
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security
+
+If the value defaultencryption12 is set to REG_SZ = "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256", this is not a finding.''',
+            'fix_text': 'Set the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Security Settings >> Encryption type for password protected Office 97-2003 files to Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256.',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-223291',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security',
+                'value_name': 'defaultencryption12',
+            },
+            'expected': {'type': 'equals', 'value': 'Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256'},
+            'description': 'Office applications must be configured to specify encryption type in password-protected Office 97-2003 files.',
+        })
+
     def test_infers_windows_user_right_allowlist_before_server_core_instructions(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254434',

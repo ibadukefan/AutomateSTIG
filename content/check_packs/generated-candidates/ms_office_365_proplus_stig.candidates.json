@@ -144,6 +144,20 @@
       "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security",
         "type": "registry",
+        "value_name": "defaultencryption12"
+      },
+      "description": "Office applications must be configured to specify encryption type in password-protected Office 97-2003 files.",
+      "expected": {
+        "type": "equals",
+        "value": "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
+      },
+      "platform": "windows",
+      "vuln_id": "V-223291"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security",
+        "type": "registry",
         "value_name": "OpenXMLEncryption"
       },
       "description": "Office applications must be configured to specify encryption type in password-protected Office Open XML files.",

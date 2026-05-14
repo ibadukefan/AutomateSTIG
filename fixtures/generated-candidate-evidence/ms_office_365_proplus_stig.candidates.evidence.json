@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 119,
+  "candidate_checks": 120,
   "cases": [
     {
       "check": {
@@ -270,6 +270,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223290"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security",
+        "type": "registry",
+        "value_name": "defaultencryption12"
+      },
+      "description": "Office applications must be configured to specify encryption type in password-protected Office 97-2003 files.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\defaultencryption12": "unexpected-Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\defaultencryption12": "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223291"
     },
     {
       "check": {
@@ -3218,5 +3245,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 119
+  "validated_candidates": 120
 }

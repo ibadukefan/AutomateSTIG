@@ -6743,7 +6743,7 @@ def _windows_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) 
             'description': rule.get('title', ''),
         }
     exact_reg_sz_match = re.search(
-        r'If\s+(?:the\s+)?value\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+REG_SZ\s*=\s+["“]([^"”\n]+)["”],\s+this\s+is\s+not\s+a\s+finding\.',
+        r'If\s+(?:the\s+)?value\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+(?:set\s+to\s+)?REG_SZ\s*=\s+["“]([^"”\n]+)["”],\s+this\s+is\s+not\s+a\s+finding\.',
         content,
         re.IGNORECASE,
     )

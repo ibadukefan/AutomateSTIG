@@ -162,16 +162,17 @@
       "vuln_id": "V-223290"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223291",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-223291 from source identifier xccdf_mil.disa.stig_group_V-223291.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-223291r961128_rule",
       "severity": "medium",
       "title": "Office applications must be configured to specify encryption type in password-protected Office 97-2003 files.",
-      "tracking_issue": "TODO-V-223291",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/fd2db86c088cb39ef1814b4562465294938d8f1c03cc8280a45291d5e19caa89/U_MS_Office_365_ProPlus_V3R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-223291"
