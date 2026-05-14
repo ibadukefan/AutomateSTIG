@@ -7163,6 +7163,47 @@ def _sql_server_sa_login_renamed_candidate(rule: dict, stig_id: str) -> dict | N
     }
 
 
+def _sql_server_audit_action_groups_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-271351', 'V-271370', 'V-271375'}:
+        return None
+    if not re.search(r'sys\.server_audit_specification_details', content, re.IGNORECASE):
+        return None
+    if not re.search(r'identified\s+groups?\s+.*?not\s+returned.*?this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'add\s+the\s+required\s+events\s+to\s+the\s+server\s+audit\s+specification', fix_text, re.IGNORECASE):
+        return None
+    in_match = re.search(r'd\.audit_action_name\s+IN\s*\((.*?)\)', content, re.IGNORECASE | re.DOTALL)
+    if not in_match:
+        return None
+    groups = re.findall(r"'([A-Z0-9_]+_GROUP)'", in_match.group(1))
+    if not groups or len(set(groups)) != len(groups):
+        return None
+    if any(not re.fullmatch(r'[A-Z0-9_]+_GROUP', group) for group in groups):
+        return None
+    values = ', '.join(f"('{group}')" for group in groups)
+    command = (
+        'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; '
+        f'WITH required(name) AS (SELECT v.name FROM (VALUES {values}) AS v(name)) '
+        'SELECT name FROM required EXCEPT SELECT d.audit_action_name '
+        'FROM sys.server_audit_specifications s '
+        'JOIN sys.server_audits a ON s.audit_guid = a.audit_guid '
+        'JOIN sys.server_audit_specification_details d ON s.server_specification_id = d.server_specification_id '
+        'WHERE a.is_state_enabled = 1;"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_sa_login_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -8041,6 +8082,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_sa_candidate = _sql_server_sa_login_renamed_candidate(rule, stig_id)
     if sql_server_sa_candidate:
         return sql_server_sa_candidate
+
+    sql_server_audit_action_groups_candidate = _sql_server_audit_action_groups_candidate(rule, stig_id)
+    if sql_server_audit_action_groups_candidate:
+        return sql_server_audit_action_groups_candidate
 
     sql_server_sa_disabled_candidate = _sql_server_sa_login_disabled_candidate(rule, stig_id)
     if sql_server_sa_disabled_candidate:

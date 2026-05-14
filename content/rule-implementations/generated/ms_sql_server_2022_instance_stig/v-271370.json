@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; WITH required(name) AS (SELECT v.name FROM (VALUES ('SCHEMA_OBJECT_CHANGE_GROUP')) AS v(name)) SELECT name FROM required EXCEPT SELECT d.audit_action_name FROM sys.server_audit_specifications s JOIN sys.server_audits a ON s.audit_guid = a.audit_guid JOIN sys.server_audit_specification_details d ON s.server_specification_id = d.server_specification_id WHERE a.is_state_enabled = 1;\"",
+      "type": "command_output"
+    },
+    "description": "SQL Server must generate audit records when successful and unsuccessful attempts to modify or delete security objects occur.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-271370"
+  },
   "check_content_excerpt": "Review the SQL configuration to verify that audit records are produced when denied actions occur.\n\nTo determine if an audit is configured, execute the following script:\nSELECT name AS 'Audit Name',\nstatus_desc AS 'Audit Status',\naudit_file_path AS 'Current Audit File'\nFROM sys.dm_server_audit_status\n\nIf no records are returned, this is a finding.\n\nExecute the following to verify the events below are included in the server audit specification:\nSCHEMA_OBJECT_CHANGE_GROUP\n\nSELECT a.name AS 'AuditName',\ns.name AS 'SpecName',\nd.audit_action_name AS 'ActionName',\nd.audited_result AS 'Result'\nFROM sys.server_audit_specifications s\nJOIN sys.server_audits a ON s.audit_guid = a.audit_guid\nJOIN sys.server_audit_specification_details d ON s.server_specification_id = d.server_specification_id\nWHERE a.is_state_enabled = 1\nAND d.audit_action_name IN (\n'SCHEMA_OBJECT_CHANGE_GROUP'\n)\nOrder by d.audit_action_name\n\nIf the identified groups are not returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Add the required events to the server audit specification to audit denied actions.\n\nRefer to the supplemental file \"SQL2022Audit.sql\" script.\n\nReference: https://learn.microsoft.com/en-us/sql/relational-databases/security/auditing/sql-server-audit-database-engine?",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271370r1111091_rule",
   "severity": "medium",

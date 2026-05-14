@@ -10171,6 +10171,41 @@ Successfully processed 1 files; Failed processing 0 files''',
         self.assertIn("icacls 'C:\\'", candidate['check']['command'])
         self.assertIn('BUILTIN\\Users:(CI)(IO)(WD)', candidate['check']['command'])
 
+    def test_infers_sql_server_audit_action_groups_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271375',
+            'title': 'SQL Server must generate audit records for all successful and unsuccessful attempts to access security objects.',
+            'check_content': '''Run the following SQL query:
+
+SELECT d.audit_action_name
+FROM sys.server_audit_specifications s
+JOIN sys.server_audits a ON s.audit_guid = a.audit_guid
+JOIN sys.server_audit_specification_details d ON s.server_specification_id = d.server_specification_id
+WHERE d.audit_action_name IN ('SUCCESSFUL_LOGIN_GROUP', 'FAILED_LOGIN_GROUP');
+
+If the identified groups are not returned, this is a finding.''',
+            'fix_text': 'Add the required events to the server audit specification.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertEqual(candidate['vuln_id'], 'V-271375')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('sys.server_audit_specification_details', candidate['check']['command'])
+        self.assertIn('a.is_state_enabled = 1', candidate['check']['command'])
+        self.assertIn("('SUCCESSFUL_LOGIN_GROUP')", candidate['check']['command'])
+        self.assertIn("('FAILED_LOGIN_GROUP')", candidate['check']['command'])
+
+    def test_infers_sql_server_audit_action_groups_skips_without_returned_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271375',
+            'title': 'SQL Server must generate audit records for security objects.',
+            'check_content': '''SELECT d.audit_action_name
+FROM sys.server_audit_specification_details d
+WHERE d.audit_action_name IN ('SUCCESSFUL_LOGIN_GROUP');''',
+            'fix_text': 'Add the required events to the server audit specification.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNone(candidate)
+
 
 if __name__ == '__main__':
     unittest.main()
