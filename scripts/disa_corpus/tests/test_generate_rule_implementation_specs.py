@@ -311,6 +311,39 @@ fi'''} ,
             'description': 'Ubuntu 24.04 LTS must be configured to enforce the acknowledgement of the Standard Mandatory DOD Notice and Consent Banner for all SSH connections.',
         })
 
+    def test_infers_windows_account_password_expires_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254258',
+            'title': 'Windows Server 2022 passwords must be configured to expire.',
+            'check_content': '''Review the password never expires status for enabled user accounts.
+
+Open "PowerShell".
+
+Domain Controllers:
+
+Enter "Search-ADAccount -PasswordNeverExpires -UsersOnly | FT Name, PasswordNeverExpires, Enabled".
+
+Exclude application accounts, disabled accounts (e.g., DefaultAccount, Guest) and the krbtgt account.
+
+If any enabled user accounts are returned with a "PasswordNeverExpires" status of "True", this is a finding.
+
+Member servers and standalone or nondomain-joined systems:
+
+Enter 'Get-CimInstance -Class Win32_Useraccount -Filter "PasswordExpires=False and LocalAccount=True" | FT Name, PasswordExpires, Disabled, LocalAccount'.
+
+Exclude application accounts and disabled accounts (e.g., DefaultAccount, Guest).
+
+If any enabled user accounts are returned with a "PasswordExpires" status of "False", this is a finding.''',
+            'fix_text': 'Configure all enabled user account passwords to expire. Uncheck "Password never expires" for all enabled user accounts in Active Directory Users and Computers for domain accounts and Users in Computer Management for member servers and standalone or nondomain-joined systems.',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254258',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -PasswordNeverExpires -UsersOnly | Where-Object { $_.Enabled -eq $true -and $_.Name -notin @('DefaultAccount','Guest','krbtgt') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter 'PasswordExpires=False and LocalAccount=True' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name }\""},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Windows Server 2022 passwords must be configured to expire.',
+        })
+
     def test_infers_windows_enabled_local_admin_password_age_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-253476',

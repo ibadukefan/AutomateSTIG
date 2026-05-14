@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 227,
+  "candidate_checks": 228,
   "cases": [
     {
       "check": {
@@ -104,6 +104,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278004"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -PasswordNeverExpires -UsersOnly | Where-Object { $_.Enabled -eq $true -and $_.Name -notin @('DefaultAccount','Guest','krbtgt') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter 'PasswordExpires=False and LocalAccount=True' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 passwords must be configured to expire.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -PasswordNeverExpires -UsersOnly | Where-Object { $_.Enabled -eq $true -and $_.Name -notin @('DefaultAccount','Guest','krbtgt') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter 'PasswordExpires=False and LocalAccount=True' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name }\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -PasswordNeverExpires -UsersOnly | Where-Object { $_.Enabled -eq $true -and $_.Name -notin @('DefaultAccount','Guest','krbtgt') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter 'PasswordExpires=False and LocalAccount=True' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name }\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278005"
     },
     {
       "check": {
@@ -6109,5 +6135,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 227
+  "validated_candidates": 228
 }

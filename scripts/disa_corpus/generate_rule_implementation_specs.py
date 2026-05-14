@@ -4519,6 +4519,44 @@ def _windows_account_password_required_candidate(rule: dict, stig_id: str) -> di
         'description': rule.get('title', ''),
     }
 
+def _windows_account_password_expires_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-254258', 'V-278005'}:
+        return None
+    if not _windows_platform(stig_id):
+        return None
+    if 'passwords must be configured to expire' not in (rule.get('title', '') or '').lower():
+        return None
+    required_phrases = (
+        'Search-ADAccount -PasswordNeverExpires -UsersOnly',
+        'PasswordNeverExpires" status of "True", this is a finding',
+        'Get-CimInstance -Class Win32_Useraccount -Filter "PasswordExpires=False and LocalAccount=True"',
+        'PasswordExpires" status of "False", this is a finding',
+        'Exclude application accounts, disabled accounts',
+    )
+    if not all(phrase.lower() in content.lower() for phrase in required_phrases):
+        return None
+    command = (
+        'powershell -NoProfile -Command "'
+        'if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { '
+        'Search-ADAccount -PasswordNeverExpires -UsersOnly | '
+        'Where-Object { $_.Enabled -eq $true -and $_.Name -notin @(\'DefaultAccount\',\'Guest\',\'krbtgt\') } | '
+        'Select-Object -ExpandProperty Name '
+        '} else { '
+        'Get-CimInstance -Class Win32_UserAccount -Filter \'PasswordExpires=False and LocalAccount=True\' | '
+        'Where-Object { $_.Disabled -ne $true -and $_.Name -notin @(\'DefaultAccount\',\'Guest\') } | '
+        'Select-Object -ExpandProperty Name '
+        '}"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
 
 def _windows_enabled_local_admin_password_age_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
@@ -7013,6 +7051,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         account_password_required_candidate = _windows_account_password_required_candidate(rule, stig_id)
         if account_password_required_candidate:
             return account_password_required_candidate
+
+        account_password_expires_candidate = _windows_account_password_expires_candidate(rule, stig_id)
+        if account_password_expires_candidate:
+            return account_password_expires_candidate
 
         local_admin_password_age_candidate = _windows_enabled_local_admin_password_age_candidate(rule, stig_id)
         if local_admin_password_age_candidate:

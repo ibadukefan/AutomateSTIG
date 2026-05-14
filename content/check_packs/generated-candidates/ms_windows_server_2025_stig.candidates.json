@@ -54,6 +54,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -PasswordNeverExpires -UsersOnly | Where-Object { $_.Enabled -eq $true -and $_.Name -notin @('DefaultAccount','Guest','krbtgt') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter 'PasswordExpires=False and LocalAccount=True' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 passwords must be configured to expire.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-278005"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$profiles=Get-NetFirewallProfile -ErrorAction SilentlyContinue; if ($profiles -and -not ($profiles | Where-Object { -not $_.Enabled })) { 'Compliant' }\"",
         "type": "command_output"
       },
