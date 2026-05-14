@@ -6789,6 +6789,43 @@ def _windows_event_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _windows_event_viewer_executable_acl_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    if rule.get('vuln_id') != 'V-254299':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    policy_text = '\n'.join(part for part in (content, fix_text) if part)
+    if not re.search(r'Event\s+Viewer\s+must\s+be\s+protected\s+from\s+unauthorized\s+modification\s+and\s+deletion', title, re.IGNORECASE):
+        return None
+    required_phrases = (
+        r'View\s+the\s+permissions\s+on\s+["“]Eventvwr\.exe["”]',
+        r'If\s+any\s+groups\s+or\s+accounts\s+other\s+than\s+TrustedInstaller\s+have\s+["“]Full\s+control["”]\s+or\s+["“]Modify["”]\s+permissions,\s+this\s+is\s+a\s+finding',
+        r'TrustedInstaller\s+-\s+Full\s+Control',
+        r'Administrators,\s+SYSTEM,\s+Users,\s+ALL\s+APPLICATION\s+PACKAGES,\s+ALL\s+RESTRICTED\s+APPLICATION\s+PACKAGES\s+-\s+Read\s+&\s+Execute',
+        r'%SystemRoot%\\System32',
+    )
+    if not all(re.search(phrase, policy_text, re.IGNORECASE) for phrase in required_phrases):
+        return None
+    if not re.search(r'Configure\s+the\s+permissions\s+on\s+the\s+["“]Eventvwr\.exe["”]\s+file\s+to\s+prevent\s+modification\s+by\s+any\s+groups\s+or\s+accounts\s+other\s+than\s+TrustedInstaller', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$p=Join-Path $env:SystemRoot \'System32\\Eventvwr.exe\'; $acl=Get-Acl -LiteralPath $p; '
+        '$violations=$acl.Access | Where-Object { ($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify) -and ($_.IdentityReference -notmatch \'TrustedInstaller$\') }; '
+        "if (-not $violations) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _tomcat_service_account_nologin_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower() or rule.get('vuln_id') != 'V-222983':
         return None
@@ -7151,6 +7188,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         event_log_acl_candidate = _windows_event_log_file_acl_candidate(rule, stig_id)
         if event_log_acl_candidate:
             return event_log_acl_candidate
+
+        event_viewer_acl_candidate = _windows_event_viewer_executable_acl_candidate(rule, stig_id)
+        if event_viewer_acl_candidate:
+            return event_viewer_acl_candidate
 
         services_msc_candidate = _windows_services_msc_candidate(rule, stig_id)
         if services_msc_candidate:

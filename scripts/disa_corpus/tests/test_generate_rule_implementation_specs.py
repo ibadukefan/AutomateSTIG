@@ -1430,6 +1430,40 @@ The default location is the "%SystemRoot%\\System32\\winevt\\Logs" folder.''',
             'description': 'Windows Server 2022 permissions for the System event log must prevent access by nonprivileged accounts.',
         })
 
+    def test_infers_windows_event_viewer_executable_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254299',
+            'title': 'Windows Server 2022 Event Viewer must be protected from unauthorized modification and deletion.',
+            'check_content': '''This is not applicable for Windows Core Edition.
+
+Navigate to "%SystemRoot%\\System32".
+
+View the permissions on "Eventvwr.exe".
+
+If any groups or accounts other than TrustedInstaller have "Full control" or "Modify" permissions, this is a finding.
+
+The default permissions below satisfy this requirement:
+
+TrustedInstaller - Full Control
+Administrators, SYSTEM, Users, ALL APPLICATION PACKAGES, ALL RESTRICTED APPLICATION PACKAGES - Read & Execute''',
+            'fix_text': '''Configure the permissions on the "Eventvwr.exe" file to prevent modification by any groups or accounts other than TrustedInstaller. The default permissions listed below satisfy this requirement:
+
+TrustedInstaller - Full Control
+Administrators, SYSTEM, Users, ALL APPLICATION PACKAGES, ALL RESTRICTED APPLICATION PACKAGES - Read & Execute
+
+The default location is the "%SystemRoot%\\System32" folder.''',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254299',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:SystemRoot 'System32\\Eventvwr.exe'; $acl=Get-Acl -LiteralPath $p; $violations=$acl.Access | Where-Object { ($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify) -and ($_.IdentityReference -notmatch 'TrustedInstaller$') }; if (-not $violations) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Windows Server 2022 Event Viewer must be protected from unauthorized modification and deletion.',
+        })
+
     def test_infers_windows_directory_service_max_conn_idle_time_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278147',

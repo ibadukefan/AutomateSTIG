@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 191,
+  "candidate_checks": 192,
   "cases": [
     {
       "check": {
@@ -424,6 +424,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-254298"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:SystemRoot 'System32\\Eventvwr.exe'; $acl=Get-Acl -LiteralPath $p; $violations=$acl.Access | Where-Object { ($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify) -and ($_.IdentityReference -notmatch 'TrustedInstaller$') }; if (-not $violations) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 Event Viewer must be protected from unauthorized modification and deletion.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p=Join-Path $env:SystemRoot 'System32\\Eventvwr.exe'; $acl=Get-Acl -LiteralPath $p; $violations=$acl.Access | Where-Object { ($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify) -and ($_.IdentityReference -notmatch 'TrustedInstaller$') }; if (-not $violations) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p=Join-Path $env:SystemRoot 'System32\\Eventvwr.exe'; $acl=Get-Acl -LiteralPath $p; $violations=$acl.Access | Where-Object { ($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify) -and ($_.IdentityReference -notmatch 'TrustedInstaller$') }; if (-not $violations) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254299"
     },
     {
       "check": {
@@ -5150,5 +5176,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 191
+  "validated_candidates": 192
 }
