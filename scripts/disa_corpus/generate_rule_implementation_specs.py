@@ -1422,6 +1422,75 @@ def _ol9_crypto_policy_not_overridden_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _vcenter_lookup_core_setting_candidate(rule: dict, stig_id: str) -> dict | None:
+    stig_lower = stig_id.lower()
+    if 'vsphere' not in stig_lower or 'lookup' not in stig_lower:
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+
+    if vuln_id == 'V-259039':
+        path = '/etc/vmware/vmware-vmon/svcCfgfiles/lookupsvc.json'
+        expected_line = '"StreamRedirectFile": "%VMWARE_LOG_DIR%/vmware/lookupsvc/lookupsvc_stream.log",'
+        if (
+            f'grep StreamRedirectFile {path}' in content
+            and expected_line in content
+            and expected_line in fix_text
+            and re.search(r'If\s+no\s+log\s+file\s+is\s+specified\s+for\s+the\s+["“]StreamRedirectFile["”]\s+setting,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        ):
+            return {
+                'vuln_id': vuln_id,
+                'platform': 'generic',
+                'check': {'type': 'file_content', 'path': path, 'pattern': expected_line, 'is_regex': False},
+                'expected': {'type': 'contains'},
+                'description': title,
+            }
+
+    if vuln_id == 'V-259049':
+        path = '/usr/lib/vmware-lookupsvc/conf/web.xml'
+        if (
+            path in content
+            and 'session-timeout' in content
+            and 'session-timeout' in fix_text
+            and re.search(r'not\s+["“]30["”]\s+or\s+less,\s+or\s+is\s+missing,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            and re.search(r'<session-timeout>\s*30\s*</session-timeout>', fix_text, re.IGNORECASE)
+        ):
+            command = "sh -c \"timeout=$(xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(/web-app/session-config/session-timeout)' - 2>/dev/null); case $timeout in ''|*[!0-9]*) exit 0;; *) [ $timeout -le 30 ] && printf PASS;; esac\""
+            return {
+                'vuln_id': vuln_id,
+                'platform': 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': 'PASS'},
+                'description': title,
+            }
+
+    if vuln_id == 'V-259057':
+        server_path = '/usr/lib/vmware-lookupsvc/conf/server.xml'
+        catalina_path = '/usr/lib/vmware-lookupsvc/conf/catalina.properties'
+        if (
+            server_path in content
+            and catalina_path in content
+            and 'port="${base.shutdown.port}"' in content
+            and 'base.shutdown.port=-1' in content
+            and 'port="${base.shutdown.port}"' in fix_text
+            and 'base.shutdown.port=-1' in fix_text
+            and re.search(r'If\s+["“]port["”]\s+does\s+not\s+equal\s+["“]\$\{base\.shutdown\.port\}["”],\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            and re.search(r'If\s+["“]base\.shutdown\.port["”]\s+does\s+not\s+equal\s+["“]-1["”],\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        ):
+            command = "sh -c \"server_port=$(xmllint --xpath 'string(/Server/@port)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); shutdown_port=$(grep '^base.shutdown.port=' /usr/lib/vmware-lookupsvc/conf/catalina.properties 2>/dev/null | tail -n 1 | cut -d= -f2-); [ \\\"$server_port\\\" = '${base.shutdown.port}' ] && [ \\\"$shutdown_port\\\" = '-1' ] && printf PASS\""
+            return {
+                'vuln_id': vuln_id,
+                'platform': 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': 'PASS'},
+                'description': title,
+            }
+
+    return None
+
+
 def _vcenter_lookup_optional_xml_value_candidate(rule: dict, stig_id: str) -> dict | None:
     stig_lower = stig_id.lower()
     if 'vsphere' not in stig_lower or 'lookup' not in stig_lower:
@@ -6760,6 +6829,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     ol9_crypto_policy_not_overridden_candidate = _ol9_crypto_policy_not_overridden_candidate(rule, stig_id)
     if ol9_crypto_policy_not_overridden_candidate:
         return ol9_crypto_policy_not_overridden_candidate
+    vcenter_lookup_core_setting_candidate = _vcenter_lookup_core_setting_candidate(rule, stig_id)
+    if vcenter_lookup_core_setting_candidate:
+        return vcenter_lookup_core_setting_candidate
     vcenter_lookup_optional_xml_value_candidate = _vcenter_lookup_optional_xml_value_candidate(rule, stig_id)
     if vcenter_lookup_optional_xml_value_candidate:
         return vcenter_lookup_optional_xml_value_candidate

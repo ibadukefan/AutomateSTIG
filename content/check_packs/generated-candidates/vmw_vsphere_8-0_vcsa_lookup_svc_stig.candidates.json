@@ -28,6 +28,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/vmware/vmware-vmon/svcCfgfiles/lookupsvc.json",
+        "pattern": "\"StreamRedirectFile\": \"%VMWARE_LOG_DIR%/vmware/lookupsvc/lookupsvc_stream.log\",",
+        "type": "file_content"
+      },
+      "description": "The vCenter Lookup service must initiate session logging upon startup.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259039"
+    },
+    {
+      "check": {
         "command": "find /var/log/vmware/lookupsvc/ -xdev ! -name lookupsvc-init.log ! -name lookupsvc-prestart.log -type f -a '(' -perm -o+w -o -not -user lookupsvc -o -not -group lookupsvc ')' -exec ls -ld {} \\;",
         "type": "command_output"
       },
@@ -120,6 +134,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"timeout=$(xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(/web-app/session-config/session-timeout)' - 2>/dev/null); case $timeout in ''|*[!0-9]*) exit 0;; *) [ $timeout -le 30 ] && printf PASS;; esac\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must set an inactive timeout for sessions.",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259049"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/lib/vmware-lookupsvc/conf/catalina.properties",
         "pattern": "org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true",
@@ -170,6 +197,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-259055"
+    },
+    {
+      "check": {
+        "command": "sh -c \"server_port=$(xmllint --xpath 'string(/Server/@port)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); shutdown_port=$(grep '^base.shutdown.port=' /usr/lib/vmware-lookupsvc/conf/catalina.properties 2>/dev/null | tail -n 1 | cut -d= -f2-); [ \\\"$server_port\\\" = '${base.shutdown.port}' ] && [ \\\"$shutdown_port\\\" = '-1' ] && printf PASS\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service shutdown port must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259057"
     },
     {
       "check": {

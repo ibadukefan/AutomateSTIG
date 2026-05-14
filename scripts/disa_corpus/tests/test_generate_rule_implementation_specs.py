@@ -1359,6 +1359,108 @@ Set the listings param-value to false.''',
             'description': 'The vCenter Lookup service directory listings parameter must be disabled.',
         })
 
+    def test_infers_vcenter_lookup_stream_redirect_file_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259039',
+            'title': 'The vCenter Lookup service must initiate session logging upon startup.',
+            'check_content': '''At the command prompt, run the following command:
+
+# grep StreamRedirectFile /etc/vmware/vmware-vmon/svcCfgfiles/lookupsvc.json
+
+Expected output:
+
+"StreamRedirectFile": "%VMWARE_LOG_DIR%/vmware/lookupsvc/lookupsvc_stream.log",
+
+If no log file is specified for the "StreamRedirectFile" setting, this is a finding.''',
+            'fix_text': '''Navigate to and open:
+
+/etc/vmware/vmware-vmon/svcCfgfiles/lookupsvc.json
+
+Below the last line of the "PreStartCommandArg" block, add the following line:
+
+"StreamRedirectFile": "%VMWARE_LOG_DIR%/vmware/lookupsvc/lookupsvc_stream.log",''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259039',
+            'platform': 'generic',
+            'check': {
+                'type': 'file_content',
+                'path': '/etc/vmware/vmware-vmon/svcCfgfiles/lookupsvc.json',
+                'pattern': '"StreamRedirectFile": "%VMWARE_LOG_DIR%/vmware/lookupsvc/lookupsvc_stream.log",',
+                'is_regex': False,
+            },
+            'expected': {'type': 'contains'},
+            'description': 'The vCenter Lookup service must initiate session logging upon startup.',
+        })
+
+    def test_infers_vcenter_lookup_session_timeout_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259049',
+            'title': 'The vCenter Lookup service must set an inactive timeout for sessions.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=".*"//g' | xmllint --xpath '/web-app/session-config/session-timeout' -
+
+Example result:
+
+<session-timeout>30</session-timeout>
+
+If the value of "session-timeout" is not "30" or less, or is missing, this is a finding.''',
+            'fix_text': '''Navigate to and open:
+
+/usr/lib/vmware-lookupsvc/conf/web.xml
+
+Navigate to the <session-config> node and configure the <session-timeout> as follows:
+
+<session-config>
+  <session-timeout>30</session-timeout>
+</session-config>''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259049',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c \"timeout=$(xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(/web-app/session-config/session-timeout)' - 2>/dev/null); case $timeout in ''|*[!0-9]*) exit 0;; *) [ $timeout -le 30 ] && printf PASS;; esac\"",
+            },
+            'expected': {'type': 'equals', 'value': 'PASS'},
+            'description': 'The vCenter Lookup service must set an inactive timeout for sessions.',
+        })
+
+    def test_infers_vcenter_lookup_shutdown_port_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259057',
+            'title': 'The vCenter Lookup service shutdown port must be disabled.',
+            'check_content': '''At the command prompt, run the following commands:
+
+# xmllint --xpath "//Server/@port" /usr/lib/vmware-lookupsvc/conf/server.xml
+# grep 'base.shutdown.port' /usr/lib/vmware-lookupsvc/conf/catalina.properties
+
+Example results:
+
+port="${base.shutdown.port}"
+base.shutdown.port=-1
+
+If "port" does not equal "${base.shutdown.port}", this is a finding.
+
+If "base.shutdown.port" does not equal "-1", this is a finding.''',
+            'fix_text': '''Configure the <Server> node with the value:
+
+port="${base.shutdown.port}"
+
+Add or modify the setting "base.shutdown.port=-1" in the "catalina.properties" file.''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259057',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c \"server_port=$(xmllint --xpath 'string(/Server/@port)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); shutdown_port=$(grep '^base.shutdown.port=' /usr/lib/vmware-lookupsvc/conf/catalina.properties 2>/dev/null | tail -n 1 | cut -d= -f2-); [ \\\"$server_port\\\" = '${base.shutdown.port}' ] && [ \\\"$shutdown_port\\\" = '-1' ] && printf PASS\"",
+            },
+            'expected': {'type': 'equals', 'value': 'PASS'},
+            'description': 'The vCenter Lookup service shutdown port must be disabled.',
+        })
+
     def test_infers_vcenter_lookup_removed_webapp_directory_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-259069',

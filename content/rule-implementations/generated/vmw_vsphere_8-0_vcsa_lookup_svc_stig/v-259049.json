@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"timeout=$(xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(/web-app/session-config/session-timeout)' - 2>/dev/null); case $timeout in ''|*[!0-9]*) exit 0;; *) [ $timeout -le 30 ] && printf PASS;; esac\"",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service must set an inactive timeout for sessions.",
+    "expected": {
+      "type": "equals",
+      "value": "PASS"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259049"
+  },
   "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '/web-app/session-config/session-timeout' -\n\nExample result:\n\n<session-timeout>30</session-timeout>\n\nIf the value of \"session-timeout\" is not \"30\" or less, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "PASS"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/web.xml\n\nNavigate to the <session-config> node and configure the <session-timeout> as follows:\n\n<session-config>\n  <session-timeout>30</session-timeout>\n  <cookie-config>\n      <http-only>true</http-only>\n      <secure>true</secure>\n  </cookie-config>\n</session-config>\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259049r1003620_rule",
   "severity": "medium",

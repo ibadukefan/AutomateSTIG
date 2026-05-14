@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 26,
+  "candidate_checks": 29,
   "cases": [
     {
       "check": {
@@ -52,6 +52,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259038"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/vmware/vmware-vmon/svcCfgfiles/lookupsvc.json",
+        "pattern": "\"StreamRedirectFile\": \"%VMWARE_LOG_DIR%/vmware/lookupsvc/lookupsvc_stream.log\",",
+        "type": "file_content"
+      },
+      "description": "The vCenter Lookup service must initiate session logging upon startup.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/vmware/vmware-vmon/svcCfgfiles/lookupsvc.json": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/vmware/vmware-vmon/svcCfgfiles/lookupsvc.json": "before\n\"StreamRedirectFile\": \"%VMWARE_LOG_DIR%/vmware/lookupsvc/lookupsvc_stream.log\",\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259039"
     },
     {
       "check": {
@@ -238,6 +265,32 @@
     },
     {
       "check": {
+        "command": "sh -c \"timeout=$(xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(/web-app/session-config/session-timeout)' - 2>/dev/null); case $timeout in ''|*[!0-9]*) exit 0;; *) [ $timeout -le 30 ] && printf PASS;; esac\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must set an inactive timeout for sessions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"timeout=$(xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(/web-app/session-config/session-timeout)' - 2>/dev/null); case $timeout in ''|*[!0-9]*) exit 0;; *) [ $timeout -le 30 ] && printf PASS;; esac\"": "unexpected-PASS"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"timeout=$(xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\\\".*\\\"//g' | xmllint --xpath 'string(/web-app/session-config/session-timeout)' - 2>/dev/null); case $timeout in ''|*[!0-9]*) exit 0;; *) [ $timeout -le 30 ] && printf PASS;; esac\"": "PASS"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259049"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/lib/vmware-lookupsvc/conf/catalina.properties",
         "pattern": "org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true",
@@ -340,6 +393,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259055"
+    },
+    {
+      "check": {
+        "command": "sh -c \"server_port=$(xmllint --xpath 'string(/Server/@port)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); shutdown_port=$(grep '^base.shutdown.port=' /usr/lib/vmware-lookupsvc/conf/catalina.properties 2>/dev/null | tail -n 1 | cut -d= -f2-); [ \\\"$server_port\\\" = '${base.shutdown.port}' ] && [ \\\"$shutdown_port\\\" = '-1' ] && printf PASS\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service shutdown port must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"server_port=$(xmllint --xpath 'string(/Server/@port)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); shutdown_port=$(grep '^base.shutdown.port=' /usr/lib/vmware-lookupsvc/conf/catalina.properties 2>/dev/null | tail -n 1 | cut -d= -f2-); [ \\\"$server_port\\\" = '${base.shutdown.port}' ] && [ \\\"$shutdown_port\\\" = '-1' ] && printf PASS\"": "unexpected-PASS"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"server_port=$(xmllint --xpath 'string(/Server/@port)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); shutdown_port=$(grep '^base.shutdown.port=' /usr/lib/vmware-lookupsvc/conf/catalina.properties 2>/dev/null | tail -n 1 | cut -d= -f2-); [ \\\"$server_port\\\" = '${base.shutdown.port}' ] && [ \\\"$shutdown_port\\\" = '-1' ] && printf PASS\"": "PASS"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259057"
     },
     {
       "check": {
@@ -685,5 +764,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
-  "validated_candidates": 26
+  "validated_candidates": 29
 }
