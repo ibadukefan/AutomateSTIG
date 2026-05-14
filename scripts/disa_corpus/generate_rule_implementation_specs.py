@@ -139,6 +139,39 @@ def _powershell_registry_absent_command(path: str, value_name: str) -> str:
     return f"powershell -NoProfile -Command \"$p='{ps_path}'; if (-not (Get-ItemProperty -Path $p -Name '{value_name}' -ErrorAction SilentlyContinue)) {{ 'Absent' }}\""
 
 
+def _powershell_registry_key_absent_command(path: str) -> str:
+    ps_path = _normalize_registry_path(path).replace('HKLM\\', 'HKLM:\\').replace('HKCU\\', 'HKCU:\\')
+    return f"powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath '{ps_path}')) {{ 'Absent' }}\""
+
+
+def _office_disabled_policy_registry_key_absent_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'office' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'policy\s+value\s+for\s+.*?\s+is\s+set\s+to\s+["“]Disabled["”]', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'Set\s+the\s+policy\s+value\s+for\s+.*?\s+to\s+["“]Disabled["”]', fix_text, re.IGNORECASE | re.DOTALL):
+        return None
+    path_match = re.search(
+        r'Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*((?:HKLM|HKCU)\\[^\n\r]+)',
+        content,
+        re.IGNORECASE,
+    )
+    if not path_match or not re.search(r'If\s+the\s+registry\s+key\s+exists,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    path = path_match.group(1).strip()
+    if not re.search(r'\\software\\policies\\microsoft\\office\\16\.0\\', path, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': _powershell_registry_key_absent_command(path)},
+        'expected': {'type': 'equals', 'value': 'Absent'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_defender_registry_absent_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -1988,14 +2021,14 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                     }
 
         exact_allowlist_match = re.search(
-            r'If\s+any\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups)\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+(?:user\s+)?right,\s+this\s+is\s+a\s+finding[:.]\s*(?:\n[ \t]*)*(?P<body>(?:\n[ \t]*(?:[-*]\s*)?[A-Za-z][^\n]+)+)',
+            r'If\s+any\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups)\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+(?:user\s+)?right,\s+this\s+is\s+a\s+finding[:.]\s*(?P<body>.*?)(?:\n\s*\n|\s+For\s+server\s+core\b|\Z)',
             content,
-            re.IGNORECASE,
+            re.IGNORECASE | re.DOTALL,
         )
         exact_allowlist_fix = re.search(
-            r'User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:only\s+include|include\s+only)\s+the\s+following\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups):\s*(?:\n[ \t]*)*(?P<body>(?:\n[ \t]*(?:[-*]\s*)?[A-Za-z][^\n]+)+)',
+            r'User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:only\s+include|include\s+only)\s+the\s+following\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups):\s*(?P<body>.*?)(?:\n\s*\n|\s+For\s+server\s+core\b|\Z)',
             fix_text,
-            re.IGNORECASE,
+            re.IGNORECASE | re.DOTALL,
         )
         exact_allowlist_right_keys = {
             'access this computer from the network': 'SeNetworkLogonRight',
@@ -2027,9 +2060,14 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             fix_display_name = exact_allowlist_fix.group(1).strip().strip('"')
 
             def _allowlist_principals(body: str) -> list[str]:
+                bullet_principals = re.findall(
+                    r'(?:^|\s)[-*]\s*([A-Za-z][A-Za-z \\]+?)(?=\s+[-*]\s+|\s{2,}(?:For|If|Review|Run|Secedit)\b|\n|$)',
+                    body,
+                    re.IGNORECASE,
+                )
                 raw_lines = [line.rstrip() for line in body.splitlines() if line.strip()]
                 bullet_lines = [line for line in raw_lines if re.match(r'^\s*[-*]\s+', line)]
-                candidate_lines = bullet_lines or raw_lines
+                candidate_lines = bullet_principals or bullet_lines or raw_lines
                 principals = []
                 for line in candidate_lines:
                     principal = line.strip(' -*\t.').lower()
@@ -7307,6 +7345,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         defender_registry_criteria_candidate = _windows_defender_registry_criteria_candidate(rule, stig_id)
         if defender_registry_criteria_candidate:
             return defender_registry_criteria_candidate
+
+        office_registry_key_absent_candidate = _office_disabled_policy_registry_key_absent_candidate(rule, stig_id)
+        if office_registry_key_absent_candidate:
+            return office_registry_key_absent_candidate
 
         policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
         if policy_candidate:

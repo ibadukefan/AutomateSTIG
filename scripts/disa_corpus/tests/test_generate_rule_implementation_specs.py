@@ -188,6 +188,25 @@ Review the text file.''',
             'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
         })
 
+    def test_infers_windows_user_right_allowlist_from_collapsed_xccdf_bullets(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254418',
+            'title': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
+            'check_content': '''This applies to domain controllers. It is NA for other systems. Verify the effective setting in Local Group Policy Editor. Run "gpedit.msc". Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment. If any accounts or groups other than the following are granted the "Access this computer from the network" right, this is a finding. - Administrators - Authenticated Users - Enterprise Domain Controllers For server core installations, run the following command: Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt Review the text file.''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Access this computer from the network to include only the following accounts or groups:
+
+- Administrators
+- Authenticated Users
+- Enterprise Domain Controllers''',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254418',
+            'platform': 'windows',
+            'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeNetworkLogonRight'},
+            'expected': {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-11,*S-1-5-9'},
+            'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
+        })
+
 
     def test_infers_windows_server_local_volumes_ntfs_refs_csvfs_candidate(self):
         candidate = mod.infer_candidate_check({
@@ -512,6 +531,30 @@ If the PasswordLastSet date is more than 60 days old for the enabled local Admin
             },
             'expected': {'type': 'equals', 'value': ''},
             'description': 'Passwords for enabled local Administrator accounts must be changed at least every 60 days.',
+        })
+
+    def test_infers_office_disabled_policy_registry_key_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223362',
+            'title': 'Level 1 file attachments must be blocked from being delivered.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Security Form Settings >> Attachment Security >> Remove file extensions blocked as Level 1 is set to "Disabled".
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\FileExtensionsRemoveLevel1
+
+If the registry key exists, this is a finding.''',
+            'fix_text': 'Set the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Security Form Settings >> Attachment Security >> Remove file extensions blocked as Level 1 to "Disabled".',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-223362',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKCU:\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\FileExtensionsRemoveLevel1')) { 'Absent' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Absent'},
+            'description': 'Level 1 file attachments must be blocked from being delivered.',
         })
 
     def test_infers_office_single_registry_dword_for_all_installed_programs_candidate(self):

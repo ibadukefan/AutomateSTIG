@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 117,
+  "candidate_checks": 119,
   "cases": [
     {
       "check": {
@@ -1704,6 +1704,58 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKCU:\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\FileExtensionsRemoveLevel1')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Level 1 file attachments must be blocked from being delivered.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKCU:\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\FileExtensionsRemoveLevel1')) { 'Absent' }\"": "unexpected-Absent"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKCU:\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\FileExtensionsRemoveLevel1')) { 'Absent' }\"": "Absent"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223362"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKCU:\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\FileExtensionsRemoveLevel2')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Level 2 file attachments must be blocked from being delivered.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKCU:\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\FileExtensionsRemoveLevel2')) { 'Absent' }\"": "unexpected-Absent"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKCU:\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\FileExtensionsRemoveLevel2')) { 'Absent' }\"": "Absent"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223363"
+    },
+    {
+      "check": {
         "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\security",
         "type": "registry",
         "value_name": "EnableOneOffFormScripts"
@@ -3166,5 +3218,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 117
+  "validated_candidates": 119
 }

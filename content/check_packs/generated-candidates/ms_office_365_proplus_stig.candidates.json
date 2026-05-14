@@ -884,6 +884,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKCU:\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\FileExtensionsRemoveLevel1')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Level 1 file attachments must be blocked from being delivered.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "windows",
+      "vuln_id": "V-223362"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKCU:\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\FileExtensionsRemoveLevel2')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Level 2 file attachments must be blocked from being delivered.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "windows",
+      "vuln_id": "V-223363"
+    },
+    {
+      "check": {
         "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\security",
         "type": "registry",
         "value_name": "EnableOneOffFormScripts"
