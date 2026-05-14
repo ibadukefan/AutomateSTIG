@@ -3830,6 +3830,46 @@ def _macos_remote_login_banner_candidate(rule: dict, stig_id: str) -> dict | Non
     }
 
 
+def _ubuntu_ssh_confirm_banner_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-270694' or 'ubuntu' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'Standard\s+Mandatory\s+DOD\s+Notice\s+and\s+Consent\s+Banner', rule.get('title', '') or '', re.IGNORECASE):
+        return None
+    if '/etc/profile.d/ssh_confirm.sh' not in content or '/etc/profile.d/ssh_confirm.sh' not in fix_text:
+        return None
+    if not re.search(r'If\s+the\s+output\s+does\s+not\s+match\s+the\s+text\s+above,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if 'Note: The "ssh_confirm.sh" script is provided as a supplemental file to this document.' not in fix_text:
+        return None
+    script_match = re.search(
+        r'^\$\s+less\s+/etc/profile\.d/ssh_confirm\.sh\s*\n(?P<script>#!/bin/bash.*?)(?:\n\s*If\s+the\s+output\s+does\s+not\s+match\s+the\s+text\s+above,\s+this\s+is\s+a\s+finding\.)',
+        content,
+        re.IGNORECASE | re.MULTILINE | re.DOTALL,
+    )
+    if not script_match:
+        return None
+    script = script_match.group('script').strip()
+    required_fragments = (
+        'if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then',
+        'read -p',
+        'You are accessing a U.S. Government (USG) Information System (IS)',
+        'Do you agree? [y/N]',
+        '[Nn]* ) exit 1 ;;',
+    )
+    if not all(fragment in script for fragment in required_fragments):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'cat /etc/profile.d/ssh_confirm.sh'},
+        'expected': {'type': 'equals', 'value': script},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_issue_banner_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -6720,6 +6760,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     linux_shadow_password_lifetime_candidate = _linux_shadow_password_lifetime_candidate(rule, stig_id)
     if linux_shadow_password_lifetime_candidate:
         return linux_shadow_password_lifetime_candidate
+
+    ubuntu_ssh_confirm_banner_candidate = _ubuntu_ssh_confirm_banner_candidate(rule, stig_id)
+    if ubuntu_ssh_confirm_banner_candidate:
+        return ubuntu_ssh_confirm_banner_candidate
 
     linux_issue_banner_candidate = _linux_issue_banner_candidate(rule, stig_id)
     if linux_issue_banner_candidate:

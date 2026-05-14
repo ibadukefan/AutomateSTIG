@@ -134,6 +134,73 @@ S-1-5-9 (Enterprise Domain Controllers)''',
             'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
         })
 
+    def test_infers_ubuntu_ssh_confirm_banner_exact_script_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270694',
+            'title': 'Ubuntu 24.04 LTS must be configured to enforce the acknowledgement of the Standard Mandatory DOD Notice and Consent Banner for all SSH connections.',
+            'check_content': '''Verify Ubuntu 24.04 LTS is configured to prompt a user to acknowledge the Standard Mandatory DOD Notice and Consent Banner before granting access with the following command:
+
+$ less /etc/profile.d/ssh_confirm.sh
+#!/bin/bash
+
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+        while true; do
+                read -p " 
+
+You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
+
+Do you agree? [y/N] " yn
+                case $yn in
+                        [Yy]* ) break ;;
+                        [Nn]* ) exit 1 ;;
+                esac
+        done
+fi
+
+If the output does not match the text above, this is a finding.''',
+            'fix_text': '''Configure Ubuntu 24.04 LTS to prompt a user to acknowledge the Standard Mandatory DOD Notice and Consent Banner before granting access:
+
+$ sudo vi /etc/profile.d/ssh_confirm.sh
+#!/bin/bash
+
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+        while true; do
+                read -p " 
+
+You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
+
+Do you agree? [y/N] " yn
+                case $yn in
+                        [Yy]* ) break ;;
+                        [Nn]* ) exit 1 ;;
+                esac
+        done
+fi
+
+Note: The "ssh_confirm.sh" script is provided as a supplemental file to this document.''',
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270694',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'cat /etc/profile.d/ssh_confirm.sh'},
+            'expected': {'type': 'equals', 'value': '''#!/bin/bash
+
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+        while true; do
+                read -p " 
+
+You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
+
+Do you agree? [y/N] " yn
+                case $yn in
+                        [Yy]* ) break ;;
+                        [Nn]* ) exit 1 ;;
+                esac
+        done
+fi'''} ,
+            'description': 'Ubuntu 24.04 LTS must be configured to enforce the acknowledgement of the Standard Mandatory DOD Notice and Consent Banner for all SSH connections.',
+        })
+
     def test_infers_windows_enabled_local_admin_password_age_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-253476',
