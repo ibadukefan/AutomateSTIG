@@ -41,6 +41,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-220744"
+    },
+    {
+      "check": {
+        "key": "SeNetworkLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Access this computer from the network user right must only be assigned to the Administrators and Remote Desktop Users groups.",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-32-555"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220957"
     }
   ],
   "platform": "windows",

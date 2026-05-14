@@ -92,6 +92,41 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
+    def test_infers_scap_fix_only_user_rights_exact_allowlist_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254418',
+            'title': 'Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers.',
+            'check_content': '',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Access this computer from the network to include only the following accounts or groups:
+
+- Administrators
+- Authenticated Users
+- Enterprise Domain Controllers''',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254418',
+            'platform': 'windows',
+            'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeNetworkLogonRight'},
+            'expected': {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-11,*S-1-5-9'},
+            'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers.',
+        })
+
+    def test_scap_fix_only_user_rights_skips_conditional_domain_lists(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254435',
+            'title': 'Windows Server 2022 Deny access to this computer from the network user right on domain-joined member servers must be configured conditionally.',
+            'check_content': '',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Deny access to this computer from the network to include the following:
+
+Domain Systems Only:
+- Enterprise Admins group
+- Domain Admins group
+
+All Systems:
+- Guests group''',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNone(candidate)
+
     def test_infers_office_registry_exact_reg_sz_with_set_to_phrase(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223291',

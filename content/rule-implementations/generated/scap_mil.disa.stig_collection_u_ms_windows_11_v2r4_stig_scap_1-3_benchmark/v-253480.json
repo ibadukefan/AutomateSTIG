@@ -1,8 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "SeNetworkLogonRight",
+      "section": "Privilege Rights",
+      "type": "security_policy"
+    },
+    "description": "The \"Access this computer from the network\" user right must only be assigned to the Administrators and Remote Desktop Users groups.",
+    "expected": {
+      "type": "equals",
+      "value": "*S-1-5-32-544,*S-1-5-32-555"
+    },
+    "platform": "windows",
+    "vuln_id": "V-253480"
+  },
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "*S-1-5-32-544,*S-1-5-32-555"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> \"Access this computer from the network\" to only include the following groups or accounts:\n\nAdministrators  \nRemote Desktop Users",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "xccdf_mil.disa.stig_rule_SV-253480r958472_rule",
   "severity": "medium",

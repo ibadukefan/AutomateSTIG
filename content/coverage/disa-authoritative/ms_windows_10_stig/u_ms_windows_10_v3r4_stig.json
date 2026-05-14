@@ -3604,16 +3604,17 @@
       "vuln_id": "V-220956"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220957",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-220957r958472_rule",
       "severity": "medium",
       "title": "The Access this computer from the network user right must only be assigned to the Administrators and Remote Desktop Users groups.",
-      "tracking_issue": "TODO-V-220957",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/4da62c3fa6643e6ce71bfbba1fdd99d5813f5e2c4ba86376f8b2cd1416e47671/U_MS_Windows_10_V3R4_STIG.zip"
       ],
       "vuln_id": "V-220957"

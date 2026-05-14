@@ -1,0 +1,38 @@
+{
+  "candidate_checks": 1,
+  "cases": [
+    {
+      "check": {
+        "key": "SeNetworkLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Access this computer from the network user right must only be assigned to the Administrators, Authenticated Users, and \nEnterprise Domain Controllers groups on domain controllers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-11,*S-1-5-9"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeNetworkLogonRight": "unexpected-*S-1-5-32-544,*S-1-5-11,*S-1-5-9"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeNetworkLogonRight": "*S-1-5-32-544,*S-1-5-11,*S-1-5-9"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205665"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2019_v3r4_stig_scap_1-3_benchmark.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark",
+  "validated_candidates": 1
+}

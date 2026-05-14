@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 2,
+  "candidate_checks": 3,
   "cases": [
     {
       "check": {
@@ -54,6 +54,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-253302"
+    },
+    {
+      "check": {
+        "key": "SeNetworkLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Access this computer from the network\" user right must only be assigned to the Administrators and Remote Desktop Users groups.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-32-555"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeNetworkLogonRight": "unexpected-*S-1-5-32-544,*S-1-5-32-555"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeNetworkLogonRight": "*S-1-5-32-544,*S-1-5-32-555"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253480"
     }
   ],
   "production_claim": false,
@@ -61,5 +88,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_11_v2r4_stig_scap_1-3_benchmark.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark",
-  "validated_candidates": 2
+  "validated_candidates": 3
 }

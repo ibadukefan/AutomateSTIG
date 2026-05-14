@@ -2091,14 +2091,31 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
         )
         exact_allowlist_right_keys = {
             'access this computer from the network': 'SeNetworkLogonRight',
+            'add workstations to domain': 'SeMachineAccountPrivilege',
             'allow log on locally': 'SeInteractiveLogonRight',
             'allow log on through remote desktop services': 'SeRemoteInteractiveLogonRight',
+            'back up files and directories': 'SeBackupPrivilege',
             'change the system time': 'SeSystemtimePrivilege',
+            'create a pagefile': 'SeCreatePagefilePrivilege',
+            'create global objects': 'SeCreateGlobalPrivilege',
+            'create symbolic links': 'SeCreateSymbolicLinkPrivilege',
+            'debug programs': 'SeDebugPrivilege',
             'deny access to this computer from the network': 'SeDenyNetworkLogonRight',
             'deny log on as a batch job': 'SeDenyBatchLogonRight',
             'deny log on locally': 'SeDenyInteractiveLogonRight',
             'deny log on through remote desktop services': 'SeDenyRemoteInteractiveLogonRight',
+            'enable computer and user accounts to be trusted for delegation': 'SeEnableDelegationPrivilege',
+            'force shutdown from a remote system': 'SeRemoteShutdownPrivilege',
+            'generate security audits': 'SeAuditPrivilege',
             'impersonate a client after authentication': 'SeImpersonatePrivilege',
+            'increase scheduling priority': 'SeIncreaseBasePriorityPrivilege',
+            'load and unload device drivers': 'SeLoadDriverPrivilege',
+            'manage auditing and security log': 'SeSecurityPrivilege',
+            'modify firmware environment values': 'SeSystemEnvironmentPrivilege',
+            'perform volume maintenance tasks': 'SeManageVolumePrivilege',
+            'profile single process': 'SeProfileSingleProcessPrivilege',
+            'restore files and directories': 'SeRestorePrivilege',
+            'take ownership of files or other objects': 'SeTakeOwnershipPrivilege',
         }
         exact_allowlist_principal_sids = {
             'administrators': '*S-1-5-32-544',
@@ -2110,30 +2127,32 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             'nt service\\autotimesvc is added in v1909 cumulative update': 'NT SERVICE\\autotimesvc',
             'remote desktop users': '*S-1-5-32-555',
             'restricted services\\printspoolerservice': 'RESTRICTED SERVICES\\PrintSpoolerService',
+            'users': '*S-1-5-32-545',
             'service': '*S-1-5-6',
             'local account': '*S-1-5-113',
             'local account and member of administrators group': '*S-1-5-114',
         }
+        def _allowlist_principals(body: str) -> list[str]:
+            bullet_principals = re.findall(
+                r'(?:^|\s)[-*]\s*([A-Za-z][A-Za-z \\]+?)(?=\s+[-*]\s+|\s{2,}(?:For|If|Review|Run|Secedit)\b|\n|$)',
+                body,
+                re.IGNORECASE,
+            )
+            raw_lines = [line.rstrip() for line in body.splitlines() if line.strip()]
+            bullet_lines = [line for line in raw_lines if re.match(r'^\s*[-*]\s+', line)]
+            candidate_lines = bullet_principals or bullet_lines or raw_lines
+            principals = []
+            for line in candidate_lines:
+                principal = line.strip(' -*\t.').lower()
+                principal = re.sub(r'\s+group$', '', principal, flags=re.IGNORECASE)
+                if principal not in exact_allowlist_principal_sids:
+                    break
+                principals.append(principal)
+            return principals
+
         if exact_allowlist_match and exact_allowlist_fix and not re.search(r'\b(application|documented|ISSO|organization-defined|site-defined|except|exception)\b', policy_text, re.IGNORECASE):
             check_display_name = exact_allowlist_match.group(1).strip().strip('"')
             fix_display_name = exact_allowlist_fix.group(1).strip().strip('"')
-
-            def _allowlist_principals(body: str) -> list[str]:
-                bullet_principals = re.findall(
-                    r'(?:^|\s)[-*]\s*([A-Za-z][A-Za-z \\]+?)(?=\s+[-*]\s+|\s{2,}(?:For|If|Review|Run|Secedit)\b|\n|$)',
-                    body,
-                    re.IGNORECASE,
-                )
-                raw_lines = [line.rstrip() for line in body.splitlines() if line.strip()]
-                bullet_lines = [line for line in raw_lines if re.match(r'^\s*[-*]\s+', line)]
-                candidate_lines = bullet_principals or bullet_lines or raw_lines
-                principals = []
-                for line in candidate_lines:
-                    principal = line.strip(' -*\t.').lower()
-                    if principal not in exact_allowlist_principal_sids:
-                        break
-                    principals.append(principal)
-                return principals
 
             check_principals = _allowlist_principals(exact_allowlist_match.group('body'))
             fix_principals = _allowlist_principals(exact_allowlist_fix.group('body'))
@@ -2148,6 +2167,29 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                         'expected': {'type': 'equals', 'value': expected_value},
                         'description': rule.get('title', ''),
                     }
+
+        fix_only_allowlist = re.search(
+            r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:only\s+include|include\s+only)\s+the\s+following\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups):\s*(?P<body>.*?)(?:\n\s*\n|\Z)',
+            fix_text,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if (
+            fix_only_allowlist
+            and not content.strip()
+            and not re.search(r'\b(application|documented|ISSO|organization-defined|site-defined|except|exception|Domain\s+Systems\s+Only|All\s+Systems|Note:)\b', fix_text, re.IGNORECASE)
+        ):
+            display_name = fix_only_allowlist.group(1).strip().strip('"')
+            key = exact_allowlist_right_keys.get(display_name.lower())
+            principals = _allowlist_principals(fix_only_allowlist.group('body'))
+            if key and principals:
+                expected_value = ','.join(exact_allowlist_principal_sids[principal] for principal in principals)
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows',
+                    'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': key},
+                    'expected': {'type': 'equals', 'value': expected_value},
+                    'description': rule.get('title', ''),
+                }
 
     if has_secedit_context:
         required_sids_match = re.search(

@@ -2824,16 +2824,17 @@
       "vuln_id": "V-254417"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254418",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254418r958472_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators, Authenticated Users, and \nEnterprise Domain Controllers groups on domain controllers.",
-      "tracking_issue": "TODO-V-254418",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/8eec09b8bdc9563e642794c94f61f7c28557b3ba75be6e78e71e52e410e04328/U_MS_Windows_Server_2022_V2R4_STIG.zip"
       ],
       "vuln_id": "V-254418"
@@ -3078,16 +3079,17 @@
       "vuln_id": "V-254433"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254434",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254434r958472_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and standalone or nondomain-joined systems.",
-      "tracking_issue": "TODO-V-254434",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/8eec09b8bdc9563e642794c94f61f7c28557b3ba75be6e78e71e52e410e04328/U_MS_Windows_Server_2022_V2R4_STIG.zip"
       ],
       "vuln_id": "V-254434"
