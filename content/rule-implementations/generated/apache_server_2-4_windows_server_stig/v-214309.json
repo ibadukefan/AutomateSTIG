@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*CustomLog\\s+\"Logs/access_log\"\\s+common\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "System logging must be enabled.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214309"
+  },
   "check_content_excerpt": "In a command line, navigate to \"<'INSTALLED PATH'>\\bin\\conf\". \nEdit the \"httpd.conf\" file and search for the directive \"CustomLog\".\n\nIf the \"CustomLog\" directive is missing or does not look like the following, this is a finding:\n\nCustomLog \"Logs/access_log\" common",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the httpd.conf file and enter the name, path, and level for the CustomLog.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214309r961863_rule",
   "severity": "medium",

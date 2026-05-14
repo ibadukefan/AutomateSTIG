@@ -3509,6 +3509,59 @@ If any algorithms other than "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@op
             'description': 'Ubuntu 24.04 LTS must configure the SSH daemon to use Message Authentication Codes (MACs) employing FIPS 140-3 approved cryptographic hashes to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.',
         })
 
+    def test_infers_apache_windows_customlog_directive_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214309',
+            'title': 'System logging must be enabled.',
+            'check_content': '''Edit the "httpd.conf" file and search for the directive "CustomLog".
+
+If the "CustomLog" directive is missing or does not look like the following, this is a finding:
+
+CustomLog "Logs/access_log" common''',
+            'fix_text': 'Edit the httpd.conf file and enter the name, path, and level for the CustomLog.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214309',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': 'powershell -NoProfile -Command "$p=Join-Path $env:ProgramFiles \'Apache24\\conf\\httpd.conf\'; $line=Select-String -Path $p -Pattern \'^\\s*CustomLog\\s+"Logs/access_log"\\s+common\\s*(?:#.*)?$\' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { \'Compliant\' }"'},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'System logging must be enabled.',
+        })
+
+    def test_infers_scap_rhel9_sshd_fix_text_effective_config_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-257984',
+            'title': 'RHEL 9 SSHD must not allow blank passwords.',
+            'check_content': '',
+            'fix_text': '''To configure the system to prevent SSH users from logging on with blank passwords edit the following line in "/etc/ssh/sshd_config" or in a file in "/etc/ssh/sshd_config.d":
+
+PermitEmptyPasswords no
+
+Restart the SSH daemon for the settings to take effect:
+
+$ sudo systemctl restart sshd.service''',
+        }, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate, {
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-257984',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "sshd -T | grep -i '^permitemptypasswords '"},
+            'expected': {'type': 'contains', 'substring': 'permitemptypasswords no'},
+            'description': 'RHEL 9 SSHD must not allow blank passwords.',
+        })
+
+    def test_does_not_infer_scap_sshd_fix_text_when_rule_has_documented_exception(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-244528',
+            'title': 'The RHEL 8 SSH daemon must not allow GSSAPI authentication, except to fulfill documented and validated mission requirements.',
+            'check_content': '',
+            'fix_text': '''Configure the SSH daemon to not allow GSSAPI authentication.
+
+Add the following line in "/etc/ssh/sshd_config", or uncomment the line and set the value to "no":
+
+GSSAPIAuthentication no''',
+        }, 'scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNone(candidate)
+
     def test_infers_linux_find_named_file_found_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-248597',

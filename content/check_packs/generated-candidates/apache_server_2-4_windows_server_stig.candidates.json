@@ -41,6 +41,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*CustomLog\\s+\"Logs/access_log\"\\s+common\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "System logging must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214309"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$m=& httpd -M 2>$null; if (($m -match 'log_config_module')) { 'Compliant' }\"",
         "type": "command_output"
       },

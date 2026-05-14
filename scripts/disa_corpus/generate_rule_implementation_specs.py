@@ -274,6 +274,29 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
         'V-214340': ('TraceEnable', 'Off', 'required'),
         'V-214355': ('SSLCompression', 'off', 'absent_or_value'),
     }
+    if vuln_id == 'V-214309':
+        combined = content + '\n' + fix_text
+        if 'CustomLog' not in combined or 'httpd.conf' not in combined:
+            return None
+        if not re.search(r'If\s+the\s+["“]?CustomLog["”]?\s+directive\s+is\s+missing\s+or\s+does\s+not\s+look\s+like\s+the\s+following,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'^\s*CustomLog\s+["“]Logs/access_log["”]\s+common\s*$', content, re.IGNORECASE | re.MULTILINE):
+            return None
+        pattern = r'^\s*CustomLog\s+"Logs/access_log"\s+common\s*(?:#.*)?$'
+        command = (
+            'powershell -NoProfile -Command '
+            '"$p=Join-Path $env:ProgramFiles \'Apache24\\conf\\httpd.conf\'; '
+            f"$line=Select-String -Path $p -Pattern '{pattern}' -ErrorAction SilentlyContinue | Select-Object -First 1; "
+            "if ($line) { 'Compliant' }\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+
     if vuln_id in {'V-214306', 'V-214341'}:
         numeric_specs = {
             'V-214306': {
@@ -2867,6 +2890,55 @@ def _grep_expected_line_candidate(rule: dict) -> dict | None:
         'platform': 'linux',
         'check': {'type': 'file_content', 'path': raw_path, 'pattern': expected_line, 'is_regex': False},
         'expected': {'type': 'contains'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _scap_rhel_sshd_effective_config_from_fix_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'scap_mil.disa.stig_collection_u_rhel_' not in stig_id.lower():
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    vuln_match = re.search(r'V-\d+', vuln_id)
+    canonical_vuln = vuln_match.group(0) if vuln_match else vuln_id
+    allowed_vulns = {
+        'V-230380', 'V-230288', 'V-230382', 'V-230244', 'V-244525', 'V-230330',
+        'V-230296', 'V-230556', 'V-257983', 'V-257995', 'V-257982', 'V-258006',
+        'V-257985', 'V-257993', 'V-257992', 'V-257984', 'V-258003', 'V-257986',
+        'V-258005', 'V-258009', 'V-257981', 'V-258008', 'V-257996', 'V-258004',
+        'V-258007', 'V-258011',
+    }
+    if canonical_vuln not in allowed_vulns:
+        return None
+    combined = '\n'.join(part for part in (rule.get('title', '') or '', rule.get('check_content', '') or '', rule.get('fix_text', '') or '') if part)
+    if re.search(r'\b(?:documented|validated\s+mission|organization-defined|operational\s+requirement|if\s+.*?required)\b', combined, re.IGNORECASE):
+        return None
+    fix_text = rule.get('fix_text', '') or ''
+    if '/etc/ssh/sshd_config' not in fix_text:
+        return None
+    allowed_keywords = {
+        'Banner', 'ClientAliveCountMax', 'ClientAliveInterval', 'GSSAPIAuthentication',
+        'HostbasedAuthentication', 'IgnoreRhosts', 'IgnoreUserKnownHosts',
+        'KerberosAuthentication', 'LogLevel', 'PermitEmptyPasswords', 'PermitRootLogin',
+        'PermitUserEnvironment', 'PrintLastLog', 'PubkeyAuthentication', 'StrictModes',
+        'UsePAM', 'X11Forwarding', 'X11UseLocalhost',
+    }
+    directive_match = None
+    for match in re.finditer(r'^\s*([A-Za-z][A-Za-z0-9]+)\s+([^\n\r#]+?)\s*$', fix_text, re.MULTILINE):
+        if match.group(1) in allowed_keywords:
+            directive_match = match
+            break
+    if not directive_match:
+        return None
+    keyword = directive_match.group(1)
+    value = ' '.join(directive_match.group(2).strip().split())
+    if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._/@:-]*(?:\s+[A-Za-z0-9][A-Za-z0-9._/@:-]*)*', value):
+        return None
+    expected = f'{keyword.lower()} {value.lower()}'
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': f"sshd -T | grep -i '^{keyword.lower()} '"},
+        'expected': {'type': 'contains', 'substring': expected},
         'description': rule.get('title', ''),
     }
 
@@ -7183,6 +7255,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     linux_shadow_password_lifetime_candidate = _linux_shadow_password_lifetime_candidate(rule, stig_id)
     if linux_shadow_password_lifetime_candidate:
         return linux_shadow_password_lifetime_candidate
+
+    scap_rhel_sshd_fix_candidate = _scap_rhel_sshd_effective_config_from_fix_candidate(rule, stig_id)
+    if scap_rhel_sshd_fix_candidate:
+        return scap_rhel_sshd_fix_candidate
 
     ubuntu_ssh_confirm_banner_candidate = _ubuntu_ssh_confirm_banner_candidate(rule, stig_id)
     if ubuntu_ssh_confirm_banner_candidate:
