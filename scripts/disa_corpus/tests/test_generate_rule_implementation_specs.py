@@ -127,6 +127,40 @@ All Systems:
         }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
         self.assertIsNone(candidate)
 
+    def test_infers_windows_unused_accounts_dual_domain_local_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254256',
+            'title': 'Windows Server 2022 outdated or unused accounts must be removed or disabled.',
+            'check_content': '''Open "Windows PowerShell".
+
+Domain Controllers:
+
+Enter "Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00"
+
+This will return accounts that have not been logged on to for 35 days, along with various attributes such as the Enabled status and LastLogonDate.
+
+Member servers and standalone or nondomain-joined systems:
+
+Copy or enter the lines below to the PowerShell window and enter.
+
+$([ADSI]"WinNT://$env:COMPUTERNAME").Children | where {$_.SchemaClassName -eq 'user'} | Foreach {
+  $user = ([ADSI]$_.Path)
+  $lastLogin = $user.Properties.LastLogin.Value
+  if ($lastLogin -eq $null) { $lastLogin = 'Never' }
+  Write-Host $user.Name $lastLogin $user.AccountDisabled
+}
+
+If any enabled accounts have not been logged on to within the past 35 days, this is a finding.''',
+            'fix_text': 'Regularly review accounts to determine if they are still active. Remove or disable accounts that have not been used in the last 35 days.',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-254256')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00', candidate['check']['command'])
+        self.assertIn('Win32_UserAccount', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_office_registry_exact_reg_sz_with_set_to_phrase(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223291',

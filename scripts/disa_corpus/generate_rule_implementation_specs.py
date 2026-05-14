@@ -4931,6 +4931,46 @@ def _windows_account_password_required_candidate(rule: dict, stig_id: str) -> di
         'description': rule.get('title', ''),
     }
 
+def _windows_unused_accounts_35_days_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-205707', 'V-254256'}:
+        return None
+    if not _windows_platform(stig_id):
+        return None
+    if 'outdated or unused accounts must be removed or disabled' not in (rule.get('title', '') or '').lower():
+        return None
+    required_content = (
+        'Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00',
+        'Member servers and standalone or nondomain-joined systems',
+        'If any enabled accounts have not been logged on to within the past 35 days, this is a finding',
+    )
+    if not all(phrase.lower() in content.lower() for phrase in required_content):
+        return None
+    if not re.search(r'Remove\s+or\s+disable\s+accounts\s+that\s+have\s+not\s+been\s+used\s+in\s+the\s+last\s+35\s+days', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command "'
+        '$cutoff=(Get-Date).AddDays(-35); '
+        'if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { '
+        'Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | '
+        'Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName '
+        '} else { '
+        'Get-CimInstance Win32_UserAccount -Filter \'LocalAccount=True and Disabled=False\' | '
+        'Where-Object { $_.Name -notin @(\'DefaultAccount\',\'Guest\') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | '
+        'Select-Object -ExpandProperty Name '
+        '}"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_account_password_expires_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     vuln_id = rule.get('vuln_id', '')
@@ -7829,6 +7869,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         account_password_required_candidate = _windows_account_password_required_candidate(rule, stig_id)
         if account_password_required_candidate:
             return account_password_required_candidate
+
+        unused_accounts_candidate = _windows_unused_accounts_35_days_candidate(rule, stig_id)
+        if unused_accounts_candidate:
+            return unused_accounts_candidate
 
         account_password_expires_candidate = _windows_account_password_expires_candidate(rule, stig_id)
         if account_password_expires_candidate:

@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 192,
+  "candidate_checks": 193,
   "cases": [
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$cutoff=(Get-Date).AddDays(-35); if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName } else { Get-CimInstance Win32_UserAccount -Filter 'LocalAccount=True and Disabled=False' | Where-Object { $_.Name -notin @('DefaultAccount','Guest') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | Select-Object -ExpandProperty Name }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 outdated or unused accounts must be removed or disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cutoff=(Get-Date).AddDays(-35); if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName } else { Get-CimInstance Win32_UserAccount -Filter 'LocalAccount=True and Disabled=False' | Where-Object { $_.Name -notin @('DefaultAccount','Guest') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | Select-Object -ExpandProperty Name }\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cutoff=(Get-Date).AddDays(-35); if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName } else { Get-CimInstance Win32_UserAccount -Filter 'LocalAccount=True and Disabled=False' | Where-Object { $_.Name -notin @('DefaultAccount','Guest') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | Select-Object -ExpandProperty Name }\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254256"
+    },
     {
       "check": {
         "command": "powershell -NoProfile -Command \"if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Get-ADUser -Filter * -Properties PasswordNotRequired,Enabled | Where-Object { $_.Enabled -eq $true -and $_.PasswordNotRequired -eq $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name } else { Get-CimInstance -Class Win32_UserAccount -Filter 'PasswordRequired=False and LocalAccount=True' | Where-Object { $_.Disabled -ne $true -and $_.Name -notin @('DefaultAccount','Guest') } | Select-Object -ExpandProperty Name }\"",
@@ -5176,5 +5202,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 192
+  "validated_candidates": 193
 }

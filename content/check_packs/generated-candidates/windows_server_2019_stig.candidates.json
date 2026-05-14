@@ -512,6 +512,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$cutoff=(Get-Date).AddDays(-35); if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName } else { Get-CimInstance Win32_UserAccount -Filter 'LocalAccount=True and Disabled=False' | Where-Object { $_.Name -notin @('DefaultAccount','Guest') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | Select-Object -ExpandProperty Name }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 outdated or unused accounts must be removed or disabled.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-205707"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters",
         "type": "registry",
         "value_name": "SupportedEncryptionTypes"
