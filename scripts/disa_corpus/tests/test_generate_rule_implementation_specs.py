@@ -134,6 +134,31 @@ S-1-5-9 (Enterprise Domain Controllers)''',
             'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
         })
 
+    def test_infers_windows_server_local_volumes_ntfs_refs_csvfs_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-277997',
+            'title': 'Windows Server 2025 local volumes must use a format that supports New Technology File System (NTFS) attributes.',
+            'check_content': '''Open "Computer Management".
+
+Select "Disk Management" under "Storage".
+
+For each local volume, if the file system does not indicate "NTFS", this is a finding.
+
+"ReFS" (Resilient File System) is also acceptable and would not be a finding.
+
+"CSVFS" (Cluster Shared Volumes File Systems) is also acceptable and would not be a finding.
+
+This does not apply to system partitions such the Recovery and EFI System Partition.''',
+            'fix_text': 'Format volumes to use NTFS, ReFS, or CSVFS.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-277997',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': "powershell -NoProfile -Command \"Get-Volume | Where-Object { $_.DriveType -eq 'Fixed' -and $_.FileSystemLabel -notmatch '^(?i:Recovery|EFI System Partition)$' -and $_.FileSystem -notin @('NTFS','ReFS','CSVFS') } | Select-Object -ExpandProperty DriveLetter\""},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Windows Server 2025 local volumes must use a format that supports New Technology File System (NTFS) attributes.',
+        })
+
     def test_infers_tomcat_removed_example_webapp_directory_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222958',

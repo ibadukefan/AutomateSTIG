@@ -6801,6 +6801,33 @@ def _windows_services_msc_candidate(rule: dict, stig_id: str) -> dict | None:
     return None
 
 
+def _windows_local_volume_filesystem_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-277997', 'V-254250', 'V-205663', 'xccdf_mil.disa.stig_group_V-254250', 'xccdf_mil.disa.stig_group_V-205663'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (content, fix_text, rule.get('title', '') or '') if part)
+    if not re.search(r'local\s+volumes?\s+must\s+use\s+a\s+format\s+that\s+supports\s+(?:New\s+Technology\s+File\s+System\s+\()?NTFS', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'For\s+each\s+local\s+volume,\s+if\s+the\s+file\s+system\s+does\s+not\s+indicate\s+["“]NTFS["”],\s+this\s+is\s+a\s+finding', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'Format\s+volumes\s+to\s+use\s+NTFS,\s+ReFS,\s+or\s+CSVFS', combined, re.IGNORECASE):
+        return None
+    if not all(re.search(rf'\b{fs}\b', combined, re.IGNORECASE) for fs in ('NTFS', 'ReFS', 'CSVFS')):
+        return None
+    command = "powershell -NoProfile -Command \"Get-Volume | Where-Object { $_.DriveType -eq 'Fixed' -and $_.FileSystemLabel -notmatch '^(?i:Recovery|EFI System Partition)$' -and $_.FileSystem -notin @('NTFS','ReFS','CSVFS') } | Select-Object -ExpandProperty DriveLetter\""
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """Infer a conservative executable check candidate from DISA prose.
 
@@ -6914,6 +6941,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         host_firewall_candidate = _windows_host_firewall_enabled_candidate(rule, stig_id)
         if host_firewall_candidate:
             return host_firewall_candidate
+
+        local_volume_filesystem_candidate = _windows_local_volume_filesystem_candidate(rule, stig_id)
+        if local_volume_filesystem_candidate:
+            return local_volume_filesystem_candidate
 
         hardened_unc_candidate = _windows_hardened_unc_paths_candidate(rule, stig_id)
         if hardened_unc_candidate:
