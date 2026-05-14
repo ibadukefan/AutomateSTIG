@@ -239,6 +239,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'out=$(grep -A1 \"superusers\" /etc/grub2.cfg 2>/dev/null); printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*set[[:space:]]+superusers=\\\"(root|admin|administrator)\\\"[[:space:]]*$\" && exit 1; printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*set[[:space:]]+superusers=\\\"[^\\\"[:space:]]+\\\"[[:space:]]*$\" && printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*export[[:space:]]+superusers[[:space:]]*$\" && echo Compliant'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must require a unique superuser's name upon booting into single-user and maintenance modes.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271451"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/selinux/config",
         "pattern": "SELINUX=enforcing",

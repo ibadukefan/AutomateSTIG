@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 440,
+  "candidate_checks": 441,
   "cases": [
     {
       "check": {
@@ -458,6 +458,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271450"
+    },
+    {
+      "check": {
+        "command": "sh -c 'out=$(grep -A1 \"superusers\" /etc/grub2.cfg 2>/dev/null); printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*set[[:space:]]+superusers=\\\"(root|admin|administrator)\\\"[[:space:]]*$\" && exit 1; printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*set[[:space:]]+superusers=\\\"[^\\\"[:space:]]+\\\"[[:space:]]*$\" && printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*export[[:space:]]+superusers[[:space:]]*$\" && echo Compliant'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must require a unique superuser's name upon booting into single-user and maintenance modes.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'out=$(grep -A1 \"superusers\" /etc/grub2.cfg 2>/dev/null); printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*set[[:space:]]+superusers=\\\"(root|admin|administrator)\\\"[[:space:]]*$\" && exit 1; printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*set[[:space:]]+superusers=\\\"[^\\\"[:space:]]+\\\"[[:space:]]*$\" && printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*export[[:space:]]+superusers[[:space:]]*$\" && echo Compliant'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'out=$(grep -A1 \"superusers\" /etc/grub2.cfg 2>/dev/null); printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*set[[:space:]]+superusers=\\\"(root|admin|administrator)\\\"[[:space:]]*$\" && exit 1; printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*set[[:space:]]+superusers=\\\"[^\\\"[:space:]]+\\\"[[:space:]]*$\" && printf \"%s\\n\" \"$out\" | grep -Eq \"^[[:space:]]*export[[:space:]]+superusers[[:space:]]*$\" && echo Compliant'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271451"
     },
     {
       "check": {
@@ -12174,5 +12200,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 440
+  "validated_candidates": 441
 }

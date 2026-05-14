@@ -139,6 +139,65 @@ If the value for all installed programs is REG_DWORD = 1, this is not a finding.
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
         self.assertEqual(candidate['description'], 'Object Caching Protection must be enabled in all Office programs.')
 
+    def test_infers_office_mime_sniffing_feature_control_enabled_for_all_installed_programs(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223301',
+            'title': 'MIME Sniffing safety feature must be enabled in all Office programs.',
+            'check_content': '''Verify the policy value for Computer Configuration >> Administrative Templates >> Microsoft Office 2016 (Machine) >> Security Settings >> IE Security >> Mime Sniffing Safety Feature is set to "Enabled" and the check box is selected for every installed Office program.
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKLM\\software\\microsoft\\internet explorer\\main\\featurecontrol\\feature_mime_sniffing
+
+If the value for all installed Office Programs is REG_DWORD = 1, this is not a finding.''',
+            'fix_text': 'Set the policy value for Computer Configuration >> Administrative Templates >> Microsoft Office 2016 (Machine) >> Security Settings >> IE Security >> Mime Sniffing Safety Feature to "Enabled" for all installed Office programs.',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-223301')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('FEATURE_MIME_SNIFFING', candidate['check']['command'])
+        self.assertIn('excel.exe', candidate['check']['command'])
+        self.assertIn('winword.exe', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_linux_grub_superusers_nondefault_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257789',
+            'title': 'RHEL 9 must require a unique superusers name upon booting into single-user and maintenance modes.',
+            'check_content': '''Verify the boot loader superuser account has been set with the following command:
+
+$ sudo grep -A1 "superusers" /etc/grub2.cfg
+
+set superusers="<accountname>"
+export superusers
+password_pbkdf2 <accountname> ${GRUB2_PASSWORD}
+
+Verify <accountname> is not a common name such as root, admin, or administrator.
+
+If superusers contains easily guessable usernames, this is a finding.''',
+            'fix_text': '''Configure RHEL 9 to have a unique username for the grub superuser account.
+
+Edit the "/etc/grub.d/01_users" file and add or modify the following lines with a nondefault username for the superuser account:
+
+set superusers="<accountname>"
+export superusers''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-257789',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'sh -c \'out=$(grep -A1 "superusers" /etc/grub2.cfg 2>/dev/null); printf "%s\\n" "$out" | grep -Eq "^[[:space:]]*set[[:space:]]+superusers=\\\"(root|admin|administrator)\\\"[[:space:]]*$" && exit 1; printf "%s\\n" "$out" | grep -Eq "^[[:space:]]*set[[:space:]]+superusers=\\\"[^\\\"[:space:]]+\\\"[[:space:]]*$" && printf "%s\\n" "$out" | grep -Eq "^[[:space:]]*export[[:space:]]+superusers[[:space:]]*$" && echo Compliant\''},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'RHEL 9 must require a unique superusers name upon booting into single-user and maintenance modes.',
+        })
+
+    def test_does_not_infer_linux_grub_superusers_from_title_only(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257789',
+            'title': 'RHEL 9 must require a unique superusers name upon booting into single-user and maintenance modes.',
+        }, 'RHEL_9_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_sles_openssh_package_and_service_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234860',

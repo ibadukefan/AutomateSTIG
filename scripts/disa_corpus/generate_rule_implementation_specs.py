@@ -697,7 +697,12 @@ def _office_all_installed_programs_feature_control_candidate(rule: dict, stig_id
         return None
     if not re.search(r'If\s+the\s+value\s+for\s+(?:all\s+installed\s+Office\s+Programs|all\s+installed\s+programs|each\s+installed\s+Office\s+Program)\s+is\s+(?:set\s+to\s+is\s+)?REG_DWORD\s*=\s*1\s*,?\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
         return None
-    if not re.search(r'select\s+the\s+check\s+boxes?\s+for\s+all\s+installed\s+Office\s+programs', combined, re.IGNORECASE):
+    explicit_all_programs_fix = re.search(
+        r'Set\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s+>>\s+Administrative\s+Templates\s+>>\s+Microsoft\s+Office\s+2016\s+\(Machine\)\s+>>\s+Security\s+Settings\s+>>\s+IE\s+Security\s+>>\s+Mime\s+Sniffing\s+Safety\s+Feature\s+to\s+["“]Enabled["”]\s+for\s+all\s+installed\s+Office\s+programs',
+        fix_text,
+        re.IGNORECASE,
+    )
+    if not re.search(r'select\s+the\s+check\s+boxes?\s+for\s+all\s+installed\s+Office\s+programs', combined, re.IGNORECASE) and not (vuln_id == 'V-223301' and explicit_all_programs_fix):
         return None
     registry_path = _normalize_registry_path(path_match.group(1))
     ps_path = registry_path.replace('HKLM\\', 'HKLM:\\')
@@ -7293,6 +7298,30 @@ def _windows_local_volume_filesystem_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _linux_grub_superusers_nondefault_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    if not re.search(r'grep\s+-A1\s+["“]superusers["”]\s+/etc/grub2\.cfg', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+superusers\s+contains\s+easily\s+guessable\s+usernames,\s*this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'set\s+superusers\s*=', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'root\s*,\s*admin\s*,\s*or\s*administrator', combined, re.IGNORECASE):
+        return None
+    command = 'sh -c \'out=$(grep -A1 "superusers" /etc/grub2.cfg 2>/dev/null); printf "%s\\n" "$out" | grep -Eq "^[[:space:]]*set[[:space:]]+superusers=\\\"(root|admin|administrator)\\\"[[:space:]]*$" && exit 1; printf "%s\\n" "$out" | grep -Eq "^[[:space:]]*set[[:space:]]+superusers=\\\"[^\\\"[:space:]]+\\\"[[:space:]]*$" && printf "%s\\n" "$out" | grep -Eq "^[[:space:]]*export[[:space:]]+superusers[[:space:]]*$" && echo Compliant\''
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """Infer a conservative executable check candidate from DISA prose.
 
@@ -7640,6 +7669,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_auditctl_candidate = _tomcat_auditctl_expected_rule_candidate(rule, stig_id)
     if tomcat_auditctl_candidate:
         return tomcat_auditctl_candidate
+
+    grub_superusers_candidate = _linux_grub_superusers_nondefault_candidate(rule, stig_id)
+    if grub_superusers_candidate:
+        return grub_superusers_candidate
 
     if _linux_platform(stig_id):
         for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_passwd_home_directory_assigned_candidate):
