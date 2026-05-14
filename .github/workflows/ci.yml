@@ -22,6 +22,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-bin: false
       - run: cargo check --workspace --all-targets
 
   test:
@@ -34,6 +36,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-bin: false
       - run: cargo test --workspace
 
   fmt:
@@ -55,6 +59,8 @@ jobs:
         with:
           components: clippy
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-bin: false
       - run: cargo clippy --workspace --all-targets -- -D warnings
 
   frontend-syntax:
@@ -74,6 +80,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-bin: false
       - run: python3 -m py_compile scripts/disa_corpus/*.py scripts/validate-rule-implementations.py
       - run: python3 -m unittest discover -s scripts/disa_corpus/tests -v
       - run: python3 scripts/disa_corpus/index_disa_downloads.py --seed-only --output /tmp/disa-download-index.json
@@ -95,6 +103,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-bin: false
       - name: Install cargo-audit
         uses: taiki-e/install-action@cargo-audit
       # RUSTSEC-2023-0071 is documented in docs/audit-exceptions.md. Keep the
@@ -121,6 +131,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-bin: false
       - run: cargo build --release --bin automatestig
       - name: Generate formal SBOM, dependency inventory, and provenance scaffold
         shell: bash
