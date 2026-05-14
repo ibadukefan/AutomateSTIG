@@ -2226,8 +2226,9 @@ def _linux_shadow_password_lifetime_candidate(rule: dict, stig_id: str) -> dict 
             'description': rule.get('title', ''),
         }
 
-    maximum_over_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$5\s*>\s*(\d+)(?:\s*\|\|\s*\$5\s*==\s*\"\")?\s*\{\s*(?:print\s+\$1\s+(?:\"\s+\"|\":\")\s+\$5|printf\s+\"%s\s+%d\\n\",\s*\$1,\s*\$5)\s*\}'\s+/etc/shadow", content, re.IGNORECASE)
-    maximum_nonpositive_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$5\s*<=\s*0\s*\{\s*(?:print\s+\$1\s+\"\s+\"\s+\$5|printf\s+\"%s\s+%d\\n\",\s*\$1,\s*\$5)\s*\}'\s+/etc/shadow", content, re.IGNORECASE)
+    shadow_print_separator = r'(?:\"\s+\"|\":\"|\"\"\s+\"\")'
+    maximum_over_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$5\s*>\s*(\d+)(?:\s*\|\|\s*\$5\s*==\s*\"\")?\s*\{\s*(?:print\s+\$1\s+" + shadow_print_separator + r"\s+\$5|printf\s+\"%s\s+%d\\n\",\s*\$1,\s*\$5)\s*\}'\s+/etc/shadow", content, re.IGNORECASE)
+    maximum_nonpositive_match = re.search(r"(?:sudo\s+)?awk\s+-F:\s+'\$5\s*<=\s*0\s*\{\s*(?:print\s+\$1\s+" + shadow_print_separator + r"\s+\$5|printf\s+\"%s\s+%d\\n\",\s*\$1,\s*\$5)\s*\}'\s+/etc/shadow", content, re.IGNORECASE)
     maximum_blank_in_over_match = bool(maximum_over_match and re.search(r"\$5\s*==\s*\"\"", maximum_over_match.group(0)))
     if maximum_over_match and (maximum_nonpositive_match or maximum_blank_in_over_match) and re.search(r'\b(?:chage\s+-M|passwd\s+-x)\s+' + re.escape(maximum_over_match.group(1)) + r'\b', fix_text, re.IGNORECASE):
         threshold = int(maximum_over_match.group(1))

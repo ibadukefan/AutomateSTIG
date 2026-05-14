@@ -2194,6 +2194,32 @@ passwd -x 60 [user]''',
             'description': 'RHEL 9 user account passwords must have a 60-day maximum password lifetime restriction.',
         })
 
+    def test_infers_oracle_linux_shadow_maximum_password_lifetime_empty_separator_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271632',
+            'title': 'OL 9 user account passwords must have a 60-day maximum password lifetime restriction.',
+            'check_content': '''Verify that OL 9 user account passwords have a 60-day maximum password lifetime restriction with the following commands:
+
+$ sudo awk -F: '$5 > 60 {print $1 "" "" $5}' /etc/shadow
+
+$ sudo awk -F: '$5 <= 0 {print $1 "" "" $5}' /etc/shadow
+
+If any results are returned that are not associated with a system account, this is a finding.''',
+            'fix_text': '''Configure noncompliant accounts to enforce a 60-day maximum password lifetime restriction.
+
+passwd -x 60 [user]''',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271632',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "awk -F: 'NR==FNR{uid[$1]=$3; shell[$1]=$7; next} ($1 in uid) && uid[$1]>=1000 && shell[$1] !~ /(nologin|false)$/ && ($5 > 60 || $5 <= 0) {print $1 \" \" $5}' /etc/passwd /etc/shadow",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'OL 9 user account passwords must have a 60-day maximum password lifetime restriction.',
+        })
+
     def test_enriches_scap_artifact_rules_by_canonical_vuln_id(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
