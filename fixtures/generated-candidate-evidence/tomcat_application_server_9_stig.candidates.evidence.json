@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 20,
+  "candidate_checks": 22,
   "cases": [
     {
       "check": {
@@ -159,6 +159,32 @@
     },
     {
       "check": {
+        "command": "sh -c \"grep -Eiq 'FIPSMode[[:space:]]*=[[:space:]]*\\\"on\\\"' \\\"$CATALINA_BASE/conf/server.xml\\\" && ! grep -Eiq 'failed to set property\\\\[FIPSMODE\\\\] to \\\\[on\\\\]' \\\"$CATALINA_BASE/logs/catalina.out\\\" && printf Compliant\"",
+        "type": "command_output"
+      },
+      "description": "Tomcat must use FIPS-validated ciphers on secured connectors.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"grep -Eiq 'FIPSMode[[:space:]]*=[[:space:]]*\\\"on\\\"' \\\"$CATALINA_BASE/conf/server.xml\\\" && ! grep -Eiq 'failed to set property\\\\[FIPSMODE\\\\] to \\\\[on\\\\]' \\\"$CATALINA_BASE/logs/catalina.out\\\" && printf Compliant\"": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"grep -Eiq 'FIPSMode[[:space:]]*=[[:space:]]*\\\"on\\\"' \\\"$CATALINA_BASE/conf/server.xml\\\" && ! grep -Eiq 'failed to set property\\\\[FIPSMODE\\\\] to \\\\[on\\\\]' \\\"$CATALINA_BASE/logs/catalina.out\\\" && printf Compliant\"": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222968"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath 'name(//Realm[contains(@className,\"LockOutRealm\")])' $CATALINA_BASE/conf/server.xml 2>/dev/null",
         "type": "command_output"
       },
@@ -234,6 +260,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222982"
+    },
+    {
+      "check": {
+        "command": "getent passwd tomcat | awk -F: '{print $7}'",
+        "type": "command_output"
+      },
+      "description": "Tomcat user account must be set to nologin.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "/usr/sbin/nologin"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "getent passwd tomcat | awk -F: '{print $7}'": "unexpected-/usr/sbin/nologin"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "getent passwd tomcat | awk -F: '{print $7}'": "/usr/sbin/nologin"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222983"
     },
     {
       "check": {
@@ -527,5 +579,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 20
+  "validated_candidates": 22
 }

@@ -6575,6 +6575,51 @@ def _windows_event_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _tomcat_service_account_nologin_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id') != 'V-222983':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    if not re.search(r'cat\s+/etc/passwd\s*\|\s*grep\s+-i\s+tomcat', content, re.IGNORECASE):
+        return None
+    if not re.search(r'command/shell\s+field\s+of\s+the\s+passwd\s+file\s+is\s+not\s+set\s+to\s+["“]/usr/sbin/nologin["”]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'usermod\s+-s\s+/usr/sbin/nologin\s+tomcat', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': "getent passwd tomcat | awk -F: '{print $7}'"},
+        'expected': {'type': 'equals', 'value': '/usr/sbin/nologin'},
+        'description': title,
+    }
+
+
+def _tomcat_fips_mode_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id') != 'V-222968':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    if not all(token in content for token in ('$CATALINA_BASE/conf/server.xml', '$CATALINA_BASE/logs/catalina.out')):
+        return None
+    if not re.search(r'server\.xml\s+does\s+not\s+contain\s+FIPSMode=["“]on["”]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'failed\s+to\s+set\s+property\[FIPSMODE\]\s+to\s+\[on\]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'FIPSMode\s*=\s*["“]on["”]', fix_text, re.IGNORECASE):
+        return None
+    command = 'sh -c "grep -Eiq \'FIPSMode[[:space:]]*=[[:space:]]*\\"on\\"\' \\"$CATALINA_BASE/conf/server.xml\\" && ! grep -Eiq \'failed to set property\\\\[FIPSMODE\\\\] to \\\\[on\\\\]\' \\"$CATALINA_BASE/logs/catalina.out\\" && printf Compliant"'
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _tomcat_web_xml_boolean_param_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower():
         return None
@@ -6947,6 +6992,14 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_systemd_boolean_property_candidate = _tomcat_systemd_boolean_property_candidate(rule, stig_id)
     if tomcat_systemd_boolean_property_candidate:
         return tomcat_systemd_boolean_property_candidate
+
+    tomcat_service_account_candidate = _tomcat_service_account_nologin_candidate(rule, stig_id)
+    if tomcat_service_account_candidate:
+        return tomcat_service_account_candidate
+
+    tomcat_fips_mode_candidate = _tomcat_fips_mode_candidate(rule, stig_id)
+    if tomcat_fips_mode_candidate:
+        return tomcat_fips_mode_candidate
 
     tomcat_web_xml_boolean_param_candidate = _tomcat_web_xml_boolean_param_candidate(rule, stig_id)
     if tomcat_web_xml_boolean_param_candidate:

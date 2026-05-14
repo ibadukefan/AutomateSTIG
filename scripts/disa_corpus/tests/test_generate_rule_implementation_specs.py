@@ -174,6 +174,51 @@ If any connector elements contain xpoweredBy="true", this is a finding.''',
             'description': 'xpoweredBy attribute must be disabled.',
         })
 
+    def test_infers_tomcat_service_account_nologin_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222983',
+            'title': 'Tomcat user account must be set to nologin.',
+            'check_content': '''From the command line of the Tomcat server type the following command:
+
+sudo cat /etc/passwd|grep -i tomcat
+
+If the command/shell field of the passwd file is not set to "/usr/sbin/nologin", this is a finding.''',
+            'fix_text': '''From the Tomcat command line type the following command:
+
+sudo usermod -s /usr/sbin/nologin tomcat''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222983',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "getent passwd tomcat | awk -F: '{print $7}'"},
+            'expected': {'type': 'equals', 'value': '/usr/sbin/nologin'},
+            'description': 'Tomcat user account must be set to nologin.',
+        })
+
+    def test_infers_tomcat_fips_mode_enabled_without_startup_failure_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222968',
+            'title': 'Tomcat must use FIPS-validated ciphers on secured connectors.',
+            'check_content': '''From the Tomcat server console, run the following two commands to verify Tomcat server is configured to use FIPS:
+
+sudo grep -i fipsmode $CATALINA_BASE/conf/server.xml
+
+sudo grep -i fipsmode $CATALINA_BASE/logs/catalina.out
+
+If server.xml does not contain FIPSMode="on", or if catalina.out contains the error "failed to set property[FIPSMODE] to [on]", this is a finding.''',
+            'fix_text': '''From the Tomcat server as a privileged user:
+sudo nano $CATALINA_BASE/conf/server.xml.
+In the <Listener/> element, locate the AprLifecycleListener. Either add or modify the FIPSMode setting and set it to on.
+FIPSMode="on"''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222968',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'sh -c "grep -Eiq \'FIPSMode[[:space:]]*=[[:space:]]*\\"on\\"\' \\"$CATALINA_BASE/conf/server.xml\\" && ! grep -Eiq \'failed to set property\\\\[FIPSMODE\\\\] to \\\\[on\\\\]\' \\"$CATALINA_BASE/logs/catalina.out\\" && printf Compliant"'},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Tomcat must use FIPS-validated ciphers on secured connectors.',
+        })
+
     def test_infers_ubuntu_ssh_confirm_banner_exact_script_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270694',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "getent passwd tomcat | awk -F: '{print $7}'",
+      "type": "command_output"
+    },
+    "description": "Tomcat user account must be set to nologin.",
+    "expected": {
+      "type": "equals",
+      "value": "/usr/sbin/nologin"
+    },
+    "platform": "linux",
+    "vuln_id": "V-222983"
+  },
   "check_content_excerpt": "From the command line of the Tomcat server type the following command:\n\nsudo cat /etc/passwd|grep -i tomcat\n\nIf the command/shell field of the passwd file is not set to \"/usr/sbin/nologin\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "/usr/sbin/nologin"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat command line type the following command:\n\nsudo usermod -s /usr/sbin/nologin tomcat",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222983r961353_rule",
   "severity": "medium",
