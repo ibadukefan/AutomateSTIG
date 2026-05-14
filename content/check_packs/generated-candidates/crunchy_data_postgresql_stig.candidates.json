@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "psql -c \"SHOW log_file_mode\"",
+        "type": "command_output"
+      },
+      "description": "The audit information produced by PostgreSQL must be protected from unauthorized modification.",
+      "expected": {
+        "substring": "0600",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233514"
+    },
+    {
+      "check": {
         "command": "psql -tAc \"SELECT current_setting('client_min_messages');\"",
         "type": "command_output"
       },
@@ -311,6 +324,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-233608"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW log_destination\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must off-load audit data to a separate log management facility; this must be continuous and in near real time for systems with a network connection to the storage facility and weekly or more often for stand-alone systems.",
+      "expected": {
+        "substring": "syslog",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233610"
     },
     {
       "check": {

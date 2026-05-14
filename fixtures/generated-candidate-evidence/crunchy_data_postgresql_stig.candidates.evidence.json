@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 28,
+  "candidate_checks": 30,
   "cases": [
+    {
+      "check": {
+        "command": "psql -c \"SHOW log_file_mode\"",
+        "type": "command_output"
+      },
+      "description": "The audit information produced by PostgreSQL must be protected from unauthorized modification.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "0600",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW log_file_mode\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW log_file_mode\"": "before\n0600\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233514"
+    },
     {
       "check": {
         "command": "psql -tAc \"SELECT current_setting('client_min_messages');\"",
@@ -627,6 +653,32 @@
     },
     {
       "check": {
+        "command": "psql -c \"SHOW log_destination\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must off-load audit data to a separate log management facility; this must be continuous and in near real time for systems with a network connection to the storage facility and weekly or more often for stand-alone systems.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "syslog",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW log_destination\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW log_destination\"": "before\nsyslog\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233610"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW ssl\"",
         "type": "command_output"
       },
@@ -735,5 +787,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 28
+  "validated_candidates": 30
 }

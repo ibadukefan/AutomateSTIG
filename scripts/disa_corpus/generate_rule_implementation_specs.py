@@ -5486,6 +5486,12 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'finding': r'If\s+(?:the\s+permissions\s+are\s+not\s+0?600|log_file_mode\s+is\s+not\s+0?600),\s+this\s+is\s+a\s+finding',
             'fix': r'^\s*log_file_mode\s*=\s*0?600\s*$',
         },
+        'V-233514': {
+            'setting': 'log_file_mode',
+            'expected': '0600',
+            'finding': r'If\s+(?:the\s+permissions\s+are\s+not\s+0?600|log_file_mode\s+is\s+not\s+0?600),\s+this\s+is\s+a\s+finding',
+            'fix': r'^\s*log_file_mode\s*=\s*0?600\s*$',
+        },
         'V-233549': {
             'setting': 'log_file_mode',
             'expected': '0600',
@@ -5504,6 +5510,12 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'finding': r'If\s+password_encryption\s+is\s+not\s+["“]scram-sha-256["”],\s+this\s+is\s+a\s+finding',
             'fix': r'^\s*password_encryption\s*=\s*[\'"“]?scram-sha-256[\'"”]?\s*$',
         },
+        'V-233610': {
+            'setting': 'log_destination',
+            'expected': 'syslog',
+            'finding': r'If\s+log_destination\s+is\s+not\s+[\'"“]?syslog[\'"”]?,\s+this\s+is\s+a\s+finding',
+            'fix': r'^\s*log_destination\s*=\s*[\'"“]?syslog[\'"”]?\s*$',
+        },
         'V-233618': {
             'setting': 'log_file_mode',
             'expected': '0600',
@@ -5516,7 +5528,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         'postgresql' in stig_id.lower()
         and postgresql_show_literal
         and re.search(
-            rf'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+{re.escape(postgresql_show_literal["setting"])}["”]\s*$',
+            rf'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+{re.escape(postgresql_show_literal["setting"])}\s*;?["”]\s*$',
             content,
             re.MULTILINE | re.IGNORECASE,
         )

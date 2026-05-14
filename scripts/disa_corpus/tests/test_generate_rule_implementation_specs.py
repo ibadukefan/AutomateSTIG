@@ -3861,6 +3861,52 @@ log_file_mode = 0600''',
             'description': 'The audit information produced by PostgreSQL must be protected from unauthorized deletion.',
         })
 
+    def test_infers_postgresql_log_file_mode_semicolon_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233514',
+            'title': 'The audit information produced by PostgreSQL must be protected from unauthorized modification.',
+            'check_content': '''As the database administrator, run the following SQL:
+
+$ sudo su - postgres
+$ psql -c "show log_file_mode;"
+
+If the permissions are not 0600, this is a finding.''',
+            'fix_text': '''Configure PostgreSQL to protect audit logs from unauthorized modification:
+
+log_file_mode = 0600''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-233514',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -c "SHOW log_file_mode"'},
+            'expected': {'type': 'contains', 'substring': '0600'},
+            'description': 'The audit information produced by PostgreSQL must be protected from unauthorized modification.',
+        })
+
+    def test_infers_postgresql_log_destination_syslog_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233610',
+            'title': 'PostgreSQL must off-load audit data to a separate log management facility.',
+            'check_content': '''As the database administrator, run the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW log_destination"
+
+If log_destination is not syslog, this is a finding.''',
+            'fix_text': '''Edit the postgresql.conf file and set:
+
+log_destination = 'syslog'
+
+The syslog_facility value must be set as directed by the organization.''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-233610',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -c "SHOW log_destination"'},
+            'expected': {'type': 'contains', 'substring': 'syslog'},
+            'description': 'PostgreSQL must off-load audit data to a separate log management facility.',
+        })
+
     def test_infers_postgresql_log_connections_on_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233558',
