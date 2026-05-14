@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.web/sessionState /text:cookieless",
+      "type": "command_output"
+    },
+    "description": "The IIS 10.0 web server must use cookies to track session state.",
+    "expected": {
+      "type": "equals",
+      "value": "UseCookies"
+    },
+    "platform": "windows",
+    "vuln_id": "V-218804"
+  },
   "check_content_excerpt": "Note: If ASP.NET is not installed, this is Not Applicable.\n\nOpen the IIS 10.0 Manager.\nClick the IIS 10.0 web server name.\nUnder \"ASP.Net\", double-click the \"Session State\" icon.\nUnder \"Cookie Settings\", verify the \"Mode\" has \"Use Cookies\" selected from the drop-down list.\nIf the \"Cookie Settings\" \"Mode\" is not set to \"Use Cookies\", this is a finding.\n\nAlternative method:\nClick the site name.\nSelect \"Configuration Editor\" under the \"Management\" section.\nFrom the \"Section:\" drop-down list at the top of the configuration editor, locate \"system.web/sessionState\".\nVerify the \"cookieless\" is set to \"UseCookies\".\nIf the \"cookieless\" is not set to \"UseCookies\", this is a finding.\n\nNote: If IIS 10.0 server/site is used only for system-to-system maintenance, does not allow users to connect to interface, and is restricted to specific system IPs, this is Not Applicable.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "UseCookies"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nUnder \"ASP.Net\", double-click the \"Session State\" icon.\n\nUnder \"Cookie Settings\", select \"Use Cookies\u201d from the \"Mode\" drop-down list.\n\nClick \"Apply\" in the \"Actions\" pane.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-218804r1043180_rule",
   "severity": "medium",

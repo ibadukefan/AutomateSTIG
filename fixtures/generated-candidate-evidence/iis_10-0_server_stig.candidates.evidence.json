@@ -1,0 +1,37 @@
+{
+  "candidate_checks": 1,
+  "cases": [
+    {
+      "check": {
+        "command": "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.web/sessionState /text:cookieless",
+        "type": "command_output"
+      },
+      "description": "The IIS 10.0 web server must use cookies to track session state.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "UseCookies"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.web/sessionState /text:cookieless": "unexpected-UseCookies"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.web/sessionState /text:cookieless": "UseCookies"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-218804"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/iis_10-0_server_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "validated_candidates": 1
+}

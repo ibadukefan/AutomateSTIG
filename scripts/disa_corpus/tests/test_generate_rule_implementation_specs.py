@@ -116,7 +116,6 @@ Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
 Review the text file.
 
 If any SIDs other than the following are granted the "SeNetworkLogonRight" user right, this is a finding.
-
 S-1-5-32-544 (Administrators)
 S-1-5-11 (Authenticated Users)
 S-1-5-9 (Enterprise Domain Controllers)''',
@@ -133,6 +132,36 @@ S-1-5-9 (Enterprise Domain Controllers)''',
             'expected': {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-11,*S-1-5-9'},
             'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
         })
+
+    def test_infers_windows_user_right_allowlist_ignores_server_core_followup_instructions(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254418',
+            'title': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
+            'check_content': '''This applies to domain controllers. It is NA for other systems.
+Verify the effective setting in Local Group Policy Editor.
+Run "gpedit.msc".
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups other than the following are granted the "Access this computer from the network" right, this is a finding.
+- Administrators
+- Authenticated Users
+- Enterprise Domain Controllers
+For server core installations, run the following command:
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
+Review the text file.''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Access this computer from the network to include only the following accounts or groups:
+- Administrators
+- Authenticated Users
+- Enterprise Domain Controllers''',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254418',
+            'platform': 'windows',
+            'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeNetworkLogonRight'},
+            'expected': {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-11,*S-1-5-9'},
+            'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to fixed groups on domain controllers.',
+        })
+
 
     def test_infers_windows_server_local_volumes_ntfs_refs_csvfs_candidate(self):
         candidate = mod.infer_candidate_check({
@@ -185,6 +214,67 @@ If no results are returned, this is a finding.''',
             'check': {'type': 'command_output', 'command': "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"nosuid\") ok=1; if (!ok) print }' /etc/fstab"},
             'expected': {'type': 'equals', 'value': ''},
             'description': 'The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are imported via Network File System (NFS).',
+        })
+
+    def test_infers_rhel9_firewalld_runtime_and_permanent_drop_target_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257937',
+            'title': 'A RHEL 9 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.',
+            'check_content': '''Verify the RHEL 9 "firewalld" is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands:
+
+$ sudo firewall-cmd --state
+running
+
+$ sudo firewall-cmd --get-active-zones
+public
+  interfaces: ens33
+
+$ sudo firewall-cmd --info-zone=public | grep target
+target: DROP
+
+$ sudo firewall-cmd --permanent --info-zone=public | grep target
+target: DROP
+
+If no zones are active on the RHEL 9 interfaces or if runtime and permanent targets are set to a different option other than "DROP", this is a finding.''',
+            'fix_text': 'Configure the "firewalld" daemon to employ a deny-all, allow-by-exception policy.',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-257937',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'firewall-cmd --info-zone=public | grep target && firewall-cmd --permanent --info-zone=public | grep target'},
+            'expected': {'type': 'contains', 'substring': 'target: DROP\ntarget: DROP'},
+            'description': 'A RHEL 9 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.',
+        })
+
+    def test_infers_iis_session_state_use_cookies_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218804',
+            'title': 'The IIS 10.0 web server must use cookies to track session state.',
+            'check_content': '''Note: If ASP.NET is not installed, this is Not Applicable.
+Open the IIS 10.0 Manager.
+Click the IIS 10.0 web server name.
+Under the "ASP.Net", double-click the "Session State" icon.
+Under "Cookie Settings", verify the "Mode" has "Use Cookies" selected from the drop-down list.
+If the "Cookie Settings" "Mode" is not set to "Use Cookies", this is a finding.
+Alternative method:
+Click the site name.
+Select "Configuration Editor" under the "Management" section.
+From the "Section:" drop-down list at the top of the configuration editor, locate "system.web/sessionState".
+Verify the "cookieless" is set to "UseCookies".
+If the "cookieless" is not set to "UseCookies", this is a finding.''',
+            'fix_text': '''Open the IIS 10.0 Manager.
+Click the IIS 10.0 web server name.
+Under the "ASP.Net", double-click the "Session State" icon.
+Under "Cookie Settings", change the "Mode" to "Use Cookies".
+Alternative method:
+Locate "system.web/sessionState" and set "cookieless" to "UseCookies".''',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-218804',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': '%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.web/sessionState /text:cookieless'},
+            'expected': {'type': 'equals', 'value': 'UseCookies'},
+            'description': 'The IIS 10.0 web server must use cookies to track session state.',
         })
 
     def test_infers_tomcat_removed_example_webapp_directory_candidate(self):

@@ -1959,11 +1959,24 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
         if exact_allowlist_match and exact_allowlist_fix and not re.search(r'\b(application|documented|ISSO|organization-defined|site-defined|except|exception)\b', policy_text, re.IGNORECASE):
             check_display_name = exact_allowlist_match.group(1).strip().strip('"')
             fix_display_name = exact_allowlist_fix.group(1).strip().strip('"')
-            check_principals = [line.strip(' -*\t.').lower() for line in exact_allowlist_match.group('body').splitlines() if line.strip()]
-            fix_principals = [line.strip(' -*\t.').lower() for line in exact_allowlist_fix.group('body').splitlines() if line.strip()]
+
+            def _allowlist_principals(body: str) -> list[str]:
+                raw_lines = [line.rstrip() for line in body.splitlines() if line.strip()]
+                bullet_lines = [line for line in raw_lines if re.match(r'^\s*[-*]\s+', line)]
+                candidate_lines = bullet_lines or raw_lines
+                principals = []
+                for line in candidate_lines:
+                    principal = line.strip(' -*\t.').lower()
+                    if principal not in exact_allowlist_principal_sids:
+                        break
+                    principals.append(principal)
+                return principals
+
+            check_principals = _allowlist_principals(exact_allowlist_match.group('body'))
+            fix_principals = _allowlist_principals(exact_allowlist_fix.group('body'))
             if check_display_name.lower() == fix_display_name.lower() and check_principals == fix_principals:
                 key = exact_allowlist_right_keys.get(check_display_name.lower())
-                if key and check_principals and all(principal in exact_allowlist_principal_sids for principal in check_principals):
+                if key and check_principals:
                     expected_value = ','.join(exact_allowlist_principal_sids[principal] for principal in check_principals)
                     return {
                         'vuln_id': rule.get('vuln_id', ''),
@@ -2705,7 +2718,7 @@ def _dconf_media_automount_literal_candidate(rule: dict) -> dict | None:
 def _firewalld_target_drop_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
-    if not re.search(r'firewall\s+employs?\s+a\s+deny-all,\s+allow-by-exception\s+policy', title, re.IGNORECASE):
+    if not re.search(r'firewall\s+(?:must\s+)?employs?\s+a\s+deny-all,\s+allow-by-exception\s+policy', title, re.IGNORECASE):
         return None
     if not re.search(r'runtime\s+and\s+permanent\s+targets?\s+are\s+set\s+to\s+a\s+different\s+option\s+other\s+than\s+["“]DROP["”]', content, re.IGNORECASE):
         return None
@@ -6933,6 +6946,31 @@ def _windows_services_msc_candidate(rule: dict, stig_id: str) -> dict | None:
     return None
 
 
+def _iis_session_state_use_cookies_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-218804' or stig_id != 'IIS_10-0_Server_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    policy_text = '\n'.join(part for part in (content, fix_text) if part)
+    if not re.search(r'system\.web/sessionState', policy_text, re.IGNORECASE):
+        return None
+    if not re.search(r'\bcookieless\b[^.\n]*(?:is\s+set\s+to|to)\s+["“]?UseCookies["”]?', policy_text, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+["“]?cookieless["”]?\s+is\s+not\s+set\s+to\s+["“]?UseCookies["”]?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': r'%windir%\system32\inetsrv\appcmd.exe list config /section:system.web/sessionState /text:cookieless',
+        },
+        'expected': {'type': 'equals', 'value': 'UseCookies'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_local_volume_filesystem_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -7064,6 +7102,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'equals', 'value': expected_value},
                 'description': rule.get('title', ''),
             }
+
+    iis_session_state_candidate = _iis_session_state_use_cookies_candidate(rule, stig_id)
+    if iis_session_state_candidate:
+        return iis_session_state_candidate
 
     if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'office', 'adobe', 'acrobat')):
         firmware_state_candidate = _windows_firmware_state_candidate(rule, stig_id)

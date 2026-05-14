@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.web/sessionState /text:cookieless",
+        "type": "command_output"
+      },
+      "description": "The IIS 10.0 web server must use cookies to track session state.",
+      "expected": {
+        "type": "equals",
+        "value": "UseCookies"
+      },
+      "platform": "windows",
+      "vuln_id": "V-218804"
+    }
+  ],
+  "platform": "windows",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "version": "candidate-planned"
+}
