@@ -2270,6 +2270,28 @@ def _linux_removable_media_mount_option_candidate(rule: dict, stig_id: str) -> d
 
 
 
+def _linux_nfs_imported_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
+    if rule.get('vuln_id', '') != 'V-204482' or not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    if not re.search(r'file\s+systems\s+that\s+are\s+being\s+NFS\s+imported\s+are\s+configured\s+with\s+the\s+["“]nosuid["”]\s+option', content, re.IGNORECASE):
+        return None
+    if not re.search(r'file\s+system\s+found\s+in\s+["“]/etc/fstab["”]\s+refers\s+to\s+NFS\s+and\s+it\s+does\s+not\s+have\s+the\s+["“]nosuid["”]\s+option\s+set,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'/etc/fstab.*use\s+the\s+["“]nosuid["”]\s+option\s+on\s+file\s+systems\s+that\s+are\s+being\s+imported\s+via\s+NFS', fix_text, re.IGNORECASE):
+        return None
+    command = "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"nosuid\") ok=1; if (!ok) print }' /etc/fstab"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': title,
+    }
+
+
 def _linux_fixed_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -7187,7 +7209,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_passwd_home_directory_assigned_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_passwd_home_directory_assigned_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

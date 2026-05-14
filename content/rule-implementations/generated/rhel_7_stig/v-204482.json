@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"nosuid\") ok=1; if (!ok) print }' /etc/fstab",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are being imported via Network File System (NFS).",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204482"
+  },
   "check_content_excerpt": "Verify file systems that are being NFS imported are configured with the \"nosuid\" option.\n\nFind the file system(s) that contain the directories being exported with the following command:\n\n# more /etc/fstab | grep nfs\n\nUUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid 0 0\n\nIf a file system found in \"/etc/fstab\" refers to NFS and it does not have the \"nosuid\" option set, this is a finding.\n\nVerify the NFS is mounted with the \"nosuid\" option:\n\n# mount | grep nfs | grep nosuid\nIf no results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the \"/etc/fstab\" to use the \"nosuid\" option on file systems that are being imported via NFS.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204482r991589_rule",
   "severity": "medium",

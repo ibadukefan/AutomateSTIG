@@ -159,6 +159,34 @@ This does not apply to system partitions such the Recovery and EFI System Partit
             'description': 'Windows Server 2025 local volumes must use a format that supports New Technology File System (NTFS) attributes.',
         })
 
+    def test_infers_linux_nfs_imported_nosuid_mount_option_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204482',
+            'title': 'The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are imported via Network File System (NFS).',
+            'check_content': '''Verify file systems that are being NFS imported are configured with the "nosuid" option.
+
+Find the file system(s) that contain the directories being exported with the following command:
+
+# more /etc/fstab | grep nfs
+
+UUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid 0 0
+
+If a file system found in "/etc/fstab" refers to NFS and it does not have the "nosuid" option set, this is a finding.
+
+Verify the NFS is mounted with the "nosuid" option:
+
+# mount | grep nfs | grep nosuid
+If no results are returned, this is a finding.''',
+            'fix_text': 'Configure the "/etc/fstab" to use the "nosuid" option on file systems that are being imported via NFS.',
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-204482',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"nosuid\") ok=1; if (!ok) print }' /etc/fstab"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are imported via Network File System (NFS).',
+        })
+
     def test_infers_tomcat_removed_example_webapp_directory_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222958',

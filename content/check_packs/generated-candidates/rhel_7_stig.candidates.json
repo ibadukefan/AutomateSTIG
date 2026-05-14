@@ -478,6 +478,19 @@
     },
     {
       "check": {
+        "command": "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"nosuid\") ok=1; if (!ok) print }' /etc/fstab",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are being imported via Network File System (NFS).",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204482"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/dev/shm",
         "pattern": "tmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0",
