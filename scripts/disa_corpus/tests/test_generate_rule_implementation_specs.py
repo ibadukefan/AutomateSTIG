@@ -117,6 +117,28 @@ If the value defaultencryption12 is set to REG_SZ = "Microsoft Enhanced RSA and 
             'description': 'Office applications must be configured to specify encryption type in password-protected Office 97-2003 files.',
         })
 
+    def test_infers_office_all_installed_programs_feature_control_dword_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223303',
+            'title': 'Object Caching Protection must be enabled in all Office programs.',
+            'check_content': '''Verify the policy value for Computer Configuration >> Administrative Templates >> Microsoft Office 2016 (Machine) >> Security Settings >> IE Security >> Object Caching Protection is set to "Enabled" and the check box is selected for every installed Office program.
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKLM\\software\\microsoft\\internet explorer\\main\\featurecontrol\\feature_object_caching
+
+If the value for all installed programs is REG_DWORD = 1, this is not a finding.''',
+            'fix_text': 'Set the policy value for Computer Configuration >> Administrative Templates >> Microsoft Office 2016 (Machine) >> Security Settings >> IE Security >> Object Caching Protection to "Enabled" and select the check boxes for all installed Office programs.',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-223303')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('FEATURE_OBJECT_CACHING', candidate['check']['command'])
+        self.assertIn('excel.exe', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertEqual(candidate['description'], 'Object Caching Protection must be enabled in all Office programs.')
+
     def test_infers_windows_user_right_allowlist_before_server_core_instructions(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254434',

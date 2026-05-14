@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 120,
+  "candidate_checks": 132,
   "cases": [
     {
       "check": {
@@ -378,6 +378,318 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223294"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_ADDON_MANAGEMENT'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Add-on Management must be enabled for all Office 365 ProPlus programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_ADDON_MANAGEMENT'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_ADDON_MANAGEMENT'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223296"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_MIME_HANDLING'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Consistent MIME handling must be enabled for all Office 365 ProPlus programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_MIME_HANDLING'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_MIME_HANDLING'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223297"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "User name and password must be disabled in all Office programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223298"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_SECURITYBAND'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Information Bar must be enabled in all Office programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_SECURITYBAND'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_SECURITYBAND'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223299"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_LOCALMACHINE_LOCKDOWN'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Local Machine Zone Lockdown Security must be enabled in all Office programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_LOCALMACHINE_LOCKDOWN'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_LOCALMACHINE_LOCKDOWN'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223300"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_VALIDATE_NAVIGATE_URL'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Navigate URL must be enabled in all Office programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_VALIDATE_NAVIGATE_URL'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_VALIDATE_NAVIGATE_URL'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223302"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_OBJECT_CACHING'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Object Caching Protection must be enabled in all Office programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_OBJECT_CACHING'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_OBJECT_CACHING'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223303"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_ZONE_ELEVATION'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Protection from zone elevation must be enabled in all Office programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_ZONE_ELEVATION'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_ZONE_ELEVATION'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223304"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_RESTRICT_ACTIVEXINSTALL'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "ActiveX installation restriction must be enabled in all Office programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_RESTRICT_ACTIVEXINSTALL'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_RESTRICT_ACTIVEXINSTALL'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223305"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_RESTRICT_FILEDOWNLOAD'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "File Download Restriction must be enabled in all Office programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_RESTRICT_FILEDOWNLOAD'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_RESTRICT_FILEDOWNLOAD'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223306"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_UNC_SAVEDFILECHECK'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Save from URL feature must be enabled in all Office programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_UNC_SAVEDFILECHECK'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_UNC_SAVEDFILECHECK'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223307"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_WINDOW_RESTRICTIONS'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Scripted Windows Security restrictions must be enabled in all Office programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_WINDOW_RESTRICTIONS'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_WINDOW_RESTRICTIONS'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223308"
     },
     {
       "check": {
@@ -3245,5 +3557,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 120
+  "validated_candidates": 132
 }

@@ -674,6 +674,60 @@ def _windows_run_as_different_user_context_menu_candidate(rule: dict, stig_id: s
     }
 
 
+def _office_all_installed_programs_feature_control_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if 'office' not in stig_id.lower():
+        return None
+    supported_vulns = {
+        'V-223296', 'V-223297', 'V-223298', 'V-223299', 'V-223300', 'V-223301',
+        'V-223302', 'V-223303', 'V-223304', 'V-223305', 'V-223306', 'V-223307',
+        'V-223308',
+    }
+    if vuln_id not in supported_vulns:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    path_match = re.search(
+        r'Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*((?:HKLM|HKEY_LOCAL_MACHINE)\\software\\microsoft\\internet\s+explorer\\main\\featurecontrol\\feature_[a-z0-9_]+)',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not path_match:
+        return None
+    if not re.search(r'If\s+the\s+value\s+for\s+(?:all\s+installed\s+Office\s+Programs|all\s+installed\s+programs|each\s+installed\s+Office\s+Program)\s+is\s+(?:set\s+to\s+is\s+)?REG_DWORD\s*=\s*1\s*,?\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'select\s+the\s+check\s+boxes?\s+for\s+all\s+installed\s+Office\s+programs', combined, re.IGNORECASE):
+        return None
+    registry_path = _normalize_registry_path(path_match.group(1))
+    ps_path = registry_path.replace('HKLM\\', 'HKLM:\\')
+    office_apps = (
+        'excel.exe', 'groove.exe', 'lync.exe', 'msaccess.exe', 'mspub.exe',
+        'onenote.exe', 'outlook.exe', 'powerpnt.exe', 'visio.exe', 'winproj.exe',
+        'winword.exe',
+    )
+    app_list = ','.join(f"'{app}'" for app in office_apps)
+    command = (
+        'powershell -NoProfile -Command '
+        f'"$apps=@({app_list}); '
+        '$roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; '
+        "$installed=$apps | Where-Object { $app=$_; $roots | Where-Object { "
+        "Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or "
+        "Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; "
+        f"$key='{ps_path.upper()}'; "
+        "$bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; "
+        "$props.PSObject.Properties[$_].Value -ne 1 }; "
+        "if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -7349,6 +7403,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         office_registry_key_absent_candidate = _office_disabled_policy_registry_key_absent_candidate(rule, stig_id)
         if office_registry_key_absent_candidate:
             return office_registry_key_absent_candidate
+
+        office_all_installed_programs_candidate = _office_all_installed_programs_feature_control_candidate(rule, stig_id)
+        if office_all_installed_programs_candidate:
+            return office_all_installed_programs_candidate
 
         policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
         if policy_candidate:

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$apps=@('excel.exe','groove.exe','lync.exe','msaccess.exe','mspub.exe','onenote.exe','outlook.exe','powerpnt.exe','visio.exe','winproj.exe','winword.exe'); $roots=@($env:ProgramFiles,${env:ProgramFiles(x86)}) | Where-Object { $_ }; $installed=$apps | Where-Object { $app=$_; $roots | Where-Object { Test-Path (Join-Path $_ ('Microsoft Office\\root\\Office16\\' + $app)) -or Test-Path (Join-Path $_ ('Microsoft Office\\Office16\\' + $app)) } }; $key='HKLM:\\SOFTWARE\\MICROSOFT\\INTERNET EXPLORER\\MAIN\\FEATURECONTROL\\FEATURE_OBJECT_CACHING'; $bad=$installed | Where-Object { $props=Get-ItemProperty -Path $key -Name $_ -ErrorAction SilentlyContinue; $props.PSObject.Properties[$_].Value -ne 1 }; if (($installed | Measure-Object).Count -gt 0 -and -not $bad) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Object Caching Protection must be enabled in all Office programs.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-223303"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Microsoft Office 2016 (Machine) >> Security Settings >> IE Security >> Object Caching Protection is set to \"Enabled\" and the check box is selected for every installed Office program.\n\nUse the Windows Registry Editor to navigate to the following key:\n\nHKLM\\software\\microsoft\\internet explorer\\main\\featurecontrol\\feature_object_caching\n\nIf the value for all installed programs is REG_DWORD = 1, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Microsoft Office 2016 (Machine) >> Security Settings >> IE Security >> Object Caching Protection to \"Enabled\" and select the check boxes for all installed Office programs.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-223303r961050_rule",
   "severity": "medium",
