@@ -379,6 +379,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'rpm -q openssh >/dev/null 2>&1 && systemctl is-active --quiet sshd.service && echo Compliant'",
+        "type": "command_output"
+      },
+      "description": "All networked SUSE operating systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234860"
+    },
+    {
+      "check": {
         "key": "kernel.kptr_restrict",
         "type": "sysctl"
       },

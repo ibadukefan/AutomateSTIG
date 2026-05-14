@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'rpm -q openssh >/dev/null 2>&1 && systemctl is-active --quiet sshd.service && echo Compliant'",
+      "type": "command_output"
+    },
+    "description": "All networked SUSE operating systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234860"
+  },
   "check_content_excerpt": "Note: If the system is not networked, this requirement is Not Applicable.\n\nVerify that the SUSE operating system implements SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.\n\nCheck that the OpenSSH package is installed on the SUSE operating system with the following command:\n\n> zypper info openssh | grep -i installed\n\nIf the OpenSSH package is not installed, this is a finding.\n\nCheck that the OpenSSH service active on the SUSE operating system with the following command:\n\n> systemctl status sshd.service | grep -i \"active:\"\n\nActive: active (running) since Thu 2017-01-12 15:03:38 UTC; 1 months 4 days ago\n\nIf OpenSSH service is not active, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Note: If the system is not networked, this requirement is Not Applicable.\n\nConfigure the SUSE operating system to implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.\n\nInstall the OpenSSH package on the SUSE operating system with the following command:\n\n> sudo zypper in openssh\n\nEnable the OpenSSH service to start automatically on reboot with the following command:\n\n> sudo systemctl enable sshd.service\n\nFor the changes to take effect immediately, start the service with the following command:\n\n> sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234860r958908_rule",
   "severity": "high",

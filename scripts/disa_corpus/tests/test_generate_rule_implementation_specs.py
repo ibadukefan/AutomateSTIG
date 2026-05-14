@@ -139,6 +139,64 @@ If the value for all installed programs is REG_DWORD = 1, this is not a finding.
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
         self.assertEqual(candidate['description'], 'Object Caching Protection must be enabled in all Office programs.')
 
+    def test_infers_sles_openssh_package_and_service_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234860',
+            'title': 'All networked SUSE operating systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.',
+            'check_content': '''Note: If the system is not networked, this requirement is Not Applicable.
+
+Verify that the SUSE operating system implements SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.
+
+Check that the OpenSSH package is installed on the SUSE operating system with the following command:
+
+> zypper info openssh | grep -i installed
+
+If the OpenSSH package is not installed, this is a finding.
+
+Check that the OpenSSH service active on the SUSE operating system with the following command:
+
+> systemctl status sshd.service | grep -i "active:"
+
+Active: active (running) since Thu 2017-01-12 15:03:38 UTC; 1 months 4 days ago
+
+If OpenSSH service is not active, this is a finding.''',
+            'fix_text': '''Install the OpenSSH package on the SUSE operating system with the following command:
+
+> sudo zypper in openssh
+
+Enable the OpenSSH service.''',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234860',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "sh -c 'rpm -q openssh >/dev/null 2>&1 && systemctl is-active --quiet sshd.service && echo Compliant'"},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'All networked SUSE operating systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.',
+        })
+
+    def test_infers_ubuntu_nfs_packages_absent_from_dpkg_extended_grep(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-279938',
+            'title': 'Ubuntu 24.04 LTS must not have the nfs-kernel-server package installed.',
+            'check_content': '''Verify Ubuntu 24.04 LTS does not have nfs packages installed.
+
+Check if packages are installed:
+$sudo dpkg -l | grep -E 'nfs-common | nfs-kernel-server'
+
+If the nfs-common or nfs-kernel-server packages are installed, this is a finding''',
+            'fix_text': '''Configure Ubuntu 24.04 LTS to disable non-essential capabilities by removing the nfs-common and nfs-kernel-server packages from the system with the following commands:
+
+Remove packages if present:
+$ sudo apt purge --yes nfs-common nfs-kernel-server''',
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-279938',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "dpkg -l | grep -E 'nfs-common | nfs-kernel-server'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Ubuntu 24.04 LTS must not have the nfs-kernel-server package installed.',
+        })
+
     def test_infers_windows_user_right_allowlist_before_server_core_instructions(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254434',

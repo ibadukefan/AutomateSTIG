@@ -2617,6 +2617,41 @@ def _package_candidate(rule: dict) -> dict | None:
             'expected': {'type': 'is_true'},
             'description': rule.get('title', ''),
         }
+    if (
+        rule.get('vuln_id', '') == 'V-234860'
+        and re.search(r'\bSUSE\s+operating\s+systems\s+must\s+have\s+and\s+implement\s+SSH\b', title, re.IGNORECASE)
+        and re.search(r'\bzypper\s+info\s+openssh\s*\|\s*grep\s+-i\s+installed\b', content, re.IGNORECASE)
+        and re.search(r'If\s+the\s+OpenSSH\s+package\s+is\s+not\s+installed,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'\bsystemctl\s+status\s+sshd\.service\s*\|\s*grep\s+-i\s+["“]active:', content, re.IGNORECASE)
+        and re.search(r'If\s+OpenSSH\s+service\s+is\s+not\s+active,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'\bzypper\s+in\s+openssh\b', rule.get('fix_text', '') or '', re.IGNORECASE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "sh -c 'rpm -q openssh >/dev/null 2>&1 && systemctl is-active --quiet sshd.service && echo Compliant'"},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
+    nfs_dpkg_absent_match = re.search(
+        r'(?P<command>(?:sudo\s+)?dpkg\s+-l\s*\|\s*grep\s+-E\s+["\']nfs-common\s*\|\s*nfs-kernel-server["\'])',
+        content,
+        re.IGNORECASE,
+    )
+    if (
+        rule.get('vuln_id', '') in {'V-279937', 'V-279938'}
+        and nfs_dpkg_absent_match
+        and re.search(r'\bmust\s+not\s+have\s+the\s+nfs-kernel-server\s+package\s+installed\b', title, re.IGNORECASE)
+        and re.search(r'If\s+the\s+nfs-common\s+or\s+nfs-kernel-server\s+packages\s+are\s+installed,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'apt\s+purge\s+--yes\s+nfs-common\s+nfs-kernel-server', rule.get('fix_text', '') or '', re.IGNORECASE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': _normalize_command(nfs_dpkg_absent_match.group('command'))},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     match = re.search(r'\b(?:dnf|yum|rpm)\s+(?:list\s+(?:--installed|installed)|-q)\s+["\']?([A-Za-z0-9_.:+-]+)["\']?', content)
     if not match:
         match = re.search(r'\bdpkg\s+-l\s*\|\s*grep\s+([A-Za-z0-9_.:+-]+)', content)
