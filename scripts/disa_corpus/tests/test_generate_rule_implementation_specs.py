@@ -512,6 +512,52 @@ Locate "system.web/sessionState" and set "cookieless" to "UseCookies".''',
             'description': 'The IIS 10.0 web server must use cookies to track session state.',
         })
 
+    def test_infers_iis_tls_12_enabled_and_legacy_protocols_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218821',
+            'title': 'An IIS 10.0 web server must maintain the confidentiality of controlled information during transmission through the use of an approved Transport Layer Security (TLS) version.',
+            'check_content': '''Access the IIS 10.0 Web Server.
+
+Navigate to:
+HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.2\\Server
+
+Verify a REG_DWORD value of "0" for "DisabledByDefault".
+Verify a REG_DWORD value of "1" for "Enabled".
+
+Navigate to:
+HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.0\\Server
+HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.1\\Server
+HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 3.0\\Server
+
+Verify a REG_DWORD value of "1" for "DisabledByDefault".
+Verify a REG_DWORD value of "0" for "Enabled".
+
+If any of the respective registry paths do not exist or are configured with the wrong value, this is a finding.''',
+            'fix_text': '''Access the IIS 10.0 Web Server.
+
+Navigate to:
+HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.2\\Server
+
+Create a REG_DWORD named "DisabledByDefault" with a value of "0".
+Create a REG_DWORD named "Enabled" with a  value of "1".
+
+Navigate to:
+HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.0\\Server
+HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.1\\Server
+HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 3.0\\Server
+
+For each protocol:
+Create a REG_DWORD named "DisabledByDefault" with a value of "1".
+Create a REG_DWORD named "Enabled" with a  value of "0".''',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-218821',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': "powershell -NoProfile -Command \"$expected=@{'TLS 1.2'=@{Enabled=1;DisabledByDefault=0};'TLS 1.0'=@{Enabled=0;DisabledByDefault=1};'TLS 1.1'=@{Enabled=0;DisabledByDefault=1};'SSL 3.0'=@{Enabled=0;DisabledByDefault=1}}; foreach($protocol in $expected.Keys){$path='HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\'+$protocol+'\\Server'; $item=Get-ItemProperty -Path $path -ErrorAction SilentlyContinue; if(-not $item){exit 1}; foreach($name in $expected[$protocol].Keys){ if([int]$item.$name -ne [int]$expected[$protocol][$name]){exit 1}}}; 'Compliant'\""},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'An IIS 10.0 web server must maintain the confidentiality of controlled information during transmission through the use of an approved Transport Layer Security (TLS) version.',
+        })
+
     def test_infers_tomcat_removed_example_webapp_directory_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222958',

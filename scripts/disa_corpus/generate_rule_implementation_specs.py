@@ -7322,6 +7322,36 @@ def _iis_session_state_use_cookies_candidate(rule: dict, stig_id: str) -> dict |
     }
 
 
+def _iis_tls_12_enabled_legacy_protocols_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-218821' or stig_id != 'IIS_10-0_Server_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    required_snippets = (
+        r'HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS\s+1\.2\\Server',
+        r'HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS\s+1\.0\\Server',
+        r'HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS\s+1\.1\\Server',
+        r'HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL\s+3\.0\\Server',
+        r'TLS\s+1\.2[\s\S]*(?:Enabled["”]?\s+with\s+a\s+value\s+of\s+["“]?1|Enabled\s*=\s*1|use\s+Enabled\s*=\s*1)',
+        r'TLS\s+1\.2[\s\S]*(?:DisabledByDefault["”]?\s+with\s+a\s+value\s+of\s+["“]?0|DisabledByDefault\s*=\s*0|use\s+Enabled\s*=\s*1\s+and\s+DisabledByDefault\s*=\s*0)',
+        r'For\s+each\s+protocol:[\s\S]*(?:Enabled["”]?\s+with\s+a\s+value\s+of\s+["“]?0|Enabled\s*=\s*0)',
+        r'For\s+each\s+protocol:[\s\S]*(?:DisabledByDefault["”]?\s+with\s+a\s+value\s+of\s+["“]?1|DisabledByDefault\s*=\s*1)',
+        r'If\s+any\s+of\s+the\s+respective\s+registry\s+paths\s+do\s+not\s+exist\s+or\s+are\s+configured\s+with\s+the\s+wrong\s+value,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(snippet, combined, re.IGNORECASE) for snippet in required_snippets):
+        return None
+    command = "powershell -NoProfile -Command \"$expected=@{'TLS 1.2'=@{Enabled=1;DisabledByDefault=0};'TLS 1.0'=@{Enabled=0;DisabledByDefault=1};'TLS 1.1'=@{Enabled=0;DisabledByDefault=1};'SSL 3.0'=@{Enabled=0;DisabledByDefault=1}}; foreach($protocol in $expected.Keys){$path='HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\'+$protocol+'\\Server'; $item=Get-ItemProperty -Path $path -ErrorAction SilentlyContinue; if(-not $item){exit 1}; foreach($name in $expected[$protocol].Keys){ if([int]$item.$name -ne [int]$expected[$protocol][$name]){exit 1}}}; 'Compliant'\""
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_local_volume_filesystem_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -7481,6 +7511,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     iis_session_state_candidate = _iis_session_state_use_cookies_candidate(rule, stig_id)
     if iis_session_state_candidate:
         return iis_session_state_candidate
+
+    iis_tls_candidate = _iis_tls_12_enabled_legacy_protocols_disabled_candidate(rule, stig_id)
+    if iis_tls_candidate:
+        return iis_tls_candidate
 
     if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'office', 'adobe', 'acrobat')):
         firmware_state_candidate = _windows_firmware_state_candidate(rule, stig_id)
