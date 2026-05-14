@@ -6899,14 +6899,14 @@ def _tomcat_web_xml_boolean_param_candidate(rule: dict, stig_id: str) -> dict | 
     if vuln_id not in {'V-222928', 'V-222953', 'V-222954'}:
         return None
     command_match = re.search(
-        r'(?:^|\n)\s*(?:[$#>]\s*)?(?:sudo\s+)?(?:cat\s+)?(?P<path>\$CATALINA_BASE/conf/web\.xml)\s*\|?\s*grep\s+-i\s+(?P<after>-A\d+)\s+(?P<before>-B\d+)\s+(?P<token>[A-Za-z0-9_.-]+)(?:\s+\$CATALINA_BASE/conf/web\.xml(?:\s+file\.?)?)?\s*(?:\n|$)',
+        r'(?:^|\n)\s*(?:[$#>]\s*)?(?:sudo\s+)?(?:cat\s+)?(?:(?P<path>\$CATALINA_BASE/conf/web\.xml)\s*\|?\s*)?grep\s+-i\s+(?P<after>-A\d+)\s+(?P<before>-B\d+)\s+(?P<token>[A-Za-z0-9_.-]+)(?:\s+\$CATALINA_BASE/conf/web\.xml(?:\s+file\.?)?)?\s*(?:\n|$)',
         content,
         re.IGNORECASE,
     )
     if not command_match:
         return None
     finding_match = re.search(
-        r'If\s+(?:the\s+)?["“](?P<param>[A-Za-z0-9_.-]+)["”]\s+(?:param-value\s+)?(?:for\s+the\s+["“]DefaultServlet["”]\s+servlet\s+class\s+)?(?:does\s+not\s+=|is\s+not\s+set\s+to)\s+["“]?(?P<value>true|false|0)["”]?,?\s+this\s+is\s+a\s+finding\.',
+        r'If\s+(?:[^.]*?\bor\s+if\s+)?(?:the\s+)?["“]?(?P<param>[A-Za-z0-9_.-]+)["”]?\s+(?:param-value\s+)?(?:for\s+the\s+["“]DefaultServlet["”]\s+servlet\s+class\s+)?(?:does\s+not\s+=|is\s+not\s+set\s+to)\s+["“]?(?P<value>true|false|0)["”]?,?\s+this\s+is\s+a\s+finding\.',
         content,
         re.IGNORECASE,
     )

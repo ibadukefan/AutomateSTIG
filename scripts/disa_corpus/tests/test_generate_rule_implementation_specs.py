@@ -9235,6 +9235,33 @@ If the "listings" param-value for the "DefaultServlet" servlet class does not = 
             'description': 'DefaultServlet directory listings parameter must be disabled.',
         })
 
+    def test_infers_tomcat_hsts_web_xml_boolean_param_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222928',
+            'title': 'HTTP Strict Transport Security (HSTS) must be enabled.',
+            'check_content': '''From the Tomcat server console, run the following command:
+
+sudo grep -i -A5 -B8 hstsEnable $CATALINA_BASE/conf/web.xml file.
+
+If the httpHeaderSecurity filter is commented out or if hstsEnable is not set to "true", this is a finding.''',
+            'fix_text': '''Uncomment the existing httpHeaderSecurity filter section or create the filter section using the following code:
+<filter>
+<filter-name>httpHeaderSecurity</filter-name>
+<filter-class>org.apache.catalina.filters.HttpHeaderSecurityFilter</filter-class>
+<init-param>
+ <param-name>hstsEnabled</param-name>
+ <param-value>true</param-value>
+</init-param>
+</filter>''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222928',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'grep -i -A5 -B8 hstsEnable $CATALINA_BASE/conf/web.xml'},
+            'expected': {'type': 'contains', 'substring': '<param-name>hstsEnabled</param-name>\n<param-value>true</param-value>'},
+            'description': 'HTTP Strict Transport Security (HSTS) must be enabled.',
+        })
+
     def test_infers_windows_bluetooth_support_service_disabled_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278018',

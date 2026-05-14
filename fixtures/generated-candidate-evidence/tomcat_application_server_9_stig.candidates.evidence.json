@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 22,
+  "candidate_checks": 23,
   "cases": [
+    {
+      "check": {
+        "command": "grep -i -A5 -B8 hstsEnable $CATALINA_BASE/conf/web.xml",
+        "type": "command_output"
+      },
+      "description": "HTTP Strict Transport Security (HSTS) must be enabled.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "<param-name>hstsEnabled</param-name>\n<param-value>true</param-value>",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i -A5 -B8 hstsEnable $CATALINA_BASE/conf/web.xml": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i -A5 -B8 hstsEnable $CATALINA_BASE/conf/web.xml": "before\n<param-name>hstsEnabled</param-name>\n<param-value>true</param-value>\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222928"
+    },
     {
       "check": {
         "command": "grep -i shutdown $CATALINA_BASE/conf/server.xml",
@@ -579,5 +605,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 22
+  "validated_candidates": 23
 }
