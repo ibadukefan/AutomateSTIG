@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "show running-config | include ^no ip source-route$",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to block all packets with any IP options.",
+      "expected": {
+        "type": "equals",
+        "value": "no ip source-route"
+      },
+      "platform": "network",
+      "vuln_id": "V-221095"
+    }
+  ],
+  "platform": "network",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "version": "candidate-planned"
+}

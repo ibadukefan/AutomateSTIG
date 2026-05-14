@@ -9338,5 +9338,54 @@ If any entries use the auth_method (last column in records) "password" or "md5",
             'description': 'If passwords are used for authentication, PostgreSQL must transmit only encrypted representations of passwords.',
         })
 
+    def test_infers_cisco_nxos_no_ip_source_route_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221095',
+            'title': 'The Cisco perimeter switch must be configured to block all packets with any IP options.',
+            'check_content': '''In Cisco NX-OS, all packets with any header option other than the “source-route” header option are dropped. By default, ipv4 source routing is enabled. Verify that source routing is disabled via the following command:
+
+no ip source-route
+
+If the switch is not configured to drop all packets with IP option source routing, this is a finding.''',
+            'fix_text': '''Configure the switch to drop all packets with IP option source routing.
+
+SW1(config)# no ip source-route
+SW1(config)# end''',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221095',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': "show running-config | include ^no ip source-route$"},
+            'expected': {'type': 'equals', 'value': 'no ip source-route'},
+            'description': 'The Cisco perimeter switch must be configured to block all packets with any IP options.',
+        })
+
+    def test_infers_windows_user_right_blank_from_no_accounts_phrase(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254423',
+            'title': 'Windows Server 2022 Deny log on as a service user right must be configured to include no accounts or groups (blank) on domain controllers.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+Run "gpedit.msc".
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups are granted the "Deny log on as a service" user right, this is a finding.
+
+For server core installations, run the following command:
+
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
+
+Review the text file.
+
+If any SIDs are granted the "SeDenyServiceLogonRight" user right, this is a finding.''',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Deny log on as a service to include no accounts or groups (blank).',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254423',
+            'platform': 'windows',
+            'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyServiceLogonRight'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Windows Server 2022 Deny log on as a service user right must be configured to include no accounts or groups (blank) on domain controllers.',
+        })
+
 if __name__ == '__main__':
     unittest.main()

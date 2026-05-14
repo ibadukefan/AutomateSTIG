@@ -1086,6 +1086,26 @@ def _windows_platform(stig_id: str) -> bool:
     return 'windows' in lower or 'ms_windows' in lower
 
 
+def _cisco_nxos_no_ip_source_route_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-221095' or 'cisco' not in stig_id.lower() or 'nx' not in stig_id.lower():
+        return None
+    combined = '\n'.join(part for part in (content, fix_text) if part)
+    if not re.search(r'no\s+ip\s+source-route', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'source\s+rout(?:e|ing)\s+is\s+disabled|drop\s+all\s+packets\s+with\s+IP\s+option\s+source\s+routing', combined, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'network',
+        'check': {'type': 'command_output', 'command': 'show running-config | include ^no ip source-route$'},
+        'expected': {'type': 'equals', 'value': 'no ip source-route'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _ubuntu_rsyslog_remote_access_methods_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-238324', 'V-260589', 'V-270681'}:
@@ -1807,7 +1827,7 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
 
     if 'Local Policies >> User Rights Assignment' in policy_text:
         blank_user_right_match = re.search(
-            r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:be\s+defined\s+but\s+containing|include)\s+no\s+entries\s+\(blank\)\s*\.\s*(?:\n|$)',
+            r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:(?:be\s+defined\s+but\s+containing|include)\s+no\s+entries|include\s+no\s+accounts\s+or\s+groups)\s+\(blank\)\s*\.\s*(?:\n|$)',
             policy_text,
             re.IGNORECASE,
         )
@@ -7266,6 +7286,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'is_false'},
                 'description': rule.get('title', ''),
             }
+
+    cisco_nxos_no_ip_source_route_candidate = _cisco_nxos_no_ip_source_route_candidate(rule, stig_id)
+    if cisco_nxos_no_ip_source_route_candidate:
+        return cisco_nxos_no_ip_source_route_candidate
 
     ubuntu_rsyslog_candidate = _ubuntu_rsyslog_remote_access_methods_candidate(rule, stig_id)
     if ubuntu_rsyslog_candidate:
