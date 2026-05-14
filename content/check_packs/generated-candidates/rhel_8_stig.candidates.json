@@ -3239,6 +3239,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "VarFile = OwnerMode+n+l+X+acl",
+        "type": "file_content"
+      },
+      "description": "The RHEL 8 file integrity tool must be configured to verify Access Control Lists (ACLs).",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230552"
+    },
+    {
+      "check": {
         "command": "rpm -qa | grep xorg | grep server",
         "type": "command_output"
       },

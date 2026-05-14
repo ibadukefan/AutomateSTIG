@@ -1,9 +1,22 @@
 {
-  "check_content_excerpt": "Verify the RHEL 9 firewalld is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands:\n\nEnsure firewalld is running:\n$ sudo firewall-cmd --state\nrunning\n\nIdentify active zones:\n$ sudo firewall-cmd --get-active-zones\ndrop\n  interfaces: ens192\n\nCheck what rules are applied in that zone:\n$ sudo firewall-cmd --list-all --zone=$(firewall-cmd --get-default-zone)\ndrop (active)\n  target: DROP\n  icmp-block-inversion: no\n  interfaces: ens192\n  sources:\n  services: ssh\n  ports:\n  protocols:\n  forward: yes\n  masquerade: no\n  forward-ports:\n  source-ports:\n  icmp-blocks:\n  rich rules:\n\nIf no zones are active on the RHEL 9 interfaces or if runtime and permanent targets are set to a different option other than \"DROP\", this is a finding.",
+  "candidate_check": {
+    "check": {
+      "command": "firewall-cmd --info-zone=public | grep target && firewall-cmd --permanent --info-zone=public | grep target",
+      "type": "command_output"
+    },
+    "description": "A RHEL 9 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.",
+    "expected": {
+      "substring": "target: DROP\ntarget: DROP",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257937"
+  },
+  "check_content_excerpt": "Verify the RHEL 9 \"firewalld\" is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands:\n\n$ sudo  firewall-cmd --state\n\nrunning\n\n$ sudo firewall-cmd --get-active-zones\n\npublic\n   interfaces: ens33\n\n$ sudo firewall-cmd --info-zone=public | grep target\n\n   target: DROP\n\n$ sudo firewall-cmd --permanent --info-zone=public | grep target\n\n   target: DROP\n\nIf no zones are active on the RHEL 9 interfaces or if runtime and permanent targets are set to a different option other than \"DROP\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,21 +24,24 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "target: DROP\ntarget: DROP",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
-  "fix_text_excerpt": "Configure the \"firewalld\" daemon to employ a deny-all, allow-by-exception policy with the following commands:\n\nStart by adding the exceptions that are required for mission functionality to the \"drop\" zone. If SSH access on port 22 is needed, for example, run the following: \"sudo firewall-cmd --permanent --add-service=ssh --zone=drop\"\n\nReload the firewall rules to update the runtime configuration from the \"--permanent\" changes made above:\n$ sudo firewall-cmd --reload\n\nSet the default zone to the drop zone:\n$ sudo firewall-cmd --set-default-zone=drop\nNote: This is a runtime and permanent change.\n\nAdd any interfaces to the newly modified \"drop\" zone:\n$ sudo firewall-cmd --permanent --zone=drop --change-interface=ens192\n\nReload the firewall rules for changes to take effect:\n$ sudo firewall-cmd --reload",
+  "fix_text_excerpt": "Configure the \"firewalld\" daemon to employ a deny-all, allow-by-exception with the following commands:\n\nStart by adding the exceptions that are required for mission functionality to the \"drop\" zone. If SSH access on port 22 is needed, for example, run the following: \"sudo firewall-cmd --permanent --add-service=ssh --zone=drop\"\n\nReload the firewall rules to update the runtime configuration from the \"--permanent\" changes made above:\n$ sudo firewall-cmd --reload\n\nSet the default zone to the drop zone:\n$ sudo firewall-cmd --set-default-zone=drop\nNote: This is a runtime and permanent change.\n\nAdd any interfaces to the newly modified \"drop\" zone:\n$ sudo firewall-cmd --permanent --zone=drop --change-interface=ens33\n\nReload the firewall rules for changes to take effect:\n$ sudo firewall-cmd --reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
-  "rule_id": "SV-257937r1106310_rule",
+  "rule_id": "SV-257937r991589_rule",
   "severity": "medium",
   "source_benchmark": "",
-  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r5_stig.json",
-  "source_version": "U_RHEL_9_V2R5_STIG.zip",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
   "stig_id": "RHEL_9_STIG",
-  "title": "The RHEL 9 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.",
+  "title": "A RHEL 9 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.",
   "tracking_issue": "TODO-V-257937",
   "vuln_id": "V-257937"
 }

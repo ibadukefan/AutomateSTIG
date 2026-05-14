@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 307,
+  "candidate_checks": 308,
   "cases": [
     {
       "check": {
@@ -6368,6 +6368,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "VarFile = OwnerMode+n+l+X+acl",
+        "type": "file_content"
+      },
+      "description": "The RHEL 8 file integrity tool must be configured to verify Access Control Lists (ACLs).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nVarFile = OwnerMode+n+l+X+acl\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230552"
+    },
+    {
+      "check": {
         "command": "rpm -qa | grep xorg | grep server",
         "type": "command_output"
       },
@@ -8257,5 +8284,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 307
+  "validated_candidates": 308
 }

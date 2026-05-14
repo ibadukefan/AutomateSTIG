@@ -3436,6 +3436,70 @@ def _service_candidate(rule: dict) -> dict | None:
     }
 
 
+SCAP_FIX_ONLY_SYSTEMCTL_SERVICE_VULNS = {
+    'V-230298', 'V-230502', 'V-230312', 'V-230532', 'V-230529', 'V-244542',
+    'V-230526', 'V-244548', 'V-244544', 'V-244545', 'V-258142', 'V-257782',
+    'V-257783', 'V-257849', 'V-257936', 'V-257815', 'V-258152', 'V-257818',
+    'V-257785', 'V-258036', 'V-257786', 'V-257944', 'V-257979', 'V-258090',
+}
+
+
+def _scap_fix_only_systemctl_service_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'scap' not in stig_id.lower() or not _linux_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '') or ''
+    vuln_match = re.search(r'V-\d+', vuln_id)
+    if not vuln_match or vuln_match.group(0) not in SCAP_FIX_ONLY_SYSTEMCTL_SERVICE_VULNS:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    if content.strip() or not fix_text.strip():
+        return None
+    service_commands = re.findall(
+        r'\bsystemctl\s+(?:--\S+\s+)*(enable|start|disable|stop|mask)\b((?:\s+--\S+)*)(?:\s+([^\s;&|]+))',
+        fix_text,
+        re.IGNORECASE,
+    )
+    if not service_commands:
+        return None
+    names = []
+    actions = set()
+    for action, options, raw_name in service_commands:
+        name = raw_name.strip().strip('"\'')
+        if name in {'--now', 'daemon-reload'}:
+            continue
+        if name.endswith('.socket'):
+            return None
+        if '.' in name and not name.endswith(('.service', '.target')):
+            return None
+        names.append(name.removesuffix('.service').removesuffix('.target'))
+        actions.add(action.lower())
+        if '--now' in options:
+            actions.add('start' if action.lower() == 'enable' else 'stop' if action.lower() in {'disable', 'mask'} else action.lower())
+    unique_names = sorted(set(names))
+    if len(unique_names) != 1:
+        return None
+    lower_title = title.lower()
+    if actions & {'disable', 'stop', 'mask'}:
+        if not re.search(r'\b(?:disabled|disable)\b', lower_title):
+            return None
+        expected_status = 'disabled'
+    elif actions & {'enable', 'start'}:
+        if not re.search(r'\b(?:active|running|enabled|enable)\b', lower_title):
+            return None
+        expected_status = 'running'
+    else:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'service', 'name': unique_names[0], 'expected_status': expected_status},
+        'expected': {'type': 'equals', 'value': expected_status},
+        'description': rule.get('title', ''),
+    }
+
+
 def _normalize_command(command: str) -> str:
     command = command.strip().strip('“”')
     command = re.sub(r'^sudo\s+', '', command)
@@ -7338,6 +7402,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     if cisco_nxos_no_ip_source_route_candidate:
         return cisco_nxos_no_ip_source_route_candidate
 
+    scap_fix_only_systemctl_service_candidate = _scap_fix_only_systemctl_service_candidate(rule, stig_id)
+    if scap_fix_only_systemctl_service_candidate:
+        return scap_fix_only_systemctl_service_candidate
+
     ubuntu_rsyslog_candidate = _ubuntu_rsyslog_remote_access_methods_candidate(rule, stig_id)
     if ubuntu_rsyslog_candidate:
         return ubuntu_rsyslog_candidate
@@ -7552,7 +7620,15 @@ def generate_specs(coverage_root: Path, implementation_root: Path, repo_root: Pa
                 enriched[k] = v
             vuln = enriched.get('vuln_id') or enriched.get('rule_id') or 'unknown'
             out = implementation_root / stig_slug / f'{slug(vuln)}.json'
-            write_json(out, spec_from_rule(manifest_path, manifest, enriched))
+            new_spec = spec_from_rule(manifest_path, manifest, enriched)
+            if out.exists() and 'candidate_check' not in new_spec:
+                try:
+                    existing_spec = json.loads(out.read_text())
+                except Exception:
+                    existing_spec = {}
+                if existing_spec.get('candidate_check'):
+                    new_spec = existing_spec
+            write_json(out, new_spec)
             count += 1
     return count
 

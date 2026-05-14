@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -65,6 +66,31 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             generated = next((root / 'impl').rglob('*.json')).read_text()
             self.assertIn('"vuln_id": "V-230543"', generated)
             self.assertNotIn('xccdf_mil.disa.stig_group_V-230543', generated)
+
+    def test_generate_specs_preserves_candidate_when_duplicate_rule_later_manifest_is_less_complete(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            coverage = root / 'coverage'
+            impl = root / 'impl'
+            (coverage / 'a').mkdir(parents=True)
+            (coverage / 'b').mkdir(parents=True)
+            (coverage / 'a' / 'first.json').write_text('''{
+              "stig_id": "RHEL_9_STIG",
+              "rules": [
+                {"vuln_id":"V-251234","rule_id":"SV-251234_rule","title":"RHEL must not have the telnet service enabled.","classification":"unsupported","severity":"medium","check_content":"Verify with: $ systemctl is-enabled telnet.service If the service is enabled, this is a finding."}
+              ]
+            }''')
+            (coverage / 'b' / 'second.json').write_text('''{
+              "stig_id": "RHEL_9_STIG",
+              "rules": [
+                {"vuln_id":"V-251234","rule_id":"SV-251234_rule","title":"RHEL must not have the telnet service enabled.","classification":"unsupported","severity":"medium"}
+              ]
+            }''')
+
+            count = mod.generate_specs(coverage, impl, root)
+            self.assertEqual(count, 2)
+            generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
+            self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
     def test_infers_windows_user_right_allowlist_before_server_core_instructions(self):
         candidate = mod.infer_candidate_check({
@@ -7203,6 +7229,29 @@ If the command above returns "inactive", this is a finding.'''
         }, 'CAN_Ubuntu_24-04_STIG')
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'auditd', 'expected_status': 'running'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
+
+    def test_infers_scap_fix_only_service_enable_now_candidate_for_whitelisted_rule(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-258142',
+            'title': 'The rsyslog service on RHEL 9 must be active.',
+            'fix_text': '''To enable the rsyslog service, run the following command:
+
+$ sudo systemctl enable --now rsyslog'''
+        }, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'rsyslog', 'expected_status': 'running'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
+
+    def test_infers_scap_fix_only_service_mask_candidate_for_whitelisted_rule(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-257818',
+            'title': 'The kdump service on RHEL 9 must be disabled.',
+            'fix_text': '''Disable and mask the kdump service on RHEL 9.
+
+$ sudo systemctl disable --now kdump
+$ sudo systemctl mask --now kdump'''
+        }, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'kdump', 'expected_status': 'disabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
 
     def test_infers_linux_service_running_candidate_from_systemctl_status_grep_active_pipeline(self):
         candidate = mod.infer_candidate_check({

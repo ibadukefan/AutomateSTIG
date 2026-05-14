@@ -1,9 +1,23 @@
 {
-  "check_content_excerpt": "Verify the file integrity tool is configured to verify ACLs.\n\nNote: AIDE is highly configurable at install time. This requirement assumes the \"aide.conf\" file is under the \"/etc\" directory.\n\nIf AIDE is not installed, ask the system administrator (SA) how file integrity checks are performed on the system.\n\nUse the following command to determine if the file is in a location other than \"/etc/aide/aide.conf\":\n\n$ sudo find / -name aide.conf\n\nUse the following command to review the \"aide.conf\" file to determine if the \"acl\" rule has been added to the rule list being applied to the files and directories selection lists:\n\n$ sudo cat /etc/aide.conf | more\n\nIf the \"acl\" rule is not being used on all selection lines in the \"/etc/aide.conf\" file, is commented out, or ACLs are not being checked by another file integrity tool, this is a finding.",
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/aide.conf",
+      "pattern": "VarFile = OwnerMode+n+l+X+acl",
+      "type": "file_content"
+    },
+    "description": "The RHEL 8 file integrity tool must be configured to verify Access Control Lists (ACLs).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230552"
+  },
+  "check_content_excerpt": "Verify the file integrity tool is configured to verify ACLs.\n\nNote: AIDE is highly configurable at install time. This requirement assumes the \"aide.conf\" file is under the \"/etc\" directory.\n\nIf AIDE is not installed, ask the System Administrator how file integrity checks are performed on the system.\n\nUse the following command to determine if the file is in a location other than \"/etc/aide/aide.conf\":\n\n     $ sudo find / -name aide.conf\n\nCheck the \"aide.conf\" file to determine if the \"acl\" rule has been added to the rule list being applied to the files and directories selection lists with the following command:\n\n     $ sudo grep -E \"[+]?acl\" /etc/aide.conf\n\n     VarFile = OwnerMode+n+l+X+acl\n\nIf the \"acl\" rule is not being used on all selection lines in the \"/etc/aide.conf\" file, is commented out, or ACLs are not being checked by another file integrity tool, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,19 +25,21 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the file integrity tool to check file and directory ACLs. \n\nIf AIDE is installed, ensure the \"acl\" rule is present on all file and directory selection lists.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
-  "rule_id": "SV-230552r1101902_rule",
+  "rule_id": "SV-230552r1017314_rule",
   "severity": "low",
   "source_benchmark": "",
-  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
-  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r3_stig.json",
+  "source_version": "U_RHEL_8_V2R3_STIG.zip",
   "stig_id": "RHEL_8_STIG",
   "title": "The RHEL 8 file integrity tool must be configured to verify Access Control Lists (ACLs).",
   "tracking_issue": "TODO-V-230552",
