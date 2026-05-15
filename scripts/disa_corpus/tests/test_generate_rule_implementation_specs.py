@@ -226,6 +226,34 @@ If "fips" is not included in the OpenSSL version, this is a finding.''',
             'description': 'PostgreSQL must use NIST FIPS 140-2 or 140-3 validated cryptographic modules for cryptographic operations.',
         })
 
+    def test_infers_tomcat_ldap_realm_ldaps_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222965',
+            'title': 'LDAP authentication must be secured.',
+            'check_content': '''From the Tomcat server as a privileged user, run the following commands:
+
+sudo grep -i -A8 JNDIRealm $CATALINA_BASE/conf/server.xml
+
+If the JNDIRealm connectionURL setting is not configured to use LDAPS, if it does not exist, or is commented out, this is a finding.
+
+EXAMPLE:
+<Realm   className="org.apache.catalina.realm.JNDIRealm"
+connectionURL="ldaps://localhost:686"
+...
+/>''',
+            'fix_text': 'Configure the JNDIRealm connectionURL to use LDAPS.',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222965',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c 'grep -i -A8 JNDIRealm \"${CATALINA_BASE:-/opt/tomcat}/conf/server.xml\" 2>/dev/null || true'",
+            },
+            'expected': {'type': 'contains', 'substring': 'ldaps://'},
+            'description': 'LDAP authentication must be secured.',
+        })
+
     def test_infers_tomcat_jmx_authenticate_false_as_empty_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222963',

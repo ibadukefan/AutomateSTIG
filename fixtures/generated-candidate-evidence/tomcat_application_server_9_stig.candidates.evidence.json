@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 29,
+  "candidate_checks": 30,
   "cases": [
     {
       "check": {
@@ -260,6 +260,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222964"
+    },
+    {
+      "check": {
+        "command": "sh -c 'grep -i -A8 JNDIRealm \"${CATALINA_BASE:-/opt/tomcat}/conf/server.xml\" 2>/dev/null || true'",
+        "type": "command_output"
+      },
+      "description": "LDAP authentication must be secured.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ldaps://",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -i -A8 JNDIRealm \"${CATALINA_BASE:-/opt/tomcat}/conf/server.xml\" 2>/dev/null || true'": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -i -A8 JNDIRealm \"${CATALINA_BASE:-/opt/tomcat}/conf/server.xml\" 2>/dev/null || true'": "before\nldaps://\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222965"
     },
     {
       "check": {
@@ -761,5 +787,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 29
+  "validated_candidates": 30
 }

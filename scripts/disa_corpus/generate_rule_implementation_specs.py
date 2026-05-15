@@ -3394,6 +3394,29 @@ def _tomcat_systemd_boolean_property_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _tomcat_ldap_realm_ldaps_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222965':
+        return None
+    content = rule.get('check_content', '') or ''
+    combined = content + '\n' + (rule.get('fix_text', '') or '')
+    if not re.search(r'grep\s+-i\s+-A8\s+JNDIRealm\s+\$CATALINA_BASE/conf/server\.xml', content, re.IGNORECASE):
+        return None
+    if not re.search(r'JNDIRealm\s+connectionURL\s+setting\s+is\s+not\s+configured\s+to\s+use\s+LDAPS', content, re.IGNORECASE):
+        return None
+    if not re.search(r'connectionURL\s*=\s*["“]ldaps://', combined, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {
+            'type': 'command_output',
+            'command': 'sh -c \'grep -i -A8 JNDIRealm "${CATALINA_BASE:-/opt/tomcat}/conf/server.xml" 2>/dev/null || true\'',
+        },
+        'expected': {'type': 'contains', 'substring': 'ldaps://'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_jmx_false_property_absent_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower():
         return None
@@ -8292,6 +8315,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_systemd_boolean_property_candidate = _tomcat_systemd_boolean_property_candidate(rule, stig_id)
     if tomcat_systemd_boolean_property_candidate:
         return tomcat_systemd_boolean_property_candidate
+
+    tomcat_ldap_realm_ldaps_candidate = _tomcat_ldap_realm_ldaps_candidate(rule, stig_id)
+    if tomcat_ldap_realm_ldaps_candidate:
+        return tomcat_ldap_realm_ldaps_candidate
 
     tomcat_jmx_false_property_candidate = _tomcat_jmx_false_property_absent_candidate(rule, stig_id)
     if tomcat_jmx_false_property_candidate:

@@ -132,6 +132,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'grep -i -A8 JNDIRealm \"${CATALINA_BASE:-/opt/tomcat}/conf/server.xml\" 2>/dev/null || true'",
+        "type": "command_output"
+      },
+      "description": "LDAP authentication must be secured.",
+      "expected": {
+        "substring": "ldaps://",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222965"
+    },
+    {
+      "check": {
         "command": "sh -c \"grep -Eiq 'FIPSMode[[:space:]]*=[[:space:]]*\\\"on\\\"' \\\"$CATALINA_BASE/conf/server.xml\\\" && ! grep -Eiq 'failed to set property\\\\[FIPSMODE\\\\] to \\\\[on\\\\]' \\\"$CATALINA_BASE/logs/catalina.out\\\" && printf Compliant\"",
         "type": "command_output"
       },
