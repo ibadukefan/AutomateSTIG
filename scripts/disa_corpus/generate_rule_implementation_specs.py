@@ -3656,6 +3656,47 @@ def _tomcat_systemd_boolean_property_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _tomcat_autodeploy_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222956':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'grep\s+-i\s+-C2\s+autodeploy', content, re.IGNORECASE) or '$CATALINA_BASE/conf/server.xml' not in content:
+        return None
+    if not re.search(r'If\s+autoDeploy\s*=\s*["“]?true["”]?\s+or\s+if\s+autoDeploy\s+is\s+not\s+set,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'autoDeploy\s*=\s*["“]false["”]', content + '\n' + fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': 'xmllint --xpath "count(//Host[not(@autoDeploy) or translate(@autoDeploy,\'TRUE\',\'true\')=\'true\'])" $CATALINA_BASE/conf/server.xml 2>/dev/null'},
+        'expected': {'type': 'equals', 'value': '0'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _tomcat_manager_client_cert_auth_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222993':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'grep\s+-i\s+auth-method\s+\$CATALINA_BASE/webapps/manager/WEB-INF/web\.xml', content, re.IGNORECASE):
+        return None
+    if not re.search(r'<Auth-Method>\s+for\s+the\s+web\s+manager\s+application\s+is\s+not\s+set\s+to\s+CLIENT-CERT,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'CLIENT-CERT', content + '\n' + fix_text, re.IGNORECASE):
+        return None
+    command = 'sh -c \'p="${CATALINA_BASE:-/opt/tomcat}/webapps/manager/WEB-INF/web.xml"; test ! -e "$p" && printf Compliant && exit 0; v=$(xmllint --xpath "string(translate(//login-config/auth-method, \\\'abcdefghijklmnopqrstuvwxyz\\\', \\\'ABCDEFGHIJKLMNOPQRSTUVWXYZ\\\'))" "$p" 2>/dev/null); [ "$v" = CLIENT-CERT ] && printf Compliant\''
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_ldap_realm_ldaps_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222965':
         return None
@@ -8876,6 +8917,14 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_systemd_boolean_property_candidate = _tomcat_systemd_boolean_property_candidate(rule, stig_id)
     if tomcat_systemd_boolean_property_candidate:
         return tomcat_systemd_boolean_property_candidate
+
+    tomcat_autodeploy_candidate = _tomcat_autodeploy_disabled_candidate(rule, stig_id)
+    if tomcat_autodeploy_candidate:
+        return tomcat_autodeploy_candidate
+
+    tomcat_manager_client_cert_candidate = _tomcat_manager_client_cert_auth_candidate(rule, stig_id)
+    if tomcat_manager_client_cert_candidate:
+        return tomcat_manager_client_cert_candidate
 
     tomcat_ldap_realm_ldaps_candidate = _tomcat_ldap_realm_ldaps_candidate(rule, stig_id)
     if tomcat_ldap_realm_ldaps_candidate:

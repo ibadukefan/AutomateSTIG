@@ -67,6 +67,19 @@
     },
     {
       "check": {
+        "command": "xmllint --xpath \"count(//Host[not(@autoDeploy) or translate(@autoDeploy,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "Autodeploy must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222956"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath \"count(//Connector[translate(@xpoweredBy,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
         "type": "command_output"
       },
@@ -324,6 +337,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-222991"
+    },
+    {
+      "check": {
+        "command": "sh -c 'p=\"${CATALINA_BASE:-/opt/tomcat}/webapps/manager/WEB-INF/web.xml\"; test ! -e \"$p\" && printf Compliant && exit 0; v=$(xmllint --xpath \"string(translate(//login-config/auth-method, \\'abcdefghijklmnopqrstuvwxyz\\', \\'ABCDEFGHIJKLMNOPQRSTUVWXYZ\\'))\" \"$p\" 2>/dev/null); [ \"$v\" = CLIENT-CERT ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Multifactor certificate-based tokens (CAC) must be used when accessing the management interface.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222993"
     },
     {
       "check": {

@@ -147,6 +147,50 @@ If no zones are active on the RHEL 8 interfaces or if the target is set to a dif
             'description': 'A RHEL 8 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.',
         })
 
+    def test_infers_tomcat_autodeploy_disabled_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222956',
+            'title': 'Autodeploy must be disabled.',
+            'check_content': '''If the SSP associated with the Host contains ISSM-documented approvals for AutoDeploy, this is not a finding.
+
+From the Tomcat server, run the following OS command:
+
+sudo cat $CATALINA_BASE/conf/server.xml | grep -i -C2 autodeploy
+
+If the command returns no results, this is not a finding. Review the results for the autoDeploy parameter in each Host element.
+
+<Host name="YOUR HOST NAME" appbase="webapps" unpackWARs="true" autoDeploy="false">
+
+If autoDeploy ="true" or if autoDeploy is not set, this is a finding.''',
+            'fix_text': 'Examine each <Host> </Host> element, if the element contains autoDeploy="true", modify the statement to read autoDeploy="false".',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222956',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'xmllint --xpath "count(//Host[not(@autoDeploy) or translate(@autoDeploy,\'TRUE\',\'true\')=\'true\'])" $CATALINA_BASE/conf/server.xml 2>/dev/null'},
+            'expected': {'type': 'equals', 'value': '0'},
+            'description': 'Autodeploy must be disabled.',
+        })
+
+    def test_infers_tomcat_manager_client_cert_auth_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222993',
+            'title': 'Multifactor certificate-based tokens (CAC) must be used when accessing the management interface.',
+            'check_content': '''If the manager application has been deleted from the Tomcat server, this is not a finding. From the Tomcat server as a privileged user, issue the following command:
+
+sudo grep -i auth-method $CATALINA_BASE/webapps/manager/WEB-INF/web.xml
+
+If the <Auth-Method> for the web manager application is not set to CLIENT-CERT, this is a finding.''',
+            'fix_text': 'Modify the auth-method for the manager application security constraint. Locate <auth-method> and configure CLIENT-CERT.',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222993',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'sh -c \'p="${CATALINA_BASE:-/opt/tomcat}/webapps/manager/WEB-INF/web.xml"; test ! -e "$p" && printf Compliant && exit 0; v=$(xmllint --xpath "string(translate(//login-config/auth-method, \\\'abcdefghijklmnopqrstuvwxyz\\\', \\\'ABCDEFGHIJKLMNOPQRSTUVWXYZ\\\'))" "$p" 2>/dev/null); [ "$v" = CLIENT-CERT ] && printf Compliant\''},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Multifactor certificate-based tokens (CAC) must be used when accessing the management interface.',
+        })
+
     def test_infers_cisco_nxos_absent_command_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221101',
