@@ -4351,6 +4351,19 @@
     },
     {
       "check": {
+        "command": "awk -v token='xattrs' '\nfunction trim(s){gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",s); return s}\n/^[[:space:]]*(#|$)/{next}\n$1 !~ /^\\// && $0 ~ /^[[:space:]]*[A-Za-z][A-Za-z0-9_]*[[:space:]]*=/ {name=$1; sub(/[[:space:]]*=.*/,\"\",name); expr=$0; sub(/^[^=]*=/,\"\",expr); rules[name]=trim(expr); next}\n$1 ~ /^\\// {expr=$NF; gsub(/[[:space:]]*#.*/,\"\",expr); resolved=(expr in rules)?rules[expr]:expr; if (resolved !~ \"(^|[+[:space:]])\" token \"($|[+[:space:]])\") print $0}\n' /etc/aide.conf 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "The OL 8 file integrity tool must be configured to verify extended attributes.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248896"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/aide.conf",
         "pattern": "VarFile = OwnerMode+n+l+X+acl",

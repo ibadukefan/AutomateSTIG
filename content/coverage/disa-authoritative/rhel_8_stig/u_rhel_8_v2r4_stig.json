@@ -4761,16 +4761,17 @@
       "vuln_id": "V-230550"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230551",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230551r1017313_rule",
       "severity": "low",
       "title": "The RHEL 8 file integrity tool must be configured to verify extended attributes.",
-      "tracking_issue": "TODO-V-230551",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/24c655685e7d3bff479d1d23b412c016b6e5c641729ca7d6e865d4223749fc95/U_RHEL_8_V2R4_STIG.zip"
       ],
       "vuln_id": "V-230551"

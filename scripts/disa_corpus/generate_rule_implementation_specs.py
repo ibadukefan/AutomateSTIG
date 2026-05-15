@@ -1446,6 +1446,48 @@ def _ubuntu_rsyslog_remote_access_methods_candidate(rule: dict, stig_id: str) ->
     }
 
 
+def _aide_selection_line_token_command(token: str) -> str:
+    escaped_token = token.replace("'", "'\\''")
+    return (
+        "awk -v token='" + escaped_token + "' '\n"
+        "function trim(s){gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",s); return s}\n"
+        "/^[[:space:]]*(#|$)/{next}\n"
+        "$1 !~ /^\\// && $0 ~ /^[[:space:]]*[A-Za-z][A-Za-z0-9_]*[[:space:]]*=/ {name=$1; sub(/[[:space:]]*=.*/,\"\",name); expr=$0; sub(/^[^=]*=/,\"\",expr); rules[name]=trim(expr); next}\n"
+        "$1 ~ /^\\// {expr=$NF; gsub(/[[:space:]]*#.*/,\"\",expr); resolved=(expr in rules)?rules[expr]:expr; if (resolved !~ \"(^|[+[:space:]])\" token \"($|[+[:space:]])\") print $0}\n"
+        "' /etc/aide.conf 2>/dev/null"
+    )
+
+
+def _linux_aide_selection_line_token_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    token_by_vuln = {
+        'V-204498': 'acl',
+        'V-204499': 'xattrs',
+        'V-230551': 'xattrs',
+        'V-234986': 'acl',
+        'V-234987': 'xattrs',
+        'V-248896': 'xattrs',
+    }
+    token = token_by_vuln.get(vuln_id)
+    if not token or not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'\baide\.conf\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'all\s+uncommented\s+(?:file\s+and\s+directory\s+)?selection\s+lists|all\s+uncommented\s+selection\s+lines', content + '\n' + fix_text, re.IGNORECASE):
+        return None
+    if not re.search(rf'\b{re.escape(token)}\b', content + '\n' + fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': _aide_selection_line_token_command(token)},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _ubuntu_aide_default_cron_script_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-238236', 'V-260585', 'V-270651'}:
@@ -8772,7 +8814,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_passwd_home_directory_assigned_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk -v token='xattrs' '\nfunction trim(s){gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",s); return s}\n/^[[:space:]]*(#|$)/{next}\n$1 !~ /^\\// && $0 ~ /^[[:space:]]*[A-Za-z][A-Za-z0-9_]*[[:space:]]*=/ {name=$1; sub(/[[:space:]]*=.*/,\"\",name); expr=$0; sub(/^[^=]*=/,\"\",expr); rules[name]=trim(expr); next}\n$1 ~ /^\\// {expr=$NF; gsub(/[[:space:]]*#.*/,\"\",expr); resolved=(expr in rules)?rules[expr]:expr; if (resolved !~ \"(^|[+[:space:]])\" token \"($|[+[:space:]])\") print $0}\n' /etc/aide.conf 2>/dev/null",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that the file integrity tool is configured to verify extended attributes.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204499"
+  },
   "check_content_excerpt": "Verify the file integrity tool is configured to verify extended attributes.\n\nNote: AIDE is highly configurable at install time. These commands assume the \"aide.conf\" file is under the \"/etc\" directory.\n\nUse the following command to determine if the file is in another location:\n     # find / -name aide.conf\n\nCheck the \"aide.conf\" file to determine if the \"xattrs\" rule has been added to the rule list being applied to the files and directories selection lists.\n\nAn example rule that includes the \"xattrs\" rule follows:\n\n     All= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux\n     /bin All # apply the custom rule to the files in bin \n     /sbin All # apply the same custom rule to the files in sbin \n\nIf the \"xattrs\" rule is not being used on all uncommented selection lines in the \"/etc/aide.conf\" file, or extended attributes are not being checked by another file integrity tool, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the file integrity tool to check file and directory extended attributes. \n\nIf AIDE is installed, ensure the \"xattrs\" rule is present on all uncommented file and directory selection lists.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204499r991589_rule",
   "severity": "low",

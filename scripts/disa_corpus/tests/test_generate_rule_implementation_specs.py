@@ -302,6 +302,31 @@ If the checksums of the system file (/etc/aide/aide.conf) and the extracted file
             'description': 'Ubuntu 24.04 LTS must be configured so that the script which runs each 30 days or less to check file integrity is the default one.',
         })
 
+    def test_infers_linux_aide_selection_lines_require_xattrs_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230551',
+            'title': 'The RHEL 8 file integrity tool must be configured to verify extended attributes.',
+            'check_content': '''Verify the file integrity tool is configured to verify extended attributes.
+
+Check the "aide.conf" file to determine if the "xattrs" rule has been added to the rule list being applied to the files and directories selection lists.
+
+An example rule that includes the "xattrs" rule follows:
+
+All= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux
+/bin All # apply the custom rule to the files in bin
+/sbin All # apply the same custom rule to the files in sbin
+
+If the "xattrs" rule is not being used on all uncommented selection lines in the "/etc/aide.conf" file, or extended attributes are not being checked by another file integrity tool, this is a finding.''',
+            'fix_text': 'If AIDE is installed, ensure the "xattrs" rule is present on all uncommented file and directory selection lists.',
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230551',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': mod._aide_selection_line_token_command('xattrs')},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The RHEL 8 file integrity tool must be configured to verify extended attributes.',
+        })
+
     def test_infers_linux_device_file_selinux_label_empty_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257932',
