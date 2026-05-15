@@ -10541,5 +10541,56 @@ WHERE d.audit_action_name IN ('SUCCESSFUL_LOGIN_GROUP');''',
         self.assertIsNone(candidate)
 
 
+    def test_infers_windows_event_log_acl_current_prose_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253340',
+            'title': 'Windows 11 permissions for the Application event log must prevent access by non-privileged accounts.',
+            'check_content': '''Verify the permissions on the Application event log (Application.evtx). Standard user accounts or groups must not have access. The default permissions listed below satisfy this requirement.
+
+Eventlog - Full Control
+SYSTEM - Full Control
+Administrators - Full Control
+
+The default location is the "%SystemRoot%\\SYSTEM32\\WINEVT\\LOGS" directory. They may have been moved to another folder.
+
+If the permissions for these files are not as restrictive as the ACLs listed, this is a finding.''',
+            'fix_text': '''Ensure the permissions on the Application event log (Application.evtx) are configured to prevent standard user accounts or groups from having access. The default permissions listed below satisfy this requirement.
+
+Eventlog - Full Control
+SYSTEM - Full Control
+Administrators - Full Control
+
+The default location is the "%SystemRoot%\\SYSTEM32\\WINEVT\\LOGS" directory.''',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-253340')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn("$log='Application'", candidate['check']['command'])
+
+    def test_infers_windows_dep_bcdedit_at_least_optout_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253283',
+            'title': 'Data Execution Prevention (DEP) must be configured to at least OptOut.',
+            'check_content': '''Verify the DEP configuration.
+Open a command prompt (cmd.exe) or PowerShell with elevated privileges (Run as administrator).
+Enter "BCDEdit /enum {current}". (If using PowerShell "{current}" must be enclosed in quotes.)
+If the value for "nx" is not "OptOut", this is a finding.
+(The more restrictive configuration of "AlwaysOn" would not be a finding.)''',
+            'fix_text': '''Configure DEP to at least OptOut.
+
+Open a command prompt (cmd.exe) or PowerShell with elevated privileges (Run as administrator).
+Enter "BCDEDIT /set {current} nx OptOut".
+"AlwaysOn", a more restrictive selection, is also valid.''',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-253283',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': 'powershell -NoProfile -Command "(bcdedit /enum `{current`}) | ForEach-Object { if ($_ -match \'^\\s*nx\\s+(OptOut|AlwaysOn)\\s*$\') { \'Compliant\' } }"'},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Data Execution Prevention (DEP) must be configured to at least OptOut.',
+        })
+
+
 if __name__ == '__main__':
     unittest.main()

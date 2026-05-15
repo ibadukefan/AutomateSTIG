@@ -7554,6 +7554,33 @@ def _windows_ftp_anonymous_authentication_disabled_candidate(rule: dict, stig_id
     }
 
 
+def _windows_dep_bcdedit_at_least_optout_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    policy_text = '\n'.join(part for part in (content, fix_text) if part)
+    if not re.search(r'Data\s+Execution\s+Prevention\s+\(DEP\)\s+must\s+be\s+configured\s+to\s+at\s+least\s+OptOut', title, re.IGNORECASE):
+        return None
+    required_patterns = (
+        r'BCDEdit\s+/enum\s+\{current\}',
+        r'value\s+for\s+["“]nx["”]\s+is\s+not\s+["“]OptOut["”],\s+this\s+is\s+a\s+finding',
+        r'more\s+restrictive\s+configuration\s+of\s+["“]AlwaysOn["”]\s+would\s+not\s+be\s+a\s+finding',
+        r'BCDEDIT\s+/set\s+\{current\}\s+nx\s+OptOut',
+    )
+    if not all(re.search(pattern, policy_text, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = 'powershell -NoProfile -Command "(bcdedit /enum `{current`}) | ForEach-Object { if ($_ -match \'^\\s*nx\\s+(OptOut|AlwaysOn)\\s*$\') { \'Compliant\' } }"'
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _windows_event_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -7567,7 +7594,7 @@ def _windows_event_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | No
     log_name = log_match.group(1).capitalize()
     if f'{log_name}.evtx' not in policy_text:
         return None
-    if '%SystemRoot%\\System32\\winevt\\Logs' not in policy_text:
+    if not re.search(re.escape(r'%SystemRoot%\System32\winevt\Logs'), policy_text, re.IGNORECASE):
         return None
     required_acl_lines = (
         r'Eventlog\s+-\s+Full\s+Control',
@@ -7576,9 +7603,17 @@ def _windows_event_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | No
     )
     if not all(re.search(line, policy_text, re.IGNORECASE) for line in required_acl_lines):
         return None
-    if not re.search(r'If\s+the\s+permissions\s+for\s+the\s+["“]' + re.escape(f'{log_name}.evtx') + r'["”]\s+file\s+are\s+not\s+as\s+restrictive\s+as\s+the\s+default\s+permissions\s+listed\s+below,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+    finding_patterns = (
+        r'If\s+the\s+permissions\s+for\s+the\s+["“]' + re.escape(f'{log_name}.evtx') + r'["”]\s+file\s+are\s+not\s+as\s+restrictive\s+as\s+the\s+default\s+permissions\s+listed\s+below,\s+this\s+is\s+a\s+finding',
+        r'If\s+the\s+permissions\s+for\s+these\s+files\s+are\s+not\s+as\s+restrictive\s+as\s+the\s+ACLs\s+listed,\s+this\s+is\s+a\s+finding',
+    )
+    if not any(re.search(pattern, content, re.IGNORECASE) for pattern in finding_patterns):
         return None
-    if not re.search(r'Configure\s+the\s+permissions\s+on\s+the\s+' + re.escape(log_name) + r'\s+event\s+log\s+file', fix_text, re.IGNORECASE):
+    fix_patterns = (
+        r'Configure\s+the\s+permissions\s+on\s+the\s+' + re.escape(log_name) + r'\s+event\s+log\s+file',
+        r'(?:Ensure|Configure)\s+the\s+permissions\s+on\s+the\s+' + re.escape(log_name) + r'\s+event\s+log\s+\(' + re.escape(f'{log_name}.evtx') + r'\)\s+are\s+configured\s+to\s+prevent\s+standard\s+user\s+accounts\s+or\s+groups\s+from\s+having\s+access',
+    )
+    if not any(re.search(pattern, fix_text, re.IGNORECASE) for pattern in fix_patterns):
         return None
     command = (
         'powershell -NoProfile -Command '
@@ -8107,6 +8142,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         ftp_anonymous_authentication_candidate = _windows_ftp_anonymous_authentication_disabled_candidate(rule, stig_id)
         if ftp_anonymous_authentication_candidate:
             return ftp_anonymous_authentication_candidate
+
+        dep_candidate = _windows_dep_bcdedit_at_least_optout_candidate(rule, stig_id)
+        if dep_candidate:
+            return dep_candidate
 
         event_log_acl_candidate = _windows_event_log_file_acl_candidate(rule, stig_id)
         if event_log_acl_candidate:
