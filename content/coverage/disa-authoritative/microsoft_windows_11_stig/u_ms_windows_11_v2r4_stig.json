@@ -2,16 +2,17 @@
   "generated_from": "content/disa-corpus/artifacts/e54bb1eadc995ee26f8976c8a516dab75c8da61dc97127488b36847f7b0943ac/U_MS_Windows_11_V2R4_STIG.zip",
   "rules": [
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-253254",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_11_v2r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-253254r991589_rule",
       "severity": "medium",
       "title": "Domain-joined systems must use Windows 11 Enterprise Edition 64-bit version.",
-      "tracking_issue": "TODO-V-253254",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_11_v2r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/e54bb1eadc995ee26f8976c8a516dab75c8da61dc97127488b36847f7b0943ac/U_MS_Windows_11_V2R4_STIG.zip"
       ],
       "vuln_id": "V-253254"

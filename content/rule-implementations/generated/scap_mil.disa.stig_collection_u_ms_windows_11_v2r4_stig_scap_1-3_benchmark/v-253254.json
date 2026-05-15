@@ -1,8 +1,21 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$os=Get-CimInstance Win32_OperatingSystem; if ($os.Caption -eq 'Microsoft Windows 11 Enterprise' -and $os.OSArchitecture -like '64-bit*') { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Domain-joined systems must use Windows 11 Enterprise Edition 64-bit version.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-253254"
+  },
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,13 +23,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Use Windows 11 Enterprise 64-bit version for domain-joined systems.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "xccdf_mil.disa.stig_rule_SV-253254r991589_rule",
   "severity": "medium",

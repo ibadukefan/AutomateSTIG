@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 3,
+  "candidate_checks": 4,
   "cases": [
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$os=Get-CimInstance Win32_OperatingSystem; if ($os.Caption -eq 'Microsoft Windows 11 Enterprise' -and $os.OSArchitecture -like '64-bit*') { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Domain-joined systems must use Windows 11 Enterprise Edition 64-bit version.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$os=Get-CimInstance Win32_OperatingSystem; if ($os.Caption -eq 'Microsoft Windows 11 Enterprise' -and $os.OSArchitecture -like '64-bit*') { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$os=Get-CimInstance Win32_OperatingSystem; if ($os.Caption -eq 'Microsoft Windows 11 Enterprise' -and $os.OSArchitecture -like '64-bit*') { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253254"
+    },
     {
       "check": {
         "key": "LockoutDuration",
@@ -88,5 +114,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_11_v2r4_stig_scap_1-3_benchmark.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark",
-  "validated_candidates": 3
+  "validated_candidates": 4
 }

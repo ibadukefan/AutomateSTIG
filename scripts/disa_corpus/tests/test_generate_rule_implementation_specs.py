@@ -199,6 +199,29 @@ All Systems:
         }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
         self.assertIsNone(candidate)
 
+    def test_infers_windows_11_enterprise_64bit_exact_vuln_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253254',
+            'title': 'Domain-joined systems must use Windows 11 Enterprise Edition 64-bit version.',
+            'check_content': '''Verify domain-joined systems are using Windows 11 Enterprise Edition 64-bit version.
+
+For standalone systems, this is NA.
+
+Open "Settings".
+Select "System", then "About".
+
+If "Edition" is not "Windows 11 Enterprise", this is a finding.
+If "System type" is not "64-bit operating system...", this is a finding.''',
+            'fix_text': 'Use Windows 11 Enterprise 64-bit version for domain-joined systems.',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-253254',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': "powershell -NoProfile -Command \"$os=Get-CimInstance Win32_OperatingSystem; if ($os.Caption -eq 'Microsoft Windows 11 Enterprise' -and $os.OSArchitecture -like '64-bit*') { 'Compliant' }\""},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Domain-joined systems must use Windows 11 Enterprise Edition 64-bit version.',
+        })
+
     def test_infers_windows_unused_accounts_dual_domain_local_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254256',

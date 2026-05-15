@@ -1313,6 +1313,31 @@ def _windows_platform(stig_id: str) -> bool:
     return 'windows' in lower or 'ms_windows' in lower
 
 
+def _windows_11_enterprise_64bit_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '') or ''
+    if vuln_id != 'V-253254' or not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{content}\n{fix_text}"
+    if not re.search(r'Windows\s+11\s+Enterprise(?:\s+Edition)?\s+64-bit\s+version', combined, re.IGNORECASE):
+        return None
+    if content.strip() and not (
+        re.search(r'If\s+["“]Edition["”]\s+is\s+not\s+["“]Windows\s+11\s+Enterprise["”],?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'If\s+["“]System\s+type["”]\s+is\s+not\s+["“]64-bit\s+operating\s+system', content, re.IGNORECASE)
+    ):
+        return None
+    if not re.search(r'Use\s+Windows\s+11\s+Enterprise\s+64-bit\s+version\s+for\s+domain-joined\s+systems', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': "powershell -NoProfile -Command \"$os=Get-CimInstance Win32_OperatingSystem; if ($os.Caption -eq 'Microsoft Windows 11 Enterprise' -and $os.OSArchitecture -like '64-bit*') { 'Compliant' }\""},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'cisco' not in stig_id.lower() or 'nx' not in stig_id.lower():
         return None
@@ -8423,6 +8448,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         firmware_state_candidate = _windows_firmware_state_candidate(rule, stig_id)
         if firmware_state_candidate:
             return firmware_state_candidate
+
+        windows_11_enterprise_64bit_candidate = _windows_11_enterprise_64bit_candidate(rule, stig_id)
+        if windows_11_enterprise_64bit_candidate:
+            return windows_11_enterprise_64bit_candidate
 
         host_firewall_candidate = _windows_host_firewall_enabled_candidate(rule, stig_id)
         if host_firewall_candidate:
