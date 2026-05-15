@@ -92,6 +92,48 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
+    def test_infers_cisco_nxos_absent_command_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221101',
+            'title': 'The Cisco BGP switch must be configured to check whether a single-hop eBGP peer is directly connected.',
+            'check_content': '''Review the BGP configuration to verify that checking whether a single-hop eBGP peer is directly connected. The example below disables this mechanism.
+
+router bgp xx
+ router-id 10.1.1.1
+ neighbor x.1.12.2 remote-as xx
+ disable-connected-check
+ address-family ipv4 unicast
+
+If the switch is configured to disable checking whether a single-hop eBGP peer is directly connected, this is a finding.''',
+            'fix_text': 'Remove the command that disables checking whether a single-hop eBGP peer is directly connected for all external BGP neighbors as shown in the example below: no disable-connected-check',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221101',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | include "^ disable-connected-check$"'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Cisco BGP switch must be configured to check whether a single-hop eBGP peer is directly connected.',
+        })
+
+    def test_infers_cisco_nxos_required_command_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221116',
+            'title': 'The Cisco MPLS switch must be configured to have TTL Propagation disabled.',
+            'check_content': '''Review the switch configuration to verify that TTL propagation is disabled as shown in the example below:
+
+no mpls ip propagate-ttl
+
+If the MPLS switch is not configured to disable TTL propagation, this is a finding.''',
+            'fix_text': 'Configure the MPLS switch to disable TTL propagation as shown in the example below: no mpls ip propagate-ttl',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221116',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | include "^no mpls ip propagate-ttl$"'},
+            'expected': {'type': 'contains', 'substring': 'no mpls ip propagate-ttl'},
+            'description': 'The Cisco MPLS switch must be configured to have TTL Propagation disabled.',
+        })
+
     def test_infers_scap_fix_only_user_rights_exact_allowlist_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254418',

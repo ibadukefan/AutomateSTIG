@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | section ^callhome | include \"^ enable$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must not be configured to have any feature enabled that calls home to the vendor.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "network",
+    "vuln_id": "V-221078"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if the call home service is enabled as shown in the example below:\n\ncallhome\n contract-id CompanyXYZ\n customer-id CompanyXYZ\n email-contact netadmin@CompanyXYZ.com\n phone-contact +1-800-555-4567\n enable\n\nIf the call home feature is configured to call home to the vendor, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable the call home feature as shown below:\n\nSW1(config)# callhome\nSW1(config-callhome)# no enable \nSW1(config-callhome)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221078r999687_rule",
   "severity": "medium",

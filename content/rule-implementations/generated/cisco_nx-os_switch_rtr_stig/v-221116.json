@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^no mpls ip propagate-ttl$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco MPLS switch must be configured to have TTL Propagation disabled.",
+    "expected": {
+      "substring": "no mpls ip propagate-ttl",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221116"
+  },
   "check_content_excerpt": "Review the switch configuration to verify that TTL propagation is disabled as shown in the example below:\n\nno mpls ip propagate-ttl\n\nIf the MPLS switch is not configured to disable TTL propagation, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "no mpls ip propagate-ttl",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the MPLS switch to disable TTL propagation as shown in the example below:\n\nSW1(config)# no mpls ip propagate-ttl",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221116r999725_rule",
   "severity": "medium",

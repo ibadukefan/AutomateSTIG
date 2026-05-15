@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | section \"^router bgp\" | include \"^ no enforce-first-as$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco BGP switch must be configured to reject route advertisements from BGP peers that do not list their autonomous system (AS) number as the first AS in the AS_PATH attribute.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "network",
+    "vuln_id": "V-221108"
+  },
   "check_content_excerpt": "Review the switch configuration to verify the switch is configured to deny updates received from eBGP peers that do not list their AS number as the first AS in the AS_PATH attribute.\n\nBy default Cisco IOS enforces the first AS in the AS_PATH attribute for all route advertisements. Review the switch configuration to verify that the command no enforce-first-as is not configured.\n\nrouter bgp xx\n router-id 10.1.1.1\n no enforce-first-as\n\nIf the switch is not configured to reject updates from peers that do not list their AS number as the first AS in the AS_PATH attribute, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to deny updates received from eBGP peers that do not list their AS number as the first AS in the AS_PATH attribute.\n\nSW1(config)# router bgp xx\nSW1(config-router)# enforce-first-as\nSW1(config-router)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221108r1137898_rule",
   "severity": "low",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^ ip directed-broadcast$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must be configured to have IP directed broadcast disabled on all interfaces.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "network",
+    "vuln_id": "V-221083"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if it is compliant with this requirement. IP directed broadcast command must not be found on any interface as shown in the example below:\n\ninterface Ethernet2/2\n no switchport\n ip address 10.1.12.1/24\n ip directed-broadcast\n\nIf IP directed broadcast is not disabled on all interfaces, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable IP directed broadcast on all interfaces as shown in the example below:\n\nSW1(config)# int e2/2\nSW1(config-if)# no ip directed-broadcast \nSW1(config-if)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221083r999692_rule",
   "severity": "low",

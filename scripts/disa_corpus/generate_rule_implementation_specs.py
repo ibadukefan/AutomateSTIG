@@ -1313,6 +1313,62 @@ def _windows_platform(stig_id: str) -> bool:
     return 'windows' in lower or 'ms_windows' in lower
 
 
+def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'cisco' not in stig_id.lower() or 'nx' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    absent_commands = {
+        'V-221078': {
+            'command': 'show running-config | section ^callhome | include "^ enable$"',
+            'content': r'call\s+home\s+service\s+is\s+enabled.*?If\s+the\s+call\s+home\s+feature\s+is\s+configured\s+to\s+call\s+home\s+to\s+the\s+vendor,\s+this\s+is\s+a\s+finding\.',
+            'fix': r'no\s+enable',
+        },
+        'V-221083': {
+            'command': 'show running-config | include "^ ip directed-broadcast$"',
+            'content': r'IP\s+directed\s+broadcast\s+command\s+must\s+not\s+be\s+found\s+on\s+any\s+interface.*?If\s+IP\s+directed\s+broadcast\s+is\s+not\s+disabled\s+on\s+all\s+interfaces,\s+this\s+is\s+a\s+finding\.',
+            'fix': r'no\s+ip\s+directed-broadcast',
+        },
+        'V-221101': {
+            'command': 'show running-config | include "^ disable-connected-check$"',
+            'content': r'disable-connected-check.*?If\s+the\s+switch\s+is\s+configured\s+to\s+disable\s+checking\s+whether\s+a\s+single-hop\s+eBGP\s+peer\s+is\s+directly\s+connected,\s+this\s+is\s+a\s+finding\.',
+            'fix': r'no\s+disable-connected-check',
+        },
+        'V-221108': {
+            'command': 'show running-config | section "^router bgp" | include "^ no enforce-first-as$"',
+            'content': r'command\s+no\s+enforce-first-as\s+is\s+not\s+configured.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+reject\s+updates\s+from\s+peers\s+that\s+do\s+not\s+list\s+their\s+AS\s+number\s+as\s+the\s+first\s+AS\s+in\s+the\s+AS_PATH\s+attribute,\s+this\s+is\s+a\s+finding\.',
+            'fix': r'\benforce-first-as\b',
+        },
+    }
+    if vuln_id in absent_commands:
+        spec = absent_commands[vuln_id]
+        if not re.search(spec['content'], content, re.IGNORECASE | re.DOTALL):
+            return None
+        if not re.search(spec['fix'], fix_text, re.IGNORECASE):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': spec['command']},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+    if vuln_id == 'V-221116':
+        if not re.search(r'Review\s+the\s+switch\s+configuration\s+to\s+verify\s+that\s+TTL\s+propagation\s+is\s+disabled.*?no\s+mpls\s+ip\s+propagate-ttl.*?If\s+the\s+MPLS\s+switch\s+is\s+not\s+configured\s+to\s+disable\s+TTL\s+propagation,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE | re.DOTALL):
+            return None
+        if not re.search(r'no\s+mpls\s+ip\s+propagate-ttl', fix_text, re.IGNORECASE):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | include "^no mpls ip propagate-ttl$"'},
+            'expected': {'type': 'contains', 'substring': 'no mpls ip propagate-ttl'},
+            'description': rule.get('title', ''),
+        }
+    return None
+
+
 def _cisco_nxos_no_ip_source_route_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -8313,6 +8369,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'is_false'},
                 'description': rule.get('title', ''),
             }
+
+    cisco_nxos_static_config_command_candidate = _cisco_nxos_static_config_command_candidate(rule, stig_id)
+    if cisco_nxos_static_config_command_candidate:
+        return cisco_nxos_static_config_command_candidate
 
     cisco_nxos_no_ip_source_route_candidate = _cisco_nxos_no_ip_source_route_candidate(rule, stig_id)
     if cisco_nxos_no_ip_source_route_candidate:

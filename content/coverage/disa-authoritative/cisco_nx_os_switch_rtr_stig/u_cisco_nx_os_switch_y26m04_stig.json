@@ -92,16 +92,17 @@
       "vuln_id": "V-221076"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221078",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221078r999687_rule",
       "severity": "medium",
       "title": "The Cisco switch must not be configured to have any feature enabled that calls home to the vendor.",
-      "tracking_issue": "TODO-V-221078",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221078"
@@ -152,16 +153,17 @@
       "vuln_id": "V-221082"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221083",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221083r999692_rule",
       "severity": "low",
       "title": "The Cisco switch must be configured to have IP directed broadcast disabled on all interfaces.",
-      "tracking_issue": "TODO-V-221083",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221083"
@@ -423,16 +425,17 @@
       "vuln_id": "V-221100"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221101",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221101r999710_rule",
       "severity": "low",
       "title": "The Cisco BGP switch must be configured to check whether a single-hop eBGP peer is directly connected.",
-      "tracking_issue": "TODO-V-221101",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221101"
@@ -528,16 +531,17 @@
       "vuln_id": "V-221107"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221108",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221108r1137898_rule",
       "severity": "low",
       "title": "The Cisco BGP switch must be configured to reject route advertisements from BGP peers that do not list their autonomous system (AS) number as the first AS in the AS_PATH attribute.",
-      "tracking_issue": "TODO-V-221108",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221108"
@@ -648,16 +652,17 @@
       "vuln_id": "V-221115"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221116",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221116r999725_rule",
       "severity": "medium",
       "title": "The Cisco MPLS switch must be configured to have TTL Propagation disabled.",
-      "tracking_issue": "TODO-V-221116",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221116"

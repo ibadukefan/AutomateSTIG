@@ -1,6 +1,58 @@
 {
-  "candidate_checks": 2,
+  "candidate_checks": 7,
   "cases": [
+    {
+      "check": {
+        "command": "show running-config | section ^callhome | include \"^ enable$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must not be configured to have any feature enabled that calls home to the vendor.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | section ^callhome | include \"^ enable$\"": "unexpected"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | section ^callhome | include \"^ enable$\"": ""
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221078"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ ip directed-broadcast$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must be configured to have IP directed broadcast disabled on all interfaces.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^ ip directed-broadcast$\"": "unexpected"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^ ip directed-broadcast$\"": ""
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221083"
+    },
     {
       "check": {
         "command": "show running-config | include ^no ip source-route$",
@@ -26,6 +78,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221095"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ disable-connected-check$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco BGP switch must be configured to check whether a single-hop eBGP peer is directly connected.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^ disable-connected-check$\"": "unexpected"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^ disable-connected-check$\"": ""
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221101"
+    },
+    {
+      "check": {
+        "command": "show running-config | section \"^router bgp\" | include \"^ no enforce-first-as$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco BGP switch must be configured to reject route advertisements from BGP peers that do not list their autonomous system (AS) number as the first AS in the AS_PATH attribute.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^router bgp\" | include \"^ no enforce-first-as$\"": "unexpected"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^router bgp\" | include \"^ no enforce-first-as$\"": ""
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221108"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^no mpls ip propagate-ttl$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco MPLS switch must be configured to have TTL Propagation disabled.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "no mpls ip propagate-ttl",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^no mpls ip propagate-ttl$\"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^no mpls ip propagate-ttl$\"": "before\nno mpls ip propagate-ttl\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221116"
     },
     {
       "check": {
@@ -59,5 +189,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 2
+  "validated_candidates": 7
 }
