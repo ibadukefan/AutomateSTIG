@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; dest=$(psql -tAc \"SHOW log_destination\"); printf %s \"$dest\" | grep -Eq \"stderr|syslog\" || bad=\"$bad log_destination=$dest\"; printf %s \"$bad\"'",
+      "type": "command_output"
+    },
+    "description": "PostgreSQL must initiate session auditing upon startup.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-233589"
+  },
   "check_content_excerpt": "As the database administrator (shown here as \"postgres\"), check the current settings by running the following SQL: \n\n$ sudo su - postgres \n$ psql -c \"SHOW shared_preload_libraries\" \n\nIf pgaudit is not in the current setting, this is a finding. \n\nAs the database administrator (shown here as \"postgres\"), check the current settings by running the following SQL: \n\n$ psql -c \"SHOW log_destination\" \n\nIf stderr or syslog are not in the current setting, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure PostgreSQL to enable auditing.\n\nTo ensure logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nFor session logging, using pgaudit is recommended. For instructions on how to setup pgaudit, see supplementary content APPENDIX-B.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233589r960888_rule",
   "severity": "medium",

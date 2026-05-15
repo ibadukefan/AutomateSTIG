@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 35,
+  "candidate_checks": 36,
   "cases": [
     {
       "check": {
@@ -653,6 +653,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; dest=$(psql -tAc \"SHOW log_destination\"); printf %s \"$dest\" | grep -Eq \"stderr|syslog\" || bad=\"$bad log_destination=$dest\"; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must initiate session auditing upon startup.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; dest=$(psql -tAc \"SHOW log_destination\"); printf %s \"$dest\" | grep -Eq \"stderr|syslog\" || bad=\"$bad log_destination=$dest\"; printf %s \"$bad\"'": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; dest=$(psql -tAc \"SHOW log_destination\"); printf %s \"$dest\" | grep -Eq \"stderr|syslog\" || bad=\"$bad log_destination=$dest\"; printf %s \"$bad\"'": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233589"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW password_encryption\"",
         "type": "command_output"
       },
@@ -917,5 +943,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 35
+  "validated_candidates": 36
 }

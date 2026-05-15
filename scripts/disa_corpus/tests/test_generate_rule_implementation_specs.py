@@ -11209,5 +11209,77 @@ If any world-writable directories without the sticky bit are returned, this is a
         self.assertIn('! -perm -1000', candidate['check']['command'])
 
 
+    def test_infers_postgresql_pgaudit_startup_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233589',
+            'title': 'PostgreSQL must initiate session auditing upon startup.',
+            'check_content': '''As the database administrator (shown here as "postgres"), check the current settings by running the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW shared_preload_libraries"
+
+If pgaudit is not in the current setting, this is a finding.
+
+As the database administrator (shown here as "postgres"), check the current settings by running the following SQL:
+
+$ psql -c "SHOW log_destination"
+
+If stderr or syslog are not in the current setting, this is a finding.''',
+            'fix_text': 'Configure PostgreSQL to enable auditing. For session logging, using pgaudit is recommended.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233589')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('SHOW shared_preload_libraries', candidate['check']['command'])
+        self.assertIn('SHOW log_destination', candidate['check']['command'])
+        self.assertIn('pgaudit', candidate['check']['command'])
+        self.assertIn('stderr|syslog', candidate['check']['command'])
+
+    def test_infers_sql_server_audit_status_started_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271273',
+            'title': 'SQL Server must initiate session auditing upon startup.',
+            'check_content': '''Check if an audit is configured and enabled by executing the following query:
+
+SELECT name AS 'Audit Name',
+status_desc AS 'Audit Status',
+audit_file_path AS 'Current Audit File'
+FROM sys.dm_server_audit_status
+WHERE status_desc = 'STARTED'
+
+All currently defined audits for the SQL server instance will be listed. If no audits are returned, this is a finding.''',
+            'fix_text': 'ALTER SERVER AUDIT [<Server Audit Name>] WITH STATE = ON',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271273')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'not_equals', 'value': ''})
+        self.assertIn('sys.dm_server_audit_status', candidate['check']['command'])
+        self.assertIn("status_desc = 'STARTED'", candidate['check']['command'])
+
+    def test_infers_sql_server_common_criteria_enabled_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271328',
+            'title': 'SQL Server must protect the private resources of one process from unauthorized access by another process.',
+            'check_content': '''Review the Instance configuration:
+
+SELECT value_in_use
+FROM sys.configurations
+WHERE name = 'common criteria compliance enabled'
+
+If "value_in_use" is set to "1" this is not a finding.
+
+If "value_in_use" is set to "0" this is a finding.''',
+            'fix_text': "EXEC SP_CONFIGURE 'common criteria compliance enabled', 1;",
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271328')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+        self.assertIn('sys.configurations', candidate['check']['command'])
+        self.assertIn('common criteria compliance enabled', candidate['check']['command'])
+
+
 if __name__ == '__main__':
     unittest.main()

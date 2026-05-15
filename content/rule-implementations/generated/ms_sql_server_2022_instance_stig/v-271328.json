@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'common criteria compliance enabled';\"",
+      "type": "command_output"
+    },
+    "description": "SQL Server must prevent unauthorized and unintended information transfer via shared system resources.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "generic",
+    "vuln_id": "V-271328"
+  },
   "check_content_excerpt": "Review system documentation to determine whether common criteria compliance is required due to potential impact on system performance. \n\nSQL Server Residual Information Protection (RIP) requires a memory allocation to be overwritten with a known pattern of bits before memory is reallocated to a new resource. Meeting the RIP standard can contribute to improved security; however, overwriting the memory allocation can slow performance. After the common criteria compliance enabled option is enabled, the overwriting occurs. \n\nReview the Instance configuration: \n\nSELECT value_in_use\nFROM sys.configurations\nWHERE name = 'common criteria compliance enabled'\n\nIf \"value_in_use\" is set to \"1\" this is not a finding.\n\nIf \"value_in_use\" is set to \"0\" this is a finding. \n\nIf no results are returned, common criteria compliance is not available in the installed version of SQL Server, this is a finding. Common criteria compliance is only supported in Enterprise and Developer editions of SQL Server.\n\nNote: Enabling this feature may impact performance on highly active SQL Server instances. If an exception justifying setting SQL Server RIP to disabled (value_in_use set to \"0\") has been documented and approved, then this is downgraded to a CAT III finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure SQL Server to effectively protect the private resources of one process or user from unauthorized access by another process or user. \n\nTo enable the use of [Common Criteria Compliance], from the query prompt:  \n \nEXEC SP_CONFIGURE 'show advanced options', 1;  \nRECONFIGURE WITH OVERRIDE;\nEXEC SP_CONFIGURE 'common criteria compliance enabled', 1;\nRECONFIGURE WITH OVERRIDE;\nEXEC SP_CONFIGURE 'show advanced options', 0;  \nRECONFIGURE WITH OVERRIDE;",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271328r1137657_rule",
   "severity": "medium",

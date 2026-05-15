@@ -327,6 +327,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; dest=$(psql -tAc \"SHOW log_destination\"); printf %s \"$dest\" | grep -Eq \"stderr|syslog\" || bad=\"$bad log_destination=$dest\"; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must initiate session auditing upon startup.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233589"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW password_encryption\"",
         "type": "command_output"
       },

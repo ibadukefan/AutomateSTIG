@@ -6059,6 +6059,24 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'contains', 'substring': 'pgaudit'},
             'description': rule.get('title', ''),
         }
+    postgresql_pgaudit_startup = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233589'
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+shared_preload_libraries["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+pgaudit\s+is\s+not\s+in\s+the\s+current\s+setting,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_destination["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+stderr\s+or\s+syslog\s+are\s+not\s+in\s+the\s+current\s+setting,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'\bpgaudit\b', fix_text, re.IGNORECASE)
+    )
+    if postgresql_pgaudit_startup:
+        command = "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; dest=$(psql -tAc \"SHOW log_destination\"); printf %s \"$dest\" | grep -Eq \"stderr|syslog\" || bad=\"$bad log_destination=$dest\"; printf %s \"$bad\"'"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     postgresql_client_min_messages_error = (
         'postgresql' in stig_id.lower()
         and re.search(r"\bSELECT\s+current_setting\([\"']client_min_messages[\"']\);", content, re.IGNORECASE)
@@ -7813,6 +7831,58 @@ def _sql_server_sa_login_disabled_candidate(rule: dict, stig_id: str) -> dict | 
     }
 
 
+def _sql_server_audit_status_started_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if rule.get('vuln_id', '') != 'V-271273':
+        return None
+    if not re.search(r'FROM\s+sys\.dm_server_audit_status\s+WHERE\s+status_desc\s*=\s*[\'"“]STARTED[\'"”]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+no\s+audits\s+are\s+returned,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'ALTER\s+SERVER\s+AUDIT\s+\[<Server\s+Audit\s+Name>\]\s+WITH\s+STATE\s*=\s*ON', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name FROM sys.dm_server_audit_status WHERE status_desc = 'STARTED';\"",
+        },
+        'expected': {'type': 'not_equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+def _sql_server_common_criteria_enabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if rule.get('vuln_id', '') != 'V-271328':
+        return None
+    if not re.search(r'FROM\s+sys\.configurations\s+WHERE\s+name\s*=\s*[\'"“]common\s+criteria\s+compliance\s+enabled[\'"”]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+["“]value_in_use["”]\s+is\s+set\s+to\s+["“]1["”]\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+["“]value_in_use["”]\s+is\s+set\s+to\s+["“]0["”]\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r"SP_CONFIGURE\s+[\'\"]common\s+criteria\s+compliance\s+enabled[\'\"]\s*,\s*1", fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'common criteria compliance enabled';\"",
+        },
+        'expected': {'type': 'equals', 'value': '1'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_system32_absent_application_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -9005,6 +9075,14 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_sa_disabled_candidate = _sql_server_sa_login_disabled_candidate(rule, stig_id)
     if sql_server_sa_disabled_candidate:
         return sql_server_sa_disabled_candidate
+
+    sql_server_audit_status_started_candidate = _sql_server_audit_status_started_candidate(rule, stig_id)
+    if sql_server_audit_status_started_candidate:
+        return sql_server_audit_status_started_candidate
+
+    sql_server_common_criteria_enabled_candidate = _sql_server_common_criteria_enabled_candidate(rule, stig_id)
+    if sql_server_common_criteria_enabled_candidate:
+        return sql_server_common_criteria_enabled_candidate
 
     tomcat_lockout_realm_candidate = _tomcat_lockout_realm_candidate(rule, stig_id)
     if tomcat_lockout_realm_candidate:
