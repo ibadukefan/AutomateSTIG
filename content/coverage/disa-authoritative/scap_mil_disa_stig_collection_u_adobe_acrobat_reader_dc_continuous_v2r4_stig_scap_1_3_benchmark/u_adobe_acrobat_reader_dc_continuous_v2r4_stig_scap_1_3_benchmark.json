@@ -66,16 +66,17 @@
       "vuln_id": "V-213171"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213172",
+      "check_pack": "generated-candidates/adobe_acrobat_reader_dc_continuous_track_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-213172 from source identifier xccdf_mil.disa.stig_group_V-213172.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-213172r395811_rule",
       "severity": "medium",
       "title": "Adobe Reader DC must Block Websites.",
-      "tracking_issue": "TODO-V-213172",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/adobe_acrobat_reader_dc_continuous_track_stig.candidates.json",
         "content/disa-corpus/artifacts/567c8991238721e8a71c127b2af49a27965cd8ed32807ef140a35c04b3528339/U_Adobe_Acrobat_Reader_DC_Continuous_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-213172"

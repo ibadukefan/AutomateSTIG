@@ -7660,6 +7660,39 @@ def _adobe_dc_repair_installation_disabled_candidate(rule: dict, stig_id: str) -
     }
 
 
+def _adobe_reader_dc_block_websites_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-213172':
+        return None
+    title = rule.get('title', '') or ''
+    combined = '\n'.join(part for part in (rule.get('check_content', '') or '', rule.get('fix_text', '') or '') if part)
+    if 'reader' not in stig_id.lower() and 'reader' not in title.lower():
+        return None
+    expected_path = r'Software\Policies\Adobe\Acrobat Reader\DC\FeatureLockDown\cDefaultLaunchURLPerms'
+    normalized = combined.lower().replace('\\\\', '\\')
+    if f'hkey_local_machine\\{expected_path}'.lower() not in normalized and f'\\{expected_path}'.lower() not in normalized:
+        return None
+    if not re.search(r'Value\s+Name:\s*iURLPerms\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'Type:\s*REG_DWORD\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'Value:\s*1\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'iURLPerms[^\n.]+not\s+set\s+to\s+["“]?1["”]?[^\n.]+finding', combined, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {
+            'type': 'registry',
+            'path': f'HKLM\\{expected_path}',
+            'value_name': 'iURLPerms',
+        },
+        'expected': {'type': 'equals', 'value': 1},
+        'description': title,
+    }
+
+
 def _windows_ftp_anonymous_authentication_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -8307,6 +8340,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         adobe_repair_installation_candidate = _adobe_dc_repair_installation_disabled_candidate(rule, stig_id)
         if adobe_repair_installation_candidate:
             return adobe_repair_installation_candidate
+
+        adobe_block_websites_candidate = _adobe_reader_dc_block_websites_candidate(rule, stig_id)
+        if adobe_block_websites_candidate:
+            return adobe_block_websites_candidate
 
         audit_policy_candidate = _windows_audit_policy_candidate(rule)
         if audit_policy_candidate:

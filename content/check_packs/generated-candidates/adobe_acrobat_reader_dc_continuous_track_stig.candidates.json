@@ -60,6 +60,20 @@
       "check": {
         "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cDefaultLaunchURLPerms",
         "type": "registry",
+        "value_name": "iURLPerms"
+      },
+      "description": "Adobe Reader DC must Block Websites.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-213172"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cDefaultLaunchURLPerms",
+        "type": "registry",
         "value_name": "iUnknownURLPerms"
       },
       "description": "Adobe Reader DC must block access to Unknown Websites.",

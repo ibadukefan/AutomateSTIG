@@ -2321,6 +2321,45 @@ Value: 1''',
             'description': 'Adobe Acrobat Pro DC Continuous Repair Installation must be disabled.',
         })
 
+    def test_infers_adobe_reader_dc_block_websites_registry_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213172',
+            'title': 'Adobe Reader DC must Block Websites.',
+            'check_content': '''Verify the following registry configuration:
+
+Utilizing the Registry Editor, navigate to the following:
+HKEY_LOCAL_MACHINE\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cDefaultLaunchURLPerms
+
+Value Name: iURLPerms
+Type: REG_DWORD
+Value: 1
+
+Value: 0 - only with a documented ISSO risk acceptance
+
+If the value for “iURLPerms” is set to “0” and a documented ISSO risk acceptance approving access to websites is provided, this is not a finding.
+
+If the value for “iURLPerms” is not set to “1” and “Type” configured to “REG_DWORD” or does not exist, this is a finding.''',
+            'fix_text': '''Configure the following registry value:
+
+Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cDefaultLaunchURLPerms
+
+Value Name: iURLPerms
+Type: REG_DWORD
+Value: 1''',
+        }, 'Adobe_Acrobat_Reader_DC_Continuous_Track_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-213172',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cDefaultLaunchURLPerms',
+                'value_name': 'iURLPerms',
+            },
+            'expected': {'type': 'equals', 'value': 1},
+            'description': 'Adobe Reader DC must Block Websites.',
+        })
+
     def test_infers_windows_ftp_anonymous_authentication_disabled_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278027',
