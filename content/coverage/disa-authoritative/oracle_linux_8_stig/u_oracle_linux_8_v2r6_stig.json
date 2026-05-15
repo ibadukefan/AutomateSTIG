@@ -1471,16 +1471,17 @@
       "vuln_id": "V-248615"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248616",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248616r991589_rule",
       "severity": "medium",
       "title": "OL 8 must prevent files with the setuid and setgid bit set from being executed on file systems that contain user home directories.",
-      "tracking_issue": "TODO-V-248616",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/0a9de69038ea7154ebc704b548c1e6d79b971c1e37ef81f72b38bd23448482b3/U_Oracle_Linux_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-248616"
@@ -1534,16 +1535,17 @@
       "vuln_id": "V-248619"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248620",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248620r991589_rule",
       "severity": "medium",
       "title": "OL 8 file systems that contain user home directories must not execute binary files.",
-      "tracking_issue": "TODO-V-248620",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/0a9de69038ea7154ebc704b548c1e6d79b971c1e37ef81f72b38bd23448482b3/U_Oracle_Linux_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-248620"

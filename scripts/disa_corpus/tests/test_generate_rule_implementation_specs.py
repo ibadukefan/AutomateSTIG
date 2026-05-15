@@ -67,6 +67,36 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertIn('"vuln_id": "V-230543"', generated)
             self.assertNotIn('xccdf_mil.disa.stig_group_V-230543', generated)
 
+    def test_enriches_scap_group_rule_from_artifact_vuln_key(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            coverage = root / 'coverage' / 'sample.json'
+            coverage.parent.mkdir()
+            coverage.write_text('''{
+              "stig_id": "scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark",
+              "benchmark": "Sample",
+              "version": "V1R1",
+              "rules": [
+                {"vuln_id":"xccdf_mil.disa.stig_group_V-230298","rule_id":"xccdf_mil.disa.stig_rule_SV-230298r1_rule","title":"The rsyslog service must be running in RHEL 8.","classification":"unsupported","severity":"medium"}
+              ]
+            }''')
+            original = mod._artifact_rule_map
+            mod._artifact_rule_map = lambda manifest, repo_root, cache: {
+                'V-230298': {
+                    'vuln_id': 'V-230298',
+                    'rule_id': 'xccdf_mil.disa.stig_rule_SV-230298r1_rule',
+                    'check_content': 'Verify that the rsyslog service is running with the following command:\n\n$ systemctl is-active rsyslog\nactive\n\nIf the service is not active, this is a finding.',
+                }
+            }
+            try:
+                count = mod.generate_specs(coverage.parent, root / 'impl', root)
+            finally:
+                mod._artifact_rule_map = original
+            self.assertEqual(count, 1)
+            generated = json.loads(next((root / 'impl').rglob('*.json')).read_text())
+            self.assertEqual(generated['vuln_id'], 'xccdf_mil.disa.stig_group_V-230298')
+            self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'rsyslog', 'expected_status': 'running'})
+
     def test_infers_linux_interactive_home_contents_mode_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244531',
@@ -144,6 +174,43 @@ By using this IS, you consent to the following conditions:
             self.assertEqual(count, 2)
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
+
+    def test_infers_oracle_linux_home_filesystem_mount_options_from_fstab_prose(self):
+        base = {
+            'vuln_id': 'V-248616',
+            'title': 'OL 8 must prevent files with the setuid and setgid bit set from being executed on file systems that contain user home directories.',
+            'check_content': '''Verify that file systems containing user home directories are mounted with the "nosuid" option.
+
+Find the file system(s) that contain the user home directories with the following command:
+
+$ sudo awk -F: '($3>=1000)&&($1!="nobody"){print $1,$3,$6}' /etc/passwd
+
+Check the file systems that are mounted at boot time with the following command:
+
+$ sudo more /etc/fstab
+
+If a file system found in "/etc/fstab" refers to the user home directory file system and it does not have the "nosuid" option set, this is a finding.''',
+            'fix_text': 'Configure "/etc/fstab" to use the "nosuid" option on file systems that contain user home directories for interactive users.',
+        }
+        candidate = mod.infer_candidate_check(base, 'Oracle_Linux_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-248616')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('findmnt -nkT "$home"', candidate['check']['command'])
+        self.assertIn('nosuid', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+        noexec_rule = dict(base)
+        noexec_rule.update({
+            'vuln_id': 'V-248620',
+            'title': 'OL 8 file systems that contain user home directories must not execute binary files.',
+            'check_content': base['check_content'].replace('nosuid', 'noexec'),
+            'fix_text': 'Configure the "/etc/fstab" to use the "noexec" option on file systems that contain user home directories for interactive users.',
+        })
+        noexec_candidate = mod.infer_candidate_check(noexec_rule, 'Oracle_Linux_8_STIG')
+        self.assertIsNotNone(noexec_candidate)
+        self.assertIn('noexec', noexec_candidate['check']['command'])
 
     def test_infers_ubuntu_aide_filesystem_integrity_check_candidate_from_exact_vuln(self):
         candidate = mod.infer_candidate_check({

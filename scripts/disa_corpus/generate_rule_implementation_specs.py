@@ -2895,7 +2895,7 @@ def _linux_interactive_home_mount_option_candidate(rule: dict, stig_id: str) -> 
     fix_text = rule.get('fix_text', '') or ''
     title = rule.get('title', '') or ''
     option_match = re.search(
-        r'file\s+systems\s+that\s+contain\s+user\s+home\s+directories\s+are\s+mounted\s+with\s+the\s+["“](noexec|nosuid)["”]\s+option',
+        r'file\s+systems\s+(?:that\s+contain|containing)\s+user\s+home\s+directories\s+are\s+mounted\s+with\s+the\s+["“](noexec|nosuid)["”]\s+option',
         content,
         re.IGNORECASE,
     )
@@ -2904,9 +2904,15 @@ def _linux_interactive_home_mount_option_candidate(rule: dict, stig_id: str) -> 
     required_option = option_match.group(1).lower()
     if not re.search(r'awk\s+-F:\s+.*?\$3\s*>=\s*1000.*?/etc/passwd', content, re.IGNORECASE | re.DOTALL):
         return None
-    if not re.search(r'user\s+home\s+directories\s+are\s+mounted\s+under\s+["“]/["”].*?automatically\s+a\s+finding.*?' + re.escape(required_option) + r'.*?cannot\s+be\s+used\s+on\s+the\s+["“]/["”]', content, re.IGNORECASE | re.DOTALL):
-        return None
-    if not re.search(r'file\s+system\s+found\s+in\s+["“]/etc/fstab["”]\s+refers\s+to\s+the\s+user\s+home\s+director(?:y|ies).*?does\s+not\s+have\s+the\s+["“]' + re.escape(required_option) + r'["”]\s+option\s+set,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+    root_exception = re.search(r'user\s+home\s+directories\s+are\s+mounted\s+under\s+["“]/["”].*?automatically\s+a\s+finding.*?' + re.escape(required_option) + r'.*?cannot\s+be\s+used\s+on\s+the\s+["“]/["”]', content, re.IGNORECASE | re.DOTALL)
+    fstab_finding = re.search(r'file\s+system\s+found\s+in\s+["“]/etc/fstab["”]\s+refers\s+to\s+the\s+user\s+home\s+director(?:y|ies).*?does\s+not\s+have\s+the\s+["“]' + re.escape(required_option) + r'["”]\s+option\s+set,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL)
+    ol8_home_fstab_finding = (
+        rule.get('vuln_id', '') in {'V-248616', 'V-248620'}
+        and stig_id == 'Oracle_Linux_8_STIG'
+        and re.search(r'Check\s+the\s+file\s+systems\s+that\s+are\s+mounted\s+at\s+boot\s+time.*?/etc/fstab', content, re.IGNORECASE | re.DOTALL)
+        and fstab_finding
+    )
+    if not (root_exception and fstab_finding) and not ol8_home_fstab_finding:
         return None
     if not re.search(r'/etc/fstab', fix_text, re.IGNORECASE) or not re.search(r'file\s+systems\s+that\s+contain\s+user\s+home\s+directories', title + '\n' + fix_text, re.IGNORECASE):
         return None
@@ -9296,7 +9302,12 @@ def generate_specs(coverage_root: Path, implementation_root: Path, repo_root: Pa
             if rule.get('classification') != 'unsupported':
                 continue
             enriched = dict(rule)
-            for k, v in artifact_rules.get(rule.get('vuln_id') or rule.get('rule_id'), {}).items():
+            artifact_rule = {}
+            for key in _artifact_rule_keys(rule):
+                if key in artifact_rules:
+                    artifact_rule = artifact_rules[key]
+                    break
+            for k, v in artifact_rule.items():
                 if not v:
                     continue
                 if k in {'vuln_id', 'rule_id'} and enriched.get(k):
