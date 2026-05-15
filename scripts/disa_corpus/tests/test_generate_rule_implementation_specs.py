@@ -11111,5 +11111,59 @@ Enter "BCDEDIT /set {current} nx OptOut".
         })
 
 
+    def test_infers_linux_sudoers_default_include_directory_from_equivalent_vulns(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-252655',
+            'title': 'OL 8 must specify the default "include" directory for the /etc/sudoers file.',
+            'check_content': '''Note: If the "include" and "includedir" directives are not present in the /etc/sudoers file, this requirement is not applicable.
+Verify the operating system specifies only the default "include" directory for the /etc/sudoers file with the following command:
+
+$ sudo grep include /etc/sudoers
+#includedir /etc/sudoers.d
+
+If the results are not "/etc/sudoers.d" or additional files or directories are specified, this is a finding.
+Verify the operating system does not have nested "include" files or directories within the /etc/sudoers.d directory with the following command:
+
+$ sudo grep -Er include /etc/sudoers.d
+
+If results are returned, this is a finding.''',
+            'fix_text': '''Configure the operating system to specify only the default "include" directory for the /etc/sudoers file by running the following command:
+
+# visudo
+
+Ensure the only uncommented include directive is:
+
+#includedir /etc/sudoers.d
+
+Remove nested include files from /etc/sudoers.d.''',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-252655')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('/etc/sudoers.d', candidate['check']['command'])
+
+
+    def test_infers_sles_world_writable_directories_sticky_bit_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234828',
+            'title': 'The sticky bit must be set on all SUSE operating system world-writable directories.',
+            'check_content': '''Verify the SUSE operating system prevents unauthorized and unintended information transfer via the shared system resources.
+Check that world-writable directories have the sticky bit set with the following command:
+
+> sudo find / \\( -path /.snapshots -o -path /proc -o -path /sys -o -path /dev \\) -prune -o -type d -perm -0002 ! -perm -1000 -print
+
+If any world-writable directories without the sticky bit are returned, this is a finding.''',
+            'fix_text': '''Configure the SUSE operating system so that all world-writable directories have the sticky bit set.
+
+> sudo chmod +t <directory>''',
+        }, 'SLES_15_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-234828')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('! -perm -1000', candidate['check']['command'])
+
+
 if __name__ == '__main__':
     unittest.main()

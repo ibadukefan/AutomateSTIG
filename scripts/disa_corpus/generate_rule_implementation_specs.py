@@ -2615,13 +2615,13 @@ def _linux_interactive_shadow_sha512_candidate(rule: dict, stig_id: str) -> dict
 def _linux_sudoers_default_include_directory_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
-    if rule.get('vuln_id', '') != 'V-251711':
+    if rule.get('vuln_id', '') not in {'V-251711', 'V-251703', 'V-252655'}:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     if not re.search(r'grep\s+include\s+/etc/sudoers', content, re.IGNORECASE):
         return None
-    if not re.search(r'grep\s+-r\s+include\s+/etc/sudoers\.d', content, re.IGNORECASE):
+    if not re.search(r'grep\s+-E?r\s+include\s+/etc/sudoers\.d', content, re.IGNORECASE):
         return None
     if '#includedir /etc/sudoers.d' not in content or '#includedir /etc/sudoers.d' not in fix_text:
         return None
