@@ -5861,9 +5861,42 @@ def _interactive_home_directory_mode_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _ubuntu_ufw_rate_limit_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-238367', 'V-260517', 'V-270754'}:
+        return None
+    if 'ubuntu' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'\bss\s+-l46ut\b', content):
+        return None
+    if not re.search(r'\bufw\s+status\b', content, re.IGNORECASE):
+        return None
+    has_denied_or_limited_port_prose = re.search(r'If\s+any\s+port\s+with\s+a\s+state\s+of\s+["“]LISTEN["”]\s+that\s+does\s+not\s+have\s+an\s+action\s+of\s+["“]DENY["”],\s+is\s+not\s+marked\s+with\s+the\s+["“]LIMIT["”]\s+action,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    if not has_denied_or_limited_port_prose:
+        return None
+    has_inactive_status_prose = re.search(r'If\s+the\s+Status\s+is\s+set\s+to\s+(?:["“]inactive["”]\s+or\s+any\s+type\s+of\s+error|anything\s+other\s+than\s+["“]active["”]),?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    if vuln_id == 'V-270754' and not has_inactive_status_prose:
+        return None
+    if not re.search(r'\bufw\s+limit\s+(?:\[service\]|<service_name>)', fix_text, re.IGNORECASE):
+        return None
+    command = "ufw status 2>/dev/null | awk 'BEGIN{status=0} /^Status:[[:space:]]+active[[:space:]]*$/ {status=1} END{exit(status?0:1)}' >/dev/null || { echo ufw-inactive; exit 0; }; ss -H -l46utn | awk '$1 ~ /^(tcp|udp)/ {addr=$5; sub(/.*:/,\"\",addr); if (addr ~ /^[0-9]+$/) print addr}' | sort -nu | while read -r port; do ufw status | awk -v p=\"$port\" 'BEGIN{ok=0} $1 ~ (\"^\" p \"(/|$)\") && ($2==\"LIMIT\" || $2==\"DENY\") {ok=1} END{exit(ok?0:1)}' || echo \"$port\"; done"
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    ubuntu_ufw_rate_limit_candidate = _ubuntu_ufw_rate_limit_candidate(rule, stig_id)
+    if ubuntu_ufw_rate_limit_candidate:
+        return ubuntu_ufw_rate_limit_candidate
     interactive_home_contents_mode_candidate = _interactive_home_contents_mode_candidate(rule, stig_id)
     if interactive_home_contents_mode_candidate:
         return interactive_home_contents_mode_candidate

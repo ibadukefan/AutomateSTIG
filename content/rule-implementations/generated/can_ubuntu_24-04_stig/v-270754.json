@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "ufw status 2>/dev/null | awk 'BEGIN{status=0} /^Status:[[:space:]]+active[[:space:]]*$/ {status=1} END{exit(status?0:1)}' >/dev/null || { echo ufw-inactive; exit 0; }; ss -H -l46utn | awk '$1 ~ /^(tcp|udp)/ {addr=$5; sub(/.*:/,\"\",addr); if (addr ~ /^[0-9]+$/) print addr}' | sort -nu | while read -r port; do ufw status | awk -v p=\"$port\" 'BEGIN{ok=0} $1 ~ (\"^\" p \"(/|$)\") && ($2==\"LIMIT\" || $2==\"DENY\") {ok=1} END{exit(ok?0:1)}' || echo \"$port\"; done",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must configure the uncomplicated firewall to rate-limit impacted network interfaces.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-270754"
+  },
   "check_content_excerpt": "Verify an application firewall is configured to rate limit any connection to the system. \n \nCheck all the services listening to the ports with the following command: \n \n$ ss -l46ut \nNetid               State          Recv-Q          Send-Q                               Local Address:Port            Peer Address:Port               Process                \ntcp                 LISTEN               0                     511                                           *:http                                          *:* \ntcp                 LISTEN               0                     128                                           [::]:ssh                                        [::]:*\ntcp                 LISTEN               0                     128                                           [::]:ipp                                        [::]:* \ntcp                 LISTEN               0                     128                                           [::]:smtp                                    [::]:*\n\n \nFor each entry, verify the Uncomplicated Firewall (ufw) is configured to rate limit the service ports with the following command: \n \n$ sudo ufw status \nStatus: active \n \nTo                           Action     From \n--                             ------         ---- \n80/tcp                    LIMIT       Anywhere\n25/tcp                    LIMIT       Anywhere\nAnywhere            DENY       177.60.7.4\n443                           LIMIT      Anywhere       \n22/tcp                     LIMIT      Anywhere    \n80/tcp (v6)            LIMIT      Anywhere\n25/tcp (v6)            LIMIT      Anywhere               \n22/tcp (v6)            LIMIT      Anywhere (v6) \n\n25                             DENY OUT    Anywhere\n25 (v6)                    DENY OUT    Anywhere (v6)\n\nIf any port with a state of \"LISTEN\" that does not have an action of \"DENY\", is not marked with the \"LIMIT\" action, this is a finding. If the Status is set to anything other than \"active\" this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the application firewall to protect against or limit the effects of DoS attacks by ensuring Ubuntu 24.04 LTS is implementing rate-limiting measures on impacted network interfaces. \n \nTo change the Status of ufw to \"active\" use the following command:\n$ sudo ufw enable\n\nCheck all the services listening to the ports with the following command: \n \n$ sudo ss -l46ut \nNetid               State                Recv-Q                Send-Q                               Local Address:Port                               Peer Address:Port               Process                \ntcp                 LISTEN               0                     128                                           [::]:ssh                                        [::]:* \n \nFor each service with a port listening to connections, run the following command, replacing \"[service]\" with the service that needs to be rate limited. \n \n$ sudo ufw limit [service] \n \nRate-limiting can also be done on an interface. An example of adding a rate-limit on the eth0 interface follows: \n \n$ sudo ufw limit in on eth0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270754r1066751_rule",
   "severity": "medium",

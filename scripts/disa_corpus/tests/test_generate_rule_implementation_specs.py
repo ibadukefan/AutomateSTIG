@@ -145,6 +145,48 @@ By using this IS, you consent to the following conditions:
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
+    def test_infers_ubuntu_ufw_rate_limit_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270754',
+            'title': 'Ubuntu 24.04 LTS must configure the uncomplicated firewall to rate-limit impacted network interfaces.',
+            'check_content': '''Verify an application firewall is configured to rate limit any connection to the system.
+
+Check all the services listening to the ports with the following command:
+
+$ ss -l46ut
+Netid State Recv-Q Send-Q Local Address:Port Peer Address:Port Process
+tcp LISTEN 0 128 [::]:ssh [::]:*
+
+For each entry, verify the Uncomplicated Firewall (ufw) is configured to rate limit the service ports with the following command:
+
+$ sudo ufw status
+Status: active
+
+To Action From
+-- ------ ----
+22/tcp LIMIT Anywhere
+
+If any port with a state of "LISTEN" that does not have an action of "DENY", is not marked with the "LIMIT" action, this is a finding. If the Status is set to anything other than "active" this is a finding.''',
+            'fix_text': '''Configure the application firewall to protect against or limit the effects of DoS attacks by ensuring Ubuntu 24.04 LTS is implementing rate-limiting measures on impacted network interfaces.
+
+To change the Status of ufw to "active" use the following command:
+$ sudo ufw enable
+
+For each service with a port listening to connections, run the following command, replacing "[service]" with the service that needs to be rate limited.
+
+$ sudo ufw limit [service]''',
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270754',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "ufw status 2>/dev/null | awk 'BEGIN{status=0} /^Status:[[:space:]]+active[[:space:]]*$/ {status=1} END{exit(status?0:1)}' >/dev/null || { echo ufw-inactive; exit 0; }; ss -H -l46utn | awk '$1 ~ /^(tcp|udp)/ {addr=$5; sub(/.*:/,\"\",addr); if (addr ~ /^[0-9]+$/) print addr}' | sort -nu | while read -r port; do ufw status | awk -v p=\"$port\" 'BEGIN{ok=0} $1 ~ (\"^\" p \"(/|$)\") && ($2==\"LIMIT\" || $2==\"DENY\") {ok=1} END{exit(ok?0:1)}' || echo \"$port\"; done",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Ubuntu 24.04 LTS must configure the uncomplicated firewall to rate-limit impacted network interfaces.',
+        })
+
     def test_infers_firewalld_active_zone_drop_candidate_from_runtime_only_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230504',
