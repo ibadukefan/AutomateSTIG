@@ -4811,6 +4811,42 @@ def _esxi_disabled_vmhost_service_candidate(rule: dict, stig_id: str) -> dict | 
     }
 
 
+def _esxi_auditrecords_enabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'esxi' not in stig_id.lower() or rule.get('vuln_id') != 'V-256436':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'(?m)^\s*#?\s*esxcli\s+system\s+auditrecords\s+get\s*$', content):
+        return None
+    if not re.search(r'(?m)^\s*\$esxcli\.system\.auditrecords\.get\.invoke\(\)\s*\|\s*Format-List\s*$', content, re.IGNORECASE):
+        return None
+    required_fields = (
+        'AuditRecordRemoteTransmissionActive : true',
+        'AuditRecordStorageActive : true',
+        'AuditRecordStorageCapacity : 100',
+    )
+    if not all(field in content for field in required_fields):
+        return None
+    if not re.search(r'If\s+audit\s+record\s+storage\s+is\s+not\s+active\s+and\s+configured,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not all(command in fix_text for command in (
+        'esxcli system auditrecords local set --size=100',
+        'esxcli system auditrecords local enable',
+        'esxcli system auditrecords remote enable',
+    )):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': '$esxcli = Get-EsxCli -v2; $esxcli.system.auditrecords.get.invoke() | Select-Object -Property AuditRecordRemoteTransmissionActive,AuditRecordStorageActive,AuditRecordStorageCapacity | ConvertTo-Json -Compress',
+        },
+        'expected': {'type': 'contains', 'substring': '"AuditRecordRemoteTransmissionActive":true,"AuditRecordStorageActive":true,"AuditRecordStorageCapacity":100'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _esxi_advanced_setting_exact_value_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'esxi' not in stig_id.lower():
         return None
@@ -8010,6 +8046,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     esxi_disabled_service_candidate = _esxi_disabled_vmhost_service_candidate(rule, stig_id)
     if esxi_disabled_service_candidate:
         return esxi_disabled_service_candidate
+
+    esxi_auditrecords_candidate = _esxi_auditrecords_enabled_candidate(rule, stig_id)
+    if esxi_auditrecords_candidate:
+        return esxi_auditrecords_candidate
 
     esxi_advanced_setting_candidate = _esxi_advanced_setting_exact_value_candidate(rule, stig_id)
     if esxi_advanced_setting_candidate:

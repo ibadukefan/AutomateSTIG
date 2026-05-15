@@ -4941,6 +4941,47 @@ If the "LocalLogOutputIsPersistent" value is not true, this is a finding.'''
             'description': 'The ESXi host must enable a persistent log location for all locally stored logs.',
         })
 
+    def test_infers_esxi_auditrecords_enabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256436',
+            'title': 'The ESXi host must enable audit logging.',
+            'check_content': '''From an ESXi shell, run the following command:
+
+# esxcli system auditrecords get
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+$esxcli = Get-EsxCli -v2
+$esxcli.system.auditrecords.get.invoke()|Format-List
+
+Example result:
+
+AuditRecordRemoteTransmissionActive : true
+AuditRecordStorageActive : true
+AuditRecordStorageCapacity : 100
+AuditRecordStorageDirectory : /scratch/auditLog
+
+If audit record storage is not active and configured, this is a finding.''',
+            'fix_text': '''From an ESXi shell, run the following commands:
+
+# esxcli system auditrecords local set --size=100
+# esxcli system auditrecords local enable
+# esxcli system auditrecords remote enable
+# esxcli system syslog reload''',
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-256436',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': '$esxcli = Get-EsxCli -v2; $esxcli.system.auditrecords.get.invoke() | Select-Object -Property AuditRecordRemoteTransmissionActive,AuditRecordStorageActive,AuditRecordStorageCapacity | ConvertTo-Json -Compress',
+            },
+            'expected': {'type': 'contains', 'substring': '"AuditRecordRemoteTransmissionActive":true,"AuditRecordStorageActive":true,"AuditRecordStorageCapacity":100'},
+            'description': 'The ESXi host must enable audit logging.',
+        })
+
     def test_infers_esxi_advanced_setting_exact_value_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256379',

@@ -249,6 +249,19 @@
     },
     {
       "check": {
+        "command": "$esxcli = Get-EsxCli -v2; $esxcli.system.auditrecords.get.invoke() | Select-Object -Property AuditRecordRemoteTransmissionActive,AuditRecordStorageActive,AuditRecordStorageCapacity | ConvertTo-Json -Compress",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must enable audit logging.",
+      "expected": {
+        "substring": "\"AuditRecordRemoteTransmissionActive\":true,\"AuditRecordStorageActive\":true,\"AuditRecordStorageCapacity\":100",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-256436"
+    },
+    {
+      "check": {
         "command": "esxcli system syslog config get|grep 509",
         "type": "command_output"
       },

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 32,
+  "candidate_checks": 33,
   "cases": [
     {
       "check": {
@@ -497,6 +497,32 @@
     },
     {
       "check": {
+        "command": "$esxcli = Get-EsxCli -v2; $esxcli.system.auditrecords.get.invoke() | Select-Object -Property AuditRecordRemoteTransmissionActive,AuditRecordStorageActive,AuditRecordStorageCapacity | ConvertTo-Json -Compress",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must enable audit logging.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "\"AuditRecordRemoteTransmissionActive\":true,\"AuditRecordStorageActive\":true,\"AuditRecordStorageCapacity\":100",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "$esxcli = Get-EsxCli -v2; $esxcli.system.auditrecords.get.invoke() | Select-Object -Property AuditRecordRemoteTransmissionActive,AuditRecordStorageActive,AuditRecordStorageCapacity | ConvertTo-Json -Compress": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "$esxcli = Get-EsxCli -v2; $esxcli.system.auditrecords.get.invoke() | Select-Object -Property AuditRecordRemoteTransmissionActive,AuditRecordStorageActive,AuditRecordStorageCapacity | ConvertTo-Json -Compress": "before\n\"AuditRecordRemoteTransmissionActive\":true,\"AuditRecordStorageActive\":true,\"AuditRecordStorageCapacity\":100\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256436"
+    },
+    {
+      "check": {
         "command": "esxcli system syslog config get|grep 509",
         "type": "command_output"
       },
@@ -839,5 +865,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_7-0_esxi_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
-  "validated_candidates": 32
+  "validated_candidates": 33
 }
