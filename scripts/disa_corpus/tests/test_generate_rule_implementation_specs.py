@@ -92,6 +92,36 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
+    def test_infers_firewalld_active_zone_drop_candidate_from_runtime_only_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230504',
+            'title': 'A RHEL 8 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.',
+            'check_content': '''Verify "firewalld" is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands:
+
+$ sudo firewall-cmd --state
+running
+
+$ sudo firewall-cmd --get-active-zones
+custom
+  interfaces: ens33
+
+$ sudo firewall-cmd --info-zone=custom | grep target
+target: DROP
+
+If no zones are active on the RHEL 8 interfaces or if the target is set to a different option other than "DROP", this is a finding.''',
+            'fix_text': 'Configure the "firewalld" daemon to employ a deny-all, allow-by-exception policy.',
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230504',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "firewall-cmd --get-active-zones | awk 'NF==1{print $1}' | while read -r zone; do target=$(firewall-cmd --info-zone=\"$zone\" | awk -F: '/^[[:space:]]*target:/{gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",$2); print $2}'); [ \"$target\" = \"DROP\" ] || printf '%s %s\\n' \"$zone\" \"$target\"; done",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'A RHEL 8 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.',
+        })
+
     def test_infers_cisco_nxos_absent_command_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221101',

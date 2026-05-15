@@ -3106,6 +3106,23 @@ def _firewalld_target_drop_candidate(rule: dict) -> dict | None:
     title = rule.get('title', '') or ''
     if not re.search(r'firewall\s+(?:must\s+)?employs?\s+a\s+deny-all,\s+allow-by-exception\s+policy', title, re.IGNORECASE):
         return None
+    runtime_only_drop = (
+        re.search(r'firewall-cmd\s+--get-active-zones', content, re.IGNORECASE)
+        and re.search(r'firewall-cmd\s+--info-zone=[A-Za-z0-9_.\[\]-]+\s*\|\s*grep\s+target', content, re.IGNORECASE)
+        and re.search(r'target:\s*DROP', content, re.IGNORECASE)
+        and re.search(r'If\s+no\s+zones\s+are\s+active[^.]*or\s+if\s+the\s+target\s+is\s+set\s+to\s+a\s+different\s+option\s+other\s+than\s+["“]DROP["”],?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL)
+    )
+    if runtime_only_drop and not re.search(r'firewall-cmd\s+--permanent\s+--info-zone=', content, re.IGNORECASE):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'firewall-cmd --get-active-zones | awk \'NF==1{print $1}\' | while read -r zone; do target=$(firewall-cmd --info-zone="$zone" | awk -F: \'/^[[:space:]]*target:/{gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",$2); print $2}\'); [ "$target" = "DROP" ] || printf \'%s %s\\n\' "$zone" "$target"; done',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     if not re.search(r'runtime\s+and\s+permanent\s+targets?\s+are\s+set\s+to\s+a\s+different\s+option\s+other\s+than\s+["“]DROP["”]', content, re.IGNORECASE):
         return None
     runtime = re.search(

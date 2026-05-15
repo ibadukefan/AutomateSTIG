@@ -2659,6 +2659,19 @@
     },
     {
       "check": {
+        "command": "firewall-cmd --get-active-zones | awk 'NF==1{print $1}' | while read -r zone; do target=$(firewall-cmd --info-zone=\"$zone\" | awk -F: '/^[[:space:]]*target:/{gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",$2); print $2}'); [ \"$target\" = \"DROP\" ] || printf '%s %s\\n' \"$zone\" \"$target\"; done",
+        "type": "command_output"
+      },
+      "description": "A RHEL 8 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230504"
+    },
+    {
+      "check": {
         "name": "firewalld",
         "should_be_installed": true,
         "type": "package"
