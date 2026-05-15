@@ -5860,6 +5860,24 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': 'error'},
             'description': rule.get('title', ''),
         }
+    postgresql_client_min_messages_no_log_debug = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233533'
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+client_min_messages;?["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+client_min_messages\s+is\s+set\s+to\s+LOG\s+or\s+DEBUG,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*client_min_messages\s*=\s*error\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
+    )
+    if postgresql_client_min_messages_no_log_debug:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'sh -c \'v=$(psql -tAc "SHOW client_min_messages" | tr -d "[:space:]" | tr "[:upper:]" "[:lower:]"); case "$v" in log|debug) printf %s "$v";; esac\'',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     postgresql_ssl_on = (
         'postgresql' in stig_id.lower()
         and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+ssl["”]\s*$', content, re.MULTILINE | re.IGNORECASE)

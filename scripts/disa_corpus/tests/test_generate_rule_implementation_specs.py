@@ -294,6 +294,31 @@ ssl = on''',
             'description': 'PostgreSQL must maintain the confidentiality and integrity of information during preparation for transmission.',
         })
 
+    def test_infers_postgresql_client_min_messages_blocks_log_and_debug(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233533',
+            'title': 'PostgreSQL must reveal detailed error messages only to the ISSO, ISSM, SA, and DBA.',
+            'check_content': '''As the database administrator (shown here as "postgres"), check the current client message level by running the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW client_min_messages;"
+
+If client_min_messages is set to LOG or DEBUG, this is a finding.''',
+            'fix_text': '''As the database administrator, edit postgresql.conf and configure:
+
+client_min_messages = error''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-233533',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'sh -c \'v=$(psql -tAc "SHOW client_min_messages" | tr -d "[:space:]" | tr "[:upper:]" "[:lower:]"); case "$v" in log|debug) printf %s "$v";; esac\'',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'PostgreSQL must reveal detailed error messages only to the ISSO, ISSM, SA, and DBA.',
+        })
+
     def test_infers_postgresql_pgaudit_security_object_settings(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233573',
