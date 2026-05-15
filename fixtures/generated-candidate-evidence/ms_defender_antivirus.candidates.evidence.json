@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 68,
+  "candidate_checks": 72,
   "cases": [
     {
       "check": {
@@ -1512,6 +1512,110 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableBehaviorMonitoring\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must enable behavior monitoring.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableBehaviorMonitoring\"": "unexpected-False"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableBehaviorMonitoring\"": "False"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278663"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableIOAVProtection\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must scan all downloaded files and attachments.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableIOAVProtection\"": "unexpected-False"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableIOAVProtection\"": "False"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278664"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableOnAccessProtection\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must monitor file and program activity.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableOnAccessProtection\"": "unexpected-False"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableOnAccessProtection\"": "False"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278665"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableRealtimeMonitoring\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must enable real-time protection.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableRealtimeMonitoring\"": "unexpected-False"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableRealtimeMonitoring\"": "False"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278666"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
         "type": "registry",
         "value_name": "DisableScriptScanning"
@@ -1840,5 +1944,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Defender_Antivirus",
-  "validated_candidates": 68
+  "validated_candidates": 72
 }

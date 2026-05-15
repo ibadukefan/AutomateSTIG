@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableIOAVProtection\"",
+      "type": "command_output"
+    },
+    "description": "Microsoft Defender AV must scan all downloaded files and attachments.",
+    "expected": {
+      "type": "equals",
+      "value": "False"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278664"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> Scan all downloaded files and attachments is set to \"Enabled\"; otherwise, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "False"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> Scan all downloaded files and attachments to \"Enabled\".\n\nClick \"OK\".\n\nClick \"Apply\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-278664r1134256_rule",
   "severity": "medium",

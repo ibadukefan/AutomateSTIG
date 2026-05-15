@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableRealtimeMonitoring\"",
+      "type": "command_output"
+    },
+    "description": "Microsoft Defender AV must enable real-time protection.",
+    "expected": {
+      "type": "equals",
+      "value": "False"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278666"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> Turn off real-time protection is set to \"Disabled\"; otherwise, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "False"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> Turn off real-time protection to \"Disabled\".\n\nClick \"OK\".\n\nClick \"Apply\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-278666r1134258_rule",
   "severity": "medium",

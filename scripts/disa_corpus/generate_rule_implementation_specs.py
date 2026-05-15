@@ -7769,6 +7769,87 @@ def _windows_dep_bcdedit_at_least_optout_candidate(rule: dict, stig_id: str) -> 
     }
 
 
+def _defender_av_get_mppreference_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'defender' not in stig_id.lower():
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (content, fix_text) if part)
+    preference_map = {
+        'V-278663': ('Turn on behavior monitoring', 'DisableBehaviorMonitoring', 'False'),
+        'V-278664': ('Scan all downloaded files and attachments', 'DisableIOAVProtection', 'False'),
+        'V-278665': ('Monitor file and program activity on your computer', 'DisableOnAccessProtection', 'False'),
+        'V-278666': ('Turn off real-time protection', 'DisableRealtimeMonitoring', 'False'),
+    }
+    if vuln_id not in preference_map:
+        return None
+    policy_name, preference_name, expected_value = preference_map[vuln_id]
+    if policy_name.lower() not in combined.lower():
+        return None
+    if vuln_id == 'V-278666':
+        if not re.search(r'Turn\s+off\s+real-time\s+protection[^\n.]+is\s+set\s+to\s+["“]Disabled["”]', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Turn\s+off\s+real-time\s+protection[^\n.]+to\s+["“]Disabled["”]', fix_text, re.IGNORECASE):
+            return None
+    else:
+        if not re.search(re.escape(policy_name) + r'[^\n.]+is\s+set\s+to\s+["“]Enabled["”]', content, re.IGNORECASE):
+            return None
+        if not re.search(re.escape(policy_name) + r'[^\n.]+to\s+["“]Enabled["”]', fix_text, re.IGNORECASE):
+            return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': f'powershell -NoProfile -Command "(Get-MpPreference).{preference_name}"'},
+        'expected': {'type': 'equals', 'value': expected_value},
+        'description': title,
+    }
+
+
+def _windows_event_log_size_minimum_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    vuln_match = re.search(r'V-\d+', vuln_id)
+    allowed_vulns = {
+        'V-254358', 'V-254359', 'V-254360',
+        'V-205796', 'V-205797', 'V-205798',
+        'V-253337', 'V-253338', 'V-253339',
+        'V-220779', 'V-220781',
+    }
+    if not vuln_match or vuln_match.group(0) not in allowed_vulns:
+        return None
+    title = rule.get('title', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (title, fix_text) if part)
+    log_match = re.search(r'\b(Application|Security|System)\s+event\s+log\s+size\s+must\s+be\s+configured\s+to', title, re.IGNORECASE)
+    if not log_match:
+        return None
+    size_match = re.search(r'Maximum\s+Log\s+Size\s*\(KB\)["”]?\s+of\s+["“]?(\d+)["”]?\s+or\s+greater', fix_text, re.IGNORECASE)
+    if not size_match:
+        size_match = re.search(r'event\s+log\s+size\s+must\s+be\s+configured\s+to\s+(\d+)\s+KB\s+or\s+greater', combined, re.IGNORECASE)
+    if not size_match:
+        return None
+    log_name = log_match.group(1).capitalize()
+    minimum_kb = int(size_match.group(1))
+    if minimum_kb <= 0:
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        f'"$log=\'{log_name}\'; $minKb={minimum_kb}; $cfg=wevtutil gl $log; '
+        "$max=($cfg | Select-String -Pattern '^maxSize:\\s*(\\d+)' | ForEach-Object { [int64]$_.Matches[0].Groups[1].Value } | Select-Object -First 1); "
+        "if ($max -ge ($minKb * 1024)) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _windows_event_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -8299,6 +8380,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         if defender_registry_absent_candidate:
             return defender_registry_absent_candidate
 
+        defender_av_preference_candidate = _defender_av_get_mppreference_candidate(rule, stig_id)
+        if defender_av_preference_candidate:
+            return defender_av_preference_candidate
+
         defender_registry_criteria_candidate = _windows_defender_registry_criteria_candidate(rule, stig_id)
         if defender_registry_criteria_candidate:
             return defender_registry_criteria_candidate
@@ -8334,6 +8419,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         dep_candidate = _windows_dep_bcdedit_at_least_optout_candidate(rule, stig_id)
         if dep_candidate:
             return dep_candidate
+
+        event_log_size_candidate = _windows_event_log_size_minimum_candidate(rule, stig_id)
+        if event_log_size_candidate:
+            return event_log_size_candidate
 
         event_log_acl_candidate = _windows_event_log_file_acl_candidate(rule, stig_id)
         if event_log_acl_candidate:

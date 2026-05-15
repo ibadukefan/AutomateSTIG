@@ -2421,6 +2421,39 @@ Select "Disabled" under "Actions".''',
             'description': 'Windows Server 2025 FTP servers must be configured to prevent anonymous logons.',
         })
 
+    def test_infers_defender_av_preference_disabled_boolean_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278663',
+            'title': 'Microsoft Defender AV must enable behavior monitoring.',
+            'check_content': 'Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Turn on behavior monitoring is set to "Enabled"; otherwise, this is a finding.',
+            'fix_text': 'Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Turn on behavior monitoring to "Enabled".',
+        }, 'MS_Defender_Antivirus')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-278663',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': 'powershell -NoProfile -Command "(Get-MpPreference).DisableBehaviorMonitoring"'},
+            'expected': {'type': 'equals', 'value': 'False'},
+            'description': 'Microsoft Defender AV must enable behavior monitoring.',
+        })
+
+    def test_infers_windows_event_log_size_minimum_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254360',
+            'title': 'Windows Server 2022 System event log size must be configured to 32768 KB or greater.',
+            'check_content': '',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Event Log Service >> System >> Specify the maximum log file size (KB) to "Enabled" with a "Maximum Log Size (KB)" of "32768" or greater.',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate, {
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254360',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': 'powershell -NoProfile -Command "$log=\'System\'; $minKb=32768; $cfg=wevtutil gl $log; $max=($cfg | Select-String -Pattern \'^maxSize:\\s*(\\d+)\' | ForEach-Object { [int64]$_.Matches[0].Groups[1].Value } | Select-Object -First 1); if ($max -ge ($minKb * 1024)) { \'Compliant\' }"',
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Windows Server 2022 System event log size must be configured to 32768 KB or greater.',
+        })
+
     def test_infers_windows_event_log_file_acl_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254298',

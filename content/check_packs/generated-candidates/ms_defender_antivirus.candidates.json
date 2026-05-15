@@ -783,6 +783,58 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableBehaviorMonitoring\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must enable behavior monitoring.",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278663"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableIOAVProtection\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must scan all downloaded files and attachments.",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278664"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableOnAccessProtection\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must monitor file and program activity.",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278665"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableRealtimeMonitoring\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must enable real-time protection.",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278666"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
         "type": "registry",
         "value_name": "DisableScriptScanning"
