@@ -161,6 +161,71 @@ If any enabled accounts have not been logged on to within the past 35 days, this
         self.assertIn('Win32_UserAccount', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_postgresql_ssl_enabled_for_transmission_reception(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233579',
+            'title': 'PostgreSQL must maintain the confidentiality and integrity of information during preparation for transmission.',
+            'check_content': '''As the database administrator (shown here as "postgres"), check the current SSL status by running the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW ssl"
+
+If SSL is not enabled, this is a finding.''',
+            'fix_text': '''To enable SSL, as the database administrator edit postgresql.conf:
+
+ssl = on''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-233579',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -tAc "SHOW ssl"'},
+            'expected': {'type': 'equals', 'value': 'on'},
+            'description': 'PostgreSQL must maintain the confidentiality and integrity of information during preparation for transmission.',
+        })
+
+    def test_infers_postgresql_pgaudit_security_object_settings(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233573',
+            'title': 'PostgreSQL must generate audit records when security objects are modified.',
+            'check_content': '''$ psql -c "SHOW shared_preload_libraries"
+If the results does not contain pgaudit, this is a finding.
+
+$ psql -c "SHOW pgaudit.log"
+If the output does not contain role, read, write, and ddl, this is a finding.
+
+$ psql -c "SHOW pgaudit.log_catalog"
+If log_catalog is not on, this is a finding.''',
+            'fix_text': '''See supplementary content APPENDIX-B for documentation on installing pgaudit.
+pgaudit.log_catalog = 'on'
+pgaudit.log='ddl, role, read, write' ''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233573')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('SHOW shared_preload_libraries', candidate['check']['command'])
+        self.assertIn('SHOW pgaudit.log_catalog', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_postgresql_openssl_fips_version(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233619',
+            'title': 'PostgreSQL must use NIST FIPS 140-2 or 140-3 validated cryptographic modules for cryptographic operations.',
+            'check_content': '''As the system administrator, run the following:
+
+$ openssl version
+
+If "fips" is not included in the OpenSSL version, this is a finding.''',
+            'fix_text': 'Install PostgreSQL with FIPS-compliant cryptography enabled.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-233619',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "sh -c 'openssl version | tr [:upper:] [:lower:]'"},
+            'expected': {'type': 'contains', 'substring': 'fips'},
+            'description': 'PostgreSQL must use NIST FIPS 140-2 or 140-3 validated cryptographic modules for cryptographic operations.',
+        })
+
     def test_infers_office_registry_exact_reg_sz_with_set_to_phrase(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223291',

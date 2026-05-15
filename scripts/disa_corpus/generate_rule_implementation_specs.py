@@ -5698,16 +5698,63 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     postgresql_ssl_on = (
         'postgresql' in stig_id.lower()
         and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+ssl["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
-        and re.search(r'If\s+this\s+is\s+not\s+set\s+to\s+on,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'If\s+(?:this\s+is\s+not\s+set\s+to\s+on|SSL\s+is\s+(?:off|not\s+enabled)),\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
         and re.search(r'^\s*ssl\s*=\s*on\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
         and not re.search(r'\b(data\s+owner|classified|NSA-approved|strict\s+requirement|organization-defined)\b', '\n'.join((content, fix_text, rule.get('title', '') or '')), re.IGNORECASE)
     )
     if postgresql_ssl_on:
+        if re.search(r'If\s+this\s+is\s+not\s+set\s+to\s+on,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'generic',
+                'check': {'type': 'command_output', 'command': 'psql -c "SHOW ssl"'},
+                'expected': {'type': 'contains', 'substring': 'on'},
+                'description': rule.get('title', ''),
+            }
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'generic',
-            'check': {'type': 'command_output', 'command': 'psql -c "SHOW ssl"'},
-            'expected': {'type': 'contains', 'substring': 'on'},
+            'check': {'type': 'command_output', 'command': 'psql -tAc "SHOW ssl"'},
+            'expected': {'type': 'equals', 'value': 'on'},
+            'description': rule.get('title', ''),
+        }
+
+    postgresql_pgaudit_security_objects = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233573'
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+shared_preload_libraries["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+the\s+results\s+does\s+not\s+contain\s+pgaudit,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+pgaudit\.log["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+the\s+output\s+does\s+not\s+contain\s+role,\s+read,\s+write,\s+and\s+ddl,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+pgaudit\.log_catalog["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+log_catalog\s+is\s+not\s+on,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'APPENDIX-B\s+for\s+documentation\s+on\s+installing\s+pgaudit', fix_text, re.IGNORECASE)
+        and re.search(r'^\s*pgaudit\.log_catalog\s*=\s*[\'"“]?on[\'"”]?\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'^\s*pgaudit\.log\s*=\s*[\'"“]?ddl,\s*role,\s*read,\s*write[\'"”]?\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
+    )
+    if postgresql_pgaudit_security_objects:
+        command = "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; pal=$(psql -tAc \"SHOW pgaudit.log\"); for token in ddl role read write; do printf %s \"$pal\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; plc=$(psql -tAc \"SHOW pgaudit.log_catalog\" | tr -d \"[:space:]\"); [ \"$plc\" = on ] || bad=\"$bad pgaudit.log_catalog=$plc\"; printf %s \"$bad\"'"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+
+    postgresql_openssl_fips_version = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233619'
+        and re.search(r'^\s*[$#>]\s*openssl\s+version\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+["“]fips["”]\s+is\s+not\s+included\s+in\s+the\s+OpenSSL\s+version,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'FIPS-compliant\s+cryptography', fix_text, re.IGNORECASE)
+    )
+    if postgresql_openssl_fips_version:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "sh -c 'openssl version | tr [:upper:] [:lower:]'"},
+            'expected': {'type': 'contains', 'substring': 'fips'},
             'description': rule.get('title', ''),
         }
     postgresql_log_timezone_utc = (

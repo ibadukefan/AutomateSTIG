@@ -223,6 +223,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; pal=$(psql -tAc \"SHOW pgaudit.log\"); for token in ddl role read write; do printf %s \"$pal\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; plc=$(psql -tAc \"SHOW pgaudit.log_catalog\" | tr -d \"[:space:]\"); [ \"$plc\" = on ] || bad=\"$bad pgaudit.log_catalog=$plc\"; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when security objects are modified.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233573"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW shared_preload_libraries\"",
         "type": "command_output"
       },
@@ -376,6 +389,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-233611"
+    },
+    {
+      "check": {
+        "command": "sh -c 'openssl version | tr [:upper:] [:lower:]'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must use NIST FIPS 140-2 or 140-3 validated cryptographic modules for cryptographic operations.",
+      "expected": {
+        "substring": "fips",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-233619"
     },
     {
       "check": {

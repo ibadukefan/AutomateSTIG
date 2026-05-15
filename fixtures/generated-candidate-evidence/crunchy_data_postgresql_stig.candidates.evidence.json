@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 32,
+  "candidate_checks": 34,
   "cases": [
     {
       "check": {
@@ -445,6 +445,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; pal=$(psql -tAc \"SHOW pgaudit.log\"); for token in ddl role read write; do printf %s \"$pal\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; plc=$(psql -tAc \"SHOW pgaudit.log_catalog\" | tr -d \"[:space:]\"); [ \"$plc\" = on ] || bad=\"$bad pgaudit.log_catalog=$plc\"; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when security objects are modified.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; pal=$(psql -tAc \"SHOW pgaudit.log\"); for token in ddl role read write; do printf %s \"$pal\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; plc=$(psql -tAc \"SHOW pgaudit.log_catalog\" | tr -d \"[:space:]\"); [ \"$plc\" = on ] || bad=\"$bad pgaudit.log_catalog=$plc\"; printf %s \"$bad\"'": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; pal=$(psql -tAc \"SHOW pgaudit.log\"); for token in ddl role read write; do printf %s \"$pal\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; plc=$(psql -tAc \"SHOW pgaudit.log_catalog\" | tr -d \"[:space:]\"); [ \"$plc\" = on ] || bad=\"$bad pgaudit.log_catalog=$plc\"; printf %s \"$bad\"'": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233573"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW shared_preload_libraries\"",
         "type": "command_output"
       },
@@ -757,6 +783,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'openssl version | tr [:upper:] [:lower:]'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must use NIST FIPS 140-2 or 140-3 validated cryptographic modules for cryptographic operations.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "fips",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'openssl version | tr [:upper:] [:lower:]'": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'openssl version | tr [:upper:] [:lower:]'": "before\nfips\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233619"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW shared_preload_libraries\"",
         "type": "command_output"
       },
@@ -839,5 +891,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 32
+  "validated_candidates": 34
 }
