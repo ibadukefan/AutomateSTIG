@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 17,
+  "candidate_checks": 20,
   "cases": [
     {
       "check": {
@@ -315,6 +315,58 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\extra\\httpd-ssl.conf'; $startup=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+startup\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; $connect=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+connect\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($startup -and $connect) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must generate unique session identifiers with definable entropy.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\extra\\httpd-ssl.conf'; $startup=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+startup\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; $connect=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+connect\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($startup -and $connect) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\extra\\httpd-ssl.conf'; $startup=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+startup\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; $connect=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+connect\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($startup -and $connect) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-214335"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*Timeout\\s+(\\d+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line -and [int]$line.Matches[0].Groups[1].Value -le 60) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must restrict the ability of users to launch denial-of-service (DoS) attacks against other information systems or networks.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*Timeout\\s+(\\d+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line -and [int]$line.Matches[0].Groups[1].Value -le 60) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*Timeout\\s+(\\d+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line -and [int]$line.Matches[0].Groups[1].Value -le 60) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-214338"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*ErrorDocument\\s+\\d{3}\\s+\\S+' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
         "type": "command_output"
       },
@@ -442,6 +494,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-214355"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$v=& httpd -v 2>$null | Select-String -Pattern 'Apache/(?<major>\\d+)\\.(?<minor>\\d+)' | Select-Object -First 1; $major=[int]$v.Matches[0].Groups['major'].Value; $minor=[int]$v.Matches[0].Groups['minor'].Value; if ($major -gt 2 -or ($major -eq 2 -and $minor -ge 4)) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server software must be a vendor-supported version.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$v=& httpd -v 2>$null | Select-String -Pattern 'Apache/(?<major>\\d+)\\.(?<minor>\\d+)' | Select-Object -First 1; $major=[int]$v.Matches[0].Groups['major'].Value; $minor=[int]$v.Matches[0].Groups['minor'].Value; if ($major -gt 2 -or ($major -eq 2 -and $minor -ge 4)) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$v=& httpd -v 2>$null | Select-String -Pattern 'Apache/(?<major>\\d+)\\.(?<minor>\\d+)' | Select-Object -First 1; $major=[int]$v.Matches[0].Groups['major'].Value; $minor=[int]$v.Matches[0].Groups['minor'].Value; if ($major -gt 2 -or ($major -eq 2 -and $minor -ge 4)) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-214359"
     }
   ],
   "production_claim": false,
@@ -449,5 +527,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apache_server_2-4_windows_server_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apache_Server_2-4_Windows_Server_STIG",
-  "validated_candidates": 17
+  "validated_candidates": 20
 }

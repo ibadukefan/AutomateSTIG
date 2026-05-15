@@ -1165,6 +1165,81 @@ Restart the Apache service.''',
             'description': 'The Apache web server must set an absolute timeout for sessions.',
         })
 
+    def test_infers_apache_windows_timeout_maximum_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214338',
+            'title': 'The Apache web server must restrict the ability of users to launch denial-of-service (DoS) attacks against other information systems or networks.',
+            'check_content': '''Review the <'INSTALLED PATH'>\\conf\\httpd.conf file.
+
+Verify the "Timeout" directive is specified in the "httpd.conf" file to have a value of "60" seconds or less.
+
+If the "Timeout" directive is not configured or set for more than "60" seconds, this is a finding.''',
+            'fix_text': '''Review the <'INSTALLED PATH'>\\conf\\httpd.conf file.
+
+Add or modify the "Timeout" directive in the Apache configuration to have a value of "60" seconds or less.
+
+"Timeout 60"
+
+Restart the Apache service.''',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-214338',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*Timeout\\s+(\\d+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line -and [int]$line.Matches[0].Groups[1].Value -le 60) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Apache web server must restrict the ability of users to launch denial-of-service (DoS) attacks against other information systems or networks.',
+        })
+
+    def test_infers_apache_windows_ssl_random_seed_directives_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214335',
+            'title': 'The Apache web server must generate unique session identifiers with definable entropy.',
+            'check_content': '''Review the <'INSTALLED PATH'>\\conf\\extra\\httpd-ssl.conf file.
+
+Verify the "ssl_module" is loaded.
+
+If it does not exist, this is a finding.
+
+If the "SSLRandomSeed" directive is missing or does not look like the following, this is a finding:
+
+SSLRandomSeed startup builtin
+SSLRandomSeed connect builtin''',
+            'fix_text': '''Edit the <'INSTALLED PATH'>\\conf\\httpd.conf file and load the "ssl_module" module.
+
+Set the "SSLRandomSeed" directives to the following:
+
+SSLRandomSeed startup builtin
+SSLRandomSeed connect builtin
+
+Restart the Apache service.''',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-214335')
+        self.assertIn('SSLRandomSeed\\s+startup\\s+builtin', candidate['check']['command'])
+        self.assertIn('SSLRandomSeed\\s+connect\\s+builtin', candidate['check']['command'])
+
+    def test_infers_apache_windows_minimum_version_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214359',
+            'title': 'The Apache web server software must be a vendor-supported version.',
+            'check_content': '''Determine the version of the Apache software that is running on the system.
+
+In a command line, navigate to "<'INSTALLED PATH'>\\bin". Run "httpd -v" to view the Apache version.
+
+If the version of Apache is not at the following version or higher, this is a finding:
+
+Apache 2.4 (February 2012)''',
+            'fix_text': 'Install the current version of the web server software and maintain appropriate service packs and patches.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-214359')
+        self.assertIn('httpd -v', candidate['check']['command'])
+        self.assertIn('$major -gt 2', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_apache_windows_proxyrequests_not_on_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-214320',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\extra\\httpd-ssl.conf'; $startup=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+startup\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; $connect=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+connect\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($startup -and $connect) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The Apache web server must generate unique session identifiers with definable entropy.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214335"
+  },
   "check_content_excerpt": "Review the <'INSTALLED PATH'>\\conf\\extra\\httpd-ssl.conf file.\n\nVerify the \"ssl_module\" is loaded.\n\nIf it does not exist, this is a finding.\n\nIf the \"SSLRandomSeed\" directive is missing or does not look like the following, this is a finding:\n\nSSLRandomSeed startup builtin\nSSLRandomSeed connect builtin",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the <'INSTALLED PATH'>\\conf\\httpd.conf file and load the \"ssl_module\" module.\n\nSet the \"SSLRandomSeed\" directives to the following:\n\nSSLRandomSeed startup builtin\nSSLRandomSeed connect builtin\n\nRestart the Apache service.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214335r1192944_rule",
   "severity": "medium",

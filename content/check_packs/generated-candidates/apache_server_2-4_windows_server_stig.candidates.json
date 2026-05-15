@@ -158,6 +158,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\extra\\httpd-ssl.conf'; $startup=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+startup\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; $connect=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+connect\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($startup -and $connect) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must generate unique session identifiers with definable entropy.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214335"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*Timeout\\s+(\\d+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line -and [int]$line.Matches[0].Groups[1].Value -le 60) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must restrict the ability of users to launch denial-of-service (DoS) attacks against other information systems or networks.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214338"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*ErrorDocument\\s+\\d{3}\\s+\\S+' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
         "type": "command_output"
       },
@@ -220,6 +246,19 @@
       },
       "platform": "windows",
       "vuln_id": "V-214355"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$v=& httpd -v 2>$null | Select-String -Pattern 'Apache/(?<major>\\d+)\\.(?<minor>\\d+)' | Select-Object -First 1; $major=[int]$v.Matches[0].Groups['major'].Value; $minor=[int]$v.Matches[0].Groups['minor'].Value; if ($major -gt 2 -or ($major -eq 2 -and $minor -ge 4)) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server software must be a vendor-supported version.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214359"
     }
   ],
   "platform": "windows",

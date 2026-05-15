@@ -376,7 +376,52 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
             'description': title,
         }
 
-    if vuln_id in {'V-214306', 'V-214341'}:
+    if vuln_id == 'V-214335':
+        combined = content + '\n' + fix_text
+        required_lines = ('SSLRandomSeed startup builtin', 'SSLRandomSeed connect builtin')
+        if not all(line in combined for line in required_lines):
+            return None
+        if not re.search(r'If\s+the\s+["“]?SSLRandomSeed["”]?\s+directive\s+is\s+missing\s+or\s+does\s+not\s+look\s+like\s+the\s+following,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Set\s+the\s+["“]?SSLRandomSeed["”]?\s+directives\s+to\s+the\s+following', fix_text, re.IGNORECASE):
+            return None
+        command = (
+            'powershell -NoProfile -Command '
+            '"$p=Join-Path $env:ProgramFiles \'Apache24\\conf\\extra\\httpd-ssl.conf\'; '
+            "$startup=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+startup\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; "
+            "$connect=Select-String -Path $p -Pattern '^\\s*SSLRandomSeed\\s+connect\\s+builtin\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; "
+            "if ($startup -and $connect) { 'Compliant' }\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+
+    if vuln_id == 'V-214359':
+        if not re.search(r'\bhttpd\s+-v\b', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+the\s+version\s+of\s+Apache\s+is\s+not\s+at\s+the\s+following\s+version\s+or\s+higher,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'^\s*Apache\s+2\.4\s+\(February\s+2012\)\s*$', content, re.IGNORECASE | re.MULTILINE):
+            return None
+        command = (
+            'powershell -NoProfile -Command '
+            '"$v=& httpd -v 2>$null | Select-String -Pattern \'Apache/(?<major>\\d+)\\.(?<minor>\\d+)\' | Select-Object -First 1; '
+            "$major=[int]$v.Matches[0].Groups['major'].Value; $minor=[int]$v.Matches[0].Groups['minor'].Value; "
+            "if ($major -gt 2 -or ($major -eq 2 -and $minor -ge 4)) { 'Compliant' }\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+
+    if vuln_id in {'V-214306', 'V-214338', 'V-214341'}:
         numeric_specs = {
             'V-214306': {
                 'directive': 'MaxKeepAliveRequests',
@@ -387,6 +432,16 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
                 'finding_pattern': r'If\s+the\s+["“]?MaxKeepAliveRequests["”]?\s+directive\s+is\s+not\s+["“]?100["”]?\s+or\s+greater,\s+this\s+is\s+a\s+finding',
                 'fix_pattern': r'Set\s+the\s+["“]?MaxKeepAliveRequests["”]?\s+directive\s+to\s+a\s+value\s+of\s+["“]?100["”]?\s+or\s+greater',
                 'ps_operator': '-ge',
+            },
+            'V-214338': {
+                'directive': 'Timeout',
+                'threshold': 60,
+                'operator': 'le',
+                'config_path': 'Apache24\\conf\\httpd.conf',
+                'check_pattern': r'Verify\s+the\s+["“]?Timeout["”]?\s+directive\s+is\s+specified\s+in\s+the\s+["“]?httpd\.conf["”]?\s+file\s+to\s+have\s+a\s+value\s+of\s+["“]?60["”]?\s+seconds\s+or\s+less',
+                'finding_pattern': r'If\s+the\s+["“]?Timeout["”]?\s+directive\s+is\s+not\s+configured\s+or\s+set\s+for\s+more\s+than\s+["“]?60["”]?\s+seconds,\s+this\s+is\s+a\s+finding',
+                'fix_pattern': r'Add\s+or\s+modify\s+the\s+["“]?Timeout["”]?\s+directive\s+in\s+the\s+Apache\s+configuration\s+to\s+have\s+a\s+value\s+of\s+["“]?60["”]?\s+seconds\s+or\s+less',
+                'ps_operator': '-le',
             },
             'V-214341': {
                 'directive': 'SessionMaxAge',

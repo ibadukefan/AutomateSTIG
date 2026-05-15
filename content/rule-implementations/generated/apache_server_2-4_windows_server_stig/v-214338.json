@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*Timeout\\s+(\\d+)\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line -and [int]$line.Matches[0].Groups[1].Value -le 60) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The Apache web server must restrict the ability of users to launch denial-of-service (DoS) attacks against other information systems or networks.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214338"
+  },
   "check_content_excerpt": "Review the <'INSTALLED PATH'>\\conf\\httpd.conf file.\n\nVerify the \"Timeout\" directive is specified in the \"httpd.conf\" file to have a value of \"60\" seconds or less.\n\nIf the \"Timeout\" directive is not configured or set for more than \"60\" seconds, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Review the <'INSTALLED PATH'>\\conf\\httpd.conf file.\n\nAdd or modify the \"Timeout\" directive in the Apache configuration to have a value of \"60\" seconds or less.\n\n\"Timeout 60\"\n\nRestart the Apache service.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214338r1192947_rule",
   "severity": "medium",
