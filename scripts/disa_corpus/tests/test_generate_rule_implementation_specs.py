@@ -1118,6 +1118,37 @@ Locate "system.web/sessionState" and set "cookieless" to "UseCookies".''',
             'description': 'The IIS 10.0 web server must use cookies to track session state.',
         })
 
+    def test_infers_iis_hsts_site_defaults_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218827',
+            'title': 'The IIS 10.0 web server must enable HTTP Strict Transport Security (HSTS).',
+            'check_content': '''Access the IIS 10.0 Web Server.
+Open IIS Manager.
+Click the IIS 10.0 web server name.
+Open Configuration Editor under Management.
+For the Section, navigate to system.applicationHost/sites.
+Expand siteDefaults and HSTS.
+If enabled is not set to True, this is a finding.
+If includeSubDomains is not set to True, this is a finding.
+If max-age is not set to a value greater than 0, this is a finding.
+If redirectHttpToHttps is not True, this is a finding.''',
+            'fix_text': '''Using the Configuration Editor in the IIS Manager or Powershell:
+Enable HSTS.
+Set includeSubDomains to True.
+Set max-age to a value greater than 0.
+Set redirectHttpToHttps to True.''',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-218827',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"Import-Module WebAdministration; $h=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.applicationHost/sites/siteDefaults/hsts' -Name '.'; if ($h.enabled -eq $true -and $h.includeSubDomains -eq $true -and [int]$h.maxAge -gt 0 -and $h.redirectHttpToHttps -eq $true) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The IIS 10.0 web server must enable HTTP Strict Transport Security (HSTS).',
+        })
+
     def test_infers_iis_tls_12_enabled_and_legacy_protocols_disabled_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-218821',

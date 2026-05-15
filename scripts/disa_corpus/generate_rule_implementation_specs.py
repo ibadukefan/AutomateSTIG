@@ -8292,6 +8292,42 @@ def _iis_session_state_use_cookies_candidate(rule: dict, stig_id: str) -> dict |
     }
 
 
+def _iis_hsts_site_defaults_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-218827' or stig_id != 'IIS_10-0_Server_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    required_check_snippets = (
+        r'system\.applicationHost/sites',
+        r'siteDefaults\s+and\s+HSTS',
+        r'If\s+enabled\s+is\s+not\s+set\s+to\s+True,\s+this\s+is\s+a\s+finding',
+        r'If\s+includeSubDomains\s+is\s+not\s+set\s+to\s+True,\s+this\s+is\s+a\s+finding',
+        r'If\s+max-age\s+is\s+not\s+set\s+to\s+a\s+value\s+greater\s+than\s+0,\s+this\s+is\s+a\s+finding',
+        r'If\s+redirectHttpToHttps\s+is\s+not\s+True,\s+this\s+is\s+a\s+finding',
+    )
+    required_fix_snippets = (
+        r'Powershell',
+        r'Enable\s+HSTS',
+        r'Set\s+includeSubDomains\s+to\s+True',
+        r'Set\s+max-age\s+to\s+a\s+value\s+greater\s+than\s+0',
+        r'Set\s+redirectHttpToHttps\s+to\s+True',
+    )
+    if not all(re.search(snippet, content, re.IGNORECASE) for snippet in required_check_snippets):
+        return None
+    if not all(re.search(snippet, combined, re.IGNORECASE) for snippet in required_fix_snippets):
+        return None
+    command = "powershell -NoProfile -Command \"Import-Module WebAdministration; $h=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.applicationHost/sites/siteDefaults/hsts' -Name '.'; if ($h.enabled -eq $true -and $h.includeSubDomains -eq $true -and [int]$h.maxAge -gt 0 -and $h.redirectHttpToHttps -eq $true) { 'Compliant' }\""
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _iis_tls_12_enabled_legacy_protocols_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id != 'V-218821' or stig_id != 'IIS_10-0_Server_STIG':
@@ -8589,6 +8625,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     iis_session_state_candidate = _iis_session_state_use_cookies_candidate(rule, stig_id)
     if iis_session_state_candidate:
         return iis_session_state_candidate
+
+    iis_hsts_candidate = _iis_hsts_site_defaults_candidate(rule, stig_id)
+    if iis_hsts_candidate:
+        return iis_hsts_candidate
 
     iis_tls_candidate = _iis_tls_12_enabled_legacy_protocols_disabled_candidate(rule, stig_id)
     if iis_tls_candidate:

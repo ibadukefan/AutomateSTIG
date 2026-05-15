@@ -67,6 +67,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module WebAdministration; $h=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.applicationHost/sites/siteDefaults/hsts' -Name '.'; if ($h.enabled -eq $true -and $h.includeSubDomains -eq $true -and [int]$h.maxAge -gt 0 -and $h.redirectHttpToHttps -eq $true) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The IIS 10.0 web server must enable HTTP Strict Transport Security (HSTS).",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-218827"
+    },
+    {
+      "check": {
         "command": "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.webServer/httpProtocol /text:customHeaders.[name='X-Powered-By'].value",
         "type": "command_output"
       },

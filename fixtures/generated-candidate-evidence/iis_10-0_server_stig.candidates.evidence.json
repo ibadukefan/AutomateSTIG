@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 6,
+  "candidate_checks": 7,
   "cases": [
     {
       "check": {
@@ -133,6 +133,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module WebAdministration; $h=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.applicationHost/sites/siteDefaults/hsts' -Name '.'; if ($h.enabled -eq $true -and $h.includeSubDomains -eq $true -and [int]$h.maxAge -gt 0 -and $h.redirectHttpToHttps -eq $true) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The IIS 10.0 web server must enable HTTP Strict Transport Security (HSTS).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Import-Module WebAdministration; $h=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.applicationHost/sites/siteDefaults/hsts' -Name '.'; if ($h.enabled -eq $true -and $h.includeSubDomains -eq $true -and [int]$h.maxAge -gt 0 -and $h.redirectHttpToHttps -eq $true) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Import-Module WebAdministration; $h=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.applicationHost/sites/siteDefaults/hsts' -Name '.'; if ($h.enabled -eq $true -and $h.includeSubDomains -eq $true -and [int]$h.maxAge -gt 0 -and $h.redirectHttpToHttps -eq $true) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-218827"
+    },
+    {
+      "check": {
         "command": "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.webServer/httpProtocol /text:customHeaders.[name='X-Powered-By'].value",
         "type": "command_output"
       },
@@ -163,5 +189,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/iis_10-0_server_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "IIS_10-0_Server_STIG",
-  "validated_candidates": 6
+  "validated_candidates": 7
 }
