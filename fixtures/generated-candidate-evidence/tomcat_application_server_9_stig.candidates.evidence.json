@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 27,
+  "candidate_checks": 29,
   "cases": [
     {
       "check": {
@@ -208,6 +208,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222960"
+    },
+    {
+      "check": {
+        "command": "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" | grep -v grep || true'",
+        "type": "command_output"
+      },
+      "description": "JMX authentication must be secured.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" | grep -v grep || true'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" | grep -v grep || true'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222963"
+    },
+    {
+      "check": {
+        "command": "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.ssl=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.ssl=false\" | grep -v grep || true'",
+        "type": "command_output"
+      },
+      "description": "TLS must be enabled on JMX.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.ssl=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.ssl=false\" | grep -v grep || true'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.ssl=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.ssl=false\" | grep -v grep || true'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222964"
     },
     {
       "check": {
@@ -709,5 +761,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 27
+  "validated_candidates": 29
 }

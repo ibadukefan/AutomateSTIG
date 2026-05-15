@@ -106,6 +106,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" | grep -v grep || true'",
+        "type": "command_output"
+      },
+      "description": "JMX authentication must be secured.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-222963"
+    },
+    {
+      "check": {
+        "command": "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.ssl=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.ssl=false\" | grep -v grep || true'",
+        "type": "command_output"
+      },
+      "description": "TLS must be enabled on JMX.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-222964"
+    },
+    {
+      "check": {
         "command": "sh -c \"grep -Eiq 'FIPSMode[[:space:]]*=[[:space:]]*\\\"on\\\"' \\\"$CATALINA_BASE/conf/server.xml\\\" && ! grep -Eiq 'failed to set property\\\\[FIPSMODE\\\\] to \\\\[on\\\\]' \\\"$CATALINA_BASE/logs/catalina.out\\\" && printf Compliant\"",
         "type": "command_output"
       },

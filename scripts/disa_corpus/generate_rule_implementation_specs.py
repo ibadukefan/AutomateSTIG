@@ -3394,6 +3394,34 @@ def _tomcat_systemd_boolean_property_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _tomcat_jmx_false_property_absent_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    property_by_vuln = {
+        'V-222963': 'com.sun.management.jmxremote.authenticate',
+        'V-222964': 'com.sun.management.jmxremote.ssl',
+    }
+    property_name = property_by_vuln.get(rule.get('vuln_id', ''))
+    if not property_name:
+        return None
+    false_flag = f'-D{property_name}=false'
+    true_flag = f'-D{property_name}=true'
+    if not re.search(re.escape(property_name) + r'\s*=\s*["“]?false["”]?', content, re.IGNORECASE) or true_flag.lower() not in fix_text.lower():
+        return None
+    if not re.search(r'jmxremote', content, re.IGNORECASE) or not re.search(r'this\s+is\s+(?:not\s+)?a\s+finding', content, re.IGNORECASE):
+        return None
+    command = f'sh -c \'grep -i -- "{false_flag}" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- "{false_flag}" | grep -v grep || true\''
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_error_report_valve_boolean_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower():
         return None
@@ -8225,6 +8253,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_systemd_boolean_property_candidate = _tomcat_systemd_boolean_property_candidate(rule, stig_id)
     if tomcat_systemd_boolean_property_candidate:
         return tomcat_systemd_boolean_property_candidate
+
+    tomcat_jmx_false_property_candidate = _tomcat_jmx_false_property_absent_candidate(rule, stig_id)
+    if tomcat_jmx_false_property_candidate:
+        return tomcat_jmx_false_property_candidate
 
     tomcat_error_report_valve_candidate = _tomcat_error_report_valve_boolean_candidate(rule, stig_id)
     if tomcat_error_report_valve_candidate:

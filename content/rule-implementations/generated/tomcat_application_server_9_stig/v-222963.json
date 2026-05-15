@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" | grep -v grep || true'",
+      "type": "command_output"
+    },
+    "description": "JMX authentication must be secured.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-222963"
+  },
   "check_content_excerpt": "From the Tomcat server run the following command:\n\nsudo grep -I jmxremote.authenticate /etc/systemd/system/tomcat.service\nsudo ps -ef |grep -i jmxremote\n\nIf the results are blank, this is not a finding.\n\nIf the results include:\n\n-Dcom.sun.management.jmxremote.authenticate=false, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If using JMX for management of the Tomcat server, start the Tomcat server by adding the following command line flags to the systemd startup scripts in /etc/systemd/system/tomcat.service.\n\nEnvironment='CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=true -Dcom.sun.management.jmxremote.ssl=true'\n\nsudo systemctl start tomcat\nsudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222963r960972_rule",
   "severity": "medium",

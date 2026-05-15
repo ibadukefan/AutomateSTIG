@@ -226,6 +226,61 @@ If "fips" is not included in the OpenSSL version, this is a finding.''',
             'description': 'PostgreSQL must use NIST FIPS 140-2 or 140-3 validated cryptographic modules for cryptographic operations.',
         })
 
+    def test_infers_tomcat_jmx_authenticate_false_as_empty_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222963',
+            'title': 'JMX authentication must be secured.',
+            'check_content': '''From the Tomcat server run the following command:
+
+sudo grep -I jmxremote.authenticate /etc/systemd/system/tomcat.service | sudo ps -ef |grep -i jmxremote
+
+If the results are blank, this is not a finding.
+
+If the results include:
+
+-Dcom.sun.management.jmxremote.authenticate=false, this is a finding.''',
+            'fix_text': '''Environment='CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=true -Dcom.sun.management.jmxremote.ssl=true' ''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222963',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" | grep -v grep || true'",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'JMX authentication must be secured.',
+        })
+
+    def test_infers_tomcat_jmx_ssl_false_as_empty_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222964',
+            'title': 'TLS must be enabled on JMX.',
+            'check_content': '''As a privileged user from the Tomcat server, run the following command:
+
+grep -i jmxremote /etc/systemd/system/tomcat.service
+
+If there are no results displayed, or jmxremote management extensions are not used, this requirement is Not Applicable.
+
+If the JMXremote setting is configured and jmxremote.ssl="false", this is a finding.
+
+EXAMPLE:
+-Dcom.sun.management.jmxremote
+-Dcom.sun.management.jmxremote.authenticate=false
+-Dcom.sun.management.jmxremote.ssl=false''',
+            'fix_text': '''Environment='CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=true -Dcom.sun.management.jmxremote.ssl=true' ''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222964',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.ssl=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.ssl=false\" | grep -v grep || true'",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'TLS must be enabled on JMX.',
+        })
+
     def test_infers_office_registry_exact_reg_sz_with_set_to_phrase(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223291',
