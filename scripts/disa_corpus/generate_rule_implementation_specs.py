@@ -1993,6 +1993,68 @@ def _vcenter_lookup_core_setting_candidate(rule: dict, stig_id: str) -> dict | N
                 'description': title,
             }
 
+    if vuln_id == 'V-259047':
+        path = '/usr/lib/vmware-lookupsvc/conf/server.xml'
+        if (
+            path in content
+            and 'URIEncoding' in content
+            and 'URIEncoding="UTF-8"' in fix_text
+            and re.search(r'If\s+any\s+connectors\s+are\s+returned,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        ):
+            command = "xmllint --xpath \"count(//Connector[@URIEncoding != 'UTF-8' or not(@URIEncoding)])\" /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null"
+            return {
+                'vuln_id': vuln_id,
+                'platform': 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': '0'},
+                'description': title,
+            }
+
+    if vuln_id == 'V-259056':
+        path = '/usr/lib/vmware-lookupsvc/conf/web.xml'
+        if (
+            path in content
+            and 'DefaultServlet' in content
+            and re.search(r'["“]?readOnly["”]?\s+param-value.*?set\s+to\s+["“]?false["”]?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL)
+            and re.search(r'["“]?readOnly["”]?\s+param-value\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE)
+            and re.search(r'<param-value>\s*false\s*</param-value>', fix_text, re.IGNORECASE)
+        ):
+            command = "xmllint --xpath \"count(//servlet[servlet-class='org.apache.catalina.servlets.DefaultServlet']//init-param[translate(param-name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='readonly' and translate(param-value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='false'])\" /usr/lib/vmware-lookupsvc/conf/web.xml 2>/dev/null"
+            return {
+                'vuln_id': vuln_id,
+                'platform': 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': '0'},
+                'description': title,
+            }
+
+    if vuln_id == 'V-259054':
+        path = '/usr/lib/vmware-lookupsvc/conf/web.xml'
+        required_tokens = (
+            'setCharacterEncodingFilter',
+            'org.apache.catalina.filters.SetCharacterEncodingFilter',
+            '<async-supported>true</async-supported>',
+            '<param-name>encoding</param-name>',
+            '<param-value>UTF-8</param-value>',
+            '<param-name>ignore</param-name>',
+            '<param-value>true</param-value>',
+            '<url-pattern>/*</url-pattern>',
+        )
+        if (
+            path in content
+            and all(token in content for token in required_tokens)
+            and 'setCharacterEncodingFilter' in fix_text
+            and re.search(r'If\s+the\s+output\s+(?:is\s+)?does\s+not\s+match\s+the\s+expected\s+result,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        ):
+            command = "sh -c \"f=/usr/lib/vmware-lookupsvc/conf/web.xml; xmllint --xpath \\\"count(//filter-mapping[filter-name='setCharacterEncodingFilter' and url-pattern='/*'])\\\" $f 2>/dev/null | grep -qx 1 || exit 1; xmllint --xpath \\\"count(//filter[filter-name='setCharacterEncodingFilter' and filter-class='org.apache.catalina.filters.SetCharacterEncodingFilter' and async-supported='true' and init-param[param-name='encoding' and param-value='UTF-8'] and init-param[param-name='ignore' and param-value='true']])\\\" $f 2>/dev/null | grep -qx 1 && printf PASS\""
+            return {
+                'vuln_id': vuln_id,
+                'platform': 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': 'PASS'},
+                'description': title,
+            }
+
     return None
 
 

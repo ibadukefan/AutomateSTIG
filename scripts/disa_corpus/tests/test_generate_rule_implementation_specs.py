@@ -3268,6 +3268,93 @@ Add or modify the setting "base.shutdown.port=-1" in the "catalina.properties" f
             'description': 'The vCenter Lookup service shutdown port must be disabled.',
         })
 
+    def test_infers_vcenter_lookup_uriencoding_utf8_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259047',
+            'title': 'The vCenter Lookup service must set URIEncoding to UTF-8.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --xpath "//Connector[@URIEncoding != 'UTF-8'] | //Connector[not[@URIEncoding]]" /usr/lib/vmware-lookupsvc/conf/server.xml
+
+Expected result:
+XPath set is empty
+
+If any connectors are returned, this is a finding.''',
+            'fix_text': '''Navigate to and open /usr/lib/vmware-lookupsvc/conf/server.xml.
+
+Configure each <Connector> node with:
+URIEncoding="UTF-8"''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259047',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "xmllint --xpath \"count(//Connector[@URIEncoding != 'UTF-8' or not(@URIEncoding)])\" /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null",
+            },
+            'expected': {'type': 'equals', 'value': '0'},
+            'description': 'The vCenter Lookup service must set URIEncoding to UTF-8.',
+        })
+
+    def test_infers_vcenter_lookup_defaultservlet_readonly_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259056',
+            'title': 'The vCenter Lookup service DefaultServlet must be set to "readonly" for "PUT" and "DELETE" commands.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --xpath "//*[contains(text(), 'DefaultServlet')]/parent::*" /usr/lib/vmware-lookupsvc/conf/web.xml
+
+If the readOnly param-value for the DefaultServlet servlet class is set to false, this is a finding.
+If the readOnly param-value does not exist, this is not a finding.''',
+            'fix_text': '''Navigate to and open /usr/lib/vmware-lookupsvc/conf/web.xml.
+Remove the following for DefaultServlet:
+<param-name>readonly</param-name>
+<param-value>false</param-value>''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259056',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "xmllint --xpath \"count(//servlet[servlet-class='org.apache.catalina.servlets.DefaultServlet']//init-param[translate(param-name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='readonly' and translate(param-value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='false'])\" /usr/lib/vmware-lookupsvc/conf/web.xml 2>/dev/null",
+            },
+            'expected': {'type': 'equals', 'value': '0'},
+            'description': 'The vCenter Lookup service DefaultServlet must be set to "readonly" for "PUT" and "DELETE" commands.',
+        })
+
+    def test_infers_vcenter_lookup_character_encoding_filter_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259054',
+            'title': 'The vCenter Lookup service must configure the "setCharacterEncodingFilter" filter.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --xpath "//*[contains(text(), 'setCharacterEncodingFilter')]/parent::*" /usr/lib/vmware-lookupsvc/conf/web.xml
+
+Expected result includes:
+<filter-name>setCharacterEncodingFilter</filter-name>
+<filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+<async-supported>true</async-supported>
+<param-name>encoding</param-name>
+<param-value>UTF-8</param-value>
+<param-name>ignore</param-name>
+<param-value>true</param-value>
+<url-pattern>/*</url-pattern>
+
+If the output does not match the expected result, this is a finding.''',
+            'fix_text': '''Navigate to and open /usr/lib/vmware-lookupsvc/conf/web.xml.
+Add the setCharacterEncodingFilter filter and filter-mapping blocks with UTF-8 encoding, ignore true, and /* url-pattern.''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259054',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c \"f=/usr/lib/vmware-lookupsvc/conf/web.xml; xmllint --xpath \\\"count(//filter-mapping[filter-name='setCharacterEncodingFilter' and url-pattern='/*'])\\\" $f 2>/dev/null | grep -qx 1 || exit 1; xmllint --xpath \\\"count(//filter[filter-name='setCharacterEncodingFilter' and filter-class='org.apache.catalina.filters.SetCharacterEncodingFilter' and async-supported='true' and init-param[param-name='encoding' and param-value='UTF-8'] and init-param[param-name='ignore' and param-value='true']])\\\" $f 2>/dev/null | grep -qx 1 && printf PASS\"",
+            },
+            'expected': {'type': 'equals', 'value': 'PASS'},
+            'description': 'The vCenter Lookup service must configure the "setCharacterEncodingFilter" filter.',
+        })
+
     def test_infers_vcenter_lookup_removed_webapp_directory_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-259069',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"f=/usr/lib/vmware-lookupsvc/conf/web.xml; xmllint --xpath \\\"count(//filter-mapping[filter-name='setCharacterEncodingFilter' and url-pattern='/*'])\\\" $f 2>/dev/null | grep -qx 1 || exit 1; xmllint --xpath \\\"count(//filter[filter-name='setCharacterEncodingFilter' and filter-class='org.apache.catalina.filters.SetCharacterEncodingFilter' and async-supported='true' and init-param[param-name='encoding' and param-value='UTF-8'] and init-param[param-name='ignore' and param-value='true']])\\\" $f 2>/dev/null | grep -qx 1 && printf PASS\"",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service must configure the \"setCharacterEncodingFilter\" filter.",
+    "expected": {
+      "type": "equals",
+      "value": "PASS"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259054"
+  },
   "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --xpath \"//*[contains(text(), 'setCharacterEncodingFilter')]/parent::*\" /usr/lib/vmware-lookupsvc/conf/web.xml\n\nExpected result:\n\n<filter-mapping>\n  <filter-name>setCharacterEncodingFilter</filter-name>\n  <url-pattern>/*</url-pattern>\n</filter-mapping>\n<filter>\n  <filter-name>setCharacterEncodingFilter</filter-name>\n  <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>\n  <async-supported>true</async-supported>\n  <init-param>\n    <param-name>encoding</param-name>\n    <param-value>UTF-8</param-value>\n  </init-param>\n  <init-param>\n    <param-name>ignore</param-name>\n    <param-value>true</param-value>\n  </init-param>\n</filter>\n\nIf the output is does not match the expected result, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "PASS"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/web.xml\n\nConfigure the <web-app> node with the child nodes listed below:\n\n<filter-mapping>\n  <filter-name>setCharacterEncodingFilter</filter-name>\n  <url-pattern>/*</url-pattern>\n</filter-mapping>\n\n<filter>\n  <filter-name>setCharacterEncodingFilter</filter-name>\n  <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>\n  <async-supported>true</async-supported>\n  <init-param>\n    <param-name>encoding</param-name>\n    <param-value>UTF-8</param-value>\n  </init-param>\n  <init-param>\n    <param-name>ignore</param-name>\n    <param-value>true</param-value>\n  </init-param>\n</filter>\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259054r961158_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "xmllint --xpath \"count(//Connector[@URIEncoding != 'UTF-8' or not(@URIEncoding)])\" /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service must set URIEncoding to UTF-8.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259047"
+  },
   "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --xpath \"//Connector[@URIEncoding != 'UTF-8'] | //Connector[not[@URIEncoding]]\" /usr/lib/vmware-lookupsvc/conf/server.xml\n\nExpected result:\n\nXPath set is empty\n\nIf any connectors are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/server.xml\n\nConfigure the <Connector> node with the value:\n\nURIEncoding=\"UTF-8\"\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259047r961158_rule",
   "severity": "medium",

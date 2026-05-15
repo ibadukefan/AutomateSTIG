@@ -121,6 +121,19 @@
     },
     {
       "check": {
+        "command": "xmllint --xpath \"count(//Connector[@URIEncoding != 'UTF-8' or not(@URIEncoding)])\" /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must set URIEncoding to UTF-8.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259047"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath '/Server/Service/Engine/Host/Valve[@className=\"org.apache.catalina.valves.ErrorReportValve\"]' /usr/lib/vmware-lookupsvc/conf/server.xml",
         "type": "command_output"
       },
@@ -187,6 +200,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"f=/usr/lib/vmware-lookupsvc/conf/web.xml; xmllint --xpath \\\"count(//filter-mapping[filter-name='setCharacterEncodingFilter' and url-pattern='/*'])\\\" $f 2>/dev/null | grep -qx 1 || exit 1; xmllint --xpath \\\"count(//filter[filter-name='setCharacterEncodingFilter' and filter-class='org.apache.catalina.filters.SetCharacterEncodingFilter' and async-supported='true' and init-param[param-name='encoding' and param-value='UTF-8'] and init-param[param-name='ignore' and param-value='true']])\\\" $f 2>/dev/null | grep -qx 1 && printf PASS\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must configure the \"setCharacterEncodingFilter\" filter.",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259054"
+    },
+    {
+      "check": {
         "command": "xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '/web-app/session-config/cookie-config/http-only' -",
         "type": "command_output"
       },
@@ -197,6 +223,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-259055"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"count(//servlet[servlet-class='org.apache.catalina.servlets.DefaultServlet']//init-param[translate(param-name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='readonly' and translate(param-value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='false'])\" /usr/lib/vmware-lookupsvc/conf/web.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service DefaultServlet must be set to \"readonly\" for \"PUT\" and \"DELETE\" commands.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259056"
     },
     {
       "check": {

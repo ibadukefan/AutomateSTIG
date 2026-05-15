@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "xmllint --xpath \"count(//servlet[servlet-class='org.apache.catalina.servlets.DefaultServlet']//init-param[translate(param-name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='readonly' and translate(param-value, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='false'])\" /usr/lib/vmware-lookupsvc/conf/web.xml 2>/dev/null",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service DefaultServlet must be set to \"readonly\" for \"PUT\" and \"DELETE\" commands.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259056"
+  },
   "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --xpath \"//*[contains(text(), 'DefaultServlet')]/parent::*\" /usr/lib/vmware-lookupsvc/conf/web.xml\n\nExample output:\n\n<servlet>\n      <description>File servlet</description>\n      <servlet-name>FileServlet</servlet-name>\n      <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>\n</servlet>\n\nIf the \"readOnly\" param-value for the \"DefaultServlet\" servlet class is set to \"false\", this is a finding.\n\nIf the \"readOnly\" param-value does not exist, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/web.xml\n\nNavigate to the /<web-apps>/<servlet>/<servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>/ node and remove the following node:\n\n<init-param>\n      <param-name>readonly</param-name>\n      <param-value>false</param-value>\n</init-param>\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259056r960792_rule",
   "severity": "medium",

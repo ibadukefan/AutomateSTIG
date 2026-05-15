@@ -161,16 +161,17 @@
       "vuln_id": "V-259046"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259047",
+      "check_pack": "generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259047r961158_rule",
       "severity": "medium",
       "title": "The vCenter Lookup service must set URIEncoding to UTF-8.",
-      "tracking_issue": "TODO-V-259047",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
         "content/disa-corpus/artifacts/825130530366e146f4914987b7b6af9d693f6ba8d237b3a59f61577b1abeb753/U_VMW_vSphere_8-0_Y25M07_STIG.zip"
       ],
       "vuln_id": "V-259047"
@@ -271,16 +272,17 @@
       "vuln_id": "V-259053"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259054",
+      "check_pack": "generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259054r961158_rule",
       "severity": "medium",
       "title": "The vCenter Lookup service must configure the \"setCharacterEncodingFilter\" filter.",
-      "tracking_issue": "TODO-V-259054",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
         "content/disa-corpus/artifacts/825130530366e146f4914987b7b6af9d693f6ba8d237b3a59f61577b1abeb753/U_VMW_vSphere_8-0_Y25M07_STIG.zip"
       ],
       "vuln_id": "V-259054"
@@ -302,16 +304,17 @@
       "vuln_id": "V-259055"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259056",
+      "check_pack": "generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259056r960792_rule",
       "severity": "medium",
       "title": "The vCenter Lookup service DefaultServlet must be set to \"readonly\" for \"PUT\" and \"DELETE\" commands.",
-      "tracking_issue": "TODO-V-259056",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
         "content/disa-corpus/artifacts/825130530366e146f4914987b7b6af9d693f6ba8d237b3a59f61577b1abeb753/U_VMW_vSphere_8-0_Y25M07_STIG.zip"
       ],
       "vuln_id": "V-259056"
