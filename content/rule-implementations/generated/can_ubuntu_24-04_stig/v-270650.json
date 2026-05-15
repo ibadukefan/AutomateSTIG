@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "aide -c /etc/aide/aide.conf --check >/dev/null 2>&1 && echo configured",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must configure AIDE to perform file integrity checking on the file system if installed.",
+    "expected": {
+      "type": "equals",
+      "value": "configured"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270650"
+  },
   "check_content_excerpt": "Note: If a file integrity tool other than Advanced Intrusion Detection Environment (AIDE) is employed, this requirement is not applicable.\n\nVerify AIDE is configured on the system by performing a manual check:\n\n$ sudo aide -c /etc/aide/aide.conf --check\n\nExample output:\n...\nStart timestamp: 2024-10-30 14:22:38 -0400 (AIDE 0.18.6)\nAIDE found differences between database and filesystem!!\n...\n\nIf AIDE is being used for system file integrity checking and the command fails, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "configured"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Initialize the AIDE package (this may take a few minutes):\n$ sudo aideinit\nRunning aide --init...\n\nThe new database will need to be renamed to be read by AIDE:\n$ sudo cp -p /var/lib/aide/aide.db.new /var/lib/aide/aide.db\n\nPerform a manual check:\n$ sudo aide -c /etc/aide/aide.conf --check\n\nExample output:\n...\nStart timestamp: 2024-10-30 14:22:38 -0400 (AIDE 0.18.6)\nAIDE found differences between database and filesystem!!\n...\n\nDone.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270650r1155241_rule",
   "severity": "medium",

@@ -1521,6 +1521,30 @@ def _linux_aide_selection_line_token_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _ubuntu_aide_filesystem_integrity_check_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-260583', 'V-270650'}:
+        return None
+    if 'ubuntu' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    if not re.search(r'aide\s+-c\s+/etc/aide/aide\.conf\s+--check', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+AIDE\s+is\s+being\s+used\s+(?:to\s+perform\s+file\s+integrity\s+checks|for\s+system\s+file\s+integrity\s+checking)\s+(?:but|and)\s+the\s+command\s+fails,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Initialize\s+AIDE|aideinit|AIDE\s+initialized\s+database', combined, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'aide -c /etc/aide/aide.conf --check >/dev/null 2>&1 && echo configured'},
+        'expected': {'type': 'equals', 'value': 'configured'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _ubuntu_aide_default_cron_script_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-238236', 'V-260585', 'V-270651'}:
@@ -9001,6 +9025,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     ubuntu_rsyslog_candidate = _ubuntu_rsyslog_remote_access_methods_candidate(rule, stig_id)
     if ubuntu_rsyslog_candidate:
         return ubuntu_rsyslog_candidate
+
+    ubuntu_aide_filesystem_candidate = _ubuntu_aide_filesystem_integrity_check_candidate(rule, stig_id)
+    if ubuntu_aide_filesystem_candidate:
+        return ubuntu_aide_filesystem_candidate
 
     ubuntu_aide_default_cron_script_candidate = _ubuntu_aide_default_cron_script_candidate(rule, stig_id)
     if ubuntu_aide_default_cron_script_candidate:

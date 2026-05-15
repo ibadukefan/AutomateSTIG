@@ -865,6 +865,19 @@
     },
     {
       "check": {
+        "command": "aide -c /etc/aide/aide.conf --check >/dev/null 2>&1 && echo configured",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must configure Advanced Intrusion Detection Environment (AIDE) to perform file integrity checking on the file system.",
+      "expected": {
+        "type": "equals",
+        "value": "configured"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260583"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/aide",
         "pattern": "SILENTREPORTS=no",

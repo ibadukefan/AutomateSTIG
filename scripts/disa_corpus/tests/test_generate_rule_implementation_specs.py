@@ -145,6 +145,46 @@ By using this IS, you consent to the following conditions:
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
+    def test_infers_ubuntu_aide_filesystem_integrity_check_candidate_from_exact_vuln(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270650',
+            'title': 'Ubuntu 24.04 LTS must configure AIDE to perform file integrity checking on the file system.',
+            'check_content': '''Note: If a file integrity tool other than AIDE is employed, this requirement is not applicable.
+
+Verify AIDE is configured and operating correctly by using the following command (this will take a few minutes):
+
+$ sudo aide -c /etc/aide/aide.conf --check
+
+Example output:
+
+Start timestamp: 2024-04-01 04:20:00 +1300 (AIDE 0.17.4)
+AIDE found differences between database and filesystem!!
+
+If AIDE is being used to perform file integrity checks but the command fails, this is a finding.''',
+            'fix_text': '''Initialize AIDE (this will take a few minutes):
+
+$ sudo aideinit
+Running aide --init...
+
+AIDE initialized database at /var/lib/aide/aide.db.new''',
+        }, 'CAN_Ubuntu_24-04_STIG')
+
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270650',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'aide -c /etc/aide/aide.conf --check >/dev/null 2>&1 && echo configured'},
+            'expected': {'type': 'equals', 'value': 'configured'},
+            'description': 'Ubuntu 24.04 LTS must configure AIDE to perform file integrity checking on the file system.',
+        })
+
+        variant_candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270650',
+            'title': 'Ubuntu 24.04 LTS must configure AIDE to perform file integrity checking on the file system if installed.',
+            'check_content': 'Verify AIDE is configured on the system by performing a manual check:\n$ sudo aide -c /etc/aide/aide.conf --check\nIf AIDE is being used for system file integrity checking and the command fails, this is a finding.',
+            'fix_text': 'Initialize the AIDE package (this may take a few minutes):\n$ sudo aideinit\nPerform a manual check:\n$ sudo aide -c /etc/aide/aide.conf --check',
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(variant_candidate['check'], candidate['check'])
+
     def test_infers_ubuntu_2004_ufw_rate_limit_candidate_from_exact_vuln_and_limit_only_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238367',

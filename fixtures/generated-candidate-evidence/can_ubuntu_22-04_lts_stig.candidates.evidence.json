@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 124,
+  "candidate_checks": 125,
   "cases": [
     {
       "check": {
@@ -1745,6 +1745,32 @@
     },
     {
       "check": {
+        "command": "aide -c /etc/aide/aide.conf --check >/dev/null 2>&1 && echo configured",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must configure Advanced Intrusion Detection Environment (AIDE) to perform file integrity checking on the file system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "configured"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "aide -c /etc/aide/aide.conf --check >/dev/null 2>&1 && echo configured": "unexpected-configured"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "aide -c /etc/aide/aide.conf --check >/dev/null 2>&1 && echo configured": "configured"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260583"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/aide",
         "pattern": "SILENTREPORTS=no",
@@ -3369,5 +3395,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 124
+  "validated_candidates": 125
 }

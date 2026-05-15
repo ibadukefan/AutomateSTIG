@@ -67,6 +67,19 @@
     },
     {
       "check": {
+        "command": "aide -c /etc/aide/aide.conf --check >/dev/null 2>&1 && echo configured",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must configure AIDE to perform file integrity checking on the file system if installed.",
+      "expected": {
+        "type": "equals",
+        "value": "configured"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270650"
+    },
+    {
+      "check": {
         "command": "conf_hash=$(sha256sum /etc/aide/aide.conf 2>/dev/null | awk '{print $1}'); [ \"$conf_hash\" = \"f3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491\" ] || printf 'aide.conf %s\\n' \"${conf_hash:-missing}\"; grep -R -- 'SCRIPT=\"/usr/share/aide/bin/dailyaidecheck\"' /etc/cron.daily/dailyaidecheck /etc/cron* /etc/crontab >/dev/null 2>&1 || printf 'missing dailyaidecheck cron script\\n'",
         "type": "command_output"
       },
