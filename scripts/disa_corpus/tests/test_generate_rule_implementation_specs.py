@@ -145,6 +145,43 @@ By using this IS, you consent to the following conditions:
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
+    def test_infers_ubuntu_2004_ufw_rate_limit_candidate_from_exact_vuln_and_limit_only_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238367',
+            'title': 'The Ubuntu operating system must configure the uncomplicated firewall to rate-limit impacted network interfaces.',
+            'check_content': '''Verify an application firewall is configured to rate limit any connection to the system.
+
+Check all the services listening to the ports with the following command:
+
+$ sudo ss -l46ut
+
+Netid State Recv-Q Send-Q Local Address:Port Peer Address:Port Process
+tcp LISTEN 0 128 [::]:ssh [::]:*
+
+For each entry, verify that the Uncomplicated Firewall is configured to rate limit the service ports with the following command:
+
+$ sudo ufw status
+
+Status: active
+
+To Action From
+-- ------ ----
+22/tcp LIMIT Anywhere
+22/tcp (v6) LIMIT Anywhere (v6)
+
+If any port with a state of "LISTEN" is not marked with the "LIMIT" action, this is a finding.''',
+            'fix_text': '''For each service with a port listening to connections, run the following command, replacing "[service]" with the service that needs to be rate limited.
+
+$ sudo ufw limit [service]''',
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-238367')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('ufw status', candidate['check']['command'])
+        self.assertIn('ss -H -l46utn', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_ubuntu_ufw_rate_limit_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270754',

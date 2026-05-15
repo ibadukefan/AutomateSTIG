@@ -5874,7 +5874,8 @@ def _ubuntu_ufw_rate_limit_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'\bufw\s+status\b', content, re.IGNORECASE):
         return None
     has_denied_or_limited_port_prose = re.search(r'If\s+any\s+port\s+with\s+a\s+state\s+of\s+["“]LISTEN["”]\s+that\s+does\s+not\s+have\s+an\s+action\s+of\s+["“]DENY["”],\s+is\s+not\s+marked\s+with\s+the\s+["“]LIMIT["”]\s+action,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
-    if not has_denied_or_limited_port_prose:
+    has_limited_port_prose = re.search(r'If\s+any\s+port\s+with\s+a\s+state\s+of\s+["“]LISTEN["”]\s+is\s+not\s+marked\s+with\s+the\s+["“]LIMIT["”]\s+action,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    if not (has_denied_or_limited_port_prose or has_limited_port_prose):
         return None
     has_inactive_status_prose = re.search(r'If\s+the\s+Status\s+is\s+set\s+to\s+(?:["“]inactive["”]\s+or\s+any\s+type\s+of\s+error|anything\s+other\s+than\s+["“]active["”]),?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
     if vuln_id == 'V-270754' and not has_inactive_status_prose:
