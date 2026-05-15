@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $cgi=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.webServer/security/isapiCgiRestriction' -Name notListedCgisAllowed -ErrorAction SilentlyContinue).Value; $isapi=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.webServer/security/isapiCgiRestriction' -Name notListedIsapisAllowed -ErrorAction SilentlyContinue).Value; if (($cgi -eq $false) -and ($isapi -eq $false)) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Unspecified file extensions on a production IIS 10.0 web server must be removed.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-218824"
+  },
   "check_content_excerpt": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nDouble-click the \"ISAPI and CGI restrictions\" icon.\n\nClick \u201cEdit Feature Settings\".\n\nVerify the \"Allow unspecified CGI modules\" and the \"Allow unspecified ISAPI modules\" check boxes are NOT checked.\n\nIf either or both of the \"Allow unspecified CGI modules\" and the \"Allow unspecified ISAPI modules\" check boxes are checked, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nDouble-click the \"ISAPI and CGI restrictions\" icon.\n\nClick \"Edit Feature Settings\".\n\nRemove the check from the \"Allow unspecified CGI modules\" and the \"Allow unspecified ISAPI modules\" check boxes.\n\nClick \"OK\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-218824r961863_rule",
   "severity": "medium",

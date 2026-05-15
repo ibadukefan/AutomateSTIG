@@ -15,6 +15,32 @@
     },
     {
       "check": {
+        "command": "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.webServer/directoryBrowse /text:enabled",
+        "type": "command_output"
+      },
+      "description": "Directory Browsing on the IIS 10.0 web server must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "platform": "windows",
+      "vuln_id": "V-218808"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$feature=Get-WindowsFeature Web-Printing -ErrorAction SilentlyContinue; if ((-not $feature -or -not $feature.Installed) -and -not (Test-Path -LiteralPath (Join-Path $env:windir 'web\\printers'))) { 'Disabled' }\"",
+        "type": "command_output"
+      },
+      "description": "The Internet Printing Protocol (IPP) must be disabled on the IIS 10.0 web server.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-218818"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$expected=@{'TLS 1.2'=@{Enabled=1;DisabledByDefault=0};'TLS 1.0'=@{Enabled=0;DisabledByDefault=1};'TLS 1.1'=@{Enabled=0;DisabledByDefault=1};'SSL 3.0'=@{Enabled=0;DisabledByDefault=1}}; foreach($protocol in $expected.Keys){$path='HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\'+$protocol+'\\Server'; $item=Get-ItemProperty -Path $path -ErrorAction SilentlyContinue; if(-not $item){exit 1}; foreach($name in $expected[$protocol].Keys){ if([int]$item.$name -ne [int]$expected[$protocol][$name]){exit 1}}}; 'Compliant'\"",
         "type": "command_output"
       },
@@ -25,6 +51,32 @@
       },
       "platform": "windows",
       "vuln_id": "V-218821"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $cgi=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.webServer/security/isapiCgiRestriction' -Name notListedCgisAllowed -ErrorAction SilentlyContinue).Value; $isapi=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.webServer/security/isapiCgiRestriction' -Name notListedIsapisAllowed -ErrorAction SilentlyContinue).Value; if (($cgi -eq $false) -and ($isapi -eq $false)) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Unspecified file extensions on a production IIS 10.0 web server must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-218824"
+    },
+    {
+      "check": {
+        "command": "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.webServer/httpProtocol /text:customHeaders.[name='X-Powered-By'].value",
+        "type": "command_output"
+      },
+      "description": "ASP.NET version must be removed from the HTTP Response Header information.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-241789"
     }
   ],
   "platform": "windows",

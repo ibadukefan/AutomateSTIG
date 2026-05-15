@@ -1164,6 +1164,92 @@ Create a REG_DWORD named "Enabled" with a  value of "0".''',
             'description': 'An IIS 10.0 web server must maintain the confidentiality of controlled information during transmission through the use of an approved Transport Layer Security (TLS) version.',
         })
 
+    def test_infers_iis_directory_browsing_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218808',
+            'title': 'Directory Browsing on the IIS 10.0 web server must be disabled.',
+            'check_content': '''Double-click the "Directory Browsing" icon.
+
+Verify "Directory Browsing" is disabled.
+
+If "Directory Browsing" is not disabled, this is a finding.''',
+            'fix_text': '''Under the "Actions" pane click "Disabled".
+
+Click "Apply".''',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-218808',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': '%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.webServer/directoryBrowse /text:enabled'},
+            'expected': {'type': 'equals', 'value': 'false'},
+            'description': 'Directory Browsing on the IIS 10.0 web server must be disabled.',
+        })
+
+    def test_infers_iis_unspecified_cgi_isapi_modules_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218824',
+            'title': 'Unspecified file extensions on a production IIS 10.0 web server must be removed.',
+            'check_content': '''Double-click the "ISAPI and CGI Restrictions" icon.
+
+Verify the "Allow unspecified CGI modules" and the "Allow unspecified ISAPI modules" check boxes are NOT checked.
+
+If either or both "Allow unspecified CGI modules" or "Allow unspecified ISAPI modules" are checked, this is a finding.''',
+            'fix_text': 'Remove the check from the "Allow unspecified CGI modules" and the "Allow unspecified ISAPI modules" check boxes.',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-218824',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $cgi=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.webServer/security/isapiCgiRestriction' -Name notListedCgisAllowed -ErrorAction SilentlyContinue).Value; $isapi=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.webServer/security/isapiCgiRestriction' -Name notListedIsapisAllowed -ErrorAction SilentlyContinue).Value; if (($cgi -eq $false) -and ($isapi -eq $false)) { 'Compliant' }\""},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Unspecified file extensions on a production IIS 10.0 web server must be removed.',
+        })
+
+    def test_infers_iis_x_powered_by_header_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-241789',
+            'title': 'ASP.NET version must be removed from the HTTP Response Header information.',
+            'check_content': '''Open the IIS 10.0 Manager and select the web server.
+
+Double-click the "HTTP Response Headers" icon.
+
+Click to select the "X-Powered-By" HTTP Header.
+
+If "X-Powered-By" has not been removed, this is a finding.''',
+            'fix_text': '''Double-click the "HTTP Response Headers" icon.
+
+Click to select the "X-Powered-By" HTTP Header.
+
+Click "Remove" in the Actions Panel.''',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-241789',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.webServer/httpProtocol /text:customHeaders.[name='X-Powered-By'].value"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'ASP.NET version must be removed from the HTTP Response Header information.',
+        })
+
+    def test_infers_iis_internet_printing_protocol_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218818',
+            'title': 'The Internet Printing Protocol (IPP) must be disabled on the IIS 10.0 web server.',
+            'check_content': '''If the Print Services role and the Internet Printing role are not installed, this check is Not Applicable.
+
+Navigate to %windir%\\web\\printers.
+
+If this folder exists, this is a finding.
+
+If the Internet Printing option is enabled, this is a finding.''',
+            'fix_text': 'If the Internet Printing option is checked, clear the check box and remove the role service.',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-218818',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': "powershell -NoProfile -Command \"$feature=Get-WindowsFeature Web-Printing -ErrorAction SilentlyContinue; if ((-not $feature -or -not $feature.Installed) -and -not (Test-Path -LiteralPath (Join-Path $env:windir 'web\\printers'))) { 'Disabled' }\""},
+            'expected': {'type': 'equals', 'value': 'Disabled'},
+            'description': 'The Internet Printing Protocol (IPP) must be disabled on the IIS 10.0 web server.',
+        })
+
     def test_infers_tomcat_removed_example_webapp_directory_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222958',

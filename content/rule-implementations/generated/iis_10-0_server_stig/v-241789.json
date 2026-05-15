@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.webServer/httpProtocol /text:customHeaders.[name='X-Powered-By'].value",
+      "type": "command_output"
+    },
+    "description": "ASP.NET version must be removed from the HTTP Response Header information.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "windows",
+    "vuln_id": "V-241789"
+  },
   "check_content_excerpt": "Note: If ASP.NET is not installed, this is Not Applicable.\n\nOpen the IIS 10.0 Manager.\nUnder the \"Connections\" pane on the left side of the management console, select the IIS 10.0 web server.\nClick the HTTP Response Headers button.\nClick to select the \u201cX-Powered-By\u201d HTTP Header.\nIf \u201cX-Powered-By\u201d has not been removed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Open the IIS 10.0 Manager.\nUnder the \"Connections\" pane on the left side of the management console, select the IIS 10.0 web server.\nClick the HTTP Response Headers button.\nClick to select the \u201cX-Powered-By\u201d HTTP Header.\nClick \u201cRemove\u201d in the Actions Panel.\nNote: This can be performed multiple ways, this is an example.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-241789r1022662_rule",
   "severity": "low",

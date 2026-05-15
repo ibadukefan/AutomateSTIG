@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$feature=Get-WindowsFeature Web-Printing -ErrorAction SilentlyContinue; if ((-not $feature -or -not $feature.Installed) -and -not (Test-Path -LiteralPath (Join-Path $env:windir 'web\\printers'))) { 'Disabled' }\"",
+      "type": "command_output"
+    },
+    "description": "The Internet Printing Protocol (IPP) must be disabled on the IIS 10.0 web server.",
+    "expected": {
+      "type": "equals",
+      "value": "Disabled"
+    },
+    "platform": "windows",
+    "vuln_id": "V-218818"
+  },
   "check_content_excerpt": "If the Print Services role and the Internet Printing role are not installed, this check is Not Applicable.\n\nNavigate to the following directory:\n\n%windir%\\web\\printers\n\nIf this folder exists, this is a finding.\n\nDetermine whether Internet Printing is enabled:\n\nClick \u201cStart\u201d, click \u201cAdministrative Tools\u201d, and then click \u201cServer Manager\u201d.\n\nExpand the roles node, right-click \u201cPrint Services\u201d, and then select \u201cRemove Roles Services\u201d.\n\nIf the Internet Printing option is enabled, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Disabled"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Click \u201cStart\u201d, click \u201cAdministrative Tools\u201d, and then click \u201cServer Manager\u201d.\n\nExpand the roles node, right-click \u201cPrint Services\u201d, and then select \u201cRemove Roles Services\u201d.\n\nIf the Internet Printing option is checked, clear the check box, click \u201cNext\u201d, and then click \u201cRemove\u201d to complete the wizard.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-218818r961470_rule",
   "severity": "medium",

@@ -8322,6 +8322,81 @@ def _iis_tls_12_enabled_legacy_protocols_disabled_candidate(rule: dict, stig_id:
     }
 
 
+def _iis_server_exact_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'IIS_10-0_Server_STIG':
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (content, fix_text, rule.get('title', '') or '') if part)
+
+    if vuln_id == 'V-218808':
+        if not re.search(r'Directory\s+Browsing', combined, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+["“]?Directory\s+Browsing["”]?\s+is\s+not\s+disabled,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'(?:click|select)\s+["“]?Disabled["”]?', fix_text, re.IGNORECASE):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': r'%windir%\system32\inetsrv\appcmd.exe list config /section:system.webServer/directoryBrowse /text:enabled'},
+            'expected': {'type': 'equals', 'value': 'false'},
+            'description': rule.get('title', ''),
+        }
+
+    if vuln_id == 'V-218824':
+        if not all(re.search(snippet, combined, re.IGNORECASE) for snippet in (r'Allow\s+unspecified\s+CGI\s+modules', r'Allow\s+unspecified\s+ISAPI\s+modules')):
+            return None
+        if not re.search(r'(?:If\s+either\s+or\s+both|If\s+either).*checked,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+            return None
+        if not re.search(r'Remove\s+the\s+check\s+from', fix_text, re.IGNORECASE):
+            return None
+        command = "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $cgi=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.webServer/security/isapiCgiRestriction' -Name notListedCgisAllowed -ErrorAction SilentlyContinue).Value; $isapi=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.webServer/security/isapiCgiRestriction' -Name notListedIsapisAllowed -ErrorAction SilentlyContinue).Value; if (($cgi -eq $false) -and ($isapi -eq $false)) { 'Compliant' }\""
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
+
+    if vuln_id == 'V-241789':
+        if not all(re.search(snippet, combined, re.IGNORECASE) for snippet in (r'HTTP\s+Response\s+Headers', r'X-Powered-By')):
+            return None
+        if not re.search(r'If\s+["“]?X-Powered-By["”]?\s+has\s+not\s+been\s+removed,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Click\s+["“]?Remove["”]?\s+in\s+the\s+Actions\s+Panel', fix_text, re.IGNORECASE):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': r"%windir%\system32\inetsrv\appcmd.exe list config /section:system.webServer/httpProtocol /text:customHeaders.[name='X-Powered-By'].value"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+
+    if vuln_id == 'V-218818':
+        if not all(re.search(snippet, combined, re.IGNORECASE) for snippet in (r'Internet\s+Printing\s+Protocol', r'%windir%\\web\\printers', r'Internet\s+Printing\s+option')):
+            return None
+        if not re.search(r'If\s+this\s+folder\s+exists,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+the\s+Internet\s+Printing\s+option\s+is\s+enabled,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Internet\s+Printing\s+option\s+is\s+checked', fix_text, re.IGNORECASE):
+            return None
+        command = "powershell -NoProfile -Command \"$feature=Get-WindowsFeature Web-Printing -ErrorAction SilentlyContinue; if ((-not $feature -or -not $feature.Installed) -and -not (Test-Path -LiteralPath (Join-Path $env:windir 'web\\printers'))) { 'Disabled' }\""
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Disabled'},
+            'description': rule.get('title', ''),
+        }
+
+    return None
+
+
 def _windows_local_volume_filesystem_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -8518,6 +8593,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     iis_tls_candidate = _iis_tls_12_enabled_legacy_protocols_disabled_candidate(rule, stig_id)
     if iis_tls_candidate:
         return iis_tls_candidate
+
+    iis_server_exact_candidate = _iis_server_exact_candidate(rule, stig_id)
+    if iis_server_exact_candidate:
+        return iis_server_exact_candidate
 
     if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'office', 'adobe', 'acrobat')):
         firmware_state_candidate = _windows_firmware_state_candidate(rule, stig_id)
