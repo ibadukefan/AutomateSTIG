@@ -2163,7 +2163,7 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                 re.IGNORECASE,
             )
         if kerberos_nonzero_upper_bound and re.search(
-            rf'Kerberos\s+Policy\s*>>\s*{re.escape(kerberos_nonzero_upper_bound.group(1).strip())}\s+to\s+a\s+maximum\s+of\s+"{re.escape(kerberos_nonzero_upper_bound.group(2))}"[^.\n]*\b(?:but\s+not|not)\s+"0"',
+            rf'Kerberos\s+Policy\s*>>\s*"?{re.escape(kerberos_nonzero_upper_bound.group(1).strip())}"?\s+to\s+a\s+maximum\s+of\s+"{re.escape(kerberos_nonzero_upper_bound.group(2))}"[^.\n]*\b(?:but\s+not|not)\s+"0"',
             policy_text,
             re.IGNORECASE,
         ):

@@ -189,6 +189,23 @@ If the MPLS switch is not configured to disable TTL propagation, this is a findi
             'description': 'The Cisco MPLS switch must be configured to have TTL Propagation disabled.',
         })
 
+    def test_infers_windows_kerberos_nonzero_maximum_with_quoted_fix_key_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-205703',
+            'title': 'Windows Server 2019 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less.',
+            'check_content': '''Navigate to Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy.
+
+If the value for "Maximum lifetime for service ticket" is "0" or greater than "600" minutes, this is a finding.''',
+            'fix_text': '''Configure the policy value in the Default Domain Policy for Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy >> "Maximum lifetime for service ticket" to a maximum of "600" minutes, but not "0", which equates to "Ticket doesn't expire".''',
+        }, 'Windows_Server_2019_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-205703',
+            'platform': 'windows',
+            'check': {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': 'Maximum lifetime for service ticket'},
+            'expected': {'type': 'matches', 'pattern': mod._positive_integer_range_pattern(600)},
+            'description': 'Windows Server 2019 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less.',
+        })
+
     def test_infers_scap_fix_only_user_rights_exact_allowlist_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254418',
