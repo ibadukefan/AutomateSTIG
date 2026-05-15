@@ -1551,6 +1551,19 @@
     },
     {
       "check": {
+        "command": "find /dev -context '*:device_t:*' \\( -type c -o -type b \\) -printf '%p %Z\\n'; find /dev -context '*:unlabeled_t:*' \\( -type c -o -type b \\) -printf '%p %Z\\n'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must be configured so that all system device files are correctly labeled to prevent unauthorized modification.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257932"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0000",
         "owner": null,

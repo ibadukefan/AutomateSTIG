@@ -4220,6 +4220,30 @@ def _selinux_getenforce_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _linux_device_file_selinux_label_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    if rule.get('vuln_id') not in {'V-257932', 'V-271769'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'system\s+device\s+files\s+(?:are\s+|to\s+be\s+)?correctly\s+labeled', content, re.IGNORECASE):
+        return None
+    if not re.search(r'(?:sudo\s+)?find\s+/dev\s+-context\s+\*:device_t:\*\s+\\\(\s+-type\s+c\s+-o\s+-type\s+b\s+\\\)\s+-printf\s+["“\']%p\s+%Z\\n["”\']', content, re.IGNORECASE):
+        return None
+    if not re.search(r'(?:sudo\s+)?find\s+/dev\s+-context\s+\*:unlabeled_t:\*\s+\\\(\s+-type\s+c\s+-o\s+-type\s+b\s+\\\)\s+-printf\s+["“\']%p\s+%Z\\n["”\']', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+there\s+is\s+(?:any\s+)?output\s+from\s+(?:the\s+)?(?:above|either)(?:\s+of\s+these)?\s+commands?', content, re.IGNORECASE):
+        return None
+    command = "find /dev -context '*:device_t:*' \\( -type c -o -type b \\) -printf '%p %Z\\n'; find /dev -context '*:unlabeled_t:*' \\( -type c -o -type b \\) -printf '%p %Z\\n'"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _selinux_sestatus_policy_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -8363,6 +8387,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     linux_issue_banner_candidate = _linux_issue_banner_candidate(rule, stig_id)
     if linux_issue_banner_candidate:
         return linux_issue_banner_candidate
+
+    linux_device_file_selinux_label_candidate = _linux_device_file_selinux_label_candidate(rule, stig_id)
+    if linux_device_file_selinux_label_candidate:
+        return linux_device_file_selinux_label_candidate
 
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:

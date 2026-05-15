@@ -161,6 +161,31 @@ If any enabled accounts have not been logged on to within the past 35 days, this
         self.assertIn('Win32_UserAccount', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_linux_device_file_selinux_label_empty_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257932',
+            'title': 'RHEL 9 must be configured so that all system device files are correctly labeled to prevent unauthorized modification.',
+            'check_content': '''Verify that all system device files are correctly labeled to prevent unauthorized modification.
+
+List all device files on the system that are incorrectly labeled with the following commands:
+
+$ find /dev -context *:device_t:* \\( -type c -o -type b \\) -printf "%p %Z\\n"
+$ find /dev -context *:unlabeled_t:* \\( -type c -o -type b \\) -printf "%p %Z\\n"
+
+If there is any output from either command, this is a finding.''',
+            'fix_text': 'Run restorecon on incorrectly labeled device files.',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-257932',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "find /dev -context '*:device_t:*' \\( -type c -o -type b \\) -printf '%p %Z\\n'; find /dev -context '*:unlabeled_t:*' \\( -type c -o -type b \\) -printf '%p %Z\\n'",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 9 must be configured so that all system device files are correctly labeled to prevent unauthorized modification.',
+        })
+
     def test_infers_postgresql_ssl_enabled_for_transmission_reception(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233579',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /dev -context '*:device_t:*' \\( -type c -o -type b \\) -printf '%p %Z\\n'; find /dev -context '*:unlabeled_t:*' \\( -type c -o -type b \\) -printf '%p %Z\\n'",
+      "type": "command_output"
+    },
+    "description": "OL 9 must be configured so that all system device files are correctly labeled to prevent unauthorized modification.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271769"
+  },
   "check_content_excerpt": "Verify that OL 9 configures all system device files to be correctly labeled to prevent unauthorized modification.\n\nList all device files on the system that are incorrectly labeled with the following commands:\n\nNote: Device files are normally found under \"/dev\", but applications may place device files in other directories and may necessitate a search of the entire system.\n\n$ sudo find /dev -context *:device_t:* \\( -type c -o -type b \\) -printf \"%p %Z\\n\"\n\n$ sudo find /dev -context *:unlabeled_t:* \\( -type c -o -type b \\) -printf \"%p %Z\\n\"\n\nNote: There are device files, such as \"/dev/dtrace/helper\" or \"/dev/vmci\", that are used for system trace capabilities or when the operating system is a host virtual machine. They will not be owned by a user on the system and require the \"device_t\" label to operate. These device files are not a finding.\n\nIf there is output from either of these commands, other than already noted, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to correctly label all system devices.\n\nRestore the SELinux policy for the affected device file from the system policy database using the following command:\n\n$ sudo restorecon -v <device_path>\n\nSubstituting \"<device_path>\" with the path to the affected device file (from the output of the previous commands). An example device file path would be \"/dev/ttyUSB0\". If the output of the above command does not indicate that the device was relabeled to a more specific SELinux type label, then the SELinux policy of the system must be updated with more specific policy for the device class specified. If a package was used to install support for a device class, that package could be reinstalled using the following command:\n\n$ sudo dnf reinstall -y <package_name>\n\nIf a package was not used to install the SELinux policy for a given device class, then it must be generated manually and provide specific type labels.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271769r1092019_rule",
   "severity": "medium",
