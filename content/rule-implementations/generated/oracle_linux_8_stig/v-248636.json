@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -uid +999 -print; done'",
+      "type": "command_output"
+    },
+    "description": "All OL 8 world-writable directories must be owned by root, sys, bin, or an application user.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-248636"
+  },
   "check_content_excerpt": "The following command will discover and print world-writable directories that are not owned by a system account, given the assumption that only system accounts have a UID lower than 1000. Run it once for each local partition [PART]: \n \n$ sudo find [PART] -xdev -type d -perm -0002 -uid +999 -print \n \nIf there is output, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Investigate any world-writable directories that are not owned by a system account and then delete the files or assign them to an appropriate group.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248636r991589_rule",
   "severity": "medium",

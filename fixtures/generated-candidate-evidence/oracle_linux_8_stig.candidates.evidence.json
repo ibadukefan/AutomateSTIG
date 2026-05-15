@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 342,
+  "candidate_checks": 344,
   "cases": [
     {
       "check": {
@@ -2562,6 +2562,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248634"
+    },
+    {
+      "check": {
+        "command": "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -uid +999 -print; done'",
+        "type": "command_output"
+      },
+      "description": "All OL 8 world-writable directories must be owned by root, sys, bin, or an application user.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -uid +999 -print; done'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -uid +999 -print; done'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248636"
+    },
+    {
+      "check": {
+        "command": "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'",
+        "type": "command_output"
+      },
+      "description": "All OL 8 world-writable directories must be group-owned by root, sys, bin, or an application group.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248637"
     },
     {
       "check": {
@@ -9286,5 +9338,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 342
+  "validated_candidates": 344
 }

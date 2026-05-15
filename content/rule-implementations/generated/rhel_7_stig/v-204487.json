@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that all world-writable directories are group-owned by root, sys, bin, or an application group.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204487"
+  },
   "check_content_excerpt": "The following command will discover and print world-writable directories that are not group-owned by a system account, assuming only system accounts have a GID lower than 1000. Run it once for each local partition [PART]: \n\n# find [PART] -xdev -type d -perm -0002 -gid +999 -print\n\nIf there is output, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "All directories in local partitions which are world-writable should be group-owned by root or another system account. If any world-writable directories are not group-owned by a system account, this should be investigated. Following this, the directories should be deleted or assigned to an appropriate group.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204487r991589_rule",
   "severity": "medium",

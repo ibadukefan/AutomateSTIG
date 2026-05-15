@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 155,
+  "candidate_checks": 157,
   "cases": [
     {
       "check": {
@@ -984,6 +984,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204486"
+    },
+    {
+      "check": {
+        "command": "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all world-writable directories are group-owned by root, sys, bin, or an application group.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204487"
     },
     {
       "check": {
@@ -3681,6 +3707,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -uid +999 -print; done'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all world-writable directories are owned by root, sys, bin, or an application user.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -uid +999 -print; done'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -uid +999 -print; done'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-228563"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0600",
         "owner": null,
@@ -4174,5 +4226,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 155
+  "validated_candidates": 157
 }

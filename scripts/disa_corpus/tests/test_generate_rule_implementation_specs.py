@@ -186,6 +186,50 @@ If there is any output from either command, this is a finding.''',
             'description': 'RHEL 9 must be configured so that all system device files are correctly labeled to prevent unauthorized modification.',
         })
 
+    def test_infers_linux_world_writable_directory_group_owner_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230319',
+            'title': 'All RHEL 8 world-writable directories must be group-owned by root, sys, bin, or an application group.',
+            'check_content': '''The following command will discover and print world-writable directories that are not group-owned by a system account, given the assumption that only system accounts have a gid lower than 1000. Run it once for each local partition [PART]:
+
+$ sudo find [PART] -xdev -type d -perm -0002 -gid +999 -print
+
+If there is output, this is a finding.''',
+            'fix_text': 'All directories in local partitions which are world-writable must be group-owned by root or another system account.',
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230319',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'All RHEL 8 world-writable directories must be group-owned by root, sys, bin, or an application group.',
+        })
+
+    def test_infers_linux_world_writable_directory_owner_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257928',
+            'title': 'All RHEL 9 world-writable directories must be owned by root, sys, bin, or an application user.',
+            'check_content': '''Verify that world writable directories are owned by root, a system account, or an application account with the following command. It will discover and print world-writable directories that are not owned by root.  Run it once for each local partition [PART]:
+
+$ sudo find  PART  -xdev -type d -perm -0002 -uid +0 -print
+
+If there is output, this is a finding.''',
+            'fix_text': 'Configure all public directories to be owned by root or a system account.',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-257928',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -uid +0 -print; done'",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'All RHEL 9 world-writable directories must be owned by root, sys, bin, or an application user.',
+        })
+
     def test_infers_postgresql_ssl_enabled_for_transmission_reception(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233579',

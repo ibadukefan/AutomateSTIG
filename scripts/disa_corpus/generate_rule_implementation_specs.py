@@ -1274,6 +1274,40 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
 
 
+def _linux_world_writable_directory_owner_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-204487', 'V-228563', 'V-230319', 'V-248636', 'V-248637', 'V-257928'}:
+        return None
+    if not re.search(r'world[-\s]writable\s+directories', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Run\s+it\s+once\s+for\s+each\s+local\s+partition\s+\[PART\]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+there\s+is\s+output,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+
+    if re.search(r'find\s+(?:\[PART\]|PART)\s+-xdev\s+-type\s+d\s+-perm\s+-0002\s+-gid\s+\+999\s+-print', content, re.IGNORECASE):
+        predicate = '-gid +999'
+    elif re.search(r'find\s+(?:\[PART\]|PART)\s+-xdev\s+-type\s+d\s+-perm\s+-0002\s+-uid\s+\+(?:0|999)\s+-print', content, re.IGNORECASE):
+        uid_match = re.search(r'-uid\s+\+(0|999)\s+-print', content, re.IGNORECASE)
+        if not uid_match:
+            return None
+        predicate = f'-uid +{uid_match.group(1)}'
+    else:
+        return None
+
+    command = f"sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 {predicate} -print; done'"
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_platform(stig_id: str) -> bool:
     lower = stig_id.lower()
     return 'windows' in lower or 'ms_windows' in lower
@@ -8391,6 +8425,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     linux_device_file_selinux_label_candidate = _linux_device_file_selinux_label_candidate(rule, stig_id)
     if linux_device_file_selinux_label_candidate:
         return linux_device_file_selinux_label_candidate
+
+    linux_world_writable_directory_owner_candidate = _linux_world_writable_directory_owner_candidate(rule, stig_id)
+    if linux_world_writable_directory_owner_candidate:
+        return linux_world_writable_directory_owner_candidate
 
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:

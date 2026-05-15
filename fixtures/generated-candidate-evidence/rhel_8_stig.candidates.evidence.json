@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 308,
+  "candidate_checks": 309,
   "cases": [
     {
       "check": {
@@ -1059,6 +1059,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230318"
+    },
+    {
+      "check": {
+        "command": "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'",
+        "type": "command_output"
+      },
+      "description": "All RHEL 8 world-writable directories must be group-owned by root, sys, bin, or an application group.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t xfs,ext2,ext3,ext4,btrfs -o TARGET | while IFS= read -r p; do find \"$p\" -xdev -type d -perm -0002 -gid +999 -print; done'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230319"
     },
     {
       "check": {
@@ -8284,5 +8310,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 308
+  "validated_candidates": 309
 }
