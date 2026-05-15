@@ -67,6 +67,31 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertIn('"vuln_id": "V-230543"', generated)
             self.assertNotIn('xccdf_mil.disa.stig_group_V-230543', generated)
 
+    def test_infers_sles_gdm_banner_file_exact_text_candidate(self):
+        rule = {
+            'vuln_id': 'V-234807',
+            'title': 'The SUSE operating system file /etc/gdm/banner must contain the Standard Mandatory DoD Notice and Consent banner text.',
+            'check_content': '''Verify the SUSE operating system file "/etc/gdm/banner" contains the Standard Mandatory DoD Notice and Consent Banner text by running the following command:
+
+> more /etc/gdm/banner
+
+If the file does not contain the following text, this is a finding.
+
+"You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
+
+By using this IS, you consent to the following conditions:
+
+-At any time, the USG may inspect and seize data stored on this IS."''',
+            'fix_text': 'Configure the SUSE operating system file "/etc/gdm/banner" to contain the Standard Mandatory DoD Notice and Consent Banner.',
+        }
+
+        candidate = mod.infer_candidate_check(rule, 'SLES_15_STIG')
+
+        self.assertEqual(candidate['vuln_id'], 'V-234807')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/gdm/banner', 'pattern': 'You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\n\nBy using this IS, you consent to the following conditions:\n\n-At any time, the USG may inspect and seize data stored on this IS.'})
+        self.assertEqual(candidate['expected'], {'type': 'contains'})
+
     def test_generate_specs_preserves_candidate_when_duplicate_rule_later_manifest_is_less_complete(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)

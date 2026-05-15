@@ -1274,6 +1274,39 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
 
 
+def _sles_gdm_banner_file_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-234807' or not _linux_platform(stig_id) or 'sles' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if '/etc/gdm/banner' not in content or '/etc/gdm/banner' not in fix_text:
+        return None
+    if not re.search(r'file\s+does\s+not\s+contain\s+the\s+following\s+text,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'more\s+/etc/gdm/banner', content, re.IGNORECASE):
+        return None
+    banner_match = re.search(
+        r'file\s+does\s+not\s+contain\s+the\s+following\s+text,?\s+this\s+is\s+a\s+finding\.\s*[\r\n]+\s*["“](.+?)["”]\s*(?:\nFIX:|\Z)',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not banner_match:
+        return None
+    banner = banner_match.group(1).strip()
+    if 'You are accessing a U.S. Government (USG) Information System' not in banner:
+        return None
+    if len(banner) < 100:
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'file_content', 'path': '/etc/gdm/banner', 'pattern': banner},
+        'expected': {'type': 'contains'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_world_writable_directory_owner_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -8776,6 +8809,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     linux_device_file_selinux_label_candidate = _linux_device_file_selinux_label_candidate(rule, stig_id)
     if linux_device_file_selinux_label_candidate:
         return linux_device_file_selinux_label_candidate
+
+    sles_gdm_banner_file_candidate = _sles_gdm_banner_file_candidate(rule, stig_id)
+    if sles_gdm_banner_file_candidate:
+        return sles_gdm_banner_file_candidate
 
     linux_world_writable_directory_owner_candidate = _linux_world_writable_directory_owner_candidate(rule, stig_id)
     if linux_world_writable_directory_owner_candidate:

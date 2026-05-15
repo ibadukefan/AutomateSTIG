@@ -98,16 +98,17 @@
       "vuln_id": "V-234806"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234807",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234807r958392_rule",
       "severity": "medium",
       "title": "The SUSE operating system file /etc/gdm/banner must contain the Standard Mandatory DoD Notice and Consent banner text.",
-      "tracking_issue": "TODO-V-234807",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234807"
