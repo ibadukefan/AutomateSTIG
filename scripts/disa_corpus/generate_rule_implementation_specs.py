@@ -7798,6 +7798,65 @@ def _office_exchange_kerberos_authentication_candidate(rule: dict, stig_id: str)
     }
 
 
+def _oracle_sqlplus_command(select_sql: str) -> str:
+    return (
+        "sqlplus -s / as sysdba <<'SQL'\n"
+        "SET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\n"
+        f"{select_sql}\n"
+        "EXIT\n"
+        "SQL"
+    )
+
+
+def _oracle_database_public_empty_result_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    allowed = {
+        'V-270528': {
+            'title': 'System Privileges must not be granted to PUBLIC.',
+            'content_pattern': r"Select\s+privilege\s+from\s+dba_sys_privs\s+where\s+grantee\s*=\s*'PUBLIC'",
+            'finding_pattern': r'If\s+any\s+records\s+are\s+returned,\s+this\s+is\s+a\s+finding\.',
+            'fix_pattern': r'revoke\s+\[system\s+privilege\]\s+from\s+PUBLIC',
+            'sql': "SELECT privilege FROM dba_sys_privs WHERE grantee = 'PUBLIC';",
+        },
+        'V-270532': {
+            'title': 'Application role permissions must not be assigned to the Oracle PUBLIC role.',
+            'content_pattern': r"select\s+granted_role\s+from\s+dba_role_privs\s+where\s+grantee\s*=\s*'PUBLIC'",
+            'finding_pattern': r'If\s+any\s+roles\s+are\s+listed,\s+this\s+is\s+a\s+finding\.',
+            'fix_pattern': r'Revoke\s+role\s+grants\s+from\s+PUBLIC',
+            'sql': "SELECT granted_role FROM dba_role_privs WHERE grantee = 'PUBLIC';",
+        },
+        'V-270545': {
+            'title': 'Oracle Database default accounts must be assigned custom passwords.',
+            'content_pattern': r'SELECT\s+\*\s+FROM\s+SYS\.DBA_USERS_WITH_DEFPWD',
+            'finding_pattern': r'If\s+any\s+accounts\s+other\s+than\s+XS\$NULL\s+are\s+listed,\s+this\s+is\s+a\s+finding\.',
+            'fix_pattern': r'Change\s+passwords\s+for\s+database\s+management\s+system\s+\(DBMS\)\s+accounts\s+to\s+nondefault\s+values',
+            'sql': "SELECT username FROM SYS.DBA_USERS_WITH_DEFPWD WHERE username <> 'XS$NULL';",
+        },
+    }
+    expected = allowed.get(vuln_id)
+    if not expected:
+        return None
+    if rule.get('title', '').strip().lower() != expected['title'].lower():
+        return None
+    if not re.search(expected['content_pattern'], content, re.IGNORECASE):
+        return None
+    if not re.search(expected['finding_pattern'], content, re.IGNORECASE):
+        return None
+    if not re.search(expected['fix_pattern'], fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': _oracle_sqlplus_command(expected['sql'])},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_exact_parameter_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE):
         return None
@@ -9159,6 +9218,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:
         return command_candidate
+
+    oracle_database_public_empty_result_candidate = _oracle_database_public_empty_result_candidate(rule, stig_id)
+    if oracle_database_public_empty_result_candidate:
+        return oracle_database_public_empty_result_candidate
 
     oracle_database_exact_parameter_candidate = _oracle_database_exact_parameter_candidate(rule, stig_id)
     if oracle_database_exact_parameter_candidate:

@@ -11495,5 +11495,61 @@ If "value_in_use" is set to "0" this is a finding.''',
         self.assertIn('common criteria compliance enabled', candidate['check']['command'])
 
 
+    def test_infers_oracle_public_empty_result_queries_from_authoritative_sqlplus_text(self):
+        public_privilege = mod.infer_candidate_check({
+            'vuln_id': 'V-270528',
+            'title': 'System Privileges must not be granted to PUBLIC.',
+            'check_content': """From SQL*Plus:
+
+Select privilege from dba_sys_privs where grantee = 'PUBLIC';
+
+If any records are returned, this is a finding.""",
+            'fix_text': """Revoke any system privileges assigned to PUBLIC:
+
+From SQL*Plus:
+
+revoke [system privilege] from PUBLIC;""",
+        }, 'Oracle_Database_19c_STIG')
+        self.assertEqual(public_privilege, {
+            'vuln_id': 'V-270528',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT privilege FROM dba_sys_privs WHERE grantee = 'PUBLIC';\nEXIT\nSQL"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'System Privileges must not be granted to PUBLIC.',
+        })
+
+        public_role = mod.infer_candidate_check({
+            'vuln_id': 'V-270532',
+            'title': 'Application role permissions must not be assigned to the Oracle PUBLIC role.',
+            'check_content': """From SQL*Plus:
+
+select granted_role from dba_role_privs where grantee = 'PUBLIC';
+
+If any roles are listed, this is a finding.""",
+            'fix_text': 'Revoke role grants from PUBLIC.\n\nDo not assign role privileges to PUBLIC.',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertEqual(public_role['check']['command'], "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT granted_role FROM dba_role_privs WHERE grantee = 'PUBLIC';\nEXIT\nSQL")
+        self.assertEqual(public_role['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_oracle_default_passwords_excluding_xs_null_from_exact_vuln(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270545',
+            'title': 'Oracle Database default accounts must be assigned custom passwords.',
+            'check_content': """Use this query to identify the Oracle-supplied accounts that still have their default passwords:
+
+SELECT * FROM SYS.DBA_USERS_WITH_DEFPWD;
+
+If any accounts other than XS$NULL are listed, this is a finding.""",
+            'fix_text': 'Change passwords for database management system (DBMS) accounts to nondefault values.',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270545',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT username FROM SYS.DBA_USERS_WITH_DEFPWD WHERE username <> 'XS$NULL';\nEXIT\nSQL"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Oracle Database default accounts must be assigned custom passwords.',
+        })
+
+
 if __name__ == '__main__':
     unittest.main()

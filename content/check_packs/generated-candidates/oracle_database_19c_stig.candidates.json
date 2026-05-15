@@ -28,6 +28,32 @@
     },
     {
       "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT privilege FROM dba_sys_privs WHERE grantee = 'PUBLIC';\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "System Privileges must not be granted to PUBLIC.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-270528"
+    },
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT granted_role FROM dba_role_privs WHERE grantee = 'PUBLIC';\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Application role permissions must not be assigned to the Oracle PUBLIC role.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-270532"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT value FROM v$parameter WHERE LOWER(name) = '_trace_files_public';\nEXIT\nSQL",
         "type": "command_output"
       },
@@ -38,6 +64,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-270535"
+    },
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT username FROM SYS.DBA_USERS_WITH_DEFPWD WHERE username <> 'XS$NULL';\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Oracle Database default accounts must be assigned custom passwords.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-270545"
     }
   ],
   "platform": "generic",

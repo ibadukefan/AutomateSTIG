@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT privilege FROM dba_sys_privs WHERE grantee = 'PUBLIC';\nEXIT\nSQL",
+      "type": "command_output"
+    },
+    "description": "System Privileges must not be granted to PUBLIC.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-270528"
+  },
   "check_content_excerpt": "From SQL*Plus:\n\nSelect privilege from dba_sys_privs where grantee = 'PUBLIC';\n\nIf any records are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Revoke any system privileges assigned to PUBLIC:\n\nFrom SQL*Plus:\n\nrevoke [system privilege] from PUBLIC;\n\nReplace [system privilege] with the named system privilege.\n\nNote: System privileges are not granted to PUBLIC by default and would indicate a custom action.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270528r1064862_rule",
   "severity": "medium",
