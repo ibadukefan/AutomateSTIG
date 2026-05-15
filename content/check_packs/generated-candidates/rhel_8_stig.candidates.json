@@ -3618,6 +3618,19 @@
     },
     {
       "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -xdev ! -name \".*\" -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null; done",
+        "type": "command_output"
+      },
+      "description": "All RHEL 8 local interactive user home directory files must have mode 0750 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-244531"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/group",
         "pattern": "sa:x:100:juan,shelley,bob,smithj",

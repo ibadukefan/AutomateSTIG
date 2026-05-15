@@ -67,6 +67,34 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertIn('"vuln_id": "V-230543"', generated)
             self.assertNotIn('xccdf_mil.disa.stig_group_V-230543', generated)
 
+    def test_infers_linux_interactive_home_contents_mode_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-244531',
+            'title': 'All RHEL 8 local interactive user home directory files must have mode 0750 or less permissive.',
+            'check_content': '''Verify all files and directories contained in a local interactive user home directory, excluding local initialization files, have a mode of "0750".
+Files that begin with a "." are excluded from this requirement.
+
+Note: The example will be for the user "smithj", who has a home directory of "/home/smithj".
+
+$ sudo ls -lLR /home/smithj
+-rwxr-x--- 1 smithj smithj 18 Mar 5 17:06 file1
+-rwxr----- 1 smithj smithj 193 Mar 5 17:06 file2
+-rw-r-x--- 1 smithj smithj 231 Mar 5 17:06 file3
+
+If any files or directories are found with a mode more permissive than "0750", this is a finding.''',
+            'fix_text': '''Set the mode on files and directories in the local interactive user home directory with the following command:
+
+$ sudo chmod 0750 /home/smithj/<file or directory>''',
+        }, 'RHEL_8_STIG')
+
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-244531',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': '''awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d "$home" ] && find "$home" -xdev ! -name ".*" -perm /027 -exec stat -c "%a %n" {} \\; 2>/dev/null; done'''},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'All RHEL 8 local interactive user home directory files must have mode 0750 or less permissive.',
+        })
+
     def test_infers_sles_gdm_banner_file_exact_text_candidate(self):
         rule = {
             'vuln_id': 'V-234807',

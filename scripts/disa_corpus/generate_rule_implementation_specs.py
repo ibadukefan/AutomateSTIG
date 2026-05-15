@@ -5792,6 +5792,35 @@ def _kubernetes_fixed_file_mode_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _interactive_home_contents_mode_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'files\s+and\s+directories\s+contained\s+in\s+a\s+local\s+interactive\s+user\s+home\s+directory', content, re.IGNORECASE):
+        return None
+    mode_match = re.search(r'mode\s+(?:of\s+)?["“](0?[0-7]{3})["”]\s*\.?\s*(?:\n|.*?or\s+less\s+permissive)', content, re.IGNORECASE | re.DOTALL)
+    finding_match = re.search(r'If\s+any\s+files\s+or\s+directories\s+are\s+found\s+with\s+a\s+mode\s+more\s+permissive\s+than\s+["“]?0?750["”]?,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    if not mode_match or not finding_match:
+        return None
+    if not re.search(r'chmod\s+0?750\s+', fix_text, re.IGNORECASE):
+        return None
+    mode = int(mode_match.group(1), 8)
+    prohibited_bits = 0o777 & ~mode
+    if prohibited_bits == 0:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {
+            'type': 'command_output',
+            'command': f'''awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){{print $6}}' /etc/passwd | while IFS= read -r home; do [ -d "$home" ] && find "$home" -xdev ! -name ".*" -perm /{prohibited_bits:03o} -exec stat -c "%a %n" {{}} \\; 2>/dev/null; done''',
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _interactive_home_directory_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -5835,6 +5864,9 @@ def _interactive_home_directory_mode_candidate(rule: dict, stig_id: str) -> dict
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    interactive_home_contents_mode_candidate = _interactive_home_contents_mode_candidate(rule, stig_id)
+    if interactive_home_contents_mode_candidate:
+        return interactive_home_contents_mode_candidate
     interactive_home_mode_candidate = _interactive_home_directory_mode_candidate(rule, stig_id)
     if interactive_home_mode_candidate:
         return interactive_home_mode_candidate

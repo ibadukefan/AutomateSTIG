@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 346,
+  "candidate_checks": 347,
   "cases": [
     {
       "check": {
@@ -2640,6 +2640,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248638"
+    },
+    {
+      "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -xdev ! -name \".*\" -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null; done",
+        "type": "command_output"
+      },
+      "description": "All OL 8 local interactive user home directory files must have mode \"0750\" or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -xdev ! -name \".*\" -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null; done": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /(nologin|false)$/){print $6}' /etc/passwd | while IFS= read -r home; do [ -d \"$home\" ] && find \"$home\" -xdev ! -name \".*\" -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null; done": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248640"
     },
     {
       "check": {
@@ -9390,5 +9416,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 346
+  "validated_candidates": 347
 }
