@@ -12,6 +12,19 @@
       },
       "platform": "network",
       "vuln_id": "V-221095"
+    },
+    {
+      "check": {
+        "command": "show running-config | include ^no ip source-route$",
+        "type": "command_output"
+      },
+      "description": "The Cisco PE switch must be configured to ignore or drop all packets with any IP options.",
+      "expected": {
+        "type": "equals",
+        "value": "no ip source-route"
+      },
+      "platform": "network",
+      "vuln_id": "V-221128"
     }
   ],
   "platform": "network",

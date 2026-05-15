@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 1,
+  "candidate_checks": 2,
   "cases": [
     {
       "check": {
@@ -26,6 +26,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221095"
+    },
+    {
+      "check": {
+        "command": "show running-config | include ^no ip source-route$",
+        "type": "command_output"
+      },
+      "description": "The Cisco PE switch must be configured to ignore or drop all packets with any IP options.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "no ip source-route"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include ^no ip source-route$": "unexpected-no ip source-route"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include ^no ip source-route$": "no ip source-route"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221128"
     }
   ],
   "production_claim": false,
@@ -33,5 +59,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 1
+  "validated_candidates": 2
 }

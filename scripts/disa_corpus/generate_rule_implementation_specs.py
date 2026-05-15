@@ -1228,7 +1228,7 @@ def _cisco_nxos_no_ip_source_route_candidate(rule: dict, stig_id: str) -> dict |
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     vuln_id = rule.get('vuln_id', '')
-    if vuln_id != 'V-221095' or 'cisco' not in stig_id.lower() or 'nx' not in stig_id.lower():
+    if vuln_id not in {'V-221095', 'V-221128'} or 'cisco' not in stig_id.lower() or 'nx' not in stig_id.lower():
         return None
     combined = '\n'.join(part for part in (content, fix_text) if part)
     if not re.search(r'no\s+ip\s+source-route', combined, re.IGNORECASE):

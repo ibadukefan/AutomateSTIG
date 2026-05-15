@@ -10118,6 +10118,28 @@ SW1(config)# end''',
             'description': 'The Cisco perimeter switch must be configured to block all packets with any IP options.',
         })
 
+    def test_infers_cisco_nxos_pe_no_ip_source_route_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221128',
+            'title': 'The Cisco PE switch must be configured to ignore or drop all packets with any IP options.',
+            'check_content': '''In Cisco NX-OS, all packets with any header option other than the “source-route” header option are dropped. By default, ipv4 source routing is enabled. Verify that source routing is disabled via the following command:
+
+no ip source-route
+
+If the switch is not configured to drop all packets with IP option source routing, this is a finding.''',
+            'fix_text': '''Configure the switch to drop all packets with IP option source routing.
+
+SW1(config)# no ip source-route
+SW1(config)# end''',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221128',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': "show running-config | include ^no ip source-route$"},
+            'expected': {'type': 'equals', 'value': 'no ip source-route'},
+            'description': 'The Cisco PE switch must be configured to ignore or drop all packets with any IP options.',
+        })
+
     def test_infers_windows_user_right_blank_from_no_accounts_phrase(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254423',

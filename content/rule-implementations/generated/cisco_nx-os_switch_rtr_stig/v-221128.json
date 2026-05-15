@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include ^no ip source-route$",
+      "type": "command_output"
+    },
+    "description": "The Cisco PE switch must be configured to ignore or drop all packets with any IP options.",
+    "expected": {
+      "type": "equals",
+      "value": "no ip source-route"
+    },
+    "platform": "network",
+    "vuln_id": "V-221128"
+  },
   "check_content_excerpt": "In Cisco NX-OS, all packets with any header option other than the \u201csource-route\u201d header option are dropped. By default, ipv4 source routing is enabled. Verify that source routing is disabled via the following command: \n\nno ip source-route\n\nIf the switch is not configured to drop all packets with IP option source routing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "no ip source-route"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to drop all packets with IP option source routing.\n\nSW1(config)# no ip source-route \nSW1(config)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221128r999737_rule",
   "severity": "medium",
