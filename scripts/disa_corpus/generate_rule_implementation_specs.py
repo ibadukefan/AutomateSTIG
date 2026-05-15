@@ -1421,6 +1421,61 @@ def _ubuntu_rsyslog_remote_access_methods_candidate(rule: dict, stig_id: str) ->
     }
 
 
+def _ubuntu_aide_default_cron_script_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-238236', 'V-260585', 'V-270651'}:
+        return None
+    if 'ubuntu' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    if 'aide' not in content.lower() or 'this is a finding' not in content.lower():
+        return None
+    if vuln_id in {'V-238236', 'V-260585'}:
+        expected_hash = {
+            'V-238236': '32958374f18871e3f7dda27a58d721f471843e26',
+            'V-260585': 'b71bb2cafaedf15ec3ac2f566f209d3260a37af0',
+        }[vuln_id]
+        if expected_hash not in content:
+            return None
+        if not re.search(r'sha1sum\s+/etc/cron\.\{daily,monthly\}/aide\s+2>/dev/null', content):
+            return None
+        if not re.search(r'no\s+AIDE\s+script\s+file\s+in\s+the\s+cron\s+directories', content, re.IGNORECASE):
+            return None
+        command = (
+            f"expected='{expected_hash}'; found=0; for f in /etc/cron.daily/aide /etc/cron.monthly/aide; "
+            "do [ -f \"$f\" ] || continue; found=1; actual=$(sha1sum \"$f\" | awk '{print $1}'); "
+            "[ \"$actual\" = \"$expected\" ] || printf '%s %s\\n' \"$f\" \"$actual\"; done; "
+            "[ \"$found\" -eq 1 ] || printf 'missing aide cron script\\n'"
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': title,
+        }
+    expected_sha256 = 'f3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491'
+    if expected_sha256 not in content:
+        return None
+    if 'SCRIPT="/usr/share/aide/bin/dailyaidecheck"' not in content:
+        return None
+    if not re.search(r'sha256sum\s+/etc/aide/aide\.conf', content):
+        return None
+    command = (
+        "conf_hash=$(sha256sum /etc/aide/aide.conf 2>/dev/null | awk '{print $1}'); "
+        f"[ \"$conf_hash\" = \"{expected_sha256}\" ] || printf 'aide.conf %s\\n' \"${{conf_hash:-missing}}\"; "
+        "grep -R -- 'SCRIPT=\"/usr/share/aide/bin/dailyaidecheck\"' /etc/cron.daily/dailyaidecheck /etc/cron* /etc/crontab >/dev/null 2>&1 || printf 'missing dailyaidecheck cron script\\n'"
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': title,
+    }
+
+
 def _windows_legal_notice_caption_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -8546,6 +8601,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     ubuntu_rsyslog_candidate = _ubuntu_rsyslog_remote_access_methods_candidate(rule, stig_id)
     if ubuntu_rsyslog_candidate:
         return ubuntu_rsyslog_candidate
+
+    ubuntu_aide_default_cron_script_candidate = _ubuntu_aide_default_cron_script_candidate(rule, stig_id)
+    if ubuntu_aide_default_cron_script_candidate:
+        return ubuntu_aide_default_cron_script_candidate
 
     gsettings_candidate = _gsettings_candidate(rule, stig_id)
     if gsettings_candidate:

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "conf_hash=$(sha256sum /etc/aide/aide.conf 2>/dev/null | awk '{print $1}'); [ \"$conf_hash\" = \"f3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491\" ] || printf 'aide.conf %s\\n' \"${conf_hash:-missing}\"; grep -R -- 'SCRIPT=\"/usr/share/aide/bin/dailyaidecheck\"' /etc/cron.daily/dailyaidecheck /etc/cron* /etc/crontab >/dev/null 2>&1 || printf 'missing dailyaidecheck cron script\\n'",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must be configured so that the script which runs each 30 days or less to check file integrity is the default one.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-270651"
+  },
   "check_content_excerpt": "Note: If AIDE is not installed, this finding is not applicable.\n\nCheck the AIDE configuration file integrity installed on the system (the default configuration file is located at /etc/aide/aide.conf or in /etc/aide/aide.conf.d/) with the following command:\n$ sudo sha256sum /etc/aide/aide.conf\nf3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491  /etc/aide/aide.conf\n\nDownload the original aide-common package in the /tmp directory: \n$ cd /tmp; apt download aide-common \n\nGenerate the checksum from the aide.conf file in the downloaded .deb package:\n$ sudo dpkg-deb --fsys-tarfile /tmp/aide-common_0.18.6-2build2_all.deb | tar -xO ./usr/share/aide/config/aide/aide.conf | sha256sum\nf3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491  -\n\nIf the checksums of the system file (/etc/aide/aide.conf) and the extracted file do not match, this is a finding.\n\nTo verify the frequency of the file integrity checks, inspect the contents of the scheduled jobs as follows:\n\nChecking scheduled cron jobs:\n$ grep -r aide /etc/cron* /etc/crontab\n/etc/cron.daily/dailyaidecheck:SCRIPT=\"/usr/share/aide/bin/dailyaidecheck\"\n\nChecking the systemd timer (this will show when the next scheduled run occurs and the last time the AIDE check was triggered):\n$ sudo systemctl list-timers | grep aide\nThu 2024-10-31 02:01:58 EDT           10h Wed 2024-10-30 13:47:41 EDT            - dailyaidecheck.timer           dailyaidecheck.service\n\nThe contents of these files can be inspected with the following commands:\n$ sudo systemctl cat dailyaidecheck.timer\n$ sudo systemctl cat dailyaidecheck.service\n\nIf there is no AIDE script file in the cron directories or in the systemd timer, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "The cron file for AIDE is fairly complex as it creates the report. This file is installed with the \"aide-common\" package, and the default can be restored by copying it from the package: \n \nDownload the original package to the /tmp dir: \n \n$ cd /tmp; apt download aide-common \n \nExtract the aide script to its original place: \n\n$ dpkg-deb --fsys-tarfile /tmp/aide-common_*.deb | sudo tar -x --wildcards ./usr/share/aide/config/cron.daily/dailyaidecheck* -C /\n \nCopy it to the cron.daily directory: \n \n$  sudo cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.daily/dailyaidecheck*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270651r1068395_rule",
   "severity": "medium",

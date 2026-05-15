@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 188,
+  "candidate_checks": 189,
   "cases": [
     {
       "check": {
@@ -130,6 +130,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270649"
+    },
+    {
+      "check": {
+        "command": "conf_hash=$(sha256sum /etc/aide/aide.conf 2>/dev/null | awk '{print $1}'); [ \"$conf_hash\" = \"f3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491\" ] || printf 'aide.conf %s\\n' \"${conf_hash:-missing}\"; grep -R -- 'SCRIPT=\"/usr/share/aide/bin/dailyaidecheck\"' /etc/cron.daily/dailyaidecheck /etc/cron* /etc/crontab >/dev/null 2>&1 || printf 'missing dailyaidecheck cron script\\n'",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that the script which runs each 30 days or less to check file integrity is the default one.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "conf_hash=$(sha256sum /etc/aide/aide.conf 2>/dev/null | awk '{print $1}'); [ \"$conf_hash\" = \"f3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491\" ] || printf 'aide.conf %s\\n' \"${conf_hash:-missing}\"; grep -R -- 'SCRIPT=\"/usr/share/aide/bin/dailyaidecheck\"' /etc/cron.daily/dailyaidecheck /etc/cron* /etc/crontab >/dev/null 2>&1 || printf 'missing dailyaidecheck cron script\\n'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "conf_hash=$(sha256sum /etc/aide/aide.conf 2>/dev/null | awk '{print $1}'); [ \"$conf_hash\" = \"f3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491\" ] || printf 'aide.conf %s\\n' \"${conf_hash:-missing}\"; grep -R -- 'SCRIPT=\"/usr/share/aide/bin/dailyaidecheck\"' /etc/cron.daily/dailyaidecheck /etc/cron* /etc/crontab >/dev/null 2>&1 || printf 'missing dailyaidecheck cron script\\n'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270651"
     },
     {
       "check": {
@@ -5127,5 +5153,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 188
+  "validated_candidates": 189
 }

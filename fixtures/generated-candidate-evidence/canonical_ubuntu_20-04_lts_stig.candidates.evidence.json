@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 136,
+  "candidate_checks": 137,
   "cases": [
     {
       "check": {
@@ -430,6 +430,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238235"
+    },
+    {
+      "check": {
+        "command": "expected='32958374f18871e3f7dda27a58d721f471843e26'; found=0; for f in /etc/cron.daily/aide /etc/cron.monthly/aide; do [ -f \"$f\" ] || continue; found=1; actual=$(sha1sum \"$f\" | awk '{print $1}'); [ \"$actual\" = \"$expected\" ] || printf '%s %s\\n' \"$f\" \"$actual\"; done; [ \"$found\" -eq 1 ] || printf 'missing aide cron script\\n'",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must be configured so that the script which runs each 30 days or less to check file integrity is the default one.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "expected='32958374f18871e3f7dda27a58d721f471843e26'; found=0; for f in /etc/cron.daily/aide /etc/cron.monthly/aide; do [ -f \"$f\" ] || continue; found=1; actual=$(sha1sum \"$f\" | awk '{print $1}'); [ \"$actual\" = \"$expected\" ] || printf '%s %s\\n' \"$f\" \"$actual\"; done; [ \"$found\" -eq 1 ] || printf 'missing aide cron script\\n'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "expected='32958374f18871e3f7dda27a58d721f471843e26'; found=0; for f in /etc/cron.daily/aide /etc/cron.monthly/aide; do [ -f \"$f\" ] || continue; found=1; actual=$(sha1sum \"$f\" | awk '{print $1}'); [ \"$actual\" = \"$expected\" ] || printf '%s %s\\n' \"$f\" \"$actual\"; done; [ \"$found\" -eq 1 ] || printf 'missing aide cron script\\n'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238236"
     },
     {
       "check": {
@@ -3748,5 +3774,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 136
+  "validated_candidates": 137
 }

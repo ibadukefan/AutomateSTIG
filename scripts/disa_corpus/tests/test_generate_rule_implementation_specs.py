@@ -233,6 +233,52 @@ If any enabled accounts have not been logged on to within the past 35 days, this
         self.assertIn('Win32_UserAccount', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_ubuntu_aide_default_cron_script_hash_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-260585',
+            'title': 'Ubuntu 22.04 LTS must be configured so that the script that runs each 30 days or less to check file integrity is the default.',
+            'check_content': '''Verify that the Advanced Intrusion Detection Environment (AIDE) default script used to check file integrity each 30 days or less is unchanged.
+
+$ dpkg-deb --fsys-tarfile /tmp/aide-common_*.deb | tar -xO ./usr/share/aide/config/cron.daily/aide | sha1sum
+b71bb2cafaedf15ec3ac2f566f209d3260a37af0  -
+
+$ sha1sum /etc/cron.{daily,monthly}/aide 2>/dev/null
+b71bb2cafaedf15ec3ac2f566f209d3260a37af0  /etc/cron.daily/aide
+
+If there is no AIDE script file in the cron directories, or the SHA1 value of at least one file in the daily or monthly cron directory does not match the SHA1 of the original, this is a finding.''',
+            'fix_text': 'Copy the default aide script from aide-common to /etc/cron.daily/aide.',
+        }, 'CAN_Ubuntu_22-04_LTS_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-260585',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "expected='b71bb2cafaedf15ec3ac2f566f209d3260a37af0'; found=0; for f in /etc/cron.daily/aide /etc/cron.monthly/aide; do [ -f \"$f\" ] || continue; found=1; actual=$(sha1sum \"$f\" | awk '{print $1}'); [ \"$actual\" = \"$expected\" ] || printf '%s %s\\n' \"$f\" \"$actual\"; done; [ \"$found\" -eq 1 ] || printf 'missing aide cron script\\n'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Ubuntu 22.04 LTS must be configured so that the script that runs each 30 days or less to check file integrity is the default.',
+        })
+
+    def test_infers_ubuntu_2404_aide_default_conf_and_daily_script_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270651',
+            'title': 'Ubuntu 24.04 LTS must be configured so that the script which runs each 30 days or less to check file integrity is the default one.',
+            'check_content': '''Check the AIDE configuration file integrity installed on the system with the following command:
+$ sudo sha256sum /etc/aide/aide.conf
+f3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491  /etc/aide/aide.conf
+
+Checking scheduled cron jobs:
+$ grep -r aide /etc/cron* /etc/crontab
+/etc/cron.daily/dailyaidecheck:SCRIPT="/usr/share/aide/bin/dailyaidecheck"
+
+If the checksums of the system file (/etc/aide/aide.conf) and the extracted file do not match, this is a finding.''',
+            'fix_text': 'Copy the aide cron script to the cron.daily directory.',
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270651',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "conf_hash=$(sha256sum /etc/aide/aide.conf 2>/dev/null | awk '{print $1}'); [ \"$conf_hash\" = \"f3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491\" ] || printf 'aide.conf %s\\n' \"${conf_hash:-missing}\"; grep -R -- 'SCRIPT=\"/usr/share/aide/bin/dailyaidecheck\"' /etc/cron.daily/dailyaidecheck /etc/cron* /etc/crontab >/dev/null 2>&1 || printf 'missing dailyaidecheck cron script\\n'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Ubuntu 24.04 LTS must be configured so that the script which runs each 30 days or less to check file integrity is the default one.',
+        })
+
     def test_infers_linux_device_file_selinux_label_empty_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257932',

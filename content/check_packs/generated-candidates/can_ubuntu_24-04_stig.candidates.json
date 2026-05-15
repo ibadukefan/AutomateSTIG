@@ -67,6 +67,19 @@
     },
     {
       "check": {
+        "command": "conf_hash=$(sha256sum /etc/aide/aide.conf 2>/dev/null | awk '{print $1}'); [ \"$conf_hash\" = \"f3bbea2552f2c5b475627850d8a5fba1659df6466986d5a18948d9821ecbe491\" ] || printf 'aide.conf %s\\n' \"${conf_hash:-missing}\"; grep -R -- 'SCRIPT=\"/usr/share/aide/bin/dailyaidecheck\"' /etc/cron.daily/dailyaidecheck /etc/cron* /etc/crontab >/dev/null 2>&1 || printf 'missing dailyaidecheck cron script\\n'",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that the script which runs each 30 days or less to check file integrity is the default one.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-270651"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/aide",
         "pattern": "SILENTREPORTS=no",

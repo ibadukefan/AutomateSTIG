@@ -224,6 +224,19 @@
     },
     {
       "check": {
+        "command": "expected='32958374f18871e3f7dda27a58d721f471843e26'; found=0; for f in /etc/cron.daily/aide /etc/cron.monthly/aide; do [ -f \"$f\" ] || continue; found=1; actual=$(sha1sum \"$f\" | awk '{print $1}'); [ \"$actual\" = \"$expected\" ] || printf '%s %s\\n' \"$f\" \"$actual\"; done; [ \"$found\" -eq 1 ] || printf 'missing aide cron script\\n'",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must be configured so that the script which runs each 30 days or less to check file integrity is the default one.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-238236"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/common-auth",
         "pattern": "auth    required    pam_faildelay.so    delay=4000000",

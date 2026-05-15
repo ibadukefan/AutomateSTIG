@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "expected='32958374f18871e3f7dda27a58d721f471843e26'; found=0; for f in /etc/cron.daily/aide /etc/cron.monthly/aide; do [ -f \"$f\" ] || continue; found=1; actual=$(sha1sum \"$f\" | awk '{print $1}'); [ \"$actual\" = \"$expected\" ] || printf '%s %s\\n' \"$f\" \"$actual\"; done; [ \"$found\" -eq 1 ] || printf 'missing aide cron script\\n'",
+      "type": "command_output"
+    },
+    "description": "The Ubuntu operating system must be configured so that the script which runs each 30 days or less to check file integrity is the default one.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-238236"
+  },
   "check_content_excerpt": "Verify that the Advanced Intrusion Detection Environment (AIDE) default script used to check file integrity each 30 days or less is unchanged. \n \nDownload the original aide-common package in the /tmp directory: \n \n$ cd /tmp; apt download aide-common \n \nFetch the SHA1 of the original script file: \n \n$ dpkg-deb --fsys-tarfile /tmp/aide-common_*.deb | tar -xO ./usr/share/aide/config/cron.daily/aide | sha1sum \n32958374f18871e3f7dda27a58d721f471843e26  - \n \nCompare with the SHA1 of the file in the daily or monthly cron directory: \n \n$ sha1sum /etc/cron.{daily,monthly}/aide 2>/dev/null \n32958374f18871e3f7dda27a58d721f471843e26  /etc/cron.daily/aide \n \nIf there is no AIDE script file in the cron directories, or the SHA1 value of at least one file in the daily or monthly cron directory does not match the SHA1 of the original, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "The cron file for AIDE is fairly complex as it creates the report. This file is installed with the \"aide-common\" package, and the default can be restored by copying it from the package: \n \nDownload the original package to the /tmp dir: \n \n$ cd /tmp; apt download aide-common \n \nExtract the aide script to its original place: \n \n$ dpkg-deb --fsys-tarfile /tmp/aide-common_*.deb | sudo tar -x ./usr/share/aide/config/cron.daily/aide -C / \n \nCopy it to the cron.daily directory: \n \n$  sudo cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.daily/aide",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-238236r958946_rule",
   "severity": "medium",
