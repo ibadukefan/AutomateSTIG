@@ -771,6 +771,27 @@ If any connector elements contain xpoweredBy="true", this is a finding.''',
             'description': 'xpoweredBy attribute must be disabled.',
         })
 
+    def test_infers_tomcat_connector_allow_trace_split_words_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222950',
+            'title': 'Stack tracing must be disabled.',
+            'check_content': '''From the Tomcat server run the following OS command:
+
+sudo cat $CATALINA_BASE/conf/server.xml | grep -i connector
+
+Review each connector element, ensure each connector does not have an "allowTrace" setting or ensure the "allowTrace" setting is set to false.
+
+If a connector element in the server.xml file or in any of the <APP NAME>/WEBINF/web.xml files contains the "allow Trace = true" statement, this is a finding.''',
+            'fix_text': 'Remove the "allow Trace=true" statement from the affected xml configuration files and restart the Tomcat server.'
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222950',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'xmllint --xpath "count(//Connector[translate(@allowTrace,\'TRUE\',\'true\')=\'true\'])" $CATALINA_BASE/conf/server.xml 2>/dev/null'},
+            'expected': {'type': 'equals', 'value': '0'},
+            'description': 'Stack tracing must be disabled.',
+        })
+
     def test_infers_tomcat_service_account_nologin_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222983',
@@ -5092,6 +5113,61 @@ If there are no results, or if the org.apache.catalina.connector.RECYCLE_FACADES
                 'substring': 'org.apache.catalina.connector.RECYCLE_FACADES=true',
             },
             'description': 'RECYCLE_FACADES must be set to true.',
+        })
+
+    def test_infers_tomcat_systemd_boolean_property_with_split_property_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222973',
+            'title': 'Tomcat must be configured to limit data exposure between applications.',
+            'check_content': '''From the Tomcat server as a privileged user, run the following command:
+
+sudo grep -i  recycle_facades /etc/systemd/system/tomcat.service
+
+If there are no results, or if the org.apache.catalina.connector. RECYCLE_FACADES is not ="true", this is a finding.'''
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222973',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'grep -i recycle_facades /etc/systemd/system/tomcat.service',
+            },
+            'expected': {
+                'type': 'contains',
+                'substring': 'org.apache.catalina.connector.RECYCLE_FACADES=true',
+            },
+            'description': 'Tomcat must be configured to limit data exposure between applications.',
+        })
+
+    def test_infers_tomcat_error_report_valve_boolean_attribute_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222975',
+            'title': 'ErrorReportValve showServerInfo must be set to false.',
+            'check_content': '''As an elevated user on the Tomcat server run the following command:
+
+sudo grep -i ErrorReportValve $CATALINA_BASE/conf/server.xml file.
+
+If the ErrorReportValve element is not defined and showServerInfo set to "false", this is a finding.
+
+EXAMPLE:
+<Host ...>
+  ...
+  <Valve className="org.apache.catalina.valves.ErrorReportValve" showServerInfo="false"/>
+  ...
+</Host>''',
+            'fix_text': '''Create or modify an ErrorReportValve <Valve> element nested beneath each <Host> element.
+
+<Valve className="org.apache.catalina.valves.ErrorReportValve" showServerInfo="false" />'''
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222975',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'xmllint --xpath "string(//Valve[contains(@className,\'ErrorReportValve\')]/@showServerInfo)" $CATALINA_BASE/conf/server.xml 2>/dev/null',
+            },
+            'expected': {'type': 'equals', 'value': 'false'},
+            'description': 'ErrorReportValve showServerInfo must be set to false.',
         })
 
     def test_infers_tomcat_shutdown_port_disabled_literal_candidate(self):

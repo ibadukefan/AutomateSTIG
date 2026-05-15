@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 23,
+  "candidate_checks": 27,
   "cases": [
     {
       "check": {
@@ -26,6 +26,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222928"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"count(//Connector[translate(@allowTrace,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "Stack tracing must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"count(//Connector[translate(@allowTrace,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null": "unexpected-0"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"count(//Connector[translate(@allowTrace,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null": "0"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222950"
     },
     {
       "check": {
@@ -208,6 +234,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222968"
+    },
+    {
+      "check": {
+        "command": "grep -i recycle_facades /etc/systemd/system/tomcat.service",
+        "type": "command_output"
+      },
+      "description": "Tomcat must be configured to limit data exposure between applications.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "org.apache.catalina.connector.RECYCLE_FACADES=true",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i recycle_facades /etc/systemd/system/tomcat.service": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i recycle_facades /etc/systemd/system/tomcat.service": "before\norg.apache.catalina.connector.RECYCLE_FACADES=true\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222973"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"string(//Valve[contains(@className,'ErrorReportValve')]/@showServerInfo)\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "ErrorReportValve showServerInfo must be set to false.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"string(//Valve[contains(@className,'ErrorReportValve')]/@showServerInfo)\" $CATALINA_BASE/conf/server.xml 2>/dev/null": "unexpected-false"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"string(//Valve[contains(@className,'ErrorReportValve')]/@showServerInfo)\" $CATALINA_BASE/conf/server.xml 2>/dev/null": "false"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222975"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"string(//Valve[contains(@className,'ErrorReportValve')]/@showReport)\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "ErrorReportValve showReport must be set to false.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"string(//Valve[contains(@className,'ErrorReportValve')]/@showReport)\" $CATALINA_BASE/conf/server.xml 2>/dev/null": "unexpected-false"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"string(//Valve[contains(@className,'ErrorReportValve')]/@showReport)\" $CATALINA_BASE/conf/server.xml 2>/dev/null": "false"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222977"
     },
     {
       "check": {
@@ -605,5 +709,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 23
+  "validated_candidates": 27
 }

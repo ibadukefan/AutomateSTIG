@@ -337,16 +337,17 @@
       "vuln_id": "V-222949"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222950",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222950r960963_rule",
       "severity": "medium",
       "title": "Stack tracing must be disabled.",
-      "tracking_issue": "TODO-V-222950",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222950"
@@ -674,16 +675,17 @@
       "vuln_id": "V-222971"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222973",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222973r1043180_rule",
       "severity": "low",
       "title": "Tomcat must be configured to limit data exposure between applications.",
-      "tracking_issue": "TODO-V-222973",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222973"
@@ -704,16 +706,17 @@
       "vuln_id": "V-222974"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222975",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222975r961167_rule",
       "severity": "medium",
       "title": "ErrorReportValve showServerInfo must be set to false.",
-      "tracking_issue": "TODO-V-222975",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222975"
@@ -734,16 +737,17 @@
       "vuln_id": "V-222976"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222977",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222977r961170_rule",
       "severity": "medium",
       "title": "ErrorReportValve showReport must be set to false.",
-      "tracking_issue": "TODO-V-222977",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222977"

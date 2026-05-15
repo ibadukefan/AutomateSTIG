@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "xmllint --xpath \"string(//Valve[contains(@className,'ErrorReportValve')]/@showReport)\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+      "type": "command_output"
+    },
+    "description": "ErrorReportValve showReport must be set to false.",
+    "expected": {
+      "type": "equals",
+      "value": "false"
+    },
+    "platform": "generic",
+    "vuln_id": "V-222977"
+  },
   "check_content_excerpt": "As an elevated user on the Tomcat server run the following command:\n\nsudo grep -i ErrorReportValve $CATALINA_BASE/conf/server.xml file.\n\nIf the ErrorReportValve element is not defined and showReport set to \"false\", this is a finding.\n\nEXAMPLE:\n<Host ...>\n  ...\n  <Valve className=\"org.apache.catalina.valves.ErrorReportValve\" showReport=\"false\"/>\n  ...\n</Host>",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "As a privileged user on the Tomcat server:\n\nEdit the $CATALINA_BASE/conf/server.xml file.\n\nCreate or modify an ErrorReportValve <Valve> element nested beneath each <Host> element.\n\nEXAMPLE:\n<Host name=\"localhost\"  appBase=\"webapps\"\n            unpackWARs=\"true\" autoDeploy=\"false\">\n...\n<Valve className=\"org.apache.catalina.valves.ErrorReportValve\" \nshowReport=\"false\" />\n\n</Host>\n\nRestart the Tomcat server:\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222977r961170_rule",
   "severity": "medium",

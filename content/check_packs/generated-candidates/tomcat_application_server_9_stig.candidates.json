@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "xmllint --xpath \"count(//Connector[translate(@allowTrace,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "Stack tracing must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222950"
+    },
+    {
+      "check": {
         "command": "grep -i shutdown $CATALINA_BASE/conf/server.xml",
         "type": "command_output"
       },
@@ -103,6 +116,45 @@
       },
       "platform": "linux",
       "vuln_id": "V-222968"
+    },
+    {
+      "check": {
+        "command": "grep -i recycle_facades /etc/systemd/system/tomcat.service",
+        "type": "command_output"
+      },
+      "description": "Tomcat must be configured to limit data exposure between applications.",
+      "expected": {
+        "substring": "org.apache.catalina.connector.RECYCLE_FACADES=true",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222973"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"string(//Valve[contains(@className,'ErrorReportValve')]/@showServerInfo)\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "ErrorReportValve showServerInfo must be set to false.",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222975"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"string(//Valve[contains(@className,'ErrorReportValve')]/@showReport)\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "ErrorReportValve showReport must be set to false.",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222977"
     },
     {
       "check": {

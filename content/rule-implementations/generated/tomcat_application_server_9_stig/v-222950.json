@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "xmllint --xpath \"count(//Connector[translate(@allowTrace,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+      "type": "command_output"
+    },
+    "description": "Stack tracing must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "generic",
+    "vuln_id": "V-222950"
+  },
   "check_content_excerpt": "From the Tomcat server run the following OS command:\n\nsudo cat $CATALINA_BASE/conf/server.xml | grep -i connector \n\nReview each connector element, ensure each connector does not have an \"allowTrace\" setting or ensure the \"allowTrace\" setting is set to false.\n\n<Connector ... allowTrace=\"false\" />\n\nDo the same for each application by checking every $CATALINA_BASE/webapps/<APP_NAME>/WEBINF/web.xml file on the system.\n\nsudo cat $CATALINA_BASE/webapps/<APP_NAME>/WEBINF/web.xml |grep -i connector \n\nIf a connector element in the server.xml file or in any of the <APP NAME>/WEBINF/web.xml files contains the \"allow Trace = true\" statement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server as a privileged user, edit the xml files containing the \"allow Trace=true\" statement.\n\nRemove the \"allow Trace=true\" statement from the affected xml configuration files and restart the Tomcat server:\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222950r960963_rule",
   "severity": "medium",

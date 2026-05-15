@@ -3316,13 +3316,13 @@ def _tomcat_systemd_boolean_property_candidate(rule: dict, stig_id: str) -> dict
     if not command_match:
         return None
     finding_match = re.search(
-        r'If\s+there\s+are\s+no\s+results,\s+or\s+if\s+the\s+(?P<property>org\.apache\.catalina(?:\.[A-Za-z0-9_]+)+)\s+is\s+not\s*=\s*["“](?P<value>true|false)["”],?\s+this\s+is\s+a\s+finding\.',
+        r'If\s+there\s+are\s+no\s+results,\s+or\s+if\s+the\s+(?P<property>org\.apache\.catalina(?:\s*\.\s*[A-Za-z0-9_]+)+)\s+is\s+not\s*=\s*["“](?P<value>true|false)["”],?\s+this\s+is\s+a\s+finding\.',
         content,
         re.IGNORECASE,
     )
     if not finding_match:
         return None
-    property_name = finding_match.group('property')
+    property_name = re.sub(r'\s+', '', finding_match.group('property'))
     expected_value = finding_match.group('value').lower()
     grep_token = command_match.group('token').lower()
     if grep_token not in property_name.lower():
@@ -3335,6 +3335,39 @@ def _tomcat_systemd_boolean_property_candidate(rule: dict, stig_id: str) -> dict
             'command': f'grep -i {command_match.group("token")} /etc/systemd/system/tomcat.service',
         },
         'expected': {'type': 'contains', 'substring': f'{property_name}={expected_value}'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _tomcat_error_report_valve_boolean_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-222975', 'V-222977'}:
+        return None
+    if not re.search(r'grep\s+-i\s+ErrorReportValve\s+\$CATALINA_BASE/conf/server\.xml', content, re.IGNORECASE):
+        return None
+    finding_match = re.search(
+        r'If\s+the\s+ErrorReportValve\s+element\s+is\s+not\s+defined\s+and\s+(?P<attr>showServerInfo|showReport)\s+set\s+to\s+["“](?P<value>false)["”],\s+this\s+is\s+a\s+finding\.',
+        content,
+        re.IGNORECASE,
+    )
+    if not finding_match:
+        return None
+    attr = finding_match.group('attr')
+    expected_value = finding_match.group('value').lower()
+    if not re.search(r'ErrorReportValve[^\n<>]*\s+' + re.escape(attr) + r'\s*=\s*["“]' + expected_value + r'["”]', fix_text + '\n' + content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': f'xmllint --xpath "string(//Valve[contains(@className,\'ErrorReportValve\')]/@{attr})" $CATALINA_BASE/conf/server.xml 2>/dev/null',
+        },
+        'expected': {'type': 'equals', 'value': expected_value},
         'description': rule.get('title', ''),
     }
 
@@ -3381,11 +3414,27 @@ def _tomcat_connector_boolean_absent_or_false_candidate(rule: dict, stig_id: str
     attr = attr_by_vuln.get(vuln_id)
     if not attr:
         return None
-    if not re.search(r'Connector', content, re.IGNORECASE) or not re.search(re.escape(attr), content, re.IGNORECASE):
+    attr_pattern = re.escape(attr)
+    if attr == 'allowTrace':
+        attr_pattern = r'allow\s*Trace'
+    if not re.search(r'Connector', content, re.IGNORECASE) or not re.search(attr_pattern, content, re.IGNORECASE):
         return None
-    if not re.search(r'If\s+any\s+connector\s+elements\s+contain\s+' + re.escape(attr) + r'\s*=\s*["“]?true["”]?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+    true_finding = re.search(
+        r'If\s+any\s+connector\s+elements\s+contain\s+' + attr_pattern + r'\s*=\s*["“]?true["”]?,\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    true_statement_finding = attr == 'allowTrace' and re.search(
+        r'contains\s+the\s+["“]allow\s*Trace\s*=\s*true["”]\s+statement,\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if not (true_finding or true_statement_finding):
         return None
-    if not re.search(re.escape(attr) + r'\s*=\s*["“]?false["”]?', fix_text + '\n' + content, re.IGNORECASE):
+    false_target = re.search(attr_pattern + r'\s*=\s*["“]?false["”]?', fix_text + '\n' + content, re.IGNORECASE)
+    if not false_target and attr == 'allowTrace':
+        false_target = re.search(r'ensure\s+the\s+["“]?allowTrace["”]?\s+setting\s+is\s+set\s+to\s+false', content, re.IGNORECASE)
+    if not false_target:
         return None
     return {
         'vuln_id': vuln_id,
@@ -8074,6 +8123,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_systemd_boolean_property_candidate = _tomcat_systemd_boolean_property_candidate(rule, stig_id)
     if tomcat_systemd_boolean_property_candidate:
         return tomcat_systemd_boolean_property_candidate
+
+    tomcat_error_report_valve_candidate = _tomcat_error_report_valve_boolean_candidate(rule, stig_id)
+    if tomcat_error_report_valve_candidate:
+        return tomcat_error_report_valve_candidate
 
     tomcat_service_account_candidate = _tomcat_service_account_nologin_candidate(rule, stig_id)
     if tomcat_service_account_candidate:
