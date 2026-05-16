@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"grep -Ehi '^[[:space:]]*[^#].*(NOPASSWD|!authenticate)' /etc/sudoers /etc/sudoers.d/* 2>/dev/null\"",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system must reauthenticate users when changing authenticators, roles, or escalating privileges.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-234853"
+  },
   "check_content_excerpt": "Verify that the SUSE operating system requires reauthentication when changing authenticators, roles, or escalating privileges.\n\nCheck that \"/etc/sudoers\" has no occurrences of \"NOPASSWD\" or \"!authenticate\" with the following command:\n\n> sudo egrep -i '(nopasswd|!authenticate)' /etc/sudoers\n\nIf any uncommented lines containing \"!authenticate\", or \"NOPASSWD\" are returned and active accounts on the system have valid passwords, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to remove any occurrence of \"NOPASSWD\" or \"!authenticate\" found in the \"/etc/sudoers\" file. If the system does not use passwords for authentication, the \"NOPASSWD\" tag may exist in the file.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234853r1050789_rule",
   "severity": "high",

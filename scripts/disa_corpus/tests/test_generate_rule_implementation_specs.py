@@ -4024,6 +4024,57 @@ If the setting is not configured in a drop in file, this is a finding.''',
             'description': 'The SUSE operating system must disable the systemd Ctrl-Alt-Delete burst key sequence.',
         })
 
+    def test_infers_sles_bios_grub_password_pbkdf2_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234819',
+            'title': 'SUSE operating systems with a basic input/output system (BIOS) must require authentication upon booting into single-user and maintenance modes.',
+            'check_content': '''Verify that the SUSE operating system has set an encrypted root password.
+
+Note: If the system does not use a BIOS this requirement is Not Applicable.
+
+Check that the encrypted password is set for root with the following command:
+
+> sudo cat /boot/grub2/grub.cfg | grep -i password
+
+password_pbkdf2 root grub.pbkdf2.sha512.10000.VeryLongString
+
+If the root password entry does not begin with "password_pbkdf2", this is a finding.''',
+            'fix_text': 'Configure the SUSE operating system to require authentication on booting into single-user and maintenance modes by generating a password_pbkdf2 root entry in /boot/grub2/grub.cfg.',
+        }, 'SLES_15_STIG')
+
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234819',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "awk '/^password_pbkdf2[[:space:]]+root[[:space:]]+grub\\.pbkdf2/{print \"Compliant\"; exit}' /boot/grub2/grub.cfg 2>/dev/null"},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'SUSE operating systems with a basic input/output system (BIOS) must require authentication upon booting into single-user and maintenance modes.',
+        })
+
+    def test_infers_sles_sudoers_no_nopasswd_or_no_authenticate_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234853',
+            'title': 'The SUSE operating system must reauthenticate users when changing authenticators, roles, or escalating privileges.',
+            'check_content': '''Verify that the SUSE operating system requires reauthentication when changing authenticators, roles, or escalating privileges.
+
+Check that "/etc/sudoers" has no occurrences of "NOPASSWD" or "!authenticate" with the following command:
+
+> sudo egrep -i '(nopasswd|!authenticate)' /etc/sudoers
+
+If any uncommented lines containing "!authenticate", or "NOPASSWD" are returned and active accounts on the system have valid passwords, this is a finding.''',
+            'fix_text': 'Configure the SUSE operating system to require reauthentication when changing authenticators, roles, or escalating privileges by removing any occurrences of "NOPASSWD" or "!authenticate" from /etc/sudoers.',
+        }, 'SLES_15_STIG')
+
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234853',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c \"grep -Ehi '^[[:space:]]*[^#].*(NOPASSWD|!authenticate)' /etc/sudoers /etc/sudoers.d/* 2>/dev/null\"",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The SUSE operating system must reauthenticate users when changing authenticators, roles, or escalating privileges.',
+        })
+
     def test_infers_sles_mfa_required_packages_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234854',

@@ -2818,6 +2818,52 @@ def _linux_shadow_password_lifetime_candidate(rule: dict, stig_id: str) -> dict 
     return None
 
 
+def _sles_bios_grub_password_pbkdf2_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sles' not in stig_id.lower() and 'suse' not in stig_id.lower():
+        return None
+    if rule.get('vuln_id', '') != 'V-234819':
+        return None
+    content = rule.get('check_content', '') or ''
+    combined = content + '\n' + (rule.get('fix_text', '') or '')
+    if '/boot/grub2/grub.cfg' not in combined:
+        return None
+    if 'password_pbkdf2 root grub.pbkdf2' not in combined:
+        return None
+    if not re.search(r'root\s+password\s+entry\s+does\s+not\s+begin\s+with\s+["“]password_pbkdf2["”],?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    command = "awk '/^password_pbkdf2[[:space:]]+root[[:space:]]+grub\\.pbkdf2/{print \"Compliant\"; exit}' /boot/grub2/grub.cfg 2>/dev/null"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _linux_sudoers_no_nopasswd_or_no_authenticate_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    combined = content + '\n' + (rule.get('fix_text', '') or '')
+    if rule.get('vuln_id', '') != 'V-234853':
+        return None
+    if not re.search(r'/etc/sudoers', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'NOPASSWD', combined, re.IGNORECASE) or not re.search(r'!authenticate', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'uncommented\s+lines\s+containing\s+["“]!authenticate["”],?\s+or\s+["“]NOPASSWD["”]\s+are\s+returned[^.]*this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+        return None
+    command = "sh -c \"grep -Ehi '^[[:space:]]*[^#].*(NOPASSWD|!authenticate)' /etc/sudoers /etc/sudoers.d/* 2>/dev/null\""
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sles_ctrl_alt_del_burst_action_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sles' not in stig_id.lower() and 'suse' not in stig_id.lower():
         return None
@@ -9397,7 +9443,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

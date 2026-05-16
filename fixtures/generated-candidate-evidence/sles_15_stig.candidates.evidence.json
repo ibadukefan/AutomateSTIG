@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 175,
+  "candidate_checks": 177,
   "cases": [
     {
       "check": {
@@ -132,6 +132,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234818"
+    },
+    {
+      "check": {
+        "command": "awk '/^password_pbkdf2[[:space:]]+root[[:space:]]+grub\\.pbkdf2/{print \"Compliant\"; exit}' /boot/grub2/grub.cfg 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "SUSE operating systems with a basic input/output system (BIOS) must require authentication upon booting into single-user and maintenance modes.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk '/^password_pbkdf2[[:space:]]+root[[:space:]]+grub\\.pbkdf2/{print \"Compliant\"; exit}' /boot/grub2/grub.cfg 2>/dev/null": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk '/^password_pbkdf2[[:space:]]+root[[:space:]]+grub\\.pbkdf2/{print \"Compliant\"; exit}' /boot/grub2/grub.cfg 2>/dev/null": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234819"
     },
     {
       "check": {
@@ -607,6 +633,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234852"
+    },
+    {
+      "check": {
+        "command": "sh -c \"grep -Ehi '^[[:space:]]*[^#].*(NOPASSWD|!authenticate)' /etc/sudoers /etc/sudoers.d/* 2>/dev/null\"",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must reauthenticate users when changing authenticators, roles, or escalating privileges.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"grep -Ehi '^[[:space:]]*[^#].*(NOPASSWD|!authenticate)' /etc/sudoers /etc/sudoers.d/* 2>/dev/null\"": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"grep -Ehi '^[[:space:]]*[^#].*(NOPASSWD|!authenticate)' /etc/sudoers /etc/sudoers.d/* 2>/dev/null\"": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234853"
     },
     {
       "check": {
@@ -4625,5 +4677,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 175
+  "validated_candidates": 177
 }
