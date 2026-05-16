@@ -353,6 +353,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %a %u %d %r %p; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must protect against a user falsely repudiating having performed organization-defined actions.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233598"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW shared_preload_libraries\"",
         "type": "command_output"
       },

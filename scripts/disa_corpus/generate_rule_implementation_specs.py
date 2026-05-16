@@ -6418,6 +6418,26 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    postgresql_nonrepudiation_audit_settings = ('%m', '%a', '%u', '%d', '%r', '%p')
+    if (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233598'
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_line_prefix["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+shared_preload_libraries["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+log_line_prefix\s+does\s+not\s+contain\s+at\s+least\s+["“\']?<\s*%m\s+%a\s+%u\s+%d\s+%r\s+%p\s*>["”\']?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'If\s+shared_preload_libraries\s+does\s+not\s+contain\s+["“]?pgaudit["”]?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and all(token in fix_text for token in postgresql_nonrepudiation_audit_settings)
+        and re.search(r'\bpgaudit\b', fix_text, re.IGNORECASE)
+    ):
+        tokens = ' '.join(postgresql_nonrepudiation_audit_settings)
+        command = f"sh -c 'bad=\"\"; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in {tokens}; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; printf %s \"$bad\"'"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     postgresql_client_min_messages_error = (
         'postgresql' in stig_id.lower()
         and re.search(r"\bSELECT\s+current_setting\([\"']client_min_messages[\"']\);", content, re.IGNORECASE)

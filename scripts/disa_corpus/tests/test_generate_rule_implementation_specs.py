@@ -911,6 +911,35 @@ client_min_messages = error''',
             'description': 'PostgreSQL must reveal detailed error messages only to the ISSO, ISSM, SA, and DBA.',
         })
 
+    def test_infers_postgresql_nonrepudiation_log_prefix_and_pgaudit(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233598',
+            'title': 'PostgreSQL must protect against a user falsely repudiating having performed organization-defined actions.',
+            'check_content': '''First, as the database administrator, review the current log_line_prefix settings by running the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW log_line_prefix"
+
+If log_line_prefix does not contain at least '< %m %a %u %d %r %p >', this is a finding.
+
+Next, review the current shared_preload_libraries settings by running the following SQL:
+
+$ psql -c "SHOW shared_preload_libraries"
+
+If shared_preload_libraries does not contain "pgaudit", this is a finding.''',
+            'fix_text': '''Configure the database to supply additional auditing information:
+
+log_line_prefix = '< %m %a %u %d %r %p >'
+shared_preload_libraries = 'pgaudit' ''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233598')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('SHOW log_line_prefix', candidate['check']['command'])
+        self.assertIn('SHOW shared_preload_libraries', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_postgresql_pgaudit_security_object_settings(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233573',
