@@ -159,6 +159,33 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertEqual(candidate['check'], {'type': 'command_output', 'command': expected_command})
                 self.assertEqual(candidate['expected'], expected)
 
+    def test_infers_windows_server_2025_domain_controller_pki_certificate_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278159',
+            'title': 'Windows Server 2025 domain controllers must have a PKI server certificate.',
+            'check_content': 'This applies to domain controllers. It is not applicable for other systems.\n\nSelect and expand the "Certificates (Local Computer)" entry in the left pane.\n\nSelect and expand the "Personal" entry in the left pane.\n\nIf no certificate for the domain controller exists in the right pane, this is a finding.',
+            'fix_text': 'Obtain a server certificate for the domain controller.',
+        }, 'MS_Windows_Server_2025_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278159')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Present'})
+        self.assertIn('Cert:\\LocalMachine\\My', candidate['check']['command'])
+
+    def test_infers_windows_removed_feature_from_fix_text_with_plural_features_heading(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254278',
+            'title': 'Windows Server 2022 must not have Windows PowerShell 2.0 installed.',
+            'fix_text': 'Uninstall the "Windows PowerShell 2.0 Engine".\n\nSelect "Remove Roles and Features" from the drop-down "TASKS" list.\n\nDeselect "Windows PowerShell 2.0 Engine" under "Windows PowerShell" on the "Features" page.',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-254278')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': 'PowerShell-V2', 'should_be_installed': False})
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
     def test_infers_windows_client_ie11_standalone_browser_disabled_candidate(self):
         for vuln_id, stig_id in (
             ('V-256893', 'Microsoft_Windows_11_STIG'),

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 231,
+  "candidate_checks": 232,
   "cases": [
     {
       "check": {
@@ -3434,6 +3434,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 domain controllers must have a PKI server certificate.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Present"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"": "unexpected-Present"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"": "Present"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278159"
+    },
+    {
+      "check": {
         "command": "Get-ADUser -Filter {(Enabled -eq $True) -and (SmartcardLogonRequired -eq $False)} | FT Name",
         "type": "command_output"
       },
@@ -6213,5 +6239,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 231
+  "validated_candidates": 232
 }

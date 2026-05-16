@@ -1377,7 +1377,7 @@ def _windows_platform(stig_id: str) -> bool:
 
 
 def _windows_domain_controller_pki_certificate_exists_candidate(rule: dict, stig_id: str) -> dict | None:
-    if not _windows_platform(stig_id) or rule.get('vuln_id') != 'V-254412':
+    if not _windows_platform(stig_id) or rule.get('vuln_id') not in {'V-254412', 'V-278159'}:
         return None
     content = rule.get('check_content', '') or ''
     combined = f"{rule.get('title', '')}\n{content}"
@@ -9447,7 +9447,7 @@ def _windows_fix_only_removed_feature_candidate(rule: dict, stig_id: str) -> dic
     display_name, feature_name = expected
     if not re.search(rf'Uninstall\s+the\s+["“]?{re.escape(display_name)}["”]?', fix_text, re.IGNORECASE):
         return None
-    if display_name != 'SMBv1 protocol' and not re.search(r'\b(?:feature|role)\b', fix_text, re.IGNORECASE):
+    if display_name != 'SMBv1 protocol' and not re.search(r'\b(?:features?|roles?)\b', fix_text, re.IGNORECASE):
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),
