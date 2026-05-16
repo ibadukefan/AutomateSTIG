@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 202,
+  "candidate_checks": 203,
   "cases": [
     {
       "check": {
@@ -5140,6 +5140,33 @@
     },
     {
       "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main",
+        "type": "registry",
+        "value_name": "NotifyDisableIEOptions"
+      },
+      "description": "Internet Explorer must be disabled for Windows 11.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main\\NotifyDisableIEOptions": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main\\NotifyDisableIEOptions": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256893"
+    },
+    {
+      "check": {
         "command": "netsh interface portproxy show all",
         "type": "command_output"
       },
@@ -5440,5 +5467,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 202
+  "validated_candidates": 203
 }

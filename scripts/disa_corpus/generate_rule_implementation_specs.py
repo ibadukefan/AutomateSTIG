@@ -5706,6 +5706,35 @@ def _windows_certificate_store_thumbprint_candidate(rule: dict, stig_id: str) ->
         'expected': {'type': 'contains', 'substring': expected_substring},
         'description': rule.get('title', ''),
     }
+
+
+def _windows_ie11_standalone_browser_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-256893', 'V-256894'}:
+        return None
+    title = rule.get('title', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'Internet\s+Explorer\s+must\s+be\s+disabled\s+for\s+Windows\s+(?:10|11)', title, re.IGNORECASE):
+        return None
+    if not re.search(r'Disable\s+Internet\s+Explorer\s+11\s+as\s+a\s+standalone\s+browser', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'policy\s+value\s+.*\bEnabled\b.*option\s+value\s+set\s+to\s+["“]Never["”]', fix_text, re.IGNORECASE | re.DOTALL):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {
+            'type': 'registry',
+            'path': r'HKLM\Software\Policies\Microsoft\Internet Explorer\Main',
+            'value_name': 'NotifyDisableIEOptions',
+        },
+        'expected': {'type': 'equals', 'value': 0},
+        'description': title,
+    }
+
+
 def _windows_account_password_required_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     vuln_id = rule.get('vuln_id', '')
@@ -9475,6 +9504,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         account_password_required_candidate = _windows_account_password_required_candidate(rule, stig_id)
         if account_password_required_candidate:
             return account_password_required_candidate
+
+        ie11_disabled_candidate = _windows_ie11_standalone_browser_disabled_candidate(rule, stig_id)
+        if ie11_disabled_candidate:
+            return ie11_disabled_candidate
 
         unused_accounts_candidate = _windows_unused_accounts_35_days_candidate(rule, stig_id)
         if unused_accounts_candidate:

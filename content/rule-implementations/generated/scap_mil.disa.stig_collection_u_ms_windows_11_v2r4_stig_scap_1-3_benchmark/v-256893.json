@@ -1,8 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main",
+      "type": "registry",
+      "value_name": "NotifyDisableIEOptions"
+    },
+    "description": "Internet Explorer must be disabled for Windows 11.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-256893"
+  },
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "For Windows 11 semi-annual channel, remove or disable the IE11 application. \n\nTo disable IE11 as a standalone browser:\n\nSet the policy value for \"Computer Configuration/Administrative Templates/Windows Components/Internet Explorer/Disable Internet Explorer 11 as a standalone browser\" to \"Enabled\" with the option value set to \"Never\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "xccdf_mil.disa.stig_rule_SV-256893r958552_rule",
   "severity": "medium",

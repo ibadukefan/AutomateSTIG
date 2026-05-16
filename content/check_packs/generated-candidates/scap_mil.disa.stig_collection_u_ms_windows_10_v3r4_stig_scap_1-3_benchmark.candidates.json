@@ -55,6 +55,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-220957"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main",
+        "type": "registry",
+        "value_name": "NotifyDisableIEOptions"
+      },
+      "description": "Internet Explorer must be disabled for Windows 10.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-256894"
     }
   ],
   "platform": "windows",

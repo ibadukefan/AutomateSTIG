@@ -159,6 +159,28 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertEqual(candidate['check'], {'type': 'command_output', 'command': expected_command})
                 self.assertEqual(candidate['expected'], expected)
 
+    def test_infers_windows_client_ie11_standalone_browser_disabled_candidate(self):
+        for vuln_id, stig_id in (
+            ('V-256893', 'Microsoft_Windows_11_STIG'),
+            ('V-256894', 'MS_Windows_10_STIG'),
+        ):
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'Internet Explorer must be disabled for Windows {"11" if vuln_id == "V-256893" else "10"}.',
+                    'fix_text': 'For Windows semi-annual channel, remove or disable the IE11 application.\n\nTo disable IE11 as a standalone browser:\n\nSet the policy value for "Computer Configuration/Administrative Templates/Windows Components/Internet Explorer/Disable Internet Explorer 11 as a standalone browser" to "Enabled" with the option value set to "Never".',
+                }, stig_id)
+
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertEqual(candidate['check'], {
+                    'type': 'registry',
+                    'path': r'HKLM\Software\Policies\Microsoft\Internet Explorer\Main',
+                    'value_name': 'NotifyDisableIEOptions',
+                })
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
+
     def test_infers_windows_client_unused_local_accounts_35_days_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-253268',

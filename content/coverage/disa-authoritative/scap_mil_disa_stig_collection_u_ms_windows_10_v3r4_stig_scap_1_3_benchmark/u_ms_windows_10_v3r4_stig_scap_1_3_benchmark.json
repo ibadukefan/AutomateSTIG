@@ -3451,16 +3451,17 @@
       "vuln_id": "V-252896"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-256894",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-256894 from source identifier xccdf_mil.disa.stig_group_V-256894.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-256894r958552_rule",
       "severity": "medium",
       "title": "Internet Explorer must be disabled for Windows 10.",
-      "tracking_issue": "TODO-V-256894",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-256894"

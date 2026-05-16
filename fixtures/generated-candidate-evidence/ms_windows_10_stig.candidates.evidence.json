@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 212,
+  "candidate_checks": 213,
   "cases": [
     {
       "check": {
@@ -5415,6 +5415,33 @@
     },
     {
       "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main",
+        "type": "registry",
+        "value_name": "NotifyDisableIEOptions"
+      },
+      "description": "Internet Explorer must be disabled for Windows 10.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main\\NotifyDisableIEOptions": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main\\NotifyDisableIEOptions": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256894"
+    },
+    {
+      "check": {
         "setting": "Failure",
         "subcategory": "Process Creation",
         "type": "audit_policy"
@@ -5715,5 +5742,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 212
+  "validated_candidates": 213
 }

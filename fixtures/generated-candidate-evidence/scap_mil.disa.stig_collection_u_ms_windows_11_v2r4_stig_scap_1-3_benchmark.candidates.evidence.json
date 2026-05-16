@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 4,
+  "candidate_checks": 5,
   "cases": [
     {
       "check": {
@@ -107,6 +107,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-253480"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main",
+        "type": "registry",
+        "value_name": "NotifyDisableIEOptions"
+      },
+      "description": "Internet Explorer must be disabled for Windows 11.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main\\NotifyDisableIEOptions": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main\\NotifyDisableIEOptions": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256893"
     }
   ],
   "production_claim": false,
@@ -114,5 +141,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_11_v2r4_stig_scap_1-3_benchmark.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark",
-  "validated_candidates": 4
+  "validated_candidates": 5
 }
