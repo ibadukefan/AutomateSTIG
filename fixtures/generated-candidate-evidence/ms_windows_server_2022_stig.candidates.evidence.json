@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 194,
+  "candidate_checks": 195,
   "cases": [
     {
       "check": {
@@ -2419,6 +2419,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-254410"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 domain controllers must have a PKI server certificate.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Present"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"": "unexpected-Present"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"": "Present"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254412"
     },
     {
       "check": {
@@ -5228,5 +5254,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 194
+  "validated_candidates": 195
 }

@@ -1376,6 +1376,27 @@ def _windows_platform(stig_id: str) -> bool:
     return 'windows' in lower or 'ms_windows' in lower
 
 
+def _windows_domain_controller_pki_certificate_exists_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id) or rule.get('vuln_id') != 'V-254412':
+        return None
+    content = rule.get('check_content', '') or ''
+    combined = f"{rule.get('title', '')}\n{content}"
+    if not re.search(r'domain\s+controllers?\s+must\s+have\s+a\s+pki\s+server\s+certificate', combined, re.IGNORECASE):
+        return None
+    if not all(phrase in content for phrase in ('Certificates (Local Computer)', 'Personal', 'If no certificate for the domain controller exists')):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"",
+        },
+        'expected': {'type': 'equals', 'value': 'Present'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_11_enterprise_64bit_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '') or ''
     if vuln_id != 'V-253254' or not _windows_platform(stig_id):
@@ -9329,6 +9350,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sles_gdm_dconf_banner_candidate = _sles_gdm_dconf_banner_message_candidate(rule, stig_id)
     if sles_gdm_dconf_banner_candidate:
         return sles_gdm_dconf_banner_candidate
+    windows_pki_certificate_candidate = _windows_domain_controller_pki_certificate_exists_candidate(rule, stig_id)
+    if windows_pki_certificate_candidate:
+        return windows_pki_certificate_candidate
     windows_legal_notice_caption_candidate = _windows_legal_notice_caption_candidate(rule, stig_id)
     if windows_legal_notice_caption_candidate:
         return windows_legal_notice_caption_candidate
