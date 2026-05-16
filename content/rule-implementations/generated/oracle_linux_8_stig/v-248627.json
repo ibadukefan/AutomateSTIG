@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "findmnt -rn -t xfs,ext2,ext3,ext4,btrfs | awk '{print $1}' | while IFS= read -r mount; do find \"$mount\" -xdev -type f -perm -0002 -print 2>/dev/null; done | while IFS= read -r wwfile; do grep -RslF -- \"$wwfile\" /etc /home 2>/dev/null | while IFS= read -r initfile; do case \"$initfile\" in */.*|/etc/profile|/etc/bashrc|/etc/zshrc|/etc/csh.cshrc|/etc/csh.login|/etc/profile.d/*) printf '%s -> %s\\n' \"$initfile\" \"$wwfile\";; esac; done; done",
+      "type": "command_output"
+    },
+    "description": "Local OL 8 initialization files must not execute world-writable programs.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-248627"
+  },
   "check_content_excerpt": "Verify that local initialization files do not execute world-writable programs. \n \nCheck the system for world-writable files. \n \nThe following command will discover and print world-writable files. Run it once for each local partition [PART]: \n \n$ sudo find [PART] -xdev -type f -perm -0002 -print \n \nFor all files listed, check for their presence in the local initialization files with the following commands: \n \nNote: The example will be for a system that is configured to create users' home directories in the \"/home\" directory. \n \n$ sudo grep <file> /home/*/.* \n \nIf any local initialization files are found to reference world-writable files, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the mode on files being executed by the local initialization files with the following command: \n \n$ sudo chmod 0755 <file>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248627r991589_rule",
   "severity": "medium",

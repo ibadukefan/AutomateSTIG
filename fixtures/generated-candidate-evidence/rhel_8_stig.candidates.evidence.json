@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 312,
+  "candidate_checks": 313,
   "cases": [
     {
       "check": {
@@ -846,6 +846,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230308"
+    },
+    {
+      "check": {
+        "command": "findmnt -rn -t xfs,ext2,ext3,ext4,btrfs | awk '{print $1}' | while IFS= read -r mount; do find \"$mount\" -xdev -type f -perm -0002 -print 2>/dev/null; done | while IFS= read -r wwfile; do grep -RslF -- \"$wwfile\" /etc /home 2>/dev/null | while IFS= read -r initfile; do case \"$initfile\" in */.*|/etc/profile|/etc/bashrc|/etc/zshrc|/etc/csh.cshrc|/etc/csh.login|/etc/profile.d/*) printf '%s -> %s\\n' \"$initfile\" \"$wwfile\";; esac; done; done",
+        "type": "command_output"
+      },
+      "description": "Local RHEL 8 initialization files must not execute world-writable programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "findmnt -rn -t xfs,ext2,ext3,ext4,btrfs | awk '{print $1}' | while IFS= read -r mount; do find \"$mount\" -xdev -type f -perm -0002 -print 2>/dev/null; done | while IFS= read -r wwfile; do grep -RslF -- \"$wwfile\" /etc /home 2>/dev/null | while IFS= read -r initfile; do case \"$initfile\" in */.*|/etc/profile|/etc/bashrc|/etc/zshrc|/etc/csh.cshrc|/etc/csh.login|/etc/profile.d/*) printf '%s -> %s\\n' \"$initfile\" \"$wwfile\";; esac; done; done": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "findmnt -rn -t xfs,ext2,ext3,ext4,btrfs | awk '{print $1}' | while IFS= read -r mount; do find \"$mount\" -xdev -type f -perm -0002 -print 2>/dev/null; done | while IFS= read -r wwfile; do grep -RslF -- \"$wwfile\" /etc /home 2>/dev/null | while IFS= read -r initfile; do case \"$initfile\" in */.*|/etc/profile|/etc/bashrc|/etc/zshrc|/etc/csh.cshrc|/etc/csh.login|/etc/profile.d/*) printf '%s -> %s\\n' \"$initfile\" \"$wwfile\";; esac; done; done": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230309"
     },
     {
       "check": {
@@ -8388,5 +8414,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 312
+  "validated_candidates": 313
 }

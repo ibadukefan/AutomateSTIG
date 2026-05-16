@@ -187,6 +187,32 @@ $ sudo chmod 0750 /home/smithj/<file or directory>''',
             'description': 'All RHEL 8 local interactive user home directory files must have mode 0750 or less permissive.',
         })
 
+    def test_infers_linux_init_files_do_not_execute_world_writable_programs_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230309',
+            'title': 'Local RHEL 8 initialization files must not execute world-writable programs.',
+            'check_content': '''Verify that local initialization files do not execute world-writable programs.
+
+Check the system for world-writable files.
+
+The following command will discover and print world-writable files. Run it once for each local partition [PART]:
+
+$ sudo find [PART] -xdev -type f -perm -0002 -print
+
+For all files listed, check for their presence in the local initialization files.
+
+If any local initialization files are found to reference world-writable files, this is a finding.''',
+            'fix_text': 'Set the mode on files being executed by the local initialization files with the following command:\n\n$ sudo chmod 0755 <file>',
+        }, 'RHEL_8_STIG')
+
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230309',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': '''findmnt -rn -t xfs,ext2,ext3,ext4,btrfs | awk '{print $1}' | while IFS= read -r mount; do find "$mount" -xdev -type f -perm -0002 -print 2>/dev/null; done | while IFS= read -r wwfile; do grep -RslF -- "$wwfile" /etc /home 2>/dev/null | while IFS= read -r initfile; do case "$initfile" in */.*|/etc/profile|/etc/bashrc|/etc/zshrc|/etc/csh.cshrc|/etc/csh.login|/etc/profile.d/*) printf '%s -> %s\\n' "$initfile" "$wwfile";; esac; done; done'''},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Local RHEL 8 initialization files must not execute world-writable programs.',
+        })
+
     def test_infers_sles_gdm_banner_file_exact_text_candidate(self):
         rule = {
             'vuln_id': 'V-234807',

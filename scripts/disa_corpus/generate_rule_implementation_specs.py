@@ -6041,6 +6041,29 @@ def _kubernetes_fixed_file_mode_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _linux_init_files_world_writable_programs_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'local\s+initialization\s+files\s+do\s+not\s+execute\s+world-writable\s+programs', content, re.IGNORECASE):
+        return None
+    if not re.search(r'find\s+\[PART\]\s+-xdev\s+-type\s+f\s+-perm\s+-0002\s+-print', content, re.IGNORECASE):
+        return None
+    if not re.search(r'local\s+initialization\s+files?\s+(?:are\s+)?found\s+to\s+reference\s+world-writable\s+files?,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'chmod\s+0?755\s+<file>', fix_text, re.IGNORECASE):
+        return None
+    command = '''findmnt -rn -t xfs,ext2,ext3,ext4,btrfs | awk '{print $1}' | while IFS= read -r mount; do find "$mount" -xdev -type f -perm -0002 -print 2>/dev/null; done | while IFS= read -r wwfile; do grep -RslF -- "$wwfile" /etc /home 2>/dev/null | while IFS= read -r initfile; do case "$initfile" in */.*|/etc/profile|/etc/bashrc|/etc/zshrc|/etc/csh.cshrc|/etc/csh.login|/etc/profile.d/*) printf '%s -> %s\\n' "$initfile" "$wwfile";; esac; done; done'''
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _interactive_home_contents_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -6147,6 +6170,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     ubuntu_ufw_rate_limit_candidate = _ubuntu_ufw_rate_limit_candidate(rule, stig_id)
     if ubuntu_ufw_rate_limit_candidate:
         return ubuntu_ufw_rate_limit_candidate
+    linux_init_files_world_writable_candidate = _linux_init_files_world_writable_programs_candidate(rule, stig_id)
+    if linux_init_files_world_writable_candidate:
+        return linux_init_files_world_writable_candidate
     interactive_home_contents_mode_candidate = _interactive_home_contents_mode_candidate(rule, stig_id)
     if interactive_home_contents_mode_candidate:
         return interactive_home_contents_mode_candidate
