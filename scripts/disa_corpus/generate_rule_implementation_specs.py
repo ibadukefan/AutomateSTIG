@@ -1304,6 +1304,33 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
 
 
+def _linux_postfix_unrestricted_mail_relay_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', vuln_id)), vuln_id)
+    if canonical_vuln_id not in {'V-257951', 'V-271763'} or not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'postfix\s+is\s+not\s+installed,\s+this\s+is\s+Not\s+Applicable', content, re.IGNORECASE):
+        return None
+    if not re.search(r'^\s*[$#>]\s*postconf\s+-n\s+smtpd_client_restrictions\s*$', content, re.MULTILINE | re.IGNORECASE):
+        return None
+    if not re.search(r'smtpd_client_restrictions\s*=\s*permit_mynetworks\s*,\s*reject', content, re.IGNORECASE):
+        return None
+    if not re.search(r'contains\s+any\s+entries\s+other\s+than\s+["“]permit_mynetworks["”]\s+and\s+["“]reject["”],\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'smtpd_client_restrictions\s*=\s*permit_mynetworks\s*,\s*reject', fix_text, re.IGNORECASE):
+        return None
+    command = "sh -c 'if ! command -v postconf >/dev/null 2>&1; then printf Compliant; exit 0; fi; v=$(postconf -n smtpd_client_restrictions | sed \"s/[[:space:]]//g\"); [ \"$v\" = \"smtpd_client_restrictions=permit_mynetworks,reject\" ] && printf Compliant'"
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sles_gdm_banner_file_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id != 'V-234807' or not _linux_platform(stig_id) or 'sles' not in stig_id.lower():
@@ -9177,6 +9204,32 @@ def _tomcat_fips_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _tomcat_manager_session_timeout_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id') != 'V-222979':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if '$CATALINA_BASE/webapps/manager/META-INF/web.xml' not in content or '$CATALINA_BASE/conf/web.xml' not in content:
+        return None
+    if not re.search(r'manager\s+application\s+has\s+been\s+deleted\s+from\s+the\s+system,\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'session-timeout\s+setting\s+is\s+not\s+configured\s+to\s+be\s+10\s+minutes\s+in\s+at\s+least\s+one\s+of\s+these\s+files,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not (
+        re.search(r'<session-timeout>\s*10\s*</session-timeout>', fix_text, re.IGNORECASE)
+        or re.search(r'Modify\s+the\s+session-timeout\s+setting\s+to\s+be\s+10\s+minutes', fix_text, re.IGNORECASE)
+    ):
+        return None
+    command = "sh -c 'for f in \"$CATALINA_BASE/webapps/manager/META-INF/web.xml\" \"$CATALINA_BASE/conf/web.xml\"; do [ -f \"$f\" ] && grep -Eiq \"<session-timeout>[[:space:]]*10[[:space:]]*</session-timeout>\" \"$f\" && printf Compliant && exit 0; done; [ ! -e \"$CATALINA_BASE/webapps/manager\" ] && printf Compliant'"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_web_xml_boolean_param_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower():
         return None
@@ -10091,6 +10144,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     if tomcat_fips_mode_candidate:
         return tomcat_fips_mode_candidate
 
+    tomcat_manager_session_timeout_candidate = _tomcat_manager_session_timeout_candidate(rule, stig_id)
+    if tomcat_manager_session_timeout_candidate:
+        return tomcat_manager_session_timeout_candidate
+
     tomcat_web_xml_boolean_param_candidate = _tomcat_web_xml_boolean_param_candidate(rule, stig_id)
     if tomcat_web_xml_boolean_param_candidate:
         return tomcat_web_xml_boolean_param_candidate
@@ -10184,7 +10241,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
+        for infer_with_stig in (_linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

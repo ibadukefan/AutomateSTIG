@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'for f in \"$CATALINA_BASE/webapps/manager/META-INF/web.xml\" \"$CATALINA_BASE/conf/web.xml\"; do [ -f \"$f\" ] && grep -Eiq \"<session-timeout>[[:space:]]*10[[:space:]]*</session-timeout>\" \"$f\" && printf Compliant && exit 0; done; [ ! -e \"$CATALINA_BASE/webapps/manager\" ] && printf Compliant'",
+      "type": "command_output"
+    },
+    "description": "Idle timeout for the management application must be set to 10 minutes.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-222979"
+  },
   "check_content_excerpt": "If the manager application has been deleted from the system, this is not a finding. \n\nFrom the Tomcat server as a privileged user, run the following commands:\n\nsudo grep -i session-timeout $CATALINA_BASE/webapps/manager/META-INF/web.xml \n\nsudo grep -i session-timeout \n$CATALINA_BASE/conf/web.xml\n\nIf the session-timeout setting is not configured to be 10 minutes in at least one of these files, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server as a privileged user:\n\nTo affect session timeout for all applications including the management application, edit the $CATALINA_BASE/conf/web.xml file.\n\nTo affect session timeout for the management application only, edit the $CATALINA_BASE/webapps/manager/META-INF/web.xml file. \n\nLocate the session-timeout setting located within the session-config element.\n\nModify the session-timeout setting to be 10 minutes.\n\nSave the file.\n\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222979r1043182_rule",
   "severity": "medium",

@@ -436,6 +436,65 @@ log_file_mode = 0600''',
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'psql -tAc "SHOW log_file_mode"'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0600'})
 
+    def test_infers_linux_postfix_unrestricted_mail_relay_candidate(self):
+        for vuln_id, stig_id, title in (
+            ('V-257951', 'RHEL_9_STIG', 'RHEL 9 must be configured to prevent unrestricted mail relaying.'),
+            ('V-271763', 'Oracle_Linux_9_STIG', 'OL 9 must be configured to prevent unrestricted mail relaying.'),
+            ('xccdf_mil.disa.stig_group_V-257951', 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark', 'RHEL 9 must be configured to prevent unrestricted mail relaying.'),
+        ):
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': '''If postfix is not installed, this is Not Applicable.
+
+Verify RHEL 9 is configured to prevent unrestricted mail relaying with the following command:
+
+$ postconf -n smtpd_client_restrictions
+
+smtpd_client_restrictions = permit_mynetworks,reject
+
+If the "smtpd_client_restrictions" parameter contains any entries other than "permit_mynetworks" and "reject", this is a finding.''',
+                    'fix_text': '''Configure RHEL 9 to prevent unrestricted mail relaying.
+
+Modify the /etc/postfix/main.cf file to have the following line:
+
+smtpd_client_restrictions = permit_mynetworks,reject''',
+                }, stig_id)
+
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+                self.assertIn('postconf -n smtpd_client_restrictions', candidate['check']['command'])
+                self.assertIn('permit_mynetworks,reject', candidate['check']['command'])
+
+    def test_infers_tomcat_manager_session_timeout_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222979',
+            'title': 'Idle timeout for the management application must be set to 10 minutes.',
+            'check_content': '''If the manager application has been deleted from the system, this is not a finding.
+
+From the Tomcat server as a privileged user, run the following commands:
+
+sudo grep -i session-timeout $CATALINA_BASE/webapps/manager/META-INF/web.xml
+
+sudo grep -i session-timeout $CATALINA_BASE/conf/web.xml
+
+If the session-timeout setting is not configured to be 10 minutes in at least one of these files, this is a finding.''',
+            'fix_text': '''Edit the $CATALINA_BASE/webapps/manager/META-INF/web.xml or $CATALINA_BASE/conf/web.xml file and configure:
+
+<session-timeout>10</session-timeout>''',
+        }, 'Tomcat_Application_Server_9_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222979')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('$CATALINA_BASE/webapps/manager/META-INF/web.xml', candidate['check']['command'])
+        self.assertIn('$CATALINA_BASE/conf/web.xml', candidate['check']['command'])
+        self.assertIn('session-timeout', candidate['check']['command'])
+
     def test_infers_scap_linux_login_defs_fix_only_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'xccdf_mil.disa.stig_group_V-258104',

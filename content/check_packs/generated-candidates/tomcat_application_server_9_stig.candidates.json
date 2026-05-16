@@ -210,6 +210,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'for f in \"$CATALINA_BASE/webapps/manager/META-INF/web.xml\" \"$CATALINA_BASE/conf/web.xml\"; do [ -f \"$f\" ] && grep -Eiq \"<session-timeout>[[:space:]]*10[[:space:]]*</session-timeout>\" \"$f\" && printf Compliant && exit 0; done; [ ! -e \"$CATALINA_BASE/webapps/manager\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Idle timeout for the management application must be set to 10 minutes.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222979"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath 'name(//Realm[contains(@className,\"LockOutRealm\")])' $CATALINA_BASE/conf/server.xml 2>/dev/null",
         "type": "command_output"
       },
