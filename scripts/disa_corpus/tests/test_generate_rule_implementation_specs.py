@@ -274,6 +274,30 @@ If a file system found in "/etc/fstab" refers to the user home directory file sy
         self.assertIsNotNone(noexec_candidate)
         self.assertIn('noexec', noexec_candidate['check']['command'])
 
+    def test_infers_sles_aide_cron_mail_notification_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234864',
+            'title': 'The SUSE operating system must notify the System Administrator (SA) when AIDE discovers anomalies.',
+            'check_content': '''Verify the SUSE operating system notifies the System Administrator when AIDE discovers anomalies.
+
+> grep -i "aide" /etc/cron.*/aide
+0 0 * * * /usr/bin/aide --check | /bin/mail -s "$HOSTNAME - Daily AIDE integrity check run" root@example_server_name.mil
+
+If the "aide" file does not exist under the "/etc/cron" directory structure or the cron job is not configured to execute a binary to send an email (such as "/bin/mail"), this is a finding.''',
+            'fix_text': '''Create the aide crontab file in "/etc/cron.daily" with the following content:
+0 0 * * * /usr/bin/aide --check | /bin/mail -s "$HOSTNAME - Daily AIDE integrity check run" root@example_server_name.mil''',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234864',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'sh -c \'grep -I -h -i "aide" /etc/cron.*/aide 2>/dev/null | grep -E "/usr/bin/aide[[:space:]]+--check.*\\|[[:space:]]*/bin/mail" >/dev/null || printf Missing\'',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The SUSE operating system must notify the System Administrator (SA) when AIDE discovers anomalies.',
+        })
+
     def test_infers_ubuntu_aide_filesystem_integrity_check_candidate_from_exact_vuln(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270650',

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 177,
+  "candidate_checks": 178,
   "cases": [
     {
       "check": {
@@ -924,6 +924,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234863"
+    },
+    {
+      "check": {
+        "command": "sh -c 'grep -I -h -i \"aide\" /etc/cron.*/aide 2>/dev/null | grep -E \"/usr/bin/aide[[:space:]]+--check.*\\|[[:space:]]*/bin/mail\" >/dev/null || printf Missing'",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must notify the System Administrator (SA) when Advanced Intrusion Detection Environment (AIDE) discovers anomalies in the operation of any security functions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -I -h -i \"aide\" /etc/cron.*/aide 2>/dev/null | grep -E \"/usr/bin/aide[[:space:]]+--check.*\\|[[:space:]]*/bin/mail\" >/dev/null || printf Missing'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -I -h -i \"aide\" /etc/cron.*/aide 2>/dev/null | grep -E \"/usr/bin/aide[[:space:]]+--check.*\\|[[:space:]]*/bin/mail\" >/dev/null || printf Missing'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234864"
     },
     {
       "check": {
@@ -4677,5 +4703,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 177
+  "validated_candidates": 178
 }

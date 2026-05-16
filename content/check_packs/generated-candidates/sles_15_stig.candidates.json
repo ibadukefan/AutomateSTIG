@@ -471,6 +471,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'grep -I -h -i \"aide\" /etc/cron.*/aide 2>/dev/null | grep -E \"/usr/bin/aide[[:space:]]+--check.*\\|[[:space:]]*/bin/mail\" >/dev/null || printf Missing'",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must notify the System Administrator (SA) when Advanced Intrusion Detection Environment (AIDE) discovers anomalies in the operation of any security functions.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234864"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/rsyslog.conf",
         "pattern": "| grep \"@\" | grep -v \"^#\"",

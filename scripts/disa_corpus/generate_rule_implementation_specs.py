@@ -1545,6 +1545,30 @@ def _ubuntu_aide_filesystem_integrity_check_candidate(rule: dict, stig_id: str) 
     }
 
 
+def _sles_aide_cron_mail_notification_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sles' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-234864':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    if not re.search(r'grep\s+-i\s+["“]?aide["”]?\s+/etc/cron\.\*/aide', content, re.IGNORECASE):
+        return None
+    if not re.search(r'/usr/bin/aide\s+--check\s*\|\s*/bin/mail', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'cron\s+job\s+is\s+not\s+configured\s+to\s+execute\s+a\s+binary\s+to\s+send\s+an\s+email\s+\(such\s+as\s+["“]/bin/mail["”]\)', content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {
+            'type': 'command_output',
+            'command': 'sh -c \'grep -I -h -i "aide" /etc/cron.*/aide 2>/dev/null | grep -E "/usr/bin/aide[[:space:]]+--check.*\\|[[:space:]]*/bin/mail" >/dev/null || printf Missing\'',
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _ubuntu_aide_default_cron_script_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-238236', 'V-260585', 'V-270651'}:
@@ -9277,6 +9301,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     ubuntu_aide_filesystem_candidate = _ubuntu_aide_filesystem_integrity_check_candidate(rule, stig_id)
     if ubuntu_aide_filesystem_candidate:
         return ubuntu_aide_filesystem_candidate
+
+    sles_aide_cron_mail_candidate = _sles_aide_cron_mail_notification_candidate(rule, stig_id)
+    if sles_aide_cron_mail_candidate:
+        return sles_aide_cron_mail_candidate
 
     ubuntu_aide_default_cron_script_candidate = _ubuntu_aide_default_cron_script_candidate(rule, stig_id)
     if ubuntu_aide_default_cron_script_candidate:
