@@ -1625,16 +1625,17 @@
       "vuln_id": "V-233617"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233618",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233618r960942_rule",
       "severity": "medium",
       "title": "PostgreSQL must protect its audit configuration from unauthorized modification.",
-      "tracking_issue": "TODO-V-233618",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233618"

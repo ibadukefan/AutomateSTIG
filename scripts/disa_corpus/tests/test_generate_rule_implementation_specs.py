@@ -189,6 +189,48 @@ If any enabled accounts have not been logged on to within the past 35 days, this
         self.assertIn('Get-CimInstance Win32_UserAccount', candidate['check']['command'])
         self.assertIn('AddDays(-35)', candidate['check']['command'])
 
+    def test_infers_postgresql_log_file_mode_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233618',
+            'title': 'PostgreSQL must protect its audit configuration from unauthorized modification.',
+            'check_content': '''To check that logs are created with 0600 permissions, check the following setting:
+
+$ sudo su - postgres
+$ psql -c "SHOW log_file_mode"
+
+If permissions are not 0600, this is a finding.''',
+            'fix_text': '''$ sudo su - postgres
+$ vi ${PGDATA?}/postgresql.conf
+log_file_mode = 0600''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233618')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'psql -tAc "SHOW log_file_mode"'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0600'})
+
+    def test_infers_scap_linux_login_defs_fix_only_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-258104',
+            'title': 'RHEL 9 passwords for new users or password changes must have a 24 hours minimum password lifetime restriction in /etc/login.defs.',
+            'check_content': '',
+            'fix_text': '''Configure the operating system to enforce 24 hours/1 day as the minimum password lifetime.
+
+Add the following line in "/etc/login.defs" (or modify the line to have the required value):
+
+PASS_MIN_DAYS 1''',
+        }, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-258104')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/etc/login.defs', candidate['check']['command'])
+        self.assertIn('PASS_MIN_DAYS', candidate['check']['command'])
+        self.assertIn('1', candidate['check']['command'])
+
     def test_infers_linux_interactive_home_contents_mode_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244531',

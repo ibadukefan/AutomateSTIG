@@ -431,6 +431,19 @@
     },
     {
       "check": {
+        "command": "psql -tAc \"SHOW log_file_mode\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must protect its audit configuration from unauthorized modification.",
+      "expected": {
+        "type": "equals",
+        "value": "0600"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233618"
+    },
+    {
+      "check": {
         "command": "sh -c 'openssl version | tr [:upper:] [:lower:]'",
         "type": "command_output"
       },

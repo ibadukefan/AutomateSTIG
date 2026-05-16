@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 37,
+  "candidate_checks": 38,
   "cases": [
     {
       "check": {
@@ -861,6 +861,32 @@
     },
     {
       "check": {
+        "command": "psql -tAc \"SHOW log_file_mode\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must protect its audit configuration from unauthorized modification.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0600"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -tAc \"SHOW log_file_mode\"": "unexpected-0600"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -tAc \"SHOW log_file_mode\"": "0600"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233618"
+    },
+    {
+      "check": {
         "command": "sh -c 'openssl version | tr [:upper:] [:lower:]'",
         "type": "command_output"
       },
@@ -969,5 +995,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 37
+  "validated_candidates": 38
 }

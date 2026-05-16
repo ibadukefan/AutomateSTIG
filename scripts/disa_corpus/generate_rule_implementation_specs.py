@@ -3434,6 +3434,51 @@ def _linux_faillock_conf_exact_setting_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _linux_login_defs_fix_line_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if not re.search(r'V-\d+', vuln_id):
+        return None
+    combined = '\n'.join(part for part in (rule.get('title', '') or '', rule.get('check_content', '') or '', rule.get('fix_text', '') or '') if part)
+    if re.search(r'\b(?:organization-defined|documented\s+requirement|operational\s+requirement|site\s+policy|ask\s+the\s+(?:system\s+)?administrator)\b', combined, re.IGNORECASE):
+        return None
+    content = rule.get('check_content', '') or ''
+    if content.strip():
+        return None
+    fix_text = rule.get('fix_text', '') or ''
+    if '/etc/login.defs' not in fix_text:
+        return None
+    line_match = None
+    allowed = {
+        'CREATE_HOME': ('exact_ci', 'yes'),
+        'ENCRYPT_METHOD': ('exact_ci', 'SHA512'),
+        'PASS_MIN_DAYS': ('minimum_int', '1'),
+        'SHA_CRYPT_MIN_ROUNDS': ('minimum_int', '100000'),
+        'SHA_CRYPT_MAX_ROUNDS': ('minimum_int', '100000'),
+    }
+    for match in re.finditer(r'^\s*(?P<key>[A-Z][A-Z0-9_]+)\s+(?P<value>[A-Za-z0-9_./-]+)\s*$', fix_text, re.MULTILINE):
+        key = match.group('key')
+        value = match.group('value')
+        if key in allowed and allowed[key][1].lower() == value.lower():
+            line_match = (key, value, allowed[key][0])
+            break
+    if not line_match:
+        return None
+    key, value, mode = line_match
+    if mode == 'minimum_int':
+        command = f"awk 'BEGIN{{ok=0}} /^[[:space:]]*#/ {{next}} toupper($1)==\"{key}\" && $2 ~ /^[0-9]+$/ && $2+0 >= {value} {{ok=1}} END{{if(ok) print \"Compliant\"}}' /etc/login.defs"
+    else:
+        command = f"awk 'BEGIN{{ok=0}} /^[[:space:]]*#/ {{next}} toupper($1)==\"{key}\" && toupper($2)==\"{value.upper()}\" {{ok=1}} END{{if(ok) print \"Compliant\"}}' /etc/login.defs"
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_passwd_home_directory_assigned_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -6397,6 +6442,22 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    postgresql_log_file_mode = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233618'
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_file_mode["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+permissions\s+are\s+not\s+0600,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*log_file_mode\s*=\s*0600\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
+    )
+    if postgresql_log_file_mode:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -tAc "SHOW log_file_mode"'},
+            'expected': {'type': 'equals', 'value': '0600'},
+            'description': rule.get('title', ''),
+        }
+
     postgresql_pgaudit_shared_preload_libraries = (
         'postgresql' in stig_id.lower()
         and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+shared_preload_libraries["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
@@ -9650,7 +9711,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate
