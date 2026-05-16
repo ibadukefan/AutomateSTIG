@@ -11354,6 +11354,35 @@ domains = testing.test''',
             'description': 'RHEL 9 must map the authenticated identity to the user or group account for PKI-based authentication.',
         })
 
+    def test_infers_oracle_linux_sssd_certmap_the_section_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248685',
+            'title': 'OL 8 must map the authenticated identity to the user or group account for PKI-based authentication.',
+            'check_content': '''Verify the certificate of the user or group is mapped to the corresponding user or group in the "sssd.conf" file with the following command:
+
+$ sudo cat /etc/sssd/sssd.conf
+
+[certmap/testing.test/rule_name]
+matchrule =<SAN>.*EDIPI@mil
+maprule = (userCertificate;binary={cert!bin})
+domains = testing.test
+
+If the "certmap" section does not exist, this is a finding.''',
+            'fix_text': '''Configure OL 8 to map the authenticated identity to the user or group account by adding or modifying the "certmap" section of the "/etc/sssd/sssd.conf" file based on the following example:
+
+[certmap/testing.test/rule_name]
+matchrule =<SAN>.*EDIPI@mil
+maprule = (userCertificate;binary={cert!bin})
+domains = testing.test''',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-248685',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'cat /etc/sssd/sssd.conf 2>/dev/null'},
+            'expected': {'type': 'contains', 'substring': 'maprule = (userCertificate;binary={cert!bin})'},
+            'description': 'OL 8 must map the authenticated identity to the user or group account for PKI-based authentication.',
+        })
+
     def test_infers_systemctl_status_active_sample_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234848',

@@ -2959,7 +2959,7 @@ def _linux_sssd_certmap_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     if 'maprule = (userCertificate;binary={cert!bin})' not in combined:
         return None
-    if not re.search(r'certmap\s+section\s+does\s+not\s+exist[^.]*this\s+is\s+a\s+finding|no\s+evidence\s+of\s+certificate\s+mapping[^.]*this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+    if not re.search(r'(?:the\s+)?["“]?certmap["”]?\s+section\s+does\s+not\s+exist[^.]*this\s+is\s+a\s+finding|no\s+evidence\s+of\s+certificate\s+mapping[^.]*this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
         return None
     command = 'cat /etc/sssd/sssd.conf 2>/dev/null'
     if re.search(r'find\s+/etc/sssd/sssd\.conf\s+/etc/sssd/conf\.d/\s+-type\s+f\s+-exec\s+cat\s+\{\}\s+\\;', content):
