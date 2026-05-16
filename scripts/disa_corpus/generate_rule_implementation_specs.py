@@ -2487,6 +2487,38 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             }
 
     if 'Local Policies >> User Rights Assignment' in policy_text:
+        domain_member_deny_service_match = re.search(
+            r'If\s+the\s+following\s+accounts\s+or\s+groups\s+are\s+not\s+defined\s+for\s+the\s+"Deny\s+log\s+on\s+as\s+a\s+service"\s+user\s+right\s+on\s+domain-joined\s+systems,\s+this\s+is\s+a\s+finding:\s*(?P<body>.*?)(?:\n\s*\n|\Z)',
+            content,
+            re.IGNORECASE | re.DOTALL,
+        )
+        domain_member_deny_service_fix = re.search(
+            r'User\s+Rights\s+Assignment\s*>>\s*"?Deny\s+log\s+on\s+as\s+a\s+service"?\s+to\s+include\s+the\s+following:\s*\n\s*Domain\s+systems:\s*(?P<body>.*?)(?:\n\s*\n|\Z)',
+            fix_text,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if domain_member_deny_service_match and domain_member_deny_service_fix:
+            check_body = domain_member_deny_service_match.group('body')
+            fix_body = domain_member_deny_service_fix.group('body')
+            required_groups = ('Enterprise Admins Group', 'Domain Admins Group')
+            has_required_check_groups = all(group in check_body for group in required_groups)
+            has_required_fix_groups = all(group in fix_body for group in required_groups)
+            has_nondomain_blank_check = re.search(
+                r'If\s+any\s+accounts\s+or\s+groups\s+are\s+defined\s+for\s+the\s+"Deny\s+log\s+on\s+as\s+a\s+service"\s+user\s+right\s+on\s+nondomain-joined\s+systems,\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            has_required_sid_suffixes = re.search(r'S-1-5-root\s+domain-519\s+\(Enterprise\s+Admins\)', content, re.IGNORECASE) and re.search(r'S-1-5-domain-512\s+\(Domain\s+Admins\)', content, re.IGNORECASE)
+            if has_required_check_groups and has_required_fix_groups and has_nondomain_blank_check and has_required_sid_suffixes:
+                command = "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyServiceLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if ($domain) { $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($values.Count -eq 2) -and (($suffixes | Sort-Object -Unique).Count -eq 2)) { 'Compliant' } } else { if ($values.Count -eq 0) { 'Compliant' } }\""
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows',
+                    'check': {'type': 'command_output', 'command': command},
+                    'expected': {'type': 'equals', 'value': 'Compliant'},
+                    'description': rule.get('title', ''),
+                }
+
         blank_user_right_match = re.search(
             r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:(?:be\s+defined\s+but\s+containing|include)\s+no\s+entries|include\s+no\s+accounts\s+or\s+groups)\s+\(blank\)\s*\.\s*(?:\n|$)',
             policy_text,

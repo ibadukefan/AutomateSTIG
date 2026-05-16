@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 230,
+  "candidate_checks": 231,
   "cases": [
     {
       "check": {
@@ -3972,6 +3972,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyServiceLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if ($domain) { $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($values.Count -eq 2) -and (($suffixes | Sort-Object -Unique).Count -eq 2)) { 'Compliant' } } else { if ($values.Count -eq 0) { 'Compliant' } }\"",
+        "type": "command_output"
+      },
+      "description": "The Windows Server 2025 \"Deny log on as a service\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts. No other groups or accounts must be assigned this right.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyServiceLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if ($domain) { $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($values.Count -eq 2) -and (($suffixes | Sort-Object -Unique).Count -eq 2)) { 'Compliant' } } else { if ($values.Count -eq 0) { 'Compliant' } }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyServiceLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if ($domain) { $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($values.Count -eq 2) -and (($suffixes | Sort-Object -Unique).Count -eq 2)) { 'Compliant' } } else { if ($values.Count -eq 0) { 'Compliant' } }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278186"
+    },
+    {
+      "check": {
         "key": "SeDenyInteractiveLogonRight",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -6187,5 +6213,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 230
+  "validated_candidates": 231
 }

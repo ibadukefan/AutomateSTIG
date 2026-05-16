@@ -2193,16 +2193,17 @@
       "vuln_id": "V-254436"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254437",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-254437 from source identifier xccdf_mil.disa.stig_group_V-254437.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-254437r1137691_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Deny log on as a service user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts. No other groups or accounts must be assigned this right.",
-      "tracking_issue": "TODO-V-254437",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/5459c32c9f0d5581bc9f6d28c451a3ab0b63e4db7c444d5b4c83ca878772f33d/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-254437"
