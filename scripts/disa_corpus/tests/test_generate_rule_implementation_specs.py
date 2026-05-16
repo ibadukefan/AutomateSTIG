@@ -111,6 +111,19 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('--request-timeout', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_windows_server_2022_name_based_strong_mapping_candidate_from_exact_vuln_and_gpedit_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271427',
+            'title': 'Windows Server 2022 must be configured for name-based strong mappings for certificates.',
+            'check_content': 'This applies to domain controllers. This is not applicable for member servers. Verify the effective setting in Local Group Policy Editor. Run "gpedit.msc". Navigate to Local Computer Policy >> Computer Configuration >> Administrative Template >> System >> KDC >> Allow name-based strong mappings for certificates. If "Allow name-based strong mappings for certificates" is not "Enabled", this is a finding.',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Administrative Template >> System >> KDC >> Allow name-based strong mappings for certificates to "Enabled".',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271427')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'registry', 'path': 'HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters', 'value_name': 'UseStrongNameMatches'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 1})
+
     def test_infers_esxi_lockdown_mode_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256375',

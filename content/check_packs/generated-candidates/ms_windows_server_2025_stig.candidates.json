@@ -1934,6 +1934,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters",
+        "type": "registry",
+        "value_name": "UseStrongNameMatches"
+      },
+      "description": "Windows Server 2025 must be configured for name-based strong mappings for certificates.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-278173"
+    },
+    {
+      "check": {
         "key": "SeDenyRemoteInteractiveLogonRight",
         "section": "Privilege Rights",
         "type": "security_policy"

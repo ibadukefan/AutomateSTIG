@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 196,
+  "candidate_checks": 197,
   "cases": [
     {
       "check": {
@@ -5060,6 +5060,33 @@
     },
     {
       "check": {
+        "path": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters",
+        "type": "registry",
+        "value_name": "UseStrongNameMatches"
+      },
+      "description": "Windows Server 2022 must be configured for name-based strong mappings for certificates.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters\\UseStrongNameMatches": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters\\UseStrongNameMatches": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271427"
+    },
+    {
+      "check": {
         "setting": "Failure",
         "subcategory": "File System",
         "type": "audit_policy"
@@ -5280,5 +5307,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 196
+  "validated_candidates": 197
 }

@@ -1403,6 +1403,31 @@ def _windows_platform(stig_id: str) -> bool:
     return 'windows' in lower or 'ms_windows' in lower
 
 
+def _windows_name_based_strong_mappings_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id) or rule.get('vuln_id') not in {'V-271427', 'V-278173'}:
+        return None
+    combined = f"{rule.get('title', '')}\n{rule.get('check_content', '')}\n{rule.get('fix_text', '')}"
+    required_phrases = (
+        'Allow name-based strong mappings for certificates',
+        'System >> KDC',
+        'not "Enabled", this is a finding',
+        'Configure the policy value',
+    )
+    if not all(phrase in combined for phrase in required_phrases):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'registry',
+            'path': 'HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters',
+            'value_name': 'UseStrongNameMatches',
+        },
+        'expected': {'type': 'equals', 'value': 1},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_domain_controller_pki_certificate_exists_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id) or rule.get('vuln_id') not in {'V-205645', 'V-254412', 'V-278159'}:
         return None
@@ -9764,6 +9789,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sles_gdm_dconf_banner_candidate = _sles_gdm_dconf_banner_message_candidate(rule, stig_id)
     if sles_gdm_dconf_banner_candidate:
         return sles_gdm_dconf_banner_candidate
+    windows_name_based_strong_mappings_candidate = _windows_name_based_strong_mappings_candidate(rule, stig_id)
+    if windows_name_based_strong_mappings_candidate:
+        return windows_name_based_strong_mappings_candidate
     windows_pki_certificate_candidate = _windows_domain_controller_pki_certificate_exists_candidate(rule, stig_id)
     if windows_pki_certificate_candidate:
         return windows_pki_certificate_candidate
