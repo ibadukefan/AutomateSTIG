@@ -4878,7 +4878,7 @@ def _selinux_getenforce_candidate(rule: dict, stig_id: str) -> dict | None:
 def _linux_device_file_selinux_label_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
-    if rule.get('vuln_id') not in {'V-257932', 'V-271769'}:
+    if rule.get('vuln_id') not in {'V-204479', 'V-257932', 'V-271769'}:
         return None
     content = rule.get('check_content', '') or ''
     if not re.search(r'system\s+device\s+files\s+(?:are\s+|to\s+be\s+)?correctly\s+labeled', content, re.IGNORECASE):
