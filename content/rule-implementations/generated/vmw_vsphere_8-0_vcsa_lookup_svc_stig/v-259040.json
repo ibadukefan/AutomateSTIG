@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"pattern=$(xmllint --xpath 'string(/Server/Service/Engine/Host/Valve[@className=\\\"org.apache.catalina.valves.AccessLogValve\\\"]/@pattern)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); for token in '%h' '%{X-Forwarded-For}i' '%l' '%t' '%u' '%r' '%s' '%b'; do case \\\"$pattern\\\" in *\\\"$token\\\"*) ;; *) exit 0;; esac; done; printf PASS\"",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service must produce log records containing sufficient information regarding event details.",
+    "expected": {
+      "type": "equals",
+      "value": "PASS"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259040"
+  },
   "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --xpath '/Server/Service/Engine/Host/Valve[@className=\"org.apache.catalina.valves.AccessLogValve\"]/@pattern' /usr/lib/vmware-lookupsvc/conf/server.xml\n\nExample result:\n\npattern=\"%t %I [Request] &quot;%{User-Agent}i&quot; %{X-Forwarded-For}i/%h:%{remote}p %l %u to local %{local}p - &quot;%r&quot; %H %m %U%q    [Response] %s - %b bytes    [Perf] process %Dms / commit %Fms / conn [%X]\"\n\nRequired elements:\n\n%h %{X-Forwarded-For}i %l %t %u &quot;%r&quot; %s %b\n\nIf the log pattern does not contain the required elements in any order, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "PASS"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/server.xml\n\nInside the <Host> node, find the \"AccessLogValve\" <Valve> node and replace the \"pattern\" element as follows:\n\npattern=\"%t %I [Request] &quot;%{User-Agent}i&quot; %{X-Forwarded-For}i/%h:%{remote}p %l %u to local %{local}p - &quot;%r&quot; %H %m %U%q    [Response] %s - %b bytes    [Perf] process %Dms / commit %Fms / conn [%X]\"\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259040r960891_rule",
   "severity": "medium",

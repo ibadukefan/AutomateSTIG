@@ -3262,6 +3262,104 @@ Below the last line of the "PreStartCommandArg" block, add the following line:
             'description': 'The vCenter Lookup service must initiate session logging upon startup.',
         })
 
+    def test_infers_vcenter_lookup_access_log_required_elements_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259040',
+            'title': 'The vCenter Lookup service must produce log records containing sufficient information regarding event details.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --xpath '/Server/Service/Engine/Host/Valve[@className="org.apache.catalina.valves.AccessLogValve"]/@pattern' /usr/lib/vmware-lookupsvc/conf/server.xml
+
+Required elements:
+
+%h %{X-Forwarded-For}i %l %t %u &quot;%r&quot; %s %b
+
+If the log pattern does not contain the required elements in any order, this is a finding.''',
+            'fix_text': '''Navigate to and open:
+
+/usr/lib/vmware-lookupsvc/conf/server.xml
+
+Inside the <Host> node, find the "AccessLogValve" <Valve> node and replace the "pattern" element as follows:
+
+pattern="%t %I [Request] &quot;%{User-Agent}i&quot; %{X-Forwarded-For}i/%h:%{remote}p %l %u to local %{local}p - &quot;%r&quot; %H %m %U%q    [Response] %s - %b bytes    [Perf] process %Dms / commit %Fms / conn [%X]"''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259040',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c \"pattern=$(xmllint --xpath 'string(/Server/Service/Engine/Host/Valve[@className=\\\"org.apache.catalina.valves.AccessLogValve\\\"]/@pattern)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); for token in '%h' '%{X-Forwarded-For}i' '%l' '%t' '%u' '%r' '%s' '%b'; do case \\\"$pattern\\\" in *\\\"$token\\\"*) ;; *) exit 0;; esac; done; printf PASS\"",
+            },
+            'expected': {'type': 'equals', 'value': 'PASS'},
+            'description': 'The vCenter Lookup service must produce log records containing sufficient information regarding event details.',
+        })
+
+    def test_infers_vcenter_lookup_rsyslog_config_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259050',
+            'title': 'The vCenter Lookup service must offload log records onto a different system or media from the system being logged.',
+            'check_content': '''At the command prompt, run the following command:
+
+# cat /etc/vmware-syslog/vmware-services-lookupsvc.conf
+
+Expected result:
+
+#catalina
+input(type="imfile"
+      File="/var/log/vmware/lookupsvc/tomcat/catalina.*.log"
+      Tag="lookupsvc-tc-catalina"
+      Severity="info"
+      Facility="local0")
+#localhost
+input(type="imfile"
+      File="/var/log/vmware/lookupsvc/tomcat/localhost.*.log"
+      Tag="lookupsvc-tc-localhost"
+      Severity="info"
+      Facility="local0")
+#lookupsvc_stream.log.std
+input(type="imfile"
+      File="/var/log/vmware/lookupsvc/lookupsvc_stream.log.std*"
+      Tag="lookupsvc-std"
+      Severity="info"
+      Facility="local0")
+
+If the output does not match the expected result, this is a finding.''',
+            'fix_text': '''Navigate to and open:
+
+/etc/vmware-syslog/vmware-services-lookupsvc.conf
+
+Set the contents of the file as follows:
+
+#catalina
+input(type="imfile"
+      File="/var/log/vmware/lookupsvc/tomcat/catalina.*.log"
+      Tag="lookupsvc-tc-catalina"
+      Severity="info"
+      Facility="local0")
+#localhost
+input(type="imfile"
+      File="/var/log/vmware/lookupsvc/tomcat/localhost.*.log"
+      Tag="lookupsvc-tc-localhost"
+      Severity="info"
+      Facility="local0")
+#lookupsvc_stream.log.std
+input(type="imfile"
+      File="/var/log/vmware/lookupsvc/lookupsvc_stream.log.std*"
+      Tag="lookupsvc-std"
+      Severity="info"
+      Facility="local0")''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259050',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c \"f=/etc/vmware-syslog/vmware-services-lookupsvc.conf; for token in 'File=\\\"/var/log/vmware/lookupsvc/tomcat/catalina.*.log\\\"' 'Tag=\\\"lookupsvc-tc-catalina\\\"' 'File=\\\"/var/log/vmware/lookupsvc/tomcat/localhost.*.log\\\"' 'Tag=\\\"lookupsvc-tc-localhost\\\"' 'File=\\\"/var/log/vmware/lookupsvc/tomcat/localhost_access.log\\\"' 'Tag=\\\"lookupsvc-localhost_access\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc-init.log\\\"' 'Tag=\\\"lookupsvc-init\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc-prestart.log\\\"' 'Tag=\\\"lookupsvc-prestart\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc-health.log\\\"' 'Tag=\\\"lookupsvc-health\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupserver-default.log\\\"' 'Tag=\\\"lookupsvc-lookupserver-default\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc_stream.log.std*\\\"' 'Tag=\\\"lookupsvc-std\\\"' 'File=\\\"/var/log/vmware/lookupsvc/vmware-lookupsvc-gc.log.*.current\\\"' 'Tag=\\\"lookupsvc-gc\\\"'; do grep -Fqx \\\"      $token\\\" $f || exit 0; done; printf PASS\"",
+            },
+            'expected': {'type': 'equals', 'value': 'PASS'},
+            'description': 'The vCenter Lookup service must offload log records onto a different system or media from the system being logged.',
+        })
+
     def test_infers_vcenter_lookup_session_timeout_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-259049',

@@ -42,6 +42,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"pattern=$(xmllint --xpath 'string(/Server/Service/Engine/Host/Valve[@className=\\\"org.apache.catalina.valves.AccessLogValve\\\"]/@pattern)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); for token in '%h' '%{X-Forwarded-For}i' '%l' '%t' '%u' '%r' '%s' '%b'; do case \\\"$pattern\\\" in *\\\"$token\\\"*) ;; *) exit 0;; esac; done; printf PASS\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must produce log records containing sufficient information regarding event details.",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259040"
+    },
+    {
+      "check": {
         "command": "find /var/log/vmware/lookupsvc/ -xdev ! -name lookupsvc-init.log ! -name lookupsvc-prestart.log -type f -a '(' -perm -o+w -o -not -user lookupsvc -o -not -group lookupsvc ')' -exec ls -ld {} \\;",
         "type": "command_output"
       },
@@ -157,6 +170,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-259049"
+    },
+    {
+      "check": {
+        "command": "sh -c \"f=/etc/vmware-syslog/vmware-services-lookupsvc.conf; for token in 'File=\\\"/var/log/vmware/lookupsvc/tomcat/catalina.*.log\\\"' 'Tag=\\\"lookupsvc-tc-catalina\\\"' 'File=\\\"/var/log/vmware/lookupsvc/tomcat/localhost.*.log\\\"' 'Tag=\\\"lookupsvc-tc-localhost\\\"' 'File=\\\"/var/log/vmware/lookupsvc/tomcat/localhost_access.log\\\"' 'Tag=\\\"lookupsvc-localhost_access\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc-init.log\\\"' 'Tag=\\\"lookupsvc-init\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc-prestart.log\\\"' 'Tag=\\\"lookupsvc-prestart\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc-health.log\\\"' 'Tag=\\\"lookupsvc-health\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupserver-default.log\\\"' 'Tag=\\\"lookupsvc-lookupserver-default\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc_stream.log.std*\\\"' 'Tag=\\\"lookupsvc-std\\\"' 'File=\\\"/var/log/vmware/lookupsvc/vmware-lookupsvc-gc.log.*.current\\\"' 'Tag=\\\"lookupsvc-gc\\\"'; do grep -Fqx \\\"      $token\\\" $f || exit 0; done; printf PASS\"",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must offload log records onto a different system or media from the system being logged.",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259050"
     },
     {
       "check": {

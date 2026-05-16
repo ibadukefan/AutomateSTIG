@@ -1953,6 +1953,54 @@ def _vcenter_lookup_core_setting_candidate(rule: dict, stig_id: str) -> dict | N
                 'description': title,
             }
 
+    if vuln_id == 'V-259040':
+        path = '/usr/lib/vmware-lookupsvc/conf/server.xml'
+        valve = 'org.apache.catalina.valves.AccessLogValve'
+        required_elements = ('%h', '%{X-Forwarded-For}i', '%l', '%t', '%u', '%r', '%s', '%b')
+        if (
+            path in content
+            and valve in content
+            and all(element in content or element.replace('%r', '&quot;%r&quot;') in content for element in required_elements)
+            and re.search(r'If\s+the\s+log\s+pattern\s+does\s+not\s+contain\s+the\s+required\s+elements\s+in\s+any\s+order,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            and path in fix_text
+            and 'AccessLogValve' in fix_text
+            and 'pattern=' in fix_text
+        ):
+            command = "sh -c \"pattern=$(xmllint --xpath 'string(/Server/Service/Engine/Host/Valve[@className=\\\"org.apache.catalina.valves.AccessLogValve\\\"]/@pattern)' /usr/lib/vmware-lookupsvc/conf/server.xml 2>/dev/null); for token in '%h' '%{X-Forwarded-For}i' '%l' '%t' '%u' '%r' '%s' '%b'; do case \\\"$pattern\\\" in *\\\"$token\\\"*) ;; *) exit 0;; esac; done; printf PASS\""
+            return {
+                'vuln_id': vuln_id,
+                'platform': 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': 'PASS'},
+                'description': title,
+            }
+
+    if vuln_id == 'V-259050':
+        path = '/etc/vmware-syslog/vmware-services-lookupsvc.conf'
+        required_tokens = (
+            'File="/var/log/vmware/lookupsvc/tomcat/catalina.*.log"',
+            'Tag="lookupsvc-tc-catalina"',
+            'File="/var/log/vmware/lookupsvc/tomcat/localhost.*.log"',
+            'Tag="lookupsvc-tc-localhost"',
+            'File="/var/log/vmware/lookupsvc/lookupsvc_stream.log.std*"',
+            'Tag="lookupsvc-std"',
+        )
+        if (
+            path in content
+            and all(token in content for token in required_tokens)
+            and re.search(r'If\s+the\s+output\s+does\s+not\s+match\s+the\s+expected\s+result,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            and path in fix_text
+            and all(token in fix_text for token in required_tokens)
+        ):
+            command = "sh -c \"f=/etc/vmware-syslog/vmware-services-lookupsvc.conf; for token in 'File=\\\"/var/log/vmware/lookupsvc/tomcat/catalina.*.log\\\"' 'Tag=\\\"lookupsvc-tc-catalina\\\"' 'File=\\\"/var/log/vmware/lookupsvc/tomcat/localhost.*.log\\\"' 'Tag=\\\"lookupsvc-tc-localhost\\\"' 'File=\\\"/var/log/vmware/lookupsvc/tomcat/localhost_access.log\\\"' 'Tag=\\\"lookupsvc-localhost_access\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc-init.log\\\"' 'Tag=\\\"lookupsvc-init\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc-prestart.log\\\"' 'Tag=\\\"lookupsvc-prestart\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc-health.log\\\"' 'Tag=\\\"lookupsvc-health\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupserver-default.log\\\"' 'Tag=\\\"lookupsvc-lookupserver-default\\\"' 'File=\\\"/var/log/vmware/lookupsvc/lookupsvc_stream.log.std*\\\"' 'Tag=\\\"lookupsvc-std\\\"' 'File=\\\"/var/log/vmware/lookupsvc/vmware-lookupsvc-gc.log.*.current\\\"' 'Tag=\\\"lookupsvc-gc\\\"'; do grep -Fqx \\\"      $token\\\" $f || exit 0; done; printf PASS\""
+            return {
+                'vuln_id': vuln_id,
+                'platform': 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': 'PASS'},
+                'description': title,
+            }
+
     if vuln_id == 'V-259049':
         path = '/usr/lib/vmware-lookupsvc/conf/web.xml'
         if (
