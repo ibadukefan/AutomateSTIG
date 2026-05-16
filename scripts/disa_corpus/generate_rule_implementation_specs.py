@@ -8278,31 +8278,58 @@ def _defender_av_get_mppreference_candidate(rule: dict, stig_id: str) -> dict | 
     fix_text = rule.get('fix_text', '') or ''
     combined = '\n'.join(part for part in (content, fix_text) if part)
     preference_map = {
+        'V-278657': ('Turn off routine remediation', 'DisableRoutinelyTakingAction', 'False'),
         'V-278663': ('Turn on behavior monitoring', 'DisableBehaviorMonitoring', 'False'),
         'V-278664': ('Scan all downloaded files and attachments', 'DisableIOAVProtection', 'False'),
         'V-278665': ('Monitor file and program activity on your computer', 'DisableOnAccessProtection', 'False'),
         'V-278666': ('Turn off real-time protection', 'DisableRealtimeMonitoring', 'False'),
+        'V-278667': ('Turn on process scanning whenever real-time protection is enabled', 'DisableProcessScanning', 'False'),
+        'V-278670': ('Configure monitoring for incoming and outgoing file and program activity', 'RealTimeScanDirection', '0'),
+        'V-278671': ('Configure Controlled folder access', 'EnableControlledFolderAccess', 'not_disabled'),
     }
     if vuln_id not in preference_map:
         return None
     policy_name, preference_name, expected_value = preference_map[vuln_id]
     if policy_name.lower() not in combined.lower():
         return None
-    if vuln_id == 'V-278666':
-        if not re.search(r'Turn\s+off\s+real-time\s+protection[^\n.]+is\s+set\s+to\s+["“]Disabled["”]', content, re.IGNORECASE):
+    if vuln_id in {'V-278657', 'V-278666'}:
+        if not re.search(re.escape(policy_name) + r'[^\n.]+is\s+set\s+to\s+["“]Disabled["”]', content, re.IGNORECASE):
             return None
-        if not re.search(r'Turn\s+off\s+real-time\s+protection[^\n.]+to\s+["“]Disabled["”]', fix_text, re.IGNORECASE):
+        if not re.search(re.escape(policy_name) + r'[^\n.]+to\s+["“]Disabled["”]', fix_text, re.IGNORECASE):
+            return None
+    elif vuln_id == 'V-278670':
+        if not re.search(re.escape(policy_name) + r'[^\n.]+is\s+set\s+to\s+["“]Enabled["”][^\n.]+bi-directional\s+\(full\s+on-access\)', content, re.IGNORECASE):
+            return None
+        if not re.search(re.escape(policy_name) + r'[^\n.]+to\s+["“]Enabled["”]', fix_text, re.IGNORECASE):
+            return None
+        if not re.search(r'policy\s+option\s+(?:to|of)\s+["“]bi-directional\s+\(full\s+on-access\)["”]', fix_text, re.IGNORECASE):
+            return None
+    elif vuln_id == 'V-278671':
+        if not re.search(re.escape(policy_name) + r'[^\n.]+is\s+set\s+to\s+["“]Enabled["”][^\n.]+Audit\s+Mode', content, re.IGNORECASE):
+            return None
+        if not re.search(r'All\s+other\s+policy\s+options\s+aside\s+from\s+["“]Disable["”]\s+are\s+allowed', content, re.IGNORECASE):
+            return None
+        if not re.search(r'policy\s+option\s+for\s+["“]Configure\s+Controlled\s+folder\s+access["”]\s+is\s+set\s+to\s+["“]Disable["”],\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(re.escape(policy_name) + r'[^\n.]+to\s+["“]Enabled["”]', fix_text, re.IGNORECASE):
+            return None
+        if not re.search(r'policy\s+option\s+value\s+to\s+["“]Audit\s+Mode["”]\s+or\s+anything\s+other\s+than\s+["“]Disable["”]', fix_text, re.IGNORECASE):
             return None
     else:
         if not re.search(re.escape(policy_name) + r'[^\n.]+is\s+set\s+to\s+["“]Enabled["”]', content, re.IGNORECASE):
             return None
         if not re.search(re.escape(policy_name) + r'[^\n.]+to\s+["“]Enabled["”]', fix_text, re.IGNORECASE):
             return None
+    expected = {'type': 'equals', 'value': expected_value}
+    command = f'powershell -NoProfile -Command "(Get-MpPreference).{preference_name}"'
+    if expected_value == 'not_disabled':
+        expected = {'type': 'equals', 'value': 'Compliant'}
+        command = 'powershell -NoProfile -Command "if ((Get-MpPreference).EnableControlledFolderAccess -ne 0) { \'Compliant\' }"'
     return {
         'vuln_id': vuln_id,
         'platform': 'windows',
-        'check': {'type': 'command_output', 'command': f'powershell -NoProfile -Command "(Get-MpPreference).{preference_name}"'},
-        'expected': {'type': 'equals', 'value': expected_value},
+        'check': {'type': 'command_output', 'command': command},
+        'expected': expected,
         'description': title,
     }
 

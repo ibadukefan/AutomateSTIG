@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"if ((Get-MpPreference).EnableControlledFolderAccess -ne 0) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Microsoft Defender AV must control folder access.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278671"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Microsoft Defender Exploit Guard >> Controlled Folder Access >> Configure Controlled folder access is set to \"Enabled\" with a policy option of \"Audit Mode\". \n\nAll other policy options aside from \"Disable\" are allowed.\n\nIf the policy option for \"Configure Controlled folder access\" is set to \"Disable\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Microsoft Defender Exploit Guard >> Controlled Folder Access >> Configure Controlled folder access to \"Enabled\".\n\nSet the policy option value to \"Audit Mode\" or anything other than \"Disable\"\n\nClick \"OK\".\n\nClick \"Apply\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-278671r1134263_rule",
   "severity": "medium",

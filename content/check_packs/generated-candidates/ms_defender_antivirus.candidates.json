@@ -713,6 +713,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableRoutinelyTakingAction\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must enable routine remediation.",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278657"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender",
         "type": "registry",
         "value_name": "HideExclusionsFromLocalUsers"
@@ -835,6 +848,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableProcessScanning\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must enable process scanning whenever real-time protection is enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278667"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
         "type": "registry",
         "value_name": "DisableScriptScanning"
@@ -860,6 +886,32 @@
       },
       "platform": "windows",
       "vuln_id": "V-278669"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).RealTimeScanDirection\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must enable monitoring for incoming and outgoing file and program activity.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278670"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if ((Get-MpPreference).EnableControlledFolderAccess -ne 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must control folder access.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278671"
     },
     {
       "check": {

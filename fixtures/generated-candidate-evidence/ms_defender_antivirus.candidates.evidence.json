@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 72,
+  "candidate_checks": 76,
   "cases": [
     {
       "check": {
@@ -1377,6 +1377,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableRoutinelyTakingAction\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must enable routine remediation.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableRoutinelyTakingAction\"": "unexpected-False"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableRoutinelyTakingAction\"": "False"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278657"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender",
         "type": "registry",
         "value_name": "HideExclusionsFromLocalUsers"
@@ -1616,6 +1642,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).DisableProcessScanning\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must enable process scanning whenever real-time protection is enabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableProcessScanning\"": "unexpected-False"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).DisableProcessScanning\"": "False"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278667"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
         "type": "registry",
         "value_name": "DisableScriptScanning"
@@ -1667,6 +1719,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278669"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"(Get-MpPreference).RealTimeScanDirection\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must enable monitoring for incoming and outgoing file and program activity.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).RealTimeScanDirection\"": "unexpected-0"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"(Get-MpPreference).RealTimeScanDirection\"": "0"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278670"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if ((Get-MpPreference).EnableControlledFolderAccess -ne 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Microsoft Defender AV must control folder access.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if ((Get-MpPreference).EnableControlledFolderAccess -ne 0) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if ((Get-MpPreference).EnableControlledFolderAccess -ne 0) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278671"
     },
     {
       "check": {
@@ -1944,5 +2048,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Defender_Antivirus",
-  "validated_candidates": 72
+  "validated_candidates": 76
 }

@@ -97,6 +97,68 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertEqual(generated['vuln_id'], 'xccdf_mil.disa.stig_group_V-230298')
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'rsyslog', 'expected_status': 'running'})
 
+    def test_infers_new_defender_av_get_mppreference_candidates(self):
+        cases = [
+            (
+                'V-278657',
+                'Microsoft Defender AV must enable routine remediation.',
+                'Turn off routine remediation',
+                'Disabled',
+                'DisableRoutinelyTakingAction',
+                'False',
+            ),
+            (
+                'V-278667',
+                'Microsoft Defender AV must enable process scanning whenever real-time protection is enabled.',
+                'Turn on process scanning whenever real-time protection is enabled',
+                'Enabled',
+                'DisableProcessScanning',
+                'False',
+            ),
+            (
+                'V-278670',
+                'Microsoft Defender AV must enable monitoring for incoming and outgoing file and program activity.',
+                'Configure monitoring for incoming and outgoing file and program activity',
+                'Enabled',
+                'RealTimeScanDirection',
+                '0',
+            ),
+            (
+                'V-278671',
+                'Microsoft Defender AV must control folder access.',
+                'Configure Controlled folder access',
+                'Enabled',
+                'EnableControlledFolderAccess',
+                'Compliant',
+            ),
+        ]
+        for vuln_id, title, policy_name, policy_state, preference_name, expected_value in cases:
+            with self.subTest(vuln_id=vuln_id):
+                option_text = ''
+                fix_option_text = ''
+                expected = {'type': 'equals', 'value': expected_value}
+                if vuln_id == 'V-278670':
+                    option_text = ' with a policy option of "bi-directional (full on-access)"'
+                    fix_option_text = '\n\nSet the policy option to "bi-directional (full on-access)"'
+                if vuln_id == 'V-278671':
+                    option_text = ' with a policy option of "Audit Mode". All other policy options aside from "Disable" are allowed. If the policy option for "Configure Controlled folder access" is set to "Disable", this is a finding.'
+                    fix_option_text = '\n\nSet the policy option value to "Audit Mode" or anything other than "Disable"'
+                    expected = {'type': 'equals', 'value': expected_value}
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': f'Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> {policy_name} is set to "{policy_state}"{option_text}; otherwise, this is a finding.',
+                    'fix_text': f'Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> {policy_name} to "{policy_state}".{fix_option_text}',
+                }, 'MS_Defender_Antivirus')
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                expected_command = f'powershell -NoProfile -Command "(Get-MpPreference).{preference_name}"'
+                if vuln_id == 'V-278671':
+                    expected_command = 'powershell -NoProfile -Command "if ((Get-MpPreference).EnableControlledFolderAccess -ne 0) { \'Compliant\' }"'
+                self.assertEqual(candidate['check'], {'type': 'command_output', 'command': expected_command})
+                self.assertEqual(candidate['expected'], expected)
+
     def test_infers_linux_interactive_home_contents_mode_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244531',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"(Get-MpPreference).RealTimeScanDirection\"",
+      "type": "command_output"
+    },
+    "description": "Microsoft Defender AV must enable monitoring for incoming and outgoing file and program activity.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278670"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> Configure monitoring for incoming and outgoing file and program activity is set to \"Enabled\" with a policy option of \"bi-directional (full on-access)\"; otherwise, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> Configure monitoring for incoming and outgoing file and program activity to \"Enabled\".\n\nSet the policy option to \"bi-directional (full on-access)\"\n\nClick \"OK\".\n\nClick \"Apply\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-278670r1134262_rule",
   "severity": "medium",
