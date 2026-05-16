@@ -1397,6 +1397,50 @@ def _windows_domain_controller_pki_certificate_exists_candidate(rule: dict, stig
     }
 
 
+def _windows_domain_controller_ntds_acl_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '') or ''
+    if not _windows_platform(stig_id) or vuln_id not in {'V-205739', 'V-254391', 'V-278138'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+    required_patterns = (
+        r'applies\s+to\s+domain\s+controllers',
+        r'HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters',
+        r'Database\s+log\s+files\s+path',
+        r'DSA\s+Database\s+file',
+        r'icacls\s+\*\.\*',
+        r'NT\s+AUTHORITY\\SYSTEM:\(I\)\(F\)',
+        r'BUILTIN\\Administrators:\(I\)\(F\)',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$k=\'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters\'; '
+        "if (-not (Test-Path -LiteralPath $k)) { 'Compliant'; exit }; "
+        '$p=Get-ItemProperty -LiteralPath $k -ErrorAction SilentlyContinue; '
+        "$paths=@($p.'Database log files path',$p.'DSA Database file') | Where-Object { $_ }; "
+        'if (-not $paths) { $paths=@((Join-Path $env:windir \'NTDS\')) }; '
+        '$allowed=@(\'NT AUTHORITY\\SYSTEM\',\'BUILTIN\\Administrators\'); $bad=$false; '
+        '$paths | Select-Object -Unique | ForEach-Object { '
+        'if (-not (Test-Path -LiteralPath $_)) { $bad=$true; return }; '
+        'Get-ChildItem -LiteralPath $_ -File -ErrorAction SilentlyContinue | ForEach-Object { '
+        '$acl=Get-Acl -LiteralPath $_.FullName; '
+        'foreach ($ace in $acl.Access) { '
+        'if (($allowed -notcontains $ace.IdentityReference.Value) -or (($ace.FileSystemRights.ToString()) -notmatch \'FullControl\')) { $bad=$true } '
+        '} } }; '
+        "if (-not $bad) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_11_enterprise_64bit_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '') or ''
     if vuln_id != 'V-253254' or not _windows_platform(stig_id):
@@ -9490,6 +9534,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     windows_pki_certificate_candidate = _windows_domain_controller_pki_certificate_exists_candidate(rule, stig_id)
     if windows_pki_certificate_candidate:
         return windows_pki_certificate_candidate
+    windows_ntds_acl_candidate = _windows_domain_controller_ntds_acl_candidate(rule, stig_id)
+    if windows_ntds_acl_candidate:
+        return windows_ntds_acl_candidate
     windows_legal_notice_caption_candidate = _windows_legal_notice_caption_candidate(rule, stig_id)
     if windows_legal_notice_caption_candidate:
         return windows_legal_notice_caption_candidate

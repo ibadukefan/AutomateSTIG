@@ -173,6 +173,27 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Present'})
         self.assertIn('Cert:\\LocalMachine\\My', candidate['check']['command'])
 
+    def test_infers_windows_domain_controller_ntds_acl_candidate(self):
+        for vuln_id, stig_id in (
+            ('V-205739', 'Windows_Server_2019_STIG'),
+            ('V-254391', 'MS_Windows_Server_2022_STIG'),
+            ('V-278138', 'MS_Windows_Server_2025_STIG'),
+        ):
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': 'Windows Server permissions on the Active Directory data files must only allow System and Administrators access.',
+                    'check_content': 'This applies to domain controllers. It is not applicable for other systems.\n\nRun "Regedit".\n\nNavigate to "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters".\n\nNote the directory locations in the values for:\n\nDatabase log files path\nDSA Database file\n\nBy default, they will be \\Windows\\NTDS.\n\nRun "icacls *.*".\n\nIf the permissions on each file are not as restrictive as the following, this is a finding:\n\nNT AUTHORITY\\SYSTEM:(I)(F)\nBUILTIN\\Administrators:(I)(F)',
+                    'fix_text': 'Maintain the permissions on NTDS database and log files as follows:\n\nNT AUTHORITY\\SYSTEM:(I)(F)\nBUILTIN\\Administrators:(I)(F)',
+                }, stig_id)
+
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+                self.assertIn('CurrentControlSet\\Services\\NTDS\\Parameters', candidate['check']['command'])
+                self.assertIn('Get-Acl', candidate['check']['command'])
+
     def test_infers_windows_removed_feature_from_fix_text_with_plural_features_heading(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'xccdf_mil.disa.stig_group_V-254278',

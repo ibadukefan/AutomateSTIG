@@ -1182,6 +1182,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$k='HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters'; if (-not (Test-Path -LiteralPath $k)) { 'Compliant'; exit }; $p=Get-ItemProperty -LiteralPath $k -ErrorAction SilentlyContinue; $paths=@($p.'Database log files path',$p.'DSA Database file') | Where-Object { $_ }; if (-not $paths) { $paths=@((Join-Path $env:windir 'NTDS')) }; $allowed=@('NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $bad=$false; $paths | Select-Object -Unique | ForEach-Object { if (-not (Test-Path -LiteralPath $_)) { $bad=$true; return }; Get-ChildItem -LiteralPath $_ -File -ErrorAction SilentlyContinue | ForEach-Object { $acl=Get-Acl -LiteralPath $_.FullName; foreach ($ace in $acl.Access) { if (($allowed -notcontains $ace.IdentityReference.Value) -or (($ace.FileSystemRights.ToString()) -notmatch 'FullControl')) { $bad=$true } } } }; if (-not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 permissions on the Active Directory data files must only allow System and Administrators access.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254391"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$root=[ADSI]'LDAP://RootDSE'; $cfg=$root.configurationNamingContext; $p=[ADSI]('LDAP://CN=Default Query Policy,CN=Query-Policies,CN=Directory Service,CN=Windows NT,CN=Services,'+$cfg); $v=@($p.Properties['LDAPAdminLimits']) | Where-Object { $_ -match '^MaxConnIdleTime=(\\d+)$' } | Select-Object -First 1; if ($v -match '^MaxConnIdleTime=(\\d+)$' -and [int]$Matches[1] -le 300) { 'Compliant' }\"",
         "type": "command_output"
       },

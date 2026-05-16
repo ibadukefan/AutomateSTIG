@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 192,
+  "candidate_checks": 193,
   "cases": [
     {
       "check": {
@@ -1448,6 +1448,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205734"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$k='HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters'; if (-not (Test-Path -LiteralPath $k)) { 'Compliant'; exit }; $p=Get-ItemProperty -LiteralPath $k -ErrorAction SilentlyContinue; $paths=@($p.'Database log files path',$p.'DSA Database file') | Where-Object { $_ }; if (-not $paths) { $paths=@((Join-Path $env:windir 'NTDS')) }; $allowed=@('NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $bad=$false; $paths | Select-Object -Unique | ForEach-Object { if (-not (Test-Path -LiteralPath $_)) { $bad=$true; return }; Get-ChildItem -LiteralPath $_ -File -ErrorAction SilentlyContinue | ForEach-Object { $acl=Get-Acl -LiteralPath $_.FullName; foreach ($ace in $acl.Access) { if (($allowed -notcontains $ace.IdentityReference.Value) -or (($ace.FileSystemRights.ToString()) -notmatch 'FullControl')) { $bad=$true } } } }; if (-not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 permissions on the Active Directory data files must only allow System and Administrators access.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$k='HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters'; if (-not (Test-Path -LiteralPath $k)) { 'Compliant'; exit }; $p=Get-ItemProperty -LiteralPath $k -ErrorAction SilentlyContinue; $paths=@($p.'Database log files path',$p.'DSA Database file') | Where-Object { $_ }; if (-not $paths) { $paths=@((Join-Path $env:windir 'NTDS')) }; $allowed=@('NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $bad=$false; $paths | Select-Object -Unique | ForEach-Object { if (-not (Test-Path -LiteralPath $_)) { $bad=$true; return }; Get-ChildItem -LiteralPath $_ -File -ErrorAction SilentlyContinue | ForEach-Object { $acl=Get-Acl -LiteralPath $_.FullName; foreach ($ace in $acl.Access) { if (($allowed -notcontains $ace.IdentityReference.Value) -or (($ace.FileSystemRights.ToString()) -notmatch 'FullControl')) { $bad=$true } } } }; if (-not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$k='HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters'; if (-not (Test-Path -LiteralPath $k)) { 'Compliant'; exit }; $p=Get-ItemProperty -LiteralPath $k -ErrorAction SilentlyContinue; $paths=@($p.'Database log files path',$p.'DSA Database file') | Where-Object { $_ }; if (-not $paths) { $paths=@((Join-Path $env:windir 'NTDS')) }; $allowed=@('NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators'); $bad=$false; $paths | Select-Object -Unique | ForEach-Object { if (-not (Test-Path -LiteralPath $_)) { $bad=$true; return }; Get-ChildItem -LiteralPath $_ -File -ErrorAction SilentlyContinue | ForEach-Object { $acl=Get-Acl -LiteralPath $_.FullName; foreach ($ace in $acl.Access) { if (($allowed -notcontains $ace.IdentityReference.Value) -or (($ace.FileSystemRights.ToString()) -notmatch 'FullControl')) { $bad=$true } } } }; if (-not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205739"
     },
     {
       "check": {
@@ -5174,5 +5200,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 192
+  "validated_candidates": 193
 }
