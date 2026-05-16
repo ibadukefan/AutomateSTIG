@@ -67,6 +67,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'f=\"$ORACLE_HOME/network/admin/cman.ora\"; if [ ! -f \"$f\" ] || grep -Eiq \"^[[:space:]]*REMOTE_ADMIN[[:space:]]*=[[:space:]]*NO([[:space:]]|$)\" \"$f\"; then printf Compliant; fi'",
+        "type": "command_output"
+      },
+      "description": "Remote administration must be disabled for the Oracle connection manager.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270542"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT username FROM SYS.DBA_USERS_WITH_DEFPWD WHERE username <> 'XS$NULL';\nEXIT\nSQL",
         "type": "command_output"
       },

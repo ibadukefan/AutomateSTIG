@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'f=\"$ORACLE_HOME/network/admin/cman.ora\"; if [ ! -f \"$f\" ] || grep -Eiq \"^[[:space:]]*REMOTE_ADMIN[[:space:]]*=[[:space:]]*NO([[:space:]]|$)\" \"$f\"; then printf Compliant; fi'",
+      "type": "command_output"
+    },
+    "description": "Remote administration must be disabled for the Oracle connection manager.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "generic",
+    "vuln_id": "V-270542"
+  },
   "check_content_excerpt": "View the cman.ora file in the ORACLE_HOME/network/admin directory.\n\nIf the file does not exist, the database is not accessed via Oracle Connection Manager and this check is not a finding.\n\nIf the entry and value for REMOTE_ADMIN is not listed or is not set to a value of NO (REMOTE_ADMIN = NO), this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "View the cman.ora file in the ORACLE_HOME/network/admin directory of the Connection Manager.\n\nInclude the following line in the file:\n\nREMOTE_ADMIN = NO",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270542r1064904_rule",
   "severity": "medium",

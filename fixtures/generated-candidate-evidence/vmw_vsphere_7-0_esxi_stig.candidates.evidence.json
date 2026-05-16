@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 33,
+  "candidate_checks": 34,
   "cases": [
+    {
+      "check": {
+        "command": "Get-VMHost | ForEach-Object { if ($_.Extensiondata.Config.LockdownMode -in @(\"lockdownNormal\",\"lockdownStrict\")) { \"Compliant\" } }",
+        "type": "command_output"
+      },
+      "description": "Access to the ESXi host must be limited by enabling lockdown mode.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | ForEach-Object { if ($_.Extensiondata.Config.LockdownMode -in @(\"lockdownNormal\",\"lockdownStrict\")) { \"Compliant\" } }": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | ForEach-Object { if ($_.Extensiondata.Config.LockdownMode -in @(\"lockdownNormal\",\"lockdownStrict\")) { \"Compliant\" } }": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256375"
+    },
     {
       "check": {
         "command": "Get-VMHost | Get-AdvancedSetting -Name Security.AccountLockFailures | Select-Object -ExpandProperty Value",
@@ -865,5 +891,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_7-0_esxi_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
-  "validated_candidates": 33
+  "validated_candidates": 34
 }

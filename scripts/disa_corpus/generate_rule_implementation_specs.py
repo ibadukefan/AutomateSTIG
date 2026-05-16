@@ -1908,6 +1908,33 @@ def _kubernetes_api_server_cipher_suites_candidate(rule: dict, stig_id: str) -> 
     }
 
 
+def _kubernetes_api_server_request_timeout_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-242438':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'grep\s+-I\s+request-timeout\s+\*', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Kubernetes\s+API\s+Server\s+manifest\s+file\s+does\s+not\s+exist,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'["“]--request-timeout["”]\s+is\s+set\s+to\s+["“]0["”].*?not\s+configured\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'Set\s+the\s+value\s+of\s+["“]--request-timeout["”]\s+greater\s+than\s+["“]0["”]', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'v=$(grep -h -- \"--request-timeout\" /etc/kubernetes/manifests/kube-apiserver.yaml "
+        "/etc/kubernetes/manifests/* 2>/dev/null | sed -n \"s/.*--request-timeout=\\([0-9][0-9]*\\).*/\\1/p\" | head -n1); "
+        "[ -n \"$v\" ] && [ \"$v\" -gt 0 ] && printf Compliant'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_manifest_grep_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower():
         return None
@@ -5710,6 +5737,31 @@ def _esxi_active_directory_authentication_candidate(rule: dict, stig_id: str) ->
     }
 
 
+def _esxi_lockdown_mode_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'esxi' not in stig_id.lower() or rule.get('vuln_id') != 'V-256375':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'Get-VMHost\s*\|\s*Select\s+Name,\s*@\{N=["“]Lockdown["”];E=\{\$?_\.Extensiondata\.Config\.LockdownMode\}\}', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+["“]Lockdown\s+Mode["”]\s+is\s+disabled,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not all(token in fix_text for token in ('lockdownNormal', 'lockdownStrict', 'ChangeLockdownMode')):
+        return None
+    command = (
+        'Get-VMHost | ForEach-Object { '
+        'if ($_.Extensiondata.Config.LockdownMode -in @("lockdownNormal","lockdownStrict")) { "Compliant" } '
+        '}'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _esxi_syslog_persistent_log_output_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'esxi' not in stig_id.lower():
         return None
@@ -8476,6 +8528,33 @@ def _oracle_database_public_empty_result_candidate(rule: dict, stig_id: str) -> 
     }
 
 
+def _oracle_database_cman_remote_admin_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270542':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'cman\.ora\s+file\s+in\s+the\s+ORACLE_HOME/network/admin\s+directory', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+file\s+does\s+not\s+exist,\s+the\s+database\s+is\s+not\s+accessed\s+via\s+Oracle\s+Connection\s+Manager\s+and\s+this\s+check\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'REMOTE_ADMIN\s+is\s+not\s+listed\s+or\s+is\s+not\s+set\s+to\s+a\s+value\s+of\s+NO\s*\(\s*REMOTE_ADMIN\s*=\s*NO\s*\)', content, re.IGNORECASE):
+        return None
+    if not re.search(r'REMOTE_ADMIN\s*=\s*NO', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'f=\"$ORACLE_HOME/network/admin/cman.ora\"; "
+        "if [ ! -f \"$f\" ] || grep -Eiq \"^[[:space:]]*REMOTE_ADMIN[[:space:]]*=[[:space:]]*NO([[:space:]]|$)\" \"$f\"; "
+        "then printf Compliant; fi'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_exact_parameter_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE):
         return None
@@ -9597,6 +9676,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_api_server_cipher_suites_candidate = _kubernetes_api_server_cipher_suites_candidate(rule, stig_id)
     if kubernetes_api_server_cipher_suites_candidate:
         return kubernetes_api_server_cipher_suites_candidate
+    kubernetes_request_timeout_candidate = _kubernetes_api_server_request_timeout_candidate(rule, stig_id)
+    if kubernetes_request_timeout_candidate:
+        return kubernetes_request_timeout_candidate
     kubernetes_manifest_grep_candidate = _kubernetes_manifest_grep_candidate(rule, stig_id)
     if kubernetes_manifest_grep_candidate:
         return kubernetes_manifest_grep_candidate
@@ -9937,6 +10019,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     if esxi_active_directory_authentication_candidate:
         return esxi_active_directory_authentication_candidate
 
+    esxi_lockdown_mode_candidate = _esxi_lockdown_mode_candidate(rule, stig_id)
+    if esxi_lockdown_mode_candidate:
+        return esxi_lockdown_mode_candidate
+
     esxi_syslog_persistent_log_output_candidate = _esxi_syslog_persistent_log_output_candidate(rule, stig_id)
     if esxi_syslog_persistent_log_output_candidate:
         return esxi_syslog_persistent_log_output_candidate
@@ -10052,6 +10138,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_public_empty_result_candidate = _oracle_database_public_empty_result_candidate(rule, stig_id)
     if oracle_database_public_empty_result_candidate:
         return oracle_database_public_empty_result_candidate
+
+    oracle_database_cman_remote_admin_candidate = _oracle_database_cman_remote_admin_candidate(rule, stig_id)
+    if oracle_database_cman_remote_admin_candidate:
+        return oracle_database_cman_remote_admin_candidate
 
     oracle_database_exact_parameter_candidate = _oracle_database_exact_parameter_candidate(rule, stig_id)
     if oracle_database_exact_parameter_candidate:

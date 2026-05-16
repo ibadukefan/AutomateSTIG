@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 50,
+  "candidate_checks": 51,
   "cases": [
     {
       "check": {
@@ -624,6 +624,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242436"
+    },
+    {
+      "check": {
+        "command": "sh -c 'v=$(grep -h -- \"--request-timeout\" /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | sed -n \"s/.*--request-timeout=\\([0-9][0-9]*\\).*/\\1/p\" | head -n1); [ -n \"$v\" ] && [ \"$v\" -gt 0 ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must configure timeouts to limit attack surface.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'v=$(grep -h -- \"--request-timeout\" /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | sed -n \"s/.*--request-timeout=\\([0-9][0-9]*\\).*/\\1/p\" | head -n1); [ -n \"$v\" ] && [ \"$v\" -gt 0 ] && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'v=$(grep -h -- \"--request-timeout\" /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | sed -n \"s/.*--request-timeout=\\([0-9][0-9]*\\).*/\\1/p\" | head -n1); [ -n \"$v\" ] && [ \"$v\" -gt 0 ] && printf Compliant'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242438"
     },
     {
       "check": {
@@ -1307,5 +1333,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 50
+  "validated_candidates": 51
 }

@@ -97,6 +97,49 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertEqual(generated['vuln_id'], 'xccdf_mil.disa.stig_group_V-230298')
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'rsyslog', 'expected_status': 'running'})
 
+    def test_infers_kubernetes_api_server_request_timeout_positive_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242438',
+            'title': 'Kubernetes API Server must configure timeouts to limit attack surface.',
+            'check_content': 'Change to the /etc/kubernetes/manifests/ directory on the Kubernetes Control Plane. Run the command:\n\ngrep -I request-timeout *\n\nIf Kubernetes API Server manifest file does not exist, this is a finding.\n\nIf the setting "--request-timeout" is set to "0" in the Kubernetes API Server manifest file, or is not configured this is a finding.',
+            'fix_text': 'Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane.\n\nSet the value of "--request-timeout" greater than "0".',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242438')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('/etc/kubernetes/manifests', candidate['check']['command'])
+        self.assertIn('--request-timeout', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_esxi_lockdown_mode_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256375',
+            'title': 'Access to the ESXi host must be limited by enabling lockdown mode.',
+            'check_content': 'For environments that do not use vCenter server to manage ESXi, this is not applicable.\n\nGet-VMHost | Select Name,@{N="Lockdown";E={$_.Extensiondata.Config.LockdownMode}}\n\nIf "Lockdown Mode" is disabled, this is a finding.',
+            'fix_text': '$level = "lockdownNormal" OR "lockdownStrict"\n$vmhost = Get-VMHost -Name <hostname> | Get-View\n$lockdown = Get-View $vmhost.ConfigManager.HostAccessManager\n$lockdown.ChangeLockdownMode($level)',
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-256375')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('Extensiondata.Config.LockdownMode', candidate['check']['command'])
+        self.assertIn('lockdownNormal', candidate['check']['command'])
+        self.assertIn('lockdownStrict', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_oracle_cman_remote_admin_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270542',
+            'title': 'Remote administration must be disabled for the Oracle connection manager.',
+            'check_content': 'View the cman.ora file in the ORACLE_HOME/network/admin directory.\n\nIf the file does not exist, the database is not accessed via Oracle Connection Manager and this check is not a finding.\n\nIf the entry and value for REMOTE_ADMIN is not listed or is not set to a value of NO (REMOTE_ADMIN = NO), this is a finding.',
+            'fix_text': 'View the cman.ora file in the ORACLE_HOME/network/admin directory of the Connection Manager. Include the following line in the file:\n\nREMOTE_ADMIN = NO',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270542')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('$ORACLE_HOME/network/admin/cman.ora', candidate['check']['command'])
+        self.assertIn('REMOTE_ADMIN', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_new_defender_av_get_mppreference_candidates(self):
         cases = [
             (

@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "Get-VMHost | ForEach-Object { if ($_.Extensiondata.Config.LockdownMode -in @(\"lockdownNormal\",\"lockdownStrict\")) { \"Compliant\" } }",
+        "type": "command_output"
+      },
+      "description": "Access to the ESXi host must be limited by enabling lockdown mode.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-256375"
+    },
+    {
+      "check": {
         "command": "Get-VMHost | Get-AdvancedSetting -Name Security.AccountLockFailures | Select-Object -ExpandProperty Value",
         "type": "command_output"
       },
