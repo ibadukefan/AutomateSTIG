@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name FROM sys.databases WHERE name LIKE '%pubs%' OR name LIKE '%northwind%' OR name LIKE '%adventureworks%' OR name LIKE '%wideworldimporters%' OR name LIKE '%contoso%';\"",
+      "type": "command_output"
+    },
+    "description": "Default demonstration and sample databases, database objects, and applications must be removed.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-271290"
+  },
   "check_content_excerpt": "Review vendor documentation and vendor websites to identify vendor-provided demonstration or sample databases, database applications, objects, and files. Review the SQL Server to determine if any of the demonstration and sample databases, database applications, or files are installed in the database or included with the SQL Server Instance. \n\nRun the following query to check for names matching known sample databases. Sample databases may have been renamed, so this is not an exhaustive list.\n\nSELECT name\nFROM sys.databases\nWHERE name LIKE '%pubs%'\nOR name LIKE '%northwind%'\nOR name LIKE '%adventureworks%'\nOR name LIKE '%wideworldimporters%'\nOR name LIKE '%contoso%'\n\nIf any sample databases are found, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove all demonstration or sample databases from production instances.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271290r1109112_rule",
   "severity": "medium",

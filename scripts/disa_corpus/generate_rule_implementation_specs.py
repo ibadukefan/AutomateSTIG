@@ -8414,6 +8414,13 @@ def _oracle_database_public_empty_result_candidate(rule: dict, stig_id: str) -> 
             'fix_pattern': r'Change\s+passwords\s+for\s+database\s+management\s+system\s+\(DBMS\)\s+accounts\s+to\s+nondefault\s+values',
             'sql': "SELECT username FROM SYS.DBA_USERS_WITH_DEFPWD WHERE username <> 'XS$NULL';",
         },
+        'V-270552': {
+            'title': 'Oracle Database default demonstration and sample databases, database objects, and applications must be removed.',
+            'content_pattern': r"select\s+distinct\s*\(\s*username\s*\)\s+from\s+dba_users\s+where\s+username\s+in\s*\(\s*'BI'\s*,\s*'HR'\s*,\s*'OE'\s*,\s*'PM'\s*,\s*'IX'\s*,\s*'SH'\s*,\s*'SCOTT'\s*\)",
+            'finding_pattern': r'If\s+any\s+of\s+the\s+users\s+listed\s+above\s+is\s+returned,\s+it\s+means\s+that\s+there\s+are\s+demo\s+programs\s+installed,\s+and\s+this\s+is\s+a\s+finding\.',
+            'fix_pattern': r'Remove\s+any\s+demonstration\s+and\s+sample\s+databases,\s+database\s+applications,\s+objects,\s+and\s+files\s+from\s+the\s+DBMS',
+            'sql': "SELECT DISTINCT username FROM dba_users WHERE username IN ('BI','HR','OE','PM','IX','SH','SCOTT');",
+        },
     }
     expected = allowed.get(vuln_id)
     if not expected:
@@ -8472,6 +8479,37 @@ def _oracle_database_exact_parameter_candidate(rule: dict, stig_id: str) -> dict
         'expected': {'type': 'equals', 'value': value},
         'description': rule.get('title', ''),
     }
+
+
+def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if rule.get('vuln_id', '') != 'V-271290':
+        return None
+    if rule.get('title', '').strip().lower() != 'default demonstration and sample databases, database objects, and applications must be removed.':
+        return None
+    required_names = ('pubs', 'northwind', 'adventureworks', 'wideworldimporters', 'contoso')
+    if not all(re.search(rf"name\s+LIKE\s+'%{re.escape(name)}%'", content, re.IGNORECASE) for name in required_names):
+        return None
+    if not re.search(r'If\s+any\s+sample\s+databases\s+are\s+found,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Remove\s+all\s+demonstration\s+or\s+sample\s+databases\s+from\s+production\s+instances\.', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; SELECT name FROM sys.databases '
+        "WHERE name LIKE '%pubs%' OR name LIKE '%northwind%' OR name LIKE '%adventureworks%' "
+        "OR name LIKE '%wideworldimporters%' OR name LIKE '%contoso%';\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
 
 
 def _sql_server_sa_login_renamed_candidate(rule: dict, stig_id: str) -> dict | None:
@@ -9980,6 +10018,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_exact_parameter_candidate = _oracle_database_exact_parameter_candidate(rule, stig_id)
     if oracle_database_exact_parameter_candidate:
         return oracle_database_exact_parameter_candidate
+
+    sql_server_sample_databases_candidate = _sql_server_sample_databases_absent_candidate(rule, stig_id)
+    if sql_server_sample_databases_candidate:
+        return sql_server_sample_databases_candidate
 
     sql_server_sa_candidate = _sql_server_sa_login_renamed_candidate(rule, stig_id)
     if sql_server_sa_candidate:

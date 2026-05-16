@@ -1629,6 +1629,51 @@ ALTER SYSTEM SET remote_os_roles = FALSE scope=spfile;''',
             'description': 'The Oracle REMOTE_OS_ROLES parameter must be set to FALSE.',
         })
 
+    def test_infers_oracle_database_sample_schema_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270552',
+            'title': 'Oracle Database default demonstration and sample databases, database objects, and applications must be removed.',
+            'check_content': '''Connect to Oracle as SYSDBA and run the following SQL to check for presence of Oracle Default Sample Schema User Accounts:
+
+select distinct(username) from dba_users where username in
+('BI','HR','OE','PM','IX','SH','SCOTT');
+
+If any of the users listed above is returned, it means that there are demo programs installed, and this is a finding.''',
+            'fix_text': 'Remove any demonstration and sample databases, database applications, objects, and files from the DBMS.',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270552',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT DISTINCT username FROM dba_users WHERE username IN ('BI','HR','OE','PM','IX','SH','SCOTT');\nEXIT\nSQL"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Oracle Database default demonstration and sample databases, database objects, and applications must be removed.',
+        })
+
+    def test_infers_sql_server_sample_databases_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271290',
+            'title': 'Default demonstration and sample databases, database objects, and applications must be removed.',
+            'check_content': '''Run the following query to check for names matching known sample databases.
+
+SELECT name
+FROM sys.databases
+WHERE name LIKE '%pubs%'
+OR name LIKE '%northwind%'
+OR name LIKE '%adventureworks%'
+OR name LIKE '%wideworldimporters%'
+OR name LIKE '%contoso%'
+
+If any sample databases are found, this is a finding.''',
+            'fix_text': 'Remove all demonstration or sample databases from production instances.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271290',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; SELECT name FROM sys.databases WHERE name LIKE \'%pubs%\' OR name LIKE \'%northwind%\' OR name LIKE \'%adventureworks%\' OR name LIKE \'%wideworldimporters%\' OR name LIKE \'%contoso%\';"'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Default demonstration and sample databases, database objects, and applications must be removed.',
+        })
+
     def test_infers_sles_openssh_package_and_service_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234860',

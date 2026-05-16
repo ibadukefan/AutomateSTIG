@@ -77,6 +77,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-270545"
+    },
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT DISTINCT username FROM dba_users WHERE username IN ('BI','HR','OE','PM','IX','SH','SCOTT');\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Oracle Database default demonstration and sample databases, database objects, and applications must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-270552"
     }
   ],
   "platform": "generic",
