@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/oracle-release",
+      "pattern": "Oracle Linux Server release 9.6",
+      "type": "file_content"
+    },
+    "description": "OL 9 must be a vendor supported release.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271438"
+  },
   "check_content_excerpt": "Verify OL 9 is vendor supported with the following command:\n\n$ cat /etc/oracle-release \nOracle Linux Server release 9.6\n\nIf the installed version of OL 9 is not supported, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Upgrade OL 9 to a supported version.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271438r1155341_rule",
   "severity": "high",

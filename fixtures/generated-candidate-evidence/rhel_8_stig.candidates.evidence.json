@@ -1,6 +1,33 @@
 {
-  "candidate_checks": 313,
+  "candidate_checks": 314,
   "cases": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/redhat-release",
+        "pattern": "Red Hat Enterprise Linux Server release 8.6 (Ootpa)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must be a vendor-supported release.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/redhat-release": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/redhat-release": "before\nRed Hat Enterprise Linux Server release 8.6 (Ootpa)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230221"
+    },
     {
       "check": {
         "is_regex": false,
@@ -8414,5 +8441,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 313
+  "validated_candidates": 314
 }

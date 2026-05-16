@@ -86,6 +86,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/oracle-release",
+        "pattern": "Oracle Linux Server release 9.6",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be a vendor supported release.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271438"
+    },
+    {
+      "check": {
         "command": "systemctl get-default",
         "type": "command_output"
       },

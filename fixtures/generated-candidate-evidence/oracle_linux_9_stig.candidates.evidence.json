@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 442,
+  "candidate_checks": 443,
   "cases": [
     {
       "check": {
@@ -162,6 +162,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271437"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/oracle-release",
+        "pattern": "Oracle Linux Server release 9.6",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be a vendor supported release.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/oracle-release": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/oracle-release": "before\nOracle Linux Server release 9.6\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271438"
     },
     {
       "check": {
@@ -12226,5 +12253,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 442
+  "validated_candidates": 443
 }

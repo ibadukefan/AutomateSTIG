@@ -3374,6 +3374,61 @@ def _grep_file_match(content: str):
     return re.search(r'\bgrep\s+(?:-[A-Za-z]+\s+)*(?:["\']?)([^"\'\s|;]+)(?:["\']?)\s+(/[A-Za-z0-9_./:+-]+)', content)
 
 
+def _linux_vendor_supported_release_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    canonical_vuln = re.search(r'V-\d+', vuln_id)
+    allowed_vulns = {'V-204458', 'V-230221', 'V-257777', 'V-271438'}
+    if not canonical_vuln or canonical_vuln.group(0) not in allowed_vulns:
+        return None
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (title, content, fix_text) if part)
+    if not re.search(r'vendor[-\s]+supported\s+release', combined, re.IGNORECASE):
+        return None
+    if re.search(r'\b(?:organization-defined|documented|ask\s+the\s+(?:system\s+)?administrator|site\s+policy)\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'upgrade\s+(?:\S+\s+){0,5}to\s+a\s+supported\s+version', fix_text, re.IGNORECASE):
+        return None
+    command_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?cat\s+(?P<path>/etc/(?:redhat|oracle)-release)\s*$',
+        content,
+        re.IGNORECASE | re.MULTILINE,
+    )
+    if not command_match:
+        return None
+    tail = content[command_match.end():]
+    sample_line = None
+    for line in tail.splitlines():
+        candidate = line.strip()
+        if not candidate:
+            continue
+        if candidate.startswith(('$', '#', '>')):
+            return None
+        if candidate.lower().startswith(('if ', 'note:', 'check ', 'verify ', 'current ', 'end of ')):
+            break
+        sample_line = candidate
+        break
+    if not sample_line:
+        return None
+    path = command_match.group('path')
+    if path == '/etc/redhat-release' and not re.fullmatch(r'Red Hat Enterprise Linux (?:Server )?release [789](?:\.\d+)? \([A-Za-z0-9 ._-]+\)', sample_line):
+        return None
+    if path == '/etc/oracle-release' and not re.fullmatch(r'Oracle Linux Server release 9(?:\.\d+)?', sample_line):
+        return None
+    if not re.search(r'If\s+the\s+(?:installed\s+version(?:\s+of\s+[^\n,.]+)?|release)\s+is\s+not\s+supported(?:\s+by\s+the\s+vendor)?,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'file_content', 'path': path, 'pattern': sample_line, 'is_regex': False},
+        'expected': {'type': 'contains'},
+        'description': title,
+    }
+
+
 def _file_content_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -9905,7 +9960,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

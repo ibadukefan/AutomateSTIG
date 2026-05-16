@@ -305,6 +305,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/redhat-release",
+        "pattern": "Red Hat Enterprise Linux Server release 7.9 (Maipo)",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be a vendor supported release.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204458"
+    },
+    {
+      "check": {
         "command": "pwck -r",
         "type": "command_output"
       },

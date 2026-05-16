@@ -3,6 +3,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/redhat-release",
+        "pattern": "Red Hat Enterprise Linux Server release 8.6 (Ootpa)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must be a vendor-supported release.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230221"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/boot/efi/EFI/redhat/user.cfg",
         "pattern": "GRUB2_PASSWORD=grub.pbkdf2.sha512.[password_hash]",
         "type": "file_content"

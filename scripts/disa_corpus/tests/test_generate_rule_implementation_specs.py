@@ -236,6 +236,57 @@ If "flags" does not contain the "nx" flag, this is a finding.''',
         self.assertIn('/proc/cpuinfo', candidate['check']['command'])
         self.assertIn('NX (Execute Disable) protection: active', candidate['check']['command'])
 
+    def test_infers_linux_vendor_supported_release_from_authoritative_sample(self):
+        cases = [
+            (
+                'V-230221',
+                'RHEL_8_STIG',
+                'RHEL 8 must be a vendor-supported release.',
+                'sudo cat /etc/redhat-release',
+                'Red Hat Enterprise Linux Server release 8.10 (Ootpa)',
+                '/etc/redhat-release',
+                'Red Hat Enterprise Linux Server release 8.10 (Ootpa)',
+                'If the release is not supported by the vendor, this is a finding.',
+            ),
+            (
+                'V-271438',
+                'Oracle_Linux_9_STIG',
+                'OL 9 must be a vendor supported release.',
+                'cat /etc/oracle-release',
+                'Oracle Linux Server release 9.6',
+                '/etc/oracle-release',
+                'Oracle Linux Server release 9.6',
+                'If the installed version of OL 9 is not supported, this is a finding.',
+            ),
+        ]
+        for vuln_id, stig_id, title, command, sample_line, path, expected_line, finding_text in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': f'''Verify the version of the operating system is vendor supported.
+
+Check the version of the operating system with the following command:
+
+$ {command}
+
+{sample_line}
+
+{finding_text}''',
+                    'fix_text': 'Upgrade to a supported version.',
+                }, stig_id)
+
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertEqual(candidate['check'], {
+                    'type': 'file_content',
+                    'path': path,
+                    'pattern': expected_line,
+                    'is_regex': False,
+                })
+                self.assertEqual(candidate['expected'], {'type': 'contains'})
+
     def test_infers_windows_server_domain_controller_pki_certificate_exists_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254412',

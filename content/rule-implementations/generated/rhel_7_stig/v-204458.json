@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/redhat-release",
+      "pattern": "Red Hat Enterprise Linux Server release 7.9 (Maipo)",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be a vendor supported release.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204458"
+  },
   "check_content_excerpt": "Verify the version of the operating system is vendor supported.\n\nCheck the version of the operating system with the following command:\n\n# cat /etc/redhat-release\n\nRed Hat Enterprise Linux Server release 7.9 (Maipo)\n\nCurrent End of Maintenance Support for RHEL 7.9 is 30 June 2024.\n\nIf the release is not supported by the vendor, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Upgrade to a supported version of the operating system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204458r991589_rule",
   "severity": "high",
