@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^ ip unreachables$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) unreachable messages disabled on all external interfaces.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "network",
+    "vuln_id": "V-221084"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if it is compliant with this requirement. The ip unreachables command must not be found on any interface as shown in the example below:\n\ninterface Ethernet2/7\n no switchport\n ip address x.22.4.2/30\n ip unreachables\n\nIf ICMP unreachable notifications are sent from any external interfaces, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable ip unreachables on all external interfaces as shown below:\n\nSW1(config)# int e2/7\nSW1(config-if)# no ip unreachables\nSW1(config-if)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221084r999693_rule",
   "severity": "medium",

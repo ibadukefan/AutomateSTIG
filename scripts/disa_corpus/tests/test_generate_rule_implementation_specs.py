@@ -563,6 +563,32 @@ If the MPLS switch is not configured to disable TTL propagation, this is a findi
             'description': 'The Cisco MPLS switch must be configured to have TTL Propagation disabled.',
         })
 
+    def test_infers_cisco_nxos_absent_ip_unreachables_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221084',
+            'title': 'The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) unreachable messages disabled on all external interfaces.',
+            'check_content': '''Review the switch configuration to determine if it is compliant with this requirement. The ip unreachables command must not be found on any interface as shown in the example below:
+
+interface Ethernet2/7
+ no switchport
+ ip address x.22.4.2/30
+ ip unreachables
+
+If ICMP unreachable notifications are sent from any external interfaces, this is a finding.''',
+            'fix_text': '''Disable ip unreachables on all external interfaces as shown below:
+
+SW1(config)# int e2/7
+SW1(config-if)# no ip unreachables
+SW1(config-if)# end''',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221084',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | include "^ ip unreachables$"'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) unreachable messages disabled on all external interfaces.',
+        })
+
     def test_infers_windows_kerberos_nonzero_maximum_with_quoted_fix_key_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-205703',

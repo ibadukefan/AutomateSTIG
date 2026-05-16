@@ -28,6 +28,19 @@
     },
     {
       "check": {
+        "command": "show running-config | include \"^ ip unreachables$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) unreachable messages disabled on all external interfaces.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "network",
+      "vuln_id": "V-221084"
+    },
+    {
+      "check": {
         "command": "show running-config | include ^no ip source-route$",
         "type": "command_output"
       },

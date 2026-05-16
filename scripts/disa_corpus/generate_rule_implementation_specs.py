@@ -1388,6 +1388,11 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'content': r'IP\s+directed\s+broadcast\s+command\s+must\s+not\s+be\s+found\s+on\s+any\s+interface.*?If\s+IP\s+directed\s+broadcast\s+is\s+not\s+disabled\s+on\s+all\s+interfaces,\s+this\s+is\s+a\s+finding\.',
             'fix': r'no\s+ip\s+directed-broadcast',
         },
+        'V-221084': {
+            'command': 'show running-config | include "^ ip unreachables$"',
+            'content': r'ip\s+unreachables\s+command\s+must\s+not\s+be\s+found\s+on\s+any\s+interface.*?If\s+ICMP\s+unreachable\s+notifications\s+are\s+sent\s+from\s+any\s+external\s+interfaces,\s+this\s+is\s+a\s+finding\.',
+            'fix': r'no\s+ip\s+unreachables',
+        },
         'V-221101': {
             'command': 'show running-config | include "^ disable-connected-check$"',
             'content': r'disable-connected-check.*?If\s+the\s+switch\s+is\s+configured\s+to\s+disable\s+checking\s+whether\s+a\s+single-hop\s+eBGP\s+peer\s+is\s+directly\s+connected,\s+this\s+is\s+a\s+finding\.',
