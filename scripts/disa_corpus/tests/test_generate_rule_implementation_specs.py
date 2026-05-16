@@ -159,6 +159,22 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertEqual(candidate['check'], {'type': 'command_output', 'command': expected_command})
                 self.assertEqual(candidate['expected'], expected)
 
+    def test_infers_windows_11_smartcard_mfa_calais_keys_populated_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253470',
+            'title': 'Windows 11 must use multifactor authentication for local and network access to privileged and nonprivileged accounts.',
+            'check_content': 'If the system is not a member of a domain, this is Not Applicable.\n\nIf all of the following settings exist and are populated, this is not a finding.\n\n\\HKLM\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\Readers\n\\HKLM\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\SmartCards',
+            'fix_text': 'For nondomain joined systems, configuring Windows Hello for sign-on options would be suggested based on the organization\'s needs and capabilities.',
+        }, 'Microsoft_Windows_11_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-253470')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('Cryptography\\Calais\\Readers', candidate['check']['command'])
+        self.assertIn('Cryptography\\Calais\\SmartCards', candidate['check']['command'])
+        self.assertIn('Get-ChildItem', candidate['check']['command'])
+
     def test_infers_windows_server_2025_domain_controller_pki_certificate_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278159',

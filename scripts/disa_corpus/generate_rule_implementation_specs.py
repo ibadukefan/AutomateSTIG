@@ -5854,6 +5854,40 @@ def _esxi_advanced_setting_exact_value_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _windows_11_smartcard_mfa_calais_keys_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    if rule.get('vuln_id') != 'V-253470' or 'windows_11' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'local\s+and\s+network\s+access\s+to\s+privileged\s+and\s+nonprivileged\s+accounts', rule.get('title', ''), re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+system\s+is\s+not\s+a\s+member\s+of\s+a\s+domain,?\s+this\s+is\s+Not\s+Applicable', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+all\s+of\s+the\s+following\s+settings\s+exist\s+and\s+are\s+populated,?\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    required_paths = (
+        r'HKLM:\SOFTWARE\Microsoft\Cryptography\Calais\Readers',
+        r'HKLM:\SOFTWARE\Microsoft\Cryptography\Calais\SmartCards',
+    )
+    if not all(path.replace(':', '').lower() in content.replace('\\', '\\').lower() for path in required_paths):
+        return None
+    command = (
+        'powershell -NoProfile -Command "'
+        '$paths=@(\'HKLM:\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\Readers\',\'HKLM:\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\SmartCards\'); '
+        'if ((Get-CimInstance Win32_ComputerSystem).PartOfDomain -eq $false) { \'Compliant\' } '
+        'elseif (($paths | Where-Object { -not (Test-Path -LiteralPath $_) -or @((Get-ChildItem -LiteralPath $_ -ErrorAction SilentlyContinue)).Count -eq 0 }).Count -eq 0) { \'Compliant\' }'
+        '"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_certificate_store_thumbprint_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -9800,6 +9834,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         directory_service_max_conn_idle_time_candidate = _windows_directory_service_max_conn_idle_time_candidate(rule, stig_id)
         if directory_service_max_conn_idle_time_candidate:
             return directory_service_max_conn_idle_time_candidate
+
+        smartcard_mfa_candidate = _windows_11_smartcard_mfa_calais_keys_candidate(rule, stig_id)
+        if smartcard_mfa_candidate:
+            return smartcard_mfa_candidate
 
         certificate_candidate = _windows_certificate_store_thumbprint_candidate(rule, stig_id)
         if certificate_candidate:
