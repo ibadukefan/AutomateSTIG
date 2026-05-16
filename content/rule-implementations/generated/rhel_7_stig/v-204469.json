@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r user home; do [ -n \"$home\" ] || { echo \"$user:missing-home\"; continue; }; [ -d \"$home\" ] || { echo \"$user:$home:missing\"; continue; }; owner=$(stat -c %U \"$home\" 2>/dev/null || true); [ \"$owner\" = \"$user\" ] || echo \"$user:$home:$owner\"; done'",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that all local interactive user home directories are owned by their respective users.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204469"
+  },
   "check_content_excerpt": "Verify the assigned home directory of all local interactive users on the system exists.\n\nCheck the home directory assignment for all local interactive users on the system with the following command:\n\n# ls -ld $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)\n\n-rwxr-x--- 1 smithj users 18 Mar 5 17:06 /home/smithj\n\nIf any home directories referenced in \"/etc/passwd\" are not owned by the interactive user, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the owner of a local interactive user's home directories to that owner. To change the owner of a local interactive user's home directory, use the following command:\n\nNote: The example will be for the user smithj, who has a home directory of \"/home/smithj\".\n\n# chown smithj /home/smithj",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204469r991589_rule",
   "severity": "medium",

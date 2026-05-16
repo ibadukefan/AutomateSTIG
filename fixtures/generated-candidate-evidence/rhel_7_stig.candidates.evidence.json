@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 161,
+  "candidate_checks": 165,
   "cases": [
     {
       "check": {
@@ -775,6 +775,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r user home; do [ -n \"$home\" ] || { echo \"$user:missing-home\"; continue; }; [ -d \"$home\" ] || { echo \"$user:$home:missing\"; continue; }; owner=$(stat -c %U \"$home\" 2>/dev/null || true); [ \"$owner\" = \"$user\" ] || echo \"$user:$home:$owner\"; done'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all local interactive user home directories are owned by their respective users.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r user home; do [ -n \"$home\" ] || { echo \"$user:missing-home\"; continue; }; [ -d \"$home\" ] || { echo \"$user:$home:missing\"; continue; }; owner=$(stat -c %U \"$home\" 2>/dev/null || true); [ \"$owner\" = \"$user\" ] || echo \"$user:$home:$owner\"; done'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r user home; do [ -n \"$home\" ] || { echo \"$user:missing-home\"; continue; }; [ -d \"$home\" ] || { echo \"$user:$home:missing\"; continue; }; owner=$(stat -c %U \"$home\" 2>/dev/null || true); [ \"$owner\" = \"$user\" ] || echo \"$user:$home:$owner\"; done'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204469"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/passwd",
         "pattern": "| awk -F: '{print $4}') /etc/group",
@@ -802,6 +828,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r _ home; do [ -d \"$home\" ] && find \"$home\" -xdev -nouser -print -quit; done | head -n 1'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all files and directories contained in local interactive user home directories have a valid owner.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r _ home; do [ -d \"$home\" ] && find \"$home\" -xdev -nouser -print -quit; done | head -n 1'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r _ home; do [ -d \"$home\" ] && find \"$home\" -xdev -nouser -print -quit; done | head -n 1'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204471"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/group",
         "pattern": "sa:x:100:juan,shelley,bob,smithj",
@@ -826,6 +878,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204472"
+    },
+    {
+      "check": {
+        "command": "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r _ home; do [ -d \"$home\" ] && find \"$home\" -xdev ! -name .\\* -perm /027 -print -quit; done | head -n 1'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all files and directories contained in local interactive user home directories have a mode of 0750 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r _ home; do [ -d \"$home\" ] && find \"$home\" -xdev ! -name .\\* -perm /027 -print -quit; done | head -n 1'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r _ home; do [ -d \"$home\" ] && find \"$home\" -xdev ! -name .\\* -perm /027 -print -quit; done | head -n 1'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204473"
+    },
+    {
+      "check": {
+        "command": "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r user home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -name .[!.]\\* ! -user \"$user\" ! -user root -print -quit; done | head -n 1'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all local initialization files for interactive users are owned by the home directory user or root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r user home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -name .[!.]\\* ! -user \"$user\" ! -user root -print -quit; done | head -n 1'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd | while IFS=: read -r user home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -name .[!.]\\* ! -user \"$user\" ! -user root -print -quit; done | head -n 1'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204474"
     },
     {
       "check": {
@@ -4330,5 +4434,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 161
+  "validated_candidates": 165
 }

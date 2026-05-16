@@ -8457,6 +8457,46 @@ If the text is not worded exactly this way, this is a finding.'''
         }, 'Apple_macOS_15_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_rhel7_interactive_home_directory_ownership_candidates(self):
+        cases = [
+            (
+                'V-204469',
+                'The Red Hat Enterprise Linux operating system must be configured so that all local interactive user home directories are owned by their respective users.',
+                'Verify the assigned home directory of all local interactive users on the system exists.\nIf any home directories referenced in "/etc/passwd" are not owned by the interactive user, this is a finding.',
+                'chown smithj /home/smithj',
+            ),
+            (
+                'V-204471',
+                'The Red Hat Enterprise Linux operating system must be configured so that all files and directories contained in local interactive user home directories have a valid owner.',
+                'Verify all files and directories in a local interactive user\'s home directory have a valid owner.\nIf any files or directories are found without an owner, this is a finding.',
+                'Either remove all files and directories from the system that do not have a valid user, or assign a valid user to all unowned files and directories on RHEL 7 with the "chown" command.',
+            ),
+            (
+                'V-204473',
+                'The Red Hat Enterprise Linux operating system must be configured so that all files and directories contained in local interactive user home directories have a mode of 0750 or less permissive.',
+                'Verify all files and directories contained in a local interactive user home directory, excluding local initialization files, have a mode of "0750".\nIf any files are found with a mode more permissive than "0750", this is a finding.',
+                'Set the mode on files and directories in the local interactive user home directory with the following command: chmod 0750 /home/smithj/<file>',
+            ),
+            (
+                'V-204474',
+                'The Red Hat Enterprise Linux operating system must be configured so that all local initialization files for interactive users are owned by the home directory user or root.',
+                'Verify the local initialization files of all local interactive users are owned by that user.\nIf all local interactive users\' initialization files are not owned by that user or root, this is a finding.',
+                'Set the owner of the local initialization files for interactive users to either the directory owner or root with the following command: chown smithj /home/smithj/.[^.]*',
+            ),
+        ]
+        for vuln_id, title, check_content, fix_text in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': check_content,
+                    'fix_text': fix_text,
+                }, 'RHEL_7_STIG')
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertEqual(candidate['check']['type'], 'command_output')
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_macos_result_variable_shell_block_as_command_output(self):
         command = 'authDBs=("system.preferences" "system.preferences.energysaver" "system.preferences.network")\nresult="1"\nfor section in ${authDBs[@]}; do\n  if [[ $(/usr/bin/security -q authorizationdb read "$section" | /usr/bin/xmllint -xpath \'name(//*[contains(text(), "shared")]/following-sibling::*[1])\' -) != "false" ]]; then\n    result="0"\n  fi\ndone\necho $result'
         candidate = mod.infer_candidate_check({

@@ -9258,6 +9258,57 @@ def _linux_grub_superusers_nondefault_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _rhel7_interactive_home_directory_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'RHEL_7_STIG':
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    interactive_users = "awk -F: '\\''($3>=1000)&&($7 !~ /(nologin|false)$/){print $1 \":\" $6}'\\'' /etc/passwd"
+    command_prefix = "sh -c '" + interactive_users + " | "
+    command_by_vuln = {
+        'V-204469': (
+            'assigned home directory of all local interactive users on the system exists',
+            'home directories referenced in "/etc/passwd" are not owned by the interactive user',
+            command_prefix + "while IFS=: read -r user home; do [ -n \"$home\" ] || { echo \"$user:missing-home\"; continue; }; [ -d \"$home\" ] || { echo \"$user:$home:missing\"; continue; }; owner=$(stat -c %U \"$home\" 2>/dev/null || true); [ \"$owner\" = \"$user\" ] || echo \"$user:$home:$owner\"; done'",
+        ),
+        'V-204471': (
+            'files and directories in a local interactive user\'s home directory have a valid owner',
+            'files or directories are found without an owner',
+            command_prefix + "while IFS=: read -r _ home; do [ -d \"$home\" ] && find \"$home\" -xdev -nouser -print -quit; done | head -n 1'",
+        ),
+        'V-204473': (
+            'excluding local initialization files, have a mode of "0750"',
+            'mode more permissive than "0750"',
+            command_prefix + "while IFS=: read -r _ home; do [ -d \"$home\" ] && find \"$home\" -xdev ! -name .\\* -perm /027 -print -quit; done | head -n 1'",
+        ),
+        'V-204474': (
+            'local initialization files of all local interactive users are owned by that user',
+            'initialization files are not owned by that user or root',
+            command_prefix + "while IFS=: read -r user home; do [ -d \"$home\" ] && find \"$home\" -maxdepth 1 -name .[!.]\\* ! -user \"$user\" ! -user root -print -quit; done | head -n 1'",
+        ),
+    }
+
+    expected = command_by_vuln.get(vuln_id)
+    if not expected:
+        return None
+    required_check, finding_text, command = expected
+    if not re.search(re.escape(required_check), combined, re.IGNORECASE):
+        return None
+    if not re.search(re.escape(finding_text), combined, re.IGNORECASE):
+        return None
+    if 'home' not in (rule.get('title', '') or '').lower():
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sles_gdm_dconf_banner_message_candidate(rule: dict, stig_id: str) -> dict | None:
     if stig_id != 'SLES_15_STIG' or rule.get('vuln_id') != 'V-234809':
         return None
@@ -9830,7 +9881,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate):
+        for infer_with_stig in (_linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate
