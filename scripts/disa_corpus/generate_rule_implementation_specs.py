@@ -8990,6 +8990,76 @@ def _linux_grub_superusers_nondefault_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _sles_gdm_dconf_banner_message_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'SLES_15_STIG' or rule.get('vuln_id') != 'V-234809':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not all(phrase in content for phrase in ('grep banner-message-text /etc/dconf/db/gdm.d/*', 'exact approved Standard Mandatory DoD Notice')):
+        return None
+    if 'dconf/db/gdm.d/01-banner-message' not in fix_text or '[org/gnome/login-screen]' not in fix_text:
+        return None
+    match = re.search(r'(banner-message-text="You are accessing a U\.S\. Government \(USG\) Information System \(IS\).*?")', fix_text, re.DOTALL)
+    if not match:
+        return None
+    pattern = match.group(1).strip()
+    if 'organization-defined' in pattern.lower() or len(pattern) < 80:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {
+            'type': 'file_content',
+            'path': '/etc/dconf/db/gdm.d/01-banner-message',
+            'pattern': pattern,
+        },
+        'expected': {'type': 'contains'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _windows_fix_only_removed_feature_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'windows' not in stig_id.lower():
+        return None
+    title = rule.get('title', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if re.search(r'\b(?:unless\s+required\s+by\s+the\s+organization|organization-defined|documented|approved)\b', title + '\n' + fix_text, re.IGNORECASE):
+        return None
+    vuln_match = re.search(r'V-\d+', rule.get('vuln_id', '') or '')
+    vuln_id = vuln_match.group(0) if vuln_match else ''
+    feature_by_vuln = {
+        'V-205678': ('Fax Server', 'Fax'),
+        'V-205679': ('Peer Name Resolution Protocol', 'PNRP'),
+        'V-205680': ('Simple TCP/IP Services', 'Simple-TCPIP'),
+        'V-205681': ('TFTP Client', 'TFTP-Client'),
+        'V-205682': ('SMBv1 protocol', 'FS-SMB1'),
+        'V-205685': ('Windows PowerShell 2.0 Engine', 'PowerShell-V2'),
+        'V-205698': ('Telnet Client', 'Telnet-Client'),
+        'V-254269': ('Fax Server', 'Fax'),
+        'V-254271': ('Peer Name Resolution Protocol', 'PNRP'),
+        'V-254272': ('Simple TCP/IP Services', 'Simple-TCPIP'),
+        'V-254273': ('Telnet Client', 'Telnet-Client'),
+        'V-254274': ('TFTP Client', 'TFTP-Client'),
+        'V-254275': ('SMBv1 protocol', 'FS-SMB1'),
+        'V-254278': ('Windows PowerShell 2.0 Engine', 'PowerShell-V2'),
+    }
+    expected = feature_by_vuln.get(vuln_id)
+    if not expected:
+        return None
+    display_name, feature_name = expected
+    if not re.search(rf'Uninstall\s+the\s+["“]?{re.escape(display_name)}["”]?', fix_text, re.IGNORECASE):
+        return None
+    if display_name != 'SMBv1 protocol' and not re.search(r'\b(?:feature|role)\b', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'windows_feature', 'name': feature_name, 'should_be_installed': False},
+        'expected': {'type': 'is_false'},
+        'description': rule.get('title', ''),
+    }
+
+
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """Infer a conservative executable check candidate from DISA prose.
 
@@ -9006,6 +9076,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_manifest_grep_candidate = _kubernetes_manifest_grep_candidate(rule, stig_id)
     if kubernetes_manifest_grep_candidate:
         return kubernetes_manifest_grep_candidate
+    sles_gdm_dconf_banner_candidate = _sles_gdm_dconf_banner_message_candidate(rule, stig_id)
+    if sles_gdm_dconf_banner_candidate:
+        return sles_gdm_dconf_banner_candidate
     windows_legal_notice_caption_candidate = _windows_legal_notice_caption_candidate(rule, stig_id)
     if windows_legal_notice_caption_candidate:
         return windows_legal_notice_caption_candidate
@@ -9255,6 +9328,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         krbtgt_password_age_candidate = _windows_krbtgt_password_age_candidate(rule, stig_id)
         if krbtgt_password_age_candidate:
             return krbtgt_password_age_candidate
+
+        fix_only_removed_feature_candidate = _windows_fix_only_removed_feature_candidate(rule, stig_id)
+        if fix_only_removed_feature_candidate:
+            return fix_only_removed_feature_candidate
 
         system32_absent_app_candidate = _windows_system32_absent_application_candidate(rule, stig_id)
         if system32_absent_app_candidate:
@@ -9589,12 +9666,23 @@ def generate_specs(coverage_root: Path, implementation_root: Path, repo_root: Pa
                 enriched[k] = v
             vuln = enriched.get('vuln_id') or enriched.get('rule_id') or 'unknown'
             out = implementation_root / stig_slug / f'{slug(vuln)}.json'
-            new_spec = spec_from_rule(manifest_path, manifest, enriched)
-            if out.exists() and 'candidate_check' not in new_spec:
+            existing_spec = {}
+            if out.exists():
                 try:
                     existing_spec = json.loads(out.read_text())
                 except Exception:
                     existing_spec = {}
+                # Some authoritative SCAP inventories expose only fixture metadata in
+                # the current extractor, while earlier generated specs may already
+                # contain DISA check/fix excerpts. Reuse those committed excerpts as
+                # authoritative evidence for conservative inference instead of
+                # discarding them on regeneration.
+                if not enriched.get('check_content') and existing_spec.get('check_content_excerpt'):
+                    enriched['check_content'] = existing_spec['check_content_excerpt']
+                if not enriched.get('fix_text') and existing_spec.get('fix_text_excerpt'):
+                    enriched['fix_text'] = existing_spec['fix_text_excerpt']
+            new_spec = spec_from_rule(manifest_path, manifest, enriched)
+            if out.exists() and 'candidate_check' not in new_spec:
                 if existing_spec.get('candidate_check'):
                     new_spec = existing_spec
             write_json(out, new_spec)

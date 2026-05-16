@@ -237,6 +237,36 @@ By using this IS, you consent to the following conditions:
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
+    def test_generate_specs_reuses_existing_authoritative_excerpts_when_artifact_lacks_detail(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            coverage = root / 'coverage'
+            impl = root / 'impl'
+            (coverage / 'scap').mkdir(parents=True)
+            (impl / 'scap_windows').mkdir(parents=True)
+            (coverage / 'scap' / 'manifest.json').write_text('''{
+              "stig_id": "scap_windows",
+              "rules": [
+                {"vuln_id":"xccdf_mil.disa.stig_group_V-254474","rule_id":"xccdf_mil.disa.stig_rule_SV-254474_rule","title":"Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords.","classification":"unsupported","severity":"high"}
+              ]
+            }''')
+            (impl / 'scap_windows' / 'xccdf_mil.disa.stig_group_v-254474.json').write_text(json.dumps({
+                'vuln_id': 'xccdf_mil.disa.stig_group_V-254474',
+                'fix_text_excerpt': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Network security: Do not store LAN Manager hash value on next password change to "Enabled".',
+            }))
+
+            count = mod.generate_specs(coverage, impl, root)
+
+            self.assertEqual(count, 1)
+            generated = json.loads((impl / 'scap_windows' / 'xccdf_mil.disa.stig_group_v-254474.json').read_text())
+            self.assertEqual(generated['fix_text_excerpt'], 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Network security: Do not store LAN Manager hash value on next password change to "Enabled".')
+            self.assertEqual(generated['candidate_check']['check'], {
+                'type': 'security_policy',
+                'section': 'Security Options',
+                'key': 'Network security: Do not store LAN Manager hash value on next password change',
+            })
+            self.assertEqual(generated['candidate_check']['expected'], {'type': 'equals', 'value': 'Enabled'})
+
     def test_infers_oracle_linux_home_filesystem_mount_options_from_fstab_prose(self):
         base = {
             'vuln_id': 'V-248616',
@@ -7249,6 +7279,63 @@ An Installed State of "Available" or "Removed" is not a finding.'''
         }, 'MS_Windows_Server_2025_STIG')
         self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': 'FS-SMB1', 'should_be_installed': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
+    def test_infers_windows_feature_candidate_from_exact_scap_fix_only_feature_names(self):
+        cases = [
+            ('xccdf_mil.disa.stig_group_V-254272', 'Simple TCP/IP Services', 'Simple-TCPIP'),
+            ('xccdf_mil.disa.stig_group_V-254269', 'Fax Server', 'Fax'),
+            ('xccdf_mil.disa.stig_group_V-254273', 'Telnet Client', 'Telnet-Client'),
+            ('xccdf_mil.disa.stig_group_V-254278', 'Windows PowerShell 2.0 Engine', 'PowerShell-V2'),
+            ('xccdf_mil.disa.stig_group_V-254274', 'TFTP Client', 'TFTP-Client'),
+            ('xccdf_mil.disa.stig_group_V-254275', 'SMBv1 protocol', 'FS-SMB1'),
+        ]
+        for vuln_id, display_name, feature_name in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'Windows Server 2022 must not have {display_name} installed.',
+                    'fix_text': f'Uninstall the "{display_name}" feature. Start "Server Manager". Select the server with the feature.',
+                }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+                self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': feature_name, 'should_be_installed': False})
+                self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
+    def test_infers_sles_gdm_dconf_banner_message_text_candidate(self):
+        rule = {
+            'vuln_id': 'V-234809',
+            'title': 'The SUSE operating system must display the approved Standard Mandatory DoD Notice before granting local or remote access to the system via a graphical user logon.',
+            'check_content': '''Check that the SUSE operating system displays the exact approved Standard Mandatory DoD Notice and Consent Banner text by performing the following command:
+
+> grep banner-message-text /etc/dconf/db/gdm.d/*
+banner-message-text=
+"You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\\nBy using this IS, you consent to the following conditions:"
+
+Note: The "\\n" characters are for formatting only. They will not be displayed on the GUI.
+
+If the banner text does not exactly match the approved banner text, this is a finding.''',
+            'fix_text': '''Add the following lines to the "[org/gnome/login-screen]" section of the "dconf/db/gdm.d/01-banner-message" file:
+
+[org/gnome/login-screen]
+banner-message-text="You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\\nBy using this IS, you consent to the following conditions:"''',
+        }
+
+        candidate = mod.infer_candidate_check(rule, 'SLES_15_STIG')
+
+        self.assertEqual(candidate['vuln_id'], 'V-234809')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'file_content',
+            'path': '/etc/dconf/db/gdm.d/01-banner-message',
+            'pattern': 'banner-message-text="You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\\nBy using this IS, you consent to the following conditions:"',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'contains'})
+
+    def test_does_not_infer_windows_feature_candidate_when_fix_allows_organization_required_exception(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254270',
+            'title': 'Windows Server 2022 must not have the Microsoft FTP service installed unless required by the organization.',
+            'fix_text': 'Uninstall the "FTP Server" role.',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNone(candidate)
 
     def test_infers_registry_candidate_from_compact_authoritative_fields(self):
         candidate = mod.infer_candidate_check({
