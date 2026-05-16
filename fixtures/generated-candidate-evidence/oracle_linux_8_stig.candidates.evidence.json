@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 352,
+  "candidate_checks": 353,
   "cases": [
     {
       "check": {
@@ -2744,6 +2744,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248638"
+    },
+    {
+      "check": {
+        "command": "find $(awk -F: '($3>=1000)&&($1!=\"nobody\"){print $6}' /etc/passwd) -maxdepth 0 -type d -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "All OL 8 local interactive user home directories must have mode \"0750\" or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find $(awk -F: '($3>=1000)&&($1!=\"nobody\"){print $6}' /etc/passwd) -maxdepth 0 -type d -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find $(awk -F: '($3>=1000)&&($1!=\"nobody\"){print $6}' /etc/passwd) -maxdepth 0 -type d -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248639"
     },
     {
       "check": {
@@ -9546,5 +9572,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 352
+  "validated_candidates": 353
 }

@@ -6278,21 +6278,31 @@ def _interactive_home_directory_mode_candidate(rule: dict, stig_id: str) -> dict
     if not _linux_platform(stig_id):
         return None
     content = rule.get('check_content', '') or ''
-    passwd_home_dirs = r"\$\(awk\s+-F:\s+['\"]\(\$3>=1000\)&&\(\$7\s+!~\s+/nologin/\)\{print\s+\$6\}['\"]\s+/etc/passwd\)"
-    has_stat_command = re.search(
-        rf"stat\s+-L\s+-c\s+['\"]%a\s+%n['\"]\s+{passwd_home_dirs}\s+2>/dev/null",
-        content,
-        re.IGNORECASE,
-    )
-    has_ls_command = re.search(
-        rf"ls\s+-ld\s+{passwd_home_dirs}",
-        content,
-        re.IGNORECASE,
-    )
-    if not has_stat_command and not has_ls_command:
+    passwd_selectors = {
+        r"\$\(awk\s+-F:\s+['\"]\(\$3>=1000\)&&\(\$7\s+!~\s+/nologin/\)\{print\s+\$6\}['\"]\s+/etc/passwd\)": "$(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)",
+        r"\$\(awk\s+-F:\s+['\"]\(\$3>=1000\)&&\(\$1\s*!=\s*\\?[\"']nobody\\?[\"']\)\{print\s+\$6\}['\"]\s+/etc/passwd\)": "$(awk -F: '($3>=1000)&&($1!=\"nobody\"){print $6}' /etc/passwd)",
+    }
+    selected_passwd_command = None
+    has_stat_command = False
+    has_ls_command = False
+    for passwd_home_dirs, passwd_command in passwd_selectors.items():
+        has_stat_command = re.search(
+            rf"stat\s+-L\s+-c\s+['\"]%a\s+%n['\"]\s+{passwd_home_dirs}\s+2>/dev/null",
+            content,
+            re.IGNORECASE,
+        ) is not None
+        has_ls_command = re.search(
+            rf"ls\s+-ld\s+{passwd_home_dirs}",
+            content,
+            re.IGNORECASE,
+        ) is not None
+        if has_stat_command or has_ls_command:
+            selected_passwd_command = passwd_command
+            break
+    if not selected_passwd_command:
         return None
     mode_match = re.search(
-        r'home\s+directories\s+referenced\s+in\s+["“]/etc/passwd["”]\s+do\s+not\s+have\s+a\s+mode\s+of\s+["“](?P<mode>0?[0-7]{3})["”]\s+or\s+less\s+permissive,?\s+this\s+is\s+a\s+finding',
+        r'home\s+directories(?:\s+of\s+interactive\s+users)?\s+referenced\s+in\s+["“]/etc/passwd["”]\s+do\s+not\s+have\s+a\s+mode\s+of\s+["“](?P<mode>0?[0-7]{3})["”]\s+or\s+less\s+permissive,?\s+this\s+is\s+a\s+finding',
         content,
         re.IGNORECASE,
     )
@@ -6307,7 +6317,7 @@ def _interactive_home_directory_mode_candidate(rule: dict, stig_id: str) -> dict
         'platform': 'linux',
         'check': {
             'type': 'command_output',
-            'command': f"find $(awk -F: '($3>=1000)&&($7 !~ /nologin/){{print $6}}' /etc/passwd) -maxdepth 0 -type d -perm /{prohibited_bits:03o} -exec stat -c \"%a %n\" {{}} \\; 2>/dev/null",
+            'command': f"find {selected_passwd_command} -maxdepth 0 -type d -perm /{prohibited_bits:03o} -exec stat -c \"%a %n\" {{}} \\; 2>/dev/null",
         },
         'expected': {'type': 'equals', 'value': ''},
         'description': rule.get('title', ''),

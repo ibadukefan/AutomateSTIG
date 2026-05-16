@@ -4027,6 +4027,28 @@ If home directories referenced in "/etc/passwd" do not have a mode of "0750" or 
             'description': 'All SUSE operating system local interactive user home directories must have mode 0750 or less permissive.',
         })
 
+    def test_infers_oracle_linux_8_interactive_home_directory_ls_mode_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248639',
+            'title': 'All OL 8 local interactive user home directories must have mode "0750" or less permissive.',
+            'check_content': '''Verify the assigned home directory of all interactive users on OL 8 has a mode of "0750" or less permissive with the following command:
+
+$ sudo ls -ld $(awk -F: '($3>=1000)&&($1!="nobody"){print $6}' /etc/passwd)
+
+If home directories of interactive users referenced in "/etc/passwd" do not have a mode of "0750" or less permissive, this is a finding.''',
+            'fix_text': 'Change the mode of interactive user home directories to "0750" or less permissive. chmod 0750 /home/smithj',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-248639',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "find $(awk -F: '($3>=1000)&&($1!=\"nobody\"){print $6}' /etc/passwd) -maxdepth 0 -type d -perm /027 -exec stat -c \"%a %n\" {} \\; 2>/dev/null",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'All OL 8 local interactive user home directories must have mode "0750" or less permissive.',
+        })
+
     def test_infers_linux_sudoers_default_include_directory_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251711',
