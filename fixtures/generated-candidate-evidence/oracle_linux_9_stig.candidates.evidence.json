@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 443,
+  "candidate_checks": 444,
   "cases": [
     {
       "check": {
@@ -4495,6 +4495,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271603"
+    },
+    {
+      "check": {
+        "command": "sh -c \"if test -f /etc/sssd/pki/sssd_auth_ca_db.pem && openssl x509 -checkend 0 -noout -in /etc/sssd/pki/sssd_auth_ca_db.pem >/dev/null 2>&1 && openssl x509 -noout -subject -issuer -in /etc/sssd/pki/sssd_auth_ca_db.pem 2>/dev/null | grep -Eiq 'CN[[:space:]]*=[[:space:]]*DoD Root CA|CN[[:space:]]*=[[:space:]]*DOD Root CA'; then printf Compliant; fi\"",
+        "type": "command_output"
+      },
+      "description": "OL 9, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"if test -f /etc/sssd/pki/sssd_auth_ca_db.pem && openssl x509 -checkend 0 -noout -in /etc/sssd/pki/sssd_auth_ca_db.pem >/dev/null 2>&1 && openssl x509 -noout -subject -issuer -in /etc/sssd/pki/sssd_auth_ca_db.pem 2>/dev/null | grep -Eiq 'CN[[:space:]]*=[[:space:]]*DoD Root CA|CN[[:space:]]*=[[:space:]]*DOD Root CA'; then printf Compliant; fi\"": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"if test -f /etc/sssd/pki/sssd_auth_ca_db.pem && openssl x509 -checkend 0 -noout -in /etc/sssd/pki/sssd_auth_ca_db.pem >/dev/null 2>&1 && openssl x509 -noout -subject -issuer -in /etc/sssd/pki/sssd_auth_ca_db.pem 2>/dev/null | grep -Eiq 'CN[[:space:]]*=[[:space:]]*DoD Root CA|CN[[:space:]]*=[[:space:]]*DOD Root CA'; then printf Compliant; fi\"": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271604"
     },
     {
       "check": {
@@ -12253,5 +12279,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 443
+  "validated_candidates": 444
 }

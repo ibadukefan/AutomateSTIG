@@ -3141,6 +3141,32 @@ def _sles_ctrl_alt_del_burst_action_candidate(rule: dict, stig_id: str) -> dict 
     }
 
 
+def _linux_dod_root_ca_trust_anchor_candidate(rule: dict, stig_id: str) -> dict | None:
+    supported_vulns = {'V-258131', 'V-271604'}
+    if rule.get('vuln_id', '') not in supported_vulns or not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'/etc/sssd/pki/sssd_auth_ca_db\.pem', content):
+        return None
+    if not re.search(r'openssl\s+x509\s+-text\s+-in\s+/etc/sssd/pki/sssd_auth_ca_db\.pem', content, re.IGNORECASE):
+        return None
+    if not re.search(r'DO?D-issued\s+certificate\s+with\s+a\s+valid\s+date', content, re.IGNORECASE):
+        return None
+    if not re.search(r'CN\s*=\s*DoD\s+Root\s+CA|CN\s*=\s*DOD\s+Root\s+CA', content, re.IGNORECASE):
+        return None
+    if not re.search(r'/etc/sssd/pki/sssd_auth_ca_db\.pem', fix_text):
+        return None
+    command = "sh -c \"if test -f /etc/sssd/pki/sssd_auth_ca_db.pem && openssl x509 -checkend 0 -noout -in /etc/sssd/pki/sssd_auth_ca_db.pem >/dev/null 2>&1 && openssl x509 -noout -subject -issuer -in /etc/sssd/pki/sssd_auth_ca_db.pem 2>/dev/null | grep -Eiq 'CN[[:space:]]*=[[:space:]]*DoD Root CA|CN[[:space:]]*=[[:space:]]*DOD Root CA'; then printf Compliant; fi\""
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_sssd_certmap_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -10241,7 +10267,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
+        for infer_with_stig in (_linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

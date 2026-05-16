@@ -2766,16 +2766,17 @@
       "vuln_id": "V-271603"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271604",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271604r1091524_rule",
       "severity": "medium",
       "title": "OL 9, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
-      "tracking_issue": "TODO-V-271604",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271604"

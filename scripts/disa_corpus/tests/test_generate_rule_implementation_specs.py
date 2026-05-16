@@ -1191,6 +1191,43 @@ If the "xattrs" rule is not being used on all uncommented selection lines in the
             'description': 'The RHEL 8 file integrity tool must be configured to verify extended attributes.',
         })
 
+    def test_infers_linux_dod_root_ca_trust_anchor_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258131',
+            'title': 'RHEL 9, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.',
+            'check_content': '''Verify RHEL 9 for PKI-based authentication has valid certificates by constructing a certification path (which includes status information) to an accepted trust anchor.
+
+Check that the system has a valid DOD root CA installed with the following command:
+
+$ sudo openssl x509 -text -in /etc/sssd/pki/sssd_auth_ca_db.pem
+
+Example output:
+
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1 (0x1)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = US, O = U.S. Government, OU = DoD, OU = PKI, CN = DoD Root CA 3
+        Validity
+        Not Before: Mar 20 18:46:41 2012 GMT
+        Not After : Dec 30 18:46:41 2029 GMT
+        Subject: C = US, O = U.S. Government, OU = DoD, OU = PKI, CN = DoD Root CA 3
+
+If the root CA file is not a DOD-issued certificate with a valid date and installed in the "/etc/sssd/pki/sssd_auth_ca_db.pem" location, this is a finding.''',
+            'fix_text': 'Configure the operating system to use the DOD root CA installed in /etc/sssd/pki/sssd_auth_ca_db.pem for PKI-based authentication.',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258131',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "sh -c \"if test -f /etc/sssd/pki/sssd_auth_ca_db.pem && openssl x509 -checkend 0 -noout -in /etc/sssd/pki/sssd_auth_ca_db.pem >/dev/null 2>&1 && openssl x509 -noout -subject -issuer -in /etc/sssd/pki/sssd_auth_ca_db.pem 2>/dev/null | grep -Eiq 'CN[[:space:]]*=[[:space:]]*DoD Root CA|CN[[:space:]]*=[[:space:]]*DOD Root CA'; then printf Compliant; fi\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'RHEL 9, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.',
+        })
+
     def test_infers_linux_device_file_selinux_label_empty_output_candidate(self):
         cases = [
             (

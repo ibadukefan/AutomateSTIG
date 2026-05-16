@@ -2280,6 +2280,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"if test -f /etc/sssd/pki/sssd_auth_ca_db.pem && openssl x509 -checkend 0 -noout -in /etc/sssd/pki/sssd_auth_ca_db.pem >/dev/null 2>&1 && openssl x509 -noout -subject -issuer -in /etc/sssd/pki/sssd_auth_ca_db.pem 2>/dev/null | grep -Eiq 'CN[[:space:]]*=[[:space:]]*DoD Root CA|CN[[:space:]]*=[[:space:]]*DOD Root CA'; then printf Compliant; fi\"",
+        "type": "command_output"
+      },
+      "description": "OL 9, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271604"
+    },
+    {
+      "check": {
         "command": "cat /etc/sssd/sssd.conf 2>/dev/null",
         "type": "command_output"
       },
