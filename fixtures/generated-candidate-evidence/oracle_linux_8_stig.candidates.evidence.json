@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 351,
+  "candidate_checks": 352,
   "cases": [
     {
       "check": {
@@ -1495,6 +1495,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248588"
+    },
+    {
+      "check": {
+        "command": "sh -c \"if dmesg 2>/dev/null | grep -Fq 'NX (Execute Disable) protection: active' || grep -Eiq '(^|[[:space:]])nx([[:space:]]|$)' /proc/cpuinfo; then printf Compliant; fi\"",
+        "type": "command_output"
+      },
+      "description": "OL 8 must implement non-executable data to protect its memory from unauthorized code execution.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"if dmesg 2>/dev/null | grep -Fq 'NX (Execute Disable) protection: active' || grep -Eiq '(^|[[:space:]])nx([[:space:]]|$)' /proc/cpuinfo; then printf Compliant; fi\"": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"if dmesg 2>/dev/null | grep -Fq 'NX (Execute Disable) protection: active' || grep -Eiq '(^|[[:space:]])nx([[:space:]]|$)' /proc/cpuinfo; then printf Compliant; fi\"": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248589"
     },
     {
       "check": {
@@ -9520,5 +9546,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 351
+  "validated_candidates": 352
 }

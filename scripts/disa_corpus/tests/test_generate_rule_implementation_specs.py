@@ -211,6 +211,31 @@ If any enabled accounts have not been logged on to within the past 35 days, this
         self.assertIn('Get-CimInstance Win32_UserAccount', candidate['check']['command'])
         self.assertIn('AddDays(-35)', candidate['check']['command'])
 
+    def test_infers_oracle_linux_8_nx_bit_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248589',
+            'title': 'OL 8 must implement non-executable data to protect its memory from unauthorized code execution.',
+            'check_content': '''Verify the NX (no-execution) bit flag is set on the system with the following commands:
+
+$ sudo dmesg | grep NX
+[ 0.000000] NX (Execute Disable) protection: active
+
+If "dmesg" does not show "NX (Execute Disable) protection" active, check the "cpuinfo" settings with the following command:
+
+$ sudo less /proc/cpuinfo | grep -i flags
+flags : fpu vme de pse tsc ms nx rdtscp lm constant_tsc
+
+If "flags" does not contain the "nx" flag, this is a finding.''',
+            'fix_text': 'Enable the NX bit execute protection in the system BIOS.',
+        }, 'Oracle_Linux_8_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-248589')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('/proc/cpuinfo', candidate['check']['command'])
+        self.assertIn('NX (Execute Disable) protection: active', candidate['check']['command'])
+
     def test_infers_postgresql_log_file_mode_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233618',

@@ -176,6 +176,32 @@ def _office_disabled_policy_registry_key_absent_candidate(rule: dict, stig_id: s
     }
 
 
+def _oracle_linux_8_nx_bit_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if stig_id != 'Oracle_Linux_8_STIG' or rule.get('vuln_id') != 'V-248589':
+        return None
+    if not re.search(r'NX\s*\(no-execution\)\s+bit\s+flag\s+is\s+set', content, re.IGNORECASE):
+        return None
+    if not re.search(r'NX\s*\(Execute\s+Disable\)\s+protection:\s+active', content, re.IGNORECASE):
+        return None
+    if not re.search(r'/proc/cpuinfo\s*\|\s*grep\s+-i\s+flags', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Enable\s+the\s+NX\s+bit\s+execute\s+protection\s+in\s+the\s+system\s+BIOS', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c \"if dmesg 2>/dev/null | grep -Fq 'NX (Execute Disable) protection: active' || "
+        "grep -Eiq '(^|[[:space:]])nx([[:space:]]|$)' /proc/cpuinfo; then printf Compliant; fi\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_defender_registry_absent_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -9622,6 +9648,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     ol8_mitigations_not_off_candidate = _ol8_mitigations_not_off_candidate(rule, stig_id)
     if ol8_mitigations_not_off_candidate:
         return ol8_mitigations_not_off_candidate
+
+    ol8_nx_bit_candidate = _oracle_linux_8_nx_bit_candidate(rule, stig_id)
+    if ol8_nx_bit_candidate:
+        return ol8_nx_bit_candidate
 
     firefox_policy_boolean_candidate = _firefox_policy_boolean_candidate(rule, stig_id)
     if firefox_policy_boolean_candidate:

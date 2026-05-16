@@ -735,6 +735,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"if dmesg 2>/dev/null | grep -Fq 'NX (Execute Disable) protection: active' || grep -Eiq '(^|[[:space:]])nx([[:space:]]|$)' /proc/cpuinfo; then printf Compliant; fi\"",
+        "type": "command_output"
+      },
+      "description": "OL 8 must implement non-executable data to protect its memory from unauthorized code execution.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248589"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/grub",
         "pattern": "GRUB_CMDLINE_LINUX=\"page_poison=1\"",
