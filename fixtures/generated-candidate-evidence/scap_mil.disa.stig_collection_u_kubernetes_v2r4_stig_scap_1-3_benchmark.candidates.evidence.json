@@ -1,0 +1,37 @@
+{
+  "candidate_checks": 1,
+  "cases": [
+    {
+      "check": {
+        "command": "grep -h -- '--tls-cipher-suites' /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | head -n1",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API server must use approved cipher suites.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -h -- '--tls-cipher-suites' /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | head -n1": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -h -- '--tls-cipher-suites' /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | head -n1": "before\nTLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242418"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_kubernetes_v2r4_stig_scap_1-3_benchmark.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "scap_mil.disa.stig_collection_U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark",
+  "validated_candidates": 1
+}

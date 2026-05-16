@@ -1764,6 +1764,36 @@ def _kubernetes_kubelet_config_value_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _kubernetes_api_server_cipher_suites_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-242418':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    approved_suites = (
+        'TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,'
+        'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,'
+        'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,'
+        'TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384'
+    )
+    combined = content + '\n' + fix_text
+    if not re.search(r'Kubernetes\s+API\s+Server\s+manifest\s+file\s+in\s+the\s+/etc/kubernetes/manifests\s+directory', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'Set\s+the\s+value\s+of\s+["“]--tls-cipher-suites["”]\s+to', fix_text, re.IGNORECASE):
+        return None
+    if approved_suites not in combined:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {
+            'type': 'command_output',
+            'command': "grep -h -- '--tls-cipher-suites' /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | head -n1",
+        },
+        'expected': {'type': 'contains', 'substring': approved_suites},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_manifest_grep_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower():
         return None
@@ -9073,6 +9103,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_kubelet_config_value_candidate = _kubernetes_kubelet_config_value_candidate(rule, stig_id)
     if kubernetes_kubelet_config_value_candidate:
         return kubernetes_kubelet_config_value_candidate
+    kubernetes_api_server_cipher_suites_candidate = _kubernetes_api_server_cipher_suites_candidate(rule, stig_id)
+    if kubernetes_api_server_cipher_suites_candidate:
+        return kubernetes_api_server_cipher_suites_candidate
     kubernetes_manifest_grep_candidate = _kubernetes_manifest_grep_candidate(rule, stig_id)
     if kubernetes_manifest_grep_candidate:
         return kubernetes_manifest_grep_candidate

@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "grep -h -- '--tls-cipher-suites' /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | head -n1",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API server must use approved cipher suites.",
+      "expected": {
+        "substring": "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-242418"
+    }
+  ],
+  "platform": "linux",
+  "stig_id": "scap_mil.disa.stig_collection_U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark",
+  "version": "candidate-planned"
+}

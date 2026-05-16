@@ -8368,6 +8368,31 @@ If a different unrelated setting is missing, this is a finding.'''
         }, 'RHEL_8_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_kubernetes_api_server_approved_cipher_suites_from_fix_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242418',
+            'title': 'The Kubernetes API server must use approved cipher suites.',
+            'check_content': '',
+            'fix_text': '''Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane.
+
+Set the value of "--tls-cipher-suites" to:
+"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"''',
+        }, 'scap_mil.disa.stig_collection_U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark')
+
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242418',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': "grep -h -- '--tls-cipher-suites' /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | head -n1",
+            },
+            'expected': {
+                'type': 'contains',
+                'substring': 'TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384',
+            },
+            'description': 'The Kubernetes API server must use approved cipher suites.',
+        })
+
     def test_skips_grep_sample_candidate_when_command_is_piped(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271525',
