@@ -159,6 +159,36 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertEqual(candidate['check'], {'type': 'command_output', 'command': expected_command})
                 self.assertEqual(candidate['expected'], expected)
 
+    def test_infers_windows_client_unused_local_accounts_35_days_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253268',
+            'title': 'Unused accounts must be disabled or removed from the system after 35 days of inactivity.',
+            'check_content': '''Run "PowerShell".
+Copy the lines below to the PowerShell window and enter.
+
+"([ADSI]('WinNT://{0}' -f $env:COMPUTERNAME)).Children | Where { $_.SchemaClassName -eq 'user' } | ForEach {
+  $user = ([ADSI]$_.Path)
+  $lastLogin = $user.Properties.LastLogin.Value
+  $enabled = ($user.Properties.UserFlags.Value -band 0x2) -ne 0x2
+  if ($lastLogin -eq $null) {
+   $lastLogin = 'Never'
+  }
+  Write-Host $user.Name $lastLogin $enabled 
+}"
+
+This will return a list of local accounts with the account name, last logon, and if the account is enabled (True/False).
+
+If any enabled accounts have not been logged on to within the past 35 days, this is a finding.''',
+            'fix_text': 'Review local accounts and verify their necessity. Disable or delete any active accounts that have not been used in the last 35 days.',
+        }, 'Microsoft_Windows_11_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-253268')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('Get-CimInstance Win32_UserAccount', candidate['check']['command'])
+        self.assertIn('AddDays(-35)', candidate['check']['command'])
+
     def test_infers_linux_interactive_home_contents_mode_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244531',

@@ -5702,20 +5702,34 @@ def _windows_unused_accounts_35_days_candidate(rule: dict, stig_id: str) -> dict
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     vuln_id = rule.get('vuln_id', '')
-    if vuln_id not in {'V-205707', 'V-254256'}:
+    if vuln_id not in {'V-205707', 'V-220711', 'V-253268', 'V-254256', 'V-278003'}:
         return None
     if not _windows_platform(stig_id):
         return None
-    if 'outdated or unused accounts must be removed or disabled' not in (rule.get('title', '') or '').lower():
+    title = (rule.get('title', '') or '').lower()
+    if not (
+        'outdated or unused accounts' in title
+        or 'unused accounts must be disabled or removed from the system after 35 days of inactivity' in title
+    ):
         return None
-    required_content = (
+    content_lower = content.lower()
+    server_domain_content = all(phrase.lower() in content_lower for phrase in (
+        'Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00',
+        'Member servers and stand-alone or nondomain-joined systems',
+        'If any enabled accounts have not been logged on to within the past 35 days, this is a finding',
+    )) or all(phrase.lower() in content_lower for phrase in (
         'Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00',
         'Member servers and standalone or nondomain-joined systems',
         'If any enabled accounts have not been logged on to within the past 35 days, this is a finding',
-    )
-    if not all(phrase.lower() in content.lower() for phrase in required_content):
+    ))
+    client_local_content = all(phrase.lower() in content_lower for phrase in (
+        "([ADSI]('WinNT://{0}' -f $env:COMPUTERNAME)).Children",
+        '$lastLogin = $user.Properties.LastLogin.Value',
+        'If any enabled accounts have not been logged on to within the past 35 days, this is a finding',
+    ))
+    if not (server_domain_content or client_local_content):
         return None
-    if not re.search(r'Remove\s+or\s+disable\s+accounts\s+that\s+have\s+not\s+been\s+used\s+in\s+the\s+last\s+35\s+days', fix_text, re.IGNORECASE):
+    if not re.search(r'(?:Remove\s+or\s+disable\s+accounts|Disable\s+or\s+delete\s+any\s+active\s+accounts)\s+that\s+have\s+not\s+been\s+used\s+in\s+the\s+last\s+35\s+days', fix_text, re.IGNORECASE):
         return None
     command = (
         'powershell -NoProfile -Command "'

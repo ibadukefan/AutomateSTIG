@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 229,
+  "candidate_checks": 230,
   "cases": [
     {
       "check": {
@@ -104,6 +104,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-277998"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$cutoff=(Get-Date).AddDays(-35); if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName } else { Get-CimInstance Win32_UserAccount -Filter 'LocalAccount=True and Disabled=False' | Where-Object { $_.Name -notin @('DefaultAccount','Guest') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | Select-Object -ExpandProperty Name }\"",
+        "type": "command_output"
+      },
+      "description": "Outdated or unused accounts on Windows Server 2025 must be removed or disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cutoff=(Get-Date).AddDays(-35); if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName } else { Get-CimInstance Win32_UserAccount -Filter 'LocalAccount=True and Disabled=False' | Where-Object { $_.Name -notin @('DefaultAccount','Guest') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | Select-Object -ExpandProperty Name }\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cutoff=(Get-Date).AddDays(-35); if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName } else { Get-CimInstance Win32_UserAccount -Filter 'LocalAccount=True and Disabled=False' | Where-Object { $_.Name -notin @('DefaultAccount','Guest') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | Select-Object -ExpandProperty Name }\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278003"
     },
     {
       "check": {
@@ -6161,5 +6187,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 229
+  "validated_candidates": 230
 }
