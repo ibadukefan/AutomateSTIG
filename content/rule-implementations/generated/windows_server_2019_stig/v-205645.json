@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2019 domain controllers must have a PKI server certificate.",
+    "expected": {
+      "type": "equals",
+      "value": "Present"
+    },
+    "platform": "windows",
+    "vuln_id": "V-205645"
+  },
   "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nRun \"MMC\".\n\nSelect \"Add/Remove Snap-in\" from the \"File\" menu.\n\nSelect \"Certificates\" in the left pane and click the \"Add >\" button.\n\nSelect \"Computer Account\" and click \"Next\".\n\nSelect the appropriate option for \"Select the computer you want this snap-in to manage\" and click \"Finish\".\n\nClick \"OK\".\n\nSelect and expand the Certificates (Local Computer) entry in the left pane.\n\nSelect and expand the Personal entry in the left pane.\n\nSelect the Certificates entry in the left pane.\n\nIf no certificate for the domain controller exists in the right pane, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Present"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Obtain a server certificate for the domain controller.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-205645r958448_rule",
   "severity": "medium",

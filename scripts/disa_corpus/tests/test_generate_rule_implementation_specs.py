@@ -336,20 +336,25 @@ $ {command}
                 self.assertEqual(candidate['expected'], {'type': 'contains'})
 
     def test_infers_windows_server_domain_controller_pki_certificate_exists_candidate(self):
-        candidate = mod.infer_candidate_check({
-            'vuln_id': 'V-254412',
-            'title': 'Windows Server 2022 domain controllers must have a PKI server certificate.',
-            'check_content': 'This applies to domain controllers. It is NA for other systems.\n\nSelect and expand the Certificates (Local Computer) entry in the left pane.\n\nSelect and expand the Personal entry in the left pane.\n\nSelect the Certificates entry in the left pane.\n\nIf no certificate for the domain controller exists in the right pane, this is a finding.',
-        }, 'MS_Windows_Server_2022_STIG')
+        for vuln_id, stig_id, title in [
+            ('V-205645', 'Windows_Server_2019_STIG', 'Windows Server 2019 domain controllers must have a PKI server certificate.'),
+            ('V-254412', 'MS_Windows_Server_2022_STIG', 'Windows Server 2022 domain controllers must have a PKI server certificate.'),
+        ]:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': 'This applies to domain controllers. It is NA for other systems.\n\nSelect and expand the Certificates (Local Computer) entry in the left pane.\n\nSelect and expand the Personal entry in the left pane.\n\nSelect the Certificates entry in the left pane.\n\nIf no certificate for the domain controller exists in the right pane, this is a finding.',
+                }, stig_id)
 
-        self.assertIsNotNone(candidate)
-        self.assertEqual(candidate['vuln_id'], 'V-254412')
-        self.assertEqual(candidate['platform'], 'windows')
-        self.assertEqual(candidate['check'], {
-            'type': 'command_output',
-            'command': "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"",
-        })
-        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Present'})
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertEqual(candidate['check'], {
+                    'type': 'command_output',
+                    'command': "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"",
+                })
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Present'})
 
     def test_infers_postgresql_log_file_mode_candidate(self):
         candidate = mod.infer_candidate_check({

@@ -195,6 +195,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if (Get-ChildItem -Path Cert:\\LocalMachine\\My -ErrorAction SilentlyContinue | Select-Object -First 1) { 'Present' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 domain controllers must have a PKI server certificate.",
+      "expected": {
+        "type": "equals",
+        "value": "Present"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205645"
+    },
+    {
+      "check": {
         "key": "MaximumPasswordAge",
         "section": "System Access",
         "type": "security_policy"

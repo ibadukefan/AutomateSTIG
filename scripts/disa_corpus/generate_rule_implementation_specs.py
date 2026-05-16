@@ -1377,7 +1377,7 @@ def _windows_platform(stig_id: str) -> bool:
 
 
 def _windows_domain_controller_pki_certificate_exists_candidate(rule: dict, stig_id: str) -> dict | None:
-    if not _windows_platform(stig_id) or rule.get('vuln_id') not in {'V-254412', 'V-278159'}:
+    if not _windows_platform(stig_id) or rule.get('vuln_id') not in {'V-205645', 'V-254412', 'V-278159'}:
         return None
     content = rule.get('check_content', '') or ''
     combined = f"{rule.get('title', '')}\n{content}"
