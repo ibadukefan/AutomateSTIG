@@ -103,6 +103,19 @@
       },
       "platform": "network",
       "vuln_id": "V-221128"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"[Ff][Ee][Cc][0-9AaBbCcDdEeFf]*:\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must not be configured to use IPv6 Site Local Unicast addresses.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "network",
+      "vuln_id": "V-237757"
     }
   ],
   "platform": "network",

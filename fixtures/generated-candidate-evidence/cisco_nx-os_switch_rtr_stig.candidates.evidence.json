@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 8,
+  "candidate_checks": 9,
   "cases": [
     {
       "check": {
@@ -208,6 +208,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221128"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"[Ff][Ee][Cc][0-9AaBbCcDdEeFf]*:\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must not be configured to use IPv6 Site Local Unicast addresses.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include \"[Ff][Ee][Cc][0-9AaBbCcDdEeFf]*:\"": "unexpected"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include \"[Ff][Ee][Cc][0-9AaBbCcDdEeFf]*:\"": ""
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-237757"
     }
   ],
   "production_claim": false,
@@ -215,5 +241,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 8
+  "validated_candidates": 9
 }

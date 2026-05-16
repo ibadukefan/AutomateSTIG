@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"[Ff][Ee][Cc][0-9AaBbCcDdEeFf]*:\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must not be configured to use IPv6 Site Local Unicast addresses.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "network",
+    "vuln_id": "V-237757"
+  },
   "check_content_excerpt": "Review the switch configuration to ensure FEC0::/10 IPv6 addresses are not defined. \n\nIf IPv6 Site Local Unicast addresses are defined, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch using only authorized IPv6 addresses.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-237757r999761_rule",
   "severity": "medium",

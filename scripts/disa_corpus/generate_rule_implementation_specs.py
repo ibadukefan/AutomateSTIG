@@ -1480,6 +1480,20 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'contains', 'substring': 'no mpls ip propagate-ttl'},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-237757':
+        if not re.search(r'Review\s+the\s+switch\s+configuration\s+to\s+ensure\s+FEC0::/10\s+IPv6\s+addresses\s+are\s+not\s+defined', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+IPv6\s+Site\s+Local\s+Unicast\s+addresses\s+are\s+defined,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Configure\s+the\s+switch\s+using\s+only\s+authorized\s+IPv6\s+addresses', fix_text, re.IGNORECASE):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | include "[Ff][Ee][Cc][0-9AaBbCcDdEeFf]*:"'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     return None
 
 

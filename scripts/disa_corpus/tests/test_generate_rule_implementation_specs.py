@@ -750,6 +750,23 @@ SW1(config-if)# end''',
             'description': 'The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) unreachable messages disabled on all external interfaces.',
         })
 
+    def test_infers_cisco_nxos_absent_ipv6_site_local_unicast_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-237757',
+            'title': 'The Cisco switch must not be configured to use IPv6 Site Local Unicast addresses.',
+            'check_content': '''Review the switch configuration to ensure FEC0::/10 IPv6 addresses are not defined.
+
+If IPv6 Site Local Unicast addresses are defined, this is a finding.''',
+            'fix_text': 'Configure the switch using only authorized IPv6 addresses.',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-237757',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | include "[Ff][Ee][Cc][0-9AaBbCcDdEeFf]*:"'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Cisco switch must not be configured to use IPv6 Site Local Unicast addresses.',
+        })
+
     def test_infers_windows_kerberos_nonzero_maximum_with_quoted_fix_key_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-205703',
