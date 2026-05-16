@@ -1011,6 +1011,37 @@ EXAMPLE:
             'description': 'TLS must be enabled on JMX.',
         })
 
+    def test_infers_windows_camera_registry_value_data_same_line_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253351',
+            'title': 'Windows 11 must cover or disable the built-in or attached camera when not in use.',
+            'check_content': '''If the camera is not disconnected or covered, the following registry entry is required:
+
+Registry Hive: HKEY_LOCAL_MACHINE
+RegistryPath\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam
+
+Value Name: Value                                                                             Value Data: Deny
+
+If "Value Name" is set to a value other than "Deny" and the collaborative computing device has not been authorized for use, this is a finding.''',
+            'fix_text': '''If the camera is not disconnected or covered, the following registry entry is required.
+
+Registry Hive: HKEY_LOCAL_MACHINE
+RegistryPath\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam
+
+Value Name: Value                                                                            Value Data: Deny''',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-253351',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam',
+                'value_name': 'Value',
+            },
+            'expected': {'type': 'equals', 'value': 'Deny'},
+            'description': 'Windows 11 must cover or disable the built-in or attached camera when not in use.',
+        })
+
     def test_infers_office_registry_exact_reg_sz_with_set_to_phrase(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223291',

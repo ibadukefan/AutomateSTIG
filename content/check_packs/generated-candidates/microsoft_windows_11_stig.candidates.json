@@ -773,6 +773,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam",
+        "type": "registry",
+        "value_name": "Value"
+      },
+      "description": "Windows 11 must cover or disable the built-in or attached camera when not in use.",
+      "expected": {
+        "type": "equals",
+        "value": "Deny"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253351"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization",
         "type": "registry",
         "value_name": "NoLockScreenSlideshow"

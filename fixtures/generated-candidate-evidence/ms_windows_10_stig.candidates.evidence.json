@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 210,
+  "candidate_checks": 211,
   "cases": [
     {
       "check": {
@@ -1262,6 +1262,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220792"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam",
+        "type": "registry",
+        "value_name": "Value"
+      },
+      "description": "Windows 10 must cover or disable the built-in or attached camera when not in use.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Deny"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam\\Value": "unexpected-Deny"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam\\Value": "Deny"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220793"
     },
     {
       "check": {
@@ -5662,5 +5689,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 210
+  "validated_candidates": 211
 }

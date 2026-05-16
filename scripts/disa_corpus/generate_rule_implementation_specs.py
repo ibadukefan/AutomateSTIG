@@ -58,6 +58,10 @@ def _registry_hive_abbrev(hive: str) -> str:
 
 
 def _registry_value(check_content: str):
+    value_data_match = re.search(r'\bValue\s+Data\s*:\s*(\S[^\n\r]*)$', check_content, re.IGNORECASE | re.MULTILINE)
+    if value_data_match:
+        return value_data_match.group(1).strip()
+
     match = re.search(r'^\s*Value(?!\s*(?:Name|Type))(?:\s+data)?\s*:?[ \t]*(0x[0-9a-fA-F]+|[-+]?\d+)\s*(?:\(([-+]?\d+)\))?', check_content, re.IGNORECASE | re.MULTILINE)
     if match:
         raw = match.group(2) or match.group(1)
@@ -9140,8 +9144,8 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return vcenter_lookup_removed_webapp_directory_candidate
     combined_registry_content = '\n'.join(part for part in (content, rule.get('fix_text', '') or '') if part)
     hives = [next(group for group in match if group).strip() for match in re.findall(r'Registry[ \t]+Hive(?::[ \t]*([^\n\r]+)|([A-Z][^\n\r]+))', combined_registry_content, re.IGNORECASE)]
-    paths = [next(group for group in match if group).strip().strip('\\/') for match in re.findall(r'Registry[ \t]+Path(?::[ \t]*([^:\n\r][^\n\r]*)|(\\[^\n\r]+))', combined_registry_content, re.IGNORECASE)]
-    value_names = [next(group for group in match if group).strip() for match in re.findall(r'Value[ \t]+Name(?::[ \t]*([^\n\r]+)|([A-Za-z0-9_.-][^\n\r]+))', combined_registry_content, re.IGNORECASE)]
+    paths = [next(group for group in match if group).strip().strip('\\/') for match in re.findall(r'Registry[ \t]*Path(?::[ \t]*([^:\n\r][^\n\r]*)|(\\[^\n\r]+))', combined_registry_content, re.IGNORECASE)]
+    value_names = [re.sub(r'\s+Value\s+Data\s*:.*$', '', next(group for group in match if group).strip(), flags=re.IGNORECASE).strip() for match in re.findall(r'Value[ \t]+Name(?::[ \t]*([^\n\r]+)|([A-Za-z0-9_.-][^\n\r]+))', combined_registry_content, re.IGNORECASE)]
     if hives and paths and value_names:
         normalized_hives = {_registry_hive_abbrev(hive) for hive in hives}
         normalized_paths = {re.sub(r'\\+', r'\\', path).rstrip('\\/.') for path in paths}
