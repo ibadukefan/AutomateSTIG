@@ -496,6 +496,19 @@
     },
     {
       "check": {
+        "command": "find /var/lib/etcd -type f -perm /133 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes etcd must have file permissions set to 644 or more restrictive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242459"
+    },
+    {
+      "check": {
         "command": "find /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf -perm /133 -exec stat -c \"%a %n\" {} \\;",
         "type": "command_output"
       },

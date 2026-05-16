@@ -6230,6 +6230,13 @@ def _kubernetes_authoritative_file_compliance_candidate(rule: dict, stig_id: str
         command = "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$cfg\" ] && exit 0; path=\"$cfg\"; [ -d \"$cfg\" ] && path=\"$cfg/kubelet\"; stat -c \"%U:%G %n\" \"$path\" 2>/dev/null | grep -v \"^root:root \"'"
     elif vuln_id == 'V-242407' and '--config' in content and 'kubeletconfiguration' in content.lower() and 'permissions of "644" or more restrictive' in content:
         command = "sh -c 'cfg=$(ps -ef | sed -n \"s/.*--config[= ]\\([^ ]*\\).*/\\1/p\" | head -n 1); [ -z \"$cfg\" ] && exit 0; path=\"$cfg\"; [ -d \"$cfg\" ] && path=\"$cfg/kubelet\"; find \"$path\" -perm /133 -exec stat -c \"%a %n\" {} \\; 2>/dev/null'"
+    elif (
+        vuln_id == 'V-242459'
+        and re.search(r'\bls\s+-AR\s+/var/lib/etcd/\*', content)
+        and mode_644_finding
+        and re.search(r'chmod\s+-R\s+0?644\s+/var/lib/etcd/\*', rule.get('fix_text', '') or '', re.IGNORECASE)
+    ):
+        command = 'find /var/lib/etcd -type f -perm /133 -exec stat -c "%a %n" {} \\;'
     else:
         return None
     return {

@@ -400,6 +400,28 @@ $ sudo chmod 0750 /home/smithj/<file or directory>''',
             'description': 'All RHEL 8 local interactive user home directory files must have mode 0750 or less permissive.',
         })
 
+    def test_infers_kubernetes_etcd_recursive_file_mode_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242459',
+            'title': 'The Kubernetes etcd must have file permissions set to 644 or more restrictive.',
+            'check_content': '''Review the permissions of the Kubernetes etcd by using the command:
+
+ls -AR /var/lib/etcd/*
+
+If any of the files have permissions more permissive than "644", this is a finding.''',
+            'fix_text': '''Change the permissions of the manifest files to "644" by executing the command:
+
+chmod -R 644 /var/lib/etcd/*''',
+        }, 'Kubernetes_STIG')
+
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242459',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'find /var/lib/etcd -type f -perm /133 -exec stat -c "%a %n" {} \\;'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Kubernetes etcd must have file permissions set to 644 or more restrictive.',
+        })
+
     def test_infers_linux_init_files_do_not_execute_world_writable_programs_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230309',
