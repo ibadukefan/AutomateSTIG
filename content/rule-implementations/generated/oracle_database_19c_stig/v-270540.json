@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN (SELECT COUNT(*) FROM audit_unified_enabled_policies WHERE entity_name = 'SYS') >= 1 OR EXISTS (SELECT 1 FROM v$parameter WHERE name = 'audit_sys_operations' AND UPPER(value) = 'TRUE') THEN 'Compliant' ELSE 'Finding' END FROM dual;\nEXIT\nSQL",
+      "type": "command_output"
+    },
+    "description": "Changes to configuration options must be audited.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "generic",
+    "vuln_id": "V-270540"
+  },
   "check_content_excerpt": "For Unified or mixed auditing, from SQL*Plus:\n\nselect count(*) from audit_unified_enabled_policies where entity_name = 'SYS';\n\nIf the count is less than one row, this is a finding.\n\nFor Standard auditing, from SQL*Plus:\n\nselect value from v$parameter where name = 'audit_sys_operations';\n\nIf the value returned is FALSE, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "For Standard auditing, from SQL*Plus:\n\nalter system set audit_sys_operations = TRUE scope = spfile;\n\nThe above SQL*Plus command will set the parameter to take effect at next system startup.\n\nIf Unified Auditing is used, to ensure auditable events are captured:\nLink the oracle binary with uniaud_on, and then restart the database. Oracle Database Upgrade Guide describes how to enable unified auditing.\n\nFor additional information on creating audit policies, refer to the Oracle Database Security Guide:\nhttps://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/configuring-audit-policies.html",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270540r1064898_rule",
   "severity": "medium",

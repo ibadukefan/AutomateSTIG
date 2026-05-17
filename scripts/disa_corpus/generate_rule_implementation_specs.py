@@ -9315,6 +9315,66 @@ def _oracle_database_exact_parameter_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _oracle_database_sqlnet_allowed_logon_version_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270543':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r'SQLNET\.ALLOWED_LOGON_VERSION_SERVER\s*=\s*12',
+        r'SQLNET\.ALLOWED_LOGON_VERSION_CLIENT\s*=\s*12',
+        r'parameters\s+do\s+not\s+exist,\s+this\s+is\s+a\s+finding',
+        r'not\s+set\s+to\s+a\s+value\s+of\s+12\s+or\s+12a,\s+this\s+is\s+a\s+finding',
+        r'Edit\s+the\s+SQLNET\.ORA\s+file\s+to\s+add\s+or\s+edit\s+the\s+entries',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "sh -c 'f=\"${TNS_ADMIN:-$ORACLE_HOME/network/admin}/sqlnet.ora\"; "
+        "grep -Eiq \"^[[:space:]]*SQLNET\\.ALLOWED_LOGON_VERSION_SERVER[[:space:]]*=[[:space:]]*12a?([[:space:]]|$)\" \"$f\" && "
+        "grep -Eiq \"^[[:space:]]*SQLNET\\.ALLOWED_LOGON_VERSION_CLIENT[[:space:]]*=[[:space:]]*12a?([[:space:]]|$)\" \"$f\" && "
+        "printf Compliant'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _oracle_database_configuration_audit_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270540':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r"select\s+count\(\*\)\s+from\s+audit_unified_enabled_policies\s+where\s+entity_name\s*=\s*'SYS'", content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+count\s+is\s+less\s+than\s+one\s+row,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r"select\s+value\s+from\s+v\$parameter\s+where\s+name\s*=\s*'audit_sys_operations'", content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+value\s+returned\s+is\s+FALSE,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'alter\s+system\s+set\s+audit_sys_operations\s*=\s*TRUE\s+scope\s*=\s*spfile', fix_text, re.IGNORECASE):
+        return None
+    command = _oracle_sqlplus_command(
+        "SELECT CASE WHEN "
+        "(SELECT COUNT(*) FROM audit_unified_enabled_policies WHERE entity_name = 'SYS') >= 1 "
+        "OR EXISTS (SELECT 1 FROM v$parameter WHERE name = 'audit_sys_operations' AND UPPER(value) = 'TRUE') "
+        "THEN 'Compliant' ELSE 'Finding' END FROM dual;"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -11221,6 +11281,14 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_exact_parameter_candidate = _oracle_database_exact_parameter_candidate(rule, stig_id)
     if oracle_database_exact_parameter_candidate:
         return oracle_database_exact_parameter_candidate
+
+    oracle_database_sqlnet_allowed_logon_version_candidate = _oracle_database_sqlnet_allowed_logon_version_candidate(rule, stig_id)
+    if oracle_database_sqlnet_allowed_logon_version_candidate:
+        return oracle_database_sqlnet_allowed_logon_version_candidate
+
+    oracle_database_configuration_audit_candidate = _oracle_database_configuration_audit_candidate(rule, stig_id)
+    if oracle_database_configuration_audit_candidate:
+        return oracle_database_configuration_audit_candidate
 
     sql_server_sample_databases_candidate = _sql_server_sample_databases_absent_candidate(rule, stig_id)
     if sql_server_sample_databases_candidate:

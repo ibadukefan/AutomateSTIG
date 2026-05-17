@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 10,
+  "candidate_checks": 12,
   "cases": [
     {
       "check": {
@@ -133,6 +133,32 @@
     },
     {
       "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN (SELECT COUNT(*) FROM audit_unified_enabled_policies WHERE entity_name = 'SYS') >= 1 OR EXISTS (SELECT 1 FROM v$parameter WHERE name = 'audit_sys_operations' AND UPPER(value) = 'TRUE') THEN 'Compliant' ELSE 'Finding' END FROM dual;\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Changes to configuration options must be audited.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN (SELECT COUNT(*) FROM audit_unified_enabled_policies WHERE entity_name = 'SYS') >= 1 OR EXISTS (SELECT 1 FROM v$parameter WHERE name = 'audit_sys_operations' AND UPPER(value) = 'TRUE') THEN 'Compliant' ELSE 'Finding' END FROM dual;\nEXIT\nSQL": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN (SELECT COUNT(*) FROM audit_unified_enabled_policies WHERE entity_name = 'SYS') >= 1 OR EXISTS (SELECT 1 FROM v$parameter WHERE name = 'audit_sys_operations' AND UPPER(value) = 'TRUE') THEN 'Compliant' ELSE 'Finding' END FROM dual;\nEXIT\nSQL": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270540"
+    },
+    {
+      "check": {
         "command": "sh -c 'f=\"$ORACLE_HOME/network/admin/cman.ora\"; if [ ! -f \"$f\" ] || grep -Eiq \"^[[:space:]]*REMOTE_ADMIN[[:space:]]*=[[:space:]]*NO([[:space:]]|$)\" \"$f\"; then printf Compliant; fi'",
         "type": "command_output"
       },
@@ -156,6 +182,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270542"
+    },
+    {
+      "check": {
+        "command": "sh -c 'f=\"${TNS_ADMIN:-$ORACLE_HOME/network/admin}/sqlnet.ora\"; grep -Eiq \"^[[:space:]]*SQLNET\\.ALLOWED_LOGON_VERSION_SERVER[[:space:]]*=[[:space:]]*12a?([[:space:]]|$)\" \"$f\" && grep -Eiq \"^[[:space:]]*SQLNET\\.ALLOWED_LOGON_VERSION_CLIENT[[:space:]]*=[[:space:]]*12a?([[:space:]]|$)\" \"$f\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Network client connections must be restricted to supported versions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'f=\"${TNS_ADMIN:-$ORACLE_HOME/network/admin}/sqlnet.ora\"; grep -Eiq \"^[[:space:]]*SQLNET\\.ALLOWED_LOGON_VERSION_SERVER[[:space:]]*=[[:space:]]*12a?([[:space:]]|$)\" \"$f\" && grep -Eiq \"^[[:space:]]*SQLNET\\.ALLOWED_LOGON_VERSION_CLIENT[[:space:]]*=[[:space:]]*12a?([[:space:]]|$)\" \"$f\" && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'f=\"${TNS_ADMIN:-$ORACLE_HOME/network/admin}/sqlnet.ora\"; grep -Eiq \"^[[:space:]]*SQLNET\\.ALLOWED_LOGON_VERSION_SERVER[[:space:]]*=[[:space:]]*12a?([[:space:]]|$)\" \"$f\" && grep -Eiq \"^[[:space:]]*SQLNET\\.ALLOWED_LOGON_VERSION_CLIENT[[:space:]]*=[[:space:]]*12a?([[:space:]]|$)\" \"$f\" && printf Compliant'": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270543"
     },
     {
       "check": {
@@ -267,5 +319,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_database_19c_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Database_19c_STIG",
-  "validated_candidates": 10
+  "validated_candidates": 12
 }

@@ -196,6 +196,34 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('DBA_PROFILES', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'UNLIMITED'})
 
+    def test_infers_oracle_sqlnet_allowed_logon_version_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270543',
+            'title': 'Network client connections must be restricted to supported versions.',
+            'check_content': 'View the SQLNET.ORA file in the ORACLE_HOME/network/admin directory or the directory specified in the TNS_ADMIN environment variable. Locate the following entries:\n\nSQLNET.ALLOWED_LOGON_VERSION_SERVER = 12\nSQLNET.ALLOWED_LOGON_VERSION_CLIENT = 12\n\nIf the parameters do not exist, this is a finding. If the parameters are not set to a value of 12 or 12a, this is a finding.',
+            'fix_text': 'Edit the SQLNET.ORA file to add or edit the entries:\n\nSQLNET.ALLOWED_LOGON_VERSION_SERVER = 12\nSQLNET.ALLOWED_LOGON_VERSION_CLIENT = 12',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270543')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('ALLOWED_LOGON_VERSION_SERVER', candidate['check']['command'])
+        self.assertIn('ALLOWED_LOGON_VERSION_CLIENT', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_oracle_audit_sys_operations_or_unified_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270540',
+            'title': 'Changes to configuration options must be audited.',
+            'check_content': "For Unified or mixed auditing, from SQL*Plus:\n\nselect count(*) from audit_unified_enabled_policies where entity_name = 'SYS';\n\nIf the count is less than one row, this is a finding.\n\nFor Standard auditing, from SQL*Plus:\n\nselect value from v$parameter where name = 'audit_sys_operations';\n\nIf the value returned is FALSE, this is a finding.",
+            'fix_text': 'For Standard auditing, from SQL*Plus:\n\nalter system set audit_sys_operations = TRUE scope = spfile;\n\nIf Unified Auditing is used, to ensure auditable events are captured: Link the oracle binary with uniaud_on, and then restart the database.',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270540')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('audit_unified_enabled_policies', candidate['check']['command'])
+        self.assertIn('audit_sys_operations', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_kubernetes_secret_env_var_candidate_from_exact_secretkeyref_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242415',

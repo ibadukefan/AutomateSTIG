@@ -67,6 +67,19 @@
     },
     {
       "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN (SELECT COUNT(*) FROM audit_unified_enabled_policies WHERE entity_name = 'SYS') >= 1 OR EXISTS (SELECT 1 FROM v$parameter WHERE name = 'audit_sys_operations' AND UPPER(value) = 'TRUE') THEN 'Compliant' ELSE 'Finding' END FROM dual;\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Changes to configuration options must be audited.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270540"
+    },
+    {
+      "check": {
         "command": "sh -c 'f=\"$ORACLE_HOME/network/admin/cman.ora\"; if [ ! -f \"$f\" ] || grep -Eiq \"^[[:space:]]*REMOTE_ADMIN[[:space:]]*=[[:space:]]*NO([[:space:]]|$)\" \"$f\"; then printf Compliant; fi'",
         "type": "command_output"
       },
@@ -77,6 +90,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-270542"
+    },
+    {
+      "check": {
+        "command": "sh -c 'f=\"${TNS_ADMIN:-$ORACLE_HOME/network/admin}/sqlnet.ora\"; grep -Eiq \"^[[:space:]]*SQLNET\\.ALLOWED_LOGON_VERSION_SERVER[[:space:]]*=[[:space:]]*12a?([[:space:]]|$)\" \"$f\" && grep -Eiq \"^[[:space:]]*SQLNET\\.ALLOWED_LOGON_VERSION_CLIENT[[:space:]]*=[[:space:]]*12a?([[:space:]]|$)\" \"$f\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Network client connections must be restricted to supported versions.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270543"
     },
     {
       "check": {
