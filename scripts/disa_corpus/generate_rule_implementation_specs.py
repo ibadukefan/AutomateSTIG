@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -10568,6 +10569,67 @@ def _sles_gdm_dconf_banner_message_candidate(rule: dict, stig_id: str) -> dict |
     }
 
 
+def _macos_15_fips_ssh_config_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Apple_macOS_15_STIG' or rule.get('vuln_id') != 'V-268439':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    config_line_match = re.search(r'fips_ssh_config=\(([^\n\r]+)\)', content)
+    if not config_line_match:
+        return None
+    try:
+        required_configs = shlex.split(config_line_match.group(1))
+    except ValueError:
+        return None
+    required_settings = {
+        'Ciphers',
+        'HostbasedAcceptedAlgorithms',
+        'HostKeyAlgorithms',
+        'KexAlgorithms',
+        'MACs',
+        'PubkeyAcceptedAlgorithms',
+        'CASignatureAlgorithms',
+    }
+    if {config.split(' ', 1)[0] for config in required_configs} != required_settings:
+        return None
+    if any('organization-defined' in config.lower() for config in required_configs):
+        return None
+    if 'limit SSH to FIPS-compliant connections' not in content:
+        return None
+    if 'If the result is not "pass", this is a finding' not in content:
+        return None
+    if '/usr/bin/ssh -G .' not in content or '/usr/bin/dscl . list /users shell' not in content:
+        return None
+    if not all(config in content for config in required_configs):
+        return None
+    if not all(config in fix_text for config in required_configs):
+        return None
+    command = (
+        "bash -lc "
+        + json.dumps(
+            "fips_ssh_config=(\n"
+            + ''.join(f"  {json.dumps(config)}\n" for config in required_configs)
+            + ")\n"
+            "ret=pass\n"
+            "for config in \"${fips_ssh_config[@]}\"; do\n"
+            "  if [[ \"$ret\" == fail ]]; then break; fi\n"
+            "  while IFS= read -r u; do\n"
+            "    ssh_check=$(/usr/bin/sudo -u \"$u\" /usr/bin/ssh -G . 2>/dev/null | /usr/bin/grep -Fci -- \"$config\")\n"
+            "    if [[ \"$ssh_check\" == 0 ]]; then ret=fail; break; fi\n"
+            "  done < <(/usr/bin/dscl . list /users shell | /usr/bin/egrep -v '(^_)|(root)|(/usr/bin/false)' | /usr/bin/awk '{print $1}')\n"
+            "done\n"
+            "printf '%s\\n' \"$ret\""
+        )
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'macos',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'pass'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_fix_only_removed_feature_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'windows' not in stig_id.lower():
         return None
@@ -10652,6 +10714,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sles_gdm_dconf_banner_candidate = _sles_gdm_dconf_banner_message_candidate(rule, stig_id)
     if sles_gdm_dconf_banner_candidate:
         return sles_gdm_dconf_banner_candidate
+    macos_15_fips_ssh_config_candidate = _macos_15_fips_ssh_config_candidate(rule, stig_id)
+    if macos_15_fips_ssh_config_candidate:
+        return macos_15_fips_ssh_config_candidate
     windows_name_based_strong_mappings_candidate = _windows_name_based_strong_mappings_candidate(rule, stig_id)
     if windows_name_based_strong_mappings_candidate:
         return windows_name_based_strong_mappings_candidate

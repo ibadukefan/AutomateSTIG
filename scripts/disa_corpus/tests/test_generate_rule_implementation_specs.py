@@ -154,6 +154,21 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('tls-private-key-file', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_macos_15_fips_ssh_config_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-268439',
+            'title': 'The macOS system must limit SSH to FIPS-compliant connections.',
+            'check_content': 'Verify the macOS system is configured to limit SSH to FIPS-compliant connections with the following command:\n\nfips_ssh_config=("Ciphers aes128-gcm@openssh.com" "HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com" "HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecd...-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecd...p256@openssh.com" "KexAlgorithms ecdh-sha2-nistp256" "MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256" "PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecd...-v01@openssh.com" "CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecd...p256@openssh.com")\ntotal=0\nret="pass"\nfor config in $fips_ssh_config; do\nif [[ "$ret" == "fail" ]]; then\nbreak\nfi\nfor u in $(/usr/bin/dscl . list /users shell | /usr/bin/egrep -v \'(^_)|(root)|(/usr/bin/false)\' | /usr/bin/awk \'{print $1}\'); do\nsshCheck=$(/usr/bin/sudo -u $u /usr/bin/ssh -G . | /usr/bin/grep -ci "$config")\nif [[ "$sshCheck" == "0" ]]; then\nret="fail"\nbreak\nfi\ndone\ndone\necho $ret\n\nIf the result is not "pass", this is a finding.',
+            'fix_text': 'Configure the macOS system to limit SSH to FIPS-compliant connections with the following command:\n\nfips_ssh_config=("Ciphers aes128-gcm@openssh.com" "HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com" "HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecd...-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecd...p256@openssh.com" "KexAlgorithms ecdh-sha2-nistp256" "MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256" "PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecd...-v01@openssh.com" "CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecd...p256@openssh.com")',
+        }, 'Apple_macOS_15_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-268439')
+        self.assertEqual(candidate['platform'], 'macos')
+        self.assertIn('/usr/bin/ssh -G .', candidate['check']['command'])
+        self.assertIn('Ciphers aes128-gcm@openssh.com', candidate['check']['command'])
+        self.assertIn('KexAlgorithms ecdh-sha2-nistp256', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'pass'})
+
     def test_infers_oracle_failed_login_attempts_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270550',

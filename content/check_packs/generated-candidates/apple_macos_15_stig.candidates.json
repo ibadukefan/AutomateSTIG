@@ -223,6 +223,19 @@
     },
     {
       "check": {
+        "command": "bash -lc \"fips_ssh_config=(\\n  \\\"Ciphers aes128-gcm@openssh.com\\\"\\n  \\\"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\\\"\\n  \\\"HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\\\"\\n  \\\"KexAlgorithms ecdh-sha2-nistp256\\\"\\n  \\\"MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256\\\"\\n  \\\"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com\\\"\\n  \\\"CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\\\"\\n)\\nret=pass\\nfor config in \\\"${fips_ssh_config[@]}\\\"; do\\n  if [[ \\\"$ret\\\" == fail ]]; then break; fi\\n  while IFS= read -r u; do\\n    ssh_check=$(/usr/bin/sudo -u \\\"$u\\\" /usr/bin/ssh -G . 2>/dev/null | /usr/bin/grep -Fci -- \\\"$config\\\")\\n    if [[ \\\"$ssh_check\\\" == 0 ]]; then ret=fail; break; fi\\n  done < <(/usr/bin/dscl . list /users shell | /usr/bin/egrep -v '(^_)|(root)|(/usr/bin/false)' | /usr/bin/awk '{print $1}')\\ndone\\nprintf '%s\\\\n' \\\"$ret\\\"\"",
+        "type": "command_output"
+      },
+      "description": "The macOS system must limit SSH to FIPS-compliant connections.",
+      "expected": {
+        "type": "equals",
+        "value": "pass"
+      },
+      "platform": "macos",
+      "vuln_id": "V-268439"
+    },
+    {
+      "check": {
         "command": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"autoEnableInSeconds\"]/following-sibling::integer[1]/text()' - | /usr/bin/awk '{ if ($1/60 >= 15 ) {print \"yes\"} else {print \"no\"}}' | /usr/bin/uniq",
         "type": "command_output"
       },

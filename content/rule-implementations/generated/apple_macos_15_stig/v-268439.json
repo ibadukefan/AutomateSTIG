@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "bash -lc \"fips_ssh_config=(\\n  \\\"Ciphers aes128-gcm@openssh.com\\\"\\n  \\\"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\\\"\\n  \\\"HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\\\"\\n  \\\"KexAlgorithms ecdh-sha2-nistp256\\\"\\n  \\\"MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256\\\"\\n  \\\"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com\\\"\\n  \\\"CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\\\"\\n)\\nret=pass\\nfor config in \\\"${fips_ssh_config[@]}\\\"; do\\n  if [[ \\\"$ret\\\" == fail ]]; then break; fi\\n  while IFS= read -r u; do\\n    ssh_check=$(/usr/bin/sudo -u \\\"$u\\\" /usr/bin/ssh -G . 2>/dev/null | /usr/bin/grep -Fci -- \\\"$config\\\")\\n    if [[ \\\"$ssh_check\\\" == 0 ]]; then ret=fail; break; fi\\n  done < <(/usr/bin/dscl . list /users shell | /usr/bin/egrep -v '(^_)|(root)|(/usr/bin/false)' | /usr/bin/awk '{print $1}')\\ndone\\nprintf '%s\\\\n' \\\"$ret\\\"\"",
+      "type": "command_output"
+    },
+    "description": "The macOS system must limit SSH to FIPS-compliant connections.",
+    "expected": {
+      "type": "equals",
+      "value": "pass"
+    },
+    "platform": "macos",
+    "vuln_id": "V-268439"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to limit SSH to FIPS-compliant connections with the following command:\n\nfips_ssh_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\")\ntotal=0\nret=\"pass\"\nfor config in $fips_ssh_config; do\nif [[ \"$ret\" == \"fail\" ]]; then\nbreak\nfi\nfor u in $(/usr/bin/dscl . list /users shell | /usr/bin/egrep -v '(^_)|(root)|(/usr/bin/false)' | /usr/bin/awk '{print $1}'); do\nsshCheck=$(/usr/bin/sudo -u $u /usr/bin/ssh -G . | /usr/bin/grep -ci \"$config\")\nif [[ \"$sshCheck\" == \"0\" ]]; then\nret=\"fail\"\nbreak\nfi\ndone\ndone\necho $ret\n\nIf the result is not \"pass\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "pass"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to limit SSH to FIPS-compliant connections with the following command:\n\nif [ -f /etc/ssh/crypto.conf ] && /usr/bin/grep -q \"Include /etc/ssh/crypto.conf\" /etc/ssh/ssh_config.d/100-macos.conf 2>/dev/null; then\n/bin/ln -fs /etc/ssh/crypto/fips.conf /etc/ssh/crypto.conf\nfi\ninclude_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/ssh_config | /usr/bin/tr -d '*')\n\nfips_ssh_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\")\nfor ssh_config in $fips_ssh_config; do\nssh_setting=$(echo $ssh_config | /usr/bin/cut -d \" \" -f1)\n/usr/bin/grep -qEi \"^$ssh_setting\" \"${include_dir}01-mscp-ssh.conf\" && /usr/bin/sed -i \"\" \"s/^$ssh_setting.*/${ssh_config}/\" \"${include_dir}01-mscp-ssh.conf\" || echo \"$ssh_config\" >> \"${include_dir}01-mscp-ssh.conf\"\nfor u in $(/usr/bin/dscl . list /users shell | /usr/bin/egrep -v '(^_)|(root)|(/usr/bin/false)' | /usr/bin/awk '{print $1}'); do\nconfig=$(/usr/bin/sudo -u $u /usr/bin/ssh -Gv . 2>&1)\nconfigfiles=$(echo \"$config\" | /usr/bin/awk '/Reading configuration data/ {print $NF}'| /usr/bin/tr -d '\\r')\nconfigarray=( ${(f)configfiles} )\nif ! echo $config | /usr/bin/grep -q -i \"$ssh_config\" ; then\nfor c in $configarray; do\nif [[ \"$c\" == \"/etc/ssh/crypto.conf\" ]]; then\ncontinue\nfi\n\n/usr/bin/sudo -u $u /usr/bin/grep -qEi \"^$ssh_setting\" \"$c\" && /usr/bin/sed -i \"\" \"s/^$ssh_setting.*/${ssh_config}/I\" \"$c\"\nif [[ \"$c\" =~ \".ssh/config\" ]]; then\nif /usr/bin/grep -qEi \"$ssh_setting\" \"$c\" 2> /dev/null; then\nold_file=$(cat ~$u/.ssh/config)\necho \"$ssh_config\" > ~$u/.ssh/config\necho \"$old_file\" >> ~$u/.ssh/config\nfi\nfi\ndone\nfi\ndone\ndone",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268439r1131194_rule",
   "severity": "high",
