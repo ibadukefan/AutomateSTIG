@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 167,
+  "candidate_checks": 168,
   "cases": [
     {
       "check": {
@@ -1062,6 +1062,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204479"
+    },
+    {
+      "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{print $1 \" \" $4}'); [ -z \"$mount\" ] && continue; target=${mount%% *}; opts=${mount#* }; if [ \"$target\" != \"/\" ] && ! printf '%s' \"$opts\" | grep -Eq '(^|,)nosuid(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that file systems containing user home directories are mounted to prevent files with the setuid and setgid bit set from being executed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{print $1 \" \" $4}'); [ -z \"$mount\" ] && continue; target=${mount%% *}; opts=${mount#* }; if [ \"$target\" != \"/\" ] && ! printf '%s' \"$opts\" | grep -Eq '(^|,)nosuid(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{print $1 \" \" $4}'); [ -z \"$mount\" ] && continue; target=${mount%% *}; opts=${mount#* }; if [ \"$target\" != \"/\" ] && ! printf '%s' \"$opts\" | grep -Eq '(^|,)nosuid(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204480"
     },
     {
       "check": {
@@ -4487,5 +4513,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 167
+  "validated_candidates": 168
 }

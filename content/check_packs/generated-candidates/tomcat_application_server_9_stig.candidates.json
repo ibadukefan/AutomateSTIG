@@ -119,6 +119,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'base=${CATALINA_BASE:-/opt/tomcat}; if [ ! -e \"$base/webapps/manager\" ] && [ ! -e \"$base/webapps/host-manager\" ]; then printf Compliant; exit 0; fi; python3 - <<\"PY\"\nimport pathlib, re, os\nbase=os.environ.get(\"CATALINA_BASE\") or \"/opt/tomcat\"\np=pathlib.Path(base)/\"conf\"/\"server.xml\"\ntext=p.read_text(errors=\"ignore\") if p.exists() else \"\"\ntext=re.sub(r\"<!--.*?-->\", \"\", text, flags=re.S)\nprint(\"Compliant\" if re.search(r\"<\\s*Realm\\b[^>]*\\bclassName\\s*=\\s*['\\\"][^'\\\"]*JNDIRealm\\b\", text, re.I) else \"\")\nPY'",
+        "type": "command_output"
+      },
+      "description": "Tomcat management applications must use LDAP realm authentication.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222962"
+    },
+    {
+      "check": {
         "command": "sh -c 'grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" /etc/systemd/system/tomcat.service 2>/dev/null || ps -ef | grep -i -- \"-Dcom.sun.management.jmxremote.authenticate=false\" | grep -v grep || true'",
         "type": "command_output"
       },

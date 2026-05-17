@@ -544,6 +544,19 @@
     },
     {
       "check": {
+        "command": "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{print $1 \" \" $4}'); [ -z \"$mount\" ] && continue; target=${mount%% *}; opts=${mount#* }; if [ \"$target\" != \"/\" ] && ! printf '%s' \"$opts\" | grep -Eq '(^|,)nosuid(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that file systems containing user home directories are mounted to prevent files with the setuid and setgid bit set from being executed.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204480"
+    },
+    {
+      "check": {
         "command": "awk '!/^[[:space:]]*#/ && NF >= 4 && ($3 ~ /^(vfat|exfat|iso9660|udf|ntfs|msdos)$/ || $2 ~ \"^/(media|mnt)/\") { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"nosuid\") ok=1; if (!ok) print }' /etc/fstab",
         "type": "command_output"
       },

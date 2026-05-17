@@ -1135,6 +1135,27 @@ All Systems:
         }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
         self.assertIsNone(candidate)
 
+    def test_infers_tomcat_jndi_realm_present_when_manager_apps_exist_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222962',
+            'title': 'Tomcat manager applications must use LDAP realm authentication.',
+            'check_content': '''If manager and host-manager applications have been deleted from the system, this is not a finding.
+
+sudo grep -i -A8 JNDIRealm $CATALINA_BASE/conf/server.xml
+
+If the JNDIRealm does not exist or if the JNDIRealm configuration is commented out, this is finding.''',
+            'fix_text': '''Edit the $CATALINA_BASE/conf/server.xml file.
+
+Locate the <Realm> element in the server.xml file, add a nested <Realm> element using the JNDIRealm className.''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222962')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('JNDIRealm', candidate['check']['command'])
+        self.assertIn('webapps/manager', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_windows_11_enterprise_64bit_exact_vuln_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-253254',
@@ -3377,6 +3398,31 @@ If a file system found in "/etc/fstab" refers to the user home directory and it 
             'expected': {'type': 'equals', 'value': ''},
             'description': 'RHEL 8 must prevent code from being executed on file systems that contain user home directories.',
         })
+
+    def test_infers_rhel7_home_nosuid_root_exception_not_finding_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204480',
+            'title': 'RHEL 7 file systems that contain user home directories must be mounted with the nosuid option.',
+            'check_content': '''Verify file systems that contain user home directories are mounted with the "nosuid" option.
+
+Note: If a separate file system has not been created for the user home directories (user home directories are mounted under "/"), this is not a finding as the "nosuid" option cannot be used on the "/" system.
+
+Find the file system(s) that contain the user home directories with the following command:
+
+# awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1, $3, $6}' /etc/passwd
+
+# more /etc/fstab
+
+If a file system found in "/etc/fstab" refers to the user home directory file system and it does not have the "nosuid" option set, this is a finding.''',
+            'fix_text': 'Configure the "/etc/fstab" to use the "nosuid" option on file systems that contain user home directories.',
+        }, 'RHEL_7_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-204480')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('findmnt -nkT "$home"', candidate['check']['command'])
+        self.assertIn('[ "$target" != "/" ]', candidate['check']['command'])
+        self.assertIn('nosuid', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
     def test_infers_macos_policy_banner_exact_text_and_mode_candidate(self):
         text = '''You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only. By using this IS (which includes any device attached to this IS), you consent to the following conditions:

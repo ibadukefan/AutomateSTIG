@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{print $1 \" \" $4}'); [ -z \"$mount\" ] && continue; target=${mount%% *}; opts=${mount#* }; if [ \"$target\" != \"/\" ] && ! printf '%s' \"$opts\" | grep -Eq '(^|,)nosuid(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that file systems containing user home directories are mounted to prevent files with the setuid and setgid bit set from being executed.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204480"
+  },
   "check_content_excerpt": "Verify file systems that contain user home directories are mounted with the \"nosuid\" option.\n\nFind the file system(s) that contain the user home directories with the following command:\n\nNote: If a separate file system has not been created for the user home directories (user home directories are mounted under \"/\"), this is not a finding as the \"nosuid\" option cannot be used on the \"/\" system.\n\n# awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1, $3, $6}' /etc/passwd\nsmithj 1001 /home/smithj\nthomasr 1002 /home/thomasr\n\nCheck the file systems that are mounted at boot time with the following command:\n\n# more /etc/fstab\n\nUUID=a411dc99-f2a1-4c87-9e05-184977be8539 /home   ext4   rw,relatime,discard,data=ordered,nosuid 0 2\n                                                            \nIf a file system found in \"/etc/fstab\" refers to the user home directory file system and it does not have the \"nosuid\" option set, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the \"/etc/fstab\" to use the \"nosuid\" option on file systems that contain user home directories.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204480r991589_rule",
   "severity": "medium",

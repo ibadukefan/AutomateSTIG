@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 33,
+  "candidate_checks": 34,
   "cases": [
     {
       "check": {
@@ -234,6 +234,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222960"
+    },
+    {
+      "check": {
+        "command": "sh -c 'base=${CATALINA_BASE:-/opt/tomcat}; if [ ! -e \"$base/webapps/manager\" ] && [ ! -e \"$base/webapps/host-manager\" ]; then printf Compliant; exit 0; fi; python3 - <<\"PY\"\nimport pathlib, re, os\nbase=os.environ.get(\"CATALINA_BASE\") or \"/opt/tomcat\"\np=pathlib.Path(base)/\"conf\"/\"server.xml\"\ntext=p.read_text(errors=\"ignore\") if p.exists() else \"\"\ntext=re.sub(r\"<!--.*?-->\", \"\", text, flags=re.S)\nprint(\"Compliant\" if re.search(r\"<\\s*Realm\\b[^>]*\\bclassName\\s*=\\s*['\\\"][^'\\\"]*JNDIRealm\\b\", text, re.I) else \"\")\nPY'",
+        "type": "command_output"
+      },
+      "description": "Tomcat management applications must use LDAP realm authentication.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'base=${CATALINA_BASE:-/opt/tomcat}; if [ ! -e \"$base/webapps/manager\" ] && [ ! -e \"$base/webapps/host-manager\" ]; then printf Compliant; exit 0; fi; python3 - <<\"PY\"\nimport pathlib, re, os\nbase=os.environ.get(\"CATALINA_BASE\") or \"/opt/tomcat\"\np=pathlib.Path(base)/\"conf\"/\"server.xml\"\ntext=p.read_text(errors=\"ignore\") if p.exists() else \"\"\ntext=re.sub(r\"<!--.*?-->\", \"\", text, flags=re.S)\nprint(\"Compliant\" if re.search(r\"<\\s*Realm\\b[^>]*\\bclassName\\s*=\\s*['\\\"][^'\\\"]*JNDIRealm\\b\", text, re.I) else \"\")\nPY'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'base=${CATALINA_BASE:-/opt/tomcat}; if [ ! -e \"$base/webapps/manager\" ] && [ ! -e \"$base/webapps/host-manager\" ]; then printf Compliant; exit 0; fi; python3 - <<\"PY\"\nimport pathlib, re, os\nbase=os.environ.get(\"CATALINA_BASE\") or \"/opt/tomcat\"\np=pathlib.Path(base)/\"conf\"/\"server.xml\"\ntext=p.read_text(errors=\"ignore\") if p.exists() else \"\"\ntext=re.sub(r\"<!--.*?-->\", \"\", text, flags=re.S)\nprint(\"Compliant\" if re.search(r\"<\\s*Realm\\b[^>]*\\bclassName\\s*=\\s*['\\\"][^'\\\"]*JNDIRealm\\b\", text, re.I) else \"\")\nPY'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222962"
     },
     {
       "check": {
@@ -865,5 +891,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 33
+  "validated_candidates": 34
 }

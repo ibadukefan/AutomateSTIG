@@ -3428,7 +3428,9 @@ def _linux_interactive_home_mount_option_candidate(rule: dict, stig_id: str) -> 
     required_option = option_match.group(1).lower()
     if not re.search(r'awk\s+-F:\s+.*?\$3\s*>=\s*1000.*?/etc/passwd', content, re.IGNORECASE | re.DOTALL):
         return None
-    root_exception = re.search(r'user\s+home\s+directories\s+are\s+mounted\s+under\s+["“]/["”].*?automatically\s+a\s+finding.*?' + re.escape(required_option) + r'.*?cannot\s+be\s+used\s+on\s+the\s+["“]/["”]', content, re.IGNORECASE | re.DOTALL)
+    root_is_finding = re.search(r'user\s+home\s+directories\s+are\s+mounted\s+under\s+["“]/["”].*?automatically\s+a\s+finding.*?' + re.escape(required_option) + r'.*?cannot\s+be\s+used\s+on\s+the\s+["“]/["”]', content, re.IGNORECASE | re.DOTALL)
+    root_not_finding = re.search(r'user\s+home\s+directories\s+are\s+mounted\s+under\s+["“]/["”].*?not\s+a\s+finding.*?' + re.escape(required_option) + r'.*?cannot\s+be\s+used\s+on\s+the\s+["“]/["”]', content, re.IGNORECASE | re.DOTALL)
+    root_exception = root_is_finding or root_not_finding
     fstab_finding = re.search(r'file\s+system\s+found\s+in\s+["“]/etc/fstab["”]\s+refers\s+to\s+the\s+user\s+home\s+director(?:y|ies).*?does\s+not\s+have\s+the\s+["“]' + re.escape(required_option) + r'["”]\s+option\s+set,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL)
     ol8_home_fstab_finding = (
         rule.get('vuln_id', '') in {'V-248616', 'V-248620'}
@@ -3440,7 +3442,10 @@ def _linux_interactive_home_mount_option_candidate(rule: dict, stig_id: str) -> 
         return None
     if not re.search(r'/etc/fstab', fix_text, re.IGNORECASE) or not re.search(r'file\s+systems\s+that\s+contain\s+user\s+home\s+directories', title + '\n' + fix_text, re.IGNORECASE):
         return None
-    command = f"awk -F: '($3>=1000)&&($7 !~ /nologin/){{print $6}}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{{print $1 \" \" $4}}'); [ -z \"$mount\" ] && continue; target=${{mount%% *}}; opts=${{mount#* }}; if [ \"$target\" = \"/\" ] || ! printf '%s' \"$opts\" | grep -Eq '(^|,){required_option}(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done"
+    if root_not_finding:
+        command = f"awk -F: '($3>=1000)&&($7 !~ /nologin/){{print $6}}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{{print $1 \" \" $4}}'); [ -z \"$mount\" ] && continue; target=${{mount%% *}}; opts=${{mount#* }}; if [ \"$target\" != \"/\" ] && ! printf '%s' \"$opts\" | grep -Eq '(^|,){required_option}(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done"
+    else:
+        command = f"awk -F: '($3>=1000)&&($7 !~ /nologin/){{print $6}}' /etc/passwd | while IFS= read -r home; do [ -z \"$home\" ] && continue; mount=$(findmnt -nkT \"$home\" | awk 'NR==1{{print $1 \" \" $4}}'); [ -z \"$mount\" ] && continue; target=${{mount%% *}}; opts=${{mount#* }}; if [ \"$target\" = \"/\" ] || ! printf '%s' \"$opts\" | grep -Eq '(^|,){required_option}(,|$)'; then printf '%s\\n' \"$home $target $opts\"; fi; done"
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',
@@ -4370,6 +4375,29 @@ def _tomcat_ldap_realm_ldaps_candidate(rule: dict, stig_id: str) -> dict | None:
             'command': 'sh -c \'grep -i -A8 JNDIRealm "${CATALINA_BASE:-/opt/tomcat}/conf/server.xml" 2>/dev/null || true\'',
         },
         'expected': {'type': 'contains', 'substring': 'ldaps://'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _tomcat_jndi_realm_present_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222962':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'manager\s+and\s+host-manager\s+applications\s+have\s+been\s+deleted\s+from\s+the\s+system,\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'grep\s+-i\s+-A8\s+JNDIRealm\s+\$CATALINA_BASE/conf/server\.xml', content, re.IGNORECASE):
+        return None
+    if not re.search(r'JNDIRealm\s+does\s+not\s+exist\s+or\s+if\s+the\s+JNDIRealm\s+configuration\s+is\s+commented\s+out,\s+this\s+is\s+(?:a\s+)?finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'\$CATALINA_BASE/conf/server\.xml', fix_text) or not re.search(r'JNDIRealm\s+className', fix_text, re.IGNORECASE):
+        return None
+    command = '''sh -c "base=${CATALINA_BASE:-/opt/tomcat}; if [ ! -e \"$base/webapps/manager\" ] && [ ! -e \"$base/webapps/host-manager\" ]; then printf Compliant; exit 0; fi; awk 'BEGIN{IGNORECASE=1} /<!--/{incomment=1} !incomment && /JNDIRealm/{found=1} /-->/{incomment=0} END{if(found)printf \"Compliant\"}' \"$base/conf/server.xml\" 2>/dev/null"'''
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
         'description': rule.get('title', ''),
     }
 
@@ -10244,6 +10272,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_ldap_realm_ldaps_candidate = _tomcat_ldap_realm_ldaps_candidate(rule, stig_id)
     if tomcat_ldap_realm_ldaps_candidate:
         return tomcat_ldap_realm_ldaps_candidate
+
+    tomcat_jndi_realm_present_candidate = _tomcat_jndi_realm_present_candidate(rule, stig_id)
+    if tomcat_jndi_realm_present_candidate:
+        return tomcat_jndi_realm_present_candidate
 
     tomcat_jmx_false_property_candidate = _tomcat_jmx_false_property_absent_candidate(rule, stig_id)
     if tomcat_jmx_false_property_candidate:
