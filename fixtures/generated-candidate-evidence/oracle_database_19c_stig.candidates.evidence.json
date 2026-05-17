@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 8,
+  "candidate_checks": 9,
   "cases": [
     {
       "check": {
@@ -185,6 +185,32 @@
     },
     {
       "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT limit FROM DBA_PROFILES WHERE profile = 'ORA_STIG_PROFILE' AND resource_name = 'PASSWORD_LOCK_TIME';\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Oracle Database must verify account lockouts persist until reset by an administrator.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "UNLIMITED"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT limit FROM DBA_PROFILES WHERE profile = 'ORA_STIG_PROFILE' AND resource_name = 'PASSWORD_LOCK_TIME';\nEXIT\nSQL": "unexpected-UNLIMITED"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT limit FROM DBA_PROFILES WHERE profile = 'ORA_STIG_PROFILE' AND resource_name = 'PASSWORD_LOCK_TIME';\nEXIT\nSQL": "UNLIMITED"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270549"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT DISTINCT username FROM dba_users WHERE username IN ('BI','HR','OE','PM','IX','SH','SCOTT');\nEXIT\nSQL",
         "type": "command_output"
       },
@@ -215,5 +241,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_database_19c_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Database_19c_STIG",
-  "validated_candidates": 8
+  "validated_candidates": 9
 }

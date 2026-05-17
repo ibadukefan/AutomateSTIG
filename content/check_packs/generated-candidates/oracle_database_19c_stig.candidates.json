@@ -93,6 +93,19 @@
     },
     {
       "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT limit FROM DBA_PROFILES WHERE profile = 'ORA_STIG_PROFILE' AND resource_name = 'PASSWORD_LOCK_TIME';\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Oracle Database must verify account lockouts persist until reset by an administrator.",
+      "expected": {
+        "type": "equals",
+        "value": "UNLIMITED"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270549"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT DISTINCT username FROM dba_users WHERE username IN ('BI','HR','OE','PM','IX','SH','SCOTT');\nEXIT\nSQL",
         "type": "command_output"
       },

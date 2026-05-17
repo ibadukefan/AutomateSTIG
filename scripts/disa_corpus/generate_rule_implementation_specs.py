@@ -2254,6 +2254,33 @@ def _kubernetes_secret_env_var_candidate(rule: dict, stig_id: str) -> dict | Non
     }
 
 
+def _kubernetes_manifest_required_flags_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-242422':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if '/etc/kubernetes/manifests' not in content:
+        return None
+    if not re.search(r'grep\s+-i\s+tls-cert-file\s+\*\s*\|\s*grep\s+-i\s+tls-private-key-file\s+\*', content, re.IGNORECASE):
+        return None
+    if not re.search(r'tls-cert-file\s+and\s+private-key-file\s+is\s+not\s+set.*contains\s+no\s+value.*this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'Set\s+the\s+value\s+of\s+tls-cert-file\s+and\s+tls-private-key-file\s+to\s+path\s+containing\s+API\s+Server\s+certificate\s+and\s+key', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'for f in tls-cert-file tls-private-key-file; do "
+        "grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; "
+        "done; printf Compliant'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_manifest_grep_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower():
         return None
@@ -9103,6 +9130,33 @@ def _oracle_database_public_empty_result_candidate(rule: dict, stig_id: str) -> 
     }
 
 
+def _oracle_database_profile_password_lock_time_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270549':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'DBA_PROFILES\s+WHERE\s+PROFILE\s*=\s*["\']ORA_STIG_PROFILE["\']', content, re.IGNORECASE):
+        return None
+    if not re.search(r'password_lock_time.*If\s+the\s+value\s+is\s+not\s+UNLIMITED,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'ALTER\s+PROFILE\s+ORA_STIG_PROFILE\s+LIMIT\s+PASSWORD_LOCK_TIME\s+UNLIMITED', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sqlplus -s / as sysdba <<'SQL'\n"
+        "SET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\n"
+        "SELECT limit FROM DBA_PROFILES WHERE profile = 'ORA_STIG_PROFILE' AND resource_name = 'PASSWORD_LOCK_TIME';\n"
+        "EXIT\n"
+        "SQL"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'UNLIMITED'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_cman_remote_admin_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270542':
         return None
@@ -10457,6 +10511,11 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_secret_env_var_candidate = _kubernetes_secret_env_var_candidate(rule, stig_id)
     if kubernetes_secret_env_var_candidate:
         return kubernetes_secret_env_var_candidate
+
+    kubernetes_manifest_required_flags_candidate = _kubernetes_manifest_required_flags_candidate(rule, stig_id)
+    if kubernetes_manifest_required_flags_candidate:
+        return kubernetes_manifest_required_flags_candidate
+
     kubernetes_manifest_grep_candidate = _kubernetes_manifest_grep_candidate(rule, stig_id)
     if kubernetes_manifest_grep_candidate:
         return kubernetes_manifest_grep_candidate
@@ -10947,6 +11006,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_public_empty_result_candidate = _oracle_database_public_empty_result_candidate(rule, stig_id)
     if oracle_database_public_empty_result_candidate:
         return oracle_database_public_empty_result_candidate
+
+    oracle_database_profile_password_lock_time_candidate = _oracle_database_profile_password_lock_time_candidate(rule, stig_id)
+    if oracle_database_profile_password_lock_time_candidate:
+        return oracle_database_profile_password_lock_time_candidate
 
     oracle_database_cman_remote_admin_candidate = _oracle_database_cman_remote_admin_candidate(rule, stig_id)
     if oracle_database_cman_remote_admin_candidate:
