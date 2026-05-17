@@ -1963,6 +1963,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$os=Get-CimInstance Win32_OperatingSystem; if ($os.Caption -like '*Windows Server 2019*' -and [int]$os.BuildNumber -ge 17763) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 must be maintained at a supported servicing level.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205849"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $value=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.ftpServer/security/authentication/anonymousAuthentication' -Name enabled -ErrorAction SilentlyContinue).Value; if ($value -eq $false) { 'Disabled' }\"",
         "type": "command_output"
       },

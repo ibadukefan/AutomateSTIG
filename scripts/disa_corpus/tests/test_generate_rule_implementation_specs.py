@@ -1939,6 +1939,30 @@ If there is output, this is a finding.''',
             'description': 'All RHEL 9 world-writable directories must be owned by root, sys, bin, or an application user.',
         })
 
+    def test_infers_windows_server_2019_supported_servicing_level_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-205849',
+            'title': 'Windows Server 2019 must be maintained at a supported servicing level.',
+            'check_content': '''Open "Command Prompt".
+
+Enter "winver.exe".
+
+If the "About Windows" dialog box does not display "Microsoft Windows Server Version 1809 (Build 17763.xxx)" or greater, this is a finding.
+
+Preview versions must not be used in a production environment.''',
+            'fix_text': 'Update the system to a Version 1809 (Build 17763.xxx) or greater.',
+        }, 'Windows_Server_2019_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-205849',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"$os=Get-CimInstance Win32_OperatingSystem; if ($os.Caption -like '*Windows Server 2019*' -and [int]$os.BuildNumber -ge 17763) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Windows Server 2019 must be maintained at a supported servicing level.',
+        })
+
     def test_infers_postgresql_ssl_enabled_for_transmission_reception(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233579',
@@ -8754,6 +8778,32 @@ banner-message-text="You are accessing a U.S. Government (USG) Information Syste
             'pattern': 'banner-message-text="You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\\nBy using this IS, you consent to the following conditions:"',
         })
         self.assertEqual(candidate['expected'], {'type': 'contains'})
+
+    def test_infers_windows_workstation_fix_only_optional_feature_candidates(self):
+        cases = [
+            (
+                'xccdf_mil.disa.stig_group_V-253278',
+                'The Telnet Client must not be installed on the system.',
+                'Uninstall "Telnet Client" from the system. Run "Programs and Features". Select "Turn Windows Features on or off". De-select "Telnet Client".',
+                'TelnetClient',
+            ),
+            (
+                'xccdf_mil.disa.stig_group_V-253279',
+                'The TFTP Client must not be installed on the system.',
+                'Uninstall "TFTP Client" from the system. Run "Programs and Features". Select "Turn Windows Features on or off". De-select "TFTP Client".',
+                'TFTP',
+            ),
+        ]
+        for vuln_id, title, fix_text, feature_name in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'fix_text': fix_text,
+                }, 'scap_mil.disa.stig_collection_U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark')
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertIn(feature_name, candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
     def test_does_not_infer_windows_feature_candidate_when_fix_allows_organization_required_exception(self):
         candidate = mod.infer_candidate_check({

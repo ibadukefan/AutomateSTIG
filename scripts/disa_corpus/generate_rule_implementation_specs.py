@@ -1670,6 +1670,30 @@ def _windows_11_no_alternate_os_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _windows_server_2019_supported_servicing_level_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '') or ''
+    if vuln_id != 'V-205849' or stig_id != 'Windows_Server_2019_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'winver\.exe', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Microsoft\s+Windows\s+Server\s+Version\s+1809\s*\(Build\s+17763\.xxx\)["”]?\s*or\s+greater', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Preview\s+versions\s+must\s+not\s+be\s+used\s+in\s+a\s+production\s+environment', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Update\s+the\s+system\s+to\s+a\s+Version\s+1809\s*\(Build\s+17763\.xxx\)\s*or\s+greater', fix_text, re.IGNORECASE):
+        return None
+    command = "powershell -NoProfile -Command \"$os=Get-CimInstance Win32_OperatingSystem; if ($os.Caption -like '*Windows Server 2019*' -and [int]$os.BuildNumber -ge 17763) { 'Compliant' }\""
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'cisco' not in stig_id.lower() or 'nx' not in stig_id.lower():
         return None
@@ -10824,10 +10848,36 @@ def _windows_fix_only_removed_feature_candidate(rule: dict, stig_id: str) -> dic
         return None
     title = rule.get('title', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    content = rule.get('check_content', '') or ''
     if re.search(r'\b(?:unless\s+required\s+by\s+the\s+organization|organization-defined|documented|approved)\b', title + '\n' + fix_text, re.IGNORECASE):
         return None
     vuln_match = re.search(r'V-\d+', rule.get('vuln_id', '') or '')
     vuln_id = vuln_match.group(0) if vuln_match else ''
+    workstation_optional_features = {
+        'V-253277': ('Simple TCPIP Services', 'SimpleTCP'),
+        'V-253278': ('Telnet Client', 'TelnetClient'),
+        'V-253279': ('TFTP Client', 'TFTP'),
+    }
+    workstation_expected = workstation_optional_features.get(vuln_id)
+    if workstation_expected and not content.strip():
+        display_name, feature_name = workstation_expected
+        if not re.search(rf'Uninstall\s+["“]{re.escape(display_name)}\b', fix_text, re.IGNORECASE):
+            return None
+        if not re.search(r'Turn\s+Windows\s+Features\s+on\s+or\s+off', fix_text, re.IGNORECASE):
+            return None
+        command = (
+            'powershell -NoProfile -Command "'
+            f'$feature=Get-WindowsOptionalFeature -Online -FeatureName {feature_name} -ErrorAction SilentlyContinue; '
+            "if (-not $feature -or $feature.State -ne 'Enabled') { 'Compliant' }"
+            '"'
+        )
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     feature_by_vuln = {
         'V-205678': ('Fax Server', 'Fax'),
         'V-205679': ('Peer Name Resolution Protocol', 'PNRP'),
@@ -11032,6 +11082,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         windows_11_no_alternate_os_candidate = _windows_11_no_alternate_os_candidate(rule, stig_id)
         if windows_11_no_alternate_os_candidate:
             return windows_11_no_alternate_os_candidate
+
+        windows_server_2019_servicing_level_candidate = _windows_server_2019_supported_servicing_level_candidate(rule, stig_id)
+        if windows_server_2019_servicing_level_candidate:
+            return windows_server_2019_servicing_level_candidate
 
         host_firewall_candidate = _windows_host_firewall_enabled_candidate(rule, stig_id)
         if host_firewall_candidate:

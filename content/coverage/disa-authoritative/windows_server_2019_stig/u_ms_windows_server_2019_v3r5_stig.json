@@ -3524,16 +3524,17 @@
       "vuln_id": "V-205848"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205849",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2019_v3r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205849r991589_rule",
       "severity": "high",
       "title": "Windows Server 2019 must be maintained at a supported servicing level.",
-      "tracking_issue": "TODO-V-205849",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2019_v3r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205849"
