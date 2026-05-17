@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 182,
+  "candidate_checks": 183,
   "cases": [
     {
       "check": {
@@ -1164,6 +1164,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234871"
+    },
+    {
+      "check": {
+        "command": "awk -F: '($3<1000)&&($1!=\"root\")&&($7 !~ /(nologin|false)$/){print $1 \":\" $3 \":\" $7}' /etc/passwd",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must not have unnecessary account capabilities.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '($3<1000)&&($1!=\"root\")&&($7 !~ /(nologin|false)$/){print $1 \":\" $3 \":\" $7}' /etc/passwd": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '($3<1000)&&($1!=\"root\")&&($7 !~ /(nologin|false)$/){print $1 \":\" $3 \":\" $7}' /etc/passwd": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234875"
     },
     {
       "check": {
@@ -4807,5 +4833,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 182
+  "validated_candidates": 183
 }

@@ -1408,6 +1408,27 @@ def _sles_gdm_banner_file_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _sles_noninteractive_accounts_no_login_shell_candidate(rule: dict, stig_id: str) -> dict | None:
+    if rule.get('vuln_id', '') != 'V-234875' or 'sles' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'awk\s+-F:\s+.*\$7\s*!~\s*["“]/sbin/nologin["”].*\$7\s*!~\s*["“]/bin/false["”]', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'non-interactive\s+accounts?\s+such\s+as\s+["“]games["”]\s+or\s+["“]nobody["”]\s+is\s+listed\s+with\s+an\s+interactive\s+shell,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'all\s+non-interactive\s+accounts\s+on\s+the\s+system\s+have\s+no\s+interactive\s+shell', fix_text, re.IGNORECASE):
+        return None
+    command = '''awk -F: '($3<1000)&&($1!="root")&&($7 !~ /(nologin|false)$/){print $1 ":" $3 ":" $7}' /etc/passwd'''
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sles_world_writable_directory_sticky_bit_candidate(rule: dict, stig_id: str) -> dict | None:
     if rule.get('vuln_id', '') != 'V-234828' or 'sles' not in stig_id.lower():
         return None
@@ -7424,6 +7445,26 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    postgresql_event_source_settings = ('%m', '%a', '%u', '%d', '%r', '%p')
+    if (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233591'
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_line_prefix["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_hostname["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'current\s+settings\s+do\s+not\s+provide\s+enough\s+information\s+regarding\s+the\s+source\s+of\s+the\s+event,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and all(token in fix_text for token in postgresql_event_source_settings)
+        and re.search(r'^\s*log_hostname\s*=\s*on\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
+    ):
+        tokens = ' '.join(postgresql_event_source_settings)
+        command = f"sh -c 'bad=\"\"; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in {tokens}; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; lh=$(psql -tAc \"SHOW log_hostname\" | tr -d \"[:space:]\"); [ \"$lh\" = on ] || bad=\"$bad log_hostname=$lh\"; printf %s \"$bad\"'"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+
     postgresql_connection_audit_settings = {
         'V-233569': ('%m', '%u', '%d', '%c'),
         'V-233604': ('%m', '%u', '%d', '%c'),
@@ -11317,6 +11358,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sles_world_writable_directory_sticky_bit_candidate = _sles_world_writable_directory_sticky_bit_candidate(rule, stig_id)
     if sles_world_writable_directory_sticky_bit_candidate:
         return sles_world_writable_directory_sticky_bit_candidate
+
+    sles_noninteractive_accounts_candidate = _sles_noninteractive_accounts_no_login_shell_candidate(rule, stig_id)
+    if sles_noninteractive_accounts_candidate:
+        return sles_noninteractive_accounts_candidate
 
     rhel7_authconfig_custom_pam_symlink_candidate = _rhel7_authconfig_custom_pam_symlink_candidate(rule, stig_id)
     if rhel7_authconfig_custom_pam_symlink_candidate:

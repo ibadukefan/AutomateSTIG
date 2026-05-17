@@ -210,6 +210,35 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('> 3', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_postgresql_event_source_log_settings_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233591',
+            'title': 'PostgreSQL must produce audit records containing sufficient information to establish the sources (origins) of the events.',
+            'check_content': '$ psql -c "SHOW log_line_prefix"\n$ psql -c "SHOW log_hostname"\nIf the current settings do not provide enough information regarding the source of the event, this is a finding.',
+            'fix_text': "log_line_prefix = '< %m %a %u %d %r %p %m >'\nlog_hostname = on",
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233591')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('SHOW log_line_prefix', candidate['check']['command'])
+        self.assertIn('SHOW log_hostname', candidate['check']['command'])
+        self.assertIn('%r', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_sles_noninteractive_accounts_no_login_shell_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234875',
+            'title': 'The SUSE operating system must not have unnecessary account capabilities.',
+            'check_content': '> awk -F: \'($7 !~ "/sbin/nologin" && $7 !~ "/bin/false"){print $1 ":" $3 ":" $7}\' /etc/passwd\nIf a non-interactive accounts such as "games" or "nobody" is listed with an interactive shell, this is a finding.',
+            'fix_text': 'Configure the SUSE operating system so that all non-interactive accounts on the system have no interactive shell assigned to them. Run the following command: usermod -s /sbin/nologin [account]',
+        }, 'SLES_15_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-234875')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('/etc/passwd', candidate['check']['command'])
+        self.assertIn('$3<1000', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_oracle_profile_password_lock_time_unlimited_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270549',

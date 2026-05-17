@@ -379,6 +379,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %a %u %d %r %p; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; lh=$(psql -tAc \"SHOW log_hostname\" | tr -d \"[:space:]\"); [ \"$lh\" = on ] || bad=\"$bad log_hostname=$lh\"; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must produce audit records containing sufficient information to establish the sources (origins) of the events.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233591"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW password_encryption\"",
         "type": "command_output"
       },
