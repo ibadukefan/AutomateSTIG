@@ -8904,6 +8904,29 @@ def _office_exchange_kerberos_authentication_candidate(rule: dict, stig_id: str)
     }
 
 
+def _postgresql_show_ssl_on_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'(?:postgresql|pgsql)', stig_id, re.IGNORECASE):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-233538', 'V-233579'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'psql\s+-c\s+["“]SHOW\s+ssl["”]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+SSL\s+is\s+(?:not\s+enabled|off),\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    if not re.search(r'configure\s+PostgreSQL\s+to\s+use\s+SSL|enabling\s+SSL', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': "sudo -u postgres psql -Atqc 'SHOW ssl'"},
+        'expected': {'type': 'equals', 'value': 'on'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_sqlplus_command(select_sql: str) -> str:
     return (
         "sqlplus -s / as sysdba <<'SQL'\n"
@@ -10537,6 +10560,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     cisco_nxos_no_ip_source_route_candidate = _cisco_nxos_no_ip_source_route_candidate(rule, stig_id)
     if cisco_nxos_no_ip_source_route_candidate:
         return cisco_nxos_no_ip_source_route_candidate
+
+    postgresql_show_ssl_on_candidate = _postgresql_show_ssl_on_candidate(rule, stig_id)
+    if postgresql_show_ssl_on_candidate:
+        return postgresql_show_ssl_on_candidate
 
     scap_fix_only_systemctl_service_candidate = _scap_fix_only_systemctl_service_candidate(rule, stig_id)
     if scap_fix_only_systemctl_service_candidate:

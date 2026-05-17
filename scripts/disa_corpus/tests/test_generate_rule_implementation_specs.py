@@ -13201,6 +13201,21 @@ If any accounts other than XS$NULL are listed, this is a finding.""",
                 self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
                 self.assertEqual(candidate['expected'], expected)
 
+    def test_infers_postgresql_ssl_show_on_candidate_from_exact_prose(self):
+        for vuln_id in ('V-233538', 'V-233579'):
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': 'PostgreSQL must maintain the confidentiality and integrity of information during transmission.',
+                    'check_content': 'As the database administrator (shown here as "postgres"), verify SSL is enabled in postgresql.conf by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c "SHOW ssl"\n\nIf SSL is off, this is a finding.',
+                    'fix_text': 'Implement protective measures against unauthorized disclosure and modification during reception.\n\nTo configure PostgreSQL to use SSL, see supplementary content APPENDIX-G for instructions on enabling SSL.',
+                }, 'Crunchy_Data_PostgreSQL_STIG')
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "sudo -u postgres psql -Atqc 'SHOW ssl'"})
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'on'})
+
 
 if __name__ == '__main__':
     unittest.main()

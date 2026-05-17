@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 39,
+  "candidate_checks": 41,
   "cases": [
     {
       "check": {
@@ -156,6 +156,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233533"
+    },
+    {
+      "check": {
+        "command": "sudo -u postgres psql -Atqc 'SHOW ssl'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must maintain the confidentiality and integrity of information during reception.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -Atqc 'SHOW ssl'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -Atqc 'SHOW ssl'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233538"
     },
     {
       "check": {
@@ -572,6 +598,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233578"
+    },
+    {
+      "check": {
+        "command": "sudo -u postgres psql -Atqc 'SHOW ssl'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must maintain the confidentiality and integrity of information during preparation for transmission.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -Atqc 'SHOW ssl'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -Atqc 'SHOW ssl'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233579"
     },
     {
       "check": {
@@ -1021,5 +1073,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 39
+  "validated_candidates": 41
 }
