@@ -866,6 +866,63 @@ By using this IS, you consent to the following conditions:
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
+    def test_infers_windows_server_2025_event_viewer_executable_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278046',
+            'title': 'Windows Server 2025 Event Viewer must be protected from unauthorized modification and deletion.',
+            'check_content': 'Navigate to "%SystemRoot%\\System32". View the permissions on "Eventvwr.exe". If any groups or accounts other than TrustedInstaller have "Full control" or "Modify" permissions, this is a finding. The default permissions below satisfy this requirement: TrustedInstaller - Full Control Administrators, SYSTEM, Users, ALL APPLICATION PACKAGES, ALL RESTRICTED APPLICATION PACKAGES - Read & Execute',
+            'fix_text': 'Configure the permissions on the "Eventvwr.exe" file to prevent modification by any groups or accounts other than TrustedInstaller. The default permissions listed below satisfy this requirement.',
+        }, 'MS_Windows_Server_2025_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['vuln_id'], 'V-278046')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('System32\\Eventvwr.exe', candidate['check']['command'])
+
+    def test_generate_specs_copies_exact_vuln_title_candidate_to_less_complete_scap_duplicate(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            coverage = root / 'coverage'
+            impl = root / 'impl'
+            (coverage / 'manual').mkdir(parents=True)
+            (coverage / 'scap').mkdir(parents=True)
+            title = 'Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords.'
+            (coverage / 'manual' / 'manifest.json').write_text(json.dumps({
+                'stig_id': 'MS_Windows_Server_2022_STIG',
+                'rules': [{
+                    'vuln_id': 'V-254474',
+                    'rule_id': 'SV-254474_rule',
+                    'title': title,
+                    'classification': 'unsupported',
+                    'severity': 'high',
+                    'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Network security: Do not store LAN Manager hash value on next password change to "Enabled".',
+                }],
+            }))
+            (coverage / 'scap' / 'manifest.json').write_text(json.dumps({
+                'stig_id': 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark',
+                'rules': [{
+                    'vuln_id': 'xccdf_mil.disa.stig_group_V-254474',
+                    'rule_id': 'xccdf_mil.disa.stig_rule_SV-254474_rule',
+                    'title': title,
+                    'classification': 'unsupported',
+                    'severity': 'high',
+                }],
+            }))
+
+            count = mod.generate_specs(coverage, impl, root)
+
+            self.assertEqual(count, 2)
+            generated = json.loads((impl / 'scap_mil.disa.stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1-3_benchmark' / 'xccdf_mil.disa.stig_group_v-254474.json').read_text())
+            self.assertEqual(generated['candidate_check']['vuln_id'], 'xccdf_mil.disa.stig_group_V-254474')
+            self.assertEqual(generated['candidate_check']['check'], {
+                'type': 'security_policy',
+                'section': 'Security Options',
+                'key': 'Network security: Do not store LAN Manager hash value on next password change',
+            })
+            self.assertEqual(generated['candidate_check']['expected'], {'type': 'equals', 'value': 'Enabled'})
+
     def test_generate_specs_reuses_existing_authoritative_excerpts_when_artifact_lacks_detail(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)

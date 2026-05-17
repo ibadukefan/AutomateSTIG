@@ -9540,7 +9540,7 @@ def _windows_event_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | No
 def _windows_event_viewer_executable_acl_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
-    if rule.get('vuln_id') != 'V-254299':
+    if rule.get('vuln_id') not in {'V-254299', 'V-278046'}:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -10844,9 +10844,55 @@ def write_json(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n')
 
 
+def _canonical_vuln_ids(rule: dict) -> set[str]:
+    ids: set[str] = set()
+    for value in (rule.get('vuln_id'), rule.get('rule_id')):
+        if not value:
+            continue
+        ids.update(re.findall(r'V-\d+', str(value)))
+    return ids
+
+
+def _normalized_title_key(title: str) -> str:
+    return re.sub(r'\s+', ' ', (title or '').strip().lower())
+
+
+def _copy_duplicate_candidate_to_less_complete_specs(written_specs: dict[Path, dict]) -> None:
+    candidate_by_vuln_title: dict[tuple[str, str], dict] = {}
+    for spec in written_specs.values():
+        candidate = spec.get('candidate_check')
+        title_key = _normalized_title_key(spec.get('title', ''))
+        if not candidate or not title_key:
+            continue
+        for vuln_id in _canonical_vuln_ids(spec):
+            candidate_by_vuln_title.setdefault((vuln_id, title_key), candidate)
+
+    for path, spec in written_specs.items():
+        if spec.get('candidate_check'):
+            continue
+        title_key = _normalized_title_key(spec.get('title', ''))
+        if not title_key:
+            continue
+        source_candidate = None
+        for vuln_id in _canonical_vuln_ids(spec):
+            source_candidate = candidate_by_vuln_title.get((vuln_id, title_key))
+            if source_candidate:
+                break
+        if not source_candidate:
+            continue
+        copied_candidate = json.loads(json.dumps(source_candidate))
+        copied_candidate['vuln_id'] = spec.get('vuln_id', '')
+        spec['candidate_check'] = copied_candidate
+        spec['normalizer'] = copied_candidate['check']['type']
+        spec['evaluator'] = 'candidate_template'
+        spec['expected_values'] = copied_candidate['expected']
+        write_json(path, spec)
+
+
 def generate_specs(coverage_root: Path, implementation_root: Path, repo_root: Path | None = None) -> int:
     repo_root = repo_root or Path.cwd()
     artifact_cache: dict[Path, dict] = {}
+    written_specs: dict[Path, dict] = {}
     count = 0
     for manifest_path in sorted(coverage_root.rglob('*.json')):
         manifest = json.loads(manifest_path.read_text())
@@ -10889,7 +10935,9 @@ def generate_specs(coverage_root: Path, implementation_root: Path, repo_root: Pa
                 if existing_spec.get('candidate_check'):
                     new_spec = existing_spec
             write_json(out, new_spec)
+            written_specs[out] = new_spec
             count += 1
+    _copy_duplicate_candidate_to_less_complete_specs(written_specs)
     return count
 
 

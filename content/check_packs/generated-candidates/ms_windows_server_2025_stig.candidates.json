@@ -467,6 +467,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:SystemRoot 'System32\\Eventvwr.exe'; $acl=Get-Acl -LiteralPath $p; $violations=$acl.Access | Where-Object { ($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify) -and ($_.IdentityReference -notmatch 'TrustedInstaller$') }; if (-not $violations) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 Event Viewer must be protected from unauthorized modification and deletion.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278046"
+    },
+    {
+      "check": {
         "setting": "Success",
         "subcategory": "Credential Validation",
         "type": "audit_policy"
