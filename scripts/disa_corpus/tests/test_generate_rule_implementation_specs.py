@@ -170,6 +170,21 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('lockdownStrict', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_postgresql_pki_crl_and_hostssl_certificate_validation_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233577',
+            'title': 'PostgreSQL, when utilizing PKI-based authentication, must validate certificates by performing RFC 5280-compliant certification path validation.',
+            'check_content': '$ sudo su - postgres\n$ psql -c "SELECT CASE WHEN length(setting) > 0 THEN CASE WHEN substring(setting, 1, 1) = \'/\' THEN setting ELSE (SELECT setting FROM pg_settings WHERE name = \'data_directory\') || \'/\' || setting END ELSE \'\' END AS ssl_crl_file FROM pg_settings WHERE name = \'ssl_crl_file\';"\nIf this is not set to a CRL file, this is a finding.\n$ sudo su - postgres\n$ ls -ld <ssl_crl_file>\nIf the CRL file does not exist, this is a finding.\n$ sudo su - postgres\n$ grep \'^hostssl.*cert.*clientcert=1\' ${PGDATA?}/pg_hba.conf\nIf hostssl entries are not returned, this is a finding.\nIf certificates are not being validated by performing RFC 5280-compliant certification path validation, this is a finding.',
+            'fix_text': 'To configure PostgreSQL to use SSL, see supplementary content APPENDIX-G.\nTo generate a Certificate Revocation List, see the official Red Hat Documentation.\nAs the database administrator (shown here as "postgres"), copy the CRL file into the data directory.\nConfigure pg_hba.conf hostssl entries with cert and clientcert=1.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233577')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('ssl_crl_file', candidate['check']['command'])
+        self.assertIn('clientcert=1', candidate['check']['command'])
+        self.assertIn('${PGDATA?}/pg_hba.conf', candidate['check']['command'])
+
     def test_infers_sles_aide_selection_line_tokens_from_all_selection_lines_prose(self):
         cases = [
             ('V-234986', 'acl', 'Access Control Lists (ACLs)'),

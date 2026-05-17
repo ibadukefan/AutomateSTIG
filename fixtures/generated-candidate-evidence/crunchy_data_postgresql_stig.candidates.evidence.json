@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 38,
+  "candidate_checks": 39,
   "cases": [
     {
       "check": {
@@ -523,6 +523,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'crl=$(psql -tAc \"SELECT CASE WHEN length(setting) > 0 THEN CASE WHEN substring(setting,1,1) = '\"'\"'/'\"'\"' THEN setting ELSE (SELECT setting FROM pg_settings WHERE name = '\"'\"'data_directory'\"'\"') || '\"'\"'/'\"'\"' || setting END ELSE '\"'\"''\"'\"' END FROM pg_settings WHERE name = '\"'\"'ssl_crl_file'\"'\"';\" | tr -d \"[:space:]\"); [ -n \"$crl\" ] && [ -f \"$crl\" ] && grep -Eq \"^hostssl.*cert.*clientcert=1\" ${PGDATA?}/pg_hba.conf && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL, when utilizing PKI-based authentication, must validate certificates by performing RFC 5280-compliant certification path validation.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'crl=$(psql -tAc \"SELECT CASE WHEN length(setting) > 0 THEN CASE WHEN substring(setting,1,1) = '\"'\"'/'\"'\"' THEN setting ELSE (SELECT setting FROM pg_settings WHERE name = '\"'\"'data_directory'\"'\"') || '\"'\"'/'\"'\"' || setting END ELSE '\"'\"''\"'\"' END FROM pg_settings WHERE name = '\"'\"'ssl_crl_file'\"'\"';\" | tr -d \"[:space:]\"); [ -n \"$crl\" ] && [ -f \"$crl\" ] && grep -Eq \"^hostssl.*cert.*clientcert=1\" ${PGDATA?}/pg_hba.conf && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'crl=$(psql -tAc \"SELECT CASE WHEN length(setting) > 0 THEN CASE WHEN substring(setting,1,1) = '\"'\"'/'\"'\"' THEN setting ELSE (SELECT setting FROM pg_settings WHERE name = '\"'\"'data_directory'\"'\"') || '\"'\"'/'\"'\"' || setting END ELSE '\"'\"''\"'\"' END FROM pg_settings WHERE name = '\"'\"'ssl_crl_file'\"'\"';\" | tr -d \"[:space:]\"); [ -n \"$crl\" ] && [ -f \"$crl\" ] && grep -Eq \"^hostssl.*cert.*clientcert=1\" ${PGDATA?}/pg_hba.conf && printf Compliant'": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233577"
+    },
+    {
+      "check": {
         "command": "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %s; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'",
         "type": "command_output"
       },
@@ -995,5 +1021,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 38
+  "validated_candidates": 39
 }

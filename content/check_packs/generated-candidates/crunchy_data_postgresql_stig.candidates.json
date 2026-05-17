@@ -262,6 +262,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'crl=$(psql -tAc \"SELECT CASE WHEN length(setting) > 0 THEN CASE WHEN substring(setting,1,1) = '\"'\"'/'\"'\"' THEN setting ELSE (SELECT setting FROM pg_settings WHERE name = '\"'\"'data_directory'\"'\"') || '\"'\"'/'\"'\"' || setting END ELSE '\"'\"''\"'\"' END FROM pg_settings WHERE name = '\"'\"'ssl_crl_file'\"'\"';\" | tr -d \"[:space:]\"); [ -n \"$crl\" ] && [ -f \"$crl\" ] && grep -Eq \"^hostssl.*cert.*clientcert=1\" ${PGDATA?}/pg_hba.conf && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL, when utilizing PKI-based authentication, must validate certificates by performing RFC 5280-compliant certification path validation.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233577"
+    },
+    {
+      "check": {
         "command": "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %s; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'",
         "type": "command_output"
       },

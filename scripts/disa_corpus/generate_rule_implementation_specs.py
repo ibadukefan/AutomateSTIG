@@ -7072,6 +7072,28 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'description': rule.get('title', ''),
         }
 
+    postgresql_pki_crl_hostssl_cert_validation = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233577'
+        and re.search(r"SELECT\s+CASE\s+WHEN\s+length\(setting\)\s*>\s*0.*?ssl_crl_file.*?FROM\s+pg_settings\s+WHERE\s+name\s*=\s*['\"]ssl_crl_file['\"]", content, re.IGNORECASE | re.DOTALL)
+        and re.search(r'If\s+this\s+is\s+not\s+set\s+to\s+a\s+CRL\s+file,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'If\s+the\s+CRL\s+file\s+does\s+not\s+exist,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r"grep\s+['\"]\^hostssl\.\*cert\.\*clientcert=1['\"]\s+\$\{PGDATA\?\}/pg_hba\.conf", content, re.IGNORECASE)
+        and re.search(r'If\s+hostssl\s+entries\s+are\s+not\s+returned,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'certificates\s+are\s+not\s+being\s+validated\s+by\s+performing\s+RFC\s+5280-compliant\s+certification\s+path\s+validation,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'\bCRL\s+file\b', fix_text, re.IGNORECASE)
+        and re.search(r'\bclientcert=1\b', fix_text, re.IGNORECASE)
+    )
+    if postgresql_pki_crl_hostssl_cert_validation:
+        command = "sh -c 'crl=$(psql -tAc \"SELECT CASE WHEN length(setting) > 0 THEN CASE WHEN substring(setting,1,1) = '\"'\"'/'\"'\"' THEN setting ELSE (SELECT setting FROM pg_settings WHERE name = '\"'\"'data_directory'\"'\"') || '\"'\"'/'\"'\"' || setting END ELSE '\"'\"''\"'\"' END FROM pg_settings WHERE name = '\"'\"'ssl_crl_file'\"'\"';\" | tr -d \"[:space:]\"); [ -n \"$crl\" ] && [ -f \"$crl\" ] && grep -Eq \"^hostssl.*cert.*clientcert=1\" ${PGDATA?}/pg_hba.conf && printf Compliant'"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
+
     postgresql_pgaudit_security_objects = (
         'postgresql' in stig_id.lower()
         and rule.get('vuln_id', '') == 'V-233573'
