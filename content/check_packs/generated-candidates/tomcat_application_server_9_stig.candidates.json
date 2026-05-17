@@ -288,6 +288,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"p=\\\"${CATALINA_BASE:-/opt/tomcat}/conf/server.xml\\\"; total=$(xmllint --xpath \\\"count(//Valve[contains(@className,'AccessLogValve')])\\\" \\\"$p\\\" 2>/dev/null || printf 0); bad=$(xmllint --xpath \\\"count(//Valve[contains(@className,'AccessLogValve') and not(contains(@pattern,'%u'))])\\\" \\\"$p\\\" 2>/dev/null || printf 1); [ \\\"$total\\\" != \\\"0\\\" ] && [ \\\"$bad\\\" = \\\"0\\\" ] && printf Compliant\"",
+        "type": "command_output"
+      },
+      "description": "Application user name must be logged.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222985"
+    },
+    {
+      "check": {
         "command": "find $CATALINA_HOME -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls",
         "type": "command_output"
       },
@@ -376,6 +389,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-222993"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"name(//Engine/Valve[contains(@className,'AccessLogValve')][1])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "AccessLogValve must be configured for Catalina engine.",
+      "expected": {
+        "type": "equals",
+        "value": "Valve"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222997"
     },
     {
       "check": {

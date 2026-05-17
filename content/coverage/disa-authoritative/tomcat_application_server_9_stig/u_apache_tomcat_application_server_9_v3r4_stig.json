@@ -853,16 +853,17 @@
       "vuln_id": "V-222984"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222985",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222985r961362_rule",
       "severity": "low",
       "title": "Application user name must be logged.",
-      "tracking_issue": "TODO-V-222985",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222985"
@@ -1025,16 +1026,17 @@
       "vuln_id": "V-222996"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222997",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222997r1016518_rule",
       "severity": "medium",
       "title": "AccessLogValve must be configured for Catalina engine.",
-      "tracking_issue": "TODO-V-222997",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222997"

@@ -2942,6 +2942,54 @@ If the Internet Printing option is enabled, this is a finding.''',
             'description': 'The Internet Printing Protocol (IPP) must be disabled on the IIS 10.0 web server.',
         })
 
+    def test_infers_tomcat_access_log_valve_records_user_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222985',
+            'title': 'Application user name must be logged.',
+            'check_content': '''As an elevated user on the Tomcat server:
+
+Edit the $CATALINA_BASE/conf/server.xml file.
+
+Review all "Valve" elements.
+
+If the pattern= statement does not include %u, this is a finding.
+
+EXAMPLE:
+<Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+               prefix="localhost_access_log" suffix=".txt"
+               pattern="%h %l %t %u &quot;%r&quot; %s %b" />''',
+            'fix_text': '''Configure the AccessLogValve pattern in $CATALINA_BASE/conf/server.xml to include %u.''',
+        }, 'Apache_Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222985')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('AccessLogValve', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_tomcat_engine_access_log_valve_present_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222997',
+            'title': 'AccessLogValve must be configured for Catalina engine.',
+            'check_content': '''As an elevated user on the Tomcat server, edit the $CATALINA_BASE/conf/server.xml file.
+
+Review the <Engine> element. Ensure one AccessLog <Valve> element is nested within the engine element.
+
+If a <Valve className="org.apache.catalina.valves.AccessLogValve" .../> element is not defined, this is a finding.
+
+EXAMPLE:
+<Engine name="Standalone" ...>
+  <Valve className="org.apache.catalina.valves.AccessLogValve"
+         prefix="catalina_access_log" suffix=".txt"
+         pattern="common"/>
+</Engine>''',
+            'fix_text': '''Configure an AccessLogValve nested in the Catalina Engine element in $CATALINA_BASE/conf/server.xml.''',
+        }, 'Apache_Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222997')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('//Engine/Valve', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Valve'})
+
     def test_infers_tomcat_removed_example_webapp_directory_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222958',

@@ -4854,6 +4854,51 @@ def _tomcat_error_report_valve_boolean_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _tomcat_access_log_valve_user_pattern_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222985':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'\$CATALINA_BASE/conf/server\.xml', content):
+        return None
+    if not re.search(r'Review\s+all\s+["“]Valve["”]\s+elements', content, re.IGNORECASE):
+        return None
+    if not re.search(r'pattern\s*=\s*statement\s+does\s+not\s+include\s+%u,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'AccessLogValve', content, re.IGNORECASE) or '%u' not in (content + '\n' + fix_text):
+        return None
+    command = 'sh -c "p=\\"${CATALINA_BASE:-/opt/tomcat}/conf/server.xml\\"; total=$(xmllint --xpath \\"count(//Valve[contains(@className,\'AccessLogValve\')])\\" \\"$p\\" 2>/dev/null || printf 0); bad=$(xmllint --xpath \\"count(//Valve[contains(@className,\'AccessLogValve\') and not(contains(@pattern,\'%u\'))])\\" \\"$p\\" 2>/dev/null || printf 1); [ \\"$total\\" != \\"0\\" ] && [ \\"$bad\\" = \\"0\\" ] && printf Compliant"'
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _tomcat_engine_access_log_valve_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222997':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'\$CATALINA_BASE/conf/server\.xml', content + '\n' + fix_text):
+        return None
+    if not re.search(r'Review\s+the\s+<Engine>\s+element', content, re.IGNORECASE):
+        return None
+    if not re.search(r'AccessLog\s+<Valve>\s+element\s+is\s+nested\s+within\s+the\s+engine\s+element', content, re.IGNORECASE):
+        return None
+    if not re.search(r'<Valve\s+className=["“]org\.apache\.catalina\.valves\.AccessLogValve', content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'xmllint --xpath "name(//Engine/Valve[contains(@className,\'AccessLogValve\')][1])" $CATALINA_BASE/conf/server.xml 2>/dev/null'},
+        'expected': {'type': 'equals', 'value': 'Valve'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_removed_webapp_directory_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower():
         return None
@@ -11228,6 +11273,14 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_web_xml_boolean_param_candidate = _tomcat_web_xml_boolean_param_candidate(rule, stig_id)
     if tomcat_web_xml_boolean_param_candidate:
         return tomcat_web_xml_boolean_param_candidate
+
+    tomcat_access_log_user_candidate = _tomcat_access_log_valve_user_pattern_candidate(rule, stig_id)
+    if tomcat_access_log_user_candidate:
+        return tomcat_access_log_user_candidate
+
+    tomcat_engine_access_log_candidate = _tomcat_engine_access_log_valve_candidate(rule, stig_id)
+    if tomcat_engine_access_log_candidate:
+        return tomcat_engine_access_log_candidate
 
     tomcat_removed_webapp_directory_candidate = _tomcat_removed_webapp_directory_candidate(rule, stig_id)
     if tomcat_removed_webapp_directory_candidate:
