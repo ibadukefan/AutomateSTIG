@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--streaming-connection-idle-timeout'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" || exit 0; v=\\$(awk -F: '/^[[:space:]]*streamingConnectionIdleTimeout[[:space:]]*:/ {gsub(/[[:space:]\\\"'\"']/,\\\"\\\",\\$2); print \\$2; exit}' \\\"\\$cfg\\\"); case \\\"\\$v\\\" in *h) n=\\${v%h}; sec=\\$((n*3600));; *m) n=\\${v%m}; sec=\\$((n*60));; *s) n=\\${v%s}; sec=\\$n;; *) sec=0;; esac; [ \\\"\\$sec\\\" -ge 300 ] && printf Compliant\"",
+      "type": "command_output"
+    },
+    "description": "Kubernetes Kubelet must not disable timeouts.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-245541"
+  },
   "check_content_excerpt": "Follow these steps to check streaming-connection-idle-timeout:\n\n1. On the Control Plane, run the command:\n\nps -ef | grep kubelet\n\nIf the \"--streaming-connection-idle-timeout\" option exists, this is a finding.\n\nNote the path to the config file (identified by --config).\n\n2. Run the command:\n\ngrep -i streamingConnectionIdleTimeout <path_to_config_file>\n\nIf the setting \"streamingConnectionIdleTimeout\" is set to less than \"5m\" or is not configured, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Follow these steps to configure streaming-connection-idle-timeout:\n1. On the Control Plane, run the command:\nps -ef | grep kubelet\n\nRemove the \"--streaming-connection-idle-timeout\" option if present.\n\nNote the path to the config file (identified by --config).\n\n2. Edit the Kubernetes Kubelet file in the --config directory on the Kubernetes Control Plane:\n\nSet the argument \"streamingConnectionIdleTimeout\" to a value of \"5m\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-245541r1069469_rule",
   "severity": "medium",

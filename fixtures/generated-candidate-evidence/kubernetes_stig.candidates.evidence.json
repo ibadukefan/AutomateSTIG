@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 51,
+  "candidate_checks": 52,
   "cases": [
     {
       "check": {
@@ -1251,6 +1251,32 @@
     },
     {
       "check": {
+        "command": "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--streaming-connection-idle-timeout'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" || exit 0; v=\\$(awk -F: '/^[[:space:]]*streamingConnectionIdleTimeout[[:space:]]*:/ {gsub(/[[:space:]\\\"'\"']/,\\\"\\\",\\$2); print \\$2; exit}' \\\"\\$cfg\\\"); case \\\"\\$v\\\" in *h) n=\\${v%h}; sec=\\$((n*3600));; *m) n=\\${v%m}; sec=\\$((n*60));; *s) n=\\${v%s}; sec=\\$n;; *) sec=0;; esac; [ \\\"\\$sec\\\" -ge 300 ] && printf Compliant\"",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Kubelet must not disable timeouts.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--streaming-connection-idle-timeout'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" || exit 0; v=\\$(awk -F: '/^[[:space:]]*streamingConnectionIdleTimeout[[:space:]]*:/ {gsub(/[[:space:]\\\"'\"']/,\\\"\\\",\\$2); print \\$2; exit}' \\\"\\$cfg\\\"); case \\\"\\$v\\\" in *h) n=\\${v%h}; sec=\\$((n*3600));; *m) n=\\${v%m}; sec=\\$((n*60));; *s) n=\\${v%s}; sec=\\$n;; *) sec=0;; esac; [ \\\"\\$sec\\\" -ge 300 ] && printf Compliant\"": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--streaming-connection-idle-timeout'; then exit 0; fi; cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); test -n \\\"\\$cfg\\\" || exit 0; v=\\$(awk -F: '/^[[:space:]]*streamingConnectionIdleTimeout[[:space:]]*:/ {gsub(/[[:space:]\\\"'\"']/,\\\"\\\",\\$2); print \\$2; exit}' \\\"\\$cfg\\\"); case \\\"\\$v\\\" in *h) n=\\${v%h}; sec=\\$((n*3600));; *m) n=\\${v%m}; sec=\\$((n*60));; *s) n=\\${v%s}; sec=\\$n;; *) sec=0;; esac; [ \\\"\\$sec\\\" -ge 300 ] && printf Compliant\"": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-245541"
+    },
+    {
+      "check": {
         "command": "grep -i basic-auth-file /etc/kubernetes/manifests/*",
         "type": "command_output"
       },
@@ -1333,5 +1359,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 51
+  "validated_candidates": 52
 }

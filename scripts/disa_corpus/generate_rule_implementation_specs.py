@@ -1958,6 +1958,40 @@ def _kubernetes_validating_admission_webhook_candidate(rule: dict, stig_id: str)
     }
 
 
+def _kubernetes_kubelet_streaming_idle_timeout_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-245541':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if '--streaming-connection-idle-timeout' not in content:
+        return None
+    if 'grep -i streamingConnectionIdleTimeout <path_to_config_file>' not in content:
+        return None
+    if not re.search(r'identified\s+by\s+--config', content, re.IGNORECASE):
+        return None
+    if not re.search(r'streamingConnectionIdleTimeout["”]?\s+is\s+set\s+to\s+less\s+than\s+["“]5m["”]?\s+or\s+is\s+not\s+configured', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Remove\s+the\s+["“]--streaming-connection-idle-timeout["”]\s+option\s+if\s+present', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'Set\s+the\s+argument\s+["“]streamingConnectionIdleTimeout["”]\s+to\s+a\s+value\s+of\s+["“]5m["”]', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c \"if ps -ef | grep '[k]ubelet' | grep -q -- '--streaming-connection-idle-timeout'; then exit 0; fi; "
+        "cfg=\\$(ps -ef | grep '[k]ubelet' | tr ' ' '\\n' | sed -n 's/^--config=//p' | head -n1); "
+        "test -n \\\"\\$cfg\\\" || exit 0; "
+        "v=\\$(awk -F: '/^[[:space:]]*streamingConnectionIdleTimeout[[:space:]]*:/ {gsub(/[[:space:]\\\"'\"']/,\\\"\\\",\\$2); print \\$2; exit}' \\\"\\$cfg\\\"); "
+        "case \\\"\\$v\\\" in *h) n=\\${v%h}; sec=\\$((n*3600));; *m) n=\\${v%m}; sec=\\$((n*60));; *s) n=\\${v%s}; sec=\\$n;; *) sec=0;; esac; "
+        "[ \\\"\\$sec\\\" -ge 300 ] && printf Compliant\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_kubelet_config_value_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower():
         return None
@@ -10021,6 +10055,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_admission_candidate = _kubernetes_validating_admission_webhook_candidate(rule, stig_id)
     if kubernetes_admission_candidate:
         return kubernetes_admission_candidate
+    kubernetes_kubelet_streaming_idle_timeout_candidate = _kubernetes_kubelet_streaming_idle_timeout_candidate(rule, stig_id)
+    if kubernetes_kubelet_streaming_idle_timeout_candidate:
+        return kubernetes_kubelet_streaming_idle_timeout_candidate
     kubernetes_kubelet_config_value_candidate = _kubernetes_kubelet_config_value_candidate(rule, stig_id)
     if kubernetes_kubelet_config_value_candidate:
         return kubernetes_kubelet_config_value_candidate

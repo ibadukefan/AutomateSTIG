@@ -235,6 +235,21 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('-perm -002', candidate['check']['command'])
         self.assertIn('! -perm -1000', candidate['check']['command'])
 
+    def test_infers_kubernetes_kubelet_streaming_connection_idle_timeout_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-245541',
+            'title': 'Kubernetes Kubelet must not disable timeouts.',
+            'check_content': 'Follow these steps to check streaming-connection-idle-timeout:\n1. On the Control Plane, run the command:\nps -ef | grep kubelet\nIf the "--streaming-connection-idle-timeout" option exists, this is a finding. Note the path to the config file (identified by --config).\n2. Run the command:\ngrep -i streamingConnectionIdleTimeout <path_to_config_file>\nIf the setting "streamingConnectionIdleTimeout" is set to less than "5m" or is not configured, this is a finding.',
+            'fix_text': 'Follow these steps to configure streaming-connection-idle-timeout:\n1. On the Control Plane, run the command:\nps -ef | grep kubelet\nRemove the "--streaming-connection-idle-timeout" option if present. Note the path to the config file (identified by --config).\n2. Edit the Kubernetes Kubelet file in the --config directory on the Kubernetes Control Plane:\nSet the argument "streamingConnectionIdleTimeout" to a value of "5m".',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-245541')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('--streaming-connection-idle-timeout', candidate['check']['command'])
+        self.assertIn('streamingConnectionIdleTimeout', candidate['check']['command'])
+        self.assertIn('300', candidate['check']['command'])
+
     def test_infers_rhel7_authconfig_custom_pam_symlink_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-255928',
