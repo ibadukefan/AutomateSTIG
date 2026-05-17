@@ -654,6 +654,39 @@ $ {command}
                 })
                 self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_rhel9_scap_fix_only_package_install_candidate_from_exact_vuln_and_dnf_prose(self):
+        cases = [
+            ('xccdf_mil.disa.stig_group_V-257825', 'subscription-manager'),
+            ('xccdf_mil.disa.stig_group_V-257838', 'openssl-pkcs11'),
+            ('xccdf_mil.disa.stig_group_V-258234', 'crypto-policies'),
+        ]
+        for vuln_id, package in cases:
+            with self.subTest(vuln_id=vuln_id):
+                install_command = f'sudo dnf install {package}' if package != 'crypto-policies' else f'sudo dnf -y install {package}'
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'RHEL 9 {package} package must be installed.',
+                    'check_content': '',
+                    'fix_text': f'The {package} package can be installed with the following command:\n\n$ {install_command}',
+                }, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark')
+
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertEqual(candidate['check'], {'type': 'package', 'name': package, 'should_be_installed': True})
+                self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
+    def test_rhel9_scap_fix_only_package_install_requires_exact_vuln_package_and_platform(self):
+        base_rule = {
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-257825',
+            'title': 'RHEL 9 subscription-manager package must be installed.',
+            'check_content': '',
+            'fix_text': 'The subscription-manager package can be installed with the following command:\n\n$ sudo dnf install subscription-manager',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**base_rule, 'vuln_id': 'xccdf_mil.disa.stig_group_V-999999'}, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark'))
+        self.assertIsNone(mod.infer_candidate_check({**base_rule, 'fix_text': 'The package can be installed with the following command:\n\n$ sudo dnf install other-package'}, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark'))
+        self.assertIsNone(mod.infer_candidate_check(base_rule, 'RHEL_9_STIG'))
+
     def test_infers_windows_server_domain_controller_pki_certificate_exists_candidate(self):
         for vuln_id, stig_id, title in [
             ('V-205645', 'Windows_Server_2019_STIG', 'Windows Server 2019 domain controllers must have a PKI server certificate.'),
@@ -2410,6 +2443,28 @@ If no results are returned, this is a finding.''',
             'check': {'type': 'command_output', 'command': "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"nosuid\") ok=1; if (!ok) print }' /etc/fstab"},
             'expected': {'type': 'equals', 'value': ''},
             'description': 'The Red Hat Enterprise Linux operating system must prevent files with the setuid and setgid bit set from being executed on file systems that are imported via Network File System (NFS).',
+        })
+
+    def test_infers_rhel7_nfs_rpcsec_gss_candidate_from_exact_vuln_and_fstab_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204626',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS.',
+            'check_content': '''To check if the system is importing an NFS file system, look for any entries in the /etc/fstab file that have a file system type of nfs with the following command:
+
+# cat /etc/fstab | grep nfs
+192.168.21.5:/mnt/export /data1 nfs4 rw,sync,soft,sec=krb5:krb5i:krb5p
+
+If the system is mounting file systems via NFS and has the sec option without the "krb5:krb5i:krb5p" settings, the "sec" option has the "sys" setting, or the "sec" option is missing, this is a finding.''',
+            'fix_text': '''Update the /etc/fstab file so the option sec is defined for each NFS mounted file system and the sec option does not have the sys setting.
+
+Ensure the sec option is defined as "krb5:krb5i:krb5p".''',
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-204626',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "awk '!/^\\s*#/ && $3 ~ /^nfs/ && ($4 !~ /(^|,)sec=(krb5|krb5i|krb5p)(:krb5|:krb5i|:krb5p)*(,|$)/ || $4 ~ /(^|,)sec=sys(,|$)/) {print}' /etc/fstab"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS.',
         })
 
     def test_infers_rhel9_firewalld_runtime_and_permanent_drop_target_candidate(self):

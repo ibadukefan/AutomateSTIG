@@ -3715,6 +3715,56 @@ def _sles_interactive_home_nosuid_candidate(rule: dict, stig_id: str) -> dict | 
     }
 
 
+def _rhel9_scap_fix_only_package_candidate(rule: dict, stig_id: str) -> dict | None:
+    stig_lower = stig_id.lower()
+    if 'scap_mil.disa.stig_collection_u_rhel_9_' not in stig_lower:
+        return None
+    canonical_match = re.search(r'V-\d+', rule.get('vuln_id', '') or '')
+    if not canonical_match:
+        return None
+    allowed_packages = {
+        'V-257825': 'subscription-manager',
+        'V-257838': 'openssl-pkcs11',
+        'V-257839': 'gnutls-utils',
+        'V-257840': 'nss-tools',
+        'V-257841': 'rng-tools',
+        'V-257842': 's-nail',
+        'V-257935': 'firewalld',
+        'V-257943': 'chrony',
+        'V-257954': 'libreswan',
+        'V-257978': 'openssh-server',
+        'V-257980': 'openssh-clients',
+        'V-258081': 'policycoreutils',
+        'V-258082': 'policycoreutils-python-utils',
+        'V-258083': 'sudo',
+        'V-258089': 'fapolicyd',
+        'V-258124': 'pcsc-lite',
+        'V-258126': 'opensc',
+        'V-258141': 'rsyslog-gnutls',
+        'V-258151': 'audit',
+        'V-258175': 'audispd-plugins',
+        'V-258234': 'crypto-policies',
+    }
+    package = allowed_packages.get(canonical_match.group(0))
+    if not package:
+        return None
+    fix_text = rule.get('fix_text', '') or ''
+    if re.search(r'\b(?:reinstall|remove|erase|unless|exception|documented|organization-defined|mission-essential)\b', fix_text, re.IGNORECASE):
+        return None
+    install_match = re.search(r'\bdnf\s+(?:-y\s+)?install\s+([A-Za-z0-9_.:+-]+)\b', fix_text, re.IGNORECASE)
+    if not install_match or install_match.group(1).lower() != package:
+        return None
+    if not re.search(rf'\b{re.escape(package)}\s+package\b|\bpackage\s+{re.escape(package)}\b|\binstall\s+the\s+{re.escape(package)}\b', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'package', 'name': package, 'should_be_installed': True},
+        'expected': {'type': 'is_true'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _package_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -5542,6 +5592,23 @@ def _nfs_fstab_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     if not re.search(r'cat\s+/etc/fstab\s*\|\s*grep\s+nfs', content, re.IGNORECASE):
         return None
+
+    if rule.get('vuln_id', '') == 'V-204626' and re.search(r'\bNetwork\s+File\s+System\s*\(NFS\).*?configured\s+to\s+use\s+RPCSEC_GSS\b', title, re.IGNORECASE):
+        if re.search(r'\borganization-defined|documented|ISSO|ISSM|site-defined\b', combined, re.IGNORECASE):
+            return None
+        if not re.search(r'sec\s+option\s+without\s+the\s+["“]krb5:krb5i:krb5p["”]\s+settings.*?["“]sec["”]\s+option\s+has\s+the\s+["“]sys["”]\s+setting.*?["“]sec["”]\s+option\s+is\s+missing,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+            return None
+        if not re.search(r'Ensure\s+the\s+["“]?sec["”]?\s+option\s+is\s+defined\s+as\s+["“]krb5:krb5i:krb5p["”]', fix_text, re.IGNORECASE):
+            return None
+        command = "awk '!/^\\s*#/ && $3 ~ /^nfs/ && ($4 !~ /(^|,)sec=(krb5|krb5i|krb5p)(:krb5|:krb5i|:krb5p)*(,|$)/ || $4 ~ /(^|,)sec=sys(,|$)/) {print}' /etc/fstab"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+
     if not re.search(r'If\s+no\s+NFS\s+mounts\s+are\s+configured,\s+this\s+requirement\s+is\s+Not\s+Applicable', content, re.IGNORECASE):
         return None
 
@@ -10871,7 +10938,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
+        for infer_with_stig in (_linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate
