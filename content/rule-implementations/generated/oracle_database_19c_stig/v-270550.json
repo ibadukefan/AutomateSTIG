@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM dba_profiles WHERE resource_name = 'FAILED_LOGIN_ATTEMPTS' AND (UPPER(limit) = 'UNLIMITED' OR TO_NUMBER(limit DEFAULT 999999 ON CONVERSION ERROR) > 3);\nEXIT\nSQL",
+      "type": "command_output"
+    },
+    "description": "Oracle Database must set the maximum number of consecutive invalid logon attempts to three.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "generic",
+    "vuln_id": "V-270550"
+  },
   "check_content_excerpt": "The limit on the number of consecutive failed logon attempts is defined in the profile assigned to a user.\n\nCheck the FAILED_LOGIN_ATTEMPTS value assigned to the profiles returned from this query:\n\nSQL>SELECT PROFILE, RESOURCE_NAME, LIMIT FROM DBA_PROFILES;\n\nCheck the setting for FAILED_LOGIN_ATTEMPTS. This is the number of consecutive failed logon attempts before locking the Oracle user account. If the value is greater than three on any of the profiles, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the database management system (DBMS) setting to specify the maximum number of consecutive failed logon attempts to three (or less):\n\nALTER PROFILE {PROFILE_NAME} LIMIT FAILED_LOGIN_ATTEMPTS 3;\n\nORA_STIG_PROFILE is available in DBA_PROFILES. \n\nNote: It is necessary to create a customized replacement for the password validation function, ORA12C_STIG_VERIFY_FUNCTION, if relying on this technique to verify password complexity.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270550r1112482_rule",
   "severity": "medium",

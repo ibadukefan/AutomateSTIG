@@ -140,6 +140,20 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('tls-private-key-file', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_oracle_failed_login_attempts_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270550',
+            'title': 'Oracle Database must set the maximum number of consecutive invalid logon attempts to three.',
+            'check_content': "Check the FAILED_LOGIN_ATTEMPTS value assigned to the profiles returned from this query:\n\nSQL>SELECT PROFILE, RESOURCE_NAME, LIMIT FROM DBA_PROFILES;\n\nIf the value is greater than three on any of the profiles, this is a finding.",
+            'fix_text': "Configure the database management system (DBMS) setting to specify the maximum number of consecutive failed logon attempts to three (or less):\n\nALTER PROFILE {PROFILE_NAME} LIMIT FAILED_LOGIN_ATTEMPTS 3;",
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270550')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('FAILED_LOGIN_ATTEMPTS', candidate['check']['command'])
+        self.assertIn('> 3', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_oracle_profile_password_lock_time_unlimited_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270549',

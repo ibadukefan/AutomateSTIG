@@ -9231,6 +9231,34 @@ def _oracle_database_cman_remote_admin_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _oracle_database_failed_login_attempts_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270550':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'FAILED_LOGIN_ATTEMPTS', content, re.IGNORECASE):
+        return None
+    if not re.search(r'value\s+is\s+greater\s+than\s+three\s+on\s+any\s+of\s+the\s+profiles,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'ALTER\s+PROFILE\s+\{PROFILE_NAME\}\s+LIMIT\s+FAILED_LOGIN_ATTEMPTS\s+3', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sqlplus -s / as sysdba <<'SQL'\n"
+        "SET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\n"
+        "SELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM dba_profiles "
+        "WHERE resource_name = 'FAILED_LOGIN_ATTEMPTS' AND (UPPER(limit) = 'UNLIMITED' OR TO_NUMBER(limit DEFAULT 999999 ON CONVERSION ERROR) > 3);\n"
+        "EXIT\n"
+        "SQL"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_exact_parameter_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE):
         return None
@@ -11061,6 +11089,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_cman_remote_admin_candidate = _oracle_database_cman_remote_admin_candidate(rule, stig_id)
     if oracle_database_cman_remote_admin_candidate:
         return oracle_database_cman_remote_admin_candidate
+
+    oracle_database_failed_login_attempts_candidate = _oracle_database_failed_login_attempts_candidate(rule, stig_id)
+    if oracle_database_failed_login_attempts_candidate:
+        return oracle_database_failed_login_attempts_candidate
 
     oracle_database_exact_parameter_candidate = _oracle_database_exact_parameter_candidate(rule, stig_id)
     if oracle_database_exact_parameter_candidate:
