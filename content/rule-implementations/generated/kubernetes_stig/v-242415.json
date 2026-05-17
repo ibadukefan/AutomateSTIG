@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "kubectl get pods --all-namespaces -o yaml | grep -A5 'secretKeyRef'",
+      "type": "command_output"
+    },
+    "description": "Secrets in Kubernetes must not be stored as environment variables.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242415"
+  },
   "check_content_excerpt": "Follow these steps to check, from the Kubernetes control plane, if secrets are stored as environment variables.\n\n1. Find All Pods Using Secrets in Environment Variables.\n\nTo list all pods using secrets as environment variables, execute:\n\nkubectl get pods --all-namespaces -o yaml | grep -A5 \"secretKeyRef\"\n\nIf any of the values returned reference environment variables, this is a finding.\n\n2. Check Environment Variables in a Specific Pod.\n\nTo check if a specific pod is using secrets as environment variables, execute:\n\nkubectl get pods -n <namespace>\n(Replace <namespace> with the actual namespace, or omit -n <namespace> to check in the default namespace.)\nkubectl describe pod <pod-name> -n <namespace> | grep -A5 \"Environment:\"\n\nIf secrets are used, output like the following will be displayed:\n\nEnvironment:\n  SECRET_USERNAME:   <set from secret: my-secret key: username>\n  SECRET_PASSWORD:   <set from secret: my-secret key: password>\n\nIf the output is similar to this, the pod is using Kubernetes secrets as environment variables, and this is a finding.\n\n3. Check the Pod YAML for Secret Usage.\n\nTo check the full YAML definition for environment variables, execute:\n\nkubectl get pod <pod-name> -n <namespace> -o yaml | grep -A5 \"env:\"\n\nExample output:\nyaml\nCopyEdit\nenv:\n  - name: SECRET_USERNAME\n    valueFrom:\n      secretKeyRef:\n        name: my-secret\n        key: username\n\nThis means the pod is pulling the secret named my-secret and setting SECRET_USERNAME from its username key.\n\nIf the pod is pulling a secret and setting an environment variable in the \"env:\", this is a finding.\n\n4. Check Secrets in a Deployment, StatefulSet, or DaemonSet.\n\nIf the pod is managed by a Deployment, StatefulSet, or DaemonSet, check their configurations:\n\nkubectl get deployment <deployment-name> -n <namespace> -o yaml | grep -A5 \"env:\"\n\nor\n\nFor all Deployments in all namespaces:\n\nkubectl get deployments --all-namespaces -o yaml | grep -A5 \"env:\"\n\nIf the pod is pulling a secret and setting an environment variable in the \"env:\", this is a finding.\n\n5. Check Environment Variables Inside a Running Pod.\n\nIf needed, check the environment variables inside a running pod:\n\nkubectl exec -it <pod-name> -n <namespace> -- env | grep SECRET\n\nIf any of the values returned reference environment variables, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Any secrets stored as environment variables must be moved to the secret files with the proper protections and enforcements or placed within a password vault.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242415r1069466_rule",
   "severity": "high",

@@ -2094,6 +2094,23 @@ def _kubernetes_api_server_request_timeout_candidate(rule: dict, stig_id: str) -
     }
 
 
+def _kubernetes_secret_env_var_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-242415':
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'kubectl\s+get\s+pods\s+--all-namespaces\s+-o\s+yaml\s*\|\s*grep\s+-A5\s+["“]?secretKeyRef["”]?', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+of\s+the\s+values\s+returned\s+reference\s+environment\s+variables,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': "kubectl get pods --all-namespaces -o yaml | grep -A5 'secretKeyRef'"},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_manifest_grep_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower():
         return None
@@ -3075,10 +3092,16 @@ def _sysctl_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     combined = '\n'.join(part for part in (content, fix_text) if part)
-    match = re.search(r'\bsysctl\s+([a-zA-Z0-9_.-]+)', content)
+    match = re.search(r'\bsysctl\s+(?!-)([a-zA-Z0-9_.-]+)', content)
     key = None
     expected = None
-    if match:
+    sysctl_a_grep_match = re.search(r'\bsysctl\s+-a\s*\|\s*grep\s+([a-zA-Z0-9_.-]+)', content)
+    if sysctl_a_grep_match:
+        key = sysctl_a_grep_match.group(1)
+        value_match = re.search(rf'{re.escape(key)}\s*=\s*([^\s,.;]+)', combined)
+        if value_match:
+            expected = value_match.group(1).strip().strip('"')
+    elif match:
         key = match.group(1)
         value_match = re.search(rf'{re.escape(key)}\s*=\s*([^\s,.;]+)', combined)
         if not value_match:
@@ -3202,6 +3225,30 @@ def _linux_shadow_password_lifetime_candidate(rule: dict, stig_id: str) -> dict 
             'description': rule.get('title', ''),
         }
     return None
+
+
+def _rhel7_duplicate_uid_zero_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'RHEL_7_STIG' or rule.get('vuln_id', '') != 'V-204462':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (rule.get('title', '') or '', content, fix_text) if part)
+    if not re.search(r'root\s+account\s+must\s+be\s+the\s+only\s+account\s+having\s+unrestricted\s+access', combined, re.IGNORECASE):
+        return None
+    if not re.search(r"awk\s+-F:\s+'\$3\s*==\s*0\s*\{\s*print\s+\$1\s*\}'\s+/etc/passwd", content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+accounts\s+other\s+than\s+root\s+have\s+a\s+UID\s+of\s+["“]0["”],?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Change\s+the\s+UID\s+of\s+any\s+account\s+on\s+the\s+system,?\s+other\s+than\s+root,?\s+that\s+has\s+a\s+UID\s+of\s+["“]0["”]', fix_text, re.IGNORECASE):
+        return None
+    command = "awk -F: '$3 == 0 && $1 != \"root\" {print $1}' /etc/passwd"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
 
 
 def _sles_bios_grub_password_pbkdf2_candidate(rule: dict, stig_id: str) -> dict | None:
@@ -10052,6 +10099,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    rhel7_duplicate_uid_zero_candidate = _rhel7_duplicate_uid_zero_candidate(rule, stig_id)
+    if rhel7_duplicate_uid_zero_candidate:
+        return rhel7_duplicate_uid_zero_candidate
     kubernetes_admission_candidate = _kubernetes_validating_admission_webhook_candidate(rule, stig_id)
     if kubernetes_admission_candidate:
         return kubernetes_admission_candidate
@@ -10067,6 +10117,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_request_timeout_candidate = _kubernetes_api_server_request_timeout_candidate(rule, stig_id)
     if kubernetes_request_timeout_candidate:
         return kubernetes_request_timeout_candidate
+    kubernetes_secret_env_var_candidate = _kubernetes_secret_env_var_candidate(rule, stig_id)
+    if kubernetes_secret_env_var_candidate:
+        return kubernetes_secret_env_var_candidate
     kubernetes_manifest_grep_candidate = _kubernetes_manifest_grep_candidate(rule, stig_id)
     if kubernetes_manifest_grep_candidate:
         return kubernetes_manifest_grep_candidate
@@ -10595,7 +10648,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
+        for infer_with_stig in (_linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

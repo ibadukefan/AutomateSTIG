@@ -111,6 +111,19 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('--request-timeout', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_kubernetes_secret_env_var_candidate_from_exact_secretkeyref_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242415',
+            'title': 'Secrets in Kubernetes must not be stored as environment variables.',
+            'check_content': 'Follow these steps to check, from the Kubernetes control plane, if secrets are stored as environment variables.\n\n1. Find All Pods Using Secrets in Environment Variables.\n\nTo list all pods using secrets as environment variables, execute:\n\nkubectl get pods --all-namespaces -o yaml | grep -A5 "secretKeyRef"\n\nIf any of the values returned reference environment variables, this is a finding.',
+            'fix_text': 'Do not store secrets in environment variables.',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242415')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "kubectl get pods --all-namespaces -o yaml | grep -A5 'secretKeyRef'"})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_postfix_root_alias_candidate_from_exact_audit_failure_mail_alias_prose(self):
         for vuln_id, stig_id in (('V-258174', 'RHEL_9_STIG'), ('V-271744', 'Oracle_Linux_9_STIG')):
             with self.subTest(vuln_id=vuln_id):
@@ -126,6 +139,32 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertIn('postconf -h alias_maps', candidate['check']['command'])
                 self.assertIn('postmap -q root', candidate['check']['command'])
                 self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Configured'})
+
+    def test_infers_rhel7_duplicate_uid_zero_candidate_from_exact_passwd_awk_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204462',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured so that the root account must be the only account having unrestricted access to the system.',
+            'check_content': 'Check the system for duplicate UID "0" assignments with the following command:\n\n# awk -F: \'$3 == 0 {print $1}\' /etc/passwd\n\nIf any accounts other than root have a UID of "0", this is a finding.',
+            'fix_text': 'Change the UID of any account on the system, other than root, that has a UID of "0".',
+        }, 'RHEL_7_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-204462')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn("$3 == 0", candidate['check']['command'])
+        self.assertIn('/etc/passwd', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_rhel7_sysctl_a_grep_candidate_from_exact_config_and_runtime_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204615',
+            'title': 'The Red Hat Enterprise Linux operating system must ignore Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages.',
+            'check_content': 'Verify the system ignores IPv4 ICMP redirect messages.\n\n# grep -r net.ipv4.conf.all.accept_redirects /run/sysctl.d/* /etc/sysctl.d/* /usr/local/lib/sysctl.d/* /usr/lib/sysctl.d/* /lib/sysctl.d/* /etc/sysctl.conf 2> /dev/null\n\nIf "net.ipv4.conf.all.accept_redirects" is not configured in the /etc/sysctl.conf file or in any of the other sysctl.d directories, is commented out, or does not have a value of "0", this is a finding.\n\nCheck that the operating system implements the "accept_redirects" variables with the following command:\n\n# /sbin/sysctl -a | grep net.ipv4.conf.all.accept_redirects\nnet.ipv4.conf.all.accept_redirects = 0\n\nIf the returned line does not have a value of "0", this is a finding.\n\nIf conflicting results are returned, this is a finding.',
+            'fix_text': 'Set the system to ignore IPv4 ICMP redirect messages by adding the following line to "/etc/sysctl.conf" or a configuration file in the /etc/sysctl.d/ directory (or modify the line to have the required value):\n\nnet.ipv4.conf.all.accept_redirects = 0\n\nIssue the following command to make the changes take effect:\n\n# sysctl --system',
+        }, 'RHEL_7_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['check'], {'type': 'sysctl', 'key': 'net.ipv4.conf.all.accept_redirects'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
 
     def test_infers_windows_server_2022_name_based_strong_mapping_candidate_from_exact_vuln_and_gpedit_prose(self):
         candidate = mod.infer_candidate_check({

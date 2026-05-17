@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 52,
+  "candidate_checks": 53,
   "cases": [
     {
       "check": {
@@ -182,6 +182,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242409"
+    },
+    {
+      "check": {
+        "command": "kubectl get pods --all-namespaces -o yaml | grep -A5 'secretKeyRef'",
+        "type": "command_output"
+      },
+      "description": "Secrets in Kubernetes must not be stored as environment variables.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "kubectl get pods --all-namespaces -o yaml | grep -A5 'secretKeyRef'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "kubectl get pods --all-namespaces -o yaml | grep -A5 'secretKeyRef'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242415"
     },
     {
       "check": {
@@ -1359,5 +1385,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 52
+  "validated_candidates": 53
 }

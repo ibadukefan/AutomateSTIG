@@ -93,6 +93,19 @@
     },
     {
       "check": {
+        "command": "kubectl get pods --all-namespaces -o yaml | grep -A5 'secretKeyRef'",
+        "type": "command_output"
+      },
+      "description": "Secrets in Kubernetes must not be stored as environment variables.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242415"
+    },
+    {
+      "check": {
         "command": "grep -h -- '--tls-cipher-suites' /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | head -n1",
         "type": "command_output"
       },
