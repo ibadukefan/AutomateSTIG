@@ -12622,6 +12622,73 @@ Successfully processed 1 files; Failed processing 0 files''',
         self.assertIn("icacls 'C:\\'", candidate['check']['command'])
         self.assertIn('BUILTIN\\Users:(CI)(IO)(WD)', candidate['check']['command'])
 
+    def test_infers_windows_server_2025_program_files_icacls_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-277999',
+            'title': 'Windows Server 2025 permissions for program file directories must conform to minimum requirements.',
+            'check_content': '''The default permissions are adequate when the Security Option "Network access: Let Everyone permissions apply to anonymous users" is set to "Disabled" (WN25-SO-000240).
+Alternately, use icacls:
+'icacls "c:\\program files"'
+'icacls "c:\\program files (x86)"'
+The following results must be displayed for each when entered:
+NT SERVICE\\TrustedInstaller:(F)
+NT SERVICE\\TrustedInstaller:(CI)(IO)(F)
+NT AUTHORITY\\SYSTEM:(M)
+NT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)
+BUILTIN\\Administrators:(M)
+BUILTIN\\Administrators:(OI)(CI)(IO)(F)
+BUILTIN\\Users:(RX)
+BUILTIN\\Users:(OI)(CI)(IO)(GR,GE)
+CREATOR OWNER:(OI)(CI)(IO)(F)
+APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES:(RX)
+APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)
+APPLICATION PACKAGE AUTHORITY\\ALL RESTRICTED APPLICATION PACKAGES:(RX)
+APPLICATION PACKAGE AUTHORITY\\ALL RESTRICTED APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)
+If permissions are not as restrictive as the default permissions listed below, this is a finding.''',
+            'fix_text': 'Maintain the default permissions for the program file directories and configure the Security Option "Network access: Let Everyone permissions apply to anonymous users" to "Disabled" (WN25-SO-000240).',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate['vuln_id'], 'V-277999')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn("'C:\\Program Files'", candidate['check']['command'])
+        self.assertIn("'C:\\Program Files (x86)'", candidate['check']['command'])
+        self.assertIn('icacls $dir', candidate['check']['command'])
+        self.assertIn('EveryoneIncludesAnonymous', candidate['check']['command'])
+        self.assertIn('APPLICATION PACKAGE AUTHORITY\\ALL RESTRICTED APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)', candidate['check']['command'])
+
+    def test_infers_windows_server_2025_windows_directory_icacls_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278000',
+            'title': 'Windows Server 2025 permissions for the Windows installation directory must conform to minimum requirements.',
+            'check_content': '''The default permissions are adequate when the Security Option "Network access: Let Everyone permissions apply to anonymous users" is set to "Disabled" (WN25-SO-000240).
+Enter "icacls" followed by the directory:
+"icacls c:\\windows"
+The following results must be displayed for each when entered:
+NT SERVICE\\TrustedInstaller:(F)
+NT SERVICE\\TrustedInstaller:(CI)(IO)(F)
+NT AUTHORITY\\SYSTEM:(M)
+NT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)
+BUILTIN\\Administrators:(M)
+BUILTIN\\Administrators:(OI)(CI)(IO)(F)
+BUILTIN\\Users:(RX)
+BUILTIN\\Users:(OI)(CI)(IO)(GR,GE)
+CREATOR OWNER:(OI)(CI)(IO)(F)
+APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES:(RX)
+APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)
+APPLICATION PACKAGE AUTHORITY\\ALL RESTRICTED APPLICATION PACKAGES:(RX)
+APPLICATION PACKAGE AUTHORITY\\ALL RESTRICTED APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)
+If permissions are not as restrictive as the default permissions listed below, this is a finding.''',
+            'fix_text': 'Maintain the default file ACLs and configure the Security Option "Network access: Let Everyone permissions apply to anonymous users" to "Disabled" (WN25-SO-000240).',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate['vuln_id'], 'V-278000')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn("'C:\\Windows'", candidate['check']['command'])
+        self.assertIn('icacls $dir', candidate['check']['command'])
+        self.assertIn('EveryoneIncludesAnonymous', candidate['check']['command'])
+
     def test_infers_sql_server_audit_action_groups_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271375',

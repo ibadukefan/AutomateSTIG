@@ -9742,6 +9742,70 @@ def _windows_system_drive_root_icacls_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _windows_server_2025_install_directory_icacls_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    target_dirs_by_vuln = {
+        'V-277999': ['C:\\Program Files', 'C:\\Program Files (x86)'],
+        'V-278000': ['C:\\Windows'],
+    }
+    target_dirs = target_dirs_by_vuln.get(vuln_id)
+    if not target_dirs:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (content, fix_text, rule.get('title', '') or '') if part)
+    if 'Windows Server 2025' not in combined:
+        return None
+    if not re.search(r'Network\s+access:\s+Let\s+Everyone\s+permissions\s+apply\s+to\s+anonymous\s+users', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'WN25-SO-000240', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+permissions\s+are\s+not\s+as\s+restrictive\s+as\s+the\s+default\s+permissions\s+listed\s+below,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    required_acl_lines = [
+        r'NT SERVICE\TrustedInstaller:(F)',
+        r'NT SERVICE\TrustedInstaller:(CI)(IO)(F)',
+        r'NT AUTHORITY\SYSTEM:(M)',
+        r'NT AUTHORITY\SYSTEM:(OI)(CI)(IO)(F)',
+        r'BUILTIN\Administrators:(M)',
+        r'BUILTIN\Administrators:(OI)(CI)(IO)(F)',
+        r'BUILTIN\Users:(RX)',
+        r'BUILTIN\Users:(OI)(CI)(IO)(GR,GE)',
+        r'CREATOR OWNER:(OI)(CI)(IO)(F)',
+        r'APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES:(RX)',
+        r'APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)',
+        r'APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES:(RX)',
+        r'APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)',
+    ]
+    if not all(line in combined for line in required_acl_lines):
+        return None
+    normalized_combined = combined.lower().replace('"', '').replace("'", '')
+    for target_dir in target_dirs:
+        if f'icacls {target_dir.lower()}' not in normalized_combined:
+            return None
+    dirs_literal = ','.join("'" + directory.replace("'", "''") + "'" for directory in target_dirs)
+    required_literal = ','.join("'" + line.replace("'", "''") + "'" for line in required_acl_lines)
+    command = (
+        'powershell -NoProfile -Command "'
+        f'$dirs=@({dirs_literal}); $required=@({required_literal}); $missing=@(); '
+        "$anon=(Get-ItemPropertyValue -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'EveryoneIncludesAnonymous' -ErrorAction SilentlyContinue); "
+        "if($anon -ne 0){ $missing += 'EveryoneIncludesAnonymous' }; "
+        "foreach($dir in $dirs){ $out=(icacls $dir) -join [Environment]::NewLine; "
+        "foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += ($dir+':'+$line) } } }; "
+        "$missing -join ';'"
+        '"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_grub_superusers_nondefault_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -10046,6 +10110,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         system_drive_root_icacls_candidate = _windows_system_drive_root_icacls_candidate(rule, stig_id)
         if system_drive_root_icacls_candidate:
             return system_drive_root_icacls_candidate
+
+        server_2025_install_directory_icacls_candidate = _windows_server_2025_install_directory_icacls_candidate(rule, stig_id)
+        if server_2025_install_directory_icacls_candidate:
+            return server_2025_install_directory_icacls_candidate
 
         hardened_unc_candidate = _windows_hardened_unc_paths_candidate(rule, stig_id)
         if hardened_unc_candidate:

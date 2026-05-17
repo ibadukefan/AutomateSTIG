@@ -54,6 +54,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$dirs=@('C:\\Program Files','C:\\Program Files (x86)'); $required=@('NT SERVICE\\TrustedInstaller:(F)','NT SERVICE\\TrustedInstaller:(CI)(IO)(F)','NT AUTHORITY\\SYSTEM:(M)','NT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)','BUILTIN\\Administrators:(M)','BUILTIN\\Administrators:(OI)(CI)(IO)(F)','BUILTIN\\Users:(RX)','BUILTIN\\Users:(OI)(CI)(IO)(GR,GE)','CREATOR OWNER:(OI)(CI)(IO)(F)','APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES:(RX)','APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)','APPLICATION PACKAGE AUTHORITY\\ALL RESTRICTED APPLICATION PACKAGES:(RX)','APPLICATION PACKAGE AUTHORITY\\ALL RESTRICTED APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)'); $missing=@(); $anon=(Get-ItemPropertyValue -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'EveryoneIncludesAnonymous' -ErrorAction SilentlyContinue); if($anon -ne 0){ $missing += 'EveryoneIncludesAnonymous' }; foreach($dir in $dirs){ $out=(icacls $dir) -join [Environment]::NewLine; foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += ($dir+':'+$line) } } }; $missing -join ';'\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 permissions for program file directories must conform to minimum requirements.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-277999"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$dirs=@('C:\\Windows'); $required=@('NT SERVICE\\TrustedInstaller:(F)','NT SERVICE\\TrustedInstaller:(CI)(IO)(F)','NT AUTHORITY\\SYSTEM:(M)','NT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)','BUILTIN\\Administrators:(M)','BUILTIN\\Administrators:(OI)(CI)(IO)(F)','BUILTIN\\Users:(RX)','BUILTIN\\Users:(OI)(CI)(IO)(GR,GE)','CREATOR OWNER:(OI)(CI)(IO)(F)','APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES:(RX)','APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)','APPLICATION PACKAGE AUTHORITY\\ALL RESTRICTED APPLICATION PACKAGES:(RX)','APPLICATION PACKAGE AUTHORITY\\ALL RESTRICTED APPLICATION PACKAGES:(OI)(CI)(IO)(GR,GE)'); $missing=@(); $anon=(Get-ItemPropertyValue -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'EveryoneIncludesAnonymous' -ErrorAction SilentlyContinue); if($anon -ne 0){ $missing += 'EveryoneIncludesAnonymous' }; foreach($dir in $dirs){ $out=(icacls $dir) -join [Environment]::NewLine; foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += ($dir+':'+$line) } } }; $missing -join ';'\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 permissions for the Windows installation directory must conform to minimum requirements.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-278000"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$cutoff=(Get-Date).AddDays(-35); if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName } else { Get-CimInstance Win32_UserAccount -Filter 'LocalAccount=True and Disabled=False' | Where-Object { $_.Name -notin @('DefaultAccount','Guest') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | Select-Object -ExpandProperty Name }\"",
         "type": "command_output"
       },
