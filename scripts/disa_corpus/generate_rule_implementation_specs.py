@@ -1603,6 +1603,16 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'content': r'ip\s+unreachables\s+command\s+must\s+not\s+be\s+found\s+on\s+any\s+interface.*?If\s+ICMP\s+unreachable\s+notifications\s+are\s+sent\s+from\s+any\s+external\s+interfaces,\s+this\s+is\s+a\s+finding\.',
             'fix': r'no\s+ip\s+unreachables',
         },
+        'V-221085': {
+            'command': 'show running-config | include "^ ip redirects$"',
+            'content': r'no\s+ip\s+redirects\s+command\s+has\s+been\s+configured\s+on\s+all\s+external\s+interfaces.*?If\s+ICMP\s+Redirect\s+messages\s+are\s+enabled\s+on\s+any\s+external\s+interfaces,\s+this\s+is\s+a\s+finding\.',
+            'fix': r'no\s+ip\s+redirects',
+        },
+        'V-221098': {
+            'command': 'show running-config | include "^ ip proxy-arp$"',
+            'content': r'IP\s+Proxy\s+ARP\s+is\s+enabled\s+on\s+any\s+external\s+interface.*?By\s+default\s+Proxy\s+ARP\s+is\s+disabled\s+on\s+all\s+interfaces.*?If\s+IP\s+Proxy\s+ARP\s+is\s+enabled\s+on\s+any\s+external\s+interface,\s+this\s+is\s+a\s+finding\.',
+            'fix': r'no\s+ip\s+proxy-arp',
+        },
         'V-221101': {
             'command': 'show running-config | include "^ disable-connected-check$"',
             'content': r'disable-connected-check.*?If\s+the\s+switch\s+is\s+configured\s+to\s+disable\s+checking\s+whether\s+a\s+single-hop\s+eBGP\s+peer\s+is\s+directly\s+connected,\s+this\s+is\s+a\s+finding\.',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^ ip redirects$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) redirect messages disabled on all external interfaces.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "network",
+    "vuln_id": "V-221085"
+  },
   "check_content_excerpt": "Review the switch configuration to verify that the no ip redirects command has been configured on all external interfaces as shown in the example below:\n\ninterface Ethernet2/7\n no switchport\n ip address x.22.4.2/30\n no ip redirects\n\nIf ICMP Redirect messages are enabled on any external interfaces, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable ICMP redirects on all external interfaces as shown in the example below:\n\nSW1(config)# int e2/7\nSW1(config-if)# no ip redirects",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221085r999694_rule",
   "severity": "medium",

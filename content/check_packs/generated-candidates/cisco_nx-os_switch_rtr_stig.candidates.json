@@ -41,6 +41,19 @@
     },
     {
       "check": {
+        "command": "show running-config | include \"^ ip redirects$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) redirect messages disabled on all external interfaces.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "network",
+      "vuln_id": "V-221085"
+    },
+    {
+      "check": {
         "command": "show running-config | include ^no ip source-route$",
         "type": "command_output"
       },
@@ -51,6 +64,19 @@
       },
       "platform": "network",
       "vuln_id": "V-221095"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ ip proxy-arp$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to have Proxy ARP disabled on all external interfaces.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "network",
+      "vuln_id": "V-221098"
     },
     {
       "check": {

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^ ip proxy-arp$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco perimeter switch must be configured to have Proxy ARP disabled on all external interfaces.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "network",
+    "vuln_id": "V-221098"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if IP Proxy ARP is enabled on any external interface as shown in the example below:\n\ninterface Ethernet2/2\n description link to DISN\n no switchport\n ip address x.1.12.2/24\n ip proxy-arp\n no shutdown\n\nNote: By default Proxy ARP is disabled on all interfaces.\n\nIf IP Proxy ARP is enabled on any external interface, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable Proxy ARP on all external interfaces as shown in the example below:\n\nSW1(config)#int e2/2 \nSW1(config-if)# no ip proxy-arp\nSW1(config-if)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221098r999707_rule",
   "severity": "medium",

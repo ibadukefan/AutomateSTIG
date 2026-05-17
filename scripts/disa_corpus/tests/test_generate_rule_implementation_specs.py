@@ -124,6 +124,37 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(candidate['check'], {'type': 'registry', 'path': 'HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters', 'value_name': 'UseStrongNameMatches'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 1})
 
+    def test_infers_cisco_nxos_external_interface_disabled_protocol_candidates(self):
+        cases = [
+            (
+                'V-221085',
+                'The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) redirect messages disabled on all external interfaces.',
+                'Review the switch configuration to verify that the no ip redirects command has been configured on all external interfaces as shown in the example below:\n\ninterface Ethernet2/7\n no switchport\n ip address x.22.4.2/30\n no ip redirects\n\nIf ICMP Redirect messages are enabled on any external interfaces, this is a finding.',
+                'Disable ICMP redirects on all external interfaces as shown in the example below:\n\nSW1(config)# int e2/7\nSW1(config-if)# no ip redirects',
+                'show running-config | include "^ ip redirects$"',
+            ),
+            (
+                'V-221098',
+                'The Cisco perimeter switch must be configured to have Proxy ARP disabled on all external interfaces.',
+                'Review the switch configuration to determine if IP Proxy ARP is enabled on any external interface as shown in the example below:\n\ninterface Ethernet2/2\n description link to DISN\n no switchport\n ip address x.1.12.2/24\n ip proxy-arp\n no shutdown\n\nNote: By default Proxy ARP is disabled on all interfaces.\n\nIf IP Proxy ARP is enabled on any external interface, this is a finding.',
+                'Disable Proxy ARP on all external interfaces as shown in the example below:\n\nSW1(config)#int e2/2\nSW1(config-if)# no ip proxy-arp',
+                'show running-config | include "^ ip proxy-arp$"',
+            ),
+        ]
+        for vuln_id, title, check_content, fix_text, command in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': check_content,
+                    'fix_text': fix_text,
+                }, 'Cisco_NX-OS_Switch_RTR_STIG')
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'network')
+                self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_esxi_lockdown_mode_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256375',
