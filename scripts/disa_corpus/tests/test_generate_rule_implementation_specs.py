@@ -1678,6 +1678,38 @@ If "System type" is not "64-bit operating system...", this is a finding.''',
             'description': 'Domain-joined systems must use Windows 11 Enterprise Edition 64-bit version.',
         })
 
+    def test_infers_windows_11_no_alternate_os_exact_vuln_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253266',
+            'title': 'Alternate operating systems must not be permitted on the same system.',
+            'check_content': '''Verify the system does not include other operating system installations.
+
+Run "Advanced System Settings".
+Select the "Advanced" tab.
+Click the "Settings" button in the "Startup and Recovery" section.
+
+If the drop-down list box "Default operating system:" shows any operating system other than Windows 11, this is a finding.''',
+            'fix_text': '''Ensure Windows 11 is the only operating system on a device.
+
+Remove alternate operating systems.''',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-253266',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': "powershell -NoProfile -Command \"$descriptions=@(bcdedit /enum osloader | Select-String '^\\s*description\\s+(.+)$' | ForEach-Object { $_.Matches[0].Groups[1].Value.Trim() }); if ($descriptions.Count -eq 1 -and $descriptions[0] -like 'Windows 11*') { 'Compliant' }\""},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Alternate operating systems must not be permitted on the same system.',
+        })
+
+    def test_rejects_windows_11_no_alternate_os_candidate_without_exact_scope(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253266',
+            'title': 'Alternate operating systems must not be permitted on the same system.',
+            'check_content': 'If the drop-down list box "Default operating system:" shows any operating system other than Windows 11, this is a finding.',
+            'fix_text': 'Remove alternate operating systems.',
+        }, 'Microsoft_Windows_10_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_windows_unused_accounts_dual_domain_local_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254256',

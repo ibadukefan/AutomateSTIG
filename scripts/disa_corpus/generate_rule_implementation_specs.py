@@ -1646,6 +1646,30 @@ def _windows_11_enterprise_64bit_candidate(rule: dict, stig_id: str) -> dict | N
     }
 
 
+def _windows_11_no_alternate_os_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '') or ''
+    if vuln_id != 'V-253266' or stig_id != 'Microsoft_Windows_11_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'Default\s+operating\s+system:', content, re.IGNORECASE):
+        return None
+    if not re.search(r'operating\s+system\s+other\s+than\s+Windows\s+11,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Ensure\s+Windows\s+11\s+is\s+the\s+only\s+operating\s+system\s+on\s+a\s+device', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'Remove\s+alternate\s+operating\s+systems', fix_text, re.IGNORECASE):
+        return None
+    command = "powershell -NoProfile -Command \"$descriptions=@(bcdedit /enum osloader | Select-String '^\\s*description\\s+(.+)$' | ForEach-Object { $_.Matches[0].Groups[1].Value.Trim() }); if ($descriptions.Count -eq 1 -and $descriptions[0] -like 'Windows 11*') { 'Compliant' }\""
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'cisco' not in stig_id.lower() or 'nx' not in stig_id.lower():
         return None
@@ -11004,6 +11028,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         windows_11_enterprise_64bit_candidate = _windows_11_enterprise_64bit_candidate(rule, stig_id)
         if windows_11_enterprise_64bit_candidate:
             return windows_11_enterprise_64bit_candidate
+
+        windows_11_no_alternate_os_candidate = _windows_11_no_alternate_os_candidate(rule, stig_id)
+        if windows_11_no_alternate_os_candidate:
+            return windows_11_no_alternate_os_candidate
 
         host_firewall_candidate = _windows_host_firewall_enabled_candidate(rule, stig_id)
         if host_firewall_candidate:

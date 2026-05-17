@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$descriptions=@(bcdedit /enum osloader | Select-String '^\\s*description\\s+(.+)$' | ForEach-Object { $_.Matches[0].Groups[1].Value.Trim() }); if ($descriptions.Count -eq 1 -and $descriptions[0] -like 'Windows 11*') { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Alternate operating systems must not be permitted on the same system.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-253266"
+  },
   "check_content_excerpt": "Verify the system does not include other operating system installations.\n\nRun \"Advanced System Settings\".\nSelect the \"Advanced\" tab.\nClick the \"Settings\" button in the \"Startup and Recovery\" section.\n\nIf the drop-down list box \"Default operating system:\" shows any operating system other than Windows 11, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Ensure Windows 11 is the only operating system on a device. Remove alternate operating systems.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-253266r991589_rule",
   "severity": "medium",
