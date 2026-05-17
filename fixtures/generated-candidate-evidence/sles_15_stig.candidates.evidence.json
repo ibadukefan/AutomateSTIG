@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 179,
+  "candidate_checks": 182,
   "cases": [
     {
       "check": {
@@ -265,6 +265,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234827"
+    },
+    {
+      "check": {
+        "command": "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d ! -perm -1000 -print 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "The sticky bit must be set on all SUSE operating system world-writable directories.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d ! -perm -1000 -print 2>/dev/null": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d ! -perm -1000 -print 2>/dev/null": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234828"
     },
     {
       "check": {
@@ -3461,6 +3487,58 @@
     },
     {
       "check": {
+        "command": "awk -v token='acl' '\nfunction trim(s){gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",s); return s}\n/^[[:space:]]*(#|$)/{next}\n$1 !~ /^\\// && $0 ~ /^[[:space:]]*[A-Za-z][A-Za-z0-9_]*[[:space:]]*=/ {name=$1; sub(/[[:space:]]*=.*/,\"\",name); expr=$0; sub(/^[^=]*=/,\"\",expr); rules[name]=trim(expr); next}\n$1 ~ /^\\// {expr=$NF; gsub(/[[:space:]]*#.*/,\"\",expr); resolved=(expr in rules)?rules[expr]:expr; if (resolved !~ \"(^|[+[:space:]])\" token \"($|[+[:space:]])\") print $0}\n' /etc/aide.conf 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system file integrity tool must be configured to verify Access Control Lists (ACLs).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -v token='acl' '\nfunction trim(s){gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",s); return s}\n/^[[:space:]]*(#|$)/{next}\n$1 !~ /^\\// && $0 ~ /^[[:space:]]*[A-Za-z][A-Za-z0-9_]*[[:space:]]*=/ {name=$1; sub(/[[:space:]]*=.*/,\"\",name); expr=$0; sub(/^[^=]*=/,\"\",expr); rules[name]=trim(expr); next}\n$1 ~ /^\\// {expr=$NF; gsub(/[[:space:]]*#.*/,\"\",expr); resolved=(expr in rules)?rules[expr]:expr; if (resolved !~ \"(^|[+[:space:]])\" token \"($|[+[:space:]])\") print $0}\n' /etc/aide.conf 2>/dev/null": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -v token='acl' '\nfunction trim(s){gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",s); return s}\n/^[[:space:]]*(#|$)/{next}\n$1 !~ /^\\// && $0 ~ /^[[:space:]]*[A-Za-z][A-Za-z0-9_]*[[:space:]]*=/ {name=$1; sub(/[[:space:]]*=.*/,\"\",name); expr=$0; sub(/^[^=]*=/,\"\",expr); rules[name]=trim(expr); next}\n$1 ~ /^\\// {expr=$NF; gsub(/[[:space:]]*#.*/,\"\",expr); resolved=(expr in rules)?rules[expr]:expr; if (resolved !~ \"(^|[+[:space:]])\" token \"($|[+[:space:]])\") print $0}\n' /etc/aide.conf 2>/dev/null": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234986"
+    },
+    {
+      "check": {
+        "command": "awk -v token='xattrs' '\nfunction trim(s){gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",s); return s}\n/^[[:space:]]*(#|$)/{next}\n$1 !~ /^\\// && $0 ~ /^[[:space:]]*[A-Za-z][A-Za-z0-9_]*[[:space:]]*=/ {name=$1; sub(/[[:space:]]*=.*/,\"\",name); expr=$0; sub(/^[^=]*=/,\"\",expr); rules[name]=trim(expr); next}\n$1 ~ /^\\// {expr=$NF; gsub(/[[:space:]]*#.*/,\"\",expr); resolved=(expr in rules)?rules[expr]:expr; if (resolved !~ \"(^|[+[:space:]])\" token \"($|[+[:space:]])\") print $0}\n' /etc/aide.conf 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system file integrity tool must be configured to verify extended attributes.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -v token='xattrs' '\nfunction trim(s){gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",s); return s}\n/^[[:space:]]*(#|$)/{next}\n$1 !~ /^\\// && $0 ~ /^[[:space:]]*[A-Za-z][A-Za-z0-9_]*[[:space:]]*=/ {name=$1; sub(/[[:space:]]*=.*/,\"\",name); expr=$0; sub(/^[^=]*=/,\"\",expr); rules[name]=trim(expr); next}\n$1 ~ /^\\// {expr=$NF; gsub(/[[:space:]]*#.*/,\"\",expr); resolved=(expr in rules)?rules[expr]:expr; if (resolved !~ \"(^|[+[:space:]])\" token \"($|[+[:space:]])\") print $0}\n' /etc/aide.conf 2>/dev/null": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -v token='xattrs' '\nfunction trim(s){gsub(/^[[:space:]]+|[[:space:]]+$/,\"\",s); return s}\n/^[[:space:]]*(#|$)/{next}\n$1 !~ /^\\// && $0 ~ /^[[:space:]]*[A-Za-z][A-Za-z0-9_]*[[:space:]]*=/ {name=$1; sub(/[[:space:]]*=.*/,\"\",name); expr=$0; sub(/^[^=]*=/,\"\",expr); rules[name]=trim(expr); next}\n$1 ~ /^\\// {expr=$NF; gsub(/[[:space:]]*#.*/,\"\",expr); resolved=(expr in rules)?rules[expr]:expr; if (resolved !~ \"(^|[+[:space:]])\" token \"($|[+[:space:]])\") print $0}\n' /etc/aide.conf 2>/dev/null": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234987"
+    },
+    {
+      "check": {
         "expected_status": "disabled",
         "name": "ctrl-alt-del",
         "type": "service"
@@ -4729,5 +4807,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 179
+  "validated_candidates": 182
 }

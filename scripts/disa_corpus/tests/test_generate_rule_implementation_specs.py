@@ -139,6 +139,40 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('lockdownStrict', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_sles_aide_selection_line_tokens_from_all_selection_lines_prose(self):
+        cases = [
+            ('V-234986', 'acl', 'Access Control Lists (ACLs)'),
+            ('V-234987', 'xattrs', 'extended attributes'),
+        ]
+        for vuln_id, token, title_fragment in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'The SUSE operating system file integrity tool must be configured to verify {title_fragment}.',
+                    'check_content': f'Check the "/etc/aide.conf" file to determine if the "{token}" rule has been added to the rule list being applied to the files and directories selection lists. If the "{token}" rule is not being used on all selection lines in the "/etc/aide.conf" file, this is a finding.',
+                    'fix_text': f'If AIDE is installed, ensure the "{token}" rule is present on all file and directory selection lists.',
+                }, 'SLES_15_STIG')
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+                self.assertIn(f"token='{token}'", candidate['check']['command'])
+                self.assertIn('/etc/aide.conf', candidate['check']['command'])
+
+    def test_infers_sles_world_writable_directory_sticky_bit_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234828',
+            'title': 'The sticky bit must be set on all SUSE operating system world-writable directories.',
+            'check_content': 'Check that world-writable directories have the sticky bit set with the following command:\n\n> sudo find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d -exec ls -lLd {} \\;\n\nIf any of the returned directories do not have the sticky bit set, or are not documented as having the write permission for the other class, this is a finding.',
+            'fix_text': 'Set the sticky bit on all of the world-writable directories with the following command:\n\n> sudo chmod 1777 /tmp',
+        }, 'SLES_15_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-234828')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('-perm -002', candidate['check']['command'])
+        self.assertIn('! -perm -1000', candidate['check']['command'])
+
     def test_infers_oracle_cman_remote_admin_disabled_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270542',

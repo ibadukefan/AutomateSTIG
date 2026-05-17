@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d ! -perm -1000 -print 2>/dev/null",
+      "type": "command_output"
+    },
+    "description": "The sticky bit must be set on all SUSE operating system world-writable directories.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-234828"
+  },
   "check_content_excerpt": "Verify the SUSE operating system prevents unauthorized and unintended information transfer via the shared system resources.\n\nCheck that world-writable directories have the sticky bit set with the following command:\n\n> sudo find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d -exec ls -lLd {} \\;\n\n256 0 drwxrwxrwt 1 root root 4096 Jun 14 06:45 /tmp\n\nIf any of the returned directories do not have the sticky bit set, or are not documented as having the write permission for the other class, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system shared system resources to prevent any unauthorized and unintended information transfer by setting the sticky bit for all world-writable directories.\n\nAn example of a world-writable directory is \"/tmp\" directory. Set the sticky bit on all of the world-writable directories (using the \"/tmp\" directory as an example) with the following command:\n\n> sudo chmod 1777 /tmp\n\nFor every world-writable directory, replace \"/tmp\" in the command above with the world-writable directory that does not have the sticky bit set.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234828r1137695_rule",
   "severity": "medium",

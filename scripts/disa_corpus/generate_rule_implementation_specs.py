@@ -1364,6 +1364,27 @@ def _sles_gdm_banner_file_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _sles_world_writable_directory_sticky_bit_candidate(rule: dict, stig_id: str) -> dict | None:
+    if rule.get('vuln_id', '') != 'V-234828' or 'sles' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'world-writable\s+directories\s+have\s+the\s+sticky\s+bit\s+set', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+of\s+the\s+returned\s+directories\s+do\s+not\s+have\s+the\s+sticky\s+bit\s+set', content, re.IGNORECASE):
+        return None
+    if not re.search(r'set(?:ting)?\s+the\s+sticky\s+bit\s+for\s+all\s+world-writable\s+directories|Set\s+the\s+sticky\s+bit\s+on\s+all\s+of\s+the\s+world-writable\s+directories', fix_text, re.IGNORECASE):
+        return None
+    command = "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d ! -perm -1000 -print 2>/dev/null"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_world_writable_directory_owner_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -1674,7 +1695,7 @@ def _linux_aide_selection_line_token_candidate(rule: dict, stig_id: str) -> dict
     fix_text = rule.get('fix_text', '') or ''
     if not re.search(r'\baide\.conf\b', content, re.IGNORECASE):
         return None
-    if not re.search(r'all\s+uncommented\s+(?:file\s+and\s+directory\s+)?selection\s+lists|all\s+uncommented\s+selection\s+lines', content + '\n' + fix_text, re.IGNORECASE):
+    if not re.search(r'all\s+uncommented\s+(?:file\s+and\s+directory\s+)?selection\s+lists|all\s+uncommented\s+selection\s+lines|all\s+selection\s+lines|all\s+file\s+and\s+directory\s+selection\s+lists', content + '\n' + fix_text, re.IGNORECASE):
         return None
     if not re.search(rf'\b{re.escape(token)}\b', content + '\n' + fix_text, re.IGNORECASE):
         return None
@@ -10237,6 +10258,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sles_gdm_banner_file_candidate = _sles_gdm_banner_file_candidate(rule, stig_id)
     if sles_gdm_banner_file_candidate:
         return sles_gdm_banner_file_candidate
+
+    sles_world_writable_directory_sticky_bit_candidate = _sles_world_writable_directory_sticky_bit_candidate(rule, stig_id)
+    if sles_world_writable_directory_sticky_bit_candidate:
+        return sles_world_writable_directory_sticky_bit_candidate
 
     linux_world_writable_directory_owner_candidate = _linux_world_writable_directory_owner_candidate(rule, stig_id)
     if linux_world_writable_directory_owner_candidate:
