@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^ip msdp sa-limit \"",
+      "type": "command_output"
+    },
+    "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to limit the amount of source-active messages it accepts on a per-peer basis.",
+    "expected": {
+      "substring": "ip msdp sa-limit",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221146"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if it is configured to limit the amount of source-active messages it accepts on a per-peer basis.\n\nip msdp peer x.1.28.2 connect-source Ethernet2/1 remote-as nn\n\u2026\n\u2026\n\u2026\nip msdp sa-limit x.1.28.2 nnn\n\nIf the switch is not configured to limit the source-active messages it accepts, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "ip msdp sa-limit",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to limit the amount of source-active messages it accepts from each peer.\n\nSW1(config)# ip msdp sa-limit x.1.28.2 nnn\nSW1(config)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221146r1137903_rule",
   "severity": "low",

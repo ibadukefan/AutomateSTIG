@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^ ipv6 nd suppress-ra$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco perimeter switch must be configured to suppress Router Advertisements on all external IPv6-enabled interfaces.",
+    "expected": {
+      "substring": "ipv6 nd suppress-ra",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-237760"
+  },
   "check_content_excerpt": "Review the switch configuration to verify that Router Advertisements are suppressed on all external IPv6-enabled interfaces as shown in the example below.\n\ninterface Ethernet1/1\n  no switchport\n  ipv6 address 2001::1:24:3/64\n  ipv6 nd suppress-ra\n  no shutdown \n\n\nIf the switch is not configured to suppress Router Advertisements on all external IPv6-enabled interfaces, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "ipv6 nd suppress-ra",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to suppress Router Advertisements on all external IPv6-enabled interfaces as shown in the example below.\n\nSW1(config)#  interface e1/1\nSW1(config-if-range)#  ipv6 nd suppress-ra\nSW1(config-if-range)#  end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-237760r999764_rule",
   "severity": "medium",

@@ -1663,6 +1663,69 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    presence_commands = {
+        'V-221097': {
+            'command': 'show running-config | include "^no cdp enable$"',
+            'expected': {'type': 'contains', 'substring': 'no cdp enable'},
+            'content': r'CDP\s+is\s+not\s+enabled\s+globally.*?no\s+cdp\s+enable.*?If\s+CDP\s+is\s+enabled\s+on\s+any\s+external\s+interface,\s+this\s+is\s+a\s+finding',
+            'fix': r'Disable\s+CDP\s+on\s+all\s+external\s+interfaces.*?no\s+cdp\s+enable',
+        },
+        'V-237760': {
+            'command': 'show running-config | include "^ ipv6 nd suppress-ra$"',
+            'expected': {'type': 'contains', 'substring': 'ipv6 nd suppress-ra'},
+            'content': r'Router\s+Advertisements\s+are\s+suppressed\s+on\s+all\s+external\s+IPv6-enabled\s+interfaces.*?ipv6\s+nd\s+suppress-ra.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+suppress\s+Router\s+Advertisements\s+on\s+all\s+external\s+IPv6-enabled\s+interfaces,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+the\s+switch\s+to\s+suppress\s+Router\s+Advertisements\s+on\s+all\s+external\s+IPv6-enabled\s+interfaces.*?ipv6\s+nd\s+suppress-ra',
+        },
+        'V-221146': {
+            'command': 'show running-config | include "^ip msdp sa-limit "',
+            'expected': {'type': 'contains', 'substring': 'ip msdp sa-limit'},
+            'content': r'limit\s+the\s+amount\s+of\s+source-active\s+messages\s+it\s+accepts\s+on\s+a\s+per-peer\s+basis.*?ip\s+msdp\s+sa-limit\s+\S+\s+\S+.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+limit\s+the\s+source-active\s+messages\s+it\s+accepts,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+the\s+switch\s+to\s+limit\s+the\s+amount\s+of\s+source-active\s+messages\s+it\s+accepts\s+from\s+each\s+peer.*?ip\s+msdp\s+sa-limit',
+        },
+        'V-221096': {
+            'command': 'show running-config | include "^ no lldp transmit$"',
+            'expected': {'type': 'contains', 'substring': 'no lldp transmit'},
+            'content': r'LLDP\s+is\s+not\s+enabled\s+globally.*?no\s+lldp\s+transmit.*?If\s+LLDP\s+transmit\s+is\s+enabled\s+on\s+any\s+external\s+interface,\s+this\s+is\s+a\s+finding',
+            'fix': r'Disable\s+LLDP\s+transmit\s+on\s+all\s+external\s+interfaces.*?no\s+lldp\s+transmit',
+        },
+        'V-221082': {
+            'command': 'show running-config | include "^ no ip arp gratuitous request$"',
+            'expected': {'type': 'contains', 'substring': 'no ip arp gratuitous request'},
+            'content': r'gratuitous\s+ARP\s+is\s+disabled\s+on\s+all\s+external\s+interfaces.*?no\s+ip\s+arp\s+gratuitous\s+request.*?If\s+gratuitous\s+ARP\s+is\s+enabled\s+on\s+any\s+external\s+interface,\s+this\s+is\s+a\s+finding',
+            'fix': r'Disable\s+Gratuitous\s+ARP.*?no\s+ip\s+arp\s+gratuitous\s+request',
+        },
+        'V-221127': {
+            'command': 'show running-config | include "^ ip verify unicast source reachable-via any$"',
+            'expected': {'type': 'contains', 'substring': 'ip verify unicast source reachable-via any'},
+            'content': r'uRPF\s+loose\s+mode\s+is\s+enabled\s+on\s+all\s+CE-facing\s+interfaces.*?ip\s+verify\s+unicast\s+source\s+reachable-via\s+any.*?If\s+uRPF\s+loose\s+mode\s+is\s+not\s+enabled\s+on\s+all\s+CE-facing\s+interfaces,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+uRPF\s+loose\s+mode\s+on\s+all\s+CE-facing\s+interfaces.*?ip\s+verify\s+unicast\s+source\s+reachable-via\s+any',
+        },
+        'V-221140': {
+            'command': 'show running-config | include "^ ip igmp state-limit "',
+            'expected': {'type': 'contains', 'substring': 'ip igmp state-limit'},
+            'content': r'limiting\s+the\s+number\s+of\s+mroute\s+states\s+via\s+IGMP\s+or\s+MLD.*?ip\s+igmp\s+state-limit\s+\S+.*?If\s+the\s+DR\s+is\s+not\s+limiting\s+multicast\s+join\s+requests\s+via\s+IGMP\s+or\s+MLD\s+on\s+all\s+applicable\s+interfaces,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+the\s+DR\s+on\s+a\s+global\s+or\s+interface\s+basis\s+to\s+limit\s+the\s+number\s+of\s+mroute\s+states.*?ip\s+igmp\s+state-limit',
+        },
+        'V-237754': {
+            'command': 'show running-config | include "^ ipv6 nd hop-limit 32$"',
+            'expected': {'type': 'contains', 'substring': 'ipv6 nd hop-limit 32'},
+            'content': r'hop\s+limit\s+has\s+been\s+configured\s+for\s+Router\s+Advertisement\s+messages\s+for\s+all\s+internal\s+interfaces.*?ipv6\s+nd\s+hop-limit\s+32.*?If\s+hop-limit\s+has\s+been\s+configured\s+and\s+has\s+not\s+been\s+set\s+to\s+at\s+least\s+32,\s+it\s+is\s+a\s+finding',
+            'fix': r'Configure\s+the\s+switch\s+to\s+advertise\s+a\s+hop\s+limit\s+of\s+at\s+least\s+32.*?ipv6\s+nd\s+hop-limit\s+32',
+        },
+    }
+    if vuln_id in presence_commands:
+        spec = presence_commands[vuln_id]
+        if not re.search(spec['content'], content, re.IGNORECASE | re.DOTALL):
+            return None
+        if not re.search(spec['fix'], fix_text, re.IGNORECASE | re.DOTALL):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': spec['command']},
+            'expected': spec['expected'],
+            'description': rule.get('title', ''),
+        }
     return None
 
 

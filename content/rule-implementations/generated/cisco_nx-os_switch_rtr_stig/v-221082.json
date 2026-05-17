@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^ no ip arp gratuitous request$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must be configured to have Gratuitous ARP disabled on all external interfaces.",
+    "expected": {
+      "substring": "no ip arp gratuitous request",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221082"
+  },
   "check_content_excerpt": "Review the configuration to determine if gratuitous ARP is disabled on all external interfaces as shown in the example below:\n\ninterface Ethernet2/7\n no switchport\n ip address x.22.4.2/30\n no ip arp gratuitous request\n\nNote: Gratuitous ARP is enabled on all interfaces by default.\n\nIf gratuitous ARP is enabled on any external interface, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "no ip arp gratuitous request",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable Gratuitous ARP as shown in the example below:\n\nSW1(config)# int e2/7\nSW1(config-if)# no ip arp gratuitous request\nSW1(config-if)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221082r999691_rule",
   "severity": "medium",

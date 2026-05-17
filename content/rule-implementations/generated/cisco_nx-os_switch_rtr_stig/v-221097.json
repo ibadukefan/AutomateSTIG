@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^no cdp enable$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco perimeter switch must be configured to have Cisco Discovery Protocol (CDP) disabled on all external interfaces.",
+    "expected": {
+      "substring": "no cdp enable",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221097"
+  },
   "check_content_excerpt": "Step 1: Verify CDP is not enabled globally via the command no cdp enable\n\nBy default CDP is enabled globally; hence, the command cdp enable will not be shown in the configuration. If CDP is enabled, proceed to Step 2.\n\nStep 2: Verify CDP is not enabled on any external interface as shown in the example below:\n\ninterface Ethernet2/2\n description link to DISN\n no switchport\n no cdp enable\n\nNote: By default CDP is enabled on all interfaces if CDP is enabled globally.\n\nIf CDP is enabled on any external interface, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "no cdp enable",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable CDP on all external interfaces via no cdp enable interface command or disable CDP globally via no cdp enable command.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221097r999706_rule",
   "severity": "low",

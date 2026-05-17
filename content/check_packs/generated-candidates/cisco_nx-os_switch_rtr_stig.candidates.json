@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "show running-config | include \"^ no ip arp gratuitous request$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must be configured to have Gratuitous ARP disabled on all external interfaces.",
+      "expected": {
+        "substring": "no ip arp gratuitous request",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221082"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ ip directed-broadcast$\"",
         "type": "command_output"
       },
@@ -64,6 +77,32 @@
       },
       "platform": "network",
       "vuln_id": "V-221095"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ no lldp transmit$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to have Link Layer Discovery Protocol (LLDP) disabled on all external interfaces.",
+      "expected": {
+        "substring": "no lldp transmit",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221096"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^no cdp enable$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to have Cisco Discovery Protocol (CDP) disabled on all external interfaces.",
+      "expected": {
+        "substring": "no cdp enable",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221097"
     },
     {
       "check": {
@@ -119,6 +158,19 @@
     },
     {
       "check": {
+        "command": "show running-config | include \"^ ip verify unicast source reachable-via any$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco PE switch must be configured with Unicast Reverse Path Forwarding (uRPF) loose mode enabled on all CE-facing interfaces.",
+      "expected": {
+        "substring": "ip verify unicast source reachable-via any",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221127"
+    },
+    {
+      "check": {
         "command": "show running-config | include ^no ip source-route$",
         "type": "command_output"
       },
@@ -132,6 +184,45 @@
     },
     {
       "check": {
+        "command": "show running-config | include \"^ ip igmp state-limit \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco multicast Designated switch (DR) must be configured to limit the number of mroute states resulting from Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Host Membership Reports.",
+      "expected": {
+        "substring": "ip igmp state-limit",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221140"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ip msdp sa-limit \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to limit the amount of source-active messages it accepts on a per-peer basis.",
+      "expected": {
+        "substring": "ip msdp sa-limit",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221146"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ ipv6 nd hop-limit 32$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must be configured to advertise a hop limit of at least 32 in Switch Advertisement messages for IPv6 stateless auto-configuration deployments.",
+      "expected": {
+        "substring": "ipv6 nd hop-limit 32",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-237754"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"[Ff][Ee][Cc][0-9AaBbCcDdEeFf]*:\"",
         "type": "command_output"
       },
@@ -142,6 +233,19 @@
       },
       "platform": "network",
       "vuln_id": "V-237757"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ ipv6 nd suppress-ra$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to suppress Router Advertisements on all external IPv6-enabled interfaces.",
+      "expected": {
+        "substring": "ipv6 nd suppress-ra",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-237760"
     }
   ],
   "platform": "network",

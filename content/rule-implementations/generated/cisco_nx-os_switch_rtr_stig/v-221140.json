@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^ ip igmp state-limit \"",
+      "type": "command_output"
+    },
+    "description": "The Cisco multicast Designated switch (DR) must be configured to limit the number of mroute states resulting from Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Host Membership Reports.",
+    "expected": {
+      "substring": "ip igmp state-limit",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221140"
+  },
   "check_content_excerpt": "Review the DR configuration to verify that it is limiting the number of mroute states via IGMP or MLD.\n\nVerify IGMP state limits have been configured on all applicable interfaces as shown in the example below:\n\ninterface Ethernet2/4\n no switchport\n ip address 10.2.22.3/24 \n ip pim sparse-mode\n ip igmp version 3\n ip igmp state-limit nnn\n\nIf the DR is not limiting multicast join requests via IGMP or MLD on all applicable interfaces, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "ip igmp state-limit",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the DR on a global or interface basis to limit the number of mroute states resulting from IGMP or MLD membership reports.\n\nSW1(config)# int e2/4\nSW1(config-if)# ip igmp state-limit 44 \nSW1(config-if)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221140r999749_rule",
   "severity": "medium",

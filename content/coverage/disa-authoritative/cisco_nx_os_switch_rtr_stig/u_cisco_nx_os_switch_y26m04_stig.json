@@ -138,16 +138,17 @@
       "vuln_id": "V-221081"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221082",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221082r999691_rule",
       "severity": "medium",
       "title": "The Cisco switch must be configured to have Gratuitous ARP disabled on all external interfaces.",
-      "tracking_issue": "TODO-V-221082",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221082"
@@ -352,31 +353,33 @@
       "vuln_id": "V-221095"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221096",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221096r999705_rule",
       "severity": "low",
       "title": "The Cisco perimeter switch must be configured to have Link Layer Discovery Protocol (LLDP) disabled on all external interfaces.",
-      "tracking_issue": "TODO-V-221096",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221096"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221097",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221097r999706_rule",
       "severity": "low",
       "title": "The Cisco perimeter switch must be configured to have Cisco Discovery Protocol (CDP) disabled on all external interfaces.",
-      "tracking_issue": "TODO-V-221097",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221097"
@@ -821,16 +824,17 @@
       "vuln_id": "V-221126"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221127",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221127r999736_rule",
       "severity": "medium",
       "title": "The Cisco PE switch must be configured with Unicast Reverse Path Forwarding (uRPF) loose mode enabled on all CE-facing interfaces.",
-      "tracking_issue": "TODO-V-221127",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221127"
@@ -1017,16 +1021,17 @@
       "vuln_id": "V-221139"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221140",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221140r999749_rule",
       "severity": "medium",
       "title": "The Cisco multicast Designated switch (DR) must be configured to limit the number of mroute states resulting from Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Host Membership Reports.",
-      "tracking_issue": "TODO-V-221140",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221140"
@@ -1107,16 +1112,17 @@
       "vuln_id": "V-221145"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221146",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221146r1137903_rule",
       "severity": "low",
       "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to limit the amount of source-active messages it accepts on a per-peer basis.",
-      "tracking_issue": "TODO-V-221146",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221146"
@@ -1137,16 +1143,17 @@
       "vuln_id": "V-221147"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-237754",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-237754r999759_rule",
       "severity": "low",
       "title": "The Cisco switch must be configured to advertise a hop limit of at least 32 in Switch Advertisement messages for IPv6 stateless auto-configuration deployments.",
-      "tracking_issue": "TODO-V-237754",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-237754"
@@ -1168,16 +1175,17 @@
       "vuln_id": "V-237757"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-237760",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-237760r999764_rule",
       "severity": "medium",
       "title": "The Cisco perimeter switch must be configured to suppress Router Advertisements on all external IPv6-enabled interfaces.",
-      "tracking_issue": "TODO-V-237760",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-237760"

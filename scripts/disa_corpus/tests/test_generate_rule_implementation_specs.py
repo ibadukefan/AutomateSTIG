@@ -13064,5 +13064,86 @@ If any accounts other than XS$NULL are listed, this is a finding.""",
         })
 
 
+    def test_infers_cisco_nxos_static_interface_config_candidates_from_exact_prose(self):
+        cases = [
+            (
+                'V-221097',
+                'The Cisco perimeter switch must be configured to have Cisco Discovery Protocol (CDP) disabled on all external interfaces.',
+                'Step 1: Verify CDP is not enabled globally via the command no cdp enable\n\nIf CDP is enabled, proceed to Step 2.\n\ninterface Ethernet2/2\n description link to DISN\n no switchport\n no cdp enable\n\nIf CDP is enabled on any external interface, this is a finding.',
+                'Disable CDP on all external interfaces via no cdp enable interface command or disable CDP globally via no cdp enable command.',
+                'show running-config | include "^no cdp enable$"',
+                {'type': 'contains', 'substring': 'no cdp enable'},
+            ),
+            (
+                'V-237760',
+                'The Cisco perimeter switch must be configured to suppress Router Advertisements on all external IPv6-enabled interfaces.',
+                'Review the switch configuration to verify that Router Advertisements are suppressed on all external IPv6-enabled interfaces as shown in the example below.\n\ninterface Ethernet1/1\n  no switchport\n  ipv6 address 2001::1:24:3/64\n  ipv6 nd suppress-ra\n\nIf the switch is not configured to suppress Router Advertisements on all external IPv6-enabled interfaces, this is a finding.',
+                'Configure the switch to suppress Router Advertisements on all external IPv6-enabled interfaces as shown in the example below.\n\nSW1(config-if-range)# ipv6 nd suppress-ra',
+                'show running-config | include "^ ipv6 nd suppress-ra$"',
+                {'type': 'contains', 'substring': 'ipv6 nd suppress-ra'},
+            ),
+            (
+                'V-221146',
+                'The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to limit the amount of source-active messages it accepts on a per-peer basis.',
+                'Review the switch configuration to determine if it is configured to limit the amount of source-active messages it accepts on a per-peer basis.\n\nip msdp peer x.1.28.2 connect-source Ethernet2/1 remote-as nn\nip msdp sa-limit x.1.28.2 nnn\n\nIf the switch is not configured to limit the source-active messages it accepts, this is a finding.',
+                'Configure the switch to limit the amount of source-active messages it accepts from each peer.\n\nSW1(config)# ip msdp sa-limit x.1.28.2 nnn',
+                'show running-config | include "^ip msdp sa-limit "',
+                {'type': 'contains', 'substring': 'ip msdp sa-limit'},
+            ),
+            (
+                'V-221096',
+                'The Cisco perimeter switch must be configured to have Link Layer Discovery Protocol (LLDP) disabled on all external interfaces.',
+                'Step 1: Verify LLDP is not enabled globally via the command feature lldp.\n\ninterface Ethernet2/2\n description link to DISN\n no switchport\n no lldp transmit\n\nIf LLDP transmit is enabled on any external interface, this is a finding.',
+                'Disable LLDP transmit on all external interfaces as shown in the example below.\n\nSW2(config-if)# no lldp transmit',
+                'show running-config | include "^ no lldp transmit$"',
+                {'type': 'contains', 'substring': 'no lldp transmit'},
+            ),
+            (
+                'V-221082',
+                'The Cisco switch must be configured to have Gratuitous ARP disabled on all external interfaces.',
+                'Review the configuration to determine if gratuitous ARP is disabled on all external interfaces as shown in the example below:\n\ninterface Ethernet2/7\n no switchport\n no ip arp gratuitous request\n\nIf gratuitous ARP is enabled on any external interface, this is a finding.',
+                'Disable Gratuitous ARP as shown in the example below:\n\nSW1(config-if)# no ip arp gratuitous request',
+                'show running-config | include "^ no ip arp gratuitous request$"',
+                {'type': 'contains', 'substring': 'no ip arp gratuitous request'},
+            ),
+            (
+                'V-221127',
+                'The Cisco PE switch must be configured with Unicast Reverse Path Forwarding (uRPF) loose mode enabled on all CE-facing interfaces.',
+                'Review the switch configuration to determine if uRPF loose mode is enabled on all CE-facing interfaces.\n\ninterface Ethernet1/2\n ip verify unicast source reachable-via any\n\nIf uRPF loose mode is not enabled on all CE-facing interfaces, this is a finding.',
+                'Configure uRPF loose mode on all CE-facing interfaces as shown in the example below:\n\nSW1(config-if)# ip verify unicast source reachable-via any',
+                'show running-config | include "^ ip verify unicast source reachable-via any$"',
+                {'type': 'contains', 'substring': 'ip verify unicast source reachable-via any'},
+            ),
+            (
+                'V-221140',
+                'The Cisco multicast Designated switch (DR) must be configured to limit the number of mroute states resulting from IGMP and MLD Host Membership Reports.',
+                'Review the DR configuration to verify that it is limiting the number of mroute states via IGMP or MLD.\n\ninterface Ethernet2/4\n ip igmp state-limit nnn\n\nIf the DR is not limiting multicast join requests via IGMP or MLD on all applicable interfaces, this is a finding.',
+                'Configure the DR on a global or interface basis to limit the number of mroute states resulting from IGMP or MLD membership reports.\n\nSW1(config-if)# ip igmp state-limit 44',
+                'show running-config | include "^ ip igmp state-limit "',
+                {'type': 'contains', 'substring': 'ip igmp state-limit'},
+            ),
+            (
+                'V-237754',
+                'The Cisco switch must be configured to advertise a hop limit of at least 32 in Router Advertisement messages for IPv6 stateless auto-configuration deployments.',
+                'Review the switch configuration to determine if the hop limit has been configured for Router Advertisement messages for all internal interfaces as shown in the example.\n\ninterface Ethernet2/1\n ipv6 nd hop-limit 32\n\nIf hop-limit has been configured and has not been set to at least 32, it is a finding.',
+                'Configure the switch to advertise a hop limit of at least 32 in Router Advertisement messages as shown in the example.\n\nSW1(config-if-range)# ipv6 nd hop-limit 32',
+                'show running-config | include "^ ipv6 nd hop-limit 32$"',
+                {'type': 'contains', 'substring': 'ipv6 nd hop-limit 32'},
+            ),
+        ]
+        for vuln_id, title, check_content, fix_text, command, expected in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': check_content,
+                    'fix_text': fix_text,
+                }, 'Cisco_NX-OS_Switch_RTR_STIG')
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['platform'], 'network')
+                self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
+                self.assertEqual(candidate['expected'], expected)
+
+
 if __name__ == '__main__':
     unittest.main()

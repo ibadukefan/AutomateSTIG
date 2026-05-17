@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^ ip verify unicast source reachable-via any$\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco PE switch must be configured with Unicast Reverse Path Forwarding (uRPF) loose mode enabled on all CE-facing interfaces.",
+    "expected": {
+      "substring": "ip verify unicast source reachable-via any",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221127"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if uRPF loose mode is enabled on all CE-facing interfaces.\n\ninterface Ethernet1/2\n ip address x.1.12.2/30\n ip access-group BLOCK_TO_CORE in\n ip verify unicast source reachable-via any\n\nIf uRPF loose mode is not enabled on all CE-facing interfaces, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "ip verify unicast source reachable-via any",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure uRPF loose mode on all CE-facing interfaces as shown in the example below:\n\nSW1(config)# int e1/2\nSW1(config-if)# ip verify unicast source reachable-via any\nSW1(config-if)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221127r999736_rule",
   "severity": "medium",
