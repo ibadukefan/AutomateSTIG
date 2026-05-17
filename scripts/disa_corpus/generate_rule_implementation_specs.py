@@ -2094,6 +2094,43 @@ def _kubernetes_api_server_request_timeout_candidate(rule: dict, stig_id: str) -
     }
 
 
+def _kubernetes_user_pods_host_privileged_ports_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-242414':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    if not re.search(r'kubectl\s+get\s+pods\s+--all-namespaces', content, re.IGNORECASE):
+        return None
+    if not re.search(r'System\s+namespaces\s+are\s+kube-system,\s*kube-node-lease\s+and\s+kube-public', content, re.IGNORECASE):
+        return None
+    if not re.search(r'kubectl\s+get\s+pod\s+podname\s+-o\s+yaml\s*\|\s*grep\s+-i\s+port', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+host-privileged\s+ports\s+are\s+returned\s+for\s+any\s+of\s+the\s+pods,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'reconfigure\s+the\s+pod\s+to\s+use\s+a\s+service\s+to\s+map\s+a\s+host\s+non-privileged\s+port', combined, re.IGNORECASE):
+        return None
+    command = (
+        "kubectl get pods --all-namespaces -o json | "
+        "python3 -c \"import json,sys; "
+        "data=json.load(sys.stdin); "
+        "system={'kube-system','kube-node-lease','kube-public'}; "
+        "bad=[]; "
+        "[bad.append('%s %s %s' % (item.get('metadata',{}).get('namespace',''), item.get('metadata',{}).get('name',''), port.get('hostPort'))) "
+        "for item in data.get('items',[]) if item.get('metadata',{}).get('namespace','') not in system "
+        "for container in (item.get('spec',{}).get('containers',[]) + item.get('spec',{}).get('initContainers',[])) "
+        "for port in container.get('ports',[]) if isinstance(port.get('hostPort'), int) and port.get('hostPort') < 1024]; "
+        "print('\\n'.join(bad), end='')\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_secret_env_var_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-242415':
         return None
@@ -10117,6 +10154,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_request_timeout_candidate = _kubernetes_api_server_request_timeout_candidate(rule, stig_id)
     if kubernetes_request_timeout_candidate:
         return kubernetes_request_timeout_candidate
+    kubernetes_user_pods_host_privileged_ports_candidate = _kubernetes_user_pods_host_privileged_ports_candidate(rule, stig_id)
+    if kubernetes_user_pods_host_privileged_ports_candidate:
+        return kubernetes_user_pods_host_privileged_ports_candidate
     kubernetes_secret_env_var_candidate = _kubernetes_secret_env_var_candidate(rule, stig_id)
     if kubernetes_secret_env_var_candidate:
         return kubernetes_secret_env_var_candidate

@@ -111,6 +111,21 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('--request-timeout', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_kubernetes_user_pods_host_privileged_ports_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242414',
+            'title': 'The Kubernetes cluster must use non-privileged host ports for user pods.',
+            'check_content': 'On the Control Plane, run the command:\nkubectl get pods --all-namespaces\n\nThe list returned is all pods running within the Kubernetes cluster. For those pods running within the user namespaces (System namespaces are kube-system, kube-node-lease and kube-public), run the command:\nkubectl get pod podname -o yaml | grep -i port\n\nReview the ports that are returned for the pod.\n\nIf any host-privileged ports are returned for any of the pods, this is a finding.',
+            'fix_text': 'For any of the pods that are using host-privileged ports, reconfigure the pod to use a service to map a host non-privileged port to the pod port or reconfigure the image to use non-privileged ports.',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242414')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('kubectl get pods --all-namespaces', candidate['check']['command'])
+        self.assertIn('hostPort', candidate['check']['command'])
+        self.assertIn('kube-system', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_kubernetes_secret_env_var_candidate_from_exact_secretkeyref_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242415',

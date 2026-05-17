@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 53,
+  "candidate_checks": 54,
   "cases": [
     {
       "check": {
@@ -182,6 +182,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242409"
+    },
+    {
+      "check": {
+        "command": "kubectl get pods --all-namespaces -o json | python3 -c \"import json,sys; data=json.load(sys.stdin); system={'kube-system','kube-node-lease','kube-public'}; bad=[]; [bad.append('%s %s %s' % (item.get('metadata',{}).get('namespace',''), item.get('metadata',{}).get('name',''), port.get('hostPort'))) for item in data.get('items',[]) if item.get('metadata',{}).get('namespace','') not in system for container in (item.get('spec',{}).get('containers',[]) + item.get('spec',{}).get('initContainers',[])) for port in container.get('ports',[]) if isinstance(port.get('hostPort'), int) and port.get('hostPort') < 1024]; print('\\n'.join(bad), end='')\"",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes cluster must use non-privileged host ports for user pods.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "kubectl get pods --all-namespaces -o json | python3 -c \"import json,sys; data=json.load(sys.stdin); system={'kube-system','kube-node-lease','kube-public'}; bad=[]; [bad.append('%s %s %s' % (item.get('metadata',{}).get('namespace',''), item.get('metadata',{}).get('name',''), port.get('hostPort'))) for item in data.get('items',[]) if item.get('metadata',{}).get('namespace','') not in system for container in (item.get('spec',{}).get('containers',[]) + item.get('spec',{}).get('initContainers',[])) for port in container.get('ports',[]) if isinstance(port.get('hostPort'), int) and port.get('hostPort') < 1024]; print('\\n'.join(bad), end='')\"": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "kubectl get pods --all-namespaces -o json | python3 -c \"import json,sys; data=json.load(sys.stdin); system={'kube-system','kube-node-lease','kube-public'}; bad=[]; [bad.append('%s %s %s' % (item.get('metadata',{}).get('namespace',''), item.get('metadata',{}).get('name',''), port.get('hostPort'))) for item in data.get('items',[]) if item.get('metadata',{}).get('namespace','') not in system for container in (item.get('spec',{}).get('containers',[]) + item.get('spec',{}).get('initContainers',[])) for port in container.get('ports',[]) if isinstance(port.get('hostPort'), int) and port.get('hostPort') < 1024]; print('\\n'.join(bad), end='')\"": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242414"
     },
     {
       "check": {
@@ -1385,5 +1411,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 53
+  "validated_candidates": 54
 }

@@ -93,6 +93,19 @@
     },
     {
       "check": {
+        "command": "kubectl get pods --all-namespaces -o json | python3 -c \"import json,sys; data=json.load(sys.stdin); system={'kube-system','kube-node-lease','kube-public'}; bad=[]; [bad.append('%s %s %s' % (item.get('metadata',{}).get('namespace',''), item.get('metadata',{}).get('name',''), port.get('hostPort'))) for item in data.get('items',[]) if item.get('metadata',{}).get('namespace','') not in system for container in (item.get('spec',{}).get('containers',[]) + item.get('spec',{}).get('initContainers',[])) for port in container.get('ports',[]) if isinstance(port.get('hostPort'), int) and port.get('hostPort') < 1024]; print('\\n'.join(bad), end='')\"",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes cluster must use non-privileged host ports for user pods.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242414"
+    },
+    {
+      "check": {
         "command": "kubectl get pods --all-namespaces -o yaml | grep -A5 'secretKeyRef'",
         "type": "command_output"
       },
