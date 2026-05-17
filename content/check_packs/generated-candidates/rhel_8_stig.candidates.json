@@ -2962,6 +2962,19 @@
     },
     {
       "check": {
+        "command": "usbguard list-rules",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must block unauthorized peripherals before establishing a connection.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230524"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/firewalld/firewalld.conf",
         "pattern": "FirewallBackend=nftables",

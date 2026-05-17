@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 403,
+  "candidate_checks": 404,
   "cases": [
     {
       "check": {
@@ -6000,6 +6000,32 @@
     },
     {
       "check": {
+        "command": "usbguard list-rules",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must block unauthorized peripherals before establishing a connection.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "usbguard list-rules": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "usbguard list-rules": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258038"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.conf",
         "pattern": "bluetooth",
@@ -11140,5 +11166,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 403
+  "validated_candidates": 404
 }

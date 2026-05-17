@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 353,
+  "candidate_checks": 354,
   "cases": [
     {
       "check": {
@@ -7966,6 +7966,32 @@
     },
     {
       "check": {
+        "command": "usbguard list-rules",
+        "type": "command_output"
+      },
+      "description": "OL 8 must block unauthorized peripherals before establishing a connection.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "usbguard list-rules": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "usbguard list-rules": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248863"
+    },
+    {
+      "check": {
         "expected_status": "running",
         "name": "usbguard",
         "type": "service"
@@ -9572,5 +9598,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 353
+  "validated_candidates": 354
 }

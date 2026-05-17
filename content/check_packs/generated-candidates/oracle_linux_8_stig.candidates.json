@@ -4019,6 +4019,19 @@
     },
     {
       "check": {
+        "command": "usbguard list-rules",
+        "type": "command_output"
+      },
+      "description": "OL 8 must block unauthorized peripherals before establishing a connection.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248863"
+    },
+    {
+      "check": {
         "expected_status": "running",
         "name": "usbguard",
         "type": "service"

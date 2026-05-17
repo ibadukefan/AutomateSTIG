@@ -3582,6 +3582,19 @@
     },
     {
       "check": {
+        "command": "usbguard list-rules",
+        "type": "command_output"
+      },
+      "description": "OL 9 must block unauthorized peripherals before establishing a connection.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271701"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d/",
         "pattern": "usb-storage",

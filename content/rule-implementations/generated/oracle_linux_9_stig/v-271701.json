@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "usbguard list-rules",
+      "type": "command_output"
+    },
+    "description": "OL 9 must block unauthorized peripherals before establishing a connection.",
+    "expected": {
+      "type": "not_equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271701"
+  },
   "check_content_excerpt": "Verify that OL 9 USBGuard has a policy configured with the following command:\n\n$ usbguard list-rules\nallow id 1d6b:0001 serial\n\nIf the command does not return results or an error is returned, ask the SA to indicate how unauthorized peripherals are being blocked.\n\nIf there is no evidence that unauthorized peripherals are being blocked before establishing a connection, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "not_equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to enable the blocking of unauthorized peripherals with the following command:\n\nNote: This command must be run from a root shell and will create an allow list for any USB devices currently connect to the system.\n\n# usbguard generate-policy --no-hash > /etc/usbguard/rules.conf\n\nNote: Enabling and starting USBGuard without properly configuring it for an individual system will immediately prevent any access over a USB device such as a keyboard or mouse.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271701r1091815_rule",
   "severity": "medium",

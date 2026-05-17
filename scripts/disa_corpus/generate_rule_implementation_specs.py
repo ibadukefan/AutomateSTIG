@@ -6593,6 +6593,32 @@ def _kubernetes_fixed_file_mode_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _linux_usbguard_rules_present_candidate(rule: dict, stig_id: str) -> dict | None:
+    exact_targets = {
+        ('RHEL_8_STIG', 'V-230524'),
+        ('RHEL_9_STIG', 'V-258038'),
+        ('Oracle_Linux_8_STIG', 'V-248863'),
+        ('Oracle_Linux_9_STIG', 'V-271701'),
+    }
+    if (stig_id, rule.get('vuln_id')) not in exact_targets:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'\busbguard\s+list-rules\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'USBGuard\s+has\s+a\s+policy\s+configured|USBGuard\s+daemon\s+with\s+a\s+policy', content + '\n' + fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'command\s+does\s+not\s+return\s+results[^.]+this\s+is\s+a\s+finding|no\s+evidence\s+that\s+unauthorized\s+peripherals\s+are\s+being\s+blocked[^.]+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'usbguard list-rules'},
+        'expected': {'type': 'not_equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_init_files_world_writable_programs_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -6732,6 +6758,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     ubuntu_ufw_rate_limit_candidate = _ubuntu_ufw_rate_limit_candidate(rule, stig_id)
     if ubuntu_ufw_rate_limit_candidate:
         return ubuntu_ufw_rate_limit_candidate
+    linux_usbguard_candidate = _linux_usbguard_rules_present_candidate(rule, stig_id)
+    if linux_usbguard_candidate:
+        return linux_usbguard_candidate
     linux_init_files_world_writable_candidate = _linux_init_files_world_writable_programs_candidate(rule, stig_id)
     if linux_init_files_world_writable_candidate:
         return linux_init_files_world_writable_candidate

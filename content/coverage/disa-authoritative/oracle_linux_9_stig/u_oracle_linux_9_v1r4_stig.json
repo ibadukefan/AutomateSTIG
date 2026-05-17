@@ -4285,16 +4285,17 @@
       "vuln_id": "V-271700"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271701",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271701r1091815_rule",
       "severity": "medium",
       "title": "OL 9 must block unauthorized peripherals before establishing a connection.",
-      "tracking_issue": "TODO-V-271701",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271701"
