@@ -155,6 +155,42 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertIn('postmap -q root', candidate['check']['command'])
                 self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Configured'})
 
+    def test_infers_scap_linux_postfix_unrestricted_mail_relay_from_exact_fix_only(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257951',
+            'title': 'RHEL 9 must be configured to prevent unrestricted mail relaying.',
+            'fix_text': "Modify the postfix configuration file to restrict client connections to the local network with the following command:\n\n$ sudo postconf -e 'smtpd_client_restrictions = permit_mynetworks,reject'",
+        }, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-257951')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('postconf -n smtpd_client_restrictions', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_postfix_relay_candidate_when_documented_exception_allowed(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257951',
+            'title': 'RHEL 9 must be configured to prevent unrestricted mail relaying.',
+            'check_content': 'If postfix is not installed, this is Not Applicable.\n\n$ postconf -n smtpd_client_restrictions\nsmtpd_client_restrictions = permit_mynetworks,reject\n\nIf the "smtpd_client_restrictions" parameter contains any entries other than "permit_mynetworks" and "reject", and the additional entries have not been documented with the information system security officer (ISSO), this is a finding.',
+            'fix_text': "Modify the postfix configuration file to restrict client connections to the local network with the following command:\n\n$ sudo postconf -e 'smtpd_client_restrictions = permit_mynetworks,reject'",
+        }, 'RHEL_9_STIG')
+        self.assertIsNone(candidate)
+
+    def test_infers_linux_kernel_module_disabled_candidate_from_exact_modprobe_fix(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-257805',
+            'title': 'RHEL 9 must be configured to disable the Controller Area Network kernel module.',
+            'fix_text': 'To configure the system to prevent the can kernel module from being loaded, add the following lines to the file  /etc/modprobe.d/can.conf (or create can.conf if it does not exist):\n\ninstall can /bin/false\nblacklist can',
+        }, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-257805')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('modprobe -n -v can', candidate['check']['command'])
+        self.assertIn('/etc/modprobe.d', candidate['check']['command'])
+        self.assertIn('blacklist[[:space:]]+can', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_rhel7_duplicate_uid_zero_candidate_from_exact_passwd_awk_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204462',

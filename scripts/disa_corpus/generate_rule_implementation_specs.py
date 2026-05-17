@@ -1304,6 +1304,36 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
 
 
+def _linux_kernel_module_disabled_from_modprobe_fix_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    fix_text = rule.get('fix_text', '') or ''
+    module_match = re.search(
+        r'add\s+the\s+following\s+lines\s+to\s+the\s+file\s+/etc/modprobe\.d/[A-Za-z0-9_.-]+\.conf.*?\n\s*install\s+([A-Za-z0-9_-]+)\s+/bin/false\s*\n\s*blacklist\s+([A-Za-z0-9_-]+)(?:\s|$)',
+        fix_text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not module_match:
+        return None
+    module = module_match.group(1)
+    if module != module_match.group(2):
+        return None
+    if not re.fullmatch(r'[A-Za-z0-9_-]+', module):
+        return None
+    command = (
+        f"sh -c \"if modprobe -n -v {module} 2>/dev/null | grep -Eq '(^|[[:space:]])install[[:space:]]+{module}[[:space:]]+/bin/false([[:space:]]|$)' && "
+        f"grep -RhsE '^[[:space:]]*blacklist[[:space:]]+{module}([[:space:]]|$)' /etc/modprobe.d/*.conf 2>/dev/null | grep -Eq 'blacklist[[:space:]]+{module}([[:space:]]|$)'; "
+        "then printf Compliant; fi\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_postfix_unrestricted_mail_relay_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', vuln_id)), vuln_id)
@@ -1312,7 +1342,20 @@ def _linux_postfix_unrestricted_mail_relay_candidate(rule: dict, stig_id: str) -
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     if not re.search(r'postfix\s+is\s+not\s+installed,\s+this\s+is\s+Not\s+Applicable', content, re.IGNORECASE):
-        return None
+        if not stig_id.lower().startswith('scap_mil.disa.stig_collection_'):
+            return None
+        if content.strip():
+            return None
+        if not re.search(r"postconf\s+-e\s+['\"]smtpd_client_restrictions\s*=\s*permit_mynetworks\s*,\s*reject['\"]", fix_text, re.IGNORECASE):
+            return None
+        command = "sh -c 'if ! command -v postconf >/dev/null 2>&1; then printf Compliant; exit 0; fi; v=$(postconf -n smtpd_client_restrictions | sed \"s/[[:space:]]//g\"); [ \"$v\" = \"smtpd_client_restrictions=permit_mynetworks,reject\" ] && printf Compliant'"
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if not re.search(r'^\s*[$#>]\s*postconf\s+-n\s+smtpd_client_restrictions\s*$', content, re.MULTILINE | re.IGNORECASE):
         return None
     if not re.search(r'smtpd_client_restrictions\s*=\s*permit_mynetworks\s*,\s*reject', content, re.IGNORECASE):
@@ -10778,7 +10821,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
+        for infer_with_stig in (_linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate
@@ -10907,6 +10950,12 @@ def _copy_duplicate_candidate_to_less_complete_specs(written_specs: dict[Path, d
                 break
         if not source_candidate:
             continue
+        if any(vuln_id in {'V-257951', 'V-271763'} for vuln_id in _canonical_vuln_ids(spec)) and re.search(
+            r'additional\s+entries\s+have\s+not\s+been\s+documented\s+with\s+the\s+information\s+system\s+security\s+officer',
+            '\n'.join(str(spec.get(key, '')) for key in ('check_content_excerpt', 'fix_text_excerpt')),
+            re.IGNORECASE,
+        ):
+            continue
         copied_candidate = json.loads(json.dumps(source_candidate))
         copied_candidate['vuln_id'] = spec.get('vuln_id', '')
         spec['candidate_check'] = copied_candidate
@@ -10959,7 +11008,14 @@ def generate_specs(coverage_root: Path, implementation_root: Path, repo_root: Pa
                     enriched['fix_text'] = existing_spec['fix_text_excerpt']
             new_spec = spec_from_rule(manifest_path, manifest, enriched)
             if out.exists() and 'candidate_check' not in new_spec:
-                if existing_spec.get('candidate_check'):
+                preserve_existing_candidate = bool(existing_spec.get('candidate_check'))
+                if preserve_existing_candidate and any(vuln_id in {'V-257951', 'V-271763'} for vuln_id in _canonical_vuln_ids(existing_spec)) and re.search(
+                    r'additional\s+entries\s+have\s+not\s+been\s+documented\s+with\s+the\s+information\s+system\s+security\s+officer',
+                    '\n'.join(str(existing_spec.get(key, '')) for key in ('check_content_excerpt', 'fix_text_excerpt')),
+                    re.IGNORECASE,
+                ):
+                    preserve_existing_candidate = False
+                if preserve_existing_candidate:
                     new_spec = existing_spec
             write_json(out, new_spec)
             written_specs[out] = new_spec

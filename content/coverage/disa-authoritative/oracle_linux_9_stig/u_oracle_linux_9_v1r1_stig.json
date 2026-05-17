@@ -5292,16 +5292,17 @@
       "vuln_id": "V-271762"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271763",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_oracle_linux_9_v1r3_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271763r1092001_rule",
       "severity": "medium",
       "title": "OL 9 must be configured to prevent unrestricted mail relaying.",
-      "tracking_issue": "TODO-V-271763",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_oracle_linux_9_v1r3_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271763"

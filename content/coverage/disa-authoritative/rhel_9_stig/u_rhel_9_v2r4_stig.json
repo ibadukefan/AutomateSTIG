@@ -2720,16 +2720,17 @@
       "vuln_id": "V-257950"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257951",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_rhel_9_v2r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257951r1014843_rule",
       "severity": "medium",
       "title": "RHEL 9 must be configured to prevent unrestricted mail relaying.",
-      "tracking_issue": "TODO-V-257951",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_rhel_9_v2r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257951"
