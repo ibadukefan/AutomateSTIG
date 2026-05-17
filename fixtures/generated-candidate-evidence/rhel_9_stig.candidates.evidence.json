@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 404,
+  "candidate_checks": 405,
   "cases": [
     {
       "check": {
@@ -9220,6 +9220,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'for map in $(postconf -h alias_maps 2>/dev/null | sed \"s/,/ /g\"); do postmap -q root \"$map\" 2>/dev/null; done | awk NF | head -n 1 | grep -q . && printf Configured'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must have mail aliases to notify the information system security officer (ISSO) and system administrator (SA) (at a minimum) in the event of an audit processing failure.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Configured"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'for map in $(postconf -h alias_maps 2>/dev/null | sed \"s/,/ /g\"); do postmap -q root \"$map\" 2>/dev/null; done | awk NF | head -n 1 | grep -q . && printf Configured'": "unexpected-Configured"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'for map in $(postconf -h alias_maps 2>/dev/null | sed \"s/,/ /g\"); do postmap -q root \"$map\" 2>/dev/null; done | awk NF | head -n 1 | grep -q . && printf Configured'": "Configured"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258174"
+    },
+    {
+      "check": {
         "name": "audispd-plugins",
         "should_be_installed": true,
         "type": "package"
@@ -11166,5 +11192,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 404
+  "validated_candidates": 405
 }

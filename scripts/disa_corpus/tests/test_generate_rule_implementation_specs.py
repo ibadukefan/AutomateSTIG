@@ -111,6 +111,22 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('--request-timeout', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_linux_postfix_root_alias_candidate_from_exact_audit_failure_mail_alias_prose(self):
+        for vuln_id, stig_id in (('V-258174', 'RHEL_9_STIG'), ('V-271744', 'Oracle_Linux_9_STIG')):
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': 'The operating system must have mail aliases to notify the ISSO and SA in the event of an audit processing failure.',
+                    'check_content': 'Verify that the system is configured to notify the appropriate interactive users in the event of an audit processing failure.\n\nFind the alias maps that are being used with the following command:\n\n$ postconf alias_maps\n\nalias_maps = hash:/etc/aliases\n\nQuery the Postfix alias maps for an alias for the root user with the following command:\n\n$ postmap -q root hash:/etc/aliases\nisso\n\nIf an alias is not set, this is a finding.',
+                    'fix_text': 'Edit the aliases map file (by default /etc/aliases) used by Postfix and configure a root alias (using the user ISSO as an example):\n\nroot:    ISSO\n\nand then update the aliases database with the command:\n\n$ sudo newaliases',
+                }, stig_id)
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertIn('postconf -h alias_maps', candidate['check']['command'])
+                self.assertIn('postmap -q root', candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Configured'})
+
     def test_infers_windows_server_2022_name_based_strong_mapping_candidate_from_exact_vuln_and_gpedit_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271427',

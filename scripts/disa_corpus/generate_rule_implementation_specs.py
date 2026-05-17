@@ -6752,9 +6752,40 @@ def _ubuntu_ufw_rate_limit_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _linux_postfix_root_alias_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-258174', 'V-271744'} or not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'notify\s+the\s+(?:information\s+system\s+security\s+officer\s+\(ISSO\)|ISSO)\s+and\s+(?:system\s+administrator\s+\(SA\)|SA)', rule.get('title', '') + '\n' + content, re.IGNORECASE):
+        return None
+    if not re.search(r'^\s*[$#>]\s*postconf\s+alias_maps\s*$', content, re.MULTILINE | re.IGNORECASE):
+        return None
+    if not re.search(r'^\s*[$#>]\s*postmap\s+-q\s+root\s+hash:/etc/aliases\s*$', content, re.MULTILINE | re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+an\s+alias\s+is\s+not\s+set,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'^\s*root\s*:\s*ISSO\s*$', fix_text, re.MULTILINE | re.IGNORECASE):
+        return None
+    if not re.search(r'\bnewaliases\b', fix_text, re.IGNORECASE):
+        return None
+    command = "sh -c 'for map in $(postconf -h alias_maps 2>/dev/null | sed \"s/,/ /g\"); do postmap -q root \"$map\" 2>/dev/null; done | awk NF | head -n 1 | grep -q . && printf Configured'"
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Configured'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    postfix_root_alias_candidate = _linux_postfix_root_alias_candidate(rule, stig_id)
+    if postfix_root_alias_candidate:
+        return postfix_root_alias_candidate
     ubuntu_ufw_rate_limit_candidate = _ubuntu_ufw_rate_limit_candidate(rule, stig_id)
     if ubuntu_ufw_rate_limit_candidate:
         return ubuntu_ufw_rate_limit_candidate

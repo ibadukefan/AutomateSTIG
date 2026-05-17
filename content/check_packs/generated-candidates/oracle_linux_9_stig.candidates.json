@@ -4177,6 +4177,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'for map in $(postconf -h alias_maps 2>/dev/null | sed \"s/,/ /g\"); do postmap -q root \"$map\" 2>/dev/null; done | awk NF | head -n 1 | grep -q . && printf Configured'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must have mail aliases to notify the information system security officer (ISSO) and system administrator (SA) (at a minimum) in the event of an audit processing failure.",
+      "expected": {
+        "type": "equals",
+        "value": "Configured"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271744"
+    },
+    {
+      "check": {
         "key": "kernel.dmesg_restrict",
         "type": "sysctl"
       },
