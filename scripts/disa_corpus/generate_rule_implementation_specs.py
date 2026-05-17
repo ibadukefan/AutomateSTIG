@@ -2256,12 +2256,31 @@ def _kubernetes_secret_env_var_candidate(rule: dict, stig_id: str) -> dict | Non
 
 
 def _kubernetes_manifest_required_flags_candidate(rule: dict, stig_id: str) -> dict | None:
-    if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-242422':
+    if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') not in {'V-242422', 'V-245544'}:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     if '/etc/kubernetes/manifests' not in content:
         return None
+    if rule.get('vuln_id') == 'V-245544':
+        flags = ('kubelet-client-certificate', 'kubelet-client-key')
+        has_grep_lines = all(re.search(rf'^\s*grep\s+-[iI]\s+{re.escape(flag)}\s+\*\s*$', content, re.IGNORECASE | re.MULTILINE) for flag in flags)
+        has_findings = all(re.search(rf'--{re.escape(flag)}["”]?\s+is\s+not\s+configured.*contains\s+no\s+value.*this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL) for flag in flags)
+        has_fix = re.search(r'Set\s+the\s+value\s+of\s+["“]--kubelet-client-certificate["”]\s+and\s+["“]--kubelet-client-key["”]\s+to\s+an\s+Approved\s+Organizational\s+Certificate\s+and\s+key\s+pair', fix_text, re.IGNORECASE)
+        if not (has_grep_lines and has_findings and has_fix):
+            return None
+        command = (
+            "sh -c 'for f in kubelet-client-certificate kubelet-client-key; do "
+            "grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; "
+            "done; printf Compliant'"
+        )
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     combined_grep = re.search(
         r'grep\s+-i\s+tls-cert-file\s+\*\s*\|\s*grep\s+-i\s+tls-private-key-file\s+\*',
         content,
@@ -2305,7 +2324,7 @@ def _kubernetes_manifest_grep_candidate(rule: dict, stig_id: str) -> dict | None
     if '/etc/kubernetes/manifests' not in content:
         return None
     command_match = re.search(
-        r'Run\s+the\s+command:\s*(?:\n|\s)+(?P<command>grep\s+-[iI]\s+(?P<flag>[A-Za-z0-9_-]+)\s+\*)\s*(?:\n|\s)+If\s+(?P<finding>[^.]+?this\s+is\s+a\s+finding)',
+        r'Run\s+the\s+command:\s*(?:\n|\s)+(?P<command>grep\s+-[iI]\s+(?P<flag>[A-Za-z0-9_-]+)(?:\s+\*)?)\s*(?:\n|\s)+If\s+(?P<finding>[^.]+?this\s+is\s+a\s+finding)',
         content,
         re.IGNORECASE | re.DOTALL,
     )

@@ -25,6 +25,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-242422"
+    },
+    {
+      "check": {
+        "command": "sh -c 'for f in kubelet-client-certificate kubelet-client-key; do grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; done; printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes endpoints must use approved organizational certificate and key pair to protect information in transit.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-245544"
     }
   ],
   "platform": "linux",

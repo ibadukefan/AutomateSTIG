@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 55,
+  "candidate_checks": 56,
   "cases": [
     {
       "check": {
@@ -1407,6 +1407,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'for f in kubelet-client-certificate kubelet-client-key; do grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; done; printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes endpoints must use approved organizational certificate and key pair to protect information in transit.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'for f in kubelet-client-certificate kubelet-client-key; do grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; done; printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'for f in kubelet-client-certificate kubelet-client-key; do grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; done; printf Compliant'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-245544"
+    },
+    {
+      "check": {
         "command": "grep -i encryption-provider-config /etc/kubernetes/manifests/*",
         "type": "command_output"
       },
@@ -1437,5 +1463,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 55
+  "validated_candidates": 56
 }

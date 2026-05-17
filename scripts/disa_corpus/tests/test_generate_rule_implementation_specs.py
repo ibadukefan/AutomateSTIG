@@ -154,6 +154,33 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('tls-private-key-file', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_kubernetes_api_server_audit_policy_file_candidate_from_exact_manifest_grep(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242403',
+            'title': 'Kubernetes API Server must generate audit records that identify what type of event has occurred.',
+            'check_content': 'Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:\ngrep -i audit-policy-file\n\nIf the audit-policy-file is not set, this is a finding. The file given is the policy file and defines what is audited.',
+            'fix_text': 'Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Set the value of "--audit-policy-file" to the path of a file with the following content:',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242403')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -i audit-policy-file /etc/kubernetes/manifests/*'})
+        self.assertEqual(candidate['expected'], {'type': 'not_equals', 'value': ''})
+
+    def test_infers_kubernetes_api_server_kubelet_client_certificate_key_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-245544',
+            'title': 'Kubernetes endpoints must use approved organizational certificate and key pair to protect information in transit.',
+            'check_content': 'Change to the /etc/kubernetes/manifests/ directory on the Kubernetes Control Plane. Run the command:\ngrep -i kubelet-client-certificate *\ngrep -I kubelet-client-key *\n\nIf the setting "--kubelet-client-certificate" is not configured in the Kubernetes API server manifest file or contains no value, this is a finding.\n\nIf the setting "--kubelet-client-key" is not configured in the Kubernetes API server manifest file or contains no value, this is a finding.',
+            'fix_text': 'Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Set the value of "--kubelet-client-certificate" and "--kubelet-client-key" to an Approved Organizational Certificate and key pair.',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-245544')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('kubelet-client-certificate', candidate['check']['command'])
+        self.assertIn('kubelet-client-key', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_macos_15_fips_ssh_config_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-268439',
