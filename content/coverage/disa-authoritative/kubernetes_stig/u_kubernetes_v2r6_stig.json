@@ -668,16 +668,17 @@
       "vuln_id": "V-242421"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242422",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_kubernetes_v2r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242422r1043178_rule",
       "severity": "medium",
       "title": "Kubernetes API Server must have a certificate for communication.",
-      "tracking_issue": "TODO-V-242422",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_kubernetes_v2r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242422"

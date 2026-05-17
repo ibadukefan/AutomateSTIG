@@ -171,6 +171,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'for f in tls-cert-file tls-private-key-file; do grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; done; printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must have a certificate for communication.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-242422"
+    },
+    {
+      "check": {
         "command": "grep -i client-cert-auth /etc/kubernetes/manifests/*",
         "type": "command_output"
       },

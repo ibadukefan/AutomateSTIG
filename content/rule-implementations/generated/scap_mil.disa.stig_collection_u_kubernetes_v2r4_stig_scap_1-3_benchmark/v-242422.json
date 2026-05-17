@@ -1,8 +1,21 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'for f in tls-cert-file tls-private-key-file; do grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; done; printf Compliant'",
+      "type": "command_output"
+    },
+    "description": "Kubernetes API Server must have a certificate for communication.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-242422"
+  },
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,13 +23,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Set the value of tls-cert-file and tls-private-key-file to path containing Approved Organizational Certificate.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "xccdf_mil.disa.stig_rule_SV-242422r1043178_rule",
   "severity": "medium",

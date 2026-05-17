@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 1,
+  "candidate_checks": 2,
   "cases": [
     {
       "check": {
@@ -26,6 +26,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242418"
+    },
+    {
+      "check": {
+        "command": "sh -c 'for f in tls-cert-file tls-private-key-file; do grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; done; printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must have a certificate for communication.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'for f in tls-cert-file tls-private-key-file; do grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; done; printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'for f in tls-cert-file tls-private-key-file; do grep -Eiq -- \"--?$f[=[:space:]]+[^[:space:]]+\" /etc/kubernetes/manifests/* || exit 1; done; printf Compliant'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242422"
     }
   ],
   "production_claim": false,
@@ -33,5 +59,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_kubernetes_v2r4_stig_scap_1-3_benchmark.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "scap_mil.disa.stig_collection_U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark",
-  "validated_candidates": 1
+  "validated_candidates": 2
 }

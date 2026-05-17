@@ -140,6 +140,20 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('tls-private-key-file', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_kubernetes_api_server_tls_certificate_flags_candidate_from_separate_grep_lines(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242422',
+            'title': 'Kubernetes API Server must have a certificate for communication.',
+            'check_content': 'Change to the /etc/kubernetes/manifests/ directory on the Kubernetes Control Plane. Run the command:\n\ngrep -i tls-cert-file *\ngrep -i tls-private-key-file *\n\nIf the setting tls-cert-file and private-key-file is not set in the Kubernetes API server manifest file or contains no value, this is a finding.',
+            'fix_text': 'Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Set the value of tls-cert-file and tls-private-key-file to path containing Approved Organizational Certificate.',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242422')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('tls-cert-file', candidate['check']['command'])
+        self.assertIn('tls-private-key-file', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_oracle_failed_login_attempts_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270550',

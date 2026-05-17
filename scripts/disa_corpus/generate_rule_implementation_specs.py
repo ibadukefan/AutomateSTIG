@@ -2261,11 +2261,24 @@ def _kubernetes_manifest_required_flags_candidate(rule: dict, stig_id: str) -> d
     fix_text = rule.get('fix_text', '') or ''
     if '/etc/kubernetes/manifests' not in content:
         return None
-    if not re.search(r'grep\s+-i\s+tls-cert-file\s+\*\s*\|\s*grep\s+-i\s+tls-private-key-file\s+\*', content, re.IGNORECASE):
+    combined_grep = re.search(
+        r'grep\s+-i\s+tls-cert-file\s+\*\s*\|\s*grep\s+-i\s+tls-private-key-file\s+\*',
+        content,
+        re.IGNORECASE,
+    )
+    separate_grep_lines = (
+        re.search(r'^\s*grep\s+-i\s+tls-cert-file\s+\*\s*$', content, re.IGNORECASE | re.MULTILINE)
+        and re.search(r'^\s*grep\s+-i\s+tls-private-key-file\s+\*\s*$', content, re.IGNORECASE | re.MULTILINE)
+    )
+    if not combined_grep and not separate_grep_lines:
         return None
     if not re.search(r'tls-cert-file\s+and\s+private-key-file\s+is\s+not\s+set.*contains\s+no\s+value.*this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
         return None
-    if not re.search(r'Set\s+the\s+value\s+of\s+tls-cert-file\s+and\s+tls-private-key-file\s+to\s+path\s+containing\s+API\s+Server\s+certificate\s+and\s+key', fix_text, re.IGNORECASE):
+    if not re.search(
+        r'Set\s+the\s+value\s+of\s+tls-cert-file\s+and\s+tls-private-key-file\s+to\s+path\s+containing\s+(?:API\s+Server\s+certificate\s+and\s+key|Approved\s+Organizational\s+Certificate)',
+        fix_text,
+        re.IGNORECASE,
+    ):
         return None
     command = (
         "sh -c 'for f in tls-cert-file tls-private-key-file; do "
