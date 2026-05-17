@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 8,
+  "candidate_checks": 9,
   "cases": [
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; DECLARE @IsClustered int = CONVERT(int, SERVERPROPERTY('IsClustered')); DECLARE @IsHadrEnabled int = CONVERT(int, SERVERPROPERTY('IsHadrEnabled')); EXECUTE AS LOGIN = 'NT AUTHORITY\\SYSTEM'; WITH p AS (SELECT permission_name FROM fn_my_permissions(NULL, 'server')) SELECT permission_name FROM p WHERE (@IsHadrEnabled = 1 AND permission_name NOT IN ('CONNECT SQL','CREATE AVAILABILITY GROUP','ALTER ANY AVAILABILITY GROUP','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) OR (@IsClustered = 1 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) OR (@IsClustered = 0 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW ANY DATABASE')); REVERT;\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must protect against a user falsely repudiating by ensuring the NT AUTHORITY SYSTEM account is not used for administration.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; DECLARE @IsClustered int = CONVERT(int, SERVERPROPERTY('IsClustered')); DECLARE @IsHadrEnabled int = CONVERT(int, SERVERPROPERTY('IsHadrEnabled')); EXECUTE AS LOGIN = 'NT AUTHORITY\\SYSTEM'; WITH p AS (SELECT permission_name FROM fn_my_permissions(NULL, 'server')) SELECT permission_name FROM p WHERE (@IsHadrEnabled = 1 AND permission_name NOT IN ('CONNECT SQL','CREATE AVAILABILITY GROUP','ALTER ANY AVAILABILITY GROUP','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) OR (@IsClustered = 1 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) OR (@IsClustered = 0 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW ANY DATABASE')); REVERT;\"": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; DECLARE @IsClustered int = CONVERT(int, SERVERPROPERTY('IsClustered')); DECLARE @IsHadrEnabled int = CONVERT(int, SERVERPROPERTY('IsHadrEnabled')); EXECUTE AS LOGIN = 'NT AUTHORITY\\SYSTEM'; WITH p AS (SELECT permission_name FROM fn_my_permissions(NULL, 'server')) SELECT permission_name FROM p WHERE (@IsHadrEnabled = 1 AND permission_name NOT IN ('CONNECT SQL','CREATE AVAILABILITY GROUP','ALTER ANY AVAILABILITY GROUP','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) OR (@IsClustered = 1 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) OR (@IsClustered = 0 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW ANY DATABASE')); REVERT;\"": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271268"
+    },
     {
       "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name FROM sys.dm_server_audit_status WHERE status_desc = 'STARTED';\"",
@@ -215,5 +241,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_SQL_Server_2022_Instance_STIG",
-  "validated_candidates": 8
+  "validated_candidates": 9
 }

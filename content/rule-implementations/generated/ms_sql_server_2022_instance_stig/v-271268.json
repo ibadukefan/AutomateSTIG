@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; DECLARE @IsClustered int = CONVERT(int, SERVERPROPERTY('IsClustered')); DECLARE @IsHadrEnabled int = CONVERT(int, SERVERPROPERTY('IsHadrEnabled')); EXECUTE AS LOGIN = 'NT AUTHORITY\\SYSTEM'; WITH p AS (SELECT permission_name FROM fn_my_permissions(NULL, 'server')) SELECT permission_name FROM p WHERE (@IsHadrEnabled = 1 AND permission_name NOT IN ('CONNECT SQL','CREATE AVAILABILITY GROUP','ALTER ANY AVAILABILITY GROUP','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) OR (@IsClustered = 1 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) OR (@IsClustered = 0 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW ANY DATABASE')); REVERT;\"",
+      "type": "command_output"
+    },
+    "description": "SQL Server must protect against a user falsely repudiating by ensuring the NT AUTHORITY SYSTEM account is not used for administration.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-271268"
+  },
   "check_content_excerpt": "Execute the following queries. The first query checks for clustering and availability groups being provisioned in the database engine. The second query lists permissions granted to the local system account.\n\nSELECT\n    SERVERPROPERTY('IsClustered') AS [IsClustered],\n    SERVERPROPERTY('IsHadrEnabled') AS [IsHadrEnabled]\n\nEXECUTE AS LOGIN = 'NT AUTHORITY\\SYSTEM'\n\nSELECT * FROM fn_my_permissions(NULL, 'server')\n\nREVERT\n\nGO\n\nIf \"IsClustered\" returns \"1\", \"IsHadrEnabled\" returns \"0\", and any permissions have been granted to the Local System account beyond \"CONNECT SQL\", \"VIEW SERVER STATE\", \"VIEW ANY DATABASE\", \"VIEW SERVER PERFORMANCE STATE\", and \"VIEW SERVER SECURITY STATE\", this is a finding.\n \nIf \"IsHadrEnabled\" returns \"1\" and any permissions have been granted to the Local System account beyond \"CONNECT SQL\", \"CREATE AVAILABILITY GROUP\", \"ALTER ANY AVAILABILITY GROUP\", \"VIEW SERVER STATE\", \"VIEW ANY DATABASE\", \"VIEW SERVER PERFORMANCE STATE\", and \"VIEW SERVER SECURITY STATE\", this is a finding.\n \nIf both \"IsClustered\" and \"IsHadrEnabled\" return \"0\" and any permissions have been granted to the Local System account beyond \"CONNECT SQL\" and \"VIEW ANY DATABASE\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove permissions that were identified as not allowed in the check content.\n\nUSE Master;\n\nREVOKE <Permission> TO [NT AUTHORITY\\SYSTEM]\n\nGO\n\nTo grant permissions to services or applications, use the Service SID of the service or a domain service account.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271268r1136917_rule",
   "severity": "medium",

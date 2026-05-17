@@ -9200,6 +9200,61 @@ def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> d
 
 
 
+def _sql_server_nt_authority_system_permissions_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if rule.get('vuln_id', '') != 'V-271268':
+        return None
+    expected_title = 'sql server must protect against a user falsely repudiating by ensuring the nt authority system account is not used for administration.'
+    if rule.get('title', '').strip().lower() != expected_title:
+        return None
+    required_content_patterns = (
+        r"SERVERPROPERTY\(\s*'IsClustered'\s*\)",
+        r"SERVERPROPERTY\(\s*'IsHadrEnabled'\s*\)",
+        r"EXECUTE\s+AS\s+LOGIN\s*=\s*'NT\s+AUTHORITY\\SYSTEM'",
+        r"fn_my_permissions\(\s*NULL\s*,\s*'server'\s*\)",
+        r'If\s+["“]IsClustered["”]\s+returns\s+["“]1["”],\s+["“]IsHadrEnabled["”]\s+returns\s+["“]0["”].*?this\s+is\s+a\s+finding',
+        r'If\s+["“]IsHadrEnabled["”]\s+returns\s+["“]1["”].*?this\s+is\s+a\s+finding',
+        r'If\s+both\s+["“]IsClustered["”]\s+and\s+["“]IsHadrEnabled["”]\s+return\s+["“]0["”].*?this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in required_content_patterns):
+        return None
+    required_permissions = (
+        'CONNECT SQL',
+        'VIEW SERVER STATE',
+        'VIEW ANY DATABASE',
+        'VIEW SERVER PERFORMANCE STATE',
+        'VIEW SERVER SECURITY STATE',
+        'CREATE AVAILABILITY GROUP',
+        'ALTER ANY AVAILABILITY GROUP',
+    )
+    if not all(permission in content for permission in required_permissions):
+        return None
+    if not re.search(r'REVOKE\s+<Permission>\s+TO\s+\[NT\s+AUTHORITY\\SYSTEM\]', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; '
+        "DECLARE @IsClustered int = CONVERT(int, SERVERPROPERTY('IsClustered')); "
+        "DECLARE @IsHadrEnabled int = CONVERT(int, SERVERPROPERTY('IsHadrEnabled')); "
+        "EXECUTE AS LOGIN = 'NT AUTHORITY\\SYSTEM'; "
+        "WITH p AS (SELECT permission_name FROM fn_my_permissions(NULL, 'server')) "
+        "SELECT permission_name FROM p WHERE "
+        "(@IsHadrEnabled = 1 AND permission_name NOT IN ('CONNECT SQL','CREATE AVAILABILITY GROUP','ALTER ANY AVAILABILITY GROUP','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) "
+        "OR (@IsClustered = 1 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) "
+        "OR (@IsClustered = 0 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW ANY DATABASE')); "
+        'REVERT;"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_sa_login_renamed_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -10904,6 +10959,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_sample_databases_candidate = _sql_server_sample_databases_absent_candidate(rule, stig_id)
     if sql_server_sample_databases_candidate:
         return sql_server_sample_databases_candidate
+
+    sql_server_nt_authority_system_permissions_candidate = _sql_server_nt_authority_system_permissions_candidate(rule, stig_id)
+    if sql_server_nt_authority_system_permissions_candidate:
+        return sql_server_nt_authority_system_permissions_candidate
 
     sql_server_sa_candidate = _sql_server_sa_login_renamed_candidate(rule, stig_id)
     if sql_server_sa_candidate:

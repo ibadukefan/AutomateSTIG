@@ -2218,6 +2218,58 @@ If any sample databases are found, this is a finding.''',
             'description': 'Default demonstration and sample databases, database objects, and applications must be removed.',
         })
 
+    def test_infers_sql_server_nt_authority_system_permissions_allowlist_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271268',
+            'title': 'SQL Server must protect against a user falsely repudiating by ensuring the NT AUTHORITY SYSTEM account is not used for administration.',
+            'check_content': '''Execute the following queries. The first query checks for clustering and availability groups being provisioned in the database engine. The second query lists permissions granted to the local system account.
+
+SELECT
+    SERVERPROPERTY('IsClustered') AS [IsClustered],
+    SERVERPROPERTY('IsHadrEnabled') AS [IsHadrEnabled]
+
+EXECUTE AS LOGIN = 'NT AUTHORITY\\SYSTEM'
+
+SELECT * FROM fn_my_permissions(NULL, 'server')
+
+REVERT
+
+GO
+
+If "IsClustered" returns "1", "IsHadrEnabled" returns "0", and any permissions have been granted to the Local System account beyond "CONNECT SQL", "VIEW SERVER STATE", "VIEW ANY DATABASE", "VIEW SERVER PERFORMANCE STATE", and "VIEW SERVER SECURITY STATE", this is a finding.
+
+If "IsHadrEnabled" returns "1" and any permissions have been granted to the Local System account beyond "CONNECT SQL", "CREATE AVAILABILITY GROUP", "ALTER ANY AVAILABILITY GROUP", "VIEW SERVER STATE", "VIEW ANY DATABASE", "VIEW SERVER PERFORMANCE STATE", and "VIEW SERVER SECURITY STATE", this is a finding.
+
+If both "IsClustered" and "IsHadrEnabled" return "0" and any permissions have been granted to the Local System account beyond "CONNECT SQL" and "VIEW ANY DATABASE", this is a finding.''',
+            'fix_text': '''Remove permissions that were identified as not allowed in the check content.
+
+USE Master;
+
+REVOKE <Permission> TO [NT AUTHORITY\\SYSTEM]
+
+GO''',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271268')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn("SERVERPROPERTY('IsClustered')", candidate['check']['command'])
+        self.assertIn("SERVERPROPERTY('IsHadrEnabled')", candidate['check']['command'])
+        self.assertIn("EXECUTE AS LOGIN = 'NT AUTHORITY\\SYSTEM'", candidate['check']['command'])
+        self.assertIn("fn_my_permissions(NULL, 'server')", candidate['check']['command'])
+        self.assertIn('CREATE AVAILABILITY GROUP', candidate['check']['command'])
+        self.assertIn('VIEW SERVER SECURITY STATE', candidate['check']['command'])
+
+    def test_does_not_infer_sql_server_nt_authority_system_permissions_without_exact_vuln(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-000000',
+            'title': 'SQL Server must protect against a user falsely repudiating by ensuring the NT AUTHORITY SYSTEM account is not used for administration.',
+            'check_content': "EXECUTE AS LOGIN = 'NT AUTHORITY\\SYSTEM' SELECT * FROM fn_my_permissions(NULL, 'server')",
+            'fix_text': 'REVOKE <Permission> TO [NT AUTHORITY\\SYSTEM]',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_sles_openssh_package_and_service_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234860',
