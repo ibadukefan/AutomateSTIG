@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$names=sqlcmd -h -1 -W -Q 'SET NOCOUNT ON; SELECT name FROM sys.server_principals WHERE type IN (''U'',''G'') AND name LIKE ''%$'';'; foreach ($n in $names) { $login=$n.Trim(); if (-not $login) { continue }; $sam=($login -split '\\\\')[-1] -replace '\\$$',''; if (([ADSISearcher]\"(&(ObjectCategory=Computer)(Name=$sam))\").FindOne()) { $login } }\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must protect against a user falsely repudiating by ensuring only clearly unique Active Directory user accounts can connect to the instance.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-271267"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; DECLARE @IsClustered int = CONVERT(int, SERVERPROPERTY('IsClustered')); DECLARE @IsHadrEnabled int = CONVERT(int, SERVERPROPERTY('IsHadrEnabled')); EXECUTE AS LOGIN = 'NT AUTHORITY\\SYSTEM'; WITH p AS (SELECT permission_name FROM fn_my_permissions(NULL, 'server')) SELECT permission_name FROM p WHERE (@IsHadrEnabled = 1 AND permission_name NOT IN ('CONNECT SQL','CREATE AVAILABILITY GROUP','ALTER ANY AVAILABILITY GROUP','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) OR (@IsClustered = 1 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW SERVER STATE','VIEW ANY DATABASE','VIEW SERVER PERFORMANCE STATE','VIEW SERVER SECURITY STATE')) OR (@IsClustered = 0 AND @IsHadrEnabled = 0 AND permission_name NOT IN ('CONNECT SQL','VIEW ANY DATABASE')); REVERT;\"",
         "type": "command_output"
       },

@@ -366,6 +366,21 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('clientcert=1', candidate['check']['command'])
         self.assertIn('${PGDATA?}/pg_hba.conf', candidate['check']['command'])
 
+    def test_infers_postgresql_connection_audit_type_records_from_minimum_fix(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233604',
+            'title': 'PostgreSQL must produce audit records containing sufficient information to establish what type of events occurred.',
+            'check_content': 'As the database administrator, verify the current log_line_prefix setting:\n$ sudo su - postgres\n$ psql -c "SHOW log_line_prefix"\nIf the current settings do not provide enough information regarding the source of the event, this is a finding.\nNext, verify the current settings of log_connections and log_disconnections by running the following SQL:\n$ psql -c "SHOW log_connections"\n$ psql -c "SHOW log_disconnections"\nIf either setting is off, this is a finding.',
+            'fix_text': 'If logging is enabled the following configurations must be made to log connections, date/time, username and session identifier.\nlog_connections = on\nlog_disconnections = on\nlog_line_prefix = \'< %m %u %d %c: >\'',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233604')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('log_connections', candidate['check']['command'])
+        self.assertIn('log_disconnections', candidate['check']['command'])
+        self.assertIn('%m %u %d %c', candidate['check']['command'])
+
     def test_infers_sles_aide_selection_line_tokens_from_all_selection_lines_prose(self):
         cases = [
             ('V-234986', 'acl', 'Access Control Lists (ACLs)'),
@@ -2292,6 +2307,31 @@ If any sample databases are found, this is a finding.''',
             'expected': {'type': 'equals', 'value': ''},
             'description': 'Default demonstration and sample databases, database objects, and applications must be removed.',
         })
+
+    def test_infers_sql_server_computer_account_logins_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271267',
+            'title': 'SQL Server must protect against a user falsely repudiating by ensuring only clearly unique Active Directory user accounts can connect to the instance.',
+            'check_content': '''Execute the following:
+
+SELECT name FROM sys.server_principals WHERE type in ('U','G') AND name LIKE '%$'
+
+If no logins are returned, this is not a finding.
+If logins are returned, determine whether each login is a computer account.
+Launch PowerShell and execute the following code:
+([ADSISearcher]"(&(ObjectCategory=Computer)(Name=<name>))").FindAll()
+If account information is returned, this is a finding.''',
+            'fix_text': 'Remove all logins that were returned in the check content.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271267')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('sys.server_principals', candidate['check']['command'])
+        self.assertIn("name LIKE \'\'%$\'\'", candidate['check']['command'])
+        self.assertIn('[ADSISearcher]', candidate['check']['command'])
+        self.assertIn('ObjectCategory=Computer', candidate['check']['command'])
 
     def test_infers_sql_server_nt_authority_system_permissions_allowlist_candidate(self):
         candidate = mod.infer_candidate_check({

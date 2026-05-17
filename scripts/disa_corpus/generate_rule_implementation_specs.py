@@ -7357,7 +7357,10 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_disconnections["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
         and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+log_line_prefix["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
         and re.search(r'If\s+either\s+(?:setting\s+)?is\s+off,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
-        and re.search(r'If\s+log_line_prefix\s+does\s+not\s+contain\s+at\s+least\s+%m\s+%u\s+%d\s+%c,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and (
+            re.search(r'If\s+log_line_prefix\s+does\s+not\s+contain\s+at\s+least\s+%m\s+%u\s+%d\s+%c,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            or re.search(r'current\s+settings\s+do\s+not\s+provide\s+enough\s+information\s+regarding\s+the\s+source\s+of\s+the\s+event,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        )
         and re.search(r'^\s*log_connections\s*=\s*on\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
         and re.search(r'^\s*log_disconnections\s*=\s*on\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
         and all(token in fix_text for token in postgresql_connection_audit_settings)
@@ -9329,6 +9332,45 @@ def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> d
 
 
 
+def _sql_server_computer_account_logins_absent_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if rule.get('vuln_id', '') != 'V-271267':
+        return None
+    expected_title = 'sql server must protect against a user falsely repudiating by ensuring only clearly unique active directory user accounts can connect to the instance.'
+    if rule.get('title', '').strip().lower() != expected_title:
+        return None
+    if not re.search(r"SELECT\s+name\s+FROM\s+sys\.server_principals\s+WHERE\s+type\s+in\s*\(\s*'U'\s*,\s*'G'\s*\)\s+AND\s+name\s+LIKE\s+'%\$'", content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+no\s+logins\s+are\s+returned,\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'ObjectCategory=Computer', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+account\s+information\s+is\s+returned,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Remove\s+all\s+logins\s+that\s+were\s+returned\s+in\s+the\s+check\s+content', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$names=sqlcmd -h -1 -W -Q \'SET NOCOUNT ON; SELECT name FROM sys.server_principals WHERE type IN (\'\'U\'\',\'\'G\'\') AND name LIKE \'\'%$\'\';\'; '
+        "foreach ($n in $names) { $login=$n.Trim(); if (-not $login) { continue }; "
+        "$sam=($login -split '\\\\')[-1] -replace '\\$$',''; "
+        "if (([ADSISearcher]\"(&(ObjectCategory=Computer)(Name=$sam))\").FindOne()) { $login } }\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': command,
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_nt_authority_system_permissions_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -11073,6 +11115,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     linux_world_writable_directory_owner_candidate = _linux_world_writable_directory_owner_candidate(rule, stig_id)
     if linux_world_writable_directory_owner_candidate:
         return linux_world_writable_directory_owner_candidate
+
+    sql_server_computer_account_logins_candidate = _sql_server_computer_account_logins_absent_candidate(rule, stig_id)
+    if sql_server_computer_account_logins_candidate:
+        return sql_server_computer_account_logins_candidate
 
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:
