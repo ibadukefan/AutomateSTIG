@@ -1385,6 +1385,48 @@ def _sles_world_writable_directory_sticky_bit_candidate(rule: dict, stig_id: str
     }
 
 
+def _rhel7_authconfig_custom_pam_symlink_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'RHEL_7_STIG' or rule.get('vuln_id', '') != 'V-255928':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{content}\n{fix_text}"
+    required_content = (
+        'system-auth',
+        'password-auth',
+        'system-auth-local',
+        'password-auth-local',
+        'symbolic links',
+        'If system-auth and password-auth files are not symbolic links, this is a finding',
+        'do not point to',
+    )
+    if not all(phrase in content for phrase in required_content):
+        return None
+    required_fix = (
+        '/etc/pam.d/system-auth-local',
+        '/etc/pam.d/system-auth',
+        '/etc/pam.d/password-auth-local',
+        '/etc/pam.d/password-auth',
+    )
+    if not all(phrase in fix_text for phrase in required_fix):
+        return None
+    if not re.search(r'ln\s+-s[f]?\s+/etc/pam\.d/system-auth-local\s+/etc/pam\.d/system-auth', combined):
+        return None
+    if not re.search(r'ln\s+-s[f]?\s+/etc/pam\.d/password-auth-local\s+/etc/pam\.d/password-auth', combined):
+        return None
+    command = (
+        "sh -c '[ \"$(readlink -f /etc/pam.d/system-auth 2>/dev/null)\" = \"/etc/pam.d/system-auth-local\" ] && "
+        "[ \"$(readlink -f /etc/pam.d/password-auth 2>/dev/null)\" = \"/etc/pam.d/password-auth-local\" ] && printf Compliant'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_world_writable_directory_owner_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -10262,6 +10304,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sles_world_writable_directory_sticky_bit_candidate = _sles_world_writable_directory_sticky_bit_candidate(rule, stig_id)
     if sles_world_writable_directory_sticky_bit_candidate:
         return sles_world_writable_directory_sticky_bit_candidate
+
+    rhel7_authconfig_custom_pam_symlink_candidate = _rhel7_authconfig_custom_pam_symlink_candidate(rule, stig_id)
+    if rhel7_authconfig_custom_pam_symlink_candidate:
+        return rhel7_authconfig_custom_pam_symlink_candidate
 
     linux_world_writable_directory_owner_candidate = _linux_world_writable_directory_owner_candidate(rule, stig_id)
     if linux_world_writable_directory_owner_candidate:

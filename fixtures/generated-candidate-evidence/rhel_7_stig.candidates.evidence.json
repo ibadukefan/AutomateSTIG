@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 166,
+  "candidate_checks": 167,
   "cases": [
     {
       "check": {
@@ -4379,6 +4379,32 @@
     },
     {
       "check": {
+        "command": "sh -c '[ \"$(readlink -f /etc/pam.d/system-auth 2>/dev/null)\" = \"/etc/pam.d/system-auth-local\" ] && [ \"$(readlink -f /etc/pam.d/password-auth 2>/dev/null)\" = \"/etc/pam.d/password-auth-local\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured to prevent overwriting of custom authentication configuration settings by the authconfig utility.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c '[ \"$(readlink -f /etc/pam.d/system-auth 2>/dev/null)\" = \"/etc/pam.d/system-auth-local\" ] && [ \"$(readlink -f /etc/pam.d/password-auth 2>/dev/null)\" = \"/etc/pam.d/password-auth-local\" ] && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c '[ \"$(readlink -f /etc/pam.d/system-auth 2>/dev/null)\" = \"/etc/pam.d/system-auth-local\" ] && [ \"$(readlink -f /etc/pam.d/password-auth 2>/dev/null)\" = \"/etc/pam.d/password-auth-local\" ] && printf Compliant'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-255928"
+    },
+    {
+      "check": {
         "name": "--queryformat",
         "should_be_installed": true,
         "type": "package"
@@ -4461,5 +4487,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 166
+  "validated_candidates": 167
 }

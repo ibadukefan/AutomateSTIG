@@ -173,6 +173,31 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('-perm -002', candidate['check']['command'])
         self.assertIn('! -perm -1000', candidate['check']['command'])
 
+    def test_infers_rhel7_authconfig_custom_pam_symlink_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-255928',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured to prevent overwriting of custom authentication configuration settings by the authconfig utility.',
+            'check_content': 'Verify "system-auth" and "password-auth" files are symbolic links pointing to "system-auth-local" and "password-auth-local":\n\n$ sudo ls -l /etc/pam.d/{password,system}-auth\nlrwxrwxrwx. 1 root root 30 Mar  1 00:00 /etc/pam.d/password-auth -> /etc/pam.d/password-auth-local\nlrwxrwxrwx. 1 root root 28 Mar  1 00:00 /etc/pam.d/system-auth -> /etc/pam.d/system-auth-local\n\nIf system-auth and password-auth files are not symbolic links, this is a finding.\n\nIf system-auth and password-auth are symbolic links but do not point to "system-auth-local" and "password-auth-local", this is a finding.',
+            'fix_text': 'Create custom configuration files and their corresponding symbolic links. Create the symbolic links:\n\nln -s /etc/pam.d/system-auth-local /etc/pam.d/system-auth\nln -s /etc/pam.d/password-auth-local /etc/pam.d/password-auth',
+        }, 'RHEL_7_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-255928')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        command = candidate['check']['command']
+        self.assertIn('readlink', command)
+        self.assertIn('/etc/pam.d/system-auth', command)
+        self.assertIn('/etc/pam.d/password-auth', command)
+        self.assertIn('/etc/pam.d/system-auth-local', command)
+        self.assertIn('/etc/pam.d/password-auth-local', command)
+        self.assertIsNone(mod.infer_candidate_check({
+            'vuln_id': 'V-255928',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured to prevent overwriting of custom authentication configuration settings by the authconfig utility.',
+            'check_content': 'Verify "system-auth" and "password-auth" files are symbolic links pointing to "system-auth-local" and "password-auth-local". If system-auth and password-auth files are not symbolic links, this is a finding.',
+            'fix_text': 'Create the symbolic links: ln -s /etc/pam.d/system-auth-local /etc/pam.d/system-auth; ln -s /etc/pam.d/password-auth-local /etc/pam.d/password-auth',
+        }, 'RHEL_8_STIG'))
+
     def test_infers_oracle_cman_remote_admin_disabled_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270542',

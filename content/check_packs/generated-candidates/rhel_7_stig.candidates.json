@@ -2229,6 +2229,19 @@
     },
     {
       "check": {
+        "command": "sh -c '[ \"$(readlink -f /etc/pam.d/system-auth 2>/dev/null)\" = \"/etc/pam.d/system-auth-local\" ] && [ \"$(readlink -f /etc/pam.d/password-auth 2>/dev/null)\" = \"/etc/pam.d/password-auth-local\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured to prevent overwriting of custom authentication configuration settings by the authconfig utility.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-255928"
+    },
+    {
+      "check": {
         "name": "--queryformat",
         "should_be_installed": true,
         "type": "package"

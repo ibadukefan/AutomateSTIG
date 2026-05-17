@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c '[ \"$(readlink -f /etc/pam.d/system-auth 2>/dev/null)\" = \"/etc/pam.d/system-auth-local\" ] && [ \"$(readlink -f /etc/pam.d/password-auth 2>/dev/null)\" = \"/etc/pam.d/password-auth-local\" ] && printf Compliant'",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured to prevent overwriting of custom authentication configuration settings by the authconfig utility.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-255928"
+  },
   "check_content_excerpt": "Verify \"system-auth\" and \"password-auth\" files are symbolic links pointing to \"system-auth-local\" and \"password-auth-local\":\n     $ sudo ls -l /etc/pam.d/{password,system}-auth\n\n     lrwxrwxrwx. 1 root root 30 Apr 1 11:59 /etc/pam.d/password-auth -> /etc/pam.d/password-auth-local\n     lrwxrwxrwx. 1 root root 28 Apr 1 11:59 /etc/pam.d/system-auth -> /etc/pam.d/system-auth-local\n\t\nIf system-auth and password-auth files are not symbolic links, this is a finding.\n\nIf system-auth and password-auth are symbolic links but do not point to \"system-auth-local\" and \"password-auth-local\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Create custom configuration files and their corresponding symbolic links:\n\nRename the existing configuration files (skip this step if symbolic links are already present):\n     $ sudo mv /etc/pam.d/system-auth /etc/pam.d/system-auth-ac\n     $ sudo mv /etc/pam.d/password-auth /etc/pam.d/password-auth-ac\n\t\nCreate custom system-auth configuration file:\n     $ sudo vi /etc/pam.d/system-auth-local\n\t\nThe new file, at minimum, must contain the following lines:\n\t\nauth        required      pam_faillock.so preauth silent audit deny=3 even_deny_root fail_interval=900 unlock_time=900\nauth        include       system-auth-ac\nauth        sufficient    pam_unix.so try_first_pass\nauth        [default=die] pam_faillock.so authfail audit deny=3 even_deny_root fail_interval=900 unlock_time=900\n\naccount     required      pam_faillock.so\naccount     include       system-auth-ac\n\npassword    requisite     pam_pwhistory.so remember=5 retry=3\npassword    requisite     pam_pwquality.so retry=3\npassword    include       system-auth-ac\npassword    sufficient    pam_unix.so sha512 shadow try_first_pass use_authtok\n\nsession     include       system-auth-ac\n\nCreate custom password-auth configuration file:\n     $ sudo vi /etc/pam.d/password-auth-local\n\t\nThe new file, at minimum, must contain the following lines:\n\nauth        required      pam_faillock.so preauth silent audit deny=3 even_deny_root fail_interval=900 unlock_time=900\nauth        include       password-auth-ac\nauth        sufficient    pam_unix.so try_first_pass\nauth        [default=die] pam_faillock.so authfail audit deny=3 even_deny_root fail_interval=900 unlock_time=900\n\naccount     required      pam_faillock.so\naccount     include       password-auth-ac\n\npassword    requisite     pam_pwhistory.so use_authtok remember=5 retry=3\npassword    requisite     pam_pwquality.so retry=3\npassword    include       password-auth-ac\npassword    sufficient    pam_unix.so sha512 shadow try_first_pass use_authtok\n\nsession     include       password-auth-ac\n\t\nCreate new or move existing symbolic links to the new custom configuration files:\n     $ sudo ln -sf /etc/pam.d/system-auth-local /etc/pam.d/system-auth\n     $ sudo ln -sf /etc/pam.d/password-auth-local /etc/pam.d/password-auth\n\nOnce finished, the following file structure should be present:\n    $ sudo ls -1 /etc/pam.d/{password,system}-auth*\n\n    /etc/pam.d/password-auth\n    /etc/pam.d/password-auth-ac\n    /etc/pam.d/password-auth-local\n    /etc/pam.d/system-auth\n    /etc/pam.d/system-auth-ac\n    /etc/pam.d/system-auth-local\n\nNote: With this solution in place, any custom settings to \"system-auth\" and \"password-auth\" will be retained and not overwritten by the use of the authconfig utility. The authconfig utility will write its settings to \"system-auth-ac\" and \"password-auth-ac\" and continue to function as expected.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-255928r982199_rule",
   "severity": "medium",
