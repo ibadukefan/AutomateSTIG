@@ -257,6 +257,40 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(candidate['check'], {'type': 'registry', 'path': 'HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters', 'value_name': 'UseStrongNameMatches'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 1})
 
+    def test_infers_windows_workstation_domain_joined_admin_deny_rights_from_exact_vulns(self):
+        cases = (
+            ('V-220969', 'MS_Windows_10_STIG', 'Deny log on as a batch job', 'SeDenyBatchLogonRight'),
+            ('V-220970', 'MS_Windows_10_STIG', 'Deny log on as a service', 'SeDenyServiceLogonRight'),
+            ('V-253492', 'Microsoft_Windows_11_STIG', 'Deny log on as a batch job', 'SeDenyBatchLogonRight'),
+            ('V-253493', 'Microsoft_Windows_11_STIG', 'Deny log on as a service', 'SeDenyServiceLogonRight'),
+        )
+        for vuln_id, stig_id, right_name, privilege_key in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'{right_name} must include highly privileged domain groups on domain-joined Windows workstations.',
+                    'check_content': f'If the following groups or accounts are not defined for the "{right_name}" right, this is a finding:\n\nEnterprise Admins Group\nDomain Admins Group',
+                    'fix_text': f'This requirement is applicable to domain-joined systems. For standalone or nondomain-joined systems, this is NA. Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> "{right_name}" to include the following:\n\nDomain Systems Only:\nEnterprise Admins Group\nDomain Admins Group',
+                }, stig_id)
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+                self.assertEqual(candidate['check']['type'], 'command_output')
+                self.assertIn(privilege_key, candidate['check']['command'])
+                self.assertIn('PartOfDomain', candidate['check']['command'])
+                self.assertIn('512', candidate['check']['command'])
+                self.assertIn('519', candidate['check']['command'])
+
+    def test_does_not_infer_domain_joined_admin_deny_rights_without_exact_vuln(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220968',
+            'title': 'Other deny right with conditional domain groups.',
+            'check_content': 'If the following groups or accounts are not defined for the "Deny log on locally" right, this is a finding:\n\nEnterprise Admins Group\nDomain Admins Group',
+            'fix_text': 'This requirement is applicable to domain-joined systems. For standalone or nondomain-joined systems, this is NA. Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> "Deny log on locally" to include the following:\n\nDomain Systems Only:\nEnterprise Admins Group\nDomain Admins Group',
+        }, 'MS_Windows_10_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_cisco_nxos_external_interface_disabled_protocol_candidates(self):
         cases = [
             (

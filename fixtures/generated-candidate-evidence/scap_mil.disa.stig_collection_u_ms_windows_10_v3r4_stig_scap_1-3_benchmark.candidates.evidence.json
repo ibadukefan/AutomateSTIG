@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 5,
+  "candidate_checks": 7,
   "cases": [
     {
       "check": {
@@ -111,6 +111,58 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if (-not $domain) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyBatchLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The \"Deny log on as a batch job\" user right on domain-joined workstations must be configured to prevent access from highly privileged domain accounts.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if (-not $domain) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyBatchLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if (-not $domain) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyBatchLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220969"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if (-not $domain) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyServiceLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Deny log on as a service user right on Windows 10 domain-joined workstations must be configured to prevent access from highly privileged domain accounts.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if (-not $domain) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyServiceLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if (-not $domain) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyServiceLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220970"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main",
         "type": "registry",
         "value_name": "NotifyDisableIEOptions"
@@ -142,5 +194,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark",
-  "validated_candidates": 5
+  "validated_candidates": 7
 }

@@ -2939,6 +2939,53 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             }
 
     if 'Local Policies >> User Rights Assignment' in policy_text:
+        exact_domain_admin_deny_rights = {
+            'V-220969': ('Deny log on as a batch job', 'SeDenyBatchLogonRight'),
+            'V-220970': ('Deny log on as a service', 'SeDenyServiceLogonRight'),
+            'V-253492': ('Deny log on as a batch job', 'SeDenyBatchLogonRight'),
+            'V-253493': ('Deny log on as a service', 'SeDenyServiceLogonRight'),
+        }
+        exact_domain_admin_deny_right = exact_domain_admin_deny_rights.get(rule.get('vuln_id', ''))
+        if exact_domain_admin_deny_right:
+            right_name, privilege_key = exact_domain_admin_deny_right
+            right_pattern = re.escape(right_name).replace(r'\ ', r'\s+')
+            has_matching_right = re.search(rf'"?{right_pattern}"?\s+(?:right|user\s+right)', content, re.IGNORECASE) and re.search(
+                rf'User\s+Rights\s+Assignment\s*>>\s*"?{right_pattern}"?\s+to\s+include\s+the\s+following',
+                fix_text,
+                re.IGNORECASE,
+            )
+            has_domain_only_scope = re.search(r'applicable\s+to\s+domain-joined\s+systems', fix_text, re.IGNORECASE) and re.search(
+                r'(?:standalone|nondomain-joined|non-domain-joined)\s+systems?.{0,40}\b(?:NA|N/A|not\s+applicable)\b',
+                fix_text,
+                re.IGNORECASE | re.DOTALL,
+            )
+            has_required_groups = all(
+                re.search(pattern, policy_text, re.IGNORECASE)
+                for pattern in (
+                    r'Enterprise\s+Admins?\s+Group',
+                    r'Domain\s+Admins?\s+Group',
+                )
+            )
+            if has_matching_right and has_domain_only_scope and has_required_groups:
+                command = (
+                    "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; "
+                    "if (-not $domain) { 'Compliant'; exit }; "
+                    "$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); "
+                    "secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; "
+                    f"$line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object {{ $_ -like '{privilege_key}*' }} | Select-Object -First 1); "
+                    "Remove-Item $cfg -ErrorAction SilentlyContinue; "
+                    "$values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; "
+                    "$suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); "
+                    "if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\""
+                )
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows',
+                    'check': {'type': 'command_output', 'command': command},
+                    'expected': {'type': 'equals', 'value': 'Compliant'},
+                    'description': rule.get('title', ''),
+                }
+
         domain_member_deny_service_match = re.search(
             r'If\s+the\s+following\s+accounts\s+or\s+groups\s+are\s+not\s+defined\s+for\s+the\s+"Deny\s+log\s+on\s+as\s+a\s+service"\s+user\s+right\s+on\s+domain-joined\s+systems,\s+this\s+is\s+a\s+finding:\s*(?P<body>.*?)(?:\n\s*\n|\Z)',
             content,

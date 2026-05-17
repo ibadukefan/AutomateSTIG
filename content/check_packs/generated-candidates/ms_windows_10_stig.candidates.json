@@ -2606,6 +2606,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if (-not $domain) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyBatchLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The \"Deny log on as a batch job\" user right on domain-joined workstations must be configured to prevent access from highly privileged domain accounts.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220969"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if (-not $domain) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyServiceLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Deny log on as a service user right on Windows 10 domain-joined workstations must be configured to prevent access from highly privileged domain accounts.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220970"
+    },
+    {
+      "check": {
         "key": "SeEnableDelegationPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if (-not $domain) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyServiceLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The \"Deny log on as a service\" user right on Windows 11 domain-joined workstations must be configured to prevent access from highly privileged domain accounts.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-253493"
+  },
   "check_content_excerpt": "This requirement is applicable to domain-joined systems, for standalone systems this is NA.\n\nVerify the effective setting in Local Group Policy Editor.\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nIf the following groups or accounts are not defined for the \"Deny log on as a service\" right , this is a finding:\n\nDomain Systems Only:\nEnterprise Admins Group\nDomain Admins Group",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "This requirement is applicable to domain-joined systems, for standalone systems this is NA.\n\nConfigure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> \"Deny log on as a service\" to include the following:\n\nDomain Systems Only:\nEnterprise Admins Group\nDomain Admins Group",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-253493r1137691_rule",
   "severity": "medium",
