@@ -902,6 +902,24 @@ By using this IS, you consent to the following conditions:
             generated = json.loads((impl / 'rhel_9_stig' / 'v-251234.json').read_text())
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
 
+
+    def test_infers_windows_server_sysvol_directory_icacls_candidate(self):
+        rule = {
+            'vuln_id': 'V-254392',
+            'title': 'Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions.',
+            'check_content': 'This applies to domain controllers. It is NA for other systems.\n\nOpen "Command Prompt".\n\nRun "icacls c:\\Windows\\SYSVOL".\n\nThe following results must be displayed:\n\nNT AUTHORITY\\Authenticated Users:(RX)\nNT AUTHORITY\\Authenticated Users:(OI)(CI)(IO)(GR,GE)\nBUILTIN\\Server Operators:(RX)\nBUILTIN\\Server Operators:(OI)(CI)(IO)(GR,GE)\nBUILTIN\\Administrators:(M,WDAC,WO)\nBUILTIN\\Administrators:(OI)(CI)(IO)(F)\nNT AUTHORITY\\SYSTEM:(F)\nNT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)\nCREATOR OWNER:(OI)(CI)(IO)(F)\n\nIf any standard user accounts or groups have greater than "Read & execute" permissions, this is a finding.',
+            'fix_text': 'Maintain the permissions on the SYSVOL directory. Do not allow greater than "Read & execute" permissions for standard user accounts or groups.',
+        }
+
+        candidate = mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-254392')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn("icacls 'C:\\Windows\\SYSVOL'", candidate['check']['command'])
+        self.assertIn('NT AUTHORITY\\Authenticated Users:(RX)', candidate['check']['command'])
+
     def test_infers_windows_server_2025_event_viewer_executable_acl_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278046',

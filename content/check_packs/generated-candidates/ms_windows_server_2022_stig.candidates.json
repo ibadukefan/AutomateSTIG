@@ -1195,6 +1195,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\Authenticated Users:(RX)','NT AUTHORITY\\Authenticated Users:(OI)(CI)(IO)(GR,GE)','BUILTIN\\Server Operators:(RX)','BUILTIN\\Server Operators:(OI)(CI)(IO)(GR,GE)','BUILTIN\\Administrators:(M,WDAC,WO)','BUILTIN\\Administrators:(OI)(CI)(IO)(F)','NT AUTHORITY\\SYSTEM:(F)','NT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\Windows\\SYSVOL') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-254392"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$root=[ADSI]'LDAP://RootDSE'; $cfg=$root.configurationNamingContext; $p=[ADSI]('LDAP://CN=Default Query Policy,CN=Query-Policies,CN=Directory Service,CN=Windows NT,CN=Services,'+$cfg); $v=@($p.Properties['LDAPAdminLimits']) | Where-Object { $_ -match '^MaxConnIdleTime=(\\d+)$' } | Select-Object -First 1; if ($v -match '^MaxConnIdleTime=(\\d+)$' -and [int]$Matches[1] -le 300) { 'Compliant' }\"",
         "type": "command_output"
       },

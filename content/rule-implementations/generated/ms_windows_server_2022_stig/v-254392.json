@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\Authenticated Users:(RX)','NT AUTHORITY\\Authenticated Users:(OI)(CI)(IO)(GR,GE)','BUILTIN\\Server Operators:(RX)','BUILTIN\\Server Operators:(OI)(CI)(IO)(GR,GE)','BUILTIN\\Administrators:(M,WDAC,WO)','BUILTIN\\Administrators:(OI)(CI)(IO)(F)','NT AUTHORITY\\SYSTEM:(F)','NT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\Windows\\SYSVOL') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "windows",
+    "vuln_id": "V-254392"
+  },
   "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nOpen a command prompt.\n\nRun \"net share\".\n\nMake note of the directory location of the SYSVOL share.\n\nBy default, this will be \\Windows\\SYSVOL\\sysvol. For this requirement, permissions will be verified at the first SYSVOL directory level.\n\nIf any standard user accounts or groups have greater than \"Read & execute\" permissions, this is a finding. \n\nThe default permissions noted below meet this requirement:\n\nOpen \"Command Prompt\".\n\nRun \"icacls c:\\Windows\\SYSVOL\".\n\nThe following results must be displayed:\n\nNT AUTHORITY\\Authenticated Users:(RX)\nNT AUTHORITY\\Authenticated Users:(OI)(CI)(IO)(GR,GE)\nBUILTIN\\Server Operators:(RX)\nBUILTIN\\Server Operators:(OI)(CI)(IO)(GR,GE)\nBUILTIN\\Administrators:(M,WDAC,WO)\nBUILTIN\\Administrators:(OI)(CI)(IO)(F)\nNT AUTHORITY\\SYSTEM:(F)\nNT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)\nCREATOR OWNER:(OI)(CI)(IO)(F)\n\n(RX) - Read & execute \n\nRun \"icacls /help\" to view definitions of other permission codes.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Maintain the permissions on the SYSVOL directory. Do not allow greater than \"Read & execute\" permissions for standard user accounts or groups. The defaults below meet this requirement:\n\nC:\\Windows\\SYSVOL\nType - \"Allow\" for all\nInherited from - \"None\" for all\n\nPrincipal - Access - Applies to\n\nAuthenticated Users - Read & execute - This folder, subfolder, and files\nServer Operators - Read & execute- This folder, subfolder, and files\nAdministrators - Special - This folder only (Special = Basic Permissions: all selected except Full control)\nCREATOR OWNER - Full control - Subfolders and files only\nAdministrators - Full control - Subfolders and files only\nSYSTEM - Full control - This folder, subfolders, and files",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-254392r958726_rule",
   "severity": "high",

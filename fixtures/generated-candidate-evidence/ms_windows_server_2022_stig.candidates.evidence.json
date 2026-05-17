@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 197,
+  "candidate_checks": 198,
   "cases": [
     {
       "check": {
@@ -2311,6 +2311,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-254391"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\Authenticated Users:(RX)','NT AUTHORITY\\Authenticated Users:(OI)(CI)(IO)(GR,GE)','BUILTIN\\Server Operators:(RX)','BUILTIN\\Server Operators:(OI)(CI)(IO)(GR,GE)','BUILTIN\\Administrators:(M,WDAC,WO)','BUILTIN\\Administrators:(OI)(CI)(IO)(F)','NT AUTHORITY\\SYSTEM:(F)','NT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\Windows\\SYSVOL') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 Active Directory SYSVOL directory must have the proper access control permissions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\Authenticated Users:(RX)','NT AUTHORITY\\Authenticated Users:(OI)(CI)(IO)(GR,GE)','BUILTIN\\Server Operators:(RX)','BUILTIN\\Server Operators:(OI)(CI)(IO)(GR,GE)','BUILTIN\\Administrators:(M,WDAC,WO)','BUILTIN\\Administrators:(OI)(CI)(IO)(F)','NT AUTHORITY\\SYSTEM:(F)','NT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\Windows\\SYSVOL') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$required=@('NT AUTHORITY\\Authenticated Users:(RX)','NT AUTHORITY\\Authenticated Users:(OI)(CI)(IO)(GR,GE)','BUILTIN\\Server Operators:(RX)','BUILTIN\\Server Operators:(OI)(CI)(IO)(GR,GE)','BUILTIN\\Administrators:(M,WDAC,WO)','BUILTIN\\Administrators:(OI)(CI)(IO)(F)','NT AUTHORITY\\SYSTEM:(F)','NT AUTHORITY\\SYSTEM:(OI)(CI)(IO)(F)','CREATOR OWNER:(OI)(CI)(IO)(F)'); $out=(icacls 'C:\\Windows\\SYSVOL') -join [Environment]::NewLine; $missing=@(); foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; $missing -join ';'\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254392"
     },
     {
       "check": {
@@ -5307,5 +5333,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 197
+  "validated_candidates": 198
 }

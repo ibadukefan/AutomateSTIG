@@ -10016,6 +10016,52 @@ def _windows_local_volume_filesystem_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _windows_sysvol_directory_icacls_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-254392', 'V-278139'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (content, fix_text, rule.get('title', '') or '') if part)
+    if not re.search(r'Active\s+Directory\s+SYSVOL\s+directory\s+must\s+have\s+the\s+proper\s+access\s+control\s+permissions', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'icacls["”]?\s+c:\\Windows\\SYSVOL', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+standard\s+user\s+accounts\s+or\s+groups\s+have\s+greater\s+than\s+["“]Read\s*&\s*execute["”]\s+permissions,?\s+this\s+is\s+a\s+finding', combined, re.IGNORECASE):
+        return None
+    required_acl_lines = [
+        r'NT AUTHORITY\Authenticated Users:(RX)',
+        r'NT AUTHORITY\Authenticated Users:(OI)(CI)(IO)(GR,GE)',
+        r'BUILTIN\Server Operators:(RX)',
+        r'BUILTIN\Server Operators:(OI)(CI)(IO)(GR,GE)',
+        r'BUILTIN\Administrators:(M,WDAC,WO)',
+        r'BUILTIN\Administrators:(OI)(CI)(IO)(F)',
+        r'NT AUTHORITY\SYSTEM:(F)',
+        r'NT AUTHORITY\SYSTEM:(OI)(CI)(IO)(F)',
+        r'CREATOR OWNER:(OI)(CI)(IO)(F)',
+    ]
+    if not all(line in combined for line in required_acl_lines):
+        return None
+    required_literal = ','.join("'" + line.replace("'", "''") + "'" for line in required_acl_lines)
+    command = (
+        'powershell -NoProfile -Command "'
+        f'$required=@({required_literal}); '
+        "$out=(icacls 'C:\\Windows\\SYSVOL') -join [Environment]::NewLine; $missing=@(); "
+        "foreach($line in $required){ if($out -notlike ('*'+$line+'*')){ $missing += $line } }; "
+        "$missing -join ';'"
+        '"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_system_drive_root_icacls_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -10425,6 +10471,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         local_volume_filesystem_candidate = _windows_local_volume_filesystem_candidate(rule, stig_id)
         if local_volume_filesystem_candidate:
             return local_volume_filesystem_candidate
+
+        sysvol_directory_icacls_candidate = _windows_sysvol_directory_icacls_candidate(rule, stig_id)
+        if sysvol_directory_icacls_candidate:
+            return sysvol_directory_icacls_candidate
 
         system_drive_root_icacls_candidate = _windows_system_drive_root_icacls_candidate(rule, stig_id)
         if system_drive_root_icacls_candidate:
