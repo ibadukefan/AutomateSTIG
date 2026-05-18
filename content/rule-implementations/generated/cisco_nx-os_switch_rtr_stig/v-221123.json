@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | section \"^interface \" | include \"^ storm-control broadcast level \"",
+      "type": "command_output"
+    },
+    "description": "The Cisco PE switch providing Virtual Private LAN Services (VPLS) must be configured to have traffic storm control thresholds on CE-facing interfaces.",
+    "expected": {
+      "substring": "storm-control broadcast level",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221123"
+  },
   "check_content_excerpt": "Review the switch configuration to verify that storm control is enabled on CE-facing interfaces deploying VPLS as shown in the example below:\n\ninterface Ethernet2/4\n no shutdown\n no switchport\n storm-control broadcast level 40.00\n service instance 1 ethernet\n encapsulation dot1q 100\n\nIf storm control is not enabled at a minimum for broadcast traffic, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "storm-control broadcast level",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure storm control for each CE-facing interface as shown in the example below:\n\nSW1(config)# int e2/4\nSW1(config-if)# storm-control broadcast level 40 \nSW1(config-if)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221123r999732_rule",
   "severity": "medium",

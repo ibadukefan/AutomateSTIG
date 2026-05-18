@@ -158,6 +158,19 @@
     },
     {
       "check": {
+        "command": "show running-config | section \"^interface \" | include \"^ storm-control broadcast level \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco PE switch providing Virtual Private LAN Services (VPLS) must be configured to have traffic storm control thresholds on CE-facing interfaces.",
+      "expected": {
+        "substring": "storm-control broadcast level",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221123"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ ip verify unicast source reachable-via any$\"",
         "type": "command_output"
       },

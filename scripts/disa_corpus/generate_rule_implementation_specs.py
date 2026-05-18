@@ -1839,6 +1839,12 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'content': r'gratuitous\s+ARP\s+is\s+disabled\s+on\s+all\s+external\s+interfaces.*?no\s+ip\s+arp\s+gratuitous\s+request.*?If\s+gratuitous\s+ARP\s+is\s+enabled\s+on\s+any\s+external\s+interface,\s+this\s+is\s+a\s+finding',
             'fix': r'Disable\s+Gratuitous\s+ARP.*?no\s+ip\s+arp\s+gratuitous\s+request',
         },
+        'V-221123': {
+            'command': 'show running-config | section "^interface " | include "^ storm-control broadcast level "',
+            'expected': {'type': 'contains', 'substring': 'storm-control broadcast level'},
+            'content': r'storm\s+control\s+is\s+enabled\s+on\s+CE-facing\s+interfaces\s+deploying\s+VPLS.*?storm-control\s+broadcast\s+level\s+\S+.*?If\s+storm\s+control\s+is\s+not\s+enabled\s+at\s+a\s+minimum\s+for\s+broadcast\s+traffic,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+storm\s+control\s+(?:for\s+each\s+CE-facing\s+interface|to\s+be\s+enabled\s+at\s+a\s+minimum\s+for\s+broadcast\s+traffic\s+on\s+CE-facing\s+interfaces\s+deploying\s+VPLS).*?storm-control\s+broadcast\s+level\s+\S+',
+        },
         'V-221127': {
             'command': 'show running-config | include "^ ip verify unicast source reachable-via any$"',
             'expected': {'type': 'contains', 'substring': 'ip verify unicast source reachable-via any'},

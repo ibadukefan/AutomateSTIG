@@ -1675,6 +1675,33 @@ If the MPLS switch is not configured to disable TTL propagation, this is a findi
             'description': 'The Cisco MPLS switch must be configured to have TTL Propagation disabled.',
         })
 
+    def test_infers_cisco_nxos_vpls_storm_control_broadcast_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221123',
+            'title': 'The Cisco PE switch providing Virtual Private LAN Services (VPLS) must be configured to have traffic storm control thresholds on CE-facing interfaces.',
+            'check_content': '''Review the switch configuration to verify that storm control is enabled on CE-facing interfaces deploying VPLS as shown in the example below:
+
+interface Ethernet2/4
+ no shutdown
+ no switchport
+ storm-control broadcast level 40.00
+ service instance 1 ethernet
+ encapsulation dot1q 100
+
+If storm control is not enabled at a minimum for broadcast traffic, this is a finding.''',
+            'fix_text': '''Configure storm control to be enabled at a minimum for broadcast traffic on CE-facing interfaces deploying VPLS as shown in the example below:
+
+interface Ethernet2/4
+ storm-control broadcast level 40.00''',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221123',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | section "^interface " | include "^ storm-control broadcast level "'},
+            'expected': {'type': 'contains', 'substring': 'storm-control broadcast level'},
+            'description': 'The Cisco PE switch providing Virtual Private LAN Services (VPLS) must be configured to have traffic storm control thresholds on CE-facing interfaces.',
+        })
+
     def test_infers_cisco_nxos_absent_ip_unreachables_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221084',

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 19,
+  "candidate_checks": 20,
   "cases": [
     {
       "check": {
@@ -315,6 +315,32 @@
     },
     {
       "check": {
+        "command": "show running-config | section \"^interface \" | include \"^ storm-control broadcast level \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco PE switch providing Virtual Private LAN Services (VPLS) must be configured to have traffic storm control thresholds on CE-facing interfaces.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "storm-control broadcast level",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^interface \" | include \"^ storm-control broadcast level \"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^interface \" | include \"^ storm-control broadcast level \"": "before\nstorm-control broadcast level\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221123"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ ip verify unicast source reachable-via any$\"",
         "type": "command_output"
       },
@@ -501,5 +527,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 19
+  "validated_candidates": 20
 }
