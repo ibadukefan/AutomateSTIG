@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 129,
+  "candidate_checks": 130,
   "cases": [
     {
       "check": {
@@ -3354,6 +3354,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259576"
+    },
+    {
+      "check": {
+        "command": "/bin/sh -c 'case \"$(/usr/bin/sw_vers -productVersion 2>/dev/null)\" in 14.*) printf Compliant;; esac'",
+        "type": "command_output"
+      },
+      "description": "The macOS system must be a version supported by the vendor.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/bin/sh -c 'case \"$(/usr/bin/sw_vers -productVersion 2>/dev/null)\" in 14.*) printf Compliant;; esac'": "unexpected-Compliant"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/bin/sh -c 'case \"$(/usr/bin/sw_vers -productVersion 2>/dev/null)\" in 14.*) printf Compliant;; esac'": "Compliant"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278360"
     }
   ],
   "production_claim": false,
@@ -3361,5 +3387,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_14_STIG",
-  "validated_candidates": 129
+  "validated_candidates": 130
 }

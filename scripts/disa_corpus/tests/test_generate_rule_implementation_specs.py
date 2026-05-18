@@ -11,6 +11,38 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_macos14_vendor_supported_release_candidate(self):
+        authoritative_check = (
+            'Verify the operating system version.\n\n'
+            'Click the Apple icon on the menu at the top-left corner of the screen.\n\n'
+            'Select the "About This Mac" option.\n\n'
+            'If the operating system version is no longer supported by the vendor, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278360',
+            'title': 'The macOS system must be a version supported by the vendor.',
+            'check_content': authoritative_check,
+            'fix_text': 'Upgrade to a supported version of the operating system.',
+        }, 'Apple_macOS_14_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278360')
+        self.assertEqual(candidate['platform'], 'macos')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/usr/bin/sw_vers -productVersion', candidate['check']['command'])
+        self.assertIn('14.*', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_macos14_vendor_supported_release_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-278360',
+            'title': 'The macOS system must be a version supported by the vendor.',
+            'check_content': 'Verify the operating system version. If the operating system version is no longer supported by the vendor, this is a finding.',
+            'fix_text': 'Upgrade to a supported version of the operating system.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Apple_macOS_14_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Apple_macOS_15_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': ''}, 'Apple_macOS_14_STIG'))
+
     def test_infers_linux_interactive_user_init_path_home_only_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258050',

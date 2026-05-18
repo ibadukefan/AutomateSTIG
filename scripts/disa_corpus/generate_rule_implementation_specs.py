@@ -5698,6 +5698,30 @@ def _macos_platform(stig_id: str) -> bool:
     return 'macos' in stig_id.lower() or 'apple' in stig_id.lower()
 
 
+def _macos14_vendor_supported_release_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Apple_macOS_14_STIG' or rule.get('vuln_id') != 'V-278360':
+        return None
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'macOS\s+system\s+must\s+be\s+a\s+version\s+supported\s+by\s+the\s+vendor', title, re.IGNORECASE):
+        return None
+    if not re.search(r'Verify\s+the\s+operating\s+system\s+version', content, re.IGNORECASE):
+        return None
+    if not re.search(r'operating\s+system\s+version\s+is\s+no\s+longer\s+supported\s+by\s+the\s+vendor,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Upgrade\s+to\s+a\s+supported\s+version\s+of\s+the\s+operating\s+system', fix_text, re.IGNORECASE):
+        return None
+    command = "/bin/sh -c 'case \"$(/usr/bin/sw_vers -productVersion 2>/dev/null)\" in 14.*) printf Compliant;; esac'"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'macos',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _command_substitutions_are_absolute(command: str) -> bool:
     substitutions = []
     idx = 0
@@ -11517,6 +11541,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     macos_15_fips_ssh_config_candidate = _macos_15_fips_ssh_config_candidate(rule, stig_id)
     if macos_15_fips_ssh_config_candidate:
         return macos_15_fips_ssh_config_candidate
+    macos14_vendor_supported_release_candidate = _macos14_vendor_supported_release_candidate(rule, stig_id)
+    if macos14_vendor_supported_release_candidate:
+        return macos14_vendor_supported_release_candidate
     windows_name_based_strong_mappings_candidate = _windows_name_based_strong_mappings_candidate(rule, stig_id)
     if windows_name_based_strong_mappings_candidate:
         return windows_name_based_strong_mappings_candidate

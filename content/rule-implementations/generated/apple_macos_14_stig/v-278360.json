@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/bin/sh -c 'case \"$(/usr/bin/sw_vers -productVersion 2>/dev/null)\" in 14.*) printf Compliant;; esac'",
+      "type": "command_output"
+    },
+    "description": "The macOS system must be a version supported by the vendor.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "macos",
+    "vuln_id": "V-278360"
+  },
   "check_content_excerpt": "Verify the operating system version.\n\nClick the Apple icon on the menu at the top-left corner of the screen.\n\nSelect the \"About This Mac\" option.\n\nIf the operating system version is no longer supported by the vendor, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Upgrade to a supported version of the operating system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-278360r1131175_rule",
   "severity": "high",

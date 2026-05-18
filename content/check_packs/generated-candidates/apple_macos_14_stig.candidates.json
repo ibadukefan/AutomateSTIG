@@ -1676,6 +1676,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-259576"
+    },
+    {
+      "check": {
+        "command": "/bin/sh -c 'case \"$(/usr/bin/sw_vers -productVersion 2>/dev/null)\" in 14.*) printf Compliant;; esac'",
+        "type": "command_output"
+      },
+      "description": "The macOS system must be a version supported by the vendor.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "macos",
+      "vuln_id": "V-278360"
     }
   ],
   "platform": "generic",
