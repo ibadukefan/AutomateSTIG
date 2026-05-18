@@ -13864,6 +13864,20 @@ If any accounts other than XS$NULL are listed, this is a finding.""",
                 self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "sudo -u postgres psql -Atqc 'SHOW ssl'"})
                 self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'on'})
 
+    def test_infers_ubuntu_2004_dod_root_ca_certificate_candidate_from_exact_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238364',
+            'title': 'The Ubuntu operating system must use DoD PKI-established certificate authorities for verification of the establishment of protected sessions.',
+            'check_content': 'Verify the directory containing the root certificates for the Ubuntu operating system contains certificate files for DoD PKI-established certificate authorities by iterating over all files in the "/etc/ssl/certs" directory and checking if, at least one, has the subject matching "DOD ROOT CA".\n\nIf none is found, this is a finding.',
+            'fix_text': 'Add at least one DoD certificate authority to the "/usr/local/share/ca-certificates" directory in the PEM format.\n\nUpdate the "/etc/ssl/certs" directory with the following command:\n\n$ sudo update-ca-certificates',
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-238364')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('/etc/ssl/certs/*', candidate['check']['command'])
+        self.assertIn('DOD ROOT CA', candidate['check']['command'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -11026,6 +11026,29 @@ def _windows_fix_only_removed_feature_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _ubuntu_2004_dod_root_ca_certificate_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Canonical_Ubuntu_20-04_LTS_STIG' or rule.get('vuln_id', '') != 'V-238364':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'/etc/ssl/certs', content):
+        return None
+    if not re.search(r'subject\s+matching\s+["“]DOD\s+ROOT\s+CA["”]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+none\s+is\s+found,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'/usr/local/share/ca-certificates', fix_text) or not re.search(r'update-ca-certificates', fix_text):
+        return None
+    command = "sh -c \"for cert in /etc/ssl/certs/*; do if openssl x509 -noout -subject -in \\\"$cert\\\" 2>/dev/null | grep -Eiq 'subject=.*DOD ROOT CA|subject=.*DoD Root CA'; then printf Compliant; exit 0; fi; done\""
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """Infer a conservative executable check candidate from DISA prose.
 
@@ -11033,6 +11056,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    ubuntu_dod_root_ca_candidate = _ubuntu_2004_dod_root_ca_certificate_candidate(rule, stig_id)
+    if ubuntu_dod_root_ca_candidate:
+        return ubuntu_dod_root_ca_candidate
     rhel7_duplicate_uid_zero_candidate = _rhel7_duplicate_uid_zero_candidate(rule, stig_id)
     if rhel7_duplicate_uid_zero_candidate:
         return rhel7_duplicate_uid_zero_candidate

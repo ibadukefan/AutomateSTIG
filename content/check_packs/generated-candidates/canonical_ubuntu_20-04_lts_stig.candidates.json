@@ -1489,6 +1489,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"for cert in /etc/ssl/certs/*; do if openssl x509 -noout -subject -in \\\"$cert\\\" 2>/dev/null | grep -Eiq 'subject=.*DOD ROOT CA|subject=.*DoD Root CA'; then printf Compliant; exit 0; fi; done\"",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must use DoD PKI-established certificate authorities for verification of the establishment of protected sessions.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238364"
+    },
+    {
+      "check": {
         "command": "ufw status 2>/dev/null | awk 'BEGIN{status=0} /^Status:[[:space:]]+active[[:space:]]*$/ {status=1} END{exit(status?0:1)}' >/dev/null || { echo ufw-inactive; exit 0; }; ss -H -l46utn | awk '$1 ~ /^(tcp|udp)/ {addr=$5; sub(/.*:/,\"\",addr); if (addr ~ /^[0-9]+$/) print addr}' | sort -nu | while read -r port; do ufw status | awk -v p=\"$port\" 'BEGIN{ok=0} $1 ~ (\"^\" p \"(/|$)\") && ($2==\"LIMIT\" || $2==\"DENY\") {ok=1} END{exit(ok?0:1)}' || echo \"$port\"; done",
         "type": "command_output"
       },
