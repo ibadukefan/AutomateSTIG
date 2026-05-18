@@ -68,6 +68,33 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyBatchLogonRight'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-546'})
 
+    def test_infers_tomcat_allow_backslash_false_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223004',
+            'title': 'ALLOW_BACKSLASH must be set to false.',
+            'check_content': 'sudo grep -i ALLOW_BACKSLASH $CATALINA_BASE/conf/catalina.properties\n\nsudo grep -i catalina_opts /etc/systemd/system/tomcat.service\n\nIf org.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true, this is a finding.',
+            'fix_text': 'Change the org.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true setting to =false. Locate the Environment=\'CATALINA_OPTS=\' line and change the -D.org.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true setting to =false.',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-223004')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('ALLOW_BACKSLASH', candidate['check']['command'])
+        self.assertIn('/etc/systemd/system/tomcat.service', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_tomcat_strict_servlet_compliance_true_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223002',
+            'title': 'STRICT_SERVLET_COMPLIANCE must be set to true.',
+            'check_content': 'sudo grep -i strict_servlet /etc/systemd/system/tomcat.service\n\nIf there are no results, or if the -Dorg.apache.catalina.STRICT_SERVLET_COMPLIANCE is not set to true, this is a finding.',
+            'fix_text': 'Set the org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true setting. EXAMPLE: CATALINA_OPTS=\'-Dorg.apache.catalina.STRICT_SERVLET_COMPLIANCE=true\'',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-223002')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('strict_servlet', candidate['check']['command'].lower())
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true'})
+
     def test_generates_planned_specs_for_unsupported_rules_only(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)

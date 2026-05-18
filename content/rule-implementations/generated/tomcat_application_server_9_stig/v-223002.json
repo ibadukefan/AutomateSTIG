@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i strict_servlet /etc/systemd/system/tomcat.service",
+      "type": "command_output"
+    },
+    "description": "STRICT_SERVLET_COMPLIANCE must be set to true.",
+    "expected": {
+      "substring": "org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true",
+      "type": "contains"
+    },
+    "platform": "generic",
+    "vuln_id": "V-223002"
+  },
   "check_content_excerpt": "If the system has an ISSM risk acceptance for operational issues that arise due to this setting, this is not a finding.\n\nFrom the Tomcat server as a privileged user, run the following command:\n\nsudo grep -i  strict_servlet /etc/systemd/system/tomcat.service \n\nIf there are no results, or if the \n-Dorg.apache.catalina.STRICT_SERVLET_COMPLIANCE is not set to true, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server as a privileged user:\n\nEdit the /etc/systemd/system/tomcat.service file and either add or edit the org.apache.catalina.STRICT_SERVLET_COMPLIANCE setting.\n\nSet the org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true \n\nEXAMPLE:\n\nCATALINA_OPTS='-Dorg.apache.catalina.STRICT_SERVLET_COMPLIANCE=true'\n\nRestart the Tomcat server:\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-223002r961863_rule",
   "severity": "low",

@@ -5067,7 +5067,7 @@ def _tomcat_systemd_boolean_property_candidate(rule: dict, stig_id: str) -> dict
     if not command_match:
         return None
     finding_match = re.search(
-        r'If\s+there\s+are\s+no\s+results,\s+or\s+if\s+the\s+(?P<property>org\.apache\.catalina(?:\s*\.\s*[A-Za-z0-9_]+)+)\s+is\s+not\s*=\s*["“](?P<value>true|false)["”],?\s+this\s+is\s+a\s+finding\.',
+        r'If\s+there\s+are\s+no\s+results,\s+or\s+if\s+the\s+(?:-D)?(?P<property>org\.apache\.catalina(?:\s*\.\s*[A-Za-z0-9_]+)+)\s+is\s+not\s+(?:set\s+to|=)\s*["“]?(?P<value>true|false)["”]?,?\s+this\s+is\s+a\s+finding\.',
         content,
         re.IGNORECASE,
     )
@@ -5086,6 +5086,38 @@ def _tomcat_systemd_boolean_property_candidate(rule: dict, stig_id: str) -> dict
             'command': f'grep -i {command_match.group("token")} /etc/systemd/system/tomcat.service',
         },
         'expected': {'type': 'contains', 'substring': f'{property_name}={expected_value}'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _tomcat_allow_backslash_false_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-223004':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    property_name = 'org.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH'
+    combined = content + '\n' + fix_text
+    if not re.search(r'grep\s+-i\s+ALLOW_BACKSLASH\s+\$CATALINA_BASE/conf/catalina\.properties', content, re.IGNORECASE):
+        return None
+    if not re.search(r'grep\s+-i\s+catalina_opts\s+/etc/systemd/system/tomcat\.service', content, re.IGNORECASE):
+        return None
+    if not re.search(re.escape(property_name) + r'\s*=\s*true,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not (
+        re.search(re.escape(property_name) + r'\s*=\s*false', combined, re.IGNORECASE)
+        or re.search(re.escape(property_name) + r'\s*=\s*true\s+setting\s+to\s+=\s*false', combined, re.IGNORECASE)
+    ):
+        return None
+    command = (
+        "sh -c 'base=${CATALINA_BASE:-/opt/tomcat}; "
+        "grep -Eis \"org\\.apache\\.catalina\\.connector\\.CoyoteAdapter\\.ALLOW_BACKSLASH[[:space:]]*=[[:space:]]*true\" "
+        "\"$base/conf/catalina.properties\" /etc/systemd/system/tomcat.service 2>/dev/null'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
         'description': rule.get('title', ''),
     }
 
@@ -11889,6 +11921,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_systemd_boolean_property_candidate = _tomcat_systemd_boolean_property_candidate(rule, stig_id)
     if tomcat_systemd_boolean_property_candidate:
         return tomcat_systemd_boolean_property_candidate
+
+    tomcat_allow_backslash_candidate = _tomcat_allow_backslash_false_candidate(rule, stig_id)
+    if tomcat_allow_backslash_candidate:
+        return tomcat_allow_backslash_candidate
 
     tomcat_autodeploy_candidate = _tomcat_autodeploy_disabled_candidate(rule, stig_id)
     if tomcat_autodeploy_candidate:
