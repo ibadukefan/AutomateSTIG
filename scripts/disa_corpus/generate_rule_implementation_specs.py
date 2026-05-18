@@ -2267,6 +2267,33 @@ def _windows_legal_notice_text_candidate(rule: dict, stig_id: str) -> dict | Non
     }
 
 
+def _kubernetes_old_component_image_versions_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Kubernetes_STIG' or rule.get('vuln_id') != 'V-242442':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if 'kubectl get pods --all-namespaces -o jsonpath="{..image}"' not in content:
+        return None
+    if not re.search(r'If\s+there\s+are\s+multiple\s+versions\s+of\s+the\s+same\s+image,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if 'kubectl delete pod podname' not in fix_text:
+        return None
+    command = (
+        "sh -c \"kubectl get pods --all-namespaces -o jsonpath='{..image}' | "
+        "tr -s '[[:space:]]' '\\n' | "
+        "awk 'NF { image=$0; base=image; sub(/@sha256:.*/, \\\"\\\", base); sub(/:[^/:]*$/, \\\"\\\", base); "
+        "seen[base SUBSEP image]=1 } END { for (k in seen) { split(k, a, SUBSEP); versions[a[1]]++ } "
+        "for (base in versions) if (versions[base] > 1) print base }'\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_validating_admission_webhook_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower():
         return None
@@ -11267,6 +11294,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     rhel7_duplicate_uid_zero_candidate = _rhel7_duplicate_uid_zero_candidate(rule, stig_id)
     if rhel7_duplicate_uid_zero_candidate:
         return rhel7_duplicate_uid_zero_candidate
+    kubernetes_old_component_image_versions_candidate = _kubernetes_old_component_image_versions_candidate(rule, stig_id)
+    if kubernetes_old_component_image_versions_candidate:
+        return kubernetes_old_component_image_versions_candidate
     kubernetes_admission_candidate = _kubernetes_validating_admission_webhook_candidate(rule, stig_id)
     if kubernetes_admission_candidate:
         return kubernetes_admission_candidate

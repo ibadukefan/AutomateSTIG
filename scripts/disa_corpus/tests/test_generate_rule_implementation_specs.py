@@ -211,6 +211,21 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('RequestResponse', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_kubernetes_old_component_image_versions_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242442',
+            'title': 'Kubernetes must remove old components after updated versions have been installed.',
+            'check_content': 'To view all pods and the images used to create the pods, from the Control Plane, run the following command:\n\nkubectl get pods --all-namespaces -o jsonpath="{..image}" | \\\ntr -s \'[[:space:]]\' \'\\n\' | \\\nsort | \\\nuniq -c\n\nReview the images used for pods running within Kubernetes.\n\nIf there are multiple versions of the same image, this is a finding.',
+            'fix_text': 'Remove any old pods that are using older images. On the Control Plane, run the command:\n\nkubectl delete pod podname\n\n(Note: "podname" is the name of the pod to delete.)',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242442')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('kubectl get pods --all-namespaces', candidate['check']['command'])
+        self.assertIn('jsonpath', candidate['check']['command'])
+        self.assertIn('versions[base]', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_kubernetes_api_server_kubelet_client_certificate_key_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-245544',

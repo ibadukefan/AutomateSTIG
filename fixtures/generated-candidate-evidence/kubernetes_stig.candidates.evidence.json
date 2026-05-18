@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 57,
+  "candidate_checks": 58,
   "cases": [
     {
       "check": {
@@ -757,6 +757,32 @@
     },
     {
       "check": {
+        "command": "sh -c \"kubectl get pods --all-namespaces -o jsonpath='{..image}' | tr -s '[[:space:]]' '\\n' | awk 'NF { image=$0; base=image; sub(/@sha256:.*/, \\\"\\\", base); sub(/:[^/:]*$/, \\\"\\\", base); seen[base SUBSEP image]=1 } END { for (k in seen) { split(k, a, SUBSEP); versions[a[1]]++ } for (base in versions) if (versions[base] > 1) print base }'\"",
+        "type": "command_output"
+      },
+      "description": "Kubernetes must remove old components after updated versions have been installed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"kubectl get pods --all-namespaces -o jsonpath='{..image}' | tr -s '[[:space:]]' '\\n' | awk 'NF { image=$0; base=image; sub(/@sha256:.*/, \\\"\\\", base); sub(/:[^/:]*$/, \\\"\\\", base); seen[base SUBSEP image]=1 } END { for (k in seen) { split(k, a, SUBSEP); versions[a[1]]++ } for (base in versions) if (versions[base] > 1) print base }'\"": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"kubectl get pods --all-namespaces -o jsonpath='{..image}' | tr -s '[[:space:]]' '\\n' | awk 'NF { image=$0; base=image; sub(/@sha256:.*/, \\\"\\\", base); sub(/:[^/:]*$/, \\\"\\\", base); seen[base SUBSEP image]=1 } END { for (k in seen) { split(k, a, SUBSEP); versions[a[1]]++ } for (base in versions) if (versions[base] > 1) print base }'\"": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242442"
+    },
+    {
+      "check": {
         "command": "stat -c %U:%G /etc/kubernetes/manifests/* | grep -v root:root",
         "type": "command_output"
       },
@@ -1489,5 +1515,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 57
+  "validated_candidates": 58
 }

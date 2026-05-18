@@ -379,6 +379,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"kubectl get pods --all-namespaces -o jsonpath='{..image}' | tr -s '[[:space:]]' '\\n' | awk 'NF { image=$0; base=image; sub(/@sha256:.*/, \\\"\\\", base); sub(/:[^/:]*$/, \\\"\\\", base); seen[base SUBSEP image]=1 } END { for (k in seen) { split(k, a, SUBSEP); versions[a[1]]++ } for (base in versions) if (versions[base] > 1) print base }'\"",
+        "type": "command_output"
+      },
+      "description": "Kubernetes must remove old components after updated versions have been installed.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242442"
+    },
+    {
+      "check": {
         "command": "stat -c %U:%G /etc/kubernetes/manifests/* | grep -v root:root",
         "type": "command_output"
       },
