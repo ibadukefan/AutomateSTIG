@@ -2488,6 +2488,37 @@ def _kubernetes_api_server_request_timeout_candidate(rule: dict, stig_id: str) -
     }
 
 
+def _kubernetes_podsecurity_feature_gates_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Kubernetes_STIG' or rule.get('vuln_id') != 'V-254801':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'/etc/kubernetes/manifests', content, re.IGNORECASE):
+        return None
+    if not re.search(r'--feature-gates[^\n]*(?:PodSecurity|--PodSecurity)', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'featureGates[^\n]*PodSecurity', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'--feature-gates=PodSecurity=true', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'feature\s+gate\s+["“]?PodSecurity=true', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'set -- /etc/kubernetes/manifests/*.y*ml; [ -e \"$1\" ] || exit 0; "
+        "for f in \"$@\"; do grep -Eq -- \"--feature-gates=([^[:space:]\\\"'\"',]*,)*PodSecurity=true(,|[[:space:]\\\"'\"']|$)\" \"$f\" || exit 0; done; "
+        "args=$(ps -ef | grep [k]ubelet || true); printf \"%s\" \"$args\" | grep -q -- \"--feature-gates\" && exit 0; "
+        "cfg=$(printf \"%s\" \"$args\" | tr \" \" \"\\n\" | sed -n \"s/^--config=//p\" | head -n1); "
+        "[ -n \"$cfg\" ] && awk '\"'\"'BEGIN{fg=0; ps=0} /^[[:space:]]*featureGates:[[:space:]]*$/ {fg=1; next} /^[^[:space:]]/ {fg=0} fg && /^[[:space:]]*PodSecurity:[[:space:]]*true[[:space:]]*$/ {ps=1} END{exit ps?0:1}'\"'\"' \"$cfg\" 2>/dev/null && printf Compliant'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_user_pods_host_privileged_ports_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-242414':
         return None
@@ -11315,6 +11346,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_request_timeout_candidate = _kubernetes_api_server_request_timeout_candidate(rule, stig_id)
     if kubernetes_request_timeout_candidate:
         return kubernetes_request_timeout_candidate
+    kubernetes_podsecurity_feature_gates_candidate = _kubernetes_podsecurity_feature_gates_candidate(rule, stig_id)
+    if kubernetes_podsecurity_feature_gates_candidate:
+        return kubernetes_podsecurity_feature_gates_candidate
     kubernetes_user_pods_host_privileged_ports_candidate = _kubernetes_user_pods_host_privileged_ports_candidate(rule, stig_id)
     if kubernetes_user_pods_host_privileged_ports_candidate:
         return kubernetes_user_pods_host_privileged_ports_candidate

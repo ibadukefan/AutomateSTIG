@@ -141,6 +141,21 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('--request-timeout', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_kubernetes_podsecurity_feature_gates_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254801',
+            'title': 'Kubernetes must enable PodSecurity admission controller on static pods and Kubelets.',
+            'check_content': 'On the Control Plane, change to the manifests\' directory at /etc/kubernetes/manifests and run the command:\ngrep -i feature-gates *\n\nFor each manifest file, if the "--feature-gates" setting does not exist, does not contain the "--PodSecurity" flag, or sets the flag to "false", this is a finding.\n\nOn each Control Plane and Worker Node, run the command:\nps -ef | grep kubelet\n\nIf the "--feature-gates" option exists, this is a finding.\n\nNote the path to the config file (identified by --config).\nInspect the content of the config file:\nIf the "featureGates" setting is not present, does not contain the "PodSecurity" flag, or sets the flag to "false", this is a finding.',
+            'fix_text': 'Ensure the argument "--feature-gates=PodSecurity=true" is present in each manifest file. Remove the "--feature-gates" option if present. Edit the Kubernetes Kubelet config file. Add a "featureGates" setting if one does not yet exist. Add the feature gate "PodSecurity=true".',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-254801')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('/etc/kubernetes/manifests', candidate['check']['command'])
+        self.assertIn('PodSecurity', candidate['check']['command'])
+        self.assertIn('featureGates', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_kubernetes_user_pods_host_privileged_ports_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242414',

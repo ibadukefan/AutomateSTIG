@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'set -- /etc/kubernetes/manifests/*.y*ml; [ -e \"$1\" ] || exit 0; for f in \"$@\"; do grep -Eq -- \"--feature-gates=([^[:space:]\\\"'\"',]*,)*PodSecurity=true(,|[[:space:]\\\"'\"']|$)\" \"$f\" || exit 0; done; args=$(ps -ef | grep [k]ubelet || true); printf \"%s\" \"$args\" | grep -q -- \"--feature-gates\" && exit 0; cfg=$(printf \"%s\" \"$args\" | tr \" \" \"\\n\" | sed -n \"s/^--config=//p\" | head -n1); [ -n \"$cfg\" ] && awk '\"'\"'BEGIN{fg=0; ps=0} /^[[:space:]]*featureGates:[[:space:]]*$/ {fg=1; next} /^[^[:space:]]/ {fg=0} fg && /^[[:space:]]*PodSecurity:[[:space:]]*true[[:space:]]*$/ {ps=1} END{exit ps?0:1}'\"'\"' \"$cfg\" 2>/dev/null && printf Compliant'",
+      "type": "command_output"
+    },
+    "description": "Kubernetes must enable PodSecurity admission controller on static pods and Kubelets.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-254801"
+  },
   "check_content_excerpt": "On the Control Plane, change to the manifests' directory at /etc/kubernetes/manifests and run the command:\ngrep -i feature-gates *\n\nFor each manifest file, if the \"--feature-gates\" setting does not exist, does not contain the \"--PodSecurity\" flag, or sets the flag to \"false\", this is a finding.\n\nOn each Control Plane and Worker Node, run the command:\nps -ef | grep kubelet\n\nIf the \"--feature-gates\" option exists, this is a finding. \n\nNote the path to the config file (identified by --config).\n\nInspect the content of the config file:\nIf the \"featureGates\" setting is not present, does not contain the \"PodSecurity\" flag, or sets the flag to \"false\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "On the Control Plane, change to the manifests' directory at /etc/kubernetes/manifests and run the command:\ngrep -i feature-gates *\n\nEnsure the argument \"--feature-gates=PodSecurity=true\" is present in each manifest file.\n\nOn each Control Plane and Worker Node, run the command:\nps -ef | grep kubelet\n\nRemove the \"--feature-gates\" option if present.\n\nNote the path to the config file (identified by --config).\n\nEdit the Kubernetes Kubelet config file: \nAdd a \"featureGates\" setting if one does not yet exist. Add the feature gate \"PodSecurity=true\".\n\nRestart the kubelet service using the following command:\nsystemctl daemon-reload && systemctl restart kubelet",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-254801r961359_rule",
   "severity": "high",
