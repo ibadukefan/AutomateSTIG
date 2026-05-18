@@ -41,6 +41,33 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('log_error_verbosity', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_oracle_database_fips_ora_true_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270569',
+            'title': 'Oracle Database must use NIST-validated FIPS 140-2/140-3 compliant cryptography for authentication mechanisms.',
+            'check_content': 'Open the fips.ora file in a browser or editor. (The default location for fips.ora is $ORACLE_HOME/ldap/admin/ but alternate locations are possible. An alternate location, if it is in use, is specified in the FIPS_HOME environment variable.)\n\nIf the line "SSLFIPS_140=TRUE" is not found in fips.ora, or the file does not exist, this is a finding.',
+            'fix_text': 'Open the fips.ora file in an editor. (The default location for fips.ora is $ORACLE_HOME/ldap/admin/ but alternate locations are possible. An alternate location, if it is in use, is specified in the FIPS_HOME environment variable.) Add or update the following line:\n\nSSLFIPS_140=TRUE',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270569')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('fips.ora', candidate['check']['command'])
+        self.assertIn('SSLFIPS_140', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_windows_scap_fix_only_guests_user_right_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254422',
+            'title': 'Windows Server 2022 Deny log on as a batch job user right on domain controllers must be configured to prevent unauthenticated access.',
+            'check_content': '',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Deny log on as a batch job to include the following:\n\n- Guests Group',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-254422')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyBatchLogonRight'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-546'})
+
     def test_generates_planned_specs_for_unsupported_rules_only(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'for f in \"${FIPS_HOME:-}\"/fips.ora \"${ORACLE_HOME:-}/ldap/admin/fips.ora\"; do [ -f \"$f\" ] && grep -Eiq \"^[[:space:]]*SSLFIPS_140[[:space:]]*=[[:space:]]*TRUE([[:space:]]|$)\" \"$f\" && printf Compliant && exit 0; done'",
+      "type": "command_output"
+    },
+    "description": "Oracle Database must use NIST-validated FIPS 140-2/140-3 compliant cryptography for authentication mechanisms.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "generic",
+    "vuln_id": "V-270569"
+  },
   "check_content_excerpt": "Check the following settings to verify FIPS 140-2 or FIPS 140-3 authentication/encryption is configured. If encryption is required but not configured, check with the database administrator (DBA) and system administrator to verify if other mechanisms or third-party cryptography products are deployed for authentication.\n\nTo verify if Oracle is configured for FIPS 140 Secure Sockets Layer (SSL)/Transport Layer Security (TLS) authentication and/or encryption:\n\nOpen the fips.ora file in a browser or editor. (The default location for fips.ora is $ORACLE_HOME/ldap/admin/ but alternate locations are possible. An alternate location, if it is in use, is specified in the FIPS_HOME environment variable.)\n\nIf the line \"SSLFIPS_140=TRUE\" is not found in fips.ora, or the file does not exist, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Utilize NIST-validated FIPS 140-2/140-3 compliant cryptography for all authentication mechanisms.\n\nOpen the fips.ora file in an editor. (The default location for fips.ora is $ORACLE_HOME/ldap/admin/ but alternate locations are possible. An alternate location, if it is in use, is specified in the FIPS_HOME environment variable.)\nCreate or modify fips.ora to include the line \"SSLFIPS_140=TRUE\".\n\nThe strength requirements are dependent upon data classification.\n\nFor unclassified data, where cryptography is required:\nAES 128 for encryption\nSHA 256 for hashing\n\nNSA has established the suite B encryption requirements for protecting National Security Systems (NSS) as follows:\nAES 128 for Secret\nAES 256 for Top Secret\nSHA 256 for Secret\nSHA 384 for Top Secret\n\nNSS is defined as: (OMB Circular A-130) Any telecommunications or information system operated by the United States Government, the function, operation, or use of which (1) involves intelligence activities; (2) involves cryptologic activities related to national security; (3) involves command and control of military forces; (4) involves equipment that is an integral part of a weapon or weapons system; or (5) is critical to the direct fulfillment of military or intelligence missions, but excluding any system that is to be used for routine administrative and business applications (including payroll, finance, logistics, and personnel management applications).\n\nThere is more information on this topic in the Oracle Database 19c Advanced Security Administrator's Guide, located at https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/oracle-database-fips-140-settings.html.\n\nNote: Because of changes in Oracle's licensing policy, it is no longer necessary to purchase Oracle Advanced Security to use network encryption and advanced authentication.\n\nFIPS documentation can be downloaded from https://csrc.nist.gov/publications/fips.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270569r1065205_rule",
   "severity": "high",

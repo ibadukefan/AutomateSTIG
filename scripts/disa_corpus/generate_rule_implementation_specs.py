@@ -3578,6 +3578,12 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             fix_text,
             re.IGNORECASE | re.DOTALL,
         )
+        if not fix_only_allowlist and re.search(r'\bxccdf_mil\.disa\.stig_group_V-(?:205683|205686|254422|254425)\b', rule.get('vuln_id', ''), re.IGNORECASE):
+            fix_only_allowlist = re.search(
+                r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*User\s+Rights\s+Assignment\s*>>\s*"?(Deny\s+log\s+on\s+as\s+a\s+batch\s+job|Deny\s+log\s+on\s+through\s+Remote\s+Desktop\s+Services)"?\s+to\s+include\s+the\s+following:\s*(?P<body>\s*-\s*Guests\s+Group\s*)(?:\n\s*\n|\Z)',
+                fix_text,
+                re.IGNORECASE | re.DOTALL,
+            )
         if (
             fix_only_allowlist
             and not content.strip()
@@ -9861,6 +9867,34 @@ def _oracle_database_sqlnet_allowed_logon_version_candidate(rule: dict, stig_id:
     }
 
 
+def _oracle_database_fips_ora_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270569':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    if not re.search(r'\bfips\.ora\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'SSLFIPS_140\s*=\s*TRUE', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+line\s+["“]SSLFIPS_140\s*=\s*TRUE["”]\s+is\s+not\s+found\s+in\s+fips\.ora,\s+or\s+the\s+file\s+does\s+not\s+exist,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'default\s+location\s+for\s+fips\.ora\s+is\s+\$ORACLE_HOME/ldap/admin', combined, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'for f in \"${FIPS_HOME:-}\"/fips.ora \"${ORACLE_HOME:-}/ldap/admin/fips.ora\"; do "
+        "[ -f \"$f\" ] && grep -Eiq \"^[[:space:]]*SSLFIPS_140[[:space:]]*=[[:space:]]*TRUE([[:space:]]|$)\" \"$f\" && "
+        "printf Compliant && exit 0; done'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_configuration_audit_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270540':
         return None
@@ -11901,6 +11935,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_sqlnet_allowed_logon_version_candidate = _oracle_database_sqlnet_allowed_logon_version_candidate(rule, stig_id)
     if oracle_database_sqlnet_allowed_logon_version_candidate:
         return oracle_database_sqlnet_allowed_logon_version_candidate
+
+    oracle_database_fips_ora_candidate = _oracle_database_fips_ora_candidate(rule, stig_id)
+    if oracle_database_fips_ora_candidate:
+        return oracle_database_fips_ora_candidate
 
     oracle_database_configuration_audit_candidate = _oracle_database_configuration_audit_candidate(rule, stig_id)
     if oracle_database_configuration_audit_candidate:
