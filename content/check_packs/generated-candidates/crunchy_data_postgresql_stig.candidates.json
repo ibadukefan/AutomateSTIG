@@ -28,6 +28,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; bad=$(find \"${PGDATA?}\" \\( ! -user postgres -o -perm /022 \\) -print -quit 2>/dev/null); [ -z \"$bad\" ] || printf \"PGDATA:%s\" \"$bad\"; for d in /usr/pgsql-${PGVER?}/bin /usr/pgsql-${PGVER?}/include /usr/pgsql-${PGVER?}/lib /usr/pgsql-${PGVER?}/share; do bad=$(find \"$d\" \\( ! -user root -o -perm /022 \\) -print -quit 2>/dev/null); [ -z \"$bad\" ] || printf \" %s:%s\" \"$d\" \"$bad\"; done'",
+        "type": "command_output"
+      },
+      "description": "Privileges to change PostgreSQL software modules must be limited.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-233517"
+    },
+    {
+      "check": {
         "command": "grep -E '^[[:space:]]*host[^#]*[[:space:]](password|md5)([[:space:]]*(#.*)?)?$' ${PGDATA?}/pg_hba.conf",
         "type": "command_output"
       },

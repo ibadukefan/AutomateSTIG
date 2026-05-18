@@ -305,6 +305,24 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('root:root', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_postgresql_software_module_permissions_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233517',
+            'title': 'Privileges to change PostgreSQL software modules must be limited.',
+            'check_content': 'As the database administrator (shown here as "postgres"), check the permissions of configuration files for the database:\n\n$ sudo su - postgres\n$ ls -la ${PGDATA?}\n\nIf any files are not owned by the database owner or have permissions allowing others to modify (write) configuration files, this is a finding.\n\nAs the server administrator, check the permissions on the shared libraries for PostgreSQL:\n\n$ sudo ls -la /usr/pgsql-${PGVER?}\n$ sudo ls -la /usr/pgsql-${PGVER?}/bin\n$ sudo ls -la /usr/pgsql-${PGVER?}/include\n$ sudo ls -la /usr/pgsql-${PGVER?}/lib\n$ sudo ls -la /usr/pgsql-${PGVER?}/share\n\nIf any files are not owned by root or have permissions allowing others to modify (write) configuration files, this is a finding.',
+            'fix_text': '$ chown postgres:postgres ${PGDATA?}/postgresql.conf\n$ chmod 0600 ${PGDATA?}/postgresql.conf\n$ sudo chown root:root /usr/pgsql-${PGVER?}/lib/*.so\n$ sudo chmod 0755 /usr/pgsql-${PGVER?}/lib/*.so\n$ sudo chown root:root /usr/pgsql-${PGVER?}/bin/*\n$ sudo chmod 0755 /usr/pgsql-${PGVER?}/bin/*',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233517')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('${PGDATA?}', candidate['check']['command'])
+        self.assertIn('/usr/pgsql-${PGVER?}/lib', candidate['check']['command'])
+        self.assertIn('/usr/pgsql-${PGVER?}/bin', candidate['check']['command'])
+        self.assertIn('postgres', candidate['check']['command'])
+        self.assertIn('root', candidate['check']['command'])
+        self.assertIn('-perm /022', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_sles_noninteractive_accounts_no_login_shell_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234875',

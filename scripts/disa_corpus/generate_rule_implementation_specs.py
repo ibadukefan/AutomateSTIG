@@ -7367,6 +7367,34 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     postgresql_audit_features_unauthorized_removal_candidate = _postgresql_audit_features_unauthorized_removal_candidate(rule, stig_id)
     if postgresql_audit_features_unauthorized_removal_candidate:
         return postgresql_audit_features_unauthorized_removal_candidate
+    postgresql_software_module_permissions = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233517'
+        and re.search(r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-la\s+\$\{PGDATA\?\}\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+any\s+files\s+are\s+not\s+owned\s+by\s+the\s+database\s+owner\s+or\s+have\s+permissions\s+allowing\s+others\s+to\s+modify\s+\(write\)\s+configuration\s+files,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and all(re.search(rf'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-la\s+/usr/pgsql-\$\{{PGVER\?\}}/{subdir}\b', content, re.MULTILINE | re.IGNORECASE) for subdir in ('bin', 'include', 'lib', 'share'))
+        and re.search(r'If\s+any\s+files\s+are\s+not\s+owned\s+by\s+root\s+or\s+have\s+permissions\s+allowing\s+others\s+to\s+modify\s+\(write\)\s+configuration\s+files,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'chown\s+postgres:postgres\s+\$\{PGDATA\?\}/postgresql\.conf', fix_text, re.IGNORECASE)
+        and re.search(r'chmod\s+0600\s+\$\{PGDATA\?\}/postgresql\.conf', fix_text, re.IGNORECASE)
+        and re.search(r'chown\s+root:root\s+/usr/pgsql-\$\{PGVER\?\}/lib/\*\.so', fix_text, re.IGNORECASE)
+        and re.search(r'chmod\s+0755\s+/usr/pgsql-\$\{PGVER\?\}/(?:lib/\*\.so|bin/\*)', fix_text, re.IGNORECASE)
+    )
+    if postgresql_software_module_permissions:
+        command = (
+            "sh -c 'bad=\"\"; "
+            "bad=$(find \"${PGDATA?}\" \\( ! -user postgres -o -perm /022 \\) -print -quit 2>/dev/null); "
+            "[ -z \"$bad\" ] || printf \"PGDATA:%s\" \"$bad\"; "
+            "for d in /usr/pgsql-${PGVER?}/bin /usr/pgsql-${PGVER?}/include /usr/pgsql-${PGVER?}/lib /usr/pgsql-${PGVER?}/share; do "
+            "bad=$(find \"$d\" \\( ! -user root -o -perm /022 \\) -print -quit 2>/dev/null); "
+            "[ -z \"$bad\" ] || printf \" %s:%s\" \"$d\" \"$bad\"; done'"
+        )
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     postfix_root_alias_candidate = _linux_postfix_root_alias_candidate(rule, stig_id)
     if postfix_root_alias_candidate:
         return postfix_root_alias_candidate
