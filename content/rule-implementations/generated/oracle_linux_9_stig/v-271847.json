@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "python3 -c '\nimport os, pathlib, pwd, re, shlex, sys\nallowed = {'\"'\"'/usr/local/sbin'\"'\"','\"'\"'/usr/local/bin'\"'\"','\"'\"'/usr/sbin'\"'\"','\"'\"'/usr/bin'\"'\"','\"'\"'/sbin'\"'\"','\"'\"'/bin'\"'\"'}\nbad = []\nfor entry in pwd.getpwall():\n    shell = entry.pw_shell or '\"'\"''\"'\"'\n    home = entry.pw_dir or '\"'\"''\"'\"'\n    if entry.pw_uid < 1000 or not home.startswith('\"'\"'/home/'\"'\"') or re.search(r'\"'\"'(nologin|false)$'\"'\"', shell):\n        continue\n    home_path = pathlib.Path(home)\n    if not home_path.is_dir():\n        continue\n    for path in home_path.glob('\"'\"'.*'\"'\"'):\n        if not path.is_file():\n            continue\n        try:\n            lines = path.read_text(errors='\"'\"'ignore'\"'\"').splitlines()\n        except OSError:\n            continue\n        for lineno, line in enumerate(lines, 1):\n            stripped = line.strip()\n            if not stripped or stripped.startswith('\"'\"'#'\"'\"') or not re.search(r'\"'\"'(^|\\b)(?:export\\s+)?PATH\\s*='\"'\"', stripped):\n                continue\n            rhs = re.split(r'\"'\"'='\"'\"', stripped, 1)[1]\n            rhs = rhs.split('\"'\"'#'\"'\"', 1)[0].strip().strip('\"'\"'\"\\'\"'\"''\"'\"')\n            for token in rhs.split('\"'\"':'\"'\"'):\n                token = token.strip().strip('\"'\"'\"\\'\"'\"''\"'\"')\n                if token in ('\"'\"'$PATH'\"'\"', '\"'\"'${PATH}'\"'\"', '\"'\"''\"'\"'):\n                    continue\n                expanded = token.replace('\"'\"'$HOME'\"'\"', home).replace('\"'\"'${HOME}'\"'\"', home)\n                if expanded.startswith('\"'\"'~/'\"'\"'):\n                    expanded = home + expanded[1:]\n                if expanded in allowed or expanded.startswith(home.rstrip('\"'\"'/'\"'\"') + '\"'\"'/'\"'\"'):\n                    continue\n                if expanded.startswith('\"'\"'$'\"'\"'):\n                    continue\n                bad.append(f'\"'\"'{path}:{lineno}:{token}'\"'\"')\nif not bad:\n    print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"')\n'",
+      "type": "command_output"
+    },
+    "description": "OL 9 must be configured so that executable search paths within the initialization files of all local interactive users must only contain paths that resolve to the system default or the users home directory.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271847"
+  },
   "check_content_excerpt": "Verify that OL 9 local interactive user initialization file executable search path statements do not contain statements that will reference a working directory other than user home directories with the following commands:\n\n$ sudo grep -i path= /home/*/.*\n/home/[localinteractiveuser]/.bash_profile:PATH=$PATH:$HOME/.local/bin:$HOME/bin\n\nIf any local interactive user initialization files have executable search path statements that include directories outside of their home directory and is not documented with the ISSO as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the local interactive user initialization files to change any PATH variable statements that reference directories other than their home directory.\n\nIf a local interactive user requires path variables to reference a directory owned by the application, it must be documented with the ISSO.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271847r1092253_rule",
   "severity": "medium",

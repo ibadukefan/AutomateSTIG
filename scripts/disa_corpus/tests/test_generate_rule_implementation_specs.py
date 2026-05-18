@@ -11,6 +11,21 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_linux_interactive_user_init_path_home_only_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258050',
+            'title': 'Executable search paths within the initialization files of all local interactive RHEL 9 users must only contain paths that resolve to the system default or the users home directory.',
+            'check_content': 'Verify that all local interactive user initialization file executable search path statements do not contain statements that will reference a working directory other than user home directories with the following commands:\n\n$ sudo find /home -maxdepth 2 -type f -name ".[^.]*" -exec grep -iH path= {} \\;\n\nPATH="$HOME/.local/bin:$HOME/bin:$PATH"\n\nIf any local interactive user initialization files have executable search path statements that include directories outside of their home directory, and this is not documented with the ISSO as an operational requirement, this is a finding.',
+            'fix_text': 'Edit the local interactive user initialization files to remove any paths that reference a working directory other than the users home directory.',
+        }, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-258050')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('/home', candidate['check']['command'])
+        self.assertIn('PATH', candidate['check']['command'])
+        self.assertIn('Compliant', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_postgresql_audit_outcome_config_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233512',

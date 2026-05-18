@@ -1337,6 +1337,75 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
 
 
+def _linux_interactive_user_init_path_home_only_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    if canonical_vuln_id not in {'V-204477', 'V-230317', 'V-234996', 'V-248635', 'V-258050', 'V-271847'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'local\s+interactive\s+user(?:s)?\s+initialization\s+file',
+        r'executable\s+search\s+path',
+        r'home\s+director(?:y|ies)',
+        r'grep\s+-?i\w*\s+path=?',
+        r'(?:paths?|statements)\s+that\s+(?:will\s+)?reference\s+a\s+working\s+directory\s+other\s+than\s+(?:the\s+)?user',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'(?:remove|change)\s+any\s+(?:PATH\s+variable\s+statements|paths?)\s+that\s+reference\s+(?:directories|a\s+working\s+directory)\s+other\s+than\s+(?:the\s+)?(?:their\s+)?(?:user|home)', fix_text, re.IGNORECASE):
+        return None
+    script = r'''
+import os, pathlib, pwd, re, shlex, sys
+allowed = {'/usr/local/sbin','/usr/local/bin','/usr/sbin','/usr/bin','/sbin','/bin'}
+bad = []
+for entry in pwd.getpwall():
+    shell = entry.pw_shell or ''
+    home = entry.pw_dir or ''
+    if entry.pw_uid < 1000 or not home.startswith('/home/') or re.search(r'(nologin|false)$', shell):
+        continue
+    home_path = pathlib.Path(home)
+    if not home_path.is_dir():
+        continue
+    for path in home_path.glob('.*'):
+        if not path.is_file():
+            continue
+        try:
+            lines = path.read_text(errors='ignore').splitlines()
+        except OSError:
+            continue
+        for lineno, line in enumerate(lines, 1):
+            stripped = line.strip()
+            if not stripped or stripped.startswith('#') or not re.search(r'(^|\b)(?:export\s+)?PATH\s*=', stripped):
+                continue
+            rhs = re.split(r'=', stripped, 1)[1]
+            rhs = rhs.split('#', 1)[0].strip().strip('"\'')
+            for token in rhs.split(':'):
+                token = token.strip().strip('"\'')
+                if token in ('$PATH', '${PATH}', ''):
+                    continue
+                expanded = token.replace('$HOME', home).replace('${HOME}', home)
+                if expanded.startswith('~/'):
+                    expanded = home + expanded[1:]
+                if expanded in allowed or expanded.startswith(home.rstrip('/') + '/'):
+                    continue
+                if expanded.startswith('$'):
+                    continue
+                bad.append(f'{path}:{lineno}:{token}')
+if not bad:
+    print('Compliant', end='')
+'''
+    command = 'python3 -c ' + shlex.quote(script)
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_kernel_module_disabled_from_modprobe_fix_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -11814,7 +11883,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return grub_superusers_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
+        for infer_with_stig in (_linux_interactive_user_init_path_home_only_candidate, _linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

@@ -555,6 +555,19 @@
     },
     {
       "check": {
+        "command": "python3 -c '\nimport os, pathlib, pwd, re, shlex, sys\nallowed = {'\"'\"'/usr/local/sbin'\"'\"','\"'\"'/usr/local/bin'\"'\"','\"'\"'/usr/sbin'\"'\"','\"'\"'/usr/bin'\"'\"','\"'\"'/sbin'\"'\"','\"'\"'/bin'\"'\"'}\nbad = []\nfor entry in pwd.getpwall():\n    shell = entry.pw_shell or '\"'\"''\"'\"'\n    home = entry.pw_dir or '\"'\"''\"'\"'\n    if entry.pw_uid < 1000 or not home.startswith('\"'\"'/home/'\"'\"') or re.search(r'\"'\"'(nologin|false)$'\"'\"', shell):\n        continue\n    home_path = pathlib.Path(home)\n    if not home_path.is_dir():\n        continue\n    for path in home_path.glob('\"'\"'.*'\"'\"'):\n        if not path.is_file():\n            continue\n        try:\n            lines = path.read_text(errors='\"'\"'ignore'\"'\"').splitlines()\n        except OSError:\n            continue\n        for lineno, line in enumerate(lines, 1):\n            stripped = line.strip()\n            if not stripped or stripped.startswith('\"'\"'#'\"'\"') or not re.search(r'\"'\"'(^|\\b)(?:export\\s+)?PATH\\s*='\"'\"', stripped):\n                continue\n            rhs = re.split(r'\"'\"'='\"'\"', stripped, 1)[1]\n            rhs = rhs.split('\"'\"'#'\"'\"', 1)[0].strip().strip('\"'\"'\"\\'\"'\"''\"'\"')\n            for token in rhs.split('\"'\"':'\"'\"'):\n                token = token.strip().strip('\"'\"'\"\\'\"'\"''\"'\"')\n                if token in ('\"'\"'$PATH'\"'\"', '\"'\"'${PATH}'\"'\"', '\"'\"''\"'\"'):\n                    continue\n                expanded = token.replace('\"'\"'$HOME'\"'\"', home).replace('\"'\"'${HOME}'\"'\"', home)\n                if expanded.startswith('\"'\"'~/'\"'\"'):\n                    expanded = home + expanded[1:]\n                if expanded in allowed or expanded.startswith(home.rstrip('\"'\"'/'\"'\"') + '\"'\"'/'\"'\"'):\n                    continue\n                if expanded.startswith('\"'\"'$'\"'\"'):\n                    continue\n                bad.append(f'\"'\"'{path}:{lineno}:{token}'\"'\"')\nif not bad:\n    print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"')\n'",
+        "type": "command_output"
+      },
+      "description": "Executable search paths within the initialization files of all local interactive RHEL 8 users must only contain paths that resolve to the system default or the users home directory.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230317"
+    },
+    {
+      "check": {
         "command": "find / -xdev -type d -perm -0002 -uid +999 -exec stat -c \"%U, %u, %A, %n\" {} \\; 2>/dev/null",
         "type": "command_output"
       },
