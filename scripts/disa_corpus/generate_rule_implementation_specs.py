@@ -11458,6 +11458,41 @@ def _windows_fix_only_removed_feature_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _windows_server_2025_ftp_site_system_drive_candidate(rule: dict, stig_id: str) -> dict | None:
+    if rule.get('vuln_id', '') != 'V-278028' or stig_id != 'MS_Windows_Server_2025_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'If\s+FTP\s+is\s+not\s+installed\s+on\s+the\s+system,\s+this\s+is\s+not\s+applicable', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Binding\s+that\s+lists\s+FTP', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+site\s+includes\s+any\s+system\s+areas\s+such\s+as\s+root\s+of\s+the\s+drive,\s+Program\s+Files,\s+or\s+Windows\s+directories,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Configure\s+the\s+FTP\s+sites\s+to\s+allow\s+access\s+only\s+to\s+specific\s+FTP\s+shared\s+resources', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command "'
+        'Import-Module WebAdministration -ErrorAction SilentlyContinue; '
+        '$bad=@(); '
+        'Get-WebBinding -Protocol ftp -ErrorAction SilentlyContinue | ForEach-Object { '
+        '$site=$_.ItemXPath -replace \"^.*name=\\\'([^\\\']+)\\\'.*$\",\"$1\"; '
+        '$path=(Get-Item \"IIS:\\Sites\\$site\" -ErrorAction SilentlyContinue).physicalPath; '
+        '$expanded=[Environment]::ExpandEnvironmentVariables($path); '
+        'if ($expanded -match \"^[A-Za-z]:\\\\?$\" -or $expanded -match \"^[A-Za-z]:\\\\Windows(\\\\|$)\" -or $expanded -match \"^[A-Za-z]:\\\\Program Files(?: \\(x86\\))?(\\\\|$)\") { $bad += $site } '
+        '}; '
+        '$bad -join \"`n\"'
+        '"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _ubuntu_2004_dod_root_ca_certificate_candidate(rule: dict, stig_id: str) -> dict | None:
     if stig_id != 'Canonical_Ubuntu_20-04_LTS_STIG' or rule.get('vuln_id', '') != 'V-238364':
         return None
@@ -11491,6 +11526,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     ubuntu_dod_root_ca_candidate = _ubuntu_2004_dod_root_ca_certificate_candidate(rule, stig_id)
     if ubuntu_dod_root_ca_candidate:
         return ubuntu_dod_root_ca_candidate
+    windows_server_2025_ftp_candidate = _windows_server_2025_ftp_site_system_drive_candidate(rule, stig_id)
+    if windows_server_2025_ftp_candidate:
+        return windows_server_2025_ftp_candidate
     rhel7_duplicate_uid_zero_candidate = _rhel7_duplicate_uid_zero_candidate(rule, stig_id)
     if rhel7_duplicate_uid_zero_candidate:
         return rhel7_duplicate_uid_zero_candidate

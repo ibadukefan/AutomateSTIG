@@ -14189,6 +14189,31 @@ If any accounts other than XS$NULL are listed, this is a finding.""",
         self.assertIn('/etc/ssl/certs/*', candidate['check']['command'])
         self.assertIn('DOD ROOT CA', candidate['check']['command'])
 
+    def test_infers_windows_server_2025_ftp_site_system_drive_candidate_from_exact_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278028',
+            'title': 'Windows Server 2025 FTP servers must be configured to prevent access to the system drive.',
+            'check_content': '''If FTP is not installed on the system, this is not applicable.
+
+Open Internet Information Services (IIS) Manager.
+
+Select "Sites" under the server name.
+
+For any sites with a Binding that lists FTP, right-click the site and select "Explore".
+
+If the site is not defined to a specific folder for shared FTP resources, this is a finding.
+
+If the site includes any system areas such as root of the drive, Program Files, or Windows directories, this is a finding.''',
+            'fix_text': 'Configure the FTP sites to allow access only to specific FTP shared resources. Do not allow access to other areas of the system.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278028')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('Get-WebBinding', candidate['check']['command'])
+        self.assertIn('ftp', candidate['check']['command'].lower())
+        self.assertIn('Program Files', candidate['check']['command'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 238,
+  "candidate_checks": 239,
   "cases": [
     {
       "check": {
@@ -574,6 +574,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278027"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $bad=@(); Get-WebBinding -Protocol ftp -ErrorAction SilentlyContinue | ForEach-Object { $site=$_.ItemXPath -replace \"^.*name=\\'([^\\']+)\\'.*$\",\"$1\"; $path=(Get-Item \"IIS:\\Sites\\$site\" -ErrorAction SilentlyContinue).physicalPath; $expanded=[Environment]::ExpandEnvironmentVariables($path); if ($expanded -match \"^[A-Za-z]:\\\\?$\" -or $expanded -match \"^[A-Za-z]:\\\\Windows(\\\\|$)\" -or $expanded -match \"^[A-Za-z]:\\\\Program Files(?: \\(x86\\))?(\\\\|$)\") { $bad += $site } }; $bad -join \"`n\"\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 FTP servers must be configured to prevent access to the system drive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $bad=@(); Get-WebBinding -Protocol ftp -ErrorAction SilentlyContinue | ForEach-Object { $site=$_.ItemXPath -replace \"^.*name=\\'([^\\']+)\\'.*$\",\"$1\"; $path=(Get-Item \"IIS:\\Sites\\$site\" -ErrorAction SilentlyContinue).physicalPath; $expanded=[Environment]::ExpandEnvironmentVariables($path); if ($expanded -match \"^[A-Za-z]:\\\\?$\" -or $expanded -match \"^[A-Za-z]:\\\\Windows(\\\\|$)\" -or $expanded -match \"^[A-Za-z]:\\\\Program Files(?: \\(x86\\))?(\\\\|$)\") { $bad += $site } }; $bad -join \"`n\"\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $bad=@(); Get-WebBinding -Protocol ftp -ErrorAction SilentlyContinue | ForEach-Object { $site=$_.ItemXPath -replace \"^.*name=\\'([^\\']+)\\'.*$\",\"$1\"; $path=(Get-Item \"IIS:\\Sites\\$site\" -ErrorAction SilentlyContinue).physicalPath; $expanded=[Environment]::ExpandEnvironmentVariables($path); if ($expanded -match \"^[A-Za-z]:\\\\?$\" -or $expanded -match \"^[A-Za-z]:\\\\Windows(\\\\|$)\" -or $expanded -match \"^[A-Za-z]:\\\\Program Files(?: \\(x86\\))?(\\\\|$)\") { $bad += $site } }; $bad -join \"`n\"\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278028"
     },
     {
       "check": {
@@ -6396,5 +6422,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 238
+  "validated_candidates": 239
 }
