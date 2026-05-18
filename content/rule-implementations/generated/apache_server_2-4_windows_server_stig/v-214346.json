@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $module=Select-String -Path $p -Pattern '^\\s*LoadModule\\s+proxy_module\\b.*mod_proxy' -ErrorAction SilentlyContinue | Select-Object -First 1; $directive=Select-String -Path $p -Pattern '^\\s*ProxyPass\\b\\s+\\S+' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($module -and $directive) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "An Apache web server that is part of a web server cluster must route all remote management through a centrally managed access control point.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214346"
+  },
   "check_content_excerpt": "Review the <'INSTALL PATH'>\\conf\\httpd.conf file.\n\nVerify the \"mod_proxy\" is loaded.\n\nIf it does not exist, this is a finding.\n\nIf the \"mod_proxy\" module is loaded and the \"ProxyPass\" directive is not configured, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the <'INSTALL PATH'>\\conf\\httpd.conf file and load the \"mod_proxy\" module.\n\nSet the \"ProxyPass\" directive.\n\nRestart the Apache service.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214346r985884_rule",
   "severity": "medium",

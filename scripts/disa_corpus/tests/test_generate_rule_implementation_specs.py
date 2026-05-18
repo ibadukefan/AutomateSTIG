@@ -181,6 +181,70 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('kubelet-client-key', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_apache_windows_reqtimeout_module_and_directive_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214342',
+            'title': 'The Apache web server must set an inactive timeout for completing the TLS handshake',
+            'check_content': 'Review the <\'INSTALL PATH\'>\\conf\\httpd.conf file.\n\nVerify the "mod_reqtimeout" is loaded.\n\nIf it does not exist, this is a finding.\n\nIf the "mod_reqtimeout" module is loaded and the "RequestReadTimeout" directive is not configured, this is a finding.',
+            'fix_text': 'Edit the <\'INSTALL PATH\'>\\conf\\httpd.conf file and load the "mod_reqtimeout" module.\n\nSet the "RequestReadTimeout" directive to a value compatible with the organization\'s operations.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-214342')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertIn('reqtimeout_module', candidate['check']['command'])
+        self.assertIn('RequestReadTimeout', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_apache_windows_proxy_module_and_directive_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214346',
+            'title': 'An Apache web server that is part of a web server cluster must route all remote management through a centrally managed access control point.',
+            'check_content': 'Review the <\'INSTALL PATH\'>\\conf\\httpd.conf file.\n\nVerify the "mod_proxy" is loaded.\n\nIf it does not exist, this is a finding.\n\nIf the "mod_proxy" module is loaded and the "ProxyPass" directive is not configured, this is a finding.',
+            'fix_text': 'Edit the <\'INSTALL PATH\'>\\conf\\httpd.conf file and load the "mod_proxy" module.\n\nSet the "ProxyPass" directive.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-214346')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertIn('proxy_module', candidate['check']['command'])
+        self.assertIn('ProxyPass', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_windows_fix_only_account_policy_minimum_password_length_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254291',
+            'title': 'Windows Server 2022 minimum password length must be configured to 14 characters.',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy >> "Minimum password length" to "14" characters.',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-254291')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'System Access', 'key': 'MinimumPasswordLength'})
+        self.assertEqual(candidate['expected'], {'type': 'greater_or_equal', 'value': 14})
+
+    def test_infers_windows_fix_only_account_policy_threshold_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254286',
+            'title': 'Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less.',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Account Lockout Policy >> Account lockout threshold to "3" or fewer invalid logon attempts (excluding "0", which is unacceptable).',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-254286')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'System Access', 'key': 'LockoutBadCount'})
+        self.assertEqual(candidate['expected'], {'type': 'matches', 'pattern': '^(?:1|2|3)$'})
+
+    def test_infers_windows_fix_only_account_policy_complexity_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254292',
+            'title': 'Windows Server 2022 must have the built-in Windows password complexity policy enabled.',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy >> Password must meet complexity requirements to "Enabled".',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-254292')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'System Access', 'key': 'PasswordComplexity'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+
     def test_infers_macos_15_fips_ssh_config_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-268439',

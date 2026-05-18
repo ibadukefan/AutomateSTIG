@@ -338,6 +338,38 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
         'V-214340': ('TraceEnable', 'Off', 'required'),
         'V-214355': ('SSLCompression', 'off', 'absent_or_value'),
     }
+    module_directive_specs = {
+        'V-214342': ('mod_reqtimeout', 'reqtimeout_module', 'RequestReadTimeout'),
+        'V-214346': ('mod_proxy', 'proxy_module', 'ProxyPass'),
+    }
+    module_directive_spec = module_directive_specs.get(vuln_id)
+    if module_directive_spec:
+        module_text, module_name, directive = module_directive_spec
+        combined = content + '\n' + fix_text
+        if not all(token in combined for token in (module_text, directive, 'httpd.conf')):
+            return None
+        if not re.search(rf'Verify\s+the\s+["“]{re.escape(module_text)}["”]\s+is\s+loaded', content, re.IGNORECASE):
+            return None
+        if not re.search(rf'If\s+it\s+does\s+not\s+exist,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(rf'If\s+the\s+["“]{re.escape(module_text)}["”]\s+module\s+is\s+loaded\s+and\s+the\s+["“]{re.escape(directive)}["”]\s+directive\s+is\s+not\s+configured,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(rf'Set\s+the\s+["“]{re.escape(directive)}["”]\s+directive', fix_text, re.IGNORECASE):
+            return None
+        command = (
+            'powershell -NoProfile -Command '
+            '"$p=Join-Path $env:ProgramFiles \'Apache24\\conf\\httpd.conf\'; '
+            f"$module=Select-String -Path $p -Pattern '^\\s*LoadModule\\s+{module_name}\\b.*{re.escape(module_text)}' -ErrorAction SilentlyContinue | Select-Object -First 1; "
+            f"$directive=Select-String -Path $p -Pattern '^\\s*{directive}\\b\\s+\\S+' -ErrorAction SilentlyContinue | Select-Object -First 1; "
+            "if ($module -and $directive) { 'Compliant' }\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
     if vuln_id in {'V-214311', 'V-214323', 'V-214326', 'V-214339', 'V-214351'}:
         combined = content + '\n' + fix_text
         if vuln_id != 'V-214351' and 'httpd.conf' not in combined:
@@ -3384,8 +3416,11 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                 'description': rule.get('title', ''),
             }
 
+    lockout_bad_count_expected = {'type': 'less_or_equal', 'value': 3}
+    if re.search(r'Account\s+lockout\s+threshold[^.\n]*(?:excluding|not)\s+"?0"?', policy_text, re.IGNORECASE):
+        lockout_bad_count_expected = {'type': 'matches', 'pattern': _positive_integer_range_pattern(3)}
     account_keys = {
-        'LockoutBadCount': (r'LockoutBadCount|Account lockout threshold', {'type': 'less_or_equal', 'value': 3}),
+        'LockoutBadCount': (r'LockoutBadCount|Account lockout threshold', lockout_bad_count_expected),
         'ResetLockoutCount': (r'ResetLockoutCount|Reset account lockout counter after', {'type': 'greater_or_equal', 'value': 15}),
         'LockoutDuration': (r'LockoutDuration|Account lockout duration', {'type': 'greater_or_equal', 'value': 15}),
         'MinimumPasswordAge': (r'MinimumPasswordAge|Minimum password age', {'type': 'greater_or_equal', 'value': 1}),

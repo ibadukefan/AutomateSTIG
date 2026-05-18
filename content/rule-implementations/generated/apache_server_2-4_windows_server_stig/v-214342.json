@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $module=Select-String -Path $p -Pattern '^\\s*LoadModule\\s+reqtimeout_module\\b.*mod_reqtimeout' -ErrorAction SilentlyContinue | Select-Object -First 1; $directive=Select-String -Path $p -Pattern '^\\s*RequestReadTimeout\\b\\s+\\S+' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($module -and $directive) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The Apache web server must set an inactive timeout for completing the TLS handshake",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214342"
+  },
   "check_content_excerpt": "Review the <'INSTALL PATH'>\\conf\\httpd.conf file.\n\nVerify the \"mod_reqtimeout\" is loaded.\n\nIf it does not exist, this is a finding.\n\nIf the \"mod_reqtimeout\" module is loaded and the \"RequestReadTimeout\" directive is not configured, this is a finding.\n\nNote: The \"RequestReadTimeout\" directive must be explicitly configured (i.e., not left to a default value) to a value compatible with the organization's operations.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the <'INSTALL PATH'>\\conf\\httpd.conf file and load the \"mod_reqtimeout\" module.\n\nSet the \"RequestReadTimeout\" directive to a value compatible with the organization's operations.\n\nRestart the Apache service.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214342r1043182_rule",
   "severity": "medium",
