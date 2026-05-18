@@ -2422,6 +2422,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"if zypper if aide 2>/dev/null | grep -Fq 'Installed: Yes' && ! aide --check 2>&1 | grep -Fq \"\"'\"\"Couldn't open file /var/lib/aide/aide.db for reading\"\"'\"\"; then printf Compliant; fi\"",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must use a file integrity tool to verify correct operation of all security functions.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-255922"
+    },
+    {
+      "check": {
         "name": "mailx",
         "should_be_installed": true,
         "type": "package"

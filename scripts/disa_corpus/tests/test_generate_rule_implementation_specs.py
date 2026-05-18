@@ -763,21 +763,44 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertEqual(candidate['check'], {'type': 'command_output', 'command': expected_command})
                 self.assertEqual(candidate['expected'], expected)
 
-    def test_infers_windows_11_smartcard_mfa_calais_keys_populated_candidate(self):
+    def test_infers_sles_aide_installed_and_initialized_candidate(self):
         candidate = mod.infer_candidate_check({
-            'vuln_id': 'V-253470',
-            'title': 'Windows 11 must use multifactor authentication for local and network access to privileged and nonprivileged accounts.',
-            'check_content': 'If the system is not a member of a domain, this is Not Applicable.\n\nIf all of the following settings exist and are populated, this is not a finding.\n\n\\HKLM\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\Readers\n\\HKLM\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\SmartCards',
-            'fix_text': 'For nondomain joined systems, configuring Windows Hello for sign-on options would be suggested based on the organization\'s needs and capabilities.',
-        }, 'Microsoft_Windows_11_STIG')
+            'vuln_id': 'V-255922',
+            'title': 'The SUSE operating system must use a file integrity tool to verify correct operation of all security functions.',
+            'check_content': 'Verify that AIDE is installed with the following command:\n\nsudo zypper if aide | grep "Installed"\nInstalled: Yes\n\nIf "Installed: Yes" is not returned, this is a finding.\n\nVerify AIDE has been initialized with the following command:\n\nsudo aide --check\n\nIf the output includes "Couldn\'t open file /var/lib/aide/aide.db for reading", this is a finding.',
+            'fix_text': 'Install AIDE and initialize the AIDE database.',
+        }, 'SLES_15_STIG')
 
         self.assertIsNotNone(candidate)
-        self.assertEqual(candidate['vuln_id'], 'V-253470')
-        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['vuln_id'], 'V-255922')
+        self.assertEqual(candidate['platform'], 'linux')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
-        self.assertIn('Cryptography\\Calais\\Readers', candidate['check']['command'])
-        self.assertIn('Cryptography\\Calais\\SmartCards', candidate['check']['command'])
-        self.assertIn('Get-ChildItem', candidate['check']['command'])
+        self.assertIn('zypper if aide', candidate['check']['command'])
+        self.assertIn('Installed: Yes', candidate['check']['command'])
+        self.assertIn('aide --check', candidate['check']['command'])
+        self.assertIn("Couldn't open file /var/lib/aide/aide.db for reading", candidate['check']['command'])
+
+    def test_infers_windows_smartcard_mfa_calais_keys_populated_candidate(self):
+        for vuln_id, stig_id, title, finding_prose in (
+            ('V-253470', 'Microsoft_Windows_11_STIG', 'Windows 11 must use multifactor authentication for local and network access to privileged and nonprivileged accounts.', 'If all of the following settings exist and are populated, this is not a finding.'),
+            ('V-220946', 'MS_Windows_10_STIG', 'Windows 10 must use multifactor authentication for local and network access to privileged and nonprivileged accounts.', 'If one of the following settings does not exist and is not populated, this is a finding:'),
+        ):
+            with self.subTest(vuln_id=vuln_id, stig_id=stig_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': f'If the system is not a member of a domain, this is Not Applicable.\n\n{finding_prose}\n\nComputer\\HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\Readers\nComputer\\HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\SmartCards',
+                    'fix_text': 'For nondomain joined systems, configuring Windows Hello for sign-on options would be suggested based on the organization\'s needs and capabilities.',
+                }, stig_id)
+
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+                self.assertIn('PartOfDomain', candidate['check']['command'])
+                self.assertIn('Cryptography\\Calais\\Readers', candidate['check']['command'])
+                self.assertIn('Cryptography\\Calais\\SmartCards', candidate['check']['command'])
+                self.assertIn('Get-ChildItem', candidate['check']['command'])
 
     def test_infers_windows_server_2025_domain_controller_pki_certificate_candidate(self):
         candidate = mod.infer_candidate_check({

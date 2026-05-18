@@ -2341,6 +2341,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$paths=@('HKLM:\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\Readers','HKLM:\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\SmartCards'); if ((Get-CimInstance Win32_ComputerSystem).PartOfDomain -eq $false) { 'Compliant' } elseif (($paths | Where-Object { -not (Test-Path -LiteralPath $_) -or @((Get-ChildItem -LiteralPath $_ -ErrorAction SilentlyContinue)).Count -eq 0 }).Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows 10 must use multifactor authentication for local and network access to privileged and nonprivileged accounts.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220946"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
         "type": "registry",
         "value_name": "ConsentPromptBehaviorUser"

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"if zypper if aide 2>/dev/null | grep -Fq 'Installed: Yes' && ! aide --check 2>&1 | grep -Fq \"\"'\"\"Couldn't open file /var/lib/aide/aide.db for reading\"\"'\"\"; then printf Compliant; fi\"",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system must use a file integrity tool to verify correct operation of all security functions.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-255922"
+  },
   "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) is installed and verifies the correct operation of all security functions.\n\nCheck that the AIDE package is installed with the following command:\n     $ sudo zypper if aide | grep \"Installed\"\n     Installed: Yes\n\nIf AIDE is not installed, ask the System Administrator how file integrity checks are performed on the system. \n\nIf there is no application installed to perform integrity checks, this is a finding.\n\nIf AIDE is installed, check if it has been initialized with the following command:\n     $ sudo aide --check\n\nIf the output is \"Couldn't open file /var/lib/aide/aide.db for reading\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install AIDE, initialize it, and perform a manual check.\n\nInstall AIDE:\n     $ sudo zipper in aide\n\nInitialize it (this may take a few minutes):\n     $ sudo aide -i\n\nThe new database will need to be renamed to be read by AIDE:\n     $ sudo mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db\n\nPerform a manual check:\n     $ sudo aide --check\n\nExample output:\n     Summary:\n       Total number of files:        140621\n       Added files:                  1\n       Removed files:                1\n       Changed files:                0\n\nDone.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-255922r958794_rule",
   "severity": "medium",

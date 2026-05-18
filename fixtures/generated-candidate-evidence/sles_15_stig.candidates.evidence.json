@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 183,
+  "candidate_checks": 184,
   "cases": [
     {
       "check": {
@@ -4776,6 +4776,32 @@
     },
     {
       "check": {
+        "command": "sh -c \"if zypper if aide 2>/dev/null | grep -Fq 'Installed: Yes' && ! aide --check 2>&1 | grep -Fq \"\"'\"\"Couldn't open file /var/lib/aide/aide.db for reading\"\"'\"\"; then printf Compliant; fi\"",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must use a file integrity tool to verify correct operation of all security functions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"if zypper if aide 2>/dev/null | grep -Fq 'Installed: Yes' && ! aide --check 2>&1 | grep -Fq \"\"'\"\"Couldn't open file /var/lib/aide/aide.db for reading\"\"'\"\"; then printf Compliant; fi\"": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"if zypper if aide 2>/dev/null | grep -Fq 'Installed: Yes' && ! aide --check 2>&1 | grep -Fq \"\"'\"\"Couldn't open file /var/lib/aide/aide.db for reading\"\"'\"\"; then printf Compliant; fi\"": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-255922"
+    },
+    {
+      "check": {
         "name": "mailx",
         "should_be_installed": true,
         "type": "package"
@@ -4833,5 +4859,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 183
+  "validated_candidates": 184
 }

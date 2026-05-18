@@ -1992,6 +1992,36 @@ def _ubuntu_aide_filesystem_integrity_check_candidate(rule: dict, stig_id: str) 
     }
 
 
+def _sles_aide_installed_and_initialized_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sles' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-255922':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    if not re.search(r'zypper\s+if\s+aide\s*\|\s*grep\s+["“]Installed["”]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Installed:\s*Yes', content, re.IGNORECASE):
+        return None
+    if not re.search(r'aide\s+--check', content, re.IGNORECASE):
+        return None
+    if not re.search(r"Couldn't\s+open\s+file\s+/var/lib/aide/aide\.db\s+for\s+reading", content, re.IGNORECASE):
+        return None
+    if not re.search(r'Install\s+AIDE|initialize\s+the\s+AIDE\s+database', combined, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c \"if zypper if aide 2>/dev/null | grep -Fq 'Installed: Yes' && "
+        "! aide --check 2>&1 | grep -Fq \"\"'\"\"Couldn't open file /var/lib/aide/aide.db for reading\"\"'\"\"; "
+        "then printf Compliant; fi\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sles_aide_cron_mail_notification_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sles' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-234864':
         return None
@@ -6632,23 +6662,32 @@ def _esxi_advanced_setting_exact_value_candidate(rule: dict, stig_id: str) -> di
     }
 
 
-def _windows_11_smartcard_mfa_calais_keys_candidate(rule: dict, stig_id: str) -> dict | None:
+def _windows_smartcard_mfa_calais_keys_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
-    if rule.get('vuln_id') != 'V-253470' or 'windows_11' not in stig_id.lower():
+    vuln_id = rule.get('vuln_id')
+    stig_lower = stig_id.lower()
+    if (vuln_id, 'windows_11' in stig_lower, 'windows_10' in stig_lower) not in {
+        ('V-253470', True, False),
+        ('V-220946', False, True),
+    }:
         return None
     content = rule.get('check_content', '') or ''
     if not re.search(r'local\s+and\s+network\s+access\s+to\s+privileged\s+and\s+nonprivileged\s+accounts', rule.get('title', ''), re.IGNORECASE):
         return None
     if not re.search(r'If\s+the\s+system\s+is\s+not\s+a\s+member\s+of\s+a\s+domain,?\s+this\s+is\s+Not\s+Applicable', content, re.IGNORECASE):
         return None
-    if not re.search(r'If\s+all\s+of\s+the\s+following\s+settings\s+exist\s+and\s+are\s+populated,?\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+    if not re.search(
+        r'(?:If\s+all\s+of\s+the\s+following\s+settings\s+exist\s+and\s+are\s+populated,?\s+this\s+is\s+not\s+a\s+finding|If\s+one\s+of\s+the\s+following\s+settings\s+does\s+not\s+exist\s+and\s+is\s+not\s+populated,?\s+this\s+is\s+a\s+finding)',
+        content,
+        re.IGNORECASE,
+    ):
         return None
-    required_paths = (
-        r'HKLM:\SOFTWARE\Microsoft\Cryptography\Calais\Readers',
-        r'HKLM:\SOFTWARE\Microsoft\Cryptography\Calais\SmartCards',
+    required_path_patterns = (
+        r'(?:HKLM:|HKLM|HKEY_LOCAL_MACHINE)\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\Readers',
+        r'(?:HKLM:|HKLM|HKEY_LOCAL_MACHINE)\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\SmartCards',
     )
-    if not all(path.replace(':', '').lower() in content.replace('\\', '\\').lower() for path in required_paths):
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_path_patterns):
         return None
     command = (
         'powershell -NoProfile -Command "'
@@ -11348,7 +11387,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         if directory_service_max_conn_idle_time_candidate:
             return directory_service_max_conn_idle_time_candidate
 
-        smartcard_mfa_candidate = _windows_11_smartcard_mfa_calais_keys_candidate(rule, stig_id)
+        smartcard_mfa_candidate = _windows_smartcard_mfa_calais_keys_candidate(rule, stig_id)
         if smartcard_mfa_candidate:
             return smartcard_mfa_candidate
 
@@ -11433,6 +11472,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     ubuntu_aide_filesystem_candidate = _ubuntu_aide_filesystem_integrity_check_candidate(rule, stig_id)
     if ubuntu_aide_filesystem_candidate:
         return ubuntu_aide_filesystem_candidate
+
+    sles_aide_installed_candidate = _sles_aide_installed_and_initialized_candidate(rule, stig_id)
+    if sles_aide_installed_candidate:
+        return sles_aide_installed_candidate
 
     sles_aide_cron_mail_candidate = _sles_aide_cron_mail_notification_candidate(rule, stig_id)
     if sles_aide_cron_mail_candidate:

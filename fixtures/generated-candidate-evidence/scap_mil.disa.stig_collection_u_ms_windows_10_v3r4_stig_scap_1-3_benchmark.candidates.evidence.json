@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 7,
+  "candidate_checks": 8,
   "cases": [
     {
       "check": {
@@ -81,6 +81,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220744"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$paths=@('HKLM:\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\Readers','HKLM:\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\SmartCards'); if ((Get-CimInstance Win32_ComputerSystem).PartOfDomain -eq $false) { 'Compliant' } elseif (($paths | Where-Object { -not (Test-Path -LiteralPath $_) -or @((Get-ChildItem -LiteralPath $_ -ErrorAction SilentlyContinue)).Count -eq 0 }).Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows 10 must use multifactor authentication for local and network access to privileged and nonprivileged accounts.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$paths=@('HKLM:\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\Readers','HKLM:\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\SmartCards'); if ((Get-CimInstance Win32_ComputerSystem).PartOfDomain -eq $false) { 'Compliant' } elseif (($paths | Where-Object { -not (Test-Path -LiteralPath $_) -or @((Get-ChildItem -LiteralPath $_ -ErrorAction SilentlyContinue)).Count -eq 0 }).Count -eq 0) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$paths=@('HKLM:\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\Readers','HKLM:\\SOFTWARE\\Microsoft\\Cryptography\\Calais\\SmartCards'); if ((Get-CimInstance Win32_ComputerSystem).PartOfDomain -eq $false) { 'Compliant' } elseif (($paths | Where-Object { -not (Test-Path -LiteralPath $_) -or @((Get-ChildItem -LiteralPath $_ -ErrorAction SilentlyContinue)).Count -eq 0 }).Count -eq 0) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220946"
     },
     {
       "check": {
@@ -194,5 +220,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark",
-  "validated_candidates": 7
+  "validated_candidates": 8
 }
