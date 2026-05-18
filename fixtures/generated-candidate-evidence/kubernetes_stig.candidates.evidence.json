@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 56,
+  "candidate_checks": 57,
   "cases": [
     {
       "check": {
@@ -26,6 +26,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242402"
+    },
+    {
+      "check": {
+        "command": "sh -c 'f=$(grep -h -- \"--audit-policy-file\" /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | sed -n \"s/.*--audit-policy-file=//p\" | awk '''{print $1}''' | tr -d \"\\\"'\\''\" | head -n1); test -n \"$f\" && grep -Eq \"^[[:space:]]*-[[:space:]]*level:[[:space:]]*RequestResponse[[:space:]]*$\" \"$f\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must generate audit records that identify what type of event has occurred, identify the source of the event, contain the event results, identify any users, and identify any containers associated with the event.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'f=$(grep -h -- \"--audit-policy-file\" /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | sed -n \"s/.*--audit-policy-file=//p\" | awk '''{print $1}''' | tr -d \"\\\"'\\''\" | head -n1); test -n \"$f\" && grep -Eq \"^[[:space:]]*-[[:space:]]*level:[[:space:]]*RequestResponse[[:space:]]*$\" \"$f\" && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'f=$(grep -h -- \"--audit-policy-file\" /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | sed -n \"s/.*--audit-policy-file=//p\" | awk '''{print $1}''' | tr -d \"\\\"'\\''\" | head -n1); test -n \"$f\" && grep -Eq \"^[[:space:]]*-[[:space:]]*level:[[:space:]]*RequestResponse[[:space:]]*$\" \"$f\" && printf Compliant'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242403"
     },
     {
       "check": {
@@ -1463,5 +1489,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 56
+  "validated_candidates": 57
 }

@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'f=$(grep -h -- \"--audit-policy-file\" /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | sed -n \"s/.*--audit-policy-file=//p\" | awk '''{print $1}''' | tr -d \"\\\"'\\''\" | head -n1); test -n \"$f\" && grep -Eq \"^[[:space:]]*-[[:space:]]*level:[[:space:]]*RequestResponse[[:space:]]*$\" \"$f\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must generate audit records that identify what type of event has occurred, identify the source of the event, contain the event results, identify any users, and identify any containers associated with the event.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-242403"
+    },
+    {
+      "check": {
         "command": "ps -ef | grep '[k]ubelet' | grep -- '--hostname-override'",
         "type": "command_output"
       },

@@ -2202,6 +2202,42 @@ def _kubernetes_validating_admission_webhook_candidate(rule: dict, stig_id: str)
     }
 
 
+def _kubernetes_api_server_requestresponse_audit_policy_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-242403':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_phrases = (
+        'audit-policy-file',
+        'The policy file must look like this',
+        'Log all requests at the RequestResponse level',
+        'apiVersion: audit.k8s.io/vX',
+        'kind: Policy',
+        'rules:',
+        '- level: RequestResponse',
+        'If the audit policy file does not look like above, this is a finding',
+    )
+    if not all(phrase in combined for phrase in required_phrases):
+        return None
+    if not re.search(r'If\s+the\s+audit-policy-file\s+is\s+not\s+set,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Set\s+the\s+value\s+of\s+["“]?--audit-policy-file["”]?\s+to\s+the\s+path\s+of\s+a\s+file\s+with\s+the\s+following\s+content', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'f=$(grep -h -- \"--audit-policy-file\" /etc/kubernetes/manifests/kube-apiserver.yaml "
+        "/etc/kubernetes/manifests/* 2>/dev/null | sed -n \"s/.*--audit-policy-file=//p\" | awk '\''{print $1}'\'' | tr -d \"\\\"'\\''\" | head -n1); "
+        "test -n \"$f\" && grep -Eq \"^[[:space:]]*-[[:space:]]*level:[[:space:]]*RequestResponse[[:space:]]*$\" \"$f\" && printf Compliant'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_kubelet_streaming_idle_timeout_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-245541':
         return None
@@ -11147,6 +11183,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_admission_candidate = _kubernetes_validating_admission_webhook_candidate(rule, stig_id)
     if kubernetes_admission_candidate:
         return kubernetes_admission_candidate
+    kubernetes_requestresponse_audit_policy_candidate = _kubernetes_api_server_requestresponse_audit_policy_candidate(rule, stig_id)
+    if kubernetes_requestresponse_audit_policy_candidate:
+        return kubernetes_requestresponse_audit_policy_candidate
     kubernetes_kubelet_streaming_idle_timeout_candidate = _kubernetes_kubelet_streaming_idle_timeout_candidate(rule, stig_id)
     if kubernetes_kubelet_streaming_idle_timeout_candidate:
         return kubernetes_kubelet_streaming_idle_timeout_candidate

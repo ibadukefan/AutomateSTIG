@@ -182,6 +182,20 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -i audit-policy-file /etc/kubernetes/manifests/*'})
         self.assertEqual(candidate['expected'], {'type': 'not_equals', 'value': ''})
 
+    def test_infers_kubernetes_api_server_requestresponse_audit_policy_file_candidate_from_authoritative_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242403',
+            'title': 'Kubernetes API Server must generate audit records that identify what type of event has occurred.',
+            'check_content': 'Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:\ngrep -i audit-policy-file \n\nIf the audit-policy-file is not set, this is a finding. \n\nThe file given is the policy file and defines what is audited and what information is included with each event.\n\nThe policy file must look like this:\n\n# Log all requests at the RequestResponse level.\napiVersion: audit.k8s.io/vX (Where X is the latest apiVersion)\nkind: Policy\nrules:\n- level: RequestResponse\n\nIf the audit policy file does not look like above, this is a finding.',
+            'fix_text': 'Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane.\n\nSet the value of  "--audit-policy-file" to the path of a file with the following content:\n\n    # Log all requests at the RequestResponse level.\n    apiVersion: audit.k8s.io/vX (Where X is the latest apiVersion)\n    kind: Policy\n    rules:\n    - level: RequestResponse',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242403')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('audit-policy-file', candidate['check']['command'])
+        self.assertIn('RequestResponse', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_kubernetes_api_server_kubelet_client_certificate_key_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-245544',
