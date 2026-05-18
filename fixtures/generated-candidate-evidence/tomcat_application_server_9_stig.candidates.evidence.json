@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 40,
+  "candidate_checks": 41,
   "cases": [
     {
       "check": {
@@ -364,6 +364,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222965"
+    },
+    {
+      "check": {
+        "command": "sh -c 'set -eu; cfg=\"$CATALINA_BASE/conf/server.xml\"; path=$(grep -Eio \"keystoreFile[[:space:]]*=[[:space:]]*\\\"[^\\\"]+\\\"\" \"$cfg\" | head -n1 | sed -E \"s/.*=\\\"([^\\\"]+)\\\"/\\\\1/I\"); [ -n \"$path\" ] && [ -f \"$path\" ] || exit 0; case \"$path\" in \"$CATALINA_BASE\"/*|\"${CATALINA_HOME:-$CATALINA_BASE}\"/*|/opt/tomcat/*) ;; *) exit 0;; esac; [ \"$(stat -c \"%a %U %G\" \"$path\")\" = \"640 root tomcat\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Keystore file must be protected.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'set -eu; cfg=\"$CATALINA_BASE/conf/server.xml\"; path=$(grep -Eio \"keystoreFile[[:space:]]*=[[:space:]]*\\\"[^\\\"]+\\\"\" \"$cfg\" | head -n1 | sed -E \"s/.*=\\\"([^\\\"]+)\\\"/\\\\1/I\"); [ -n \"$path\" ] && [ -f \"$path\" ] || exit 0; case \"$path\" in \"$CATALINA_BASE\"/*|\"${CATALINA_HOME:-$CATALINA_BASE}\"/*|/opt/tomcat/*) ;; *) exit 0;; esac; [ \"$(stat -c \"%a %U %G\" \"$path\")\" = \"640 root tomcat\" ] && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'set -eu; cfg=\"$CATALINA_BASE/conf/server.xml\"; path=$(grep -Eio \"keystoreFile[[:space:]]*=[[:space:]]*\\\"[^\\\"]+\\\"\" \"$cfg\" | head -n1 | sed -E \"s/.*=\\\"([^\\\"]+)\\\"/\\\\1/I\"); [ -n \"$path\" ] && [ -f \"$path\" ] || exit 0; case \"$path\" in \"$CATALINA_BASE\"/*|\"${CATALINA_HOME:-$CATALINA_BASE}\"/*|/opt/tomcat/*) ;; *) exit 0;; esac; [ \"$(stat -c \"%a %U %G\" \"$path\")\" = \"640 root tomcat\" ] && printf Compliant'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222967"
     },
     {
       "check": {
@@ -1047,5 +1073,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 40
+  "validated_candidates": 41
 }

@@ -184,6 +184,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'set -eu; cfg=\"$CATALINA_BASE/conf/server.xml\"; path=$(grep -Eio \"keystoreFile[[:space:]]*=[[:space:]]*\\\"[^\\\"]+\\\"\" \"$cfg\" | head -n1 | sed -E \"s/.*=\\\"([^\\\"]+)\\\"/\\\\1/I\"); [ -n \"$path\" ] && [ -f \"$path\" ] || exit 0; case \"$path\" in \"$CATALINA_BASE\"/*|\"${CATALINA_HOME:-$CATALINA_BASE}\"/*|/opt/tomcat/*) ;; *) exit 0;; esac; [ \"$(stat -c \"%a %U %G\" \"$path\")\" = \"640 root tomcat\" ] && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Keystore file must be protected.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222967"
+    },
+    {
+      "check": {
         "command": "sh -c \"grep -Eiq 'FIPSMode[[:space:]]*=[[:space:]]*\\\"on\\\"' \\\"$CATALINA_BASE/conf/server.xml\\\" && ! grep -Eiq 'failed to set property\\\\[FIPSMODE\\\\] to \\\\[on\\\\]' \\\"$CATALINA_BASE/logs/catalina.out\\\" && printf Compliant\"",
         "type": "command_output"
       },

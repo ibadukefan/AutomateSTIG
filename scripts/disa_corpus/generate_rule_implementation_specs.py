@@ -10906,6 +10906,36 @@ def _windows_event_viewer_executable_acl_candidate(rule: dict, stig_id: str) -> 
     }
 
 
+def _tomcat_keystore_file_permissions_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id') != 'V-222967':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'grep\s+-i\s+keystorefile\s+\$CATALINA_BASE/conf/server\.xml', content, re.IGNORECASE):
+        return None
+    if not re.search(r'permissions\s+are\s+not\s+set\s+to\s+640\s+USER:root\s+GROUP:tomcat', content, re.IGNORECASE):
+        return None
+    if not re.search(r'keystore\s+file\s+is\s+not\s+stored\s+within\s+the\s+tomcat\s+folder\s+path', content, re.IGNORECASE):
+        return None
+    for pattern in (r'chmod\s+640\s+\[keystorefile\]', r'chown\s+root\s+\[keystorefile\]', r'chgrp\s+tomcat\s+\[keystorefile\]'):
+        if not re.search(pattern, fix_text, re.IGNORECASE):
+            return None
+    command = (
+        "sh -c 'set -eu; cfg=\"$CATALINA_BASE/conf/server.xml\"; "
+        "path=$(grep -Eio \"keystoreFile[[:space:]]*=[[:space:]]*\\\"[^\\\"]+\\\"\" \"$cfg\" | head -n1 | sed -E \"s/.*=\\\"([^\\\"]+)\\\"/\\\\1/I\"); "
+        "[ -n \"$path\" ] && [ -f \"$path\" ] || exit 0; "
+        "case \"$path\" in \"$CATALINA_BASE\"/*|\"${CATALINA_HOME:-$CATALINA_BASE}\"/*|/opt/tomcat/*) ;; *) exit 0;; esac; "
+        "[ \"$(stat -c \"%a %U %G\" \"$path\")\" = \"640 root tomcat\" ] && printf Compliant'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_service_account_nologin_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower() or rule.get('vuln_id') != 'V-222983':
         return None
@@ -12275,6 +12305,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_manager_default_error_pages_candidate = _tomcat_manager_default_error_pages_customized_candidate(rule, stig_id)
     if tomcat_manager_default_error_pages_candidate:
         return tomcat_manager_default_error_pages_candidate
+
+    tomcat_keystore_permissions_candidate = _tomcat_keystore_file_permissions_candidate(rule, stig_id)
+    if tomcat_keystore_permissions_candidate:
+        return tomcat_keystore_permissions_candidate
 
     tomcat_service_account_candidate = _tomcat_service_account_nologin_candidate(rule, stig_id)
     if tomcat_service_account_candidate:

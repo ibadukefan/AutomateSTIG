@@ -168,6 +168,32 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('DomainRole', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_tomcat_keystore_file_permissions_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222967',
+            'title': 'Keystore file must be protected.',
+            'check_content': 'Identify the location of the .keystore file. sudo grep -i keystorefile $CATALINA_BASE/conf/server.xml Extract the location of the file from the output. sudo ls -la [keystorefile location] If the file permissions are not set to 640 USER:root GROUP:tomcat, this is a finding. If the keystore file is not stored within the tomcat folder path, i.e. [/opt/tomcat], this is a finding.',
+            'fix_text': 'Run the following commands on the Tomcat server: sudo chmod 640 [keystorefile] sudo chown root [keystorefile] sudo chgrp tomcat [keystorefile] Store the keystore file in a secured folder within the Tomcat folder path.',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222967')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('keystorefile', candidate['check']['command'].lower())
+        self.assertIn('stat -c', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_tomcat_keystore_file_permissions_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-222967',
+            'title': 'Keystore file must be protected.',
+            'check_content': 'sudo grep -i keystorefile $CATALINA_BASE/conf/server.xml If the file permissions are not set to 640 USER:root GROUP:tomcat, this is a finding. If the keystore file is not stored within the tomcat folder path, this is a finding.',
+            'fix_text': 'sudo chmod 640 [keystorefile] sudo chown root [keystorefile] sudo chgrp tomcat [keystorefile]',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Tomcat_Application_Server_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'Store the keystore file somewhere.'}, 'Tomcat_Application_Server_9_STIG'))
+
     def test_infers_tomcat_allow_backslash_false_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223004',
