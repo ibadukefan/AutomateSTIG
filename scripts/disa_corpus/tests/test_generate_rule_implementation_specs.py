@@ -627,6 +627,21 @@ kubectl create -f restricted.yml''',
         self.assertIn('$3<1000', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_sles_emergency_admin_account_never_expires_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234872',
+            'title': 'The SUSE operating system must never automatically remove or disable emergency administrator accounts.',
+            'check_content': 'Verify the SUSE operating system is configured such that emergency administrator accounts are never automatically removed or disabled.\n\nNote: Root is typically the "account of last resort" on a system and is also used as the example emergency administrator account. If another account is being used as the emergency administrator account, the command should be used against that account.\n\nCheck to see if the root account password or account expires with the following command:\n\n> sudo chage -l [Emergency_Administrator]\n\nPassword expires:never\n\nIf "Password expires" or "Account expires" is set to anything other than "never", this is a finding.',
+            'fix_text': 'Configure the SUSE operating system to never automatically remove or disable emergency administrator accounts.\n\nReplace "[Emergency_Administrator]" in the following command with the correct emergency administrator account. Run the following command as an administrator:\n\n> sudo chage -I -1 -M 99999 [Emergency_Administrator]',
+        }, 'SLES_15_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-234872')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('chage -l root', candidate['check']['command'])
+        self.assertIn('Password expires', candidate['check']['command'])
+        self.assertIn('Account expires', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_oracle_profile_password_lock_time_unlimited_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270549',

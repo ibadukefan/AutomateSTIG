@@ -1530,6 +1530,30 @@ def _sles_noninteractive_accounts_no_login_shell_candidate(rule: dict, stig_id: 
     }
 
 
+def _sles_emergency_admin_account_never_expires_candidate(rule: dict, stig_id: str) -> dict | None:
+    if rule.get('vuln_id', '') != 'V-234872' or 'sles' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'emergency\s+administrator\s+accounts\s+are\s+never\s+automatically\s+removed\s+or\s+disabled', content, re.IGNORECASE):
+        return None
+    if not re.search(r'chage\s+-l\s+\[Emergency_Administrator\]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+["“]Password\s+expires["”]\s+or\s+["“]Account\s+expires["”]\s+is\s+set\s+to\s+anything\s+other\s+than\s+["“]never["”],\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'chage\s+-I\s+-1\s+-M\s+99999\s+\[Emergency_Administrator\]', fix_text, re.IGNORECASE):
+        return None
+    command = "sh -c \"chage -l root | awk -F: '/^(Password expires|Account expires)/ {v=tolower($2); gsub(/^[ \\t]+|[ \\t]+$/, \\\"\\\", v); if (v != \\\"never\\\") bad=1} END {if (!bad) print \\\"Compliant\\\"}'\""
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _sles_world_writable_directory_sticky_bit_candidate(rule: dict, stig_id: str) -> dict | None:
     if rule.get('vuln_id', '') != 'V-234828' or 'sles' not in stig_id.lower():
         return None
@@ -12184,6 +12208,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sles_noninteractive_accounts_candidate = _sles_noninteractive_accounts_no_login_shell_candidate(rule, stig_id)
     if sles_noninteractive_accounts_candidate:
         return sles_noninteractive_accounts_candidate
+
+    sles_emergency_admin_account_candidate = _sles_emergency_admin_account_never_expires_candidate(rule, stig_id)
+    if sles_emergency_admin_account_candidate:
+        return sles_emergency_admin_account_candidate
 
     rhel7_authconfig_custom_pam_symlink_candidate = _rhel7_authconfig_custom_pam_symlink_candidate(rule, stig_id)
     if rhel7_authconfig_custom_pam_symlink_candidate:

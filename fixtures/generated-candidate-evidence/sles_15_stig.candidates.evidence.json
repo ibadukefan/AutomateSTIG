@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 184,
+  "candidate_checks": 185,
   "cases": [
     {
       "check": {
@@ -1164,6 +1164,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234871"
+    },
+    {
+      "check": {
+        "command": "sh -c \"chage -l root | awk -F: '/^(Password expires|Account expires)/ {v=tolower($2); gsub(/^[ \\t]+|[ \\t]+$/, \\\"\\\", v); if (v != \\\"never\\\") bad=1} END {if (!bad) print \\\"Compliant\\\"}'\"",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must never automatically remove or disable emergency administrator accounts.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"chage -l root | awk -F: '/^(Password expires|Account expires)/ {v=tolower($2); gsub(/^[ \\t]+|[ \\t]+$/, \\\"\\\", v); if (v != \\\"never\\\") bad=1} END {if (!bad) print \\\"Compliant\\\"}'\"": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"chage -l root | awk -F: '/^(Password expires|Account expires)/ {v=tolower($2); gsub(/^[ \\t]+|[ \\t]+$/, \\\"\\\", v); if (v != \\\"never\\\") bad=1} END {if (!bad) print \\\"Compliant\\\"}'\"": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234872"
     },
     {
       "check": {
@@ -4859,5 +4885,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 184
+  "validated_candidates": 185
 }
