@@ -2962,6 +2962,37 @@ Locate "system.web/sessionState" and set "cookieless" to "UseCookies".''',
             'description': 'The IIS 10.0 web server must use cookies to track session state.',
         })
 
+    def test_infers_iis_session_state_use_cookies_and_timeout_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218805',
+            'title': 'The IIS 10.0 web server must accept only system-generated session identifiers.',
+            'check_content': '''Note: If ASP.NET is not installed, this is Not Applicable.
+Open the IIS 10.0 Manager.
+Click the IIS 10.0 web server name.
+Under the "ASP.NET" section, select "Session State".
+Under "Cookie Settings", verify the "Use Cookies" mode is selected from the "Mode:" drop-down list.
+Under "Time-out (in minutes)", verify a maximum of 15 minutes is entered.
+If the "Use Cookies" mode is selected and Time-out (in minutes) is configured for "15 minutes" (or less), this is not a finding.
+Alternative method:
+Click the site name.
+Select "Configuration Editor" under the "Management" section.
+From the "Section:" drop-down list at the top of the configuration editor, locate "system.web/sessionState".
+Verify the "cookieless" is set to "UseCookies".
+If the "cookieless" is not set to "UseCookies", this is a finding.''',
+            'fix_text': '''Open the IIS 10.0 Manager.
+Click the IIS 10.0 web server name.
+Under the "ASP.NET" section, select "Session State".
+Under "Cookie Settings", select the "Use Cookies" mode from the "Mode:" drop-down list.
+Under "Time-out (in minutes)", enter a value of "15 or less".''',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-218805',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $s=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.web/sessionState' -Name '.' -ErrorAction SilentlyContinue; if ($s.cookieless -eq 'UseCookies' -and [TimeSpan]$s.timeout -le [TimeSpan]::FromMinutes(15)) { 'Compliant' }\""},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The IIS 10.0 web server must accept only system-generated session identifiers.',
+        })
+
     def test_infers_iis_hsts_site_defaults_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-218827',

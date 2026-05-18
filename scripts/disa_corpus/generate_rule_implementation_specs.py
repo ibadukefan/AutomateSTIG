@@ -10445,7 +10445,7 @@ def _windows_services_msc_candidate(rule: dict, stig_id: str) -> dict | None:
 
 def _iis_session_state_use_cookies_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
-    if vuln_id != 'V-218804' or stig_id != 'IIS_10-0_Server_STIG':
+    if vuln_id not in {'V-218804', 'V-218805'} or stig_id != 'IIS_10-0_Server_STIG':
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -10456,12 +10456,27 @@ def _iis_session_state_use_cookies_candidate(rule: dict, stig_id: str) -> dict |
         return None
     if not re.search(r'If\s+the\s+["“]?cookieless["”]?\s+is\s+not\s+set\s+to\s+["“]?UseCookies["”]?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
         return None
+    if vuln_id == 'V-218805':
+        if not re.search(r'Time-?out\s*\(in\s+minutes\).*?(?:maximum\s+of\s+)?15\s+minutes', content, re.IGNORECASE | re.DOTALL):
+            return None
+        if not re.search(r'Time-?out\s*\(in\s+minutes\).*?(?:15\s+minutes|15\s+or\s+less)', fix_text, re.IGNORECASE | re.DOTALL):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $s=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.web/sessionState' -Name '.' -ErrorAction SilentlyContinue; if ($s.cookieless -eq 'UseCookies' -and [TimeSpan]$s.timeout -le [TimeSpan]::FromMinutes(15)) { 'Compliant' }\"",
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     return {
         'vuln_id': vuln_id,
         'platform': 'windows',
         'check': {
             'type': 'command_output',
-            'command': r'%windir%\system32\inetsrv\appcmd.exe list config /section:system.web/sessionState /text:cookieless',
+            'command': '%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.web/sessionState /text:cookieless',
         },
         'expected': {'type': 'equals', 'value': 'UseCookies'},
         'description': rule.get('title', ''),

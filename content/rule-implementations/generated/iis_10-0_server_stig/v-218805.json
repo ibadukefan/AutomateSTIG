@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $s=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.web/sessionState' -Name '.' -ErrorAction SilentlyContinue; if ($s.cookieless -eq 'UseCookies' -and [TimeSpan]$s.timeout -le [TimeSpan]::FromMinutes(15)) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The IIS 10.0 web server must accept only system-generated session identifiers.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-218805"
+  },
   "check_content_excerpt": "Note: If ASP.NET is not installed, this is Not Applicable.\n\nOpen the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nUnder the \"ASP.NET\" section, select \"Session State\".\n\nUnder \"Cookie Settings\", verify the \"Use Cookies\" mode is selected from the \"Mode:\" drop-down list.\n\nUnder \"Time-out (in minutes)\", verify a maximum of 15 minutes is entered.\n\nIf the \"Use Cookies\" mode is selected and Time-out (in minutes) is configured for \"15 minutes\" (or less), this is not a finding.\n\nAlternative method:\n\nClick the site name.\n\nSelect \"Configuration Editor\" under the \"Management\" section.\n\nFrom the \"Section:\" drop-down list at the top of the configuration editor, locate \"system.web/sessionState\".\n\nVerify the \"cookieless\" is set to \"UseCookies\".\n\nIf the \"cookieless\" is not set to \"UseCookies\", this is a finding.\n\nNote: If IIS 10.0 server/site is used only for system-to-system maintenance, does not allow users to connect to interface, and is restricted to specific system IPs, this is Not Applicable.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nUnder the \"ASP.NET\" section, select \"Session State\".\n\nUnder \"Cookie Settings\", select the \"Use Cookies\" mode from the \"Mode:\" drop-down list.\n\nUnder \"Time-out (in minutes)\", enter a value of \"15 or less\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-218805r1067583_rule",
   "severity": "medium",
