@@ -145,6 +145,45 @@
     },
     {
       "check": {
+        "command": "sh -c 'cfg=\"${PGDATA?}/postgresql.conf\"; grep -Eq '\"'\"'^[[:space:]]*log_connections[[:space:]]*=[[:space:]]*on'\"'\"' \"$cfg\" && grep -Eq '\"'\"'^[[:space:]]*log_line_prefix[[:space:]]*=[[:space:]]*'\"'\"'\"'\"'\"'\"'\"'\"'<\\s*%m\\s+%u\\s+%c:\\s*>'\"'\"'\"'\"'\"'\"'\"'\"''\"'\"' \"$cfg\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful logons or connection attempts occur.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-233553"
+    },
+    {
+      "check": {
+        "command": "sh -c 'cfg=\"${PGDATA?}/postgresql.conf\"; grep -Eq '\"'\"'^[[:space:]]*log_connections[[:space:]]*=[[:space:]]*on'\"'\"' \"$cfg\" && grep -Eq '\"'\"'^[[:space:]]*log_disconnections[[:space:]]*=[[:space:]]*on'\"'\"' \"$cfg\" && grep -Eq '\"'\"'^[[:space:]]*log_line_prefix[[:space:]]*=[[:space:]]*'\"'\"'\"'\"'\"'\"'\"'\"'<\\s*%m\\s+%u\\s+%c:\\s*>'\"'\"'\"'\"'\"'\"'\"'\"''\"'\"' \"$cfg\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records showing starting and ending time for user access to the database(s).",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-233554"
+    },
+    {
+      "check": {
+        "command": "sh -c 'cfg=\"${PGDATA?}/postgresql.conf\"; grep -Eq '\"'\"'^[[:space:]]*pgaudit\\.log[[:space:]]*=[[:space:]]*'\"'\"'\"'\"'\"'\"'\"'\"'[^'\"'\"'\"'\"'\"'\"'\"'\"']*\\brole\\b[^'\"'\"'\"'\"'\"'\"'\"'\"']*'\"'\"'\"'\"'\"'\"'\"'\"''\"'\"' \"$cfg\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when privileges/permissions are added.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-233556"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW shared_preload_libraries\"",
         "type": "command_output"
       },
@@ -168,6 +207,32 @@
       },
       "platform": "generic",
       "vuln_id": "V-233558"
+    },
+    {
+      "check": {
+        "command": "sh -c 'cfg=\"${PGDATA?}/postgresql.conf\"; grep -Eq '\"'\"'^[[:space:]]*pgaudit\\.log[[:space:]]*=[[:space:]]*'\"'\"'\"'\"'\"'\"'\"'\"'[^'\"'\"'\"'\"'\"'\"'\"'\"']*\\bddl\\b[^'\"'\"'\"'\"'\"'\"'\"'\"']*'\"'\"'\"'\"'\"'\"'\"'\"''\"'\"' \"$cfg\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when security objects are deleted.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-233559"
+    },
+    {
+      "check": {
+        "command": "sh -c 'cfg=\"${PGDATA?}/postgresql.conf\"; grep -Eq '\"'\"'^[[:space:]]*pgaudit\\.log_catalog[[:space:]]*=[[:space:]]*'\"'\"'\"'\"'\"'\"'\"'\"'on'\"'\"'\"'\"'\"'\"'\"'\"''\"'\"' \"$cfg\" && grep -Eq '\"'\"'^[[:space:]]*pgaudit\\.log[[:space:]]*=[[:space:]]*'\"'\"'\"'\"'\"'\"'\"'\"'[^'\"'\"'\"'\"'\"'\"'\"'\"']*\\bread\\b[^'\"'\"'\"'\"'\"'\"'\"'\"']*'\"'\"'\"'\"'\"'\"'\"'\"''\"'\"' \"$cfg\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must be able to generate audit records when privileges/permissions are retrieved.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-233562"
     },
     {
       "check": {

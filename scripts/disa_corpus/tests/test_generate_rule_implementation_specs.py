@@ -98,6 +98,33 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('log_error_verbosity', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_postgresql_audit_config_candidate_for_explicit_log_settings(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233554',
+            'title': 'PostgreSQL must generate audit records showing starting and ending time for user access to the database(s).',
+            'check_content': 'verify the log for a connection audit trail\nLOG: connection authorized: user=postgres database=postgres\nLOG: disconnection: session time: 0:02:05.497 user=postgres database=postgres host=[local]\nIf connections are not logged, this is a finding.',
+            'fix_text': "Edit the following parameters:\n\nlog_connections = on\nlog_disconnections = on\nlog_line_prefix = '< %m %u %c: >'",
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233554')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('${PGDATA?}/postgresql.conf', candidate['check']['command'])
+        self.assertIn('log_connections', candidate['check']['command'])
+        self.assertIn('log_disconnections', candidate['check']['command'])
+        self.assertIn('log_line_prefix', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_postgresql_audit_config_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-233554',
+            'title': 'PostgreSQL must generate audit records showing starting and ending time for user access to the database(s).',
+            'check_content': 'LOG: connection authorized: user=postgres database=postgres\nLOG: disconnection: session time: 0:02:05.497 user=postgres database=postgres host=[local]\nIf connections are not logged, this is a finding.',
+            'fix_text': "log_connections = on\nlog_disconnections = on\nlog_line_prefix = '< %m %u %c: >'",
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Crunchy_Data_PostgreSQL_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'log_connections = off'}, 'Crunchy_Data_PostgreSQL_STIG'))
+
     def test_infers_oracle_database_fips_ora_true_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270569',

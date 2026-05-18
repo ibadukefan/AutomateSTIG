@@ -7728,6 +7728,74 @@ def _postgresql_audit_features_unauthorized_removal_candidate(rule: dict, stig_i
     }
 
 
+def _postgresql_audit_explicit_config_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'postgresql' not in stig_id.lower():
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    profiles = {
+        'V-233553': {
+            'title': r'unsuccessful\s+logons\s+or\s+connection\s+attempts',
+            'content': (r'FATAL:\s+role\s+["“]joe["”]\s+does\s+not\s+exist', r'audit\s+record\s+is\s+not\s+generated'),
+            'settings': {
+                'log_connections': 'on',
+                'log_line_prefix': r"'<\s*%m\s+%u\s+%c:\s*>'",
+            },
+        },
+        'V-233554': {
+            'title': r'starting\s+and\s+ending\s+time\s+for\s+user\s+access',
+            'content': (r'LOG:\s+connection\s+authorized', r'LOG:\s+disconnection:', r'If\s+connections\s+are\s+not\s+logged,\s+this\s+is\s+a\s+finding'),
+            'settings': {
+                'log_connections': 'on',
+                'log_disconnections': 'on',
+                'log_line_prefix': r"'<\s*%m\s+%u\s+%c:\s*>'",
+            },
+        },
+        'V-233556': {
+            'title': r'privileges/permissions\s+are\s+added',
+            'content': (r'GRANT\s+CONNECT\s+ON\s+DATABASE\s+postgres\s+TO\s+bob', r'AUDIT:\s+SESSION.*ROLE,GRANT', r'audit\s+records\s+are\s+produced\s+when\s+privileges/permissions/role\s+memberships\s+are\s+added'),
+            'settings': {'pgaudit.log': r"'[^']*\brole\b[^']*'"},
+        },
+        'V-233559': {
+            'title': r'security\s+objects\s+are\s+deleted',
+            'content': (r'DROP\s+POLICY\s+lock_table', r'AUDIT:\s+SESSION.*DDL,DROP\s+POLICY', r'audit\s+records\s+are\s+not\s+produced\s+when\s+security\s+objects\s+are\s+dropped'),
+            'settings': {'pgaudit.log': r"'[^']*\bddl\b[^']*'"},
+        },
+        'V-233562': {
+            'title': r'privileges/permissions\s+are\s+retrieved',
+            'content': (r'SHOW\s+shared_preload_libraries', r'pgaudit\s+is\s+not\s+found', r'AUDIT:\s+SESSION.*READ,SELECT', r'audit\s+records\s+are\s+not\s+produced'),
+            'settings': {
+                'pgaudit.log_catalog': "'on'",
+                'pgaudit.log': r"'[^']*\bread\b[^']*'",
+            },
+        },
+    }
+    profile = profiles.get(vuln_id)
+    if not profile:
+        return None
+    if not re.search(profile['title'], rule.get('title', '') or '', re.IGNORECASE):
+        return None
+    if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in profile['content']):
+        return None
+    for key, value_pattern in profile['settings'].items():
+        if not re.search(rf'{re.escape(key)}\s*=\s*{value_pattern}', fix_text, re.IGNORECASE):
+            return None
+    required_patterns = [
+        rf'^[[:space:]]*{re.escape(key)}[[:space:]]*=[[:space:]]*{value_pattern}'
+        for key, value_pattern in profile['settings'].items()
+    ]
+    checks = ' && '.join(f"grep -Eq {shlex.quote(pattern)} \"$cfg\"" for pattern in required_patterns)
+    script = f'cfg="${{PGDATA?}}/postgresql.conf"; {checks} && printf Compliant'
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'sh -c ' + shlex.quote(script)},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _postgresql_audit_outcome_config_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -7765,6 +7833,9 @@ def _postgresql_audit_outcome_config_candidate(rule: dict, stig_id: str) -> dict
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    postgresql_audit_config_candidate = _postgresql_audit_explicit_config_candidate(rule, stig_id)
+    if postgresql_audit_config_candidate:
+        return postgresql_audit_config_candidate
     postgresql_audit_outcome_config_candidate = _postgresql_audit_outcome_config_candidate(rule, stig_id)
     if postgresql_audit_outcome_config_candidate:
         return postgresql_audit_outcome_config_candidate
