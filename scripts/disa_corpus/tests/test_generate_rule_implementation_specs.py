@@ -168,6 +168,71 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('--request-timeout', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_kubernetes_pod_security_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242437',
+            'title': 'Kubernetes must have a pod security policy set.',
+            'check_content': '''Pre-version 1.25 Check:
+On the Control Plane, run the command:
+kubectl get podsecuritypolicy
+
+If there is no pod security policy configured, this is a finding.
+
+For any pod security policies listed, edit the policy with the command:
+kubectl edit podsecuritypolicy policyname
+
+Review the runAsUser, supplementalGroups and fsGroup sections of the policy.
+
+If any of these sections are missing, this is a finding.
+
+If the rule within the runAsUser section is not set to "MustRunAsNonRoot", this is a finding.
+
+If the ranges within the supplementalGroups section has min set to "0" or min is missing, this is a finding.
+
+If the ranges within the fsGroup section has a min set to "0" or the min is missing, this is a finding.''',
+            'fix_text': '''From the Control Plane, save the following policy to a file called restricted.yml.
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+runAsUser:
+  rule: 'MustRunAsNonRoot'
+supplementalGroups:
+  rule: 'MustRunAs'
+  ranges:
+  - min: 1
+    max: 65535
+fsGroup:
+  rule: 'MustRunAs'
+  ranges:
+  - min: 1
+    max: 65535
+To implement the policy, run the command:
+kubectl create -f restricted.yml''',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242437')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('kubectl get podsecuritypolicy', candidate['check']['command'])
+        self.assertIn('runAsUser', candidate['check']['command'])
+        self.assertIn('MustRunAsNonRoot', candidate['check']['command'])
+        self.assertIn('supplementalGroups', candidate['check']['command'])
+        self.assertIn('fsGroup', candidate['check']['command'])
+        self.assertIn('Compliant', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_kubernetes_pod_security_policy_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-242438',
+            'title': 'Kubernetes must have a pod security policy set.',
+            'check_content': 'kubectl get podsecuritypolicy runAsUser supplementalGroups fsGroup MustRunAsNonRoot',
+            'fix_text': 'kind: PodSecurityPolicy runAsUser supplementalGroups fsGroup',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Kubernetes_STIG'))
+        rule['vuln_id'] = 'V-242437'
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+        rule['check_content'] = 'kubectl get podsecuritypolicy runAsUser supplementalGroups MustRunAsNonRoot'
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Kubernetes_STIG'))
+
     def test_infers_kubernetes_podsecurity_feature_gates_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254801',

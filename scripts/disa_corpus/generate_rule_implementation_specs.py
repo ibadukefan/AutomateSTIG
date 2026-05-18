@@ -2267,6 +2267,63 @@ def _windows_legal_notice_text_candidate(rule: dict, stig_id: str) -> dict | Non
     }
 
 
+def _kubernetes_pod_security_policy_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Kubernetes_STIG' or rule.get('vuln_id') != 'V-242437':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_content = (
+        r'kubectl\s+get\s+podsecuritypolicy',
+        r'runAsUser',
+        r'supplementalGroups',
+        r'fsGroup',
+        r'MustRunAsNonRoot',
+        r'no\s+pod\s+security\s+policy\s+configured,?\s+this\s+is\s+a\s+finding',
+        r'ranges\s+within\s+the\s+supplementalGroups\s+section\s+has\s+min\s+set\s+to\s+["“]?0["”]?\s+or\s+min\s+is\s+missing',
+        r'ranges\s+within\s+the\s+fsGroup\s+section\s+has\s+a\s+min\s+set\s+to\s+["“]?0["”]?\s+or\s+the\s+min\s+is\s+missing',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in required_content):
+        return None
+    required_fix = (
+        r'kind:\s*PodSecurityPolicy',
+        r'runAsUser:.*?rule:\s*[\'"“]?MustRunAsNonRoot',
+        r'supplementalGroups:.*?ranges:.*?min:\s*1',
+        r'fsGroup:.*?ranges:.*?min:\s*1',
+        r'kubectl\s+create\s+-f\s+restricted\.yml',
+    )
+    if not all(re.search(pattern, fix_text, re.IGNORECASE | re.DOTALL) for pattern in required_fix):
+        return None
+    script = r'''
+# kubectl get podsecuritypolicy
+import json, subprocess, sys
+try:
+    data = json.loads(subprocess.check_output(['kubectl', 'get', 'podsecuritypolicy', '-o', 'json'], stderr=subprocess.DEVNULL, text=True))
+except Exception:
+    sys.exit(0)
+items = data.get('items') or []
+def ranges_have_nonzero_min(section):
+    ranges = ((section or {}).get('ranges') or [])
+    return bool(ranges) and all(isinstance(entry, dict) and entry.get('min') not in (None, 0, '0') for entry in ranges)
+def compliant(item):
+    spec = item.get('spec') or {}
+    return (
+        ((spec.get('runAsUser') or {}).get('rule') == 'MustRunAsNonRoot')
+        and ranges_have_nonzero_min(spec.get('supplementalGroups'))
+        and ranges_have_nonzero_min(spec.get('fsGroup'))
+    )
+if items and all(compliant(item) for item in items if isinstance(item, dict)):
+    print('Compliant', end='')
+'''
+    command = 'python3 -c ' + shlex.quote(script)
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_old_component_image_versions_candidate(rule: dict, stig_id: str) -> dict | None:
     if stig_id != 'Kubernetes_STIG' or rule.get('vuln_id') != 'V-242442':
         return None
@@ -11381,6 +11438,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     rhel7_duplicate_uid_zero_candidate = _rhel7_duplicate_uid_zero_candidate(rule, stig_id)
     if rhel7_duplicate_uid_zero_candidate:
         return rhel7_duplicate_uid_zero_candidate
+    kubernetes_pod_security_policy_candidate = _kubernetes_pod_security_policy_candidate(rule, stig_id)
+    if kubernetes_pod_security_policy_candidate:
+        return kubernetes_pod_security_policy_candidate
     kubernetes_old_component_image_versions_candidate = _kubernetes_old_component_image_versions_candidate(rule, stig_id)
     if kubernetes_old_component_image_versions_candidate:
         return kubernetes_old_component_image_versions_candidate

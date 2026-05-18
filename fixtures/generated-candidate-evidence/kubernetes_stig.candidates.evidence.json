@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 59,
+  "candidate_checks": 60,
   "cases": [
     {
       "check": {
@@ -728,6 +728,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242436"
+    },
+    {
+      "check": {
+        "command": "python3 -c '\n# kubectl get podsecuritypolicy\nimport json, subprocess, sys\ntry:\n    data = json.loads(subprocess.check_output(['\"'\"'kubectl'\"'\"', '\"'\"'get'\"'\"', '\"'\"'podsecuritypolicy'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'json'\"'\"'], stderr=subprocess.DEVNULL, text=True))\nexcept Exception:\n    sys.exit(0)\nitems = data.get('\"'\"'items'\"'\"') or []\ndef ranges_have_nonzero_min(section):\n    ranges = ((section or {}).get('\"'\"'ranges'\"'\"') or [])\n    return bool(ranges) and all(entry.get('\"'\"'min'\"'\"') not in (None, 0, '\"'\"'0'\"'\"') for entry in ranges if isinstance(entry, dict))\ndef compliant(item):\n    spec = item.get('\"'\"'spec'\"'\"') or {}\n    return (\n        ((spec.get('\"'\"'runAsUser'\"'\"') or {}).get('\"'\"'rule'\"'\"') == '\"'\"'MustRunAsNonRoot'\"'\"')\n        and ranges_have_nonzero_min(spec.get('\"'\"'supplementalGroups'\"'\"'))\n        and ranges_have_nonzero_min(spec.get('\"'\"'fsGroup'\"'\"'))\n    )\nif items and all(compliant(item) for item in items if isinstance(item, dict)):\n    print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"')\n'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes must have a pod security policy set.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 -c '\n# kubectl get podsecuritypolicy\nimport json, subprocess, sys\ntry:\n    data = json.loads(subprocess.check_output(['\"'\"'kubectl'\"'\"', '\"'\"'get'\"'\"', '\"'\"'podsecuritypolicy'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'json'\"'\"'], stderr=subprocess.DEVNULL, text=True))\nexcept Exception:\n    sys.exit(0)\nitems = data.get('\"'\"'items'\"'\"') or []\ndef ranges_have_nonzero_min(section):\n    ranges = ((section or {}).get('\"'\"'ranges'\"'\"') or [])\n    return bool(ranges) and all(entry.get('\"'\"'min'\"'\"') not in (None, 0, '\"'\"'0'\"'\"') for entry in ranges if isinstance(entry, dict))\ndef compliant(item):\n    spec = item.get('\"'\"'spec'\"'\"') or {}\n    return (\n        ((spec.get('\"'\"'runAsUser'\"'\"') or {}).get('\"'\"'rule'\"'\"') == '\"'\"'MustRunAsNonRoot'\"'\"')\n        and ranges_have_nonzero_min(spec.get('\"'\"'supplementalGroups'\"'\"'))\n        and ranges_have_nonzero_min(spec.get('\"'\"'fsGroup'\"'\"'))\n    )\nif items and all(compliant(item) for item in items if isinstance(item, dict)):\n    print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"')\n'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 -c '\n# kubectl get podsecuritypolicy\nimport json, subprocess, sys\ntry:\n    data = json.loads(subprocess.check_output(['\"'\"'kubectl'\"'\"', '\"'\"'get'\"'\"', '\"'\"'podsecuritypolicy'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'json'\"'\"'], stderr=subprocess.DEVNULL, text=True))\nexcept Exception:\n    sys.exit(0)\nitems = data.get('\"'\"'items'\"'\"') or []\ndef ranges_have_nonzero_min(section):\n    ranges = ((section or {}).get('\"'\"'ranges'\"'\"') or [])\n    return bool(ranges) and all(entry.get('\"'\"'min'\"'\"') not in (None, 0, '\"'\"'0'\"'\"') for entry in ranges if isinstance(entry, dict))\ndef compliant(item):\n    spec = item.get('\"'\"'spec'\"'\"') or {}\n    return (\n        ((spec.get('\"'\"'runAsUser'\"'\"') or {}).get('\"'\"'rule'\"'\"') == '\"'\"'MustRunAsNonRoot'\"'\"')\n        and ranges_have_nonzero_min(spec.get('\"'\"'supplementalGroups'\"'\"'))\n        and ranges_have_nonzero_min(spec.get('\"'\"'fsGroup'\"'\"'))\n    )\nif items and all(compliant(item) for item in items if isinstance(item, dict)):\n    print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"')\n'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242437"
     },
     {
       "check": {
@@ -1541,5 +1567,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 59
+  "validated_candidates": 60
 }
