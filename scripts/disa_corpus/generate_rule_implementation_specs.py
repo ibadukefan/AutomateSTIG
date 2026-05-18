@@ -7400,9 +7400,46 @@ def _postgresql_audit_features_unauthorized_removal_candidate(rule: dict, stig_i
     }
 
 
+def _postgresql_audit_outcome_config_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if (
+        'postgresql' not in stig_id.lower()
+        or rule.get('vuln_id', '') != 'V-233512'
+        or not re.search(r'produce\s+audit\s+records\s+containing\s+sufficient\s+information\s+to\s+establish\s+the\s+outcome', rule.get('title', '') or '', re.IGNORECASE)
+        or not re.search(r'LOG:\s+AUDIT:.*ERROR:\s+permission\s+denied', content, re.IGNORECASE | re.DOTALL)
+        or not re.search(r'pgaudit\.log\s*=\s*[\'\"]all,\s*-misc[\'\"]', fix_text, re.IGNORECASE)
+        or not re.search(r'log_line_prefix\s*=\s*[\'\"]<\s*%m\s+%u\s+%d\s+%e:\s*>[\'\"]', fix_text, re.IGNORECASE)
+        or not re.search(r'log_error_verbosity\s*=\s*default', fix_text, re.IGNORECASE)
+    ):
+        return None
+    required_patterns = [
+        r"^[[:space:]]*pgaudit\.log_catalog[[:space:]]*=[[:space:]]*'on'",
+        r"^[[:space:]]*pgaudit\.log_level[[:space:]]*=[[:space:]]*'log'",
+        r"^[[:space:]]*pgaudit\.log_parameter[[:space:]]*=[[:space:]]*'on'",
+        r"^[[:space:]]*pgaudit\.log_statement_once[[:space:]]*=[[:space:]]*'off'",
+        r"^[[:space:]]*pgaudit\.log[[:space:]]*=[[:space:]]*'all,[[:space:]]*-misc'",
+        r"^[[:space:]]*log_line_prefix[[:space:]]*=[[:space:]]*'<[[:space:]]*%m[[:space:]]+%u[[:space:]]+%d[[:space:]]+%e:[[:space:]]*>'",
+        r'^[[:space:]]*log_error_verbosity[[:space:]]*=[[:space:]]*default',
+    ]
+    checks = ' && '.join(f"grep -Eq {shlex.quote(pattern)} \"$cfg\"" for pattern in required_patterns)
+    script = f'cfg="${{PGDATA?}}/postgresql.conf"; {checks} && printf Compliant'
+    command = 'sh -c ' + shlex.quote(script)
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    postgresql_audit_outcome_config_candidate = _postgresql_audit_outcome_config_candidate(rule, stig_id)
+    if postgresql_audit_outcome_config_candidate:
+        return postgresql_audit_outcome_config_candidate
     postgresql_audit_features_unauthorized_removal_candidate = _postgresql_audit_features_unauthorized_removal_candidate(rule, stig_id)
     if postgresql_audit_features_unauthorized_removal_candidate:
         return postgresql_audit_features_unauthorized_removal_candidate

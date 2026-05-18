@@ -11,6 +11,21 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_postgresql_audit_outcome_config_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233512',
+            'title': 'PostgreSQL must produce audit records containing sufficient information to establish the outcome (success or failure) of the events.',
+            'check_content': 'Now verify the errors were logged:\n\n$ sudo su - postgres\n$ cat ${PGLOG?}/<latest_logfile>\nLOG: AUDIT: SESSION,1,1,DDL,CREATE TABLE,,,CREATE TABLE stig_test(id INT);,<none>\nERROR: permission denied for relation stig_test',
+            'fix_text': "With pgaudit and logging enabled, set the following configuration settings in postgresql.conf, as the database administrator (shown here as \\\"postgres\\\"), to the following:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\npgaudit.log_catalog='on'\npgaudit.log_level='log'\npgaudit.log_parameter='on'\npgaudit.log_statement_once='off'\npgaudit.log='all, -misc'\n\nNext, tune the following logging configurations in postgresql.conf:\nlog_line_prefix = '< %m %u %d %e: >'\nlog_error_verbosity = default",
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233512')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('${PGDATA?}/postgresql.conf', candidate['check']['command'])
+        self.assertIn('pgaudit\\.log_parameter', candidate['check']['command'])
+        self.assertIn('log_error_verbosity', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_generates_planned_specs_for_unsupported_rules_only(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
