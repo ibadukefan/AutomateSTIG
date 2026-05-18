@@ -11060,6 +11060,30 @@ def _iis_server_exact_candidate(rule: dict, stig_id: str) -> dict | None:
     fix_text = rule.get('fix_text', '') or ''
     combined = '\n'.join(part for part in (content, fix_text, rule.get('title', '') or '') if part)
 
+    if vuln_id == 'V-218807':
+        required_check_snippets = (
+            r'Machine\s+Key',
+            r'HMACSHA256["”]?\s+or\s+stronger\s+encryption\s+is\s+selected\s+for\s+the\s+Validation\s+method',
+            r'["“]?Auto["”]?\s+is\s+selected\s+for\s+the\s+Encryption\s+method',
+            r'If\s+["“]?HMACSHA256["”]?\s+or\s+stronger\s+encryption\s+is\s+not\s+selected\s+for\s+the\s+Validation\s+method\s+and/or\s+["“]?Auto["”]?\s+is\s+not\s+selected\s+for\s+the\s+Encryption\s+method,\s+this\s+is\s+a\s+finding',
+        )
+        required_fix_snippets = (
+            r'Validation\s+method\s+to\s+["“]?HMACSHA256["”]?\s+or\s+stronger',
+            r'Encryption\s+method\s+to\s+["“]?Auto["”]?',
+        )
+        if not all(re.search(snippet, content, re.IGNORECASE) for snippet in required_check_snippets):
+            return None
+        if not all(re.search(snippet, fix_text, re.IGNORECASE) for snippet in required_fix_snippets):
+            return None
+        command = "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $mk=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.web/machineKey' -Name '.' -ErrorAction SilentlyContinue; $valid=@('HMACSHA256','HMACSHA384','HMACSHA512'); if (($valid -contains [string]$mk.validation) -and ([string]$mk.decryption -eq 'Auto')) { 'Compliant' }\""
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
+
     if vuln_id == 'V-218808':
         if not re.search(r'Directory\s+Browsing', combined, re.IGNORECASE):
             return None

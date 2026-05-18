@@ -3410,6 +3410,29 @@ Create a REG_DWORD named "Enabled" with a  value of "0".''',
             'description': 'An IIS 10.0 web server must maintain the confidentiality of controlled information during transmission through the use of an approved Transport Layer Security (TLS) version.',
         })
 
+    def test_infers_iis_machine_key_sha2_auto_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218807',
+            'title': 'The production IIS 10.0 web server must utilize SHA2 encryption for the Machine Key.',
+            'check_content': '''Note: If ASP.NET is not installed, this is Not Applicable.
+
+Double-click the "Machine Key" icon in the website Home Pane.
+
+Verify "HMACSHA256" or stronger encryption is selected for the Validation method and "Auto" is selected for the Encryption method.
+
+If "HMACSHA256" or stronger encryption is not selected for the Validation method and/or "Auto" is not selected for the Encryption method, this is a finding.''',
+            'fix_text': '''Set the Validation method to "HMACSHA256" or stronger.
+
+Set the Encryption method to "Auto".''',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-218807',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $mk=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.web/machineKey' -Name '.' -ErrorAction SilentlyContinue; $valid=@('HMACSHA256','HMACSHA384','HMACSHA512'); if (($valid -contains [string]$mk.validation) -and ([string]$mk.decryption -eq 'Auto')) { 'Compliant' }\""},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The production IIS 10.0 web server must utilize SHA2 encryption for the Machine Key.',
+        })
+
     def test_infers_iis_directory_browsing_disabled_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-218808',

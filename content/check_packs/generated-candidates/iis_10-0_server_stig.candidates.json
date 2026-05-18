@@ -28,6 +28,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $mk=Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter 'system.web/machineKey' -Name '.' -ErrorAction SilentlyContinue; $valid=@('HMACSHA256','HMACSHA384','HMACSHA512'); if (($valid -contains [string]$mk.validation) -and ([string]$mk.decryption -eq 'Auto')) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The production IIS 10.0 web server must utilize SHA2 encryption for the Machine Key.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-218807"
+    },
+    {
+      "check": {
         "command": "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.webServer/directoryBrowse /text:enabled",
         "type": "command_output"
       },
