@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 36,
+  "candidate_checks": 37,
   "cases": [
     {
       "check": {
@@ -208,6 +208,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222958"
+    },
+    {
+      "check": {
+        "command": "sh -c 'grep -Eis \"Apache Software Foundation|Apache Tomcat|Tomcat server|Tomcat default\" \"$CATALINA_BASE/webapps/ROOT/index.jsp\" \"$CATALINA_BASE/webapps/ROOT/RELEASE-NOTES.txt\" 2>/dev/null'",
+        "type": "command_output"
+      },
+      "description": "Tomcat default ROOT web application must be removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -Eis \"Apache Software Foundation|Apache Tomcat|Tomcat server|Tomcat default\" \"$CATALINA_BASE/webapps/ROOT/index.jsp\" \"$CATALINA_BASE/webapps/ROOT/RELEASE-NOTES.txt\" 2>/dev/null'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -Eis \"Apache Software Foundation|Apache Tomcat|Tomcat server|Tomcat default\" \"$CATALINA_BASE/webapps/ROOT/index.jsp\" \"$CATALINA_BASE/webapps/ROOT/RELEASE-NOTES.txt\" 2>/dev/null'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222959"
     },
     {
       "check": {
@@ -943,5 +969,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 36
+  "validated_candidates": 37
 }

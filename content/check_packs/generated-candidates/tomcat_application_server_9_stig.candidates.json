@@ -106,6 +106,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'grep -Eis \"Apache Software Foundation|Apache Tomcat|Tomcat server|Tomcat default\" \"$CATALINA_BASE/webapps/ROOT/index.jsp\" \"$CATALINA_BASE/webapps/ROOT/RELEASE-NOTES.txt\" 2>/dev/null'",
+        "type": "command_output"
+      },
+      "description": "Tomcat default ROOT web application must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-222959"
+    },
+    {
+      "check": {
         "command": "sh -c 'test ! -e \"$CATALINA_BASE/webapps/docs\" && printf Absent'",
         "type": "command_output"
       },

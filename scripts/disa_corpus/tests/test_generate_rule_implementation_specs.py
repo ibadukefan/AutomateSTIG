@@ -3389,6 +3389,29 @@ sudo rm -rf $CATALINA_BASE/webapps/examples''',
             'description': 'Example applications must be removed.',
         })
 
+    def test_infers_tomcat_root_default_webapp_content_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222959',
+            'title': 'Tomcat default ROOT web application must be removed.',
+            'check_content': '''From the Tomcat server OS type the following command:
+
+sudo ls -l $CATALINA_BASE/webapps/ROOT
+
+Review the index.jsp file. Also review the RELEASE-NOTES.txt file. Look for content that describes the application as being licensed by the Apache Software Foundation. Check the index.jsp for other verbiage that indicates the application is part of the Tomcat server.
+
+If the ROOT web application contains Tomcat default application content, this is a finding.''',
+            'fix_text': '''From the Tomcat server OS:
+
+Either remove the files contained in $CATALINA_BASE/webapps/ROOT folder or replace the content of the folder with a new application that serves as the new default server application.''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222959')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('$CATALINA_BASE/webapps/ROOT/index.jsp', candidate['check']['command'])
+        self.assertIn('$CATALINA_BASE/webapps/ROOT/RELEASE-NOTES.txt', candidate['check']['command'])
+        self.assertIn('Apache Software Foundation', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_tomcat_connector_true_attribute_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222957',

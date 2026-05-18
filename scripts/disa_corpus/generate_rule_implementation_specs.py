@@ -5232,6 +5232,28 @@ def _tomcat_removed_webapp_directory_candidate(rule: dict, stig_id: str) -> dict
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     vuln_id = rule.get('vuln_id', '')
+    if vuln_id == 'V-222959':
+        root_path = '$CATALINA_BASE/webapps/ROOT'
+        if not re.search(r'ls\s+-l\s+' + re.escape(root_path), content, re.IGNORECASE):
+            return None
+        if not re.search(r'ROOT\s+web\s+application\s+contains\s+Tomcat\s+default\s+application\s+content,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'remove\s+the\s+files\s+contained\s+in\s+' + re.escape(root_path) + r'\s+folder\s+or\s+replace\s+the\s+content', fix_text, re.IGNORECASE):
+            return None
+        command = (
+            "sh -c 'grep -Eis \"Apache Software Foundation|Apache Tomcat|Tomcat server|Tomcat default\" "
+            '"$CATALINA_BASE/webapps/ROOT/index.jsp" '
+            '"$CATALINA_BASE/webapps/ROOT/RELEASE-NOTES.txt" 2>/dev/null'
+            "'"
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+
     webapp_by_vuln = {
         'V-222958': 'examples',
         'V-222960': 'docs',
