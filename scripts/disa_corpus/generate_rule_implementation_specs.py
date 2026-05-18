@@ -7292,9 +7292,46 @@ def _linux_postfix_root_alias_candidate(rule: dict, stig_id: str) -> dict | None
     }
 
 
+def _postgresql_audit_features_unauthorized_removal_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if (
+        'postgresql' not in stig_id.lower()
+        or rule.get('vuln_id', '') != 'V-233609'
+        or not re.search(r'ls\s+-la\s+\$\{PGDATA\?\}', content, re.IGNORECASE)
+        or not re.search(r'PGDATA\s+is\s+not\s+owned\s+by\s+postgres:postgres\s+or\s+if\s+files\s+can\s+be\s+accessed\s+by\s+others,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        or not all(re.search(rf'ls\s+-la\s+/usr/pgsql-\$\{{PGVER\?\}}/{subdir}\b', content, re.IGNORECASE) for subdir in ('bin', 'include', 'lib', 'share'))
+        or not re.search(r'any\s+of\s+these\s+are\s+not\s+owned\s+by\s+root:root,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        or not re.search(r'chown\s+-R\s+postgres:postgres\s+\$\{PGDATA\?\}', fix_text, re.IGNORECASE)
+        or not re.search(r'chmod\s+700\s+\$\{PGDATA\?\}', fix_text, re.IGNORECASE)
+        or not re.search(r'chown\s+-R\s+root:root\s+/usr/pgsql-\$\{PGVER\?\}', fix_text, re.IGNORECASE)
+    ):
+        return None
+    command = (
+        "sh -c 'bad=\"\"; "
+        "owner=$(stat -c %U:%G \"${PGDATA?}\" 2>/dev/null || true); "
+        "[ \"$owner\" = postgres:postgres ] || bad=\"$bad PGDATA-owner=$owner\"; "
+        "open=$(find \"${PGDATA?}\" -perm /077 -print -quit 2>/dev/null); "
+        "[ -z \"$open\" ] || bad=\"$bad PGDATA-accessible=$open\"; "
+        "for d in /usr/pgsql-${PGVER?}/bin /usr/pgsql-${PGVER?}/include /usr/pgsql-${PGVER?}/lib /usr/pgsql-${PGVER?}/share; do "
+        "o=$(stat -c %U:%G \"$d\" 2>/dev/null || true); [ \"$o\" = root:root ] || bad=\"$bad $d-owner=$o\"; "
+        "done; printf %s \"$bad\"'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    postgresql_audit_features_unauthorized_removal_candidate = _postgresql_audit_features_unauthorized_removal_candidate(rule, stig_id)
+    if postgresql_audit_features_unauthorized_removal_candidate:
+        return postgresql_audit_features_unauthorized_removal_candidate
     postfix_root_alias_candidate = _linux_postfix_root_alias_candidate(rule, stig_id)
     if postfix_root_alias_candidate:
         return postfix_root_alias_candidate

@@ -225,6 +225,22 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('%r', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_postgresql_audit_features_unauthorized_removal_permissions_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233609',
+            'title': 'PostgreSQL must protect its audit features from unauthorized removal.',
+            'check_content': 'As the database administrator (shown here as "postgres"), verify the permissions of PGDATA:\n\n$ sudo su - postgres\n$ ls -la ${PGDATA?}\n\nIf PGDATA is not owned by postgres:postgres or if files can be accessed by others, this is a finding.\n\nAs the system administrator, verify the permissions of pgsql shared objects and compiled binaries:\n\n$ ls -la /usr/pgsql-${PGVER?}/bin\n$ ls -la /usr/pgsql-${PGVER?}/include\n$ ls -la /usr/pgsql-${PGVER?}/lib\n$ ls -la /usr/pgsql-${PGVER?}/share\n\nIf any of these are not owned by root:root, this is a finding.',
+            'fix_text': 'As the system administrator, change the permissions of PGDATA:\n\n$ sudo chown -R postgres:postgres ${PGDATA?}\n$ sudo chmod 700 ${PGDATA?}\n\nAs the system administrator, change the permissions of pgsql:\n\n$ sudo chown -R root:root /usr/pgsql-${PGVER?}',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233609')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('${PGDATA?}', candidate['check']['command'])
+        self.assertIn('/usr/pgsql-${PGVER?}/bin', candidate['check']['command'])
+        self.assertIn('postgres:postgres', candidate['check']['command'])
+        self.assertIn('root:root', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_sles_noninteractive_accounts_no_login_shell_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234875',
