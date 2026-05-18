@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'grep -I -h -E \"^[[:space:]]*server[[:space:]]+(tick\\.usno\\.navy\\.mil|tock\\.usno\\.navy\\.mil|ntp2\\.usno\\.navy\\.mil)[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)\" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS'",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 22.04 LTS must, for networked systems, compare internal information system clocks at least every 24 hours with a server synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DOD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).",
+    "expected": {
+      "type": "equals",
+      "value": "PASS"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260519"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS is configured to compare the system clock at least every 24 hours to the authoritative time source by using the following command: \n \nNote: If the system is not networked, this requirement is not applicable. \n \n     $ sudo grep maxpoll -ir /etc/chrony* \n     server tick.usno.navy.mil iburst maxpoll 16 \n  \nIf the \"maxpoll\" option is set to a number greater than 16, the line is commented out, or is missing, this is a finding. \n  \nVerify that the \"chrony.conf\" file is configured to an authoritative DOD time source by using the following command:  \n  \n     $ sudo grep -ir server /etc/chrony* \n     server tick.usno.navy.mil iburst maxpoll 16 \n     server tock.usno.navy.mil iburst maxpoll 16 \n     server ntp2.usno.navy.mil iburst maxpoll 16 \n  \nIf \"server\" is not defined, is not set to an authoritative DOD time source, is commented out, or missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "PASS"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to compare the system clock at least every 24 hours to the authoritative time source. \n \nAdd or modify the following line in the \"/etc/chrony/chrony.conf\" file: \n  \nserver [source] iburst maxpoll = 16  \n  \nRestart \"chrony.service\" for the changes to take effect by using the following command:  \n  \n     $ sudo systemctl restart chrony.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-260519r1038944_rule",
   "severity": "low",

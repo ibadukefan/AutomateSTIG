@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 125,
+  "candidate_checks": 126,
   "cases": [
     {
       "check": {
@@ -752,6 +752,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260517"
+    },
+    {
+      "check": {
+        "command": "sh -c 'grep -I -h -E \"^[[:space:]]*server[[:space:]]+(tick\\.usno\\.navy\\.mil|tock\\.usno\\.navy\\.mil|ntp2\\.usno\\.navy\\.mil)[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)\" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS'",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must, for networked systems, compare internal information system clocks at least every 24 hours with a server synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DOD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -I -h -E \"^[[:space:]]*server[[:space:]]+(tick\\.usno\\.navy\\.mil|tock\\.usno\\.navy\\.mil|ntp2\\.usno\\.navy\\.mil)[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)\" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS'": "unexpected-PASS"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -I -h -E \"^[[:space:]]*server[[:space:]]+(tick\\.usno\\.navy\\.mil|tock\\.usno\\.navy\\.mil|ntp2\\.usno\\.navy\\.mil)[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)\" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS'": "PASS"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260519"
     },
     {
       "check": {
@@ -3395,5 +3421,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 125
+  "validated_candidates": 126
 }

@@ -800,16 +800,17 @@
       "vuln_id": "V-260518"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260519",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-260519r1038944_rule",
       "severity": "low",
       "title": "Ubuntu 22.04 LTS must, for networked systems, compare internal information system clocks at least every 24 hours with a server synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DOD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).",
-      "tracking_issue": "TODO-V-260519",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/321066b5fad268c0aa65e7a2934031daf2edf03aaecacc6381cddae6f5bea96b/U_CAN_Ubuntu_22-04_LTS_V2R5_STIG.zip"
       ],
       "vuln_id": "V-260519"

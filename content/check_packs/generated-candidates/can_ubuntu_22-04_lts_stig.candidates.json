@@ -356,6 +356,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'grep -I -h -E \"^[[:space:]]*server[[:space:]]+(tick\\.usno\\.navy\\.mil|tock\\.usno\\.navy\\.mil|ntp2\\.usno\\.navy\\.mil)[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)\" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS'",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must, for networked systems, compare internal information system clocks at least every 24 hours with a server synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DOD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260519"
+    },
+    {
+      "check": {
         "expected_status": "running",
         "name": "ssh",
         "type": "service"

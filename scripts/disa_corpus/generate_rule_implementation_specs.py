@@ -2163,6 +2163,34 @@ def _sles_aide_cron_mail_notification_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _ubuntu_chrony_usno_maxpoll_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-260519' or 'ubuntu' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_hosts = ('tick.usno.navy.mil', 'tock.usno.navy.mil', 'ntp2.usno.navy.mil')
+    if not all(host in content for host in required_hosts):
+        return None
+    if not re.search(r'grep\s+maxpoll\s+-ir\s+/etc/chrony\*', content, re.IGNORECASE):
+        return None
+    if not re.search(r'maxpoll["”]?\s+option\s+is\s+set\s+to\s+a\s+number\s+greater\s+than\s+16', content, re.IGNORECASE):
+        return None
+    if not re.search(r'server["”]?\s+is\s+not\s+defined,\s+is\s+not\s+set\s+to\s+an\s+authoritative\s+DOD\s+time\s+source', content, re.IGNORECASE):
+        return None
+    if not re.search(r'server\s+\[source\]\s+iburst\s+maxpoll\s*=\s*16', combined, re.IGNORECASE):
+        return None
+    command = 'sh -c \'grep -I -h -E "^[[:space:]]*server[[:space:]]+(tick\\.usno\\.navy\\.mil|tock\\.usno\\.navy\\.mil|ntp2\\.usno\\.navy\\.mil)[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS\''
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'PASS'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _ubuntu_aide_default_cron_script_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-238236', 'V-260585', 'V-270651'}:
@@ -12143,6 +12171,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     ubuntu_aide_filesystem_candidate = _ubuntu_aide_filesystem_integrity_check_candidate(rule, stig_id)
     if ubuntu_aide_filesystem_candidate:
         return ubuntu_aide_filesystem_candidate
+
+    ubuntu_chrony_usno_candidate = _ubuntu_chrony_usno_maxpoll_candidate(rule, stig_id)
+    if ubuntu_chrony_usno_candidate:
+        return ubuntu_chrony_usno_candidate
 
     sles_aide_installed_candidate = _sles_aide_installed_and_initialized_candidate(rule, stig_id)
     if sles_aide_installed_candidate:
