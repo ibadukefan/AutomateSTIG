@@ -11440,6 +11440,13 @@ def _windows_fix_only_removed_feature_candidate(rule: dict, stig_id: str) -> dic
         'V-254274': ('TFTP Client', 'TFTP-Client'),
         'V-254275': ('SMBv1 protocol', 'FS-SMB1'),
         'V-254278': ('Windows PowerShell 2.0 Engine', 'PowerShell-V2'),
+        'V-278015': ('Fax Server', 'Fax'),
+        'V-278019': ('Peer Name Resolution Protocol', 'PNRP'),
+        'V-278020': ('Simple TCP/IP Services', 'Simple-TCPIP'),
+        'V-278021': ('Telnet Client', 'Telnet-Client'),
+        'V-278022': ('TFTP Client', 'TFTP-Client'),
+        'V-278023': ('SMBv1 protocol', 'FS-SMB1'),
+        'V-278026': ('Windows PowerShell 2.0 Engine', 'PowerShell-V2'),
     }
     expected = feature_by_vuln.get(vuln_id)
     if not expected:
@@ -11459,11 +11466,15 @@ def _windows_fix_only_removed_feature_candidate(rule: dict, stig_id: str) -> dic
 
 
 def _windows_server_2025_ftp_site_system_drive_candidate(rule: dict, stig_id: str) -> dict | None:
-    if rule.get('vuln_id', '') != 'V-278028' or stig_id != 'MS_Windows_Server_2025_STIG':
+    allowed_targets = {
+        ('V-205854', 'Windows_Server_2019_STIG'),
+        ('V-278028', 'MS_Windows_Server_2025_STIG'),
+    }
+    if (rule.get('vuln_id', ''), stig_id) not in allowed_targets:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
-    if not re.search(r'If\s+FTP\s+is\s+not\s+installed\s+on\s+the\s+system,\s+this\s+is\s+not\s+applicable', content, re.IGNORECASE):
+    if not re.search(r'If\s+FTP\s+is\s+not\s+installed\s+on\s+the\s+system,\s+this\s+is\s+(?:not\s+applicable|NA)', content, re.IGNORECASE):
         return None
     if not re.search(r'Binding\s+that\s+lists\s+FTP', content, re.IGNORECASE):
         return None

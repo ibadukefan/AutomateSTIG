@@ -43,6 +43,31 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'Apple_macOS_15_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': ''}, 'Apple_macOS_14_STIG'))
 
+    def test_infers_windows_server_2025_absent_feature_candidate_from_fix_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278021',
+            'title': 'Windows Server 2025 must not have the Telnet Client installed.',
+            'check_content': 'If the "Telnet Client" feature is installed, this is a finding.',
+            'fix_text': 'Uninstall the "Telnet Client" feature.\n\nStart "Server Manager".\n\nSelect the server with the feature.\n\nDeselect "Telnet Client" on the "Features" page.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278021')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'windows_feature')
+        self.assertEqual(candidate['check']['name'], 'Telnet-Client')
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
+    def test_does_not_infer_windows_server_absent_feature_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-278021',
+            'title': 'Windows Server 2025 must not have the Telnet Client installed.',
+            'check_content': 'If the "Telnet Client" feature is installed, this is a finding.',
+            'fix_text': 'Uninstall the "Telnet Client" feature.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2025_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Some_Other_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'Install the "Telnet Client" feature.'}, 'MS_Windows_Server_2025_STIG'))
+
     def test_infers_linux_interactive_user_init_path_home_only_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258050',
@@ -14208,6 +14233,31 @@ If the site includes any system areas such as root of the drive, Program Files, 
         }, 'MS_Windows_Server_2025_STIG')
         self.assertIsNotNone(candidate)
         self.assertEqual(candidate['vuln_id'], 'V-278028')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('Get-WebBinding', candidate['check']['command'])
+        self.assertIn('ftp', candidate['check']['command'].lower())
+        self.assertIn('Program Files', candidate['check']['command'])
+
+    def test_infers_windows_server_2019_ftp_site_system_drive_candidate_from_exact_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-205854',
+            'title': 'Windows Server 2019 FTP servers must be configured to prevent access to the system drive.',
+            'check_content': '''If FTP is not installed on the system, this is NA.
+
+Open "Internet Information Services (IIS) Manager".
+
+Select "Sites" under the server name.
+
+For any sites with a Binding that lists FTP, right-click the site and select "Explore".
+
+If the site is not defined to a specific folder for shared FTP resources, this is a finding.
+
+If the site includes any system areas such as root of the drive, Program Files, or Windows directories, this is a finding.''',
+            'fix_text': 'Configure the FTP sites to allow access only to specific FTP shared resources. Do not allow access to other areas of the system.',
+        }, 'Windows_Server_2019_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-205854')
         self.assertEqual(candidate['platform'], 'windows')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
         self.assertIn('Get-WebBinding', candidate['check']['command'])
