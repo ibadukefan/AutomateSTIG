@@ -3216,6 +3216,69 @@ def _ol8_mitigations_not_off_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _windows_server_2025_network_logon_role_scoped_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'MS_Windows_Server_2025_STIG':
+        return None
+    vuln_id = rule.get('vuln_id', '')
+    expected_by_vuln = {
+        'V-278165': {
+            'scope': 'domain_controller',
+            'principals': ['*S-1-5-32-544', '*S-1-5-11', '*S-1-5-9'],
+            'content_patterns': (
+                r'This\s+applies\s+to\s+domain\s+controllers\.\s+It\s+is\s+not\s+applicable\s+for\s+other\s+systems',
+                r'Administrators\.?\s*\n\s*-\s*Authenticated\s+Users\.?\s*\n\s*-\s*Enterprise\s+Domain\s+Controllers\.?',
+            ),
+        },
+        'V-278183': {
+            'scope': 'non_domain_controller',
+            'principals': ['*S-1-5-32-544', '*S-1-5-11'],
+            'content_patterns': (
+                r'This\s+applies\s+to\s+member\s+servers\s+and\s+stand-alone\s+or\s+nondomain-joined\s+systems\.\s+A\s+separate\s+version\s+applies\s+to\s+domain\s+controllers',
+                r'Administrators\.?\s*\n\s*-\s*Authenticated\s+Users\.?',
+            ),
+        },
+    }
+    expected = expected_by_vuln.get(vuln_id)
+    if not expected:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    if not re.search(r'"Access\s+this\s+computer\s+from\s+the\s+network"\s+(?:user\s+)?right', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+accounts\s+or\s+groups\s+other\s+than\s+the\s+following\s+are\s+granted', content, re.IGNORECASE):
+        return None
+    if not re.search(r'User\s+Rights\s+Assignment\s*>>\s*Access\s+this\s+computer\s+from\s+the\s+network\s+to\s+include\s+only\s+the\s+following\s+accounts\s+or\s+groups', fix_text, re.IGNORECASE):
+        return None
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in expected['content_patterns']):
+        return None
+    expected_sids = ','.join(expected['principals'])
+    expected_sid_literals = ','.join(sid.lstrip('*') for sid in expected['principals'])
+    domain_role_condition = '$role -ge 4' if expected['scope'] == 'domain_controller' else '$role -lt 4'
+    not_applicable_condition = '$role -lt 4' if expected['scope'] == 'domain_controller' else '$role -ge 4'
+    command = (
+        "powershell -NoProfile -Command \""
+        "$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; "
+        f"if ({not_applicable_condition}) {{ 'Compliant'; exit }}; "
+        "$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); "
+        "secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; "
+        "$line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeNetworkLogonRight*' } | Select-Object -First 1); "
+        "Remove-Item $cfg -ErrorAction SilentlyContinue; "
+        "$values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; "
+        f"$expected=@('{expected_sid_literals}'.Split(',')); "
+        "$actual=@($values | Sort-Object); $wanted=@($expected | Sort-Object); "
+        f"if (({domain_role_condition}) -and ($actual.Count -eq $wanted.Count) -and (@(Compare-Object $actual $wanted).Count -eq 0)) {{ 'Compliant' }}\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _windows_security_policy_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -11954,6 +12017,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         audit_policy_candidate = _windows_audit_policy_candidate(rule)
         if audit_policy_candidate:
             return audit_policy_candidate
+
+        windows_server_2025_network_logon_candidate = _windows_server_2025_network_logon_role_scoped_candidate(rule, stig_id)
+        if windows_server_2025_network_logon_candidate:
+            return windows_server_2025_network_logon_candidate
 
         security_policy_candidate = _windows_security_policy_candidate(rule)
         if security_policy_candidate:

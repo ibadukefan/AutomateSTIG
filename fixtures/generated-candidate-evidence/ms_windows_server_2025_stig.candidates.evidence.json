@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 239,
+  "candidate_checks": 241,
   "cases": [
     {
       "check": {
@@ -3696,6 +3696,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -lt 4) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeNetworkLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $expected=@('S-1-5-32-544,S-1-5-11,S-1-5-9'.Split(',')); $actual=@($values | Sort-Object); $wanted=@($expected | Sort-Object); if (($role -ge 4) -and ($actual.Count -eq $wanted.Count) -and (@(Compare-Object $actual $wanted).Count -eq 0)) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Windows Server 2025 \"Access this computer from the network\" user right must only be assigned to the Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -lt 4) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeNetworkLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $expected=@('S-1-5-32-544,S-1-5-11,S-1-5-9'.Split(',')); $actual=@($values | Sort-Object); $wanted=@($expected | Sort-Object); if (($role -ge 4) -and ($actual.Count -eq $wanted.Count) -and (@(Compare-Object $actual $wanted).Count -eq 0)) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -lt 4) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeNetworkLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $expected=@('S-1-5-32-544,S-1-5-11,S-1-5-9'.Split(',')); $actual=@($values | Sort-Object); $wanted=@($expected | Sort-Object); if (($role -ge 4) -and ($actual.Count -eq $wanted.Count) -and (@(Compare-Object $actual $wanted).Count -eq 0)) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278165"
+    },
+    {
+      "check": {
         "key": "SeMachineAccountPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -4124,6 +4150,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278182"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -ge 4) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeNetworkLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $expected=@('S-1-5-32-544,S-1-5-11'.Split(',')); $actual=@($values | Sort-Object); $wanted=@($expected | Sort-Object); if (($role -lt 4) -and ($actual.Count -eq $wanted.Count) -and (@(Compare-Object $actual $wanted).Count -eq 0)) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 \"Access this computer from the network\" user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and stand-alone or nondomain-joined systems.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -ge 4) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeNetworkLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $expected=@('S-1-5-32-544,S-1-5-11'.Split(',')); $actual=@($values | Sort-Object); $wanted=@($expected | Sort-Object); if (($role -lt 4) -and ($actual.Count -eq $wanted.Count) -and (@(Compare-Object $actual $wanted).Count -eq 0)) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -ge 4) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeNetworkLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $expected=@('S-1-5-32-544,S-1-5-11'.Split(',')); $actual=@($values | Sort-Object); $wanted=@($expected | Sort-Object); if (($role -lt 4) -and ($actual.Count -eq $wanted.Count) -and (@(Compare-Object $actual $wanted).Count -eq 0)) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278183"
     },
     {
       "check": {
@@ -6422,5 +6474,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 239
+  "validated_candidates": 241
 }

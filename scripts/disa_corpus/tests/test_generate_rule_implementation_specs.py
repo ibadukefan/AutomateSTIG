@@ -152,6 +152,22 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyBatchLogonRight'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-546'})
 
+    def test_infers_windows_server_2025_network_logon_role_scoped_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278165',
+            'title': 'The Windows Server 2025 "Access this computer from the network" user right must only be assigned to the Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers.',
+            'check_content': 'This applies to domain controllers. It is not applicable for other systems.\n\nIf any accounts or groups other than the following are granted the "Access this computer from the network" right, this is a finding:\n- Administrators.\n- Authenticated Users.\n- Enterprise Domain Controllers.',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Access this computer from the network to include only the following accounts or groups:\n- Administrators.\n- Authenticated Users.\n- Enterprise Domain Controllers.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278165')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('SeNetworkLogonRight', candidate['check']['command'])
+        self.assertIn('S-1-5-9', candidate['check']['command'])
+        self.assertIn('DomainRole', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_tomcat_allow_backslash_false_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223004',
