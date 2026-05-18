@@ -12,6 +12,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-271763"
+    },
+    {
+      "check": {
+        "command": "awk -F: '($3<1000)&&($1!=\"root\")&&($7 !~ /(nologin|false)$/){print $1 \":\" $3 \":\" $7}' /etc/passwd",
+        "type": "command_output"
+      },
+      "description": "OL 9 system accounts must not have an interactive login shell.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271845"
     }
   ],
   "platform": "linux",

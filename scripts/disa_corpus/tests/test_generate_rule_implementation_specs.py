@@ -83,6 +83,44 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('Compliant', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_rhel_ol9_system_accounts_no_interactive_shell_candidate(self):
+        base_rule = {
+            'vuln_id': 'V-258046',
+            'title': 'RHEL 9 system accounts must not have an interactive login shell.',
+            'check_content': "Verify that system accounts must not have an interactive login shell with the following command:\n\n$ awk -F: '($3<1000){print $1 \":\" $3 \":\" $7}' /etc/passwd\n\nroot:0:/bin/bash\nbin:1:/sbin/nologin\ndaemon:2:/sbin/nologin\n\nIdentify the system accounts from this listing that do not have a nologin shell.\n\nIf any system account (other than the root account) has a login shell and it is not documented with the information system security officer (ISSO), this is a finding.",
+            'fix_text': 'Configure RHEL 9 so that all noninteractive accounts on the system do not have an interactive shell assigned to them. Run the following command to disable the interactive shell for a specific noninteractive user account: $ sudo usermod --shell /sbin/nologin <user> Do not perform the steps in this section on the root account.',
+        }
+        candidate = mod.infer_candidate_check(base_rule, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-258046')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/etc/passwd', candidate['check']['command'])
+        self.assertIn('$3<1000', candidate['check']['command'])
+        self.assertIn('root', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+        ol_candidate = mod.infer_candidate_check({
+            **base_rule,
+            'vuln_id': 'V-271845',
+            'title': 'OL 9 system accounts must not have an interactive login shell.',
+            'check_content': base_rule['check_content'].replace('system accounts must not have', 'OL 9 configures system accounts to not have'),
+            'fix_text': base_rule['fix_text'].replace('RHEL 9', 'OL 9'),
+        }, 'Oracle_Linux_9_STIG')
+        self.assertIsNotNone(ol_candidate)
+        self.assertEqual(ol_candidate['vuln_id'], 'V-271845')
+
+    def test_does_not_infer_rhel_ol9_system_accounts_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-258046',
+            'title': 'RHEL 9 system accounts must not have an interactive login shell.',
+            'check_content': "awk -F: '($3<1000){print $1 \":\" $3 \":\" $7}' /etc/passwd If any system account has a login shell, this is a finding.",
+            'fix_text': 'Configure RHEL 9 so that all noninteractive accounts on the system do not have an interactive shell assigned to them. usermod --shell /sbin/nologin <user>',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'RHEL_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_8_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'Document any exceptions with the ISSO.'}, 'RHEL_9_STIG'))
+
     def test_infers_postgresql_audit_outcome_config_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233512',

@@ -1530,6 +1530,37 @@ def _sles_noninteractive_accounts_no_login_shell_candidate(rule: dict, stig_id: 
     }
 
 
+def _rhel_ol9_system_accounts_no_login_shell_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-258046', 'V-271845'}:
+        return None
+    stig_lower = stig_id.lower()
+    if (vuln_id == 'V-258046' and 'rhel_9' not in stig_lower) or (vuln_id == 'V-271845' and 'oracle_linux_9' not in stig_lower):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'awk\s+-F:\s+\'\(\$3<1000\)\{print\s+\$1\s+.*\$3\s+.*\$7\}\'\s+/etc/passwd', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'Identify\s+the\s+system\s+accounts\s+from\s+this\s+listing\s+that\s+do\s+not\s+have\s+a\s+nologin\s+shell', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+system\s+account\s+\(other\s+than\s+the\s+root\s+account\)\s+has\s+a\s+login\s+shell\s+and\s+it\s+is\s+not\s+documented\s+with\s+the\s+(?:information\s+system\s+security\s+officer\s+\(ISSO\)|ISSO),\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Configure\s+(?:RHEL|OL)\s+9\s+so\s+that\s+all\s+noninteractive\s+accounts\s+on\s+the\s+system\s+do\s+not\s+have\s+an\s+interactive\s+shell\s+assigned\s+to\s+them', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'usermod\s+--shell\s+/sbin/nologin\s+<user>', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'Do\s+not\s+perform\s+the\s+steps\s+in\s+this\s+section\s+on\s+the\s+root\s+account', fix_text, re.IGNORECASE):
+        return None
+    command = '''awk -F: '($3<1000)&&($1!="root")&&($7 !~ /(nologin|false)$/){print $1 ":" $3 ":" $7}' /etc/passwd'''
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sles_emergency_admin_account_never_expires_candidate(rule: dict, stig_id: str) -> dict | None:
     if rule.get('vuln_id', '') != 'V-234872' or 'sles' not in stig_id.lower():
         return None
@@ -12373,6 +12404,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sles_noninteractive_accounts_candidate = _sles_noninteractive_accounts_no_login_shell_candidate(rule, stig_id)
     if sles_noninteractive_accounts_candidate:
         return sles_noninteractive_accounts_candidate
+
+    rhel_ol9_system_accounts_candidate = _rhel_ol9_system_accounts_no_login_shell_candidate(rule, stig_id)
+    if rhel_ol9_system_accounts_candidate:
+        return rhel_ol9_system_accounts_candidate
 
     sles_emergency_admin_account_candidate = _sles_emergency_admin_account_never_expires_candidate(rule, stig_id)
     if sles_emergency_admin_account_candidate:
