@@ -145,6 +145,19 @@
     },
     {
       "check": {
+        "command": "show running-config | section \"^router (ospf|isis)\" | include \"^ mpls ldp sync$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco MPLS switch must be configured to synchronize Interior Gateway Protocol (IGP) and LDP to minimize packet loss when an IGP adjacency is established prior to LDP peers completing label exchange.",
+      "expected": {
+        "substring": "mpls ldp sync",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221114"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^no mpls ip propagate-ttl$\"",
         "type": "command_output"
       },
@@ -210,6 +223,19 @@
     },
     {
       "check": {
+        "command": "show running-config | include \"^ip msdp password \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to authenticate all received MSDP packets.",
+      "expected": {
+        "substring": "ip msdp password",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221143"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ip msdp sa-limit \"",
         "type": "command_output"
       },
@@ -220,6 +246,19 @@
       },
       "platform": "network",
       "vuln_id": "V-221146"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ip msdp peer .* connect-source \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to use a loopback address as the source address when originating MSDP traffic.",
+      "expected": {
+        "substring": "connect-source",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221147"
     },
     {
       "check": {

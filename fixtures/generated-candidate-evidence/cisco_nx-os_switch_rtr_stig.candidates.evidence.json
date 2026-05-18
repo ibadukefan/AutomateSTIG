@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 20,
+  "candidate_checks": 23,
   "cases": [
     {
       "check": {
@@ -289,6 +289,32 @@
     },
     {
       "check": {
+        "command": "show running-config | section \"^router (ospf|isis)\" | include \"^ mpls ldp sync$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco MPLS switch must be configured to synchronize Interior Gateway Protocol (IGP) and LDP to minimize packet loss when an IGP adjacency is established prior to LDP peers completing label exchange.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "mpls ldp sync",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^router (ospf|isis)\" | include \"^ mpls ldp sync$\"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^router (ospf|isis)\" | include \"^ mpls ldp sync$\"": "before\nmpls ldp sync\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221114"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^no mpls ip propagate-ttl$\"",
         "type": "command_output"
       },
@@ -419,6 +445,32 @@
     },
     {
       "check": {
+        "command": "show running-config | include \"^ip msdp password \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to authenticate all received MSDP packets.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ip msdp password",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^ip msdp password \"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^ip msdp password \"": "before\nip msdp password\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221143"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ip msdp sa-limit \"",
         "type": "command_output"
       },
@@ -442,6 +494,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221146"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ip msdp peer .* connect-source \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to use a loopback address as the source address when originating MSDP traffic.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "connect-source",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^ip msdp peer .* connect-source \"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^ip msdp peer .* connect-source \"": "before\nconnect-source\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221147"
     },
     {
       "check": {
@@ -527,5 +605,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 20
+  "validated_candidates": 23
 }

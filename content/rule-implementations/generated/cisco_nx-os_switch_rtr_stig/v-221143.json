@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"^ip msdp password \"",
+      "type": "command_output"
+    },
+    "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to authenticate all received MSDP packets.",
+    "expected": {
+      "substring": "ip msdp password",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221143"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if received MSDP packets are authenticated.\n\nip msdp peer x.1.28.2 remote-as nn\nip msdp password peer x.1.28.2 xxxxxxxxxxxx\n\nip msdp peer x.1.28.2 connect-source Ethernet2/3 remote-as 8\nip msdp password x.1.28.2 3 3ec66c90c104ad13\n\nIf the switch does not require MSDP authentication, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "ip msdp password",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to authenticate MSDP messages as shown in the following example:\n\nSW1(config)# ip msdp password x.1.28.2 xxxxxxxxxxxx",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221143r999752_rule",
   "severity": "medium",

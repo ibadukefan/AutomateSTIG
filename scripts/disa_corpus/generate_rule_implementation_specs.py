@@ -1863,6 +1863,24 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'content': r'hop\s+limit\s+has\s+been\s+configured\s+for\s+Router\s+Advertisement\s+messages\s+for\s+all\s+internal\s+interfaces.*?ipv6\s+nd\s+hop-limit\s+32.*?If\s+hop-limit\s+has\s+been\s+configured\s+and\s+has\s+not\s+been\s+set\s+to\s+at\s+least\s+32,\s+it\s+is\s+a\s+finding',
             'fix': r'Configure\s+the\s+switch\s+to\s+advertise\s+a\s+hop\s+limit\s+of\s+at\s+least\s+32.*?ipv6\s+nd\s+hop-limit\s+32',
         },
+        'V-221114': {
+            'command': 'show running-config | section "^router (ospf|isis)" | include "^ mpls ldp sync$"',
+            'expected': {'type': 'contains', 'substring': 'mpls ldp sync'},
+            'content': r'router\s+ospf\s+\S+.*?mpls\s+ldp\s+sync.*?router\s+isis.*?mpls\s+ldp\s+sync.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+synchronize\s+IGP\s+and\s+LDP',
+            'fix': r'Configure\s+the\s+MPLS\s+switch\s+to\s+synchronize\s+IGP\s+and\s+LDP.*?mpls\s+ldp\s+sync',
+        },
+        'V-221143': {
+            'command': 'show running-config | include "^ip msdp password "',
+            'expected': {'type': 'contains', 'substring': 'ip msdp password'},
+            'content': r'ip\s+msdp\s+peer\s+\S+\s+remote-as\s+\S+.*?ip\s+msdp\s+password(?:\s+peer)?\s+\S+\s+\S+.*?If\s+the\s+switch\s+does\s+not\s+(?:authenticate\s+received\s+MSDP\s+packets|require\s+MSDP\s+authentication)',
+            'fix': r'Configure\s+the\s+switch\s+to\s+authenticate\s+MSDP\s+messages.*?ip\s+msdp\s+password',
+        },
+        'V-221147': {
+            'command': 'show running-config | include "^ip msdp peer .* connect-source "',
+            'expected': {'type': 'contains', 'substring': 'connect-source'},
+            'content': r'interface\s+Loopback\S+.*?ip\s+msdp\s+peer\s+\S+\s+connect-source\s+\S+.*?If\s+the\s+switch\s+does\s+not\s+use\s+its\s+loopback\s+address\s+as\s+the\s+source\s+address\s+when\s+originating\s+MSDP\s+traffic',
+            'fix': r'Configure\s+the\s+switch\s+to\s+use\s+its\s+loopback\s+address.*?ip\s+msdp\s+peer\s+\S+\s+connect-source',
+        },
     }
     if vuln_id in presence_commands:
         spec = presence_commands[vuln_id]

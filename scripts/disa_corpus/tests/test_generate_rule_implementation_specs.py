@@ -210,6 +210,19 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('kubelet-client-key', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_cisco_nxos_msdp_password_candidate_from_authoritative_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221143',
+            'title': 'The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to authenticate all received MSDP packets.',
+            'check_content': 'Review the switch configuration to determine if received MSDP packets are authenticated.\n\nip msdp peer x.1.28.2 remote-as nn\nip msdp password peer x.1.28.2 xxxxxxxxxxxx\n\nIf the switch does not authenticate received MSDP packets, this is a finding.',
+            'fix_text': 'Configure the switch to authenticate MSDP messages as shown in the following example:\n\nSW1(config)# ip msdp password x.1.28.2 xxxxxxxxxxxx',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221143')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertIn('ip msdp password', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'ip msdp password'})
+
     def test_infers_apache_windows_reqtimeout_module_and_directive_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-214342',
