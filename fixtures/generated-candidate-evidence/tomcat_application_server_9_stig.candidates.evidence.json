@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 39,
+  "candidate_checks": 40,
   "cases": [
     {
       "check": {
@@ -442,6 +442,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222975"
+    },
+    {
+      "check": {
+        "command": "sh -c 'base=\"${CATALINA_BASE:-/opt/tomcat}\"/webapps/manager/WEB-INF/jsp; for f in 401.jsp 402.jsp 403.jsp; do [ -f \"$base/$f\" ] && grep -Ein \"tomcat-users\\.xml|manager-(gui|script|jmx|status)|<role[[:space:]]+rolename|<user[[:space:]]+username\" \"$base/$f\"; done'",
+        "type": "command_output"
+      },
+      "description": "Default error pages for manager application must be customized.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'base=\"${CATALINA_BASE:-/opt/tomcat}\"/webapps/manager/WEB-INF/jsp; for f in 401.jsp 402.jsp 403.jsp; do [ -f \"$base/$f\" ] && grep -Ein \"tomcat-users\\.xml|manager-(gui|script|jmx|status)|<role[[:space:]]+rolename|<user[[:space:]]+username\" \"$base/$f\"; done'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'base=\"${CATALINA_BASE:-/opt/tomcat}\"/webapps/manager/WEB-INF/jsp; for f in 401.jsp 402.jsp 403.jsp; do [ -f \"$base/$f\" ] && grep -Ein \"tomcat-users\\.xml|manager-(gui|script|jmx|status)|<role[[:space:]]+rolename|<user[[:space:]]+username\" \"$base/$f\"; done'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222976"
     },
     {
       "check": {
@@ -1021,5 +1047,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 39
+  "validated_candidates": 40
 }

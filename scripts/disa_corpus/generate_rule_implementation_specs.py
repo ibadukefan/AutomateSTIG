@@ -5357,6 +5357,34 @@ def _tomcat_error_report_valve_boolean_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _tomcat_manager_default_error_pages_customized_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222976':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'\$CATALINA_BASE/webapps/manager/WEB-INF/jsp/401\.jsp', content):
+        return None
+    if not re.search(r'Repeat\s+for\s+the\s+402\.jsp\s+and\s+403\.jsp\s+files', content, re.IGNORECASE):
+        return None
+    if not re.search(r'default\s+error\s+files\s+contain\s+sample\s+passwords\s+and\s+user\s+accounts', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Remove\s+account\s+information\s+and\s+make\s+the\s+files\s+reflect\s+generic\s+error\s+information', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'base=\"${CATALINA_BASE:-/opt/tomcat}\"/webapps/manager/WEB-INF/jsp; "
+        "for f in 401.jsp 402.jsp 403.jsp; do "
+        "[ -f \"$base/$f\" ] && grep -Ein \"tomcat-users\\.xml|manager-(gui|script|jmx|status)|<role[[:space:]]+rolename|<user[[:space:]]+username\" \"$base/$f\"; "
+        "done'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_access_log_valve_user_pattern_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222985':
         return None
@@ -12211,6 +12239,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_error_report_valve_candidate = _tomcat_error_report_valve_boolean_candidate(rule, stig_id)
     if tomcat_error_report_valve_candidate:
         return tomcat_error_report_valve_candidate
+
+    tomcat_manager_default_error_pages_candidate = _tomcat_manager_default_error_pages_customized_candidate(rule, stig_id)
+    if tomcat_manager_default_error_pages_candidate:
+        return tomcat_manager_default_error_pages_candidate
 
     tomcat_service_account_candidate = _tomcat_service_account_nologin_candidate(rule, stig_id)
     if tomcat_service_account_candidate:

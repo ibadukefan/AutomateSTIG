@@ -14345,6 +14345,24 @@ If the site includes any system areas such as root of the drive, Program Files, 
         self.assertIn('ftp', candidate['check']['command'].lower())
         self.assertIn('Program Files', candidate['check']['command'])
 
+    def test_infers_tomcat_manager_default_error_pages_customized_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222976',
+            'title': 'Default error pages for manager application must be customized.',
+            'check_content': 'From the Tomcat server console, run the following command:\n\nsudo cat $CATALINA_BASE/webapps/manager/WEB-INF/jsp/401.jsp\n\nRepeat for the 402.jsp and 403.jsp files.\n\nThe default error files contain sample passwords and user accounts. If the error files contained in this folder are not customized and sample information removed, this is a finding.',
+            'fix_text': 'From the Tomcat server as a privileged user:\n\nsudo cd $CATALINA_BASE/webapps/manager/WEB-INF/jsp/\n\nUse a file editor like nano or vi and edit the 401, 402, and 403 jsp files. Remove account information and make the files reflect generic error information that assists users but does not provide sample data to users. Save the file and restart Tomcat.',
+        }, 'Tomcat_Application_Server_9_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222976')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('CATALINA_BASE', candidate['check']['command'])
+        self.assertIn('/webapps/manager/WEB-INF/jsp', candidate['check']['command'])
+        self.assertIn('401.jsp', candidate['check']['command'])
+        self.assertIn('402.jsp', candidate['check']['command'])
+        self.assertIn('403.jsp', candidate['check']['command'])
+
 
 if __name__ == '__main__':
     unittest.main()

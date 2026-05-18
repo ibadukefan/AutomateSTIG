@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'base=\"${CATALINA_BASE:-/opt/tomcat}\"/webapps/manager/WEB-INF/jsp; for f in 401.jsp 402.jsp 403.jsp; do [ -f \"$base/$f\" ] && grep -Ein \"tomcat-users\\.xml|manager-(gui|script|jmx|status)|<role[[:space:]]+rolename|<user[[:space:]]+username\" \"$base/$f\"; done'",
+      "type": "command_output"
+    },
+    "description": "Default error pages for manager application must be customized.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-222976"
+  },
   "check_content_excerpt": "From the Tomcat server console, run the following command:\n\nsudo cat $CATALINA_BASE/webapps/manager/WEB-INF/jsp/401.jsp \n\nRepeat for the 402.jsp and 403.jsp files.\n\nThe default error files contain sample passwords and user accounts.\n\nIf the error files contained in this folder are not customized and sample information removed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server as a privileged user:\n\nsudo cd $CATALINA_BASE/webapps/manager/WEB-INF/jsp/\n\nUse a file editor like nano or vi and edit the 401, 402, and 403 jsp files. Remove account information and make the files reflect generic error information that assists users but does not provide sample data to users.\n\nSave the file and restart Tomcat:\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222976r961170_rule",
   "severity": "low",
