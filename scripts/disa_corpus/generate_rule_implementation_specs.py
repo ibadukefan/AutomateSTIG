@@ -1687,6 +1687,84 @@ def _windows_platform(stig_id: str) -> bool:
     return 'windows' in lower or 'ms_windows' in lower
 
 
+_HKLM_APP_CONTAINER_READ_SID = 'S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681'
+
+
+def _windows_hklm_default_registry_permissions_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '') or ''
+    if not _windows_platform(stig_id) or vuln_id not in {'V-220907', 'V-278001'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{content}\n{fix_text}"
+    required_patterns = (
+        r'default\s+permissions\s+for\s+the\s+HKEY_LOCAL_MACHINE\s+registry\s+hive',
+        r'non-?privileged\s+groups\s+such\s+as\s+Everyone,\s+Users,?\s+or\s+Authenticated\s+Users\s+have\s+greater\s+than\s+Read\s+permission',
+        r'Maintain\s+the\s+default\s+permissions\s+for\s+the\s+HKEY_LOCAL_MACHINE\s+registry\s+hive',
+        r'HKEY_LOCAL_MACHINE\\SECURITY',
+        r'HKEY_LOCAL_MACHINE\\SOFTWARE',
+        r'HKEY_LOCAL_MACHINE\\SYSTEM',
+        r'Type\s+-\s+["“]Allow["”]\s+for\s+all',
+        r'Inherited\s+from\s+-\s+["“]None["”]\s+for\s+all',
+        r'SYSTEM\s+-\s+Full\s+Control\s+-\s+This\s+key\s+and\s+subkeys',
+        r'Administrators\s+-\s+(?:Special|Full\s+Control)\s+-\s+This\s+key\s+and\s+subkeys',
+        r'CREATOR\s+OWNER\s+-\s+Full\s+Control\s+-\s+This\s+key\s+and\s+subkeys',
+        r'ALL\s+APPLICATION\s+PACKAGES\s+-\s+Read\s+-\s+This\s+key\s+and\s+subkeys',
+        re.escape(_HKLM_APP_CONTAINER_READ_SID),
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if vuln_id == 'V-278001':
+        required_vuln_patterns = (
+            r'If\s+permissions\s+are\s+not\s+as\s+restrictive\s+as\s+the\s+default\s+permissions\s+listed\s+below,\s+this\s+is\s+a\s+finding',
+            r'Authenticated\s+Users\s+-\s+Read\s+-\s+This\s+key\s+and\s+subkeys',
+            r'Server\s+Operators\s+-\s+Read\s+-\s+This\s+Key\s+and\s+subkeys\s+\(Domain\s+controllers\s+only\)',
+        )
+        system_read_principal = 'NT AUTHORITY\\Authenticated Users'
+        include_server_operators = True
+    else:
+        required_vuln_patterns = (r'Users\s+-\s+Read\s+-\s+This\s+key\s+and\s+subkeys',)
+        system_read_principal = 'BUILTIN\\Users'
+        include_server_operators = False
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_vuln_patterns):
+        return None
+
+    system_expected = [system_read_principal, 'BUILTIN\\Administrators', 'NT AUTHORITY\\SYSTEM', 'CREATOR OWNER', 'APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES', _HKLM_APP_CONTAINER_READ_SID]
+    if include_server_operators:
+        system_expected.append('BUILTIN\\Server Operators')
+    expected = {
+        'Registry::HKEY_LOCAL_MACHINE\\SECURITY': ['NT AUTHORITY\\SYSTEM', 'BUILTIN\\Administrators'],
+        'Registry::HKEY_LOCAL_MACHINE\\SOFTWARE': ['BUILTIN\\Users', 'BUILTIN\\Administrators', 'NT AUTHORITY\\SYSTEM', 'CREATOR OWNER', 'APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES', _HKLM_APP_CONTAINER_READ_SID],
+        'Registry::HKEY_LOCAL_MACHINE\\SYSTEM': system_expected,
+    }
+    ps_quote = lambda value: "'" + value.replace("'", "''") + "'"
+    expected_ps = '@{' + ';'.join(
+        f"'{path}'=@({','.join(ps_quote(principal) for principal in principals)})"
+        for path, principals in expected.items()
+    ) + '}'
+    script = (
+        f"$expected={expected_ps}; "
+        "$nonPriv=@('Everyone','BUILTIN\\Users','NT AUTHORITY\\Authenticated Users'); "
+        "$readMask=[System.Security.AccessControl.RegistryRights]::ReadKey -bor [System.Security.AccessControl.RegistryRights]::Synchronize; "
+        "$bad=$false; "
+        "foreach($path in $expected.Keys){ "
+        "if(-not (Test-Path -LiteralPath $path)){ $bad=$true; continue }; "
+        "$acl=Get-Acl -LiteralPath $path; "
+        "foreach($principal in $expected[$path]){ if(-not ($acl.Access | Where-Object { $_.IdentityReference.Value -eq $principal })){ $bad=$true } }; "
+        "foreach($ace in $acl.Access){ $id=$ace.IdentityReference.Value; if(($nonPriv -contains $id) -and (($ace.RegistryRights -band (-bnot $readMask)) -ne 0)){ $bad=$true } } "
+        "}; "
+        "if(-not $bad){ 'Compliant' }"
+    )
+    escaped_script = script.replace('"', '`"')
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': f'powershell -NoProfile -ExecutionPolicy Bypass -Command "{escaped_script}"'},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_name_based_strong_mappings_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id) or rule.get('vuln_id') not in {'V-271427', 'V-278173'}:
         return None
@@ -11892,6 +11970,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     macos14_vendor_supported_release_candidate = _macos14_vendor_supported_release_candidate(rule, stig_id)
     if macos14_vendor_supported_release_candidate:
         return macos14_vendor_supported_release_candidate
+    windows_hklm_default_registry_permissions_candidate = _windows_hklm_default_registry_permissions_candidate(rule, stig_id)
+    if windows_hklm_default_registry_permissions_candidate:
+        return windows_hklm_default_registry_permissions_candidate
     windows_name_based_strong_mappings_candidate = _windows_name_based_strong_mappings_candidate(rule, stig_id)
     if windows_name_based_strong_mappings_candidate:
         return windows_name_based_strong_mappings_candidate

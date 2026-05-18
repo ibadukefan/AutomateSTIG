@@ -2811,16 +2811,17 @@
       "vuln_id": "V-220906"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220907",
+      "check_pack": "generated-candidates/ms_windows_10_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-220907r958726_rule",
       "severity": "medium",
       "title": "Default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained.",
-      "tracking_issue": "TODO-V-220907",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
         "content/disa-corpus/artifacts/9b16b466a847e8fa201ce49e4e86670ab840ce363e788e39d13e1c3f4e757545/U_MS_Windows_10_V3R5_STIG.zip"
       ],
       "vuln_id": "V-220907"

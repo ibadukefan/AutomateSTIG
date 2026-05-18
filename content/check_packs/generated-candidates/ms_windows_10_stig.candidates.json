@@ -1809,6 +1809,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$expected=@{'Registry::HKEY_LOCAL_MACHINE\\SECURITY'=@('NT AUTHORITY\\\\SYSTEM','BUILTIN\\\\Administrators');'Registry::HKEY_LOCAL_MACHINE\\SOFTWARE'=@('BUILTIN\\\\Users','BUILTIN\\\\Administrators','NT AUTHORITY\\\\SYSTEM','CREATOR OWNER','APPLICATION PACKAGE AUTHORITY\\\\ALL APPLICATION PACKAGES','S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681');'Registry::HKEY_LOCAL_MACHINE\\SYSTEM'=@('BUILTIN\\\\Users','BUILTIN\\\\Administrators','NT AUTHORITY\\\\SYSTEM','CREATOR OWNER','APPLICATION PACKAGE AUTHORITY\\\\ALL APPLICATION PACKAGES','S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681')}; $nonPriv=@('Everyone','BUILTIN\\Users','NT AUTHORITY\\Authenticated Users'); $readMask=[System.Security.AccessControl.RegistryRights]::ReadKey -bor [System.Security.AccessControl.RegistryRights]::Synchronize; $bad=$false; foreach($path in $expected.Keys){ if(-not (Test-Path -LiteralPath $path)){ $bad=$true; continue }; $acl=Get-Acl -LiteralPath $path; foreach($principal in $expected[$path]){ if(-not ($acl.Access | Where-Object { $_.IdentityReference.Value -eq $principal })){ $bad=$true } }; foreach($ace in $acl.Access){ $id=$ace.IdentityReference.Value; if(($nonPriv -contains $id) -and (($ace.RegistryRights -band (-bnot $readMask)) -ne 0)){ $bad=$true } } }; if(-not $bad){ 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220907"
+    },
+    {
+      "check": {
         "key": "Accounts: Administrator account status",
         "section": "Security Options",
         "type": "security_policy"

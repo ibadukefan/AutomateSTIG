@@ -11,6 +11,68 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_windows_hklm_default_registry_permissions_candidates(self):
+        required_sid = 'S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681'
+        server_2025_check = (
+            'Review the registry permissions for the keys of the HKEY_LOCAL_MACHINE hive noted below.\n\n'
+            'If any nonprivileged groups such as Everyone, Users, or Authenticated Users have greater than Read permission, this is a finding.\n\n'
+            'If permissions are not as restrictive as the default permissions listed below, this is a finding.\n\n'
+            'HKEY_LOCAL_MACHINE\\SECURITY\nType - "Allow" for all\nInherited from - "None" for all\nPrincipal - Access - Applies to\n'
+            'SYSTEM - Full Control - This key and subkeys\nAdministrators - Special - This key and subkeys\n\n'
+            'HKEY_LOCAL_MACHINE\\SOFTWARE\nType - "Allow" for all\nInherited from - "None" for all\nPrincipal - Access - Applies to\n'
+            'Users - Read - This key and subkeys\nAdministrators - Full Control - This key and subkeys\nSYSTEM - Full Control - This key and subkeys\nCREATOR OWNER - Full Control - This key and subkeys\nALL APPLICATION PACKAGES - Read - This key and subkeys\n\n'
+            'HKEY_LOCAL_MACHINE\\SYSTEM\nType - "Allow" for all\nInherited from - "None" for all\nPrincipal - Access - Applies to\n'
+            'Authenticated Users - Read - This key and subkeys\nAdministrators - Full Control - This key and subkeys\nSYSTEM - Full Control - This key and subkeys\nCREATOR OWNER - Full Control - This key and Subkeys\nALL APPLICATION PACKAGES - Read - This key and subkeys\nServer Operators - Read - This Key and subkeys (Domain controllers only)\n\n'
+            f'Microsoft has given Read permission to the SOFTWARE and SYSTEM registry keys in Windows Server 2025 to the following SID. This is not a finding.\n\n{required_sid}'
+        )
+        server_2025_fix = server_2025_check.replace(
+            'Review the registry permissions for the keys of the HKEY_LOCAL_MACHINE hive noted below.',
+            'Maintain the default permissions for the HKEY_LOCAL_MACHINE registry hive.',
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278001',
+            'title': 'Windows Server 2025 default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained.',
+            'check_content': server_2025_check,
+            'fix_text': server_2025_fix,
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278001')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Registry::HKEY_LOCAL_MACHINE\\SECURITY', candidate['check']['command'])
+        self.assertIn("'NT AUTHORITY\\SYSTEM'", candidate['check']['command'])
+        self.assertNotIn('NT AUTHORITY\\\\SYSTEM', candidate['check']['command'])
+        self.assertIn('Server Operators', candidate['check']['command'])
+        self.assertIn(required_sid, candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+        windows_10_check = server_2025_check.replace('Windows Server 2025', 'Windows 10').replace('Authenticated Users - Read - This key and subkeys', 'Users - Read - This key and subkeys').replace('Server Operators - Read - This Key and subkeys (Domain controllers only)\n', '')
+        windows_10_fix = windows_10_check.replace(
+            'Review the registry permissions for the keys of the HKEY_LOCAL_MACHINE hive noted below.',
+            'Maintain the default permissions for the HKEY_LOCAL_MACHINE registry hive.',
+        )
+        win10_candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220907',
+            'title': 'Default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained.',
+            'check_content': windows_10_check,
+            'fix_text': windows_10_fix,
+        }, 'MS_Windows_10_STIG')
+        self.assertIsNotNone(win10_candidate)
+        self.assertEqual(win10_candidate['vuln_id'], 'V-220907')
+        self.assertIn('Users', win10_candidate['check']['command'])
+        self.assertNotIn('Server Operators', win10_candidate['check']['command'])
+
+    def test_does_not_infer_windows_hklm_default_registry_permissions_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-278001',
+            'title': 'Windows Server 2025 default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained.',
+            'check_content': 'If any nonprivileged groups such as Everyone, Users, or Authenticated Users have greater than Read permission, this is a finding. HKEY_LOCAL_MACHINE\\SECURITY',
+            'fix_text': 'Maintain the default permissions for the HKEY_LOCAL_MACHINE registry hive.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2025_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': ''}, 'MS_Windows_Server_2025_STIG'))
+
     def test_infers_macos14_vendor_supported_release_candidate(self):
         authoritative_check = (
             'Verify the operating system version.\n\n'
