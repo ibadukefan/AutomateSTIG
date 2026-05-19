@@ -134,6 +134,77 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertIn('findmnt', candidate['check']['command'])
                 self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_rhel9_lsblk_data_at_rest_parent_crypt_candidate(self):
+        check = (
+            'Verify RHEL 9 prevents unauthorized disclosure or modification of all information requiring at-rest protection by using disk encryption.\n'
+            'List all block devices in tree-like format:\n\n'
+            '$ sudo lsblk --tree\n\n'
+            'Verify that the block device tree for each persistent filesystem, excluding the /boot and /boot/efi filesystems, '
+            'has at least one parent block device of type "crypt", and that the encryption type is LUKS:\n\n'
+            '$ sudo cryptsetup status luks-example\n'
+            'type:    LUKS2\n\n'
+            'If any persistent filesystem does not have a parent block device of type "crypt", or that block device is not LUKS, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257879',
+            'title': 'RHEL 9 local disk partitions must implement cryptographic mechanisms to prevent unauthorized disclosure or modification of all information that requires at rest protection.',
+            'check_content': check,
+            'fix_text': 'Configure RHEL 9 to prevent unauthorized modification of all information at rest by using disk encryption. To encrypt an entire partition, dedicate a partition for encryption in the partition layout.',
+        }, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-257879')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('findmnt', candidate['check']['command'])
+        self.assertIn('lsblk', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_oracle_linux_8_crypto_luks_data_at_rest_candidate(self):
+        check = (
+            'Verify OL 8 prevents unauthorized disclosure or modification of all information requiring at-rest protection by using disk encryption.\n'
+            'Verify all system partitions are encrypted with the following command:\n\n'
+            '$ sudo blkid\n'
+            '/dev/mapper/ol-root: UUID="example" TYPE="crypto_LUKS"\n\n'
+            'Every persistent disk partition present must be of type "crypto_LUKS".\n'
+            'If any partitions other than the boot partition or pseudo file systems (such as "/proc" or "/sys") are not listed, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248525',
+            'title': 'All OL 8 local disk partitions must implement cryptographic mechanisms to prevent unauthorized disclosure or modification of all information that requires at-rest protection.',
+            'check_content': check,
+            'fix_text': 'Configure OL 8 to prevent unauthorized modification of all information at rest by using disk encryption. To encrypt an entire partition, dedicate a partition for encryption in the partition layout.',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-248525')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('findmnt', candidate['check']['command'])
+        self.assertIn('lsblk', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_oracle_linux_9_crypttab_data_at_rest_candidate(self):
+        check = (
+            'Verify that OL 9 prevents unauthorized disclosure or modification of all information requiring at rest protection by using disk encryption.\n'
+            'Determine the partition layout for the system with the following command:\n\n'
+            '$ sudo fdisk -l\n\n'
+            'Verify that the system partitions are all encrypted with the following command:\n\n'
+            '$ sudo more /etc/crypttab\n\n'
+            'Every persistent disk partition present must have an entry in the file.\n'
+            'If any partitions other than the boot partition or pseudo file systems (such as /proc or /sys) are not listed, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271431',
+            'title': 'The OL 9 operating system must implement cryptographic mechanisms to prevent unauthorized modification of all information at rest.',
+            'check_content': check,
+            'fix_text': 'Configure the OL 9 operating system to implement cryptographic mechanisms to prevent unauthorized modification of all information at rest. To encrypt an entire partition, dedicate a partition for encryption in the partition layout.',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271431')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/etc/crypttab', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_sql_server_2022_disabled_configuration_option_candidate(self):
         check = (
             'To determine if [Remote Access] is enabled, execute the following command:\n'

@@ -1436,13 +1436,14 @@ def _ubuntu_2004_data_at_rest_crypttab_candidate(rule: dict, stig_id: str) -> di
         'V-238335': {'Canonical_Ubuntu_20-04_LTS_STIG'},
         'V-260484': {'CAN_Ubuntu_22-04_LTS_STIG'},
         'V-270747': {'CAN_Ubuntu_24-04_STIG'},
+        'V-271431': {'Oracle_Linux_9_STIG'},
     }
     if stig_id not in supported_stigs.get(canonical_vuln_id, set()):
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     required_patterns = (
-        r'data[-\s]at[-\s]rest|information\s+at[-\s]rest',
+        r'data[-\s]at[-\s]rest|information\s+(?:requiring\s+at[-\s]rest\s+protection|at[-\s]rest)',
         r'fdisk\s+-l',
         r'/etc/crypttab',
         r'Every\s+persistent\s+disk\s+partition\s+present\s+must\s+have\s+an\s+entry\s+in\s+the\s+file',
@@ -1503,20 +1504,27 @@ for line in findmnt.stdout.splitlines():
 
 def _linux_data_at_rest_encryption_candidate(rule: dict, stig_id: str) -> dict | None:
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
-    supported_vulns = {'V-270747', 'V-271431', 'V-271756'}
+    supported_vulns = {'V-248525', 'V-257879', 'V-270747', 'V-271431', 'V-271756'}
     if canonical_vuln_id not in supported_vulns or not _linux_platform(stig_id):
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
-    if not re.search(r'data[-\s]at[-\s]rest|information\s+at\s+rest', content, re.IGNORECASE):
+    if not re.search(r'data[-\s]at[-\s]rest|information\s+(?:requiring\s+at[-\s]rest\s+protection|at\s+rest)', content, re.IGNORECASE):
         return None
-    if not re.search(r'\b(?:fdisk\s+-l|blkid)\b', content, re.IGNORECASE):
-        return None
-    if not re.search(r'crypto_LUKS', content):
-        return None
-    if not re.search(r'Every\s+persistent\s+disk\s+partition\s+present\s+must\s+be\s+of\s+type\s+["“]?crypto_LUKS["”]?', content, re.IGNORECASE):
-        return None
-    if not re.search(r'boot\s+partition\s+or\s+pseudo\s+file\s+systems', content, re.IGNORECASE):
+    crypto_luks_partition_pattern = (
+        re.search(r'\b(?:fdisk\s+-l|blkid)\b', content, re.IGNORECASE)
+        and re.search(r'crypto_LUKS', content)
+        and re.search(r'Every\s+persistent\s+disk\s+partition\s+present\s+must\s+be\s+of\s+type\s+["“]?crypto_LUKS["”]?', content, re.IGNORECASE)
+        and re.search(r'boot\s+partition\s+or\s+pseudo\s+file\s+systems', content, re.IGNORECASE)
+    )
+    lsblk_parent_crypt_pattern = (
+        canonical_vuln_id == 'V-257879'
+        and re.search(r'lsblk\s+--tree', content, re.IGNORECASE)
+        and re.search(r'each\s+persistent\s+filesystem.*?has\s+at\s+least\s+one\s+parent\s+block\s+device\s+of\s+type\s+["“]?crypt["”]?', content, re.IGNORECASE | re.DOTALL)
+        and re.search(r'encryption\s+type\s+is\s+LUKS|type:\s*LUKS\d*', content, re.IGNORECASE)
+        and re.search(r'excluding\s+the\s+/boot\s+and\s+/boot/efi\s+filesystems', content, re.IGNORECASE)
+    )
+    if not (crypto_luks_partition_pattern or lsblk_parent_crypt_pattern):
         return None
     if not re.search(r'encrypt', fix_text, re.IGNORECASE):
         return None

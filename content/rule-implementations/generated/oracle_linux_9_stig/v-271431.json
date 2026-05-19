@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "python3 -c '\nimport os, pathlib, subprocess\ncrypttab = pathlib.Path('\"'\"'/etc/crypttab'\"'\"')\nif not crypttab.is_file():\n    print('\"'\"'Missing /etc/crypttab'\"'\"')\n    raise SystemExit(0)\nentries = []\nfor line in crypttab.read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    line = line.strip()\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    parts = line.split()\n    if len(parts) >= 2:\n        entries.append(parts)\nfindmnt = subprocess.run(\n    ['\"'\"'findmnt'\"'\"', '\"'\"'-rn'\"'\"', '\"'\"'-t'\"'\"', '\"'\"'nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'SOURCE,TARGET'\"'\"'],\n    text=True,\n    capture_output=True,\n    check=False,\n)\nfor line in findmnt.stdout.splitlines():\n    fields = line.split(None, 1)\n    if len(fields) != 2:\n        continue\n    src, target = fields\n    if target == '\"'\"'/boot'\"'\"' or target.startswith(('\"'\"'/boot/'\"'\"', '\"'\"'/proc/'\"'\"', '\"'\"'/sys/'\"'\"', '\"'\"'/run/'\"'\"')) or target in {'\"'\"'/proc'\"'\"', '\"'\"'/sys'\"'\"', '\"'\"'/run'\"'\"'}:\n        continue\n    dev = os.path.realpath(src)\n    if not os.path.exists(dev):\n        continue\n    name = os.path.basename(dev)\n    uuid_result = subprocess.run(['\"'\"'blkid'\"'\"', '\"'\"'-s'\"'\"', '\"'\"'UUID'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'value'\"'\"', dev], text=True, capture_output=True, check=False)\n    uuid = uuid_result.stdout.strip()\n    tokens = {dev, name}\n    if uuid:\n        tokens.add(f'\"'\"'UUID={uuid}'\"'\"')\n    if not any(entry[0] in tokens or entry[1] in tokens for entry in entries):\n        print(f'\"'\"'Missing crypttab entry for {dev} {target}'\"'\"')\n'",
+      "type": "command_output"
+    },
+    "description": "The OL 9 operating system must implement cryptographic mechanisms to prevent unauthorized modification of all information at rest.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271431"
+  },
   "check_content_excerpt": "Note: If there is a documented and approved reason for not having data at rest encryption, this requirement is Not Applicable.\n\nVerify that OL 9 prevents unauthorized disclosure or modification of all information requiring at rest protection by using disk encryption.\n\nDetermine the partition layout for the system with the following command: \n \n$ sudo fdisk -l \n(..) \nDisk /dev/vda: 15 GiB, 16106127360 bytes, 31457280 sectors \nUnits: sectors of 1 * 512 = 512 bytes \nSector size (logical/physical): 512 bytes / 512 bytes \nI/O size (minimum/optimal): 512 bytes / 512 bytes \nDisklabel type: gpt \nDisk identifier: 83298450-B4E3-4B19-A9E4-7DF147A5FEFB \n \nDevice       Start      End  Sectors Size Type \n/dev/vda1     2048     4095     2048   1M BIOS boot \n/dev/vda2     4096  2101247  2097152   1G Linux filesystem \n/dev/vda3  2101248 31455231 29353984  14G Linux filesystem \n(...) \n \nVerify that the system partitions are all encrypted with the following command: \n \n$ sudo more /etc/crypttab \n \nEvery persistent disk partition present must have an entry in the file. \n \nIf any partitions other than the boot partition or pseudo file systems (such as /proc or /sys) are not listed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the OL 9 operating system to implement cryptographic mechanisms to prevent unauthorized modification of all information at rest.\n\nTo encrypt an entire partition, dedicate a partition for encryption in the partition layout. \n \nNote: Encrypting a partition in an already-installed system is more difficult because it will need to be resized and existing partitions changed.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271431r1092616_rule",
   "severity": "medium",

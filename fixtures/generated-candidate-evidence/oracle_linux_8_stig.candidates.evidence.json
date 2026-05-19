@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 355,
+  "candidate_checks": 356,
   "cases": [
     {
       "check": {
@@ -26,6 +26,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248519"
+    },
+    {
+      "check": {
+        "command": "sh -c 'findmnt -rn -t nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay -o SOURCE,TARGET 2>/dev/null | while read -r src tgt; do case \"$tgt\" in /boot|/boot/*|/proc|/proc/*|/sys|/sys/*|/run|/run/*) continue;; esac; dev=$(readlink -f \"$src\" 2>/dev/null || printf %s \"$src\"); [ -b \"$dev\" ] || continue; lsblk -sno TYPE,FSTYPE \"$dev\" 2>/dev/null | grep -Eq \"(^|[[:space:]])(crypt|crypto_LUKS)([[:space:]]|$)\" || printf \"Unencrypted %s %s\\n\" \"$dev\" \"$tgt\"; done'",
+        "type": "command_output"
+      },
+      "description": "All OL 8 local disk partitions must implement cryptographic mechanisms to prevent unauthorized disclosure or modification of all information that requires at-rest protection.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay -o SOURCE,TARGET 2>/dev/null | while read -r src tgt; do case \"$tgt\" in /boot|/boot/*|/proc|/proc/*|/sys|/sys/*|/run|/run/*) continue;; esac; dev=$(readlink -f \"$src\" 2>/dev/null || printf %s \"$src\"); [ -b \"$dev\" ] || continue; lsblk -sno TYPE,FSTYPE \"$dev\" 2>/dev/null | grep -Eq \"(^|[[:space:]])(crypt|crypto_LUKS)([[:space:]]|$)\" || printf \"Unencrypted %s %s\\n\" \"$dev\" \"$tgt\"; done'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'findmnt -rn -t nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay -o SOURCE,TARGET 2>/dev/null | while read -r src tgt; do case \"$tgt\" in /boot|/boot/*|/proc|/proc/*|/sys|/sys/*|/run|/run/*) continue;; esac; dev=$(readlink -f \"$src\" 2>/dev/null || printf %s \"$src\"); [ -b \"$dev\" ] || continue; lsblk -sno TYPE,FSTYPE \"$dev\" 2>/dev/null | grep -Eq \"(^|[[:space:]])(crypt|crypto_LUKS)([[:space:]]|$)\" || printf \"Unencrypted %s %s\\n\" \"$dev\" \"$tgt\"; done'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248525"
     },
     {
       "check": {
@@ -9624,5 +9650,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 355
+  "validated_candidates": 356
 }

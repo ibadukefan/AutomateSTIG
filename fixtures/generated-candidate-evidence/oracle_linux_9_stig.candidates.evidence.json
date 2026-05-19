@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 450,
+  "candidate_checks": 451,
   "cases": [
+    {
+      "check": {
+        "command": "python3 -c '\nimport os, pathlib, subprocess\ncrypttab = pathlib.Path('\"'\"'/etc/crypttab'\"'\"')\nif not crypttab.is_file():\n    print('\"'\"'Missing /etc/crypttab'\"'\"')\n    raise SystemExit(0)\nentries = []\nfor line in crypttab.read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    line = line.strip()\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    parts = line.split()\n    if len(parts) >= 2:\n        entries.append(parts)\nfindmnt = subprocess.run(\n    ['\"'\"'findmnt'\"'\"', '\"'\"'-rn'\"'\"', '\"'\"'-t'\"'\"', '\"'\"'nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'SOURCE,TARGET'\"'\"'],\n    text=True,\n    capture_output=True,\n    check=False,\n)\nfor line in findmnt.stdout.splitlines():\n    fields = line.split(None, 1)\n    if len(fields) != 2:\n        continue\n    src, target = fields\n    if target == '\"'\"'/boot'\"'\"' or target.startswith(('\"'\"'/boot/'\"'\"', '\"'\"'/proc/'\"'\"', '\"'\"'/sys/'\"'\"', '\"'\"'/run/'\"'\"')) or target in {'\"'\"'/proc'\"'\"', '\"'\"'/sys'\"'\"', '\"'\"'/run'\"'\"'}:\n        continue\n    dev = os.path.realpath(src)\n    if not os.path.exists(dev):\n        continue\n    name = os.path.basename(dev)\n    uuid_result = subprocess.run(['\"'\"'blkid'\"'\"', '\"'\"'-s'\"'\"', '\"'\"'UUID'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'value'\"'\"', dev], text=True, capture_output=True, check=False)\n    uuid = uuid_result.stdout.strip()\n    tokens = {dev, name}\n    if uuid:\n        tokens.add(f'\"'\"'UUID={uuid}'\"'\"')\n    if not any(entry[0] in tokens or entry[1] in tokens for entry in entries):\n        print(f'\"'\"'Missing crypttab entry for {dev} {target}'\"'\"')\n'",
+        "type": "command_output"
+      },
+      "description": "The OL 9 operating system must implement cryptographic mechanisms to prevent unauthorized modification of all information at rest.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 -c '\nimport os, pathlib, subprocess\ncrypttab = pathlib.Path('\"'\"'/etc/crypttab'\"'\"')\nif not crypttab.is_file():\n    print('\"'\"'Missing /etc/crypttab'\"'\"')\n    raise SystemExit(0)\nentries = []\nfor line in crypttab.read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    line = line.strip()\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    parts = line.split()\n    if len(parts) >= 2:\n        entries.append(parts)\nfindmnt = subprocess.run(\n    ['\"'\"'findmnt'\"'\"', '\"'\"'-rn'\"'\"', '\"'\"'-t'\"'\"', '\"'\"'nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'SOURCE,TARGET'\"'\"'],\n    text=True,\n    capture_output=True,\n    check=False,\n)\nfor line in findmnt.stdout.splitlines():\n    fields = line.split(None, 1)\n    if len(fields) != 2:\n        continue\n    src, target = fields\n    if target == '\"'\"'/boot'\"'\"' or target.startswith(('\"'\"'/boot/'\"'\"', '\"'\"'/proc/'\"'\"', '\"'\"'/sys/'\"'\"', '\"'\"'/run/'\"'\"')) or target in {'\"'\"'/proc'\"'\"', '\"'\"'/sys'\"'\"', '\"'\"'/run'\"'\"'}:\n        continue\n    dev = os.path.realpath(src)\n    if not os.path.exists(dev):\n        continue\n    name = os.path.basename(dev)\n    uuid_result = subprocess.run(['\"'\"'blkid'\"'\"', '\"'\"'-s'\"'\"', '\"'\"'UUID'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'value'\"'\"', dev], text=True, capture_output=True, check=False)\n    uuid = uuid_result.stdout.strip()\n    tokens = {dev, name}\n    if uuid:\n        tokens.add(f'\"'\"'UUID={uuid}'\"'\"')\n    if not any(entry[0] in tokens or entry[1] in tokens for entry in entries):\n        print(f'\"'\"'Missing crypttab entry for {dev} {target}'\"'\"')\n'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 -c '\nimport os, pathlib, subprocess\ncrypttab = pathlib.Path('\"'\"'/etc/crypttab'\"'\"')\nif not crypttab.is_file():\n    print('\"'\"'Missing /etc/crypttab'\"'\"')\n    raise SystemExit(0)\nentries = []\nfor line in crypttab.read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    line = line.strip()\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    parts = line.split()\n    if len(parts) >= 2:\n        entries.append(parts)\nfindmnt = subprocess.run(\n    ['\"'\"'findmnt'\"'\"', '\"'\"'-rn'\"'\"', '\"'\"'-t'\"'\"', '\"'\"'nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'SOURCE,TARGET'\"'\"'],\n    text=True,\n    capture_output=True,\n    check=False,\n)\nfor line in findmnt.stdout.splitlines():\n    fields = line.split(None, 1)\n    if len(fields) != 2:\n        continue\n    src, target = fields\n    if target == '\"'\"'/boot'\"'\"' or target.startswith(('\"'\"'/boot/'\"'\"', '\"'\"'/proc/'\"'\"', '\"'\"'/sys/'\"'\"', '\"'\"'/run/'\"'\"')) or target in {'\"'\"'/proc'\"'\"', '\"'\"'/sys'\"'\"', '\"'\"'/run'\"'\"'}:\n        continue\n    dev = os.path.realpath(src)\n    if not os.path.exists(dev):\n        continue\n    name = os.path.basename(dev)\n    uuid_result = subprocess.run(['\"'\"'blkid'\"'\"', '\"'\"'-s'\"'\"', '\"'\"'UUID'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'value'\"'\"', dev], text=True, capture_output=True, check=False)\n    uuid = uuid_result.stdout.strip()\n    tokens = {dev, name}\n    if uuid:\n        tokens.add(f'\"'\"'UUID={uuid}'\"'\"')\n    if not any(entry[0] in tokens or entry[1] in tokens for entry in entries):\n        print(f'\"'\"'Missing crypttab entry for {dev} {target}'\"'\"')\n'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271431"
+    },
     {
       "check": {
         "is_regex": false,
@@ -12435,5 +12461,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 450
+  "validated_candidates": 451
 }

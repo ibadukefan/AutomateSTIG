@@ -821,6 +821,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'findmnt -rn -t nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay -o SOURCE,TARGET 2>/dev/null | while read -r src tgt; do case \"$tgt\" in /boot|/boot/*|/proc|/proc/*|/sys|/sys/*|/run|/run/*) continue;; esac; dev=$(readlink -f \"$src\" 2>/dev/null || printf %s \"$src\"); [ -b \"$dev\" ] || continue; lsblk -sno TYPE,FSTYPE \"$dev\" 2>/dev/null | grep -Eq \"(^|[[:space:]])(crypt|crypto_LUKS)([[:space:]]|$)\" || printf \"Unencrypted %s %s\\n\" \"$dev\" \"$tgt\"; done'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 local disk partitions must implement cryptographic mechanisms to prevent unauthorized disclosure or modification of all information that requires at rest protection.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257879"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.conf",
         "pattern": "cramfs",
