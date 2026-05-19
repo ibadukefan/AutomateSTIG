@@ -15384,5 +15384,40 @@ If "server" is not defined, is not set to an authoritative DOD time source, is c
         })
 
 
+    def test_infers_iis_registry_tuning_values_present_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218819',
+            'title': 'The IIS 10.0 web server must be tuned to handle the operational requirements of the hosted application.',
+            'check_content': '''Verify, at a minimum, the following tuning settings in the registry.
+Access the IIS 10.0 web server registry.
+Verify the following keys are present and configured. The required setting depends upon the requirements of the application.
+Recommended settings are not provided as these settings must be explicitly configured to show a conscientious tuning has been made.
+Navigate to HKLM\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters\\
+REG_DWORD "URIEnableCache"
+REG_DWORD "UriMaxUriBytes"
+REG_DWORD "UriScavengerPeriod"
+
+If explicit settings are not configured for "URIEnableCache", "UriMaxUriBytes" and "UriScavengerPeriod", this is a finding.''',
+            'fix_text': '''Access the IIS 10.0 web server registry.
+Verify the following keys are present and configured. The required setting depends upon the requirements of the application. These settings must be explicitly configured to show a conscientious tuning has been made.
+
+Navigate to HKLM\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters\\
+
+Configure the following registry keys to levels to accommodate the hosted applications.
+
+Create REG_DWORD "URIEnableCache"
+Create REG_DWORD "UriMaxUriBytes"
+Create REG_DWORD "UriScavengerPeriod"''',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-218819')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('HKLM:\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters', candidate['check']['command'])
+        self.assertIn('URIEnableCache', candidate['check']['command'])
+        self.assertIn('UriMaxUriBytes', candidate['check']['command'])
+        self.assertIn('UriScavengerPeriod', candidate['check']['command'])
+
+
 if __name__ == '__main__':
     unittest.main()

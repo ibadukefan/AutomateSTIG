@@ -12051,6 +12051,26 @@ def _iis_server_exact_candidate(rule: dict, stig_id: str) -> dict | None:
             'description': rule.get('title', ''),
         }
 
+    if vuln_id == 'V-218819':
+        required_values = ('URIEnableCache', 'UriMaxUriBytes', 'UriScavengerPeriod')
+        if not re.search(r'HKLM\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters', combined, re.IGNORECASE):
+            return None
+        if not all(re.search(r'REG_DWORD\s+["“]?' + re.escape(value) + r'["”]?', combined, re.IGNORECASE) for value in required_values):
+            return None
+        if not re.search(r'If\s+explicit\s+settings\s+are\s+not\s+configured\s+for\s+["“]URIEnableCache["”],\s+["“]UriMaxUriBytes["”]\s+and\s+["“]UriScavengerPeriod["”],\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Create\s+REG_DWORD\s+["“]URIEnableCache["”].*Create\s+REG_DWORD\s+["“]UriMaxUriBytes["”].*Create\s+REG_DWORD\s+["“]UriScavengerPeriod["”]', fix_text, re.IGNORECASE | re.DOTALL):
+            return None
+        values_literal = ','.join(repr(value) for value in required_values)
+        command = f"powershell -NoProfile -Command \"$path='HKLM:\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters'; $item=Get-ItemProperty -Path $path -ErrorAction SilentlyContinue; if(-not $item) {{ exit 1 }}; $missing=@({values_literal}) | Where-Object {{ $item.PSObject.Properties.Name -notcontains $_ }}; if($missing.Count -eq 0) {{ 'Compliant' }}\""
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
+
     if vuln_id == 'V-218824':
         if not all(re.search(snippet, combined, re.IGNORECASE) for snippet in (r'Allow\s+unspecified\s+CGI\s+modules', r'Allow\s+unspecified\s+ISAPI\s+modules')):
             return None

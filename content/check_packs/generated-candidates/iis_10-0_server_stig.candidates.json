@@ -67,6 +67,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$path='HKLM:\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters'; $item=Get-ItemProperty -Path $path -ErrorAction SilentlyContinue; if($item -and @('URIEnableCache','UriMaxUriBytes','UriScavengerPeriod') | ForEach-Object { $item.PSObject.Properties.Name -contains $_ } | Where-Object { -not $_ }) { exit 1 }; if($item -and (@('URIEnableCache','UriMaxUriBytes','UriScavengerPeriod') | Where-Object { $item.PSObject.Properties.Name -contains $_ }).Count -eq 3) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The IIS 10.0 web server must be tuned to handle the operational requirements of the hosted application.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-218819"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$expected=@{'TLS 1.2'=@{Enabled=1;DisabledByDefault=0};'TLS 1.0'=@{Enabled=0;DisabledByDefault=1};'TLS 1.1'=@{Enabled=0;DisabledByDefault=1};'SSL 3.0'=@{Enabled=0;DisabledByDefault=1}}; foreach($protocol in $expected.Keys){$path='HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\'+$protocol+'\\Server'; $item=Get-ItemProperty -Path $path -ErrorAction SilentlyContinue; if(-not $item){exit 1}; foreach($name in $expected[$protocol].Keys){ if([int]$item.$name -ne [int]$expected[$protocol][$name]){exit 1}}}; 'Compliant'\"",
         "type": "command_output"
       },

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$path='HKLM:\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters'; $item=Get-ItemProperty -Path $path -ErrorAction SilentlyContinue; if($item -and @('URIEnableCache','UriMaxUriBytes','UriScavengerPeriod') | ForEach-Object { $item.PSObject.Properties.Name -contains $_ } | Where-Object { -not $_ }) { exit 1 }; if($item -and (@('URIEnableCache','UriMaxUriBytes','UriScavengerPeriod') | Where-Object { $item.PSObject.Properties.Name -contains $_ }).Count -eq 3) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The IIS 10.0 web server must be tuned to handle the operational requirements of the hosted application.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-218819"
+  },
   "check_content_excerpt": "If the IIS 10.0 web server is not hosting any applications, this is Not Applicable.\n\nIf the IIS 10.0 web server is hosting applications, consult with the system administrator to determine risk analysis performed when the application was written and deployed to the IIS 10.0 web server.\n\nObtain documentation on the configuration.\nVerify, at a minimum, the following tuning settings in the registry.\nAccess the IIS 10.0 web server registry.\nVerify the following keys are present and configured. The required setting depends upon the requirements of the application. \nRecommended settings are not provided as these settings must be explicitly configured to show a conscientious tuning has been made.\nNavigate to HKLM\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters\\\nREG_DWORD \"URIEnableCache\"\nREG_DWORD \"UriMaxUriBytes\"\nREG_DWORD \"UriScavengerPeriod\"\n\nIf explicit settings are not configured for \"URIEnableCache\", \"UriMaxUriBytes\" and \"UriScavengerPeriod\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Access the IIS 10.0 web server registry.\n\nVerify the following keys are present and configured. The required setting depends upon the requirements of the application. These settings must be explicitly configured to show a conscientious tuning has been made.\n\nNavigate to HKLM\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters\\\n\nConfigure the following registry keys to levels to accommodate the hosted applications.\n\nCreate REG_DWORD \"URIEnableCache\"\nCreate REG_DWORD \"UriMaxUriBytes\"\nCreate REG_DWORD \"UriScavengerPeriod\"",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-218819r1022659_rule",
   "severity": "medium",
