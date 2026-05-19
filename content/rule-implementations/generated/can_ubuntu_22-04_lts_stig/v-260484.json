@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "python3 -c '\nimport os, pathlib, subprocess\ncrypttab = pathlib.Path('\"'\"'/etc/crypttab'\"'\"')\nif not crypttab.is_file():\n    print('\"'\"'Missing /etc/crypttab'\"'\"')\n    raise SystemExit(0)\nentries = []\nfor line in crypttab.read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    line = line.strip()\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    parts = line.split()\n    if len(parts) >= 2:\n        entries.append(parts)\nfindmnt = subprocess.run(\n    ['\"'\"'findmnt'\"'\"', '\"'\"'-rn'\"'\"', '\"'\"'-t'\"'\"', '\"'\"'nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'SOURCE,TARGET'\"'\"'],\n    text=True,\n    capture_output=True,\n    check=False,\n)\nfor line in findmnt.stdout.splitlines():\n    fields = line.split(None, 1)\n    if len(fields) != 2:\n        continue\n    src, target = fields\n    if target == '\"'\"'/boot'\"'\"' or target.startswith(('\"'\"'/boot/'\"'\"', '\"'\"'/proc/'\"'\"', '\"'\"'/sys/'\"'\"', '\"'\"'/run/'\"'\"')) or target in {'\"'\"'/proc'\"'\"', '\"'\"'/sys'\"'\"', '\"'\"'/run'\"'\"'}:\n        continue\n    dev = os.path.realpath(src)\n    if not os.path.exists(dev):\n        continue\n    name = os.path.basename(dev)\n    uuid_result = subprocess.run(['\"'\"'blkid'\"'\"', '\"'\"'-s'\"'\"', '\"'\"'UUID'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'value'\"'\"', dev], text=True, capture_output=True, check=False)\n    uuid = uuid_result.stdout.strip()\n    tokens = {dev, name}\n    if uuid:\n        tokens.add(f'\"'\"'UUID={uuid}'\"'\"')\n    if not any(entry[0] in tokens or entry[1] in tokens for entry in entries):\n        print(f'\"'\"'Missing crypttab entry for {dev} {target}'\"'\"')\n'",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-260484"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS prevents unauthorized disclosure or modification of all information requiring at-rest protection by using disk encryption.   \n \nNote: If there is a documented and approved reason for not having data-at-rest encryption, this requirement is not applicable. \n  \nDetermine the partition layout for the system by using the following command:  \n  \n     $ sudo fdisk -l \n \n     ... \n     Device               Start               End        Sectors       Size  Type \n     /dev/sda1         2048      2203647       2201600          1G  EFI System \n     /dev/sda2  2203648      6397951       4194304          2G  Linux filesystem \n     /dev/sda3  6397952  536868863  530470912  252.9G  Linux filesystem \n     ... \n  \nVerify the system partitions are all encrypted by using the following command:  \n \n     # more /etc/crypttab \n \nEvery persistent disk partition present must have an entry in the file.   \n  \nIf any partitions other than the boot partition or pseudo file systems (such as /proc or /sys) are not listed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "To encrypt an entire partition, dedicate a partition for encryption in the partition layout.  \n  \nNote: Encrypting a partition in an already-installed system is more difficult because it will need to be resized and existing partitions changed.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-260484r958552_rule",
   "severity": "medium",

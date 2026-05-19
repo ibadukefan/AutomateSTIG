@@ -1432,7 +1432,12 @@ def _linux_platform(stig_id: str) -> bool:
 
 def _ubuntu_2004_data_at_rest_crypttab_candidate(rule: dict, stig_id: str) -> dict | None:
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
-    if canonical_vuln_id != 'V-238335' or stig_id != 'Canonical_Ubuntu_20-04_LTS_STIG':
+    supported_stigs = {
+        'V-238335': {'Canonical_Ubuntu_20-04_LTS_STIG'},
+        'V-260484': {'CAN_Ubuntu_22-04_LTS_STIG'},
+        'V-270747': {'CAN_Ubuntu_24-04_STIG'},
+    }
+    if stig_id not in supported_stigs.get(canonical_vuln_id, set()):
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''

@@ -103,6 +103,37 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('findmnt', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_ubuntu_2204_and_2404_data_at_rest_crypttab_candidates(self):
+        base_check = (
+            'Note: If there is a documented and approved mission requirement for data-at-rest to not be encrypted, this requirement is not applicable.\n'
+            'Verify Ubuntu {version} LTS prevents unauthorized disclosure or modification of all information requiring at-rest protection by using disk encryption.\n'
+            'Determine the partition layout for the system with the following command:\n\n'
+            '$ sudo fdisk -l\n\n'
+            'Verify the system partitions are all encrypted with the following command:\n\n'
+            '$ more /etc/crypttab\n\n'
+            'Every persistent disk partition present must have an entry in the file.\n'
+            'If any partitions other than the boot partition or pseudo file systems (such as /proc or /sys) are not listed, this is a finding.'
+        )
+        cases = (
+            ('V-260484', '22.04', 'CAN_Ubuntu_22-04_LTS_STIG'),
+            ('V-270747', '24.04', 'CAN_Ubuntu_24-04_STIG'),
+        )
+        for vuln_id, version, stig_id in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'Ubuntu {version} LTS handling data requiring "data at rest" protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest.',
+                    'check_content': base_check.format(version=version),
+                    'fix_text': 'To encrypt an entire partition, dedicate a partition for encryption in the partition layout.',
+                }, stig_id)
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertEqual(candidate['check']['type'], 'command_output')
+                self.assertIn('/etc/crypttab', candidate['check']['command'])
+                self.assertIn('findmnt', candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_sql_server_2022_disabled_configuration_option_candidate(self):
         check = (
             'To determine if [Remote Access] is enabled, execute the following command:\n'

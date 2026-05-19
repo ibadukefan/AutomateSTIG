@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 191,
+  "candidate_checks": 192,
   "cases": [
     {
       "check": {
@@ -2646,6 +2646,32 @@
     },
     {
       "check": {
+        "command": "python3 -c '\nimport os, pathlib, subprocess\ncrypttab = pathlib.Path('\"'\"'/etc/crypttab'\"'\"')\nif not crypttab.is_file():\n    print('\"'\"'Missing /etc/crypttab'\"'\"')\n    raise SystemExit(0)\nentries = []\nfor line in crypttab.read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    line = line.strip()\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    parts = line.split()\n    if len(parts) >= 2:\n        entries.append(parts)\nfindmnt = subprocess.run(\n    ['\"'\"'findmnt'\"'\"', '\"'\"'-rn'\"'\"', '\"'\"'-t'\"'\"', '\"'\"'nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'SOURCE,TARGET'\"'\"'],\n    text=True,\n    capture_output=True,\n    check=False,\n)\nfor line in findmnt.stdout.splitlines():\n    fields = line.split(None, 1)\n    if len(fields) != 2:\n        continue\n    src, target = fields\n    if target == '\"'\"'/boot'\"'\"' or target.startswith(('\"'\"'/boot/'\"'\"', '\"'\"'/proc/'\"'\"', '\"'\"'/sys/'\"'\"', '\"'\"'/run/'\"'\"')) or target in {'\"'\"'/proc'\"'\"', '\"'\"'/sys'\"'\"', '\"'\"'/run'\"'\"'}:\n        continue\n    dev = os.path.realpath(src)\n    if not os.path.exists(dev):\n        continue\n    name = os.path.basename(dev)\n    uuid_result = subprocess.run(['\"'\"'blkid'\"'\"', '\"'\"'-s'\"'\"', '\"'\"'UUID'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'value'\"'\"', dev], text=True, capture_output=True, check=False)\n    uuid = uuid_result.stdout.strip()\n    tokens = {dev, name}\n    if uuid:\n        tokens.add(f'\"'\"'UUID={uuid}'\"'\"')\n    if not any(entry[0] in tokens or entry[1] in tokens for entry in entries):\n        print(f'\"'\"'Missing crypttab entry for {dev} {target}'\"'\"')\n'",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS handling data requiring \"data at rest\" protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 -c '\nimport os, pathlib, subprocess\ncrypttab = pathlib.Path('\"'\"'/etc/crypttab'\"'\"')\nif not crypttab.is_file():\n    print('\"'\"'Missing /etc/crypttab'\"'\"')\n    raise SystemExit(0)\nentries = []\nfor line in crypttab.read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    line = line.strip()\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    parts = line.split()\n    if len(parts) >= 2:\n        entries.append(parts)\nfindmnt = subprocess.run(\n    ['\"'\"'findmnt'\"'\"', '\"'\"'-rn'\"'\"', '\"'\"'-t'\"'\"', '\"'\"'nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'SOURCE,TARGET'\"'\"'],\n    text=True,\n    capture_output=True,\n    check=False,\n)\nfor line in findmnt.stdout.splitlines():\n    fields = line.split(None, 1)\n    if len(fields) != 2:\n        continue\n    src, target = fields\n    if target == '\"'\"'/boot'\"'\"' or target.startswith(('\"'\"'/boot/'\"'\"', '\"'\"'/proc/'\"'\"', '\"'\"'/sys/'\"'\"', '\"'\"'/run/'\"'\"')) or target in {'\"'\"'/proc'\"'\"', '\"'\"'/sys'\"'\"', '\"'\"'/run'\"'\"'}:\n        continue\n    dev = os.path.realpath(src)\n    if not os.path.exists(dev):\n        continue\n    name = os.path.basename(dev)\n    uuid_result = subprocess.run(['\"'\"'blkid'\"'\"', '\"'\"'-s'\"'\"', '\"'\"'UUID'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'value'\"'\"', dev], text=True, capture_output=True, check=False)\n    uuid = uuid_result.stdout.strip()\n    tokens = {dev, name}\n    if uuid:\n        tokens.add(f'\"'\"'UUID={uuid}'\"'\"')\n    if not any(entry[0] in tokens or entry[1] in tokens for entry in entries):\n        print(f'\"'\"'Missing crypttab entry for {dev} {target}'\"'\"')\n'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 -c '\nimport os, pathlib, subprocess\ncrypttab = pathlib.Path('\"'\"'/etc/crypttab'\"'\"')\nif not crypttab.is_file():\n    print('\"'\"'Missing /etc/crypttab'\"'\"')\n    raise SystemExit(0)\nentries = []\nfor line in crypttab.read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    line = line.strip()\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    parts = line.split()\n    if len(parts) >= 2:\n        entries.append(parts)\nfindmnt = subprocess.run(\n    ['\"'\"'findmnt'\"'\"', '\"'\"'-rn'\"'\"', '\"'\"'-t'\"'\"', '\"'\"'nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'SOURCE,TARGET'\"'\"'],\n    text=True,\n    capture_output=True,\n    check=False,\n)\nfor line in findmnt.stdout.splitlines():\n    fields = line.split(None, 1)\n    if len(fields) != 2:\n        continue\n    src, target = fields\n    if target == '\"'\"'/boot'\"'\"' or target.startswith(('\"'\"'/boot/'\"'\"', '\"'\"'/proc/'\"'\"', '\"'\"'/sys/'\"'\"', '\"'\"'/run/'\"'\"')) or target in {'\"'\"'/proc'\"'\"', '\"'\"'/sys'\"'\"', '\"'\"'/run'\"'\"'}:\n        continue\n    dev = os.path.realpath(src)\n    if not os.path.exists(dev):\n        continue\n    name = os.path.basename(dev)\n    uuid_result = subprocess.run(['\"'\"'blkid'\"'\"', '\"'\"'-s'\"'\"', '\"'\"'UUID'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'value'\"'\"', dev], text=True, capture_output=True, check=False)\n    uuid = uuid_result.stdout.strip()\n    tokens = {dev, name}\n    if uuid:\n        tokens.add(f'\"'\"'UUID={uuid}'\"'\"')\n    if not any(entry[0] in tokens or entry[1] in tokens for entry in entries):\n        print(f'\"'\"'Missing crypttab entry for {dev} {target}'\"'\"')\n'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270747"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/group",
         "pattern": "sudo:x:27:foo",
@@ -5205,5 +5231,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 191
+  "validated_candidates": 192
 }
