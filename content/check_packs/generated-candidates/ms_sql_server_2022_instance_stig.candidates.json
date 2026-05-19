@@ -54,6 +54,84 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'Replication Xps';\"",
+        "type": "command_output"
+      },
+      "description": "The SQL Server Replication Xps feature must be disabled unless specifically required and approved.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-271292"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'External Scripts Enabled';\"",
+        "type": "command_output"
+      },
+      "description": "The SQL Server External Scripts Enabled feature must be disabled, unless specifically required and approved.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-271293"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'Remote Data Archive';\"",
+        "type": "command_output"
+      },
+      "description": "The remote Data Archive feature must be disabled unless specifically required and approved.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-271295"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'Allow Polybase Export';\"",
+        "type": "command_output"
+      },
+      "description": "The \"Allow Polybase Export\" feature must be disabled, unless specifically required and approved.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-271296"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'Hadoop Connectivity';\"",
+        "type": "command_output"
+      },
+      "description": "The \"Hadoop Connectivity\" feature must be disabled unless specifically required and approved.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-271297"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'Remote Access';\"",
+        "type": "command_output"
+      },
+      "description": "The \"Remote Access\" feature must be disabled unless specifically required and approved.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-271298"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'common criteria compliance enabled';\"",
         "type": "command_output"
       },

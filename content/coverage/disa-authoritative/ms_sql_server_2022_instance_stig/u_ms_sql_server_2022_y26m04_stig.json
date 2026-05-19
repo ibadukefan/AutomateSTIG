@@ -306,91 +306,97 @@
       "vuln_id": "V-271291"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271292",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271292r1111143_rule",
       "severity": "medium",
       "title": "The SQL Server Replication Xps feature must be disabled unless specifically required and approved.",
-      "tracking_issue": "TODO-V-271292",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271292"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271293",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271293r1111138_rule",
       "severity": "medium",
       "title": "The SQL Server External Scripts Enabled feature must be disabled, unless specifically required and approved.",
-      "tracking_issue": "TODO-V-271293",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271293"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271295",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271295r1111135_rule",
       "severity": "medium",
       "title": "The remote Data Archive feature must be disabled unless specifically required and approved.",
-      "tracking_issue": "TODO-V-271295",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271295"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271296",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271296r1111132_rule",
       "severity": "medium",
       "title": "The \"Allow Polybase Export\" feature must be disabled, unless specifically required and approved.",
-      "tracking_issue": "TODO-V-271296",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271296"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271297",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271297r1111129_rule",
       "severity": "medium",
       "title": "The \"Hadoop Connectivity\" feature must be disabled unless specifically required and approved.",
-      "tracking_issue": "TODO-V-271297",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271297"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271298",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271298r1111126_rule",
       "severity": "medium",
       "title": "The \"Remote Access\" feature must be disabled unless specifically required and approved.",
-      "tracking_issue": "TODO-V-271298",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271298"

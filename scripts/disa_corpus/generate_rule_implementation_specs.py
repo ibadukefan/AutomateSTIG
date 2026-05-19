@@ -10837,6 +10837,43 @@ def _sql_server_audit_status_started_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _sql_server_disabled_configuration_option_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server_2022' not in stig_id.lower() and 'sql server 2022' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    option_by_vuln = {
+        'V-271292': 'Replication Xps',
+        'V-271293': 'External Scripts Enabled',
+        'V-271295': 'Remote Data Archive',
+        'V-271296': 'Allow Polybase Export',
+        'V-271297': 'Hadoop Connectivity',
+        'V-271298': 'Remote Access',
+    }
+    option = option_by_vuln.get(rule.get('vuln_id', ''))
+    if not option:
+        return None
+    if not re.search(r'SELECT\s+name\s*,\s*value\s*,\s*value_in_use\s+FROM\s+sys\.configurations', content, re.IGNORECASE):
+        return None
+    if not re.search(rf"WHERE\s+name\s*=\s*['\"“]{re.escape(option)}['\"”]", content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s*\[value_in_use\]\s*is\s*a\s*\[1\]', content, re.IGNORECASE):
+        return None
+    if not re.search(rf"SP_CONFIGURE\s+['\"“][^'\"”]*{re.escape(option)}[^'\"”]*['\"”]\s*,\s*0", fix_text, re.IGNORECASE):
+        return None
+    escaped_option = option.replace("'", "''")
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': f"sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = '{escaped_option}';\"",
+        },
+        'expected': {'type': 'equals', 'value': '0'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_common_criteria_enabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -12851,6 +12888,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_audit_status_started_candidate = _sql_server_audit_status_started_candidate(rule, stig_id)
     if sql_server_audit_status_started_candidate:
         return sql_server_audit_status_started_candidate
+
+    sql_server_disabled_configuration_option_candidate = _sql_server_disabled_configuration_option_candidate(rule, stig_id)
+    if sql_server_disabled_configuration_option_candidate:
+        return sql_server_disabled_configuration_option_candidate
 
     sql_server_common_criteria_enabled_candidate = _sql_server_common_criteria_enabled_candidate(rule, stig_id)
     if sql_server_common_criteria_enabled_candidate:

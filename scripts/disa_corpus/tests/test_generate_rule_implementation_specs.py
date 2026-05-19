@@ -11,6 +11,40 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_sql_server_2022_disabled_configuration_option_candidate(self):
+        check = (
+            'To determine if [Remote Access] is enabled, execute the following command:\n'
+            'SELECT name, value, value_in_use\n'
+            'FROM sys.configurations\n'
+            "WHERE name = 'Remote Access'\n\n"
+            'If [value_in_use] is a [1], review the system documentation to determine whether the use of [Remote Access] is approved. '
+            'If it is not approved, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271298',
+            'title': 'The "Remote Access" feature must be disabled unless specifically required and approved.',
+            'check_content': check,
+            'fix_text': "To disable the use of [Remote Access], from the query prompt: EXEC SP_CONFIGURE 'remote access', 0; RECONFIGURE WITH OVERRIDE;",
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271298')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn("sqlcmd", candidate['check']['command'])
+        self.assertIn("Remote Access", candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
+
+    def test_does_not_infer_sql_server_disabled_configuration_option_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-271298',
+            'title': 'The "Remote Access" feature must be disabled unless specifically required and approved.',
+            'check_content': "SELECT name, value, value_in_use FROM sys.configurations WHERE name = 'Remote Access'",
+            'fix_text': "EXEC SP_CONFIGURE 'remote access', 0;",
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_SQL_Server_2022_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2019_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': 'review Remote Access'}, 'MS_SQL_Server_2022_Instance_STIG'))
+
     def test_infers_windows_domain_controller_anonymous_directory_access_candidate(self):
         check = (
             'This applies to domain controllers. It is NA for other systems.\n\n'

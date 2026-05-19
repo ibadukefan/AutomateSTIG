@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'Replication Xps';\"",
+      "type": "command_output"
+    },
+    "description": "The SQL Server Replication Xps feature must be disabled unless specifically required and approved.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "generic",
+    "vuln_id": "V-271292"
+  },
   "check_content_excerpt": "To determine if [Replication Xps] is enabled, execute the following command:\nSELECT name, value, value_in_use\nFROM sys.configurations\nWHERE name = 'Replication Xps'\n \nIf [value_in_use] is a [1], review the system documentation to determine whether the use of [Replication Xps] is approved. If it is not approved, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable use of or remove any external application executable object definitions that are not approved.\n\nTo disable the use of [Replication Xps] option, from the query prompt:\nEXEC SP_CONFIGURE 'show advanced options', 1;  \nRECONFIGURE WITH OVERRIDE;\nEXEC SP_CONFIGURE 'replication xps', 0;\nRECONFIGURE WITH OVERRIDE;\nEXEC SP_CONFIGURE 'show advanced options', 0;  \nRECONFIGURE WITH OVERRIDE;\nGO  \nRECONFIGURE;  \nGO",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271292r1111143_rule",
   "severity": "medium",
