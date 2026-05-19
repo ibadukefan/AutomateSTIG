@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 170,
+  "candidate_checks": 171,
   "cases": [
     {
       "check": {
@@ -1166,6 +1166,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204482"
+    },
+    {
+      "check": {
+        "command": "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"noexec\") ok=1; if (!ok) print }' /etc/fstab",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must prevent binary files from being executed on file systems that are being imported via Network File System (NFS).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"noexec\") ok=1; if (!ok) print }' /etc/fstab": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"noexec\") ok=1; if (!ok) print }' /etc/fstab": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204483"
     },
     {
       "check": {
@@ -4565,5 +4591,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 170
+  "validated_candidates": 171
 }

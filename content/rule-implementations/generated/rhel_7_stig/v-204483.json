@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"noexec\") ok=1; if (!ok) print }' /etc/fstab",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must prevent binary files from being executed on file systems that are being imported via Network File System (NFS).",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204483"
+  },
   "check_content_excerpt": "Verify file systems that are being NFS imported are configured with the \"noexec\" option.\n\nFind the file system(s) that contain the directories being imported with the following command:\n\n# more /etc/fstab | grep nfs\n\nUUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,noexec 0 0\n\nIf a file system found in \"/etc/fstab\" refers to NFS and it does not have the \"noexec\" option set, and use of NFS imported binaries is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.\n\nVerify the NFS is mounted with the \"noexec\"option:\n\n# mount | grep nfs | grep noexec\nIf no results are returned and use of NFS imported binaries is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the \"/etc/fstab\" to use the \"noexec\" option on file systems that are being imported via NFS.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204483r991589_rule",
   "severity": "medium",

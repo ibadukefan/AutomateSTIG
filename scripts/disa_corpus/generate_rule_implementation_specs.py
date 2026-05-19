@@ -4359,18 +4359,32 @@ def _linux_removable_media_mount_option_candidate(rule: dict, stig_id: str) -> d
 
 
 def _linux_nfs_imported_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
-    if rule.get('vuln_id', '') != 'V-204482' or not _linux_platform(stig_id):
+    if not _linux_platform(stig_id):
         return None
+    vuln_id = rule.get('vuln_id', '')
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     title = rule.get('title', '') or ''
-    if not re.search(r'file\s+systems\s+that\s+are\s+being\s+NFS\s+imported\s+are\s+configured\s+with\s+the\s+["“]nosuid["”]\s+option', content, re.IGNORECASE):
+    option_by_vuln = {
+        'V-204482': 'nosuid',
+        'V-204483': 'noexec',
+    }
+    required_option = option_by_vuln.get(vuln_id)
+    if not required_option:
         return None
-    if not re.search(r'file\s+system\s+found\s+in\s+["“]/etc/fstab["”]\s+refers\s+to\s+NFS\s+and\s+it\s+does\s+not\s+have\s+the\s+["“]nosuid["”]\s+option\s+set,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
-        return None
-    if not re.search(r'/etc/fstab.*use\s+the\s+["“]nosuid["”]\s+option\s+on\s+file\s+systems\s+that\s+are\s+being\s+imported\s+via\s+NFS', fix_text, re.IGNORECASE):
-        return None
-    command = "awk '$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"nosuid\") ok=1; if (!ok) print }' /etc/fstab"
+    if vuln_id == 'V-204483':
+        if not re.search(r'Network\s+File\s+System\s*\(NFS\)', title, re.IGNORECASE):
+            return None
+        if not re.search(r'/etc/fstab.*use\s+the\s+["“]noexec["”]\s+option\s+on\s+file\s+systems\s+that\s+are\s+being\s+imported\s+via\s+NFS', fix_text, re.IGNORECASE):
+            return None
+    else:
+        if not re.search(r'file\s+systems\s+that\s+are\s+being\s+NFS\s+imported\s+are\s+configured\s+with\s+the\s+["“]nosuid["”]\s+option', content, re.IGNORECASE):
+            return None
+        if not re.search(r'file\s+system\s+found\s+in\s+["“]/etc/fstab["”]\s+refers\s+to\s+NFS\s+and\s+it\s+does\s+not\s+have\s+the\s+["“]nosuid["”]\s+option\s+set,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'/etc/fstab.*use\s+the\s+["“]nosuid["”]\s+option\s+on\s+file\s+systems\s+that\s+are\s+being\s+imported\s+via\s+NFS', fix_text, re.IGNORECASE):
+            return None
+    command = f"awk '$3 ~ /^(nfs|nfs4)$/ {{ ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == \"{required_option}\") ok=1; if (!ok) print }}' /etc/fstab"
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',

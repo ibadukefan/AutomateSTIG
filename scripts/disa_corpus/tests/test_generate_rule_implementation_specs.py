@@ -1848,6 +1848,28 @@ By using this IS, you consent to the following conditions:
             })
             self.assertEqual(generated['candidate_check']['expected'], {'type': 'equals', 'value': 'Enabled'})
 
+    def test_infers_scap_rhel7_nfs_import_noexec_from_fix_only(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204483',
+            'title': 'The Red Hat Enterprise Linux operating system must prevent binary files from being executed on file systems that are being imported via Network File System (NFS).',
+            'check_content': '',
+            'fix_text': 'Configure the "/etc/fstab" to use the "noexec" option on file systems that are being imported via NFS.',
+        }, 'scap_mil.disa.stig_collection_U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-204483')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'awk \'$3 ~ /^(nfs|nfs4)$/ { ok=0; n=split($4, opts, \",\"); for (i=1; i<=n; i++) if (opts[i] == "noexec") ok=1; if (!ok) print }\' /etc/fstab'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_does_not_infer_scap_rhel7_nfs_import_noexec_without_exact_vuln(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The Red Hat Enterprise Linux operating system must prevent binary files from being executed on file systems that are being imported via Network File System (NFS).',
+            'check_content': '',
+            'fix_text': 'Configure the "/etc/fstab" to use the "noexec" option on file systems that are being imported via NFS.',
+        }, 'scap_mil.disa.stig_collection_U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNone(candidate)
+
     def test_infers_oracle_linux_home_filesystem_mount_options_from_fstab_prose(self):
         base = {
             'vuln_id': 'V-248616',
