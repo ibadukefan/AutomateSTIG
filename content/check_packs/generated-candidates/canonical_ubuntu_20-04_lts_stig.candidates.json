@@ -1145,6 +1145,19 @@
     },
     {
       "check": {
+        "command": "python3 -c '\nimport os, pathlib, subprocess\ncrypttab = pathlib.Path('\"'\"'/etc/crypttab'\"'\"')\nif not crypttab.is_file():\n    print('\"'\"'Missing /etc/crypttab'\"'\"')\n    raise SystemExit(0)\nentries = []\nfor line in crypttab.read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    line = line.strip()\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    parts = line.split()\n    if len(parts) >= 2:\n        entries.append(parts)\nfindmnt = subprocess.run(\n    ['\"'\"'findmnt'\"'\"', '\"'\"'-rn'\"'\"', '\"'\"'-t'\"'\"', '\"'\"'nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'SOURCE,TARGET'\"'\"'],\n    text=True,\n    capture_output=True,\n    check=False,\n)\nfor line in findmnt.stdout.splitlines():\n    fields = line.split(None, 1)\n    if len(fields) != 2:\n        continue\n    src, target = fields\n    if target == '\"'\"'/boot'\"'\"' or target.startswith(('\"'\"'/boot/'\"'\"', '\"'\"'/proc/'\"'\"', '\"'\"'/sys/'\"'\"', '\"'\"'/run/'\"'\"')) or target in {'\"'\"'/proc'\"'\"', '\"'\"'/sys'\"'\"', '\"'\"'/run'\"'\"'}:\n        continue\n    dev = os.path.realpath(src)\n    if not os.path.exists(dev):\n        continue\n    name = os.path.basename(dev)\n    uuid_result = subprocess.run(['\"'\"'blkid'\"'\"', '\"'\"'-s'\"'\"', '\"'\"'UUID'\"'\"', '\"'\"'-o'\"'\"', '\"'\"'value'\"'\"', dev], text=True, capture_output=True, check=False)\n    uuid = uuid_result.stdout.strip()\n    tokens = {dev, name}\n    if uuid:\n        tokens.add(f'\"'\"'UUID={uuid}'\"'\"')\n    if not any(entry[0] in tokens or entry[1] in tokens for entry in entries):\n        print(f'\"'\"'Missing crypttab entry for {dev} {target}'\"'\"')\n'",
+        "type": "command_output"
+      },
+      "description": "Ubuntu operating systems handling data requiring \"data at rest\" protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-238335"
+    },
+    {
+      "check": {
         "command": "find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type f -exec stat -c \"%n %a\" {} \\;",
         "type": "command_output"
       },

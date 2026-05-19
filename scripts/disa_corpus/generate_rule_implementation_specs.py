@@ -1430,6 +1430,72 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
 
 
+def _ubuntu_2004_data_at_rest_crypttab_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    if canonical_vuln_id != 'V-238335' or stig_id != 'Canonical_Ubuntu_20-04_LTS_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'data[-\s]at[-\s]rest|information\s+at[-\s]rest',
+        r'fdisk\s+-l',
+        r'/etc/crypttab',
+        r'Every\s+persistent\s+disk\s+partition\s+present\s+must\s+have\s+an\s+entry\s+in\s+the\s+file',
+        r'boot\s+partition\s+or\s+pseudo\s+file\s+systems',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'encrypt\s+an\s+entire\s+partition|partition\s+for\s+encryption', fix_text, re.IGNORECASE):
+        return None
+    script = r'''
+import os, pathlib, subprocess
+crypttab = pathlib.Path('/etc/crypttab')
+if not crypttab.is_file():
+    print('Missing /etc/crypttab')
+    raise SystemExit(0)
+entries = []
+for line in crypttab.read_text(errors='ignore').splitlines():
+    line = line.strip()
+    if not line or line.startswith('#'):
+        continue
+    parts = line.split()
+    if len(parts) >= 2:
+        entries.append(parts)
+findmnt = subprocess.run(
+    ['findmnt', '-rn', '-t', 'nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay', '-o', 'SOURCE,TARGET'],
+    text=True,
+    capture_output=True,
+    check=False,
+)
+for line in findmnt.stdout.splitlines():
+    fields = line.split(None, 1)
+    if len(fields) != 2:
+        continue
+    src, target = fields
+    if target == '/boot' or target.startswith(('/boot/', '/proc/', '/sys/', '/run/')) or target in {'/proc', '/sys', '/run'}:
+        continue
+    dev = os.path.realpath(src)
+    if not os.path.exists(dev):
+        continue
+    name = os.path.basename(dev)
+    uuid_result = subprocess.run(['blkid', '-s', 'UUID', '-o', 'value', dev], text=True, capture_output=True, check=False)
+    uuid = uuid_result.stdout.strip()
+    tokens = {dev, name}
+    if uuid:
+        tokens.add(f'UUID={uuid}')
+    if not any(entry[0] in tokens or entry[1] in tokens for entry in entries):
+        print(f'Missing crypttab entry for {dev} {target}')
+'''
+    command = f"python3 -c {shlex.quote(script)}"
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_data_at_rest_encryption_candidate(rule: dict, stig_id: str) -> dict | None:
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
     supported_vulns = {'V-270747', 'V-271431', 'V-271756'}
@@ -12369,6 +12435,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    ubuntu_2004_data_at_rest_candidate = _ubuntu_2004_data_at_rest_crypttab_candidate(rule, stig_id)
+    if ubuntu_2004_data_at_rest_candidate:
+        return ubuntu_2004_data_at_rest_candidate
+
     linux_data_at_rest_candidate = _linux_data_at_rest_encryption_candidate(rule, stig_id)
     if linux_data_at_rest_candidate:
         return linux_data_at_rest_candidate
