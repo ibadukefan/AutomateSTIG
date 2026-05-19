@@ -11,6 +11,39 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_windows_workstation_bitlocker_all_fixed_volumes_candidate(self):
+        check = (
+            'Verify all Windows 11 information systems (including SIPRNet) employ BitLocker for full disk encryption.\n\n'
+            'If full disk encryption using BitLocker is not implemented, this is a finding.\n\n'
+            'Verify BitLocker is turned on for the operating system drive and any fixed data drives.\n\n'
+            'Open "BitLocker Drive Encryption" from the Control Panel.\n\n'
+            'If the operating system drive or any fixed data drives have "Turn on BitLocker", this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253259',
+            'title': 'Windows 11 information systems must use BitLocker to encrypt all disks to protect the confidentiality and integrity of all information at rest.',
+            'check_content': check,
+            'fix_text': 'Enable full disk encryption on all information systems (including SIPRNet) using BitLocker.',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-253259')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Get-BitLockerVolume', candidate['check']['command'])
+        self.assertIn('VolumeType -in', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_bitlocker_candidate_without_exact_workstation_guards(self):
+        rule = {
+            'vuln_id': 'V-253259',
+            'title': 'Windows 11 information systems must use BitLocker to encrypt all disks.',
+            'check_content': 'Verify BitLocker is turned on.',
+            'fix_text': 'Enable BitLocker.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Microsoft_Windows_11_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Microsoft_Windows_11_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2025_STIG'))
+
     def test_infers_windows_server_2025_antivirus_service_candidate(self):
         check = (
             'Verify an antivirus solution is installed on the system. The antivirus solution may be bundled with an approved host-based security solution.\n\n'

@@ -782,6 +782,39 @@ def _windows_host_firewall_enabled_candidate(rule: dict, stig_id: str) -> dict |
     }
 
 
+def _windows_workstation_bitlocker_all_fixed_volumes_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-220702', 'V-253259'}:
+        return None
+    if stig_id not in {'MS_Windows_10_STIG', 'Microsoft_Windows_11_STIG'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_content_patterns = (
+        r'employ\s+BitLocker\s+for\s+full\s+disk\s+encryption',
+        r'full\s+disk\s+encryption\s+using\s+BitLocker\s+is\s+not\s+implemented,?\s+this\s+is\s+a\s+finding',
+        r'BitLocker\s+is\s+turned\s+on\s+for\s+the\s+operating\s+system\s+drive\s+and\s+any\s+fixed\s+data\s+drives',
+        r'operating\s+system\s+drive\s+or\s+any\s+fixed\s+data\s+drives\s+have\s+["“]Turn\s+on\s+BitLocker["”],?\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content_patterns):
+        return None
+    if not re.search(r'Enable\s+full\s+disk\s+encryption\s+on\s+all\s+information\s+systems.*?using\s+BitLocker', combined, re.IGNORECASE | re.DOTALL):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$volumes = Get-BitLockerVolume | Where-Object { $_.VolumeType -in @(\'OperatingSystem\', \'FixedData\') }; '
+        'if ($volumes -and -not ($volumes | Where-Object { $_.ProtectionStatus -ne \'On\' })) { \'Compliant\' }"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_run_as_different_user_context_menu_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     vuln_id = rule.get('vuln_id', '')
@@ -12269,6 +12302,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         host_firewall_candidate = _windows_host_firewall_enabled_candidate(rule, stig_id)
         if host_firewall_candidate:
             return host_firewall_candidate
+
+        bitlocker_candidate = _windows_workstation_bitlocker_all_fixed_volumes_candidate(rule, stig_id)
+        if bitlocker_candidate:
+            return bitlocker_candidate
 
         local_volume_filesystem_candidate = _windows_local_volume_filesystem_candidate(rule, stig_id)
         if local_volume_filesystem_candidate:

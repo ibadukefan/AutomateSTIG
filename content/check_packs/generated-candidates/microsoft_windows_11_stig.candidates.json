@@ -54,6 +54,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$volumes = Get-BitLockerVolume | Where-Object { $_.VolumeType -in @('OperatingSystem', 'FixedData') }; if ($volumes -and -not ($volumes | Where-Object { $_.ProtectionStatus -ne 'On' })) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows 11 information systems must use BitLocker to encrypt all disks to protect the confidentiality and integrity of all information at rest.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253259"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$descriptions=@(bcdedit /enum osloader | Select-String '^\\s*description\\s+(.+)$' | ForEach-Object { $_.Matches[0].Groups[1].Value.Trim() }); if ($descriptions.Count -eq 1 -and $descriptions[0] -like 'Windows 11*') { 'Compliant' }\"",
         "type": "command_output"
       },

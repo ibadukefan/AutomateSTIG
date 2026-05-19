@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$volumes = Get-BitLockerVolume | Where-Object { $_.VolumeType -in @('OperatingSystem', 'FixedData') }; if ($volumes -and -not ($volumes | Where-Object { $_.ProtectionStatus -ne 'On' })) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows 10 information systems must use BitLocker to encrypt all disks to protect the confidentiality and integrity of all information at rest.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220702"
+    },
+    {
+      "check": {
         "key": "LockoutDuration",
         "section": "System Access",
         "type": "security_policy"
