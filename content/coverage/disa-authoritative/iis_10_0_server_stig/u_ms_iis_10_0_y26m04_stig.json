@@ -363,16 +363,17 @@
       "vuln_id": "V-218813"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-218814",
+      "check_pack": "generated-candidates/iis_10-0_server_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-218814r1067589_rule",
       "severity": "medium",
       "title": "IIS 10.0 web server system files must conform to minimum file permission requirements.",
-      "tracking_issue": "TODO-V-218814",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/iis_10-0_server_stig.candidates.json",
         "content/disa-corpus/artifacts/5cb7f837811e6bf524d5713d808fc8e90ef4948da4fb7f04feaea1b9d211226e/U_MS_IIS_10-0_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-218814"

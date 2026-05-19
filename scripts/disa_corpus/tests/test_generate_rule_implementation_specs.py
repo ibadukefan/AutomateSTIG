@@ -895,6 +895,62 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('strict_servlet', candidate['check']['command'].lower())
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true'})
 
+    def test_infers_iis_10_inetpub_acl_candidate(self):
+        check_text = '''Open Explorer and navigate to the inetpub directory.
+
+Right-click "inetpub" and select "Properties".
+
+Click the "Security" tab.
+
+Verify the permissions for the following users; if the permissions are less restrictive, this is a finding.
+
+System: Full control
+Administrators: Full control
+TrustedInstaller: Full control
+ALL APPLICATION PACKAGES (built-in security group): Read and execute, This folder, subfolders and files
+ALL RESTRICTED APPLICATION PACKAGES (built-in security group): Read and execute, This folder, subfolders and files
+Users: Read and execute, list folder contents
+CREATOR OWNER: Full Control, Subfolders and files only'''
+        fix_text = '''Open Explorer and navigate to the inetpub directory.
+
+Right-click "inetpub" and select "Properties".
+
+Click the "Security" tab.
+
+Set the following permissions:
+System: Full control
+Administrators: Full control
+TrustedInstaller: Full control
+ALL APPLICATION PACKAGES (built-in security group): Read and execute, This folder, subfolders and files
+ALL RESTRICTED APPLICATION PACKAGES (built-in security group): Read and execute, This folder, subfolders and files
+Users: Read and execute, list folder contents
+CREATOR OWNER: Full Control, Subfolders and files only'''
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218814',
+            'title': 'IIS 10.0 web server system files must conform to minimum file permission requirements.',
+            'check_content': check_text,
+            'fix_text': fix_text,
+        }, 'IIS_10-0_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-218814')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Get-Acl', candidate['check']['command'])
+        self.assertIn('C:\\inetpub', candidate['check']['command'])
+        self.assertIn('ALL APPLICATION PACKAGES', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_does_not_infer_iis_10_inetpub_acl_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-218814',
+            'title': 'IIS 10.0 web server system files must conform to minimum file permission requirements.',
+            'check_content': 'Open Explorer and navigate to the inetpub directory. System: Full control Administrators: Full control Users: Read and execute, list folder contents',
+            'fix_text': 'Set inetpub permissions.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'IIS_10-0_Server_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Windows_Server_2019_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'IIS_10-0_Server_STIG'))
+
     def test_generates_planned_specs_for_unsupported_rules_only(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)

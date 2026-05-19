@@ -11912,6 +11912,52 @@ def _windows_services_msc_candidate(rule: dict, stig_id: str) -> dict | None:
     return None
 
 
+def _iis_10_inetpub_acl_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-218814' or stig_id != 'IIS_10-0_Server_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    required_snippets = (
+        r'Open\s+Explorer\s+and\s+navigate\s+to\s+the\s+inetpub\s+directory',
+        r'Verify\s+the\s+permissions\s+for\s+the\s+following\s+users;\s+if\s+the\s+permissions\s+are\s+less\s+restrictive,\s+this\s+is\s+a\s+finding',
+        r'System:\s+Full\s+control',
+        r'Administrators:\s+Full\s+control',
+        r'TrustedInstaller:\s+Full\s+control',
+        r'ALL\s+APPLICATION\s+PACKAGES\s+\(built-in\s+security\s+group\):\s+Read\s+and\s+execute,\s+This\s+folder,\s+subfolders\s+and\s+files',
+        r'ALL\s+RESTRICTED\s+APPLICATION\s+PACKAGES\s+\(built-in\s+security\s+group\):\s+Read\s+and\s+execute,\s+This\s+folder,\s+subfolders\s+and\s+files',
+        r'Users:\s+Read\s+and\s+execute,\s+list\s+folder\s+contents',
+        r'CREATOR\s+OWNER:\s+Full\s+Control,\s+Subfolders\s+and\s+files\s+only',
+    )
+    if not all(re.search(snippet, combined, re.IGNORECASE) for snippet in required_snippets):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "$path='C:\\inetpub'; "
+        "$acl=Get-Acl -LiteralPath $path -ErrorAction SilentlyContinue; if(-not $acl){'missing C:\\inetpub'; exit}; "
+        "$rules=$acl.Access; "
+        "$required=@{"
+        "'SYSTEM'='FullControl';'Administrators'='FullControl';'TrustedInstaller'='FullControl';"
+        "'ALL APPLICATION PACKAGES'='ReadAndExecute';'ALL RESTRICTED APPLICATION PACKAGES'='ReadAndExecute';"
+        "'Users'='ReadAndExecute';'CREATOR OWNER'='FullControl'}; "
+        "foreach($id in $required.Keys){"
+        "$right=[System.Enum]::Parse([System.Security.AccessControl.FileSystemRights],$required[$id]); "
+        "$match=$rules|Where-Object{$_.AccessControlType -eq 'Allow' -and $_.IdentityReference.Value -like ('*'+$id) -and (($_.FileSystemRights -band $right) -ne 0)}; "
+        "if(-not $match){'missing '+$id+' '+$required[$id]}}; "
+        "$limited=@('ALL APPLICATION PACKAGES','ALL RESTRICTED APPLICATION PACKAGES','Users'); "
+        "foreach($id in $limited){$extra=$rules|Where-Object{$_.AccessControlType -eq 'Allow' -and $_.IdentityReference.Value -like ('*'+$id) -and (($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify) -or ($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::FullControl))}; if($extra){'too permissive '+$id}}"
+        "\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _iis_session_state_use_cookies_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-218804', 'V-218805'} or stig_id != 'IIS_10-0_Server_STIG':
@@ -12788,6 +12834,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'equals', 'value': expected_value},
                 'description': rule.get('title', ''),
             }
+
+    iis_inetpub_acl_candidate = _iis_10_inetpub_acl_candidate(rule, stig_id)
+    if iis_inetpub_acl_candidate:
+        return iis_inetpub_acl_candidate
 
     iis_session_state_candidate = _iis_session_state_use_cookies_candidate(rule, stig_id)
     if iis_session_state_candidate:

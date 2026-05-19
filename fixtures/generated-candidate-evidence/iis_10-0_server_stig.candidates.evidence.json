@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 10,
+  "candidate_checks": 11,
   "cases": [
     {
       "check": {
@@ -104,6 +104,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-218808"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$path='C:\\inetpub'; $acl=Get-Acl -LiteralPath $path -ErrorAction SilentlyContinue; if(-not $acl){'missing C:\\inetpub'; exit}; $rules=$acl.Access; $required=@{'SYSTEM'='FullControl';'Administrators'='FullControl';'TrustedInstaller'='FullControl';'ALL APPLICATION PACKAGES'='ReadAndExecute';'ALL RESTRICTED APPLICATION PACKAGES'='ReadAndExecute';'Users'='ReadAndExecute';'CREATOR OWNER'='FullControl'}; foreach($id in $required.Keys){$match=$rules|Where-Object{$_.AccessControlType -eq 'Allow' -and $_.IdentityReference.Value -like ('*'+$id) -and (($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::$($required[$id])) -ne 0)}; if(-not $match){'missing '+$id+' '+$required[$id]}}; $limited=@('ALL APPLICATION PACKAGES','ALL RESTRICTED APPLICATION PACKAGES','Users'); foreach($id in $limited){$extra=$rules|Where-Object{$_.AccessControlType -eq 'Allow' -and $_.IdentityReference.Value -like ('*'+$id) -and (($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify) -or ($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::FullControl))}; if($extra){'too permissive '+$id}}\"",
+        "type": "command_output"
+      },
+      "description": "IIS 10.0 web server system files must conform to minimum file permission requirements.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$path='C:\\inetpub'; $acl=Get-Acl -LiteralPath $path -ErrorAction SilentlyContinue; if(-not $acl){'missing C:\\inetpub'; exit}; $rules=$acl.Access; $required=@{'SYSTEM'='FullControl';'Administrators'='FullControl';'TrustedInstaller'='FullControl';'ALL APPLICATION PACKAGES'='ReadAndExecute';'ALL RESTRICTED APPLICATION PACKAGES'='ReadAndExecute';'Users'='ReadAndExecute';'CREATOR OWNER'='FullControl'}; foreach($id in $required.Keys){$match=$rules|Where-Object{$_.AccessControlType -eq 'Allow' -and $_.IdentityReference.Value -like ('*'+$id) -and (($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::$($required[$id])) -ne 0)}; if(-not $match){'missing '+$id+' '+$required[$id]}}; $limited=@('ALL APPLICATION PACKAGES','ALL RESTRICTED APPLICATION PACKAGES','Users'); foreach($id in $limited){$extra=$rules|Where-Object{$_.AccessControlType -eq 'Allow' -and $_.IdentityReference.Value -like ('*'+$id) -and (($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify) -or ($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::FullControl))}; if($extra){'too permissive '+$id}}\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$path='C:\\inetpub'; $acl=Get-Acl -LiteralPath $path -ErrorAction SilentlyContinue; if(-not $acl){'missing C:\\inetpub'; exit}; $rules=$acl.Access; $required=@{'SYSTEM'='FullControl';'Administrators'='FullControl';'TrustedInstaller'='FullControl';'ALL APPLICATION PACKAGES'='ReadAndExecute';'ALL RESTRICTED APPLICATION PACKAGES'='ReadAndExecute';'Users'='ReadAndExecute';'CREATOR OWNER'='FullControl'}; foreach($id in $required.Keys){$match=$rules|Where-Object{$_.AccessControlType -eq 'Allow' -and $_.IdentityReference.Value -like ('*'+$id) -and (($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::$($required[$id])) -ne 0)}; if(-not $match){'missing '+$id+' '+$required[$id]}}; $limited=@('ALL APPLICATION PACKAGES','ALL RESTRICTED APPLICATION PACKAGES','Users'); foreach($id in $limited){$extra=$rules|Where-Object{$_.AccessControlType -eq 'Allow' -and $_.IdentityReference.Value -like ('*'+$id) -and (($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify) -or ($_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::FullControl))}; if($extra){'too permissive '+$id}}\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-218814"
     },
     {
       "check": {
@@ -267,5 +293,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/iis_10-0_server_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "IIS_10-0_Server_STIG",
-  "validated_candidates": 10
+  "validated_candidates": 11
 }
