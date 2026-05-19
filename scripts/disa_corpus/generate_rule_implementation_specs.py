@@ -10689,13 +10689,14 @@ def _oracle_database_inactive_account_time_candidate(rule: dict, stig_id: str) -
         return None
     if not re.search(r"upper\s*\(\s*resource_name\s*\)\s*=\s*['\"]INACTIVE_ACCOUNT_TIME['\"]", content, re.IGNORECASE):
         return None
-    if not re.search(r'INACTIVE_ACCOUNT_TIME\s+parameter\s+is\s+set\s+to\s+UNLIMITED\s*\(default\)\s+or\s+is\s+set\s+to\s+more\s+than\s+35,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+    if not re.search(r'INACTIVE_ACCOUNT_TIME\s+parameter\s+is\s+set\s+to\s+UNLIMITED\s*\(default\)\s+or\s+(?:it\s+)?is\s+set\s+to\s+more\s+than\s+35(?:\s+days)?,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
         return None
-    if not re.search(r'ALTER\s+PROFILE\s+\{PROFILE_NAME\}\s+LIMIT\s+INACTIVE_ACCOUNT_TIME\s+35', fix_text, re.IGNORECASE):
+    if not re.search(r'ALTER\s+PROFILE\s+(?:\{PROFILE_NAME\}|profile_name)\s+LIMIT\s+INACTIVE_ACCOUNT_TIME\s+35', fix_text, re.IGNORECASE):
         return None
     command = _oracle_sqlplus_command(
-        "SELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM dba_profiles "
-        "WHERE resource_name = 'INACTIVE_ACCOUNT_TIME' AND (UPPER(limit) = 'UNLIMITED' OR TO_NUMBER(limit DEFAULT 999999 ON CONVERSION ERROR) > 35);"
+        "SELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM ("
+        "SELECT profile FROM dba_profiles GROUP BY profile HAVING SUM(CASE WHEN UPPER(resource_name) = 'INACTIVE_ACCOUNT_TIME' "
+        "AND UPPER(limit) <> 'UNLIMITED' AND TO_NUMBER(limit DEFAULT 999999 ON CONVERSION ERROR) <= 35 THEN 1 ELSE 0 END) = 0);"
     )
     return {
         'vuln_id': rule.get('vuln_id', ''),

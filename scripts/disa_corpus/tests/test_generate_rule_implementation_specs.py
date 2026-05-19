@@ -1543,6 +1543,25 @@ kubectl create -f restricted.yml''',
         self.assertIn('-perm -002', candidate['check']['command'])
         self.assertIn('! -perm -1000', candidate['check']['command'])
 
+    def test_infers_oracle_inactive_account_time_with_profile_name_placeholder(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270551',
+            'title': 'Oracle Database must disable user accounts after 35 days of inactivity.',
+            'check_content': """Check to verify what profile each user is associated with, if any, with this query:
+select username, profile from dba_users order by 1,2;
+Then, check the profile to verify what the inactive_account_time is set to in the table dba_profiles.
+select profile, resource_name, limit from dba_profiles where upper(resource_name) = 'INACTIVE_ACCOUNT_TIME';
+If the INACTIVE_ACCOUNT_TIME parameter is set to UNLIMITED (default) or it is set to more than 35 days, this is a finding.""",
+            'fix_text': 'For accounts managed by Oracle, issue the statement:\nALTER PROFILE profile_name LIMIT inactive_account_time 35;',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270551')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('INACTIVE_ACCOUNT_TIME', candidate['check']['command'])
+        self.assertIn('GROUP BY profile', candidate['check']['command'])
+        self.assertIn('<= 35', candidate['check']['command'])
+
     def test_infers_kubernetes_kubelet_streaming_connection_idle_timeout_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-245541',

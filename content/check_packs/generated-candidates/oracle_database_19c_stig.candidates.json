@@ -158,6 +158,19 @@
     },
     {
       "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM (SELECT profile FROM dba_profiles GROUP BY profile HAVING SUM(CASE WHEN UPPER(resource_name) = 'INACTIVE_ACCOUNT_TIME' AND UPPER(limit) <> 'UNLIMITED' AND TO_NUMBER(limit DEFAULT 999999 ON CONVERSION ERROR) <= 35 THEN 1 ELSE 0 END) = 0);\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Oracle Database must disable user accounts after 35 days of inactivity.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270551"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT DISTINCT username FROM dba_users WHERE username IN ('BI','HR','OE','PM','IX','SH','SCOTT');\nEXIT\nSQL",
         "type": "command_output"
       },

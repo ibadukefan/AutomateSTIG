@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 14,
+  "candidate_checks": 15,
   "cases": [
     {
       "check": {
@@ -315,6 +315,32 @@
     },
     {
       "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM (SELECT profile FROM dba_profiles GROUP BY profile HAVING SUM(CASE WHEN UPPER(resource_name) = 'INACTIVE_ACCOUNT_TIME' AND UPPER(limit) <> 'UNLIMITED' AND TO_NUMBER(limit DEFAULT 999999 ON CONVERSION ERROR) <= 35 THEN 1 ELSE 0 END) = 0);\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Oracle Database must disable user accounts after 35 days of inactivity.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM (SELECT profile FROM dba_profiles GROUP BY profile HAVING SUM(CASE WHEN UPPER(resource_name) = 'INACTIVE_ACCOUNT_TIME' AND UPPER(limit) <> 'UNLIMITED' AND TO_NUMBER(limit DEFAULT 999999 ON CONVERSION ERROR) <= 35 THEN 1 ELSE 0 END) = 0);\nEXIT\nSQL": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM (SELECT profile FROM dba_profiles GROUP BY profile HAVING SUM(CASE WHEN UPPER(resource_name) = 'INACTIVE_ACCOUNT_TIME' AND UPPER(limit) <> 'UNLIMITED' AND TO_NUMBER(limit DEFAULT 999999 ON CONVERSION ERROR) <= 35 THEN 1 ELSE 0 END) = 0);\nEXIT\nSQL": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270551"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT DISTINCT username FROM dba_users WHERE username IN ('BI','HR','OE','PM','IX','SH','SCOTT');\nEXIT\nSQL",
         "type": "command_output"
       },
@@ -371,5 +397,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_database_19c_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Database_19c_STIG",
-  "validated_candidates": 14
+  "validated_candidates": 15
 }
