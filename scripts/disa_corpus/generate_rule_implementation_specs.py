@@ -3534,6 +3534,49 @@ def _windows_domain_controller_user_share_partition_candidate(rule: dict, stig_i
 
 
 
+def _windows_user_rights_orphaned_sid_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-205855', 'V-278030'} or not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r'Local\s+Policies\s*>>\s*User\s+Rights\s+Assignment',
+        r'unresolved\s+SIDs\s+to\s+determine\s+whether\s+they\s+are\s+valid',
+        r'Unresolved\s+SIDs\s+have\s+the\s+format\s+that\s+begins\s+with\s+["“]\*S-1-',
+        r'If\s+any\s+unresolved\s+SIDs\s+exist\s+and\s+are\s+not\s+for\s+currently\s+valid\s+accounts\s+or\s+groups,\s+this\s+is\s+a\s+finding',
+        r'Secedit\s+/export\s+/areas\s+USER_RIGHTS\s+/cfg',
+        r'Remove\s+any\s+unresolved\s+SIDs\s+found\s+in\s+User\s+Rights\s+assignments',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    listed_sids = set(re.findall(r'(?m)^\s*(S-1-[0-9-]+)\s+-\s+', content))
+    required_sids = {'S-1-5-11', 'S-1-5-113', 'S-1-5-114', 'S-1-5-19', 'S-1-5-20', 'S-1-5-32-544', 'S-1-5-32-546', 'S-1-5-6', 'S-1-5-9'}
+    if not required_sids.issubset(listed_sids):
+        return None
+    # Keep the PowerShell source explicit rather than interpolating a Python list representation.
+    known_array = "','".join(sorted(required_sids))
+    command = (
+        "powershell -NoProfile -Command \""
+        "$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); "
+        "secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; "
+        "$content=Get-Content $cfg -ErrorAction SilentlyContinue; "
+        "Remove-Item $cfg -ErrorAction SilentlyContinue; "
+        f"$known=@('{known_array}'); "
+        "$sids=@($content | ForEach-Object { if ($_ -match '=(.*)$') { $Matches[1].Split(',') } } | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ -match '^S-1-' }); "
+        "$unknown=@($sids | Where-Object { ($known -notcontains $_) -and ($_ -notmatch '^S-1-5-[0-9-]+-(512|519)$') -and ($_ -ne 'S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420') }); "
+        "if ($unknown.Count -eq 0) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_server_2025_network_logon_role_scoped_candidate(rule: dict, stig_id: str) -> dict | None:
     if stig_id != 'MS_Windows_Server_2025_STIG':
         return None
@@ -12573,6 +12616,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         audit_policy_candidate = _windows_audit_policy_candidate(rule)
         if audit_policy_candidate:
             return audit_policy_candidate
+
+        orphaned_sid_candidate = _windows_user_rights_orphaned_sid_candidate(rule, stig_id)
+        if orphaned_sid_candidate:
+            return orphaned_sid_candidate
 
         windows_server_2025_network_logon_candidate = _windows_server_2025_network_logon_role_scoped_candidate(rule, stig_id)
         if windows_server_2025_network_logon_candidate:

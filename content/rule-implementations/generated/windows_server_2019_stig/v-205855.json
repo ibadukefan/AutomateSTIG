@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $content=Get-Content $cfg -ErrorAction SilentlyContinue; Remove-Item $cfg -ErrorAction SilentlyContinue; $known=@('S-1-5-11','S-1-5-113','S-1-5-114','S-1-5-19','S-1-5-20','S-1-5-32-544','S-1-5-32-546','S-1-5-6','S-1-5-9'); $sids=@($content | ForEach-Object { if ($_ -match '=(.*)$') { $Matches[1].Split(',') } } | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ -match '^S-1-' }); $unknown=@($sids | Where-Object { ($known -notcontains $_) -and ($_ -notmatch '^S-1-5-[0-9-]+-(512|519)$') -and ($_ -ne 'S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420') }); if ($unknown.Count -eq 0) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2019 must have orphaned security identifiers (SIDs) removed from user rights.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-205855"
+  },
   "check_content_excerpt": "Review the effective User Rights setting in Local Group Policy Editor.\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nReview each User Right listed for any unresolved SIDs to determine whether they are valid, such as due to being temporarily disconnected from the domain. (Unresolved SIDs have the format that begins with \"*S-1-\".)\n\nIf any unresolved SIDs exist and are not for currently valid accounts or groups, this is a finding.\n\nFor server core installations, run the following command:\n\nSecedit /export /areas USER_RIGHTS /cfg c:\\path\\UserRights.txt\n\nThe results in the file identify user right assignments by SID instead of group name. Review the SIDs for unidentified ones. A list of typical SIDs \\ Groups is below, search Microsoft for articles on well-known SIDs for others. \n\nIf any unresolved SIDs exist and are not for currently valid accounts or groups, this is a finding.\n\nSID - Group\nS-1-5-11 - Authenticated Users\nS-1-5-113 - Local account\nS-1-5-114 - Local account and member of Administrators group\nS-1-5-19 - Local Service\nS-1-5-20 - Network Service\nS-1-5-32-544 - Administrators\nS-1-5-32-546 - Guests\nS-1-5-6 - Service\nS-1-5-9 - Enterprise Domain Controllers\nS-1-5-domain-512 - Domain Admins\nS-1-5-root domain-519 - Enterprise Admins\nS-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420 - NT Service\\WdiServiceHost",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove any unresolved SIDs found in User Rights assignments and determined to not be for currently valid accounts or groups by removing the accounts or groups from the appropriate group policy.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-205855r991589_rule",
   "severity": "medium",

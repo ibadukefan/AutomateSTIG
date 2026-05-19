@@ -2493,6 +2493,44 @@ All Systems:
         }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
         self.assertIsNone(candidate)
 
+    def test_infers_windows_user_rights_orphaned_sid_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278030',
+            'title': 'Windows Server 2025 must have orphaned security identifiers (SIDs) removed from user rights.',
+            'check_content': '''Review the effective User Rights setting in Local Group Policy Editor.
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+Review each User Right listed for any unresolved SIDs to determine whether they are valid, such as due to being temporarily disconnected from the domain. (Unresolved SIDs have the format that begins with "*S-1-".)
+
+If any unresolved SIDs exist and are not for currently valid accounts or groups, this is a finding.
+
+For server core installations, run the following command:
+
+Secedit /export /areas USER_RIGHTS /cfg c:\\path\\UserRights.txt
+
+SID - Group
+S-1-5-11 - Authenticated Users
+S-1-5-113 - Local account
+S-1-5-114 - Local account and member of Administrators group
+S-1-5-19 - Local Service
+S-1-5-20 - Network Service
+S-1-5-32-544 - Administrators
+S-1-5-32-546 - Guests
+S-1-5-6 - Service
+S-1-5-9 - Enterprise Domain Controllers
+S-1-5-domain-512 - Domain Admins
+S-1-5-root domain-519 - Enterprise Admins''',
+            'fix_text': 'Remove any unresolved SIDs found in User Rights assignments that are determined to not be for currently valid accounts or groups by removing the accounts or groups from the appropriate group policy.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278030')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('secedit /export /areas USER_RIGHTS', candidate['check']['command'])
+        self.assertIn('S-1-5-32-544', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_tomcat_jndi_realm_present_when_manager_apps_exist_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222962',

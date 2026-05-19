@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 197,
+  "candidate_checks": 198,
   "cases": [
     {
       "check": {
@@ -3901,6 +3901,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $content=Get-Content $cfg -ErrorAction SilentlyContinue; Remove-Item $cfg -ErrorAction SilentlyContinue; $known=@('S-1-5-11','S-1-5-113','S-1-5-114','S-1-5-19','S-1-5-20','S-1-5-32-544','S-1-5-32-546','S-1-5-6','S-1-5-9'); $sids=@($content | ForEach-Object { if ($_ -match '=(.*)$') { $Matches[1].Split(',') } } | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ -match '^S-1-' }); $unknown=@($sids | Where-Object { ($known -notcontains $_) -and ($_ -notmatch '^S-1-5-[0-9-]+-(512|519)$') -and ($_ -ne 'S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420') }); if ($unknown.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 must have orphaned security identifiers (SIDs) removed from user rights.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $content=Get-Content $cfg -ErrorAction SilentlyContinue; Remove-Item $cfg -ErrorAction SilentlyContinue; $known=@('S-1-5-11','S-1-5-113','S-1-5-114','S-1-5-19','S-1-5-20','S-1-5-32-544','S-1-5-32-546','S-1-5-6','S-1-5-9'); $sids=@($content | ForEach-Object { if ($_ -match '=(.*)$') { $Matches[1].Split(',') } } | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ -match '^S-1-' }); $unknown=@($sids | Where-Object { ($known -notcontains $_) -and ($_ -notmatch '^S-1-5-[0-9-]+-(512|519)$') -and ($_ -ne 'S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420') }); if ($unknown.Count -eq 0) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $content=Get-Content $cfg -ErrorAction SilentlyContinue; Remove-Item $cfg -ErrorAction SilentlyContinue; $known=@('S-1-5-11','S-1-5-113','S-1-5-114','S-1-5-19','S-1-5-20','S-1-5-32-544','S-1-5-32-546','S-1-5-6','S-1-5-9'); $sids=@($content | ForEach-Object { if ($_ -match '=(.*)$') { $Matches[1].Split(',') } } | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ -match '^S-1-' }); $unknown=@($sids | Where-Object { ($known -notcontains $_) -and ($_ -notmatch '^S-1-5-[0-9-]+-(512|519)$') -and ($_ -ne 'S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420') }); if ($unknown.Count -eq 0) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205855"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$info=Get-ComputerInfo -Property BiosFirmwareType -ErrorAction SilentlyContinue; if ($info.BiosFirmwareType -eq 'Uefi') { 'Compliant' }\"",
         "type": "command_output"
       },
@@ -5304,5 +5330,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 197
+  "validated_candidates": 198
 }
