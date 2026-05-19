@@ -11,6 +11,38 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_copies_duplicate_candidate_from_existing_completed_spec(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            existing = root / 'source' / 'v-123456.json'
+            existing.parent.mkdir(parents=True)
+            candidate = {
+                'vuln_id': 'V-123456',
+                'platform': 'windows',
+                'check': {'type': 'registry', 'path': 'HKLM\\Software\\Example', 'value_name': 'Enabled'},
+                'expected': {'type': 'equals', 'value': 1},
+                'description': 'Exact duplicate title.',
+            }
+            existing.write_text(json.dumps({
+                'vuln_id': 'V-123456',
+                'title': 'Exact duplicate title.',
+                'candidate_check': candidate,
+            }))
+            less_complete_path = root / 'scap' / 'xccdf_mil.disa.stig_group_v-123456.json'
+            less_complete = {
+                'vuln_id': 'xccdf_mil.disa.stig_group_V-123456',
+                'title': 'Exact duplicate title.',
+                'check_content_excerpt': '',
+                'fix_text_excerpt': 'same authoritative rule represented in SCAP.',
+            }
+            less_complete_path.parent.mkdir(parents=True)
+            mod._copy_duplicate_candidate_to_less_complete_specs({less_complete_path: less_complete}, implementation_root=root)
+
+            self.assertIn('candidate_check', less_complete)
+            self.assertEqual(less_complete['candidate_check']['vuln_id'], 'xccdf_mil.disa.stig_group_V-123456')
+            self.assertEqual(less_complete['normalizer'], 'registry')
+            self.assertEqual(json.loads(less_complete_path.read_text())['candidate_check']['check']['path'], 'HKLM\\Software\\Example')
+
     def test_infers_sql_server_2022_disabled_configuration_option_candidate(self):
         check = (
             'To determine if [Remote Access] is enabled, execute the following command:\n'

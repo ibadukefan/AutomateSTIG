@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 2,
+  "candidate_checks": 3,
   "cases": [
     {
       "check": {
@@ -54,6 +54,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-254434"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "NoLMHash"
+      },
+      "description": "Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\NoLMHash": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\NoLMHash": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "xccdf_mil.disa.stig_group_V-254474"
     }
   ],
   "production_claim": false,
@@ -61,5 +88,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1-3_benchmark.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark",
-  "validated_candidates": 2
+  "validated_candidates": 3
 }

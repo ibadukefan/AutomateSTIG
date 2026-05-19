@@ -13110,7 +13110,7 @@ def _normalized_title_key(title: str) -> str:
     return re.sub(r'\s+', ' ', (title or '').strip().lower())
 
 
-def _copy_duplicate_candidate_to_less_complete_specs(written_specs: dict[Path, dict]) -> None:
+def _copy_duplicate_candidate_to_less_complete_specs(written_specs: dict[Path, dict], implementation_root: Path | None = None) -> None:
     candidate_by_vuln_title: dict[tuple[str, str], dict] = {}
     for spec in written_specs.values():
         candidate = spec.get('candidate_check')
@@ -13119,6 +13119,26 @@ def _copy_duplicate_candidate_to_less_complete_specs(written_specs: dict[Path, d
             continue
         for vuln_id in _canonical_vuln_ids(spec):
             candidate_by_vuln_title.setdefault((vuln_id, title_key), candidate)
+
+    # Some authoritative feeds (notably SCAP collections) carry the same STIG
+    # rule with a prefixed group id and less prose than the full STIG zip.  When
+    # an already-generated spec for the exact canonical V-number and exact
+    # normalized title has a candidate check, reuse that conservative mapping for
+    # the less-complete duplicate instead of relying on title-only inference.
+    if implementation_root:
+        for existing_path in sorted(implementation_root.rglob('*.json')):
+            if existing_path in written_specs:
+                continue
+            try:
+                existing_spec = json.loads(existing_path.read_text())
+            except Exception:
+                continue
+            candidate = existing_spec.get('candidate_check')
+            title_key = _normalized_title_key(existing_spec.get('title', ''))
+            if not candidate or not title_key:
+                continue
+            for vuln_id in _canonical_vuln_ids(existing_spec):
+                candidate_by_vuln_title.setdefault((vuln_id, title_key), candidate)
 
     for path, spec in written_specs.items():
         if spec.get('candidate_check'):
@@ -13203,7 +13223,7 @@ def generate_specs(coverage_root: Path, implementation_root: Path, repo_root: Pa
             write_json(out, new_spec)
             written_specs[out] = new_spec
             count += 1
-    _copy_duplicate_candidate_to_less_complete_specs(written_specs)
+    _copy_duplicate_candidate_to_less_complete_specs(written_specs, implementation_root=implementation_root)
     return count
 
 

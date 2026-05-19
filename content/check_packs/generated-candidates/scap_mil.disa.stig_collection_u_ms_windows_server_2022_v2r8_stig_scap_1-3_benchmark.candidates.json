@@ -27,6 +27,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-254434"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "NoLMHash"
+      },
+      "description": "Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "xccdf_mil.disa.stig_group_V-254474"
     }
   ],
   "platform": "windows",
