@@ -2363,6 +2363,12 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'content': r'loopback\s+interface\s+is\s+used\s+as\s+the\s+source\s+address\s+for\s+all\s+iBGP\s+sessions.*?update-source\s+(?:loopback|lo)\d*.*?If\s+the\s+switch\s+does\s+not\s+use\s+its\s+loopback\s+address\s+as\s+the\s+source\s+address\s+for\s+all\s+iBGP\s+sessions',
             'fix': r'Configure\s+the\s+switch\s+to\s+use\s+its\s+loopback\s+address\s+as\s+the\s+source\s+address\s+for\s+all\s+iBGP\s+peering.*?update-source\s+(?:loopback|lo)\d*',
         },
+        'V-221113': {
+            'command': 'show running-config | section "^mpls ldp configuration" | include "^ router-id (loopback|lo)[0-9]*$"',
+            'expected': {'type': 'contains', 'substring': 'router-id'},
+            'content': r'loopback\s+address\s+has\s+been\s+configured.*?By\s+default,\s+switches\s+will\s+use\s+its\s+loopback\s+address\s+for\s+LDP\s+peering.*?router-id\s+(?:loopback|lo)\d*.*?If\s+the\s+switch\s+is\s+not\s+configured\s+do\s+use\s+its\s+loopback\s+address\s+for\s+LDP\s+peering',
+            'fix': r'Configure\s+the\s+switch\s+to\s+use\s+their\s+loopback\s+address\s+as\s+the\s+source\s+address\s+for\s+LDP\s+peering\s+sessions.*?router-id\s+(?:loopback|lo)\d*',
+        },
         'V-221125': {
             'command': 'show running-config | section "^bridge-domain " | include "^ mac limit maximum addresses "',
             'expected': {'type': 'contains', 'substring': 'mac limit maximum addresses'},

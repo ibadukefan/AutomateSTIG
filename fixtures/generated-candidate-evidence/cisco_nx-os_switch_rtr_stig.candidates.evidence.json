@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 25,
+  "candidate_checks": 26,
   "cases": [
     {
       "check": {
@@ -312,6 +312,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221112"
+    },
+    {
+      "check": {
+        "command": "show running-config | section \"^mpls ldp configuration\" | include \"^ router-id (loopback|lo)[0-9]*$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco MPLS switch must be configured to use its loopback address as the source address for LDP peering sessions.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "router-id",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^mpls ldp configuration\" | include \"^ router-id (loopback|lo)[0-9]*$\"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^mpls ldp configuration\" | include \"^ router-id (loopback|lo)[0-9]*$\"": "before\nrouter-id\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221113"
     },
     {
       "check": {
@@ -657,5 +683,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 25
+  "validated_candidates": 26
 }

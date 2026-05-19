@@ -158,6 +158,19 @@
     },
     {
       "check": {
+        "command": "show running-config | section \"^mpls ldp configuration\" | include \"^ router-id (loopback|lo)[0-9]*$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco MPLS switch must be configured to use its loopback address as the source address for LDP peering sessions.",
+      "expected": {
+        "substring": "router-id",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221113"
+    },
+    {
+      "check": {
         "command": "show running-config | section \"^router (ospf|isis)\" | include \"^ mpls ldp sync$\"",
         "type": "command_output"
       },

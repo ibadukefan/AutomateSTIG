@@ -2682,6 +2682,36 @@ If the switch does not use its loopback address as the source address for all iB
             'description': 'The Cisco BGP switch must be configured to use its loopback address as the source address for iBGP peering sessions.',
         })
 
+    def test_infers_cisco_nxos_ldp_router_id_loopback_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221113',
+            'title': 'The Cisco MPLS switch must be configured to use its loopback address as the source address for LDP peering sessions.',
+            'check_content': '''Review the switch configuration to determine if it is compliant with this requirement.
+
+Verify that a loopback address has been configured as shown in the following example:
+
+interface loopback0
+ ip address 10.1.1.1/32
+
+By default, switches will use its loopback address for LDP peering. If an address has not be configured on the loopback interface, it will use its physical interface connecting to the LDP peer. If the router-id command is specified that overrides this default behavior, verify that it is a loopback interface as shown in the example below:
+
+mpls ldp configuration
+ router-id lo0
+
+If the switch is not configured do use its loopback address for LDP peering, this is a finding.''',
+            'fix_text': '''Configure the switch to use their loopback address as the source address for LDP peering sessions. As noted in the check content, the default behavior is to use its loopback address.
+
+SW1(config)# mpls ldp configuration
+SW1(config-ldp)# router-id lo0''',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221113',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | section "^mpls ldp configuration" | include "^ router-id (loopback|lo)[0-9]*$"'},
+            'expected': {'type': 'contains', 'substring': 'router-id'},
+            'description': 'The Cisco MPLS switch must be configured to use its loopback address as the source address for LDP peering sessions.',
+        })
+
     def test_infers_cisco_nxos_vpls_mac_limit_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221125',
