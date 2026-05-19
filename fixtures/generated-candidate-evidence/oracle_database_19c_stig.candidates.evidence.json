@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 15,
+  "candidate_checks": 16,
   "cases": [
     {
       "check": {
@@ -390,6 +390,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270569"
+    },
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT log_mode FROM v$database;\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Oracle Database must preserve any organization-defined system state information in the event of a system failure.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "ARCHIVELOG"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT log_mode FROM v$database;\nEXIT\nSQL": "unexpected-ARCHIVELOG"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT log_mode FROM v$database;\nEXIT\nSQL": "ARCHIVELOG"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270573"
     }
   ],
   "production_claim": false,
@@ -397,5 +423,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_database_19c_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Database_19c_STIG",
-  "validated_candidates": 15
+  "validated_candidates": 16
 }

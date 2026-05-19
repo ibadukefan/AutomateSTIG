@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT log_mode FROM v$database;\nEXIT\nSQL",
+      "type": "command_output"
+    },
+    "description": "Oracle Database must preserve any organization-defined system state information in the event of a system failure.",
+    "expected": {
+      "type": "equals",
+      "value": "ARCHIVELOG"
+    },
+    "platform": "generic",
+    "vuln_id": "V-270573"
+  },
   "check_content_excerpt": "If the database is used solely for transient data (such as one dedicated to Extract-Transform-Load [ETL]), and a clear plan exists for the recovery of the database by means other than archiving, this is not a finding.\n\nIf it has been determined that up-to-the second recovery is not necessary and this fact is recorded in the system documentation, with appropriate approval, this is not a finding.\n\nCheck database management system (DBMS) settings to determine whether system state information is being preserved in the event of a system failure.\n\nThe necessary state information is defined as \"information necessary to determine cause of failure and to return to operations with least disruption to mission/business processes\".\n\nOracle creates what is known as archive logs. Archive logs contain information required to replay a transaction should something happen. The redo logs are also used to copy transactions or pieces of transactions.\n\nIssue the following commands to check the status of archive log mode:\n\n$ sqlplus connect as sysdba --Check current archivelog mode in database\n\nSQL> archive log list\nDatabase log mode Archive Mode\nAutomatic archival Enabled\nArchive destination /home/oracle/app/oracle/arc2/ORCL\nOldest online log sequence 433\nNext log sequence to archive 435\nCurrent log sequence 435\n\nIf archive log mode is not enabled, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "ARCHIVELOG"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure DBMS settings to preserve all required system state information in the event of a system failure.\n\nIf the database is not in archive log mode, issue the following commands to put the database in archive log mode. The database must be normally shutdown and restarted before it can be placed in archive log mode. \n\n$ sqlplus connect as sysdba -- stop and dismount database and shutdown instance.\nSQL> shutdown immediate;\n\nDatabase closed.\nDatabase dismounted.\nORACLE instance shut down.\n\nSQL> startup mount; -- Restart instance.\n\nORACLE instance started.\nTotal System Global Area 1653518336 bytes\nFixed Size 2228904 bytes\nVariable Size 1325403480 bytes\nDatabase Buffers 318767104 bytes\nRedo Buffers 7118848 bytes\nDatabase mounted.\n\nSQL> alter database archivelog; -- Enable ArchiveLog\nDatabase altered.\n\nSQL> alter database open; -- Re-open database\nDatabase altered.\n\nIssue the following command to verify the new status:\nSQL> select log_mode from v$database;\n\nLOG_MODE\n------------\nARCHIVELOG\n\nSQL> archive log list;\n\nDatabase log mode Archive Mode\nAutomatic archival Enabled\nArchive destination USE_DB_RECOVERY_FILE_DEST\nOldest online log sequence 294\nNext log sequence to archive 296\nCurrent log sequence 296\n\nThe database is now in archive log mode, and transactions are either being recorded to transport to another database or being reapplied if the database becomes corrupt and needs to be restored from the last backup. Use the redo logs to replay transactions not captured in the backup.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270573r1064997_rule",
   "severity": "medium",

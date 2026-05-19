@@ -194,6 +194,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-270569"
+    },
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT log_mode FROM v$database;\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Oracle Database must preserve any organization-defined system state information in the event of a system failure.",
+      "expected": {
+        "type": "equals",
+        "value": "ARCHIVELOG"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270573"
     }
   ],
   "platform": "generic",

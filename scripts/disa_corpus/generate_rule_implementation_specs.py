@@ -10869,6 +10869,30 @@ def _oracle_database_fips_ora_candidate(rule: dict, stig_id: str) -> dict | None
     }
 
 
+def _oracle_database_archivelog_mode_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270573':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'archive\s+log\s+list', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Database\s+log\s+mode\s+Archive\s+Mode', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+archive\s+log\s+mode\s+is\s+not\s+enabled,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'alter\s+database\s+archivelog', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'select\s+log_mode\s+from\s+v\$database', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': _oracle_sqlplus_command('SELECT log_mode FROM v$database;')},
+        'expected': {'type': 'equals', 'value': 'ARCHIVELOG'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_configuration_audit_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270540':
         return None
@@ -13233,6 +13257,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_fips_ora_candidate = _oracle_database_fips_ora_candidate(rule, stig_id)
     if oracle_database_fips_ora_candidate:
         return oracle_database_fips_ora_candidate
+
+    oracle_database_archivelog_mode_candidate = _oracle_database_archivelog_mode_candidate(rule, stig_id)
+    if oracle_database_archivelog_mode_candidate:
+        return oracle_database_archivelog_mode_candidate
 
     oracle_database_configuration_audit_candidate = _oracle_database_configuration_audit_candidate(rule, stig_id)
     if oracle_database_configuration_audit_candidate:

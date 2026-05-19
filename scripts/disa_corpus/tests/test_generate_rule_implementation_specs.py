@@ -705,6 +705,31 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('SSLFIPS_140', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_oracle_database_archivelog_mode_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270573',
+            'title': 'Oracle Database must preserve any organization-defined system state information in the event of a system failure.',
+            'check_content': 'Issue the following commands to check the status of archive log mode:\n\n$ sqlplus connect as sysdba --Check current archivelog mode in database\n\nSQL> archive log list\nDatabase log mode Archive Mode\nAutomatic archival Enabled\n\nIf archive log mode is not enabled, this is a finding.',
+            'fix_text': 'Configure DBMS settings to preserve all required system state information in the event of a system failure.\n\nIf the database is not in archive log mode, issue the following commands to put the database in archive log mode.\nSQL> alter database archivelog;\n\nIssue the following command to verify the new status:\nSQL> select log_mode from v$database;',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270573')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('v$database', candidate['check']['command'])
+        self.assertIn('log_mode', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'ARCHIVELOG'})
+
+    def test_does_not_infer_oracle_database_archivelog_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-270573',
+            'title': 'Oracle Database must preserve any organization-defined system state information in the event of a system failure.',
+            'check_content': 'Run archive log list and review output.',
+            'fix_text': 'Enable archivelog if required.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Oracle_Database_19c_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
+
     def test_infers_windows_scap_fix_only_guests_user_right_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'xccdf_mil.disa.stig_group_V-254422',
