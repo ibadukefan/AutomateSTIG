@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*Header\\s+always\\s+edit\\s+Set-Cookie\\s+.*HttpOnly;secure\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Cookies exchanged between the Apache web server and client, such as session cookies, must have security settings that disallow cookie access outside the originating Apache web server and hosted application.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-214332"
+  },
   "check_content_excerpt": "Review the <'INSTALL PATH'>\\conf\\httpd.conf file.\n\nIf \"HttpOnly;secure\" is not configured, this is a finding.\n\nReview the code. If when creating cookies, the following is not occurring, this is a finding:\n\nfunction setCookie() { document.cookie = \"ALEPH_SESSION_ID = $SESS; path = /; secure\"; }",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Add this line to \"httpd.conf\" file:\n\nHeader always edit Set-Cookie ^(.*)$ $1;HttpOnly;secure\n\nAdd the secure attribute to the JavaScript set cookie:\n\nfunction setCookie() { document.cookie = \"ALEPH_SESSION_ID = $SESS; path = /; secure\"; } \n\nHttpOnly cannot be used since by definition this is a cookie set by JavaScript.\n\nRestart the Apache service.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214332r1043180_rule",
   "severity": "medium",

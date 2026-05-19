@@ -565,6 +565,32 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
             'description': title,
         }
 
+    if vuln_id == 'V-214332':
+        combined = content + '\n' + fix_text
+        if 'HttpOnly;secure' not in combined or 'Set-Cookie' not in combined or 'httpd.conf' not in combined:
+            return None
+        if not re.search(r'If\s+["“]?HttpOnly;secure["”]?\s+is\s+not\s+configured,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Header\s+always\s+edit\s+Set-Cookie\s+\^\(\.\*\)\$\s+\$1;HttpOnly;secure', fix_text, re.IGNORECASE):
+            return None
+        command = (
+            'powershell -NoProfile -Command '
+            '"$p=Join-Path $env:ProgramFiles \'Apache24\\conf\\httpd.conf\'; '
+            "$line=Select-String -Path $p -Pattern '^\\s*Header\\s+always\\s+edit\\s+Set-Cookie\\s+.*HttpOnly;secure\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; "
+            "$docroot=Join-Path $env:ProgramFiles 'Apache24\\htdocs'; "
+            "$docline=Select-String -Path $p -Pattern '^\\s*DocumentRoot\\s+[''\"\\'']?([^''\"\\'']+)[''\"\\'']?' -ErrorAction SilentlyContinue | Select-Object -First 1; "
+            "if ($docline) { $docroot=$docline.Matches[0].Groups[1].Value }; "
+            "$bad=Get-ChildItem -Path $docroot -Recurse -Include *.js,*.html,*.htm,*.jsp,*.php -ErrorAction SilentlyContinue | Select-String -Pattern 'document\\.cookie\\s*=' -ErrorAction SilentlyContinue | Where-Object { $_.Line -notmatch ';\\s*secure\\b' }; "
+            "if ($line -and -not $bad) { 'Compliant' }\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+
     spec = directive_specs.get(vuln_id)
     if not spec:
         return None

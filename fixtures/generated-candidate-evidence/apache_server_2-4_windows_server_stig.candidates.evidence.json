@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 22,
+  "candidate_checks": 23,
   "cases": [
     {
       "check": {
@@ -286,6 +286,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-214327"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*Header\\s+always\\s+edit\\s+Set-Cookie\\s+.*HttpOnly;secure\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Cookies exchanged between the Apache web server and client, such as session cookies, must have security settings that disallow cookie access outside the originating Apache web server and hosted application.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*Header\\s+always\\s+edit\\s+Set-Cookie\\s+.*HttpOnly;secure\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $line=Select-String -Path $p -Pattern '^\\s*Header\\s+always\\s+edit\\s+Set-Cookie\\s+.*HttpOnly;secure\\s*(?:#.*)?$' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($line) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-214332"
     },
     {
       "check": {
@@ -579,5 +605,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apache_server_2-4_windows_server_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apache_Server_2-4_Windows_Server_STIG",
-  "validated_candidates": 22
+  "validated_candidates": 23
 }

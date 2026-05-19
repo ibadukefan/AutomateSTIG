@@ -4516,6 +4516,30 @@ Restart the Apache service.''',
             'description': 'The Apache web server must not be a proxy server.',
         })
 
+    def test_infers_apache_windows_set_cookie_httponly_secure_header_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214332',
+            'title': 'Cookies exchanged between the Apache web server and client must have security settings.',
+            'check_content': '''Review the <'INSTALL PATH'>\\conf\\httpd.conf file.
+
+If "HttpOnly;secure" is not configured, this is a finding.''',
+            'fix_text': '''Add this line to "httpd.conf" file:
+
+Header always edit Set-Cookie ^(.*)$ $1;HttpOnly;secure
+
+Restart the Apache service.''',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-214332')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Header', candidate['check']['command'])
+        self.assertIn('Set-Cookie', candidate['check']['command'])
+        self.assertIn('HttpOnly', candidate['check']['command'])
+        self.assertIn('secure', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_apache_windows_forbidden_executable_handlers_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-214323',
