@@ -1989,6 +1989,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$patterns=@('Defender','mcafee','symantec'); $svc=Get-Service | Where-Object { $p=$_.DisplayName; $patterns | Where-Object { $p -like ('*' + $_ + '*') } } | Where-Object { $_.Status -eq 'Running' } | Select-Object -First 1; if ($svc) { 'Present' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 must use an anti-virus program.",
+      "expected": {
+        "type": "equals",
+        "value": "Present"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205850"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $value=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.ftpServer/security/authentication/anonymousAuthentication' -Name enabled -ErrorAction SilentlyContinue).Value; if ($value -eq $false) { 'Disabled' }\"",
         "type": "command_output"
       },
@@ -2288,6 +2301,19 @@
       },
       "platform": "windows",
       "vuln_id": "V-205874"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"try { Add-Type -AssemblyName System.DirectoryServices.Protocols; $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $conn=New-Object System.DirectoryServices.Protocols.LdapConnection('localhost'); $conn.AuthType=[System.DirectoryServices.Protocols.AuthType]::Anonymous; $conn.Bind(); $req=New-Object System.DirectoryServices.Protocols.SearchRequest($defaultNamingContext,'(objectClass=*)',[System.DirectoryServices.Protocols.SearchScope]::Base,$null); $resp=$conn.SendRequest($req); if ($resp.Entries.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 directory data (outside the root DSE) of a non-public directory must be configured to prevent anonymous access.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205875"
     },
     {
       "check": {

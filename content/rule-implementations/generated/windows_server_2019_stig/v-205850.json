@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$patterns=@('Defender','mcafee','symantec'); $svc=Get-Service | Where-Object { $p=$_.DisplayName; $patterns | Where-Object { $p -like ('*' + $_ + '*') } } | Where-Object { $_.Status -eq 'Running' } | Select-Object -First 1; if ($svc) { 'Present' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2019 must use an anti-virus program.",
+    "expected": {
+      "type": "equals",
+      "value": "Present"
+    },
+    "platform": "windows",
+    "vuln_id": "V-205850"
+  },
   "check_content_excerpt": "Verify an anti-virus solution is installed on the system. The anti-virus solution may be bundled with an approved host-based security solution.\n\nIf there is no anti-virus solution installed on the system, this is a finding.\n\nVerify if Windows Defender is in use or enabled:\n\nOpen \"PowerShell\".\n\nEnter \u201cget-service | where {$_.DisplayName -Like \"*Defender*\"} | Select Status,DisplayName\u201d\n\nVerify if third-party anti-virus is in use or enabled:\n\nOpen \"PowerShell\".\n\nEnter \"get-service | where {$_.DisplayName -Like \"*mcafee*\"} | Select Status,DisplayName\u201d\n\nEnter \"get-service | where {$_.DisplayName -Like \"*symantec*\"} | Select Status,DisplayName\u201d",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Present"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If no anti-virus software is in use, install Windows Defender or third-party anti-virus.\n\nOpen \"PowerShell\".\n\nEnter \"Install-WindowsFeature -Name Windows-Defender\u201d.\n\nFor third-party anti-virus, install per anti-virus instructions and disable Windows Defender.\n\nOpen \"PowerShell\".\n\nEnter \"Uninstall-WindowsFeature -Name Windows-Defender\u201d.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-205850r991589_rule",
   "severity": "high",

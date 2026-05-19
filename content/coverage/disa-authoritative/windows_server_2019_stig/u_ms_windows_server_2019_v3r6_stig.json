@@ -3541,16 +3541,17 @@
       "vuln_id": "V-205849"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205850",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205850r991589_rule",
       "severity": "high",
       "title": "Windows Server 2019 must use an anti-virus program.",
-      "tracking_issue": "TODO-V-205850",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/de998bcf180eef5455fa320637cc7434bb0e732905bbc2a145829ca8bf1d1986/U_MS_Windows_Server_2019_V3R6_STIG.zip"
       ],
       "vuln_id": "V-205850"
@@ -3938,16 +3939,17 @@
       "vuln_id": "V-205874"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205875",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205875r991589_rule",
       "severity": "high",
       "title": "Windows Server 2019 directory data (outside the root DSE) of a non-public directory must be configured to prevent anonymous access.",
-      "tracking_issue": "TODO-V-205875",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/de998bcf180eef5455fa320637cc7434bb0e732905bbc2a145829ca8bf1d1986/U_MS_Windows_Server_2019_V3R6_STIG.zip"
       ],
       "vuln_id": "V-205875"

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 198,
+  "candidate_checks": 200,
   "cases": [
     {
       "check": {
@@ -3849,6 +3849,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$patterns=@('Defender','mcafee','symantec'); $svc=Get-Service | Where-Object { $p=$_.DisplayName; $patterns | Where-Object { $p -like ('*' + $_ + '*') } } | Where-Object { $_.Status -eq 'Running' } | Select-Object -First 1; if ($svc) { 'Present' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 must use an anti-virus program.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Present"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$patterns=@('Defender','mcafee','symantec'); $svc=Get-Service | Where-Object { $p=$_.DisplayName; $patterns | Where-Object { $p -like ('*' + $_ + '*') } } | Where-Object { $_.Status -eq 'Running' } | Select-Object -First 1; if ($svc) { 'Present' }\"": "unexpected-Present"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$patterns=@('Defender','mcafee','symantec'); $svc=Get-Service | Where-Object { $p=$_.DisplayName; $patterns | Where-Object { $p -like ('*' + $_ + '*') } } | Where-Object { $_.Status -eq 'Running' } | Select-Object -First 1; if ($svc) { 'Present' }\"": "Present"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205850"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"Import-Module WebAdministration -ErrorAction SilentlyContinue; $value=(Get-WebConfigurationProperty -PSPath 'IIS:\\' -Filter '/system.ftpServer/security/authentication/anonymousAuthentication' -Name enabled -ErrorAction SilentlyContinue).Value; if ($value -eq $false) { 'Disabled' }\"",
         "type": "command_output"
       },
@@ -4434,6 +4460,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205874"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"try { Add-Type -AssemblyName System.DirectoryServices.Protocols; $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $conn=New-Object System.DirectoryServices.Protocols.LdapConnection('localhost'); $conn.AuthType=[System.DirectoryServices.Protocols.AuthType]::Anonymous; $conn.Bind(); $req=New-Object System.DirectoryServices.Protocols.SearchRequest($defaultNamingContext,'(objectClass=*)',[System.DirectoryServices.Protocols.SearchScope]::Base,$null); $resp=$conn.SendRequest($req); if ($resp.Entries.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 directory data (outside the root DSE) of a non-public directory must be configured to prevent anonymous access.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { Add-Type -AssemblyName System.DirectoryServices.Protocols; $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $conn=New-Object System.DirectoryServices.Protocols.LdapConnection('localhost'); $conn.AuthType=[System.DirectoryServices.Protocols.AuthType]::Anonymous; $conn.Bind(); $req=New-Object System.DirectoryServices.Protocols.SearchRequest($defaultNamingContext,'(objectClass=*)',[System.DirectoryServices.Protocols.SearchScope]::Base,$null); $resp=$conn.SendRequest($req); if ($resp.Entries.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { Add-Type -AssemblyName System.DirectoryServices.Protocols; $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $conn=New-Object System.DirectoryServices.Protocols.LdapConnection('localhost'); $conn.AuthType=[System.DirectoryServices.Protocols.AuthType]::Anonymous; $conn.Bind(); $req=New-Object System.DirectoryServices.Protocols.SearchRequest($defaultNamingContext,'(objectClass=*)',[System.DirectoryServices.Protocols.SearchScope]::Base,$null); $resp=$conn.SendRequest($req); if ($resp.Entries.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205875"
     },
     {
       "check": {
@@ -5330,5 +5382,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 198
+  "validated_candidates": 200
 }

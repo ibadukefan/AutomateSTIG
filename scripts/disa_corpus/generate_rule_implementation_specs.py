@@ -754,16 +754,20 @@ def _windows_firmware_state_candidate(rule: dict, stig_id: str) -> dict | None:
 
 
 def _windows_server_2025_antivirus_service_candidate(rule: dict, stig_id: str) -> dict | None:
-    if rule.get('vuln_id') != 'V-277995' or stig_id != 'MS_Windows_Server_2025_STIG':
+    allowed_targets = {
+        ('V-205850', 'Windows_Server_2019_STIG'),
+        ('V-277995', 'MS_Windows_Server_2025_STIG'),
+    }
+    if (rule.get('vuln_id'), stig_id) not in allowed_targets:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
-    if not re.search(r'If\s+there\s+is\s+no\s+antivirus\s+solution\s+installed\s+on\s+the\s+system,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+    if not re.search(r'If\s+there\s+is\s+no\s+anti-?virus\s+solution\s+installed\s+on\s+the\s+system,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
         return None
-    if not re.search(r'Microsoft\s+Defender\s+antivirus\s+is\s+in\s+use\s+or\s+enabled', content, re.IGNORECASE):
+    if not re.search(r'(?:Microsoft\s+Defender\s+antivirus|Windows\s+Defender)\s+is\s+in\s+use\s+or\s+enabled', content, re.IGNORECASE):
         return None
     for product in ('Defender', 'mcafee', 'symantec'):
-        if not re.search(rf'DisplayName\s+-Like\s+"\*{product}\*"', content, re.IGNORECASE):
+        if not re.search(rf'DisplayName\s+-Like\s+["“]\*{product}\*["”]', content, re.IGNORECASE):
             return None
     if not re.search(r'Install-WindowsFeature\s+-Name\s+Windows-Defender', fix_text, re.IGNORECASE):
         return None
@@ -11528,6 +11532,7 @@ def _tomcat_web_xml_boolean_param_candidate(rule: dict, stig_id: str) -> dict | 
 
 def _windows_domain_controller_anonymous_directory_access_candidate(rule: dict, stig_id: str) -> dict | None:
     allowed_targets = {
+        ('V-205875', 'Windows_Server_2019_STIG'),
         ('V-254399', 'MS_Windows_Server_2022_STIG'),
         ('V-278146', 'MS_Windows_Server_2025_STIG'),
     }
@@ -11548,7 +11553,7 @@ def _windows_domain_controller_anonymous_directory_access_candidate(rule: dict, 
         return None
     if not re.search(r'(?:If\s+any\s+data\s+is\s+returned\s+from\s+a\s+nonpublic\s+directory\s+search|If\s+attribute\s+data\s+is\s+displayed,\s+anonymous\s+access\s+is\s+enabled\s+to\s+the\s+domain\s+naming\s+context)\b.*?this\s+is\s+a\s+finding\.', content, re.IGNORECASE | re.DOTALL):
         return None
-    if not re.search(r'Configure\s+directory\s+data\s+\(outside\s+the\s+root\s+DSE\)\s+of\s+a\s+nonpublic\s+directory\s+to\s+prevent\s+anonymous\s+access', combined, re.IGNORECASE):
+    if not re.search(r'Configure\s+directory\s+data\s+\(outside\s+the\s+root\s+DSE\)\s+of\s+a\s+non-?public\s+directory\s+to\s+prevent\s+anonymous\s+access', combined, re.IGNORECASE):
         return None
     command = (
         "powershell -NoProfile -Command \""

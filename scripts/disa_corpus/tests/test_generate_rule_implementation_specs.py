@@ -104,6 +104,21 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('AuthType]::Anonymous', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+        server_2019_check = check.replace(
+            'If any data is returned from a nonpublic directory search, this is a finding.',
+            'If attribute data is displayed, anonymous access is enabled to the domain naming context and this is a finding.',
+        )
+        server_2019_candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-205875',
+            'title': 'Windows Server 2019 directory data (outside the root DSE) of a non-public directory must be configured to prevent anonymous access.',
+            'check_content': server_2019_check,
+            'fix_text': 'Configure directory data (outside the root DSE) of a non-public directory to prevent anonymous access.',
+        }, 'Windows_Server_2019_STIG')
+        self.assertIsNotNone(server_2019_candidate)
+        self.assertEqual(server_2019_candidate['vuln_id'], 'V-205875')
+        self.assertEqual(server_2019_candidate['platform'], 'windows')
+        self.assertIn('DirectoryServices.Protocols', server_2019_candidate['check']['command'])
+
     def test_does_not_infer_windows_domain_controller_anonymous_directory_access_without_exact_guards(self):
         rule = {
             'vuln_id': 'V-278146',
@@ -185,6 +200,45 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         }
         self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2025_STIG'))
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+
+    def test_infers_windows_server_2019_antivirus_service_candidate(self):
+        check = (
+            'Verify an anti-virus solution is installed on the system. The anti-virus solution may be bundled with an approved host-based security solution.\n\n'
+            'If there is no anti-virus solution installed on the system, this is a finding.\n\n'
+            'Verify if Windows Defender is in use or enabled:\n\n'
+            'Open "PowerShell".\n\n'
+            'Enter “get-service | where {$_.DisplayName -Like "*Defender*"} | Select Status,DisplayName”\n\n'
+            'Verify if third-party anti-virus is in use or enabled:\n\n'
+            'Open "PowerShell".\n\n'
+            'Enter "get-service | where {$_.DisplayName -Like "*mcafee*"} | Select Status,DisplayName”\n\n'
+            'Enter "get-service | where {$_.DisplayName -Like "*symantec*"} | Select Status,DisplayName”'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-205850',
+            'title': 'Windows Server 2019 must use an anti-virus program.',
+            'check_content': check,
+            'fix_text': 'If no anti-virus software is in use, install Windows Defender or third-party anti-virus. Enter "Install-WindowsFeature -Name Windows-Defender”.',
+        }, 'Windows_Server_2019_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-205850')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Get-Service', candidate['check']['command'])
+        self.assertIn('Defender', candidate['check']['command'])
+        self.assertIn('mcafee', candidate['check']['command'])
+        self.assertIn('symantec', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Present'})
+
+    def test_does_not_infer_windows_server_2019_antivirus_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-205850',
+            'title': 'Windows Server 2019 must use an anti-virus program.',
+            'check_content': 'If there is no anti-virus solution installed on the system, this is a finding.',
+            'fix_text': 'Install Windows Defender.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Windows_Server_2019_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2025_STIG'))
         self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
 
     def test_infers_windows_hklm_default_registry_permissions_candidates(self):
