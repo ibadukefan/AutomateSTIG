@@ -634,6 +634,47 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
     }
 
 
+def _apache_windows_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Apache_Server_2-4_Windows_Server_STIG' or rule.get('vuln_id') != 'V-214314':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r"icacls\s+<[^>]+>\\logs\\\*",
+        r"icacls\s+c:\\Apache24\\logs\\\*",
+        r"Only\s+the\s+Auditors,\s+Web\s+Managers,\s+Administrators,\s+and\s+the\s+account\s+that\s+runs\s+the\s+web\s+server\s+should\s+have\s+permissions\s+to\s+the\s+files",
+        r"If\s+any\s+users\s+other\s+than\s+those\s+authorized\s+have\s+read\s+access\s+to\s+the\s+log\s+files,\s+this\s+is\s+a\s+finding",
+        r"only\s+the\s+members\s+of\s+the\s+Auditors\s+group,\s+Administrators,\s+and\s+the\s+user\s+assigned\s+to\s+run\s+the\s+web\s+server\s+software\s+are\s+granted\s+permissions\s+to\s+read\s+the\s+log\s+files",
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "$paths=@((Join-Path $env:ProgramFiles 'Apache24\\logs'),'C:\\Apache24\\logs') | Select-Object -Unique; "
+        "$path=$paths | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1; "
+        "if (-not $path) { exit }; "
+        "$allowed=@('NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators','NT SERVICE\\TrustedInstaller','Auditors','Web Managers'); "
+        "$svc=Get-CimInstance Win32_Service -ErrorAction SilentlyContinue | Where-Object { $_.PathName -match 'httpd\\.exe|Apache24' }; "
+        "$svc | ForEach-Object { if ($_.StartName) { $allowed += $_.StartName } }; "
+        "$readMask=[System.Security.AccessControl.FileSystemRights]'Read,ReadAndExecute,Write,Modify,FullControl'; "
+        "$bad=$false; "
+        "Get-ChildItem -LiteralPath $path -File -ErrorAction SilentlyContinue | ForEach-Object { "
+        "$acl=Get-Acl -LiteralPath $_.FullName; "
+        "foreach ($ace in $acl.Access) { "
+        "if ($ace.AccessControlType -eq 'Allow' -and (($ace.FileSystemRights -band $readMask) -ne 0) -and ($allowed -notcontains $ace.IdentityReference.Value)) { $bad=$true } "
+        "} }; "
+        "if (-not $bad) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _apache_windows_module_candidate(rule: dict, stig_id: str) -> dict | None:
     if stig_id != 'Apache_Server_2-4_Windows_Server_STIG':
         return None
@@ -12738,6 +12779,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         apache_windows_module_candidate = _apache_windows_module_candidate(rule, stig_id)
         if apache_windows_module_candidate:
             return apache_windows_module_candidate
+
+        apache_windows_log_file_acl_candidate = _apache_windows_log_file_acl_candidate(rule, stig_id)
+        if apache_windows_log_file_acl_candidate:
+            return apache_windows_log_file_acl_candidate
 
         defender_registry_absent_candidate = _windows_defender_registry_absent_candidate(rule, stig_id)
         if defender_registry_absent_candidate:

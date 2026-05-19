@@ -4769,6 +4769,45 @@ systemctl daemon-reload && systemctl restart kubelet''',
             'description': 'Kubernetes Kubelet must enable kernel protection.',
         })
 
+    def test_infers_apache_windows_log_file_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214314',
+            'title': 'The Apache web server log files must only be accessible by privileged users.',
+            'check_content': '''Review the <'INSTALL PATH'>\\conf\\httpd.conf file to determine the location of the logs.
+
+Determine permissions for log files. From the command line, navigate to the directory where the log files are located and enter the following command:
+
+icacls <'Apache Directory'>\\logs\\*
+
+ex: icacls c:\\Apache24\\logs\\*
+
+Only the Auditors, Web Managers, Administrators, and the account that runs the web server should have permissions to the files.
+
+If any users other than those authorized have read access to the log files, this is a finding.''',
+            'fix_text': 'To maintain the integrity of the data that is being captured in the log files, ensure that only the members of the Auditors group, Administrators, and the user assigned to run the web server software are granted permissions to read the log files.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-214314')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Get-Acl', candidate['check']['command'])
+        self.assertIn('Apache24\\logs', candidate['check']['command'])
+        self.assertIn('Win32_Service', candidate['check']['command'])
+        self.assertIn('BUILTIN\\Administrators', candidate['check']['command'])
+        self.assertIn('Web Managers', candidate['check']['command'])
+
+    def test_does_not_infer_apache_windows_log_file_acl_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-214314',
+            'title': 'The Apache web server log files must only be accessible by privileged users.',
+            'check_content': 'Review Apache log permissions.',
+            'fix_text': 'Restrict log file permissions.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Apache_Server_2-4_Windows_Server_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Apache_Server_2-4_Windows_Server_STIG'))
+
     def test_infers_apache_windows_httpd_conf_directive_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-214327',

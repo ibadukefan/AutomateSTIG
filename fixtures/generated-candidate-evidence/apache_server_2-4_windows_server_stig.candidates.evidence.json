@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 23,
+  "candidate_checks": 24,
   "cases": [
     {
       "check": {
@@ -156,6 +156,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-214311"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$paths=@((Join-Path $env:ProgramFiles 'Apache24\\logs'),'C:\\Apache24\\logs') | Select-Object -Unique; $path=$paths | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1; if (-not $path) { exit }; $allowed=@('NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators','NT SERVICE\\TrustedInstaller','Auditors','Web Managers'); $svc=Get-CimInstance Win32_Service -ErrorAction SilentlyContinue | Where-Object { $_.PathName -match 'httpd\\.exe|Apache24' }; $svc | ForEach-Object { if ($_.StartName) { $allowed += $_.StartName } }; $readMask=[System.Security.AccessControl.FileSystemRights]'Read,ReadAndExecute,Write,Modify,FullControl'; $bad=$false; Get-ChildItem -LiteralPath $path -File -ErrorAction SilentlyContinue | ForEach-Object { $acl=Get-Acl -LiteralPath $_.FullName; foreach ($ace in $acl.Access) { if ($ace.AccessControlType -eq 'Allow' -and (($ace.FileSystemRights -band $readMask) -ne 0) -and ($allowed -notcontains $ace.IdentityReference.Value)) { $bad=$true } } }; if (-not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server log files must only be accessible by privileged users.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$paths=@((Join-Path $env:ProgramFiles 'Apache24\\logs'),'C:\\Apache24\\logs') | Select-Object -Unique; $path=$paths | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1; if (-not $path) { exit }; $allowed=@('NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators','NT SERVICE\\TrustedInstaller','Auditors','Web Managers'); $svc=Get-CimInstance Win32_Service -ErrorAction SilentlyContinue | Where-Object { $_.PathName -match 'httpd\\.exe|Apache24' }; $svc | ForEach-Object { if ($_.StartName) { $allowed += $_.StartName } }; $readMask=[System.Security.AccessControl.FileSystemRights]'Read,ReadAndExecute,Write,Modify,FullControl'; $bad=$false; Get-ChildItem -LiteralPath $path -File -ErrorAction SilentlyContinue | ForEach-Object { $acl=Get-Acl -LiteralPath $_.FullName; foreach ($ace in $acl.Access) { if ($ace.AccessControlType -eq 'Allow' -and (($ace.FileSystemRights -band $readMask) -ne 0) -and ($allowed -notcontains $ace.IdentityReference.Value)) { $bad=$true } } }; if (-not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$paths=@((Join-Path $env:ProgramFiles 'Apache24\\logs'),'C:\\Apache24\\logs') | Select-Object -Unique; $path=$paths | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1; if (-not $path) { exit }; $allowed=@('NT AUTHORITY\\SYSTEM','BUILTIN\\Administrators','NT SERVICE\\TrustedInstaller','Auditors','Web Managers'); $svc=Get-CimInstance Win32_Service -ErrorAction SilentlyContinue | Where-Object { $_.PathName -match 'httpd\\.exe|Apache24' }; $svc | ForEach-Object { if ($_.StartName) { $allowed += $_.StartName } }; $readMask=[System.Security.AccessControl.FileSystemRights]'Read,ReadAndExecute,Write,Modify,FullControl'; $bad=$false; Get-ChildItem -LiteralPath $path -File -ErrorAction SilentlyContinue | ForEach-Object { $acl=Get-Acl -LiteralPath $_.FullName; foreach ($ace in $acl.Access) { if ($ace.AccessControlType -eq 'Allow' -and (($ace.FileSystemRights -band $readMask) -ne 0) -and ($allowed -notcontains $ace.IdentityReference.Value)) { $bad=$true } } }; if (-not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-214314"
     },
     {
       "check": {
@@ -605,5 +631,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apache_server_2-4_windows_server_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apache_Server_2-4_Windows_Server_STIG",
-  "validated_candidates": 23
+  "validated_candidates": 24
 }
