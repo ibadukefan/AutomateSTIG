@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 26,
+  "candidate_checks": 29,
   "cases": [
     {
       "check": {
@@ -419,6 +419,32 @@
     },
     {
       "check": {
+        "command": "show running-config | include \"^no ip igmp snooping$|^ no ip igmp snooping$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco PE switch must be configured to implement Internet Group Management Protocol (IGMP) or Multicast Listener Discovery (MLD) snooping for each Virtual Private LAN Services (VPLS) bridge domain.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^no ip igmp snooping$|^ no ip igmp snooping$\"": "unexpected"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^no ip igmp snooping$|^ no ip igmp snooping$\"": ""
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221124"
+    },
+    {
+      "check": {
         "command": "show running-config | section \"^bridge-domain \" | include \"^ mac limit maximum addresses \"",
         "type": "command_output"
       },
@@ -497,6 +523,32 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{c=0;d=0;p=0;b=0} /^class-map match-all SCAVENGER$/{c=1} /^ match ip dscp cs1$/{d=1} /^ class SCAVENGER$/{p=1} /^  bandwidth percent 5$/{b=1} END{if(c&&d&&p&&b) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must be configured to enforce a Quality-of-Service (QoS) policy to limit the effects of packet flooding denial-of-service (DoS) attacks.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{c=0;d=0;p=0;b=0} /^class-map match-all SCAVENGER$/{c=1} /^ match ip dscp cs1$/{d=1} /^ class SCAVENGER$/{p=1} /^  bandwidth percent 5$/{b=1} END{if(c&&d&&p&&b) print \"Compliant\"}'": "unexpected-Compliant"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{c=0;d=0;p=0;b=0} /^class-map match-all SCAVENGER$/{c=1} /^ match ip dscp cs1$/{d=1} /^ class SCAVENGER$/{p=1} /^  bandwidth percent 5$/{b=1} END{if(c&&d&&p&&b) print \"Compliant\"}'": "Compliant"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221131"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ ip igmp state-limit \"",
         "type": "command_output"
       },
@@ -520,6 +572,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221140"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ip pim spt-threshold infinity \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco multicast Designated switch (DR) must be configured to set the shortest-path tree (SPT) threshold to infinity to minimalize source-group (S, G) state within the multicast topology where Any Source Multicast (ASM) is deployed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ip pim spt-threshold infinity",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^ip pim spt-threshold infinity \"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include \"^ip pim spt-threshold infinity \"": "before\nip pim spt-threshold infinity\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221141"
     },
     {
       "check": {
@@ -683,5 +761,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 26
+  "validated_candidates": 29
 }

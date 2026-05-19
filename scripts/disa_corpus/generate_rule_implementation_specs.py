@@ -2345,6 +2345,24 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'content': r'limiting\s+the\s+number\s+of\s+mroute\s+states\s+via\s+IGMP\s+or\s+MLD.*?ip\s+igmp\s+state-limit\s+\S+.*?If\s+the\s+DR\s+is\s+not\s+limiting\s+multicast\s+join\s+requests\s+via\s+IGMP\s+or\s+MLD\s+on\s+all\s+applicable\s+interfaces,\s+this\s+is\s+a\s+finding',
             'fix': r'Configure\s+the\s+DR\s+on\s+a\s+global\s+or\s+interface\s+basis\s+to\s+limit\s+the\s+number\s+of\s+mroute\s+states.*?ip\s+igmp\s+state-limit',
         },
+        'V-221131': {
+            'command': 'show running-config | awk \'BEGIN{c=0;d=0;p=0;b=0} /^class-map match-all SCAVENGER$/{c=1} /^ match ip dscp cs1$/{d=1} /^ class SCAVENGER$/{p=1} /^  bandwidth percent 5$/{b=1} END{if(c&&d&&p&&b) print "Compliant"}\'',
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'content': r'class-map\s+match-all\s+SCAVENGER\s+match\s+ip\s+dscp\s+cs1.*?policy-map\s+\S+.*?class\s+SCAVENGER\s+bandwidth\s+percent\s+5.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+enforce\s+a\s+QoS\s+policy\s+to\s+limit\s+the\s+effects\s+of\s+packet\s+flooding\s+DoS\s+attacks,\s+this\s+is\s+a\s+finding',
+            'fix': r'class-map\s+match-all\s+SCAVENGER.*?match\s+ip\s+dscp\s+cs1.*?class\s+SCAVENGER.*?bandwidth\s+percent\s+5',
+        },
+        'V-221141': {
+            'command': 'show running-config | include "^ip pim spt-threshold infinity "',
+            'expected': {'type': 'contains', 'substring': 'ip pim spt-threshold infinity'},
+            'content': r'SPT\s+switchover\s+threshold\s+is\s+set\s+to\s+infinity.*?ip\s+pim\s+spt-threshold\s+infinity.*?If\s+the\s+DR\s+is\s+not\s+configured\s+set\s+SPT\s+threshold\s+to\s+infinity',
+            'fix': r'Configure\s+the\s+SPT\s+threshold\s+to\s+infinity.*?ip\s+pim\s+spt-threshold\s+infinity',
+        },
+        'V-221124': {
+            'command': 'show running-config | include "^no ip igmp snooping$|^ no ip igmp snooping$"',
+            'expected': {'type': 'equals', 'value': ''},
+            'content': r'no\s+ip\s+igmp\s+snooping.*?should\s+not\s+be\s+configured\s+for\s+any\s+VPLS\s+bridge\s+domain.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+implement\s+IGMP\s+or\s+MLD\s+snooping\s+for\s+each\s+VPLS\s+bridge\s+domain',
+            'fix': r'Configure\s+IGMP\s+or\s+MLD\s+snooping.*?ip\s+igmp\s+snooping',
+        },
         'V-237754': {
             'command': 'show running-config | include "^ ipv6 nd hop-limit 32$"',
             'expected': {'type': 'contains', 'substring': 'ipv6 nd hop-limit 32'},

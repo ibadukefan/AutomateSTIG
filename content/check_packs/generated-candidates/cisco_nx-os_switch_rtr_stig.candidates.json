@@ -210,6 +210,19 @@
     },
     {
       "check": {
+        "command": "show running-config | include \"^no ip igmp snooping$|^ no ip igmp snooping$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco PE switch must be configured to implement Internet Group Management Protocol (IGMP) or Multicast Listener Discovery (MLD) snooping for each Virtual Private LAN Services (VPLS) bridge domain.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "network",
+      "vuln_id": "V-221124"
+    },
+    {
+      "check": {
         "command": "show running-config | section \"^bridge-domain \" | include \"^ mac limit maximum addresses \"",
         "type": "command_output"
       },
@@ -249,6 +262,19 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{c=0;d=0;p=0;b=0} /^class-map match-all SCAVENGER$/{c=1} /^ match ip dscp cs1$/{d=1} /^ class SCAVENGER$/{p=1} /^  bandwidth percent 5$/{b=1} END{if(c&&d&&p&&b) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must be configured to enforce a Quality-of-Service (QoS) policy to limit the effects of packet flooding denial-of-service (DoS) attacks.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221131"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ ip igmp state-limit \"",
         "type": "command_output"
       },
@@ -259,6 +285,19 @@
       },
       "platform": "network",
       "vuln_id": "V-221140"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"^ip pim spt-threshold infinity \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco multicast Designated switch (DR) must be configured to set the shortest-path tree (SPT) threshold to infinity to minimalize source-group (S, G) state within the multicast topology where Any Source Multicast (ASM) is deployed.",
+      "expected": {
+        "substring": "ip pim spt-threshold infinity",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221141"
     },
     {
       "check": {

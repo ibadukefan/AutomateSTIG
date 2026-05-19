@@ -2759,6 +2759,72 @@ interface Ethernet2/4
             'description': 'The Cisco PE switch providing Virtual Private LAN Services (VPLS) must be configured to have traffic storm control thresholds on CE-facing interfaces.',
         })
 
+    def test_infers_cisco_nxos_vpls_igmp_snooping_absent_disable_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221124',
+            'title': 'The Cisco PE switch must be configured to implement Internet Group Management Protocol (IGMP) or Multicast Listener Discovery (MLD) snooping for each Virtual Private LAN Services (VPLS) bridge domain.',
+            'check_content': '''Step 1: Verify that IGMP snooping is enabled globally. By default, IGMP snooping is enabled globally; hence, the following command should not be in the switch configuration: no ip igmp snooping
+
+Step 2: If IGMP snooping is enabled globally, it will also be enabled by default for each VPLS bridge domain. Hence, the command “no ip igmp snooping” should not be configured for any VPLS bridge domain as shown in the example below:
+
+bridge-domain 100
+ no ip igmp snooping
+
+If the switch is not configured to implement IGMP or MLD snooping for each VPLS bridge domain, this is a finding.''',
+            'fix_text': 'Configure IGMP or MLD snooping for IPv4 and IPv6 multicast traffic respectively for each VPLS bridge domain. SW1(config-bdomain)# ip igmp snooping',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221124',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | include "^no ip igmp snooping$|^ no ip igmp snooping$"'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Cisco PE switch must be configured to implement Internet Group Management Protocol (IGMP) or Multicast Listener Discovery (MLD) snooping for each Virtual Private LAN Services (VPLS) bridge domain.',
+        })
+
+    def test_infers_cisco_nxos_qos_scavenger_and_pim_spt_threshold_candidates(self):
+        qos_candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221131',
+            'title': 'The Cisco switch must be configured to enforce a Quality-of-Service (QoS) policy to limit the effects of packet flooding denial-of-service (DoS) attacks.',
+            'check_content': '''Step 1: Verify that a class map has been configured for the Scavenger class as shown in the example below:
+
+class-map match-all SCAVENGER
+ match ip dscp cs1
+
+Step 2: Verify that the policy map includes the SCAVENGER class with low priority as shown in the following example below:
+
+policy-map QOS_POLICY
+ class SCAVENGER
+  bandwidth percent 5
+
+If the switch is not configured to enforce a QoS policy to limit the effects of packet flooding DoS attacks, this is a finding.''',
+            'fix_text': 'Configure a class map for the SCAVENGER class. class-map match-all SCAVENGER match ip dscp cs1 Add the SCAVENGER class to the policy map. class SCAVENGER bandwidth percent 5',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(qos_candidate, {
+            'vuln_id': 'V-221131',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': "show running-config | awk 'BEGIN{c=0;d=0;p=0;b=0} /^class-map match-all SCAVENGER$/{c=1} /^ match ip dscp cs1$/{d=1} /^ class SCAVENGER$/{p=1} /^  bandwidth percent 5$/{b=1} END{if(c&&d&&p&&b) print \"Compliant\"}'"},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Cisco switch must be configured to enforce a Quality-of-Service (QoS) policy to limit the effects of packet flooding denial-of-service (DoS) attacks.',
+        })
+
+        pim_candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221141',
+            'title': 'The Cisco multicast Designated switch (DR) must be configured to set the shortest-path tree (SPT) threshold to infinity to minimalize source-group (S, G) state within the multicast topology where Any Source Multicast (ASM) is deployed.',
+            'check_content': '''Review the DR configuration to verify that the SPT switchover threshold is set to infinity (never switch over).
+
+ip pim spt-threshold infinity group-list prefix-list SPT_GROUPS
+
+If the DR is not configured set SPT threshold to infinity to minimalize (S, G) state, this is a finding.''',
+            'fix_text': 'Configure the SPT threshold to infinity. ip pim spt-threshold infinity group prefix-list SPT_GROUPS',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(pim_candidate, {
+            'vuln_id': 'V-221141',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | include "^ip pim spt-threshold infinity "'},
+            'expected': {'type': 'contains', 'substring': 'ip pim spt-threshold infinity'},
+            'description': 'The Cisco multicast Designated switch (DR) must be configured to set the shortest-path tree (SPT) threshold to infinity to minimalize source-group (S, G) state within the multicast topology where Any Source Multicast (ASM) is deployed.',
+        })
+
     def test_infers_cisco_nxos_absent_ip_unreachables_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221084',
