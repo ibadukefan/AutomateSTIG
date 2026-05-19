@@ -2489,16 +2489,17 @@
       "vuln_id": "V-254395"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254396",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254396r1137695_rule",
       "severity": "medium",
       "title": "Windows Server 2022 data files owned by users must be on a different logical partition from the directory server data files.",
-      "tracking_issue": "TODO-V-254396",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/7681561809403e3f48c26bcf72e1273b3713b6327cf8dfdc5427977a1ee5967d/U_MS_Windows_Server_2022_V2R8_STIG.zip"
       ],
       "vuln_id": "V-254396"

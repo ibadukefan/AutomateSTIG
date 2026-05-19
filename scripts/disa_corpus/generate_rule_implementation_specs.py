@@ -3491,6 +3491,49 @@ def _ol8_mitigations_not_off_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _windows_domain_controller_user_share_partition_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-205723', 'V-254396', 'V-278143'} or not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'This\s+applies\s+to\s+domain\s+controllers\.\s+It\s+is\s+(?:NA|not\s+applicable)\s+for\s+other\s+systems', content, re.IGNORECASE):
+        return None
+    if not re.search(r'HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters', content, re.IGNORECASE):
+        return None
+    if not re.search(r'"DSA\s+Database\s+file"', content, re.IGNORECASE):
+        return None
+    if not re.search(r'\bnet\s+share\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Ignore\s+system\s+shares\s+\(e\.g\.,\s+NETLOGON,\s+SYSVOL,\s+and\s+administrative\s+shares\s+ending\s+in\s+\$\)', content, re.IGNORECASE):
+        return None
+    if not re.search(r'User\s+shares\s+that\s+are\s+hidden\s+\(ending\s+with\s+\$\)\s+(?:must|should)\s+not\s+be\s+ignored', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+user\s+shares\s+are\s+located\s+on\s+the\s+same\s+logical\s+partition\s+as\s+the\s+directory\s+server\s+data\s+files,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Move\s+shares\s+used\s+to\s+store\s+files\s+owned\s+by\s+users\s+to\s+a\s+different\s+logical\s+partition\s+than\s+the\s+directory\s+server\s+data\s+files', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; "
+        "if ($role -lt 4) { 'Compliant'; exit }; "
+        "$db=(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters' -Name 'DSA Database file' -ErrorAction SilentlyContinue).'DSA Database file'; "
+        "if (-not $db) { exit }; "
+        "$dbRoot=[System.IO.Path]::GetPathRoot($db); "
+        "$shares=Get-CimInstance Win32_Share | Where-Object { $_.Path -and $_.Name -notin @('NETLOGON','SYSVOL','ADMIN$','IPC$','PRINT$') -and $_.Name -notmatch '^[A-Z]\\$$' }; "
+        "$bad=@($shares | Where-Object { [System.IO.Path]::GetPathRoot($_.Path) -ieq $dbRoot } | Select-Object -ExpandProperty Name); "
+        "if ($bad.Count -eq 0) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _windows_server_2025_network_logon_role_scoped_candidate(rule: dict, stig_id: str) -> dict | None:
     if stig_id != 'MS_Windows_Server_2025_STIG':
         return None
@@ -12534,6 +12577,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         windows_server_2025_network_logon_candidate = _windows_server_2025_network_logon_role_scoped_candidate(rule, stig_id)
         if windows_server_2025_network_logon_candidate:
             return windows_server_2025_network_logon_candidate
+
+        dc_user_share_partition_candidate = _windows_domain_controller_user_share_partition_candidate(rule, stig_id)
+        if dc_user_share_partition_candidate:
+            return dc_user_share_partition_candidate
 
         security_policy_candidate = _windows_security_policy_candidate(rule)
         if security_policy_candidate:

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 196,
+  "candidate_checks": 197,
   "cases": [
     {
       "check": {
@@ -1367,6 +1367,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205722"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -lt 4) { 'Compliant'; exit }; $db=(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters' -Name 'DSA Database file' -ErrorAction SilentlyContinue).'DSA Database file'; if (-not $db) { exit }; $dbRoot=[System.IO.Path]::GetPathRoot($db); $shares=Get-CimInstance Win32_Share | Where-Object { $_.Path -and $_.Name -notin @('NETLOGON','SYSVOL','ADMIN$','IPC$','PRINT$') -and $_.Name -notmatch '^[A-Z]\\$$' }; $bad=@($shares | Where-Object { [System.IO.Path]::GetPathRoot($_.Path) -ieq $dbRoot } | Select-Object -ExpandProperty Name); if ($bad.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 data files owned by users must be on a different logical partition from the directory server data files.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -lt 4) { 'Compliant'; exit }; $db=(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters' -Name 'DSA Database file' -ErrorAction SilentlyContinue).'DSA Database file'; if (-not $db) { exit }; $dbRoot=[System.IO.Path]::GetPathRoot($db); $shares=Get-CimInstance Win32_Share | Where-Object { $_.Path -and $_.Name -notin @('NETLOGON','SYSVOL','ADMIN$','IPC$','PRINT$') -and $_.Name -notmatch '^[A-Z]\\$$' }; $bad=@($shares | Where-Object { [System.IO.Path]::GetPathRoot($_.Path) -ieq $dbRoot } | Select-Object -ExpandProperty Name); if ($bad.Count -eq 0) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -lt 4) { 'Compliant'; exit }; $db=(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters' -Name 'DSA Database file' -ErrorAction SilentlyContinue).'DSA Database file'; if (-not $db) { exit }; $dbRoot=[System.IO.Path]::GetPathRoot($db); $shares=Get-CimInstance Win32_Share | Where-Object { $_.Path -and $_.Name -notin @('NETLOGON','SYSVOL','ADMIN$','IPC$','PRINT$') -and $_.Name -notmatch '^[A-Z]\\$$' }; $bad=@($shares | Where-Object { [System.IO.Path]::GetPathRoot($_.Path) -ieq $dbRoot } | Select-Object -ExpandProperty Name); if ($bad.Count -eq 0) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205723"
     },
     {
       "check": {
@@ -5278,5 +5304,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 196
+  "validated_candidates": 197
 }

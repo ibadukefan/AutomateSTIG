@@ -1790,6 +1790,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -lt 4) { 'Compliant'; exit }; $db=(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters' -Name 'DSA Database file' -ErrorAction SilentlyContinue).'DSA Database file'; if (-not $db) { exit }; $dbRoot=[System.IO.Path]::GetPathRoot($db); $shares=Get-CimInstance Win32_Share | Where-Object { $_.Path -and $_.Name -notin @('NETLOGON','SYSVOL','ADMIN$','IPC$','PRINT$') -and $_.Name -notmatch '^[A-Z]\\$$' }; $bad=@($shares | Where-Object { [System.IO.Path]::GetPathRoot($_.Path) -ieq $dbRoot } | Select-Object -ExpandProperty Name); if ($bad.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 data files owned by users must be on a different logical partition from the directory server data files.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278143"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"try { Add-Type -AssemblyName System.DirectoryServices.Protocols; $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $conn=New-Object System.DirectoryServices.Protocols.LdapConnection('localhost'); $conn.AuthType=[System.DirectoryServices.Protocols.AuthType]::Anonymous; $conn.Bind(); $req=New-Object System.DirectoryServices.Protocols.SearchRequest($defaultNamingContext,'(objectClass=*)',[System.DirectoryServices.Protocols.SearchScope]::Base,$null); $resp=$conn.SendRequest($req); if ($resp.Entries.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"",
         "type": "command_output"
       },

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$role=(Get-CimInstance Win32_ComputerSystem).DomainRole; if ($role -lt 4) { 'Compliant'; exit }; $db=(Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters' -Name 'DSA Database file' -ErrorAction SilentlyContinue).'DSA Database file'; if (-not $db) { exit }; $dbRoot=[System.IO.Path]::GetPathRoot($db); $shares=Get-CimInstance Win32_Share | Where-Object { $_.Path -and $_.Name -notin @('NETLOGON','SYSVOL','ADMIN$','IPC$','PRINT$') -and $_.Name -notmatch '^[A-Z]\\$$' }; $bad=@($shares | Where-Object { [System.IO.Path]::GetPathRoot($_.Path) -ieq $dbRoot } | Select-Object -ExpandProperty Name); if ($bad.Count -eq 0) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2019 data files owned by users must be on a different logical partition from the directory server data files.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-205723"
+  },
   "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nRun \"Regedit\".\n\nNavigate to \"HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters\".\n\nNote the directory locations in the values for \"DSA Database file\".\n\nOpen \"Command Prompt\".\n\nEnter \"net share\".\n\nNote the logical drive(s) or file system partition for any organization-created data shares.\n\nIgnore system shares (e.g., NETLOGON, SYSVOL, and administrative shares ending in $). User shares that are hidden (ending with $) should not be ignored.\n\nIf user shares are located on the same logical partition as the directory server data files, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Move shares used to store files owned by users to a different logical partition than the directory server data files.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-205723r1137695_rule",
   "severity": "medium",

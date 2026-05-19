@@ -3587,6 +3587,49 @@ Review the text file.''',
         })
 
 
+    def test_infers_windows_domain_controller_user_share_partition_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254396',
+            'title': 'Windows Server 2022 data files owned by users must be on a different logical partition from the directory server data files.',
+            'check_content': '''This applies to domain controllers. It is NA for other systems.
+
+Run "Regedit".
+
+Navigate to "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters".
+
+Note the directory locations in the values for "DSA Database file".
+
+Open "Command Prompt".
+
+Enter "net share".
+
+Note the logical drive(s) or file system partition for any organization-created data shares.
+
+Ignore system shares (e.g., NETLOGON, SYSVOL, and administrative shares ending in $). User shares that are hidden (ending with $) must not be ignored.
+
+If user shares are located on the same logical partition as the directory server data files, this is a finding.''',
+            'fix_text': 'Move shares used to store files owned by users to a different logical partition than the directory server data files.',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-254396')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Win32_ComputerSystem', candidate['check']['command'])
+        self.assertIn('Services\\NTDS\\Parameters', candidate['check']['command'])
+        self.assertIn('Win32_Share', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_windows_domain_controller_user_share_partition_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-254396',
+            'title': 'Windows Server 2022 data files owned by users must be on a different logical partition from the directory server data files.',
+            'check_content': 'This applies to domain controllers. Run Regedit and review shares.',
+            'fix_text': 'Move shares used to store files owned by users.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Microsoft_Windows_11_STIG'))
+
     def test_infers_windows_server_local_volumes_ntfs_refs_csvfs_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-277997',
