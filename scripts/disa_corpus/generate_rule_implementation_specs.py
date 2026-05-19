@@ -1530,6 +1530,43 @@ def _sles_noninteractive_accounts_no_login_shell_candidate(rule: dict, stig_id: 
     }
 
 
+def _linux_ssh_private_keys_require_passphrase_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-258127', 'V-271605'}:
+        return None
+    if not ((stig_id == 'RHEL_9_STIG' and vuln_id == 'V-258127') or (stig_id == 'Oracle_Linux_9_STIG' and vuln_id == 'V-271605')):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'Verify(?:\s+that\s+OL\s+9)?\s+(?:the\s+)?SSH\s+private\s+key\s+files\s+have\s+a\s+passcode', content, re.IGNORECASE):
+        return None
+    if not re.search(r'For\s+each\s+private\s+key\s+stored\s+on\s+the\s+system', content, re.IGNORECASE):
+        return None
+    if not re.search(r'ssh-keygen\s+-y\s+-f\s+/path/to/file', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+contents\s+of\s+the\s+key\s+are\s+displayed,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'ssh-keygen\s+-n\s+\[passphrase\]', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'for root in /home /root /etc/ssh; do "
+        "[ -d \"$root\" ] || continue; "
+        "find \"$root\" -xdev -type f -readable -print 2>/dev/null; "
+        "done | while IFS= read -r key; do "
+        "grep -Il \"BEGIN .*PRIVATE KEY\" \"$key\" 2>/dev/null | "
+        "while IFS= read -r private_key; do "
+        "if ssh-keygen -y -P \"\" -f \"$private_key\" >/dev/null 2>&1; then printf \"%s\\n\" \"$private_key\"; fi; "
+        "done; done'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _rhel_ol9_system_accounts_no_login_shell_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-258046', 'V-271845'}:
@@ -11917,6 +11954,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     windows_server_2025_ftp_candidate = _windows_server_2025_ftp_site_system_drive_candidate(rule, stig_id)
     if windows_server_2025_ftp_candidate:
         return windows_server_2025_ftp_candidate
+    ssh_private_key_passphrase_candidate = _linux_ssh_private_keys_require_passphrase_candidate(rule, stig_id)
+    if ssh_private_key_passphrase_candidate:
+        return ssh_private_key_passphrase_candidate
     rhel7_duplicate_uid_zero_candidate = _rhel7_duplicate_uid_zero_candidate(rule, stig_id)
     if rhel7_duplicate_uid_zero_candidate:
         return rhel7_duplicate_uid_zero_candidate

@@ -183,6 +183,43 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_8_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'Document any exceptions with the ISSO.'}, 'RHEL_9_STIG'))
 
+    def test_infers_rhel_ol9_ssh_private_keys_require_passphrase_candidate(self):
+        base_rule = {
+            'vuln_id': 'V-258127',
+            'title': 'RHEL 9, for PKI-based authentication, must enforce authorized access to the corresponding private key.',
+            'check_content': 'Verify the SSH private key files have a passcode.\n\nFor each private key stored on the system, use the following command:\n\n$ sudo ssh-keygen -y -f /path/to/file\n\nIf the contents of the key are displayed, this is a finding.',
+            'fix_text': 'Create a new private and public key pair that utilizes a passcode with the following command:\n\n$ sudo ssh-keygen -n [passphrase]',
+        }
+        candidate = mod.infer_candidate_check(base_rule, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-258127')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('ssh-keygen -y -P', candidate['check']['command'])
+        self.assertIn('BEGIN .*PRIVATE KEY', candidate['check']['command'])
+        self.assertIn('/home /root /etc/ssh', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+        ol_candidate = mod.infer_candidate_check({
+            **base_rule,
+            'vuln_id': 'V-271605',
+            'title': 'OL 9, for PKI-based authentication, must enforce authorized access to the corresponding private key.',
+            'check_content': base_rule['check_content'].replace('Verify the SSH private key files', 'Verify that OL 9 SSH private key files'),
+        }, 'Oracle_Linux_9_STIG')
+        self.assertIsNotNone(ol_candidate)
+        self.assertEqual(ol_candidate['vuln_id'], 'V-271605')
+
+    def test_does_not_infer_linux_ssh_private_key_passphrase_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-258127',
+            'title': 'RHEL 9, for PKI-based authentication, must enforce authorized access to the corresponding private key.',
+            'check_content': 'Verify the SSH private key files have a passcode. ssh-keygen -y -f /path/to/file If the contents of the key are displayed, this is a finding.',
+            'fix_text': 'Create a new private and public key pair that utilizes a passcode with ssh-keygen -n [passphrase]',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'RHEL_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_8_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'Document each private key passphrase exception with the ISSO.'}, 'RHEL_9_STIG'))
+
     def test_infers_postgresql_audit_outcome_config_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233512',

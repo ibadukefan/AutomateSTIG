@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 407,
+  "candidate_checks": 408,
   "cases": [
     {
       "check": {
@@ -8082,6 +8082,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'for root in /home /root /etc/ssh; do [ -d \"$root\" ] || continue; find \"$root\" -xdev -type f -readable -print 2>/dev/null; done | while IFS= read -r key; do grep -Il \"BEGIN .*PRIVATE KEY\" \"$key\" 2>/dev/null | while IFS= read -r private_key; do if ssh-keygen -y -P \"\" -f \"$private_key\" >/dev/null 2>&1; then printf \"%s\\n\" \"$private_key\"; fi; done; done'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9, for PKI-based authentication, must enforce authorized access to the corresponding private key.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'for root in /home /root /etc/ssh; do [ -d \"$root\" ] || continue; find \"$root\" -xdev -type f -readable -print 2>/dev/null; done | while IFS= read -r key; do grep -Il \"BEGIN .*PRIVATE KEY\" \"$key\" 2>/dev/null | while IFS= read -r private_key; do if ssh-keygen -y -P \"\" -f \"$private_key\" >/dev/null 2>&1; then printf \"%s\\n\" \"$private_key\"; fi; done; done'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'for root in /home /root /etc/ssh; do [ -d \"$root\" ] || continue; find \"$root\" -xdev -type f -readable -print 2>/dev/null; done | while IFS= read -r key; do grep -Il \"BEGIN .*PRIVATE KEY\" \"$key\" 2>/dev/null | while IFS= read -r private_key; do if ssh-keygen -y -P \"\" -f \"$private_key\" >/dev/null 2>&1; then printf \"%s\\n\" \"$private_key\"; fi; done; done'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258127"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/lib/systemd/system/emergency.service",
         "pattern": "sulogin",
@@ -11244,5 +11270,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 407
+  "validated_candidates": 408
 }

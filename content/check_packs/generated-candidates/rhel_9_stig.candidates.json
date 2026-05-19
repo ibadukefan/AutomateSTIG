@@ -3964,6 +3964,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'for root in /home /root /etc/ssh; do [ -d \"$root\" ] || continue; find \"$root\" -xdev -type f -readable -print 2>/dev/null; done | while IFS= read -r key; do grep -Il \"BEGIN .*PRIVATE KEY\" \"$key\" 2>/dev/null | while IFS= read -r private_key; do if ssh-keygen -y -P \"\" -f \"$private_key\" >/dev/null 2>&1; then printf \"%s\\n\" \"$private_key\"; fi; done; done'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9, for PKI-based authentication, must enforce authorized access to the corresponding private key.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-258127"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/lib/systemd/system/emergency.service",
         "pattern": "sulogin",

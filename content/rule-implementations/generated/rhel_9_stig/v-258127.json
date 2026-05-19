@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'for root in /home /root /etc/ssh; do [ -d \"$root\" ] || continue; find \"$root\" -xdev -type f -readable -print 2>/dev/null; done | while IFS= read -r key; do grep -Il \"BEGIN .*PRIVATE KEY\" \"$key\" 2>/dev/null | while IFS= read -r private_key; do if ssh-keygen -y -P \"\" -f \"$private_key\" >/dev/null 2>&1; then printf \"%s\\n\" \"$private_key\"; fi; done; done'",
+      "type": "command_output"
+    },
+    "description": "RHEL 9, for PKI-based authentication, must enforce authorized access to the corresponding private key.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-258127"
+  },
   "check_content_excerpt": "Verify the SSH private key files have a passcode.\n\nFor each private key stored on the system, use the following command:\n\n$ sudo ssh-keygen -y -f /path/to/file\n\nIf the contents of the key are displayed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Create a new private and public key pair that utilizes a passcode with the following command:\n\n$ sudo ssh-keygen -n [passphrase]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258127r958450_rule",
   "severity": "medium",
