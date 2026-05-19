@@ -727,6 +727,36 @@ def _windows_firmware_state_candidate(rule: dict, stig_id: str) -> dict | None:
     return None
 
 
+def _windows_server_2025_antivirus_service_candidate(rule: dict, stig_id: str) -> dict | None:
+    if rule.get('vuln_id') != 'V-277995' or stig_id != 'MS_Windows_Server_2025_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'If\s+there\s+is\s+no\s+antivirus\s+solution\s+installed\s+on\s+the\s+system,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Microsoft\s+Defender\s+antivirus\s+is\s+in\s+use\s+or\s+enabled', content, re.IGNORECASE):
+        return None
+    for product in ('Defender', 'mcafee', 'symantec'):
+        if not re.search(rf'DisplayName\s+-Like\s+"\*{product}\*"', content, re.IGNORECASE):
+            return None
+    if not re.search(r'Install-WindowsFeature\s+-Name\s+Windows-Defender', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command "'
+        '$patterns=@(\'Defender\',\'mcafee\',\'symantec\'); '
+        '$svc=Get-Service | Where-Object { $p=$_.DisplayName; $patterns | Where-Object { $p -like (\'*\' + $_ + \'*\') } } | '
+        'Where-Object { $_.Status -eq \'Running\' } | Select-Object -First 1; '
+        'if ($svc) { \'Present\' }"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Present'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_host_firewall_enabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -12231,6 +12261,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         windows_server_2019_servicing_level_candidate = _windows_server_2019_supported_servicing_level_candidate(rule, stig_id)
         if windows_server_2019_servicing_level_candidate:
             return windows_server_2019_servicing_level_candidate
+
+        windows_server_2025_antivirus_candidate = _windows_server_2025_antivirus_service_candidate(rule, stig_id)
+        if windows_server_2025_antivirus_candidate:
+            return windows_server_2025_antivirus_candidate
 
         host_firewall_candidate = _windows_host_firewall_enabled_candidate(rule, stig_id)
         if host_firewall_candidate:

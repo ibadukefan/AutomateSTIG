@@ -11,6 +11,45 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_windows_server_2025_antivirus_service_candidate(self):
+        check = (
+            'Verify an antivirus solution is installed on the system. The antivirus solution may be bundled with an approved host-based security solution.\n\n'
+            'If there is no antivirus solution installed on the system, this is a finding.\n\n'
+            'Verify if Microsoft Defender antivirus is in use or enabled:\n\n'
+            'Open PowerShell.\n\n'
+            'Enter "get-service | where {$_.DisplayName -Like "*Defender*"} | Select Status,DisplayName"\n\n'
+            'Verify if third-party antivirus is in use or enabled:\n\n'
+            'Open PowerShell.\n\n'
+            'Enter "get-service | where {$_.DisplayName -Like "*mcafee*"} | Select Status,DisplayName\n\n'
+            'Enter "get-service | where {$_.DisplayName -Like "*symantec*"} | Select Status,DisplayName'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-277995',
+            'title': 'Windows Server 2025 must use an antivirus program.',
+            'check_content': check,
+            'fix_text': 'If no antivirus software is in use, install Microsoft Defender or third-party antivirus. Enter "Install-WindowsFeature -Name Windows-Defender".',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-277995')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Get-Service', candidate['check']['command'])
+        self.assertIn('Defender', candidate['check']['command'])
+        self.assertIn('mcafee', candidate['check']['command'])
+        self.assertIn('symantec', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Present'})
+
+    def test_does_not_infer_windows_server_2025_antivirus_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-277995',
+            'title': 'Windows Server 2025 must use an antivirus program.',
+            'check_content': 'Verify an antivirus solution is installed on the system.',
+            'fix_text': 'Install antivirus.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2025_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+
     def test_infers_windows_hklm_default_registry_permissions_candidates(self):
         required_sid = 'S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681'
         server_2025_check = (

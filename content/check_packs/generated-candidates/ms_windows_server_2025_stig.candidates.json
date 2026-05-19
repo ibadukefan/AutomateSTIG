@@ -28,6 +28,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$patterns=@('Defender','mcafee','symantec'); $svc=Get-Service | Where-Object { $p=$_.DisplayName; $patterns | Where-Object { $p -like ('*' + $_ + '*') } } | Where-Object { $_.Status -eq 'Running' } | Select-Object -First 1; if ($svc) { 'Present' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must use an antivirus program.",
+      "expected": {
+        "type": "equals",
+        "value": "Present"
+      },
+      "platform": "windows",
+      "vuln_id": "V-277995"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"Get-Volume | Where-Object { $_.DriveType -eq 'Fixed' -and $_.FileSystemLabel -notmatch '^(?i:Recovery|EFI System Partition)$' -and $_.FileSystem -notin @('NTFS','ReFS','CSVFS') } | Select-Object -ExpandProperty DriveLetter\"",
         "type": "command_output"
       },

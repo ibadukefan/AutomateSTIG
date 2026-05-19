@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 242,
+  "candidate_checks": 243,
   "cases": [
     {
       "check": {
@@ -52,6 +52,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-277993"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$patterns=@('Defender','mcafee','symantec'); $svc=Get-Service | Where-Object { $p=$_.DisplayName; $patterns | Where-Object { $p -like ('*' + $_ + '*') } } | Where-Object { $_.Status -eq 'Running' } | Select-Object -First 1; if ($svc) { 'Present' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must use an antivirus program.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Present"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$patterns=@('Defender','mcafee','symantec'); $svc=Get-Service | Where-Object { $p=$_.DisplayName; $patterns | Where-Object { $p -like ('*' + $_ + '*') } } | Where-Object { $_.Status -eq 'Running' } | Select-Object -First 1; if ($svc) { 'Present' }\"": "unexpected-Present"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$patterns=@('Defender','mcafee','symantec'); $svc=Get-Service | Where-Object { $p=$_.DisplayName; $patterns | Where-Object { $p -like ('*' + $_ + '*') } } | Where-Object { $_.Status -eq 'Running' } | Select-Object -First 1; if ($svc) { 'Present' }\"": "Present"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-277995"
     },
     {
       "check": {
@@ -6500,5 +6526,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 242
+  "validated_candidates": 243
 }
