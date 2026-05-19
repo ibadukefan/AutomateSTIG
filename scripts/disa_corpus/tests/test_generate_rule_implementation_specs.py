@@ -743,6 +743,20 @@ kubectl create -f restricted.yml''',
         self.assertIn('> 3', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_oracle_listener_local_os_authentication_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270531',
+            'title': 'The Oracle Listener must be configured to require administration authentication.',
+            'check_content': 'If a listener is not running on the local database host server, this check is not a finding.\nAt a command prompt, issue the command:\nps -ef | grep tnslsnr | grep -v grep\nFrom a system command prompt, execute the listener control utility:\nlsnrctl status [LISTENER NAME]\nReview the results for the value of Security.\nIf "Security = OFF" is displayed, this is a finding.\nIf "Security = ON: Password or Local OS Authentication", this is a finding (Instead, use Local OS Authentication).\nIf "Security = ON: Local OS Authentication" is displayed, this is not a finding.',
+            'fix_text': 'Oracle Listener authentication is enforced through local operating system authentication. Remote administration of the listener must not be permitted.',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270531')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('[t]nslsnr', candidate['check']['command'])
+        self.assertIn('lsnrctl status', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_postgresql_event_source_log_settings_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233591',

@@ -41,6 +41,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'listeners=$(ps -ef | awk '''/tnslsnr/ && !/awk/ {print $NF}'''); [ -z \"$listeners\" ] && printf Compliant && exit 0; for l in $listeners; do out=$(lsnrctl status \"$l\" 2>/dev/null); printf \"%s\" \"$out\" | grep -Fq \"Security                  ON: Local OS Authentication\" || exit 1; printf \"%s\" \"$out\" | grep -Fq \"Password or Local OS Authentication\" && exit 1; printf \"%s\" \"$out\" | grep -Fq \"Security                  OFF\" && exit 1; done; printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The Oracle Listener must be configured to require administration authentication.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270531"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT granted_role FROM dba_role_privs WHERE grantee = 'PUBLIC';\nEXIT\nSQL",
         "type": "command_output"
       },

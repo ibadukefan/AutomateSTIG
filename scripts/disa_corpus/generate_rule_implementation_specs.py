@@ -10319,6 +10319,68 @@ def _oracle_database_failed_login_attempts_candidate(rule: dict, stig_id: str) -
     }
 
 
+def _oracle_database_listener_local_os_auth_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270531':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required = (
+        r'listener\s+is\s+not\s+running\s+on\s+the\s+local\s+database\s+host\s+server,\s+this\s+check\s+is\s+not\s+a\s+finding',
+        r'ps\s+-ef\s*\|\s*grep\s+tnslsnr\s*\|\s*grep\s+-v\s+grep',
+        r'lsnrctl\s+status\s+\[LISTENER\s+NAME\]',
+        r'Security\s*=\s*OFF["”]?\s+is\s+displayed,\s+this\s+is\s+a\s+finding',
+        r'Security\s*=\s*ON:\s*Password\s+or\s+Local\s+OS\s+Authentication["”]?,\s+this\s+is\s+a\s+finding',
+        r'Security\s*=\s*ON:\s*Local\s+OS\s+Authentication["”]?\s+is\s+displayed,\s+this\s+is\s+not\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required):
+        return None
+    if not re.search(r'Listener\s+authentication\s+is\s+enforced\s+through\s+local\s+operating\s+system\s+authentication', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'Remote\s+administration\s+of\s+the\s+listener\s+must\s+not\s+be\s+permitted', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'listeners=$(ps -ef | awk \"/[t]nslsnr/ {print \\$NF}\"); "
+        "[ -z \"$listeners\" ] && printf Compliant && exit 0; "
+        "for l in $listeners; do out=$(lsnrctl status \"$l\" 2>/dev/null); "
+        "printf \"%s\" \"$out\" | grep -Fq \"Security                  ON: Local OS Authentication\" || exit 1; "
+        "printf \"%s\" \"$out\" | grep -Fq \"Password or Local OS Authentication\" && exit 1; "
+        "printf \"%s\" \"$out\" | grep -Fq \"Security                  OFF\" && exit 1; done; printf Compliant'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _oracle_database_inactive_account_time_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270551':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'INACTIVE_ACCOUNT_TIME', content, re.IGNORECASE):
+        return None
+    if not re.search(r"upper\s*\(\s*resource_name\s*\)\s*=\s*['\"]INACTIVE_ACCOUNT_TIME['\"]", content, re.IGNORECASE):
+        return None
+    if not re.search(r'INACTIVE_ACCOUNT_TIME\s+parameter\s+is\s+set\s+to\s+UNLIMITED\s*\(default\)\s+or\s+is\s+set\s+to\s+more\s+than\s+35,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'ALTER\s+PROFILE\s+\{PROFILE_NAME\}\s+LIMIT\s+INACTIVE_ACCOUNT_TIME\s+35', fix_text, re.IGNORECASE):
+        return None
+    command = _oracle_sqlplus_command(
+        "SELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM dba_profiles "
+        "WHERE resource_name = 'INACTIVE_ACCOUNT_TIME' AND (UPPER(limit) = 'UNLIMITED' OR TO_NUMBER(limit DEFAULT 999999 ON CONVERSION ERROR) > 35);"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_exact_parameter_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE):
         return None
@@ -12591,6 +12653,14 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_failed_login_attempts_candidate = _oracle_database_failed_login_attempts_candidate(rule, stig_id)
     if oracle_database_failed_login_attempts_candidate:
         return oracle_database_failed_login_attempts_candidate
+
+    oracle_database_listener_local_os_auth_candidate = _oracle_database_listener_local_os_auth_candidate(rule, stig_id)
+    if oracle_database_listener_local_os_auth_candidate:
+        return oracle_database_listener_local_os_auth_candidate
+
+    oracle_database_inactive_account_time_candidate = _oracle_database_inactive_account_time_candidate(rule, stig_id)
+    if oracle_database_inactive_account_time_candidate:
+        return oracle_database_inactive_account_time_candidate
 
     oracle_database_exact_parameter_candidate = _oracle_database_exact_parameter_candidate(rule, stig_id)
     if oracle_database_exact_parameter_candidate:
