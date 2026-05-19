@@ -10834,6 +10834,49 @@ def _oracle_database_configuration_audit_candidate(rule: dict, stig_id: str) -> 
     }
 
 
+def _sql_server_kerberos_spn_registration_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server_2022' not in stig_id.lower() and 'sql server 2022' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if rule.get('vuln_id', '') != 'V-271264':
+        return None
+    if rule.get('title', '').strip().lower() != 'sql server must be configured to use the most-secure authentication method available.':
+        return None
+    required_content_patterns = (
+        r'If\s+the\s+SQL\s+Server\s+is\s+not\s+part\s+of\s+an\s+Active\s+Directory\s+domain,\s+this\s+is\s+Not\s+Applicable',
+        r'setspn\s+-L\s+<Service\s+Account>',
+        r'MSSQLSvc/<FQDN>',
+        r'If\s+the\s+listing\s+does\s+not\s+contain\s+the\s+following\s+supported\s+service\s+principal\s+names\s+\(SPN\)\s+formats,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content_patterns):
+        return None
+    if not re.search(r'setspn\s+-S\s+MSSQLSvc/<Fully\s+Qualified\s+Domain\s+Name>', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$fqdn=([System.Net.Dns]::GetHostByName($env:COMPUTERNAME)).HostName; '
+        '$services=Get-CimInstance Win32_Service | Where-Object { $_.Name -eq \'MSSQLSERVER\' -or $_.Name -like \'MSSQL$*\' }; '
+        '$missing=@(); foreach ($svc in $services) { '
+        '$acct=$svc.StartName; if (-not $acct -or $acct -match \'^(LocalSystem|NT AUTHORITY\\\\|NT Service\\\\)\') { continue }; '
+        '$spns=(setspn -L $acct 2>$null); '
+        '$instance=if ($svc.Name -eq \'MSSQLSERVER\') { \'MSSQLSERVER\' } else { $svc.Name.Substring(6) }; '
+        '$required=@(\"MSSQLSvc/$fqdn\"); if ($instance -ne \'MSSQLSERVER\') { $required += \"MSSQLSvc/${fqdn}:$instance\" }; '
+        '$reg=if ($instance -eq \'MSSQLSERVER\') { \'HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Microsoft SQL Server\\\\MSSQLServer\\\\SuperSocketNetLib\\\\Tcp\\\\IPAll\' } else { \'HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Microsoft SQL Server\\\\MSSQL$\' + $instance + \'\\\\MSSQLServer\\\\SuperSocketNetLib\\\\Tcp\\\\IPAll\' }; '
+        'try { $port=(Get-ItemProperty -Path $reg -ErrorAction Stop).TcpPort } catch { $port=$null }; '
+        'if ($port) { $required += \"MSSQLSvc/${fqdn}:$port\" }; '
+        'foreach ($r in $required) { if ($spns -notcontains $r) { $missing += $r } } } '
+        '$missing | Sort-Object -Unique"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -13073,6 +13116,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     linux_world_writable_directory_owner_candidate = _linux_world_writable_directory_owner_candidate(rule, stig_id)
     if linux_world_writable_directory_owner_candidate:
         return linux_world_writable_directory_owner_candidate
+
+    sql_server_kerberos_spn_candidate = _sql_server_kerberos_spn_registration_candidate(rule, stig_id)
+    if sql_server_kerberos_spn_candidate:
+        return sql_server_kerberos_spn_candidate
 
     sql_server_computer_account_logins_candidate = _sql_server_computer_account_logins_absent_candidate(rule, stig_id)
     if sql_server_computer_account_logins_candidate:

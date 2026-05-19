@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$fqdn=([System.Net.Dns]::GetHostByName($env:COMPUTERNAME)).HostName; $services=Get-CimInstance Win32_Service | Where-Object { $_.Name -eq 'MSSQLSERVER' -or $_.Name -like 'MSSQL$*' }; $missing=@(); foreach ($svc in $services) { $acct=$svc.StartName; if (-not $acct -or $acct -match '^(LocalSystem|NT AUTHORITY\\\\|NT Service\\\\)') { continue }; $spns=(setspn -L $acct 2>$null); $instance=if ($svc.Name -eq 'MSSQLSERVER') { 'MSSQLSERVER' } else { $svc.Name.Substring(6) }; $required=@(\"MSSQLSvc/$fqdn\"); if ($instance -ne 'MSSQLSERVER') { $required += \"MSSQLSvc/$fqdn:$instance\" }; $reg=if ($instance -eq 'MSSQLSERVER') { 'HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Microsoft SQL Server\\\\MSSQLServer\\\\SuperSocketNetLib\\\\Tcp\\\\IPAll' } else { 'HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Microsoft SQL Server\\\\MSSQL$' + $instance + '\\\\MSSQLServer\\\\SuperSocketNetLib\\\\Tcp\\\\IPAll' }; try { $port=(Get-ItemProperty -Path $reg -ErrorAction Stop).TcpPort } catch { $port=$null }; if ($port) { $required += \"MSSQLSvc/$fqdn:$port\" }; foreach ($r in $required) { if ($spns -notcontains $r) { $missing += $r } } } $missing | Sort-Object -Unique\"",
+      "type": "command_output"
+    },
+    "description": "SQL Server must be configured to use the most-secure authentication method available.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-271264"
+  },
   "check_content_excerpt": "If the SQL Server is not part of an Active Directory domain, this is Not Applicable. \n\nObtain the fully qualified domain name of the SQL Server instance: \n\n1. Launch Windows Explorer. \n2. Right-click \"Computer\" or \"This PC\" (Varies by OS level). \n3. Click \"Properties\". Note the value shown for \"Full computer name\". \n\nNote: For a cluster, this value must be obtained from the Failover Cluster Manager.\n\nObtain the TCP port that is supporting the SQL Server instance:\n \n1. Click \"Start\".\n2. Type \"SQL Server 2022 Configuration Manager\".\n3. From the search results, click \"SQL Server 2022 Configuration Manager\". \n4. From the tree on the left, expand \"SQL Server Network Configuration\". \n5. Click \"Protocols for <Instance Name>\" where <Instance Name> is the name of the instance (MSSQLSERVER is the default name). \n6. In the right pane, right-click \"TCP/IP\" and choose \"Properties\". \n7. In the window that opens, click the \"IP Addresses\" tab. Note the TCP port configured for the instance. \n\nObtain the service account that is running the SQL Server service: \n\n1. Click \"Start\". \n2. Type \"SQL Server 2022 Configuration Manager\". \n3. From the search results, click \"SQL Server 2022 Configuration Manager\". \n4. From the tree on the left, select \"SQL Server Services\". Note the account listed in the \"Log On As\" column for the SQL Server instance being reviewed. \n5. Launch a command-line or PowerShell window. \n6. Enter the following command where <Service Account> is the identity of the service account:\n      setspn -L <Service Account> \n      Example: setspn -L CONTOSO\\sql2016svc \n7. Review the Registered Service Principal Names returned. \n\nIf the listing does not contain the following supported service principal names (SPN) formats, this is a finding. \n\nNamed instance\n   MSSQLSvc/<FQDN>:[<port> | <instancename>], where:\n   MSSQLSvc is the service that is being registered.\n   <FQDN> is the fully qualified domain name of the server.\n   <port> is the TCP port number.\n   <instancename> is the name of the SQL Server instance.\n\nDefault instance\n   MSSQLSvc/<FQDN>:<port> | MSSQLSvc/<FQDN>, where:\n   MSSQLSvc is the service that is being registered.\n   <FQDN> is the fully qualified domain name of the server.\n   <port> is the TCP port number.\n\nIf the MSSQLSvc service is registered for any fully qualified domain names that do not match the current server, this may indicate the service account is shared across SQL Server instances. Review server documentation, if the sharing of service accounts across instances is not documented and authorized, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Ensure Service Principal Names (SPNs) are properly registered for the SQL Server instance. \n\nUse the Microsoft Kerberos Configuration Manager to review Kerberos configuration issues for a given SQL Server instance. \n\nhttps://www.microsoft.com/en-us/download/details.aspx?id=39046 \n\nAlternatively, SPNs for SQL Server can be manually registered. \n\nFor other connections that support Kerberos the SPN is registered in the format MSSQLSvc/<FQDN>/<instancename> for a named instance. The format for registering the default instance is MSSQLSvc/<FQDN>.\n\nUsing an account with permissions to register SPNs, issue the following commands from a command-prompt: \n\nsetspn -S MSSQLSvc/<Fully Qualified Domain Name> <Service Account> \nsetspn -S MSSQLSvc/<Fully Qualified Domain Name>:<TCP Port> <Service Account> \nFor a named instance, use:\nsetspn -S MSSQLSvc/<FQDN>:<instancename> <Service Account> \nsetspn -S MSSQLSvc/<FQDN>:<TCP Port> <Service Account>\n\nRestart the SQL Server instance. \n\nMore information regarding this process is available at https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/register-a-service-principal-name-for-kerberos-connections#Manual.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271264r1111061_rule",
   "severity": "high",

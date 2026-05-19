@@ -239,6 +239,43 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2019_Instance_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': 'review Remote Access'}, 'MS_SQL_Server_2022_Instance_STIG'))
 
+    def test_infers_sql_server_kerberos_spn_registration_candidate(self):
+        check = (
+            'If the SQL Server is not part of an Active Directory domain, this is Not Applicable.\n'
+            'Obtain the fully qualified domain name of the SQL Server instance.\n'
+            'Obtain the TCP port that is supporting the SQL Server instance.\n'
+            'Obtain the service account that is running the SQL Server service.\n'
+            'Enter the following command where <Service Account> is the identity of the service account:\n'
+            'setspn -L <Service Account>\n'
+            'If the listing does not contain the following supported service principal names (SPN) formats, this is a finding.\n'
+            'MSSQLSvc/<FQDN>:[<port> | <instancename>]\n'
+            'MSSQLSvc/<FQDN>:<port>'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271264',
+            'title': 'SQL Server must be configured to use the most-secure authentication method available.',
+            'check_content': check,
+            'fix_text': 'setspn -S MSSQLSvc/<Fully Qualified Domain Name> <Service Account>\nsetspn -S MSSQLSvc/<Fully Qualified Domain Name>:<TCP Port> <Service Account>',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271264')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('setspn -L', candidate['check']['command'])
+        self.assertIn('MSSQLSvc/${fqdn}:', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_does_not_infer_sql_server_kerberos_spn_registration_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-271264',
+            'title': 'SQL Server must be configured to use the most-secure authentication method available.',
+            'check_content': 'setspn -L <Service Account>',
+            'fix_text': 'setspn -S MSSQLSvc/<Fully Qualified Domain Name> <Service Account>',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_SQL_Server_2022_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2019_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2022_Instance_STIG'))
+
     def test_infers_windows_domain_controller_anonymous_directory_access_candidate(self):
         check = (
             'This applies to domain controllers. It is NA for other systems.\n\n'

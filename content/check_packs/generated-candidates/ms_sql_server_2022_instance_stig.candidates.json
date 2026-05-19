@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$fqdn=([System.Net.Dns]::GetHostByName($env:COMPUTERNAME)).HostName; $services=Get-CimInstance Win32_Service | Where-Object { $_.Name -eq 'MSSQLSERVER' -or $_.Name -like 'MSSQL$*' }; $missing=@(); foreach ($svc in $services) { $acct=$svc.StartName; if (-not $acct -or $acct -match '^(LocalSystem|NT AUTHORITY\\\\|NT Service\\\\)') { continue }; $spns=(setspn -L $acct 2>$null); $instance=if ($svc.Name -eq 'MSSQLSERVER') { 'MSSQLSERVER' } else { $svc.Name.Substring(6) }; $required=@(\"MSSQLSvc/$fqdn\"); if ($instance -ne 'MSSQLSERVER') { $required += \"MSSQLSvc/$fqdn:$instance\" }; $reg=if ($instance -eq 'MSSQLSERVER') { 'HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Microsoft SQL Server\\\\MSSQLServer\\\\SuperSocketNetLib\\\\Tcp\\\\IPAll' } else { 'HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Microsoft SQL Server\\\\MSSQL$' + $instance + '\\\\MSSQLServer\\\\SuperSocketNetLib\\\\Tcp\\\\IPAll' }; try { $port=(Get-ItemProperty -Path $reg -ErrorAction Stop).TcpPort } catch { $port=$null }; if ($port) { $required += \"MSSQLSvc/$fqdn:$port\" }; foreach ($r in $required) { if ($spns -notcontains $r) { $missing += $r } } } $missing | Sort-Object -Unique\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must be configured to use the most-secure authentication method available.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-271264"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$names=sqlcmd -h -1 -W -Q 'SET NOCOUNT ON; SELECT name FROM sys.server_principals WHERE type IN (''U'',''G'') AND name LIKE ''%$'';'; foreach ($n in $names) { $login=$n.Trim(); if (-not $login) { continue }; $sam=($login -split '\\\\')[-1] -replace '\\$$',''; if (([ADSISearcher]\"(&(ObjectCategory=Computer)(Name=$sam))\").FindOne()) { $login } }\"",
         "type": "command_output"
       },
