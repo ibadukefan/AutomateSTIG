@@ -507,6 +507,33 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'Store the keystore file somewhere.'}, 'Tomcat_Application_Server_9_STIG'))
 
+    def test_infers_vmware_esxi_snmp_disabled_or_v3_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256414',
+            'title': 'Simple Network Management Protocol (SNMP) must be configured properly on the ESXi host.',
+            'check_content': 'From an ESXi shell, run the following command:\n\n# esxcli system snmp get\n\nIf SNMP is not in use and is enabled, this is a finding.\n\nIf SNMP is enabled and read-only communities are set to "public", this is a finding.\n\nIf SNMP is enabled and is not using v3 targets, this is a finding.\n\nNote: SNMP v3 targets can only be viewed and configured via the "esxcli" command.',
+            'fix_text': 'To disable SNMP from an ESXi shell, run the following command:\n\n# esxcli system snmp set -e no\n\nor configure SNMP v3 targets and remove public communities.',
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-256414')
+        self.assertEqual(candidate['platform'], 'vmware-esxi')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('esxcli system snmp get', candidate['check']['command'])
+        self.assertIn('public', candidate['check']['command'])
+        self.assertIn('v3targets', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_vmware_esxi_snmp_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-256414',
+            'title': 'SNMP must be configured properly.',
+            'check_content': 'Run esxcli system snmp get and review the output.',
+            'fix_text': 'Configure SNMP.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'VMW_vSphere_7-0_ESXi_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': rule['check_content'] + ' public v3targets'}, 'VMW_vSphere_7-0_ESXi_STIG'))
+
     def test_infers_tomcat_allow_backslash_false_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223004',

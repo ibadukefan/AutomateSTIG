@@ -3175,6 +3175,37 @@ def _ol9_crypto_policy_not_overridden_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _vmware_esxi_snmp_disabled_or_v3_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'vsphere' not in stig_id.lower() or 'esxi' not in stig_id.lower() or rule.get('vuln_id') != 'V-256414':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_phrases = (
+        'esxcli system snmp get',
+        'If SNMP is not in use and is enabled, this is a finding',
+        'If SNMP is enabled and read-only communities are set to "public", this is a finding',
+        'If SNMP is enabled and is not using v3 targets, this is a finding',
+        'SNMP v3 targets can only be viewed and configured via the "esxcli" command',
+    )
+    if not all(phrase in content for phrase in required_phrases):
+        return None
+    if not re.search(r'esxcli\s+system\s+snmp\s+set\s+-e\s+no', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c \"out=$(esxcli system snmp get 2>/dev/null); "
+        "printf '%s\\n' \\\"$out\\\" | grep -Eiq '^[[:space:]]*Enabled:[[:space:]]*true' || { printf Compliant; exit 0; }; "
+        "printf '%s\\n' \\\"$out\\\" | grep -Eiq '^[[:space:]]*Communities:[[:space:]]*([^,[:space:]]+,)*public([,[:space:]]|$)' && exit 0; "
+        "printf '%s\\n' \\\"$out\\\" | grep -Eiq '^[[:space:]]*v3targets:[[:space:]]*[^[:space:]]+' && printf Compliant\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'vmware-esxi',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _vcenter_lookup_core_setting_candidate(rule: dict, stig_id: str) -> dict | None:
     stig_lower = stig_id.lower()
     if 'vsphere' not in stig_lower or 'lookup' not in stig_lower:
@@ -12383,6 +12414,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     ol9_crypto_policy_not_overridden_candidate = _ol9_crypto_policy_not_overridden_candidate(rule, stig_id)
     if ol9_crypto_policy_not_overridden_candidate:
         return ol9_crypto_policy_not_overridden_candidate
+    vmware_esxi_snmp_candidate = _vmware_esxi_snmp_disabled_or_v3_candidate(rule, stig_id)
+    if vmware_esxi_snmp_candidate:
+        return vmware_esxi_snmp_candidate
     vcenter_lookup_core_setting_candidate = _vcenter_lookup_core_setting_candidate(rule, stig_id)
     if vcenter_lookup_core_setting_candidate:
         return vcenter_lookup_core_setting_candidate

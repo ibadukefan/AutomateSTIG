@@ -184,6 +184,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"out=$(esxcli system snmp get 2>/dev/null); printf '%s\\n' \\\"$out\\\" | grep -Eiq '^[[:space:]]*Enabled:[[:space:]]*true' || { printf Compliant; exit 0; }; printf '%s\\n' \\\"$out\\\" | grep -Eiq '^[[:space:]]*Communities:[[:space:]]*([^,[:space:]]+,)*public([,[:space:]]|$)' && exit 0; printf '%s\\n' \\\"$out\\\" | grep -Eiq '^[[:space:]]*v3targets:[[:space:]]*[^[:space:]]+' && printf Compliant\"",
+        "type": "command_output"
+      },
+      "description": "Simple Network Management Protocol (SNMP) must be configured properly on the ESXi host.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "vmware-esxi",
+      "vuln_id": "V-256414"
+    },
+    {
+      "check": {
         "command": "Get-VMHost | Get-AdvancedSetting -Name UserVars.ESXiVPsDisabledProtocols | Select-Object -ExpandProperty Value",
         "type": "command_output"
       },

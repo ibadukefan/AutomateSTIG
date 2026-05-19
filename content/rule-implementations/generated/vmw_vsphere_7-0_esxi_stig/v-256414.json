@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"out=$(esxcli system snmp get 2>/dev/null); printf '%s\\n' \\\"$out\\\" | grep -Eiq '^[[:space:]]*Enabled:[[:space:]]*true' || { printf Compliant; exit 0; }; printf '%s\\n' \\\"$out\\\" | grep -Eiq '^[[:space:]]*Communities:[[:space:]]*([^,[:space:]]+,)*public([,[:space:]]|$)' && exit 0; printf '%s\\n' \\\"$out\\\" | grep -Eiq '^[[:space:]]*v3targets:[[:space:]]*[^[:space:]]+' && printf Compliant\"",
+      "type": "command_output"
+    },
+    "description": "Simple Network Management Protocol (SNMP) must be configured properly on the ESXi host.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "vmware-esxi",
+    "vuln_id": "V-256414"
+  },
   "check_content_excerpt": "From an ESXi shell, run the following command:\n\n# esxcli system snmp get\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHostSnmp | Select *\n\nIf SNMP is not in use and is enabled, this is a finding.\n\nIf SNMP is enabled and read-only communities are set to \"public\", this is a finding.\n\nIf SNMP is enabled and is not using v3 targets, this is a finding.\n\nNote: SNMP v3 targets can only be viewed and configured via the \"esxcli\" command.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "To disable SNMP from an ESXi shell, run the following command:\n\n# esxcli system snmp set -e no\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi Host:\n\nGet-VMHostSnmp | Set-VMHostSnmp -Enabled $false\n\nTo configure SNMP for v3 targets, use the \"esxcli system snmp set\" command set locally on the host or remotely via PowerCLI.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256414r959010_rule",
   "severity": "medium",
