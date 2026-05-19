@@ -11346,6 +11346,55 @@ def _tomcat_web_xml_boolean_param_candidate(rule: dict, stig_id: str) -> dict | 
     }
 
 
+def _windows_domain_controller_anonymous_directory_access_candidate(rule: dict, stig_id: str) -> dict | None:
+    allowed_targets = {
+        ('V-254399', 'MS_Windows_Server_2022_STIG'),
+        ('V-278146', 'MS_Windows_Server_2025_STIG'),
+    }
+    vuln_id = rule.get('vuln_id', '')
+    if (vuln_id, stig_id) not in allowed_targets:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    required_check_snippets = (
+        r'This\s+applies\s+to\s+domain\s+controllers\.\s+It\s+is\s+(?:NA|not\s+applicable)\s+for\s+other\s+systems\.',
+        r'Run\s+["“]ldp\.exe["”]',
+        r'Clear\s+the\s+User,\s+Password,\s+and\s+Domain\s+fields',
+        r'Select\s+["“]Simple\s+bind["”]',
+        r'Authenticated\s+as:\s+[\'"“]?NT\s+AUTHORITY\\ANONYMOUS\s+LOGON[\'"”]?',
+    )
+    if not all(re.search(snippet, content, re.IGNORECASE) for snippet in required_check_snippets):
+        return None
+    if not re.search(r'(?:If\s+any\s+data\s+is\s+returned\s+from\s+a\s+nonpublic\s+directory\s+search|If\s+attribute\s+data\s+is\s+displayed,\s+anonymous\s+access\s+is\s+enabled\s+to\s+the\s+domain\s+naming\s+context)\b.*?this\s+is\s+a\s+finding\.', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'Configure\s+directory\s+data\s+\(outside\s+the\s+root\s+DSE\)\s+of\s+a\s+nonpublic\s+directory\s+to\s+prevent\s+anonymous\s+access', combined, re.IGNORECASE):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "try { "
+        "Add-Type -AssemblyName System.DirectoryServices.Protocols; "
+        "$root=([ADSI]'LDAP://RootDSE'); "
+        "$defaultNamingContext=[string]$root.defaultNamingContext; "
+        "if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; "
+        "$conn=New-Object System.DirectoryServices.Protocols.LdapConnection('localhost'); "
+        "$conn.AuthType=[System.DirectoryServices.Protocols.AuthType]::Anonymous; "
+        "$conn.Bind(); "
+        "$req=New-Object System.DirectoryServices.Protocols.SearchRequest($defaultNamingContext,'(objectClass=*)',[System.DirectoryServices.Protocols.SearchScope]::Base,$null); "
+        "$resp=$conn.SendRequest($req); "
+        "if ($resp.Entries.Count -eq 0) { 'Compliant' } "
+        "} catch { 'Compliant' }"
+        "\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_bluetooth_support_service_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id) or rule.get('vuln_id', '') != 'V-278018':
         return None
@@ -12394,6 +12443,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         services_msc_candidate = _windows_services_msc_candidate(rule, stig_id)
         if services_msc_candidate:
             return services_msc_candidate
+
+        anonymous_directory_access_candidate = _windows_domain_controller_anonymous_directory_access_candidate(rule, stig_id)
+        if anonymous_directory_access_candidate:
+            return anonymous_directory_access_candidate
 
         bluetooth_service_candidate = _windows_bluetooth_support_service_disabled_candidate(rule, stig_id)
         if bluetooth_service_candidate:

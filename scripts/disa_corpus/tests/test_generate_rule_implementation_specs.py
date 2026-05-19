@@ -11,6 +11,44 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_windows_domain_controller_anonymous_directory_access_candidate(self):
+        check = (
+            'This applies to domain controllers. It is NA for other systems.\n\n'
+            'Open "Command Prompt" (not elevated).\n\n'
+            'Run "ldp.exe".\n\n'
+            'From the "Connection menu", select "Bind".\n\n'
+            'Clear the User, Password, and Domain fields.\n\n'
+            'Select "Simple bind" for the Bind type and click "OK".\n\n'
+            "Confirmation of anonymous access will be displayed at the end:\n\n"
+            "res = ldap_simple_bind_s\nAuthenticated as: 'NT AUTHORITY\\ANONYMOUS LOGON'\n\n"
+            'From the "Browse" menu, select "Search".\n\n'
+            'If any data is returned from a nonpublic directory search, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278146',
+            'title': 'Windows Server 2025 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access.',
+            'check_content': check,
+            'fix_text': 'Configure directory data (outside the root DSE) of a nonpublic directory to prevent anonymous access.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278146')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('DirectoryServices.Protocols', candidate['check']['command'])
+        self.assertIn('AuthType]::Anonymous', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_windows_domain_controller_anonymous_directory_access_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-278146',
+            'title': 'Windows Server 2025 directory data must prevent anonymous access.',
+            'check_content': 'Run ldp.exe and review access.',
+            'fix_text': 'Prevent anonymous access.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2025_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2025_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Microsoft_Windows_11_STIG'))
+
     def test_infers_windows_workstation_bitlocker_all_fixed_volumes_candidate(self):
         check = (
             'Verify all Windows 11 information systems (including SIPRNet) employ BitLocker for full disk encryption.\n\n'

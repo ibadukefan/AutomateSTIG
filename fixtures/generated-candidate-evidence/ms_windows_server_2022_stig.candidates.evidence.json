@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 198,
+  "candidate_checks": 199,
   "cases": [
     {
       "check": {
@@ -2337,6 +2337,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-254392"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"try { Add-Type -AssemblyName System.DirectoryServices.Protocols; $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $conn=New-Object System.DirectoryServices.Protocols.LdapConnection('localhost'); $conn.AuthType=[System.DirectoryServices.Protocols.AuthType]::Anonymous; $conn.Bind(); $req=New-Object System.DirectoryServices.Protocols.SearchRequest($defaultNamingContext,'(objectClass=*)',[System.DirectoryServices.Protocols.SearchScope]::Base,$null); $resp=$conn.SendRequest($req); if ($resp.Entries.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 directory data (outside the root DSE) of a nonpublic directory must be configured to prevent anonymous access.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { Add-Type -AssemblyName System.DirectoryServices.Protocols; $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $conn=New-Object System.DirectoryServices.Protocols.LdapConnection('localhost'); $conn.AuthType=[System.DirectoryServices.Protocols.AuthType]::Anonymous; $conn.Bind(); $req=New-Object System.DirectoryServices.Protocols.SearchRequest($defaultNamingContext,'(objectClass=*)',[System.DirectoryServices.Protocols.SearchScope]::Base,$null); $resp=$conn.SendRequest($req); if ($resp.Entries.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { Add-Type -AssemblyName System.DirectoryServices.Protocols; $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $conn=New-Object System.DirectoryServices.Protocols.LdapConnection('localhost'); $conn.AuthType=[System.DirectoryServices.Protocols.AuthType]::Anonymous; $conn.Bind(); $req=New-Object System.DirectoryServices.Protocols.SearchRequest($defaultNamingContext,'(objectClass=*)',[System.DirectoryServices.Protocols.SearchScope]::Base,$null); $resp=$conn.SendRequest($req); if ($resp.Entries.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254399"
     },
     {
       "check": {
@@ -5333,5 +5359,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 198
+  "validated_candidates": 199
 }
