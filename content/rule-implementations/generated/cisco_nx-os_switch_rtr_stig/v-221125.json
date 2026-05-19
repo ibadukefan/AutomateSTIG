@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | section \"^bridge-domain \" | include \"^ mac limit maximum addresses \"",
+      "type": "command_output"
+    },
+    "description": "The Cisco PE switch must be configured to limit the number of MAC addresses it can learn for each Virtual Private LAN Services (VPLS) bridge domain.",
+    "expected": {
+      "substring": "mac limit maximum addresses",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221125"
+  },
   "check_content_excerpt": "Review the PE switch configuration to determine if a MAC address limit has been set for each VPLS bridge domain.\n\nbridge-domain 100 \n mac limit maximum addresses nnnnn\n\nIf a limit has not been configured, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "mac limit maximum addresses",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure a MAC address learning limit for each VPLS bridge domain.\n\nSW1(config)# bridge-domain 100\nSW1(config-bdomain)# mac limit maximum addresses nnnn\nSW1(config-bdomain)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221125r999734_rule",
   "severity": "medium",

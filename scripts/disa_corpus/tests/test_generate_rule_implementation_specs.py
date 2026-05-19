@@ -2144,6 +2144,53 @@ If the MPLS switch is not configured to disable TTL propagation, this is a findi
             'description': 'The Cisco MPLS switch must be configured to have TTL Propagation disabled.',
         })
 
+    def test_infers_cisco_nxos_ibgp_update_source_loopback_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221112',
+            'title': 'The Cisco BGP switch must be configured to use its loopback address as the source address for iBGP peering sessions.',
+            'check_content': '''Step 1: Review the switch configuration to verify that a loopback address has been configured.
+
+interface loopback0
+ ip address 10.1.1.1/32
+
+Step 2: Verify that the loopback interface is used as the source address for all iBGP sessions.
+
+router bgp xx
+ neighbor 10.1.12.2 remote-as xx
+ address-family ipv4 unicast
+  neighbor 10.1.12.2 update-source loopback0
+
+If the switch does not use its loopback address as the source address for all iBGP sessions, this is a finding.''',
+            'fix_text': 'Configure the switch to use its loopback address as the source address for all iBGP peering. neighbor 10.1.12.2 update-source lo0',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221112',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | section "^router bgp" | include "update-source (loopback|lo)[0-9]*$"'},
+            'expected': {'type': 'contains', 'substring': 'update-source'},
+            'description': 'The Cisco BGP switch must be configured to use its loopback address as the source address for iBGP peering sessions.',
+        })
+
+    def test_infers_cisco_nxos_vpls_mac_limit_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221125',
+            'title': 'The Cisco PE switch must be configured to limit the number of MAC addresses it can learn for each Virtual Private LAN Services (VPLS) bridge domain.',
+            'check_content': '''Review the PE switch configuration to determine if a MAC address limit has been set for each VPLS bridge domain.
+
+bridge-domain 100
+ mac limit maximum addresses nnnnn
+
+If a limit has not been configured, this is a finding.''',
+            'fix_text': 'Configure a MAC address learning limit for each VPLS bridge domain. SW1(config-bdomain)# mac limit maximum addresses nnnn',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221125',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | section "^bridge-domain " | include "^ mac limit maximum addresses "'},
+            'expected': {'type': 'contains', 'substring': 'mac limit maximum addresses'},
+            'description': 'The Cisco PE switch must be configured to limit the number of MAC addresses it can learn for each Virtual Private LAN Services (VPLS) bridge domain.',
+        })
+
     def test_infers_cisco_nxos_vpls_storm_control_broadcast_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221123',

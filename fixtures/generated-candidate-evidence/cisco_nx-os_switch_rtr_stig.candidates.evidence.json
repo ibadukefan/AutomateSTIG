@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 23,
+  "candidate_checks": 25,
   "cases": [
     {
       "check": {
@@ -289,6 +289,32 @@
     },
     {
       "check": {
+        "command": "show running-config | section \"^router bgp\" | include \"update-source (loopback|lo)[0-9]*$\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco BGP switch must be configured to use its loopback address as the source address for iBGP peering sessions.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "update-source",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^router bgp\" | include \"update-source (loopback|lo)[0-9]*$\"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^router bgp\" | include \"update-source (loopback|lo)[0-9]*$\"": "before\nupdate-source\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221112"
+    },
+    {
+      "check": {
         "command": "show running-config | section \"^router (ospf|isis)\" | include \"^ mpls ldp sync$\"",
         "type": "command_output"
       },
@@ -364,6 +390,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221123"
+    },
+    {
+      "check": {
+        "command": "show running-config | section \"^bridge-domain \" | include \"^ mac limit maximum addresses \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco PE switch must be configured to limit the number of MAC addresses it can learn for each Virtual Private LAN Services (VPLS) bridge domain.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "mac limit maximum addresses",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^bridge-domain \" | include \"^ mac limit maximum addresses \"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^bridge-domain \" | include \"^ mac limit maximum addresses \"": "before\nmac limit maximum addresses\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221125"
     },
     {
       "check": {
@@ -605,5 +657,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 23
+  "validated_candidates": 25
 }

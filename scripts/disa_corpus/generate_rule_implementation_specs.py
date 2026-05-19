@@ -2108,6 +2108,18 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'content': r'router\s+ospf\s+\S+.*?mpls\s+ldp\s+sync.*?router\s+isis.*?mpls\s+ldp\s+sync.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+synchronize\s+IGP\s+and\s+LDP',
             'fix': r'Configure\s+the\s+MPLS\s+switch\s+to\s+synchronize\s+IGP\s+and\s+LDP.*?mpls\s+ldp\s+sync',
         },
+        'V-221112': {
+            'command': 'show running-config | section "^router bgp" | include "update-source (loopback|lo)[0-9]*$"',
+            'expected': {'type': 'contains', 'substring': 'update-source'},
+            'content': r'loopback\s+interface\s+is\s+used\s+as\s+the\s+source\s+address\s+for\s+all\s+iBGP\s+sessions.*?update-source\s+(?:loopback|lo)\d*.*?If\s+the\s+switch\s+does\s+not\s+use\s+its\s+loopback\s+address\s+as\s+the\s+source\s+address\s+for\s+all\s+iBGP\s+sessions',
+            'fix': r'Configure\s+the\s+switch\s+to\s+use\s+its\s+loopback\s+address\s+as\s+the\s+source\s+address\s+for\s+all\s+iBGP\s+peering.*?update-source\s+(?:loopback|lo)\d*',
+        },
+        'V-221125': {
+            'command': 'show running-config | section "^bridge-domain " | include "^ mac limit maximum addresses "',
+            'expected': {'type': 'contains', 'substring': 'mac limit maximum addresses'},
+            'content': r'MAC\s+address\s+limit\s+has\s+been\s+set\s+for\s+each\s+VPLS\s+bridge\s+domain.*?mac\s+limit\s+maximum\s+addresses\s+\S+.*?If\s+a\s+limit\s+has\s+not\s+been\s+configured,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+a\s+MAC\s+address\s+learning\s+limit\s+for\s+each\s+VPLS\s+bridge\s+domain.*?mac\s+limit\s+maximum\s+addresses',
+        },
         'V-221143': {
             'command': 'show running-config | include "^ip msdp password "',
             'expected': {'type': 'contains', 'substring': 'ip msdp password'},
