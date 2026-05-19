@@ -239,6 +239,62 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2019_Instance_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': 'review Remote Access'}, 'MS_SQL_Server_2022_Instance_STIG'))
 
+    def test_infers_sql_server_2022_sp_configure_disabled_option_variants(self):
+        cases = (
+            (
+                'V-274451',
+                'Ole Automation Procedures',
+                'To determine if the "Ole Automation Procedures" option is enabled, execute the following query:\n'
+                "EXEC SP_CONFIGURE 'show advanced options', '1';\n"
+                'RECONFIGURE WITH OVERRIDE;\n'
+                "EXEC SP_CONFIGURE 'Ole Automation Procedures';\n\n"
+                'If the value of "config_value" is "0", this is not a finding.\n\n'
+                'If the value of "config_value" is "1", review the system documentation to determine whether the use of "Ole Automation Procedures" is required and authorized. If it is not authorized, this is a finding.',
+                "sp_configure 'Ole Automation Procedures', 0;",
+            ),
+            (
+                'V-274452',
+                'user options',
+                'To determine if "User Options" option is enabled, execute the following query:\n'
+                "EXEC SP_CONFIGURE 'show advanced options', '1';\n"
+                'RECONFIGURE WITH OVERRIDE;\n'
+                "EXEC SP_CONFIGURE 'user options';\n\n"
+                'If the value of "config_value" is "0", this is not a finding.\n\n'
+                'If the value of "config_value" is "1", review the system documentation to determine whether the use of "user options" is required and authorized. If it is not authorized, this is a finding.',
+                "sp_configure 'user options', 0;",
+            ),
+            (
+                'V-271359',
+                'clr enabled',
+                'Run the following query to determine whether CLR is enabled for the instance:\n'
+                'SELECT name, value, value_in_use\nFROM sys.configurations\n'
+                "WHERE name = 'clr enabled'\n\n"
+                'If "value_in_use" is a "1" and CLR is not required, this is a finding.',
+                "EXEC SP_CONFIGURE 'clr enabled', 0;",
+            ),
+            (
+                'V-274450',
+                'filestream access level',
+                "EXEC sp_configure 'filestream access level'\n\n"
+                'If "run_value" is greater than "0", this is a finding.\n\n'
+                "SELECT CASE WHEN EXISTS (SELECT * FROM sys.configurations WHERE Name = 'filestream access level' AND Cast(value AS INT) = 0) THEN 'No' ELSE 'Yes' END AS TSQLFileStreamAccess;\n"
+                'If the above query returns "Yes" in the "FileStreamEnabled" field, this is a finding.',
+                'EXEC sp_configure filestream_access_level, 0 RECONFIGURE',
+            ),
+        )
+        for vuln_id, option, check_content, fix_text in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'The {option} feature must be disabled unless specifically required and approved.',
+                    'check_content': check_content,
+                    'fix_text': fix_text,
+                }, 'MS_SQL_Server_2022_Instance_STIG')
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertIn(option, candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
+
     def test_infers_sql_server_kerberos_spn_registration_candidate(self):
         check = (
             'If the SQL Server is not part of an Active Directory domain, this is Not Applicable.\n'

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'Ole Automation Procedures';\"",
+      "type": "command_output"
+    },
+    "description": "The Ole Automation Procedures feature must be disabled unless specifically required and approved.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "generic",
+    "vuln_id": "V-274451"
+  },
   "check_content_excerpt": "To determine if the \"Ole Automation Procedures\" option is enabled, execute the following query: \nEXEC SP_CONFIGURE 'show advanced options', '1'; \nRECONFIGURE WITH OVERRIDE; \nEXEC SP_CONFIGURE 'Ole Automation Procedures'; \n\nIf the value of \"config_value\" is \"0\", this is not a finding. \n\nIf the value of \"config_value\" is \"1\", review the system documentation to determine whether the use of \"Ole Automation Procedures\" is required and authorized. If it is not authorized, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable use of or remove any external application executable object definitions that are not authorized. To disable the use of \"Ole Automation Procedures\" option, from the query prompt:\nsp_configure 'show advanced options', 1;  \nGO  \nRECONFIGURE;  \nGO  \nsp_configure 'Ole Automation Procedures', 0;  \nGO  \nRECONFIGURE;  \nGO",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274451r1111120_rule",
   "severity": "medium",

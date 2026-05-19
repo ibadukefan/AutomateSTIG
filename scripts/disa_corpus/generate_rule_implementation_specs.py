@@ -11218,17 +11218,31 @@ def _sql_server_disabled_configuration_option_candidate(rule: dict, stig_id: str
         'V-271296': 'Allow Polybase Export',
         'V-271297': 'Hadoop Connectivity',
         'V-271298': 'Remote Access',
+        'V-271359': 'clr enabled',
+        'V-274450': 'filestream access level',
+        'V-274451': 'Ole Automation Procedures',
+        'V-274452': 'user options',
     }
     option = option_by_vuln.get(rule.get('vuln_id', ''))
     if not option:
         return None
-    if not re.search(r'SELECT\s+name\s*,\s*value\s*,\s*value_in_use\s+FROM\s+sys\.configurations', content, re.IGNORECASE):
+    option_name_pattern = r'[\s_]+'.join(re.escape(part) for part in re.split(r'[\s_]+', option))
+    has_sys_configurations_query = (
+        re.search(r'SELECT\s+name\s*,\s*value\s*,\s*value_in_use\s+FROM\s+sys\.configurations', content, re.IGNORECASE)
+        and re.search(rf"WHERE\s+name\s*=\s*['\"“]{option_name_pattern}['\"”]", content, re.IGNORECASE)
+    )
+    has_sp_configure_query = re.search(rf"EXEC\s+SP_CONFIGURE\s+['\"“]{option_name_pattern}['\"”]", content, re.IGNORECASE)
+    if not (has_sys_configurations_query or has_sp_configure_query):
         return None
-    if not re.search(rf"WHERE\s+name\s*=\s*['\"“]{re.escape(option)}['\"”]", content, re.IGNORECASE):
+    if not (
+        re.search(r'If\s*\[value_in_use\]\s*is\s*a\s*\[1\]', content, re.IGNORECASE)
+        or re.search(r'If\s+["“]value_in_use["”]\s+is\s+a\s+["“]?1["”]?', content, re.IGNORECASE)
+        or re.search(r'If\s+the\s+value\s+of\s+["“]config_value["”]\s+is\s+["“]1["”]', content, re.IGNORECASE)
+        or re.search(r'If\s+["“]run_value["”]\s+is\s+greater\s+than\s+["“]?0["”]?', content, re.IGNORECASE)
+        or re.search(r'If\s+the\s+above\s+query\s+returns\s+["“]Yes["”].*this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL)
+    ):
         return None
-    if not re.search(r'If\s*\[value_in_use\]\s*is\s*a\s*\[1\]', content, re.IGNORECASE):
-        return None
-    if not re.search(rf"SP_CONFIGURE\s+['\"“][^'\"”]*{re.escape(option)}[^'\"”]*['\"”]\s*,\s*0", fix_text, re.IGNORECASE):
+    if not re.search(rf"SP_CONFIGURE\s+['\"“]?{option_name_pattern}['\"”]?\s*,\s*0", fix_text, re.IGNORECASE):
         return None
     escaped_option = option.replace("'", "''")
     return {

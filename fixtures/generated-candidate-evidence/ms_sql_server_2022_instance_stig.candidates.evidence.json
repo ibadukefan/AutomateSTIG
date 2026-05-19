@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 17,
+  "candidate_checks": 21,
   "cases": [
     {
       "check": {
@@ -341,6 +341,32 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'clr enabled';\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must maintain a separate execution domain for each executing process.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'clr enabled';\"": "unexpected-0"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'clr enabled';\"": "0"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271359"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; WITH required(name) AS (SELECT v.name FROM (VALUES ('SCHEMA_OBJECT_CHANGE_GROUP')) AS v(name)) SELECT name FROM required EXCEPT SELECT d.audit_action_name FROM sys.server_audit_specifications s JOIN sys.server_audits a ON s.audit_guid = a.audit_guid JOIN sys.server_audit_specification_details d ON s.server_specification_id = d.server_specification_id WHERE a.is_state_enabled = 1;\"",
         "type": "command_output"
       },
@@ -442,6 +468,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-274445"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'filestream access level';\"",
+        "type": "command_output"
+      },
+      "description": "Filestream must be disabled unless specifically required and approved.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'filestream access level';\"": "unexpected-0"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'filestream access level';\"": "0"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274450"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'Ole Automation Procedures';\"",
+        "type": "command_output"
+      },
+      "description": "The Ole Automation Procedures feature must be disabled unless specifically required and approved.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'Ole Automation Procedures';\"": "unexpected-0"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'Ole Automation Procedures';\"": "0"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274451"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'user options';\"",
+        "type": "command_output"
+      },
+      "description": "The SQL Server User Options feature must be disabled unless specifically required and approved.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'user options';\"": "unexpected-0"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'user options';\"": "0"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274452"
     }
   ],
   "production_claim": false,
@@ -449,5 +553,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_SQL_Server_2022_Instance_STIG",
-  "validated_candidates": 17
+  "validated_candidates": 21
 }

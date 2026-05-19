@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'filestream access level';\"",
+      "type": "command_output"
+    },
+    "description": "Filestream must be disabled unless specifically required and approved.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "generic",
+    "vuln_id": "V-274450"
+  },
   "check_content_excerpt": "Review the system documentation to determine if FileStream is in use. If in use and authorized, this is not a finding.   \n\nIf FileStream is not documented as being authorized, execute the following query:\nEXEC sp_configure 'filestream access level'\n\nIf \"run_value\" is greater than \"0\", this is a finding.\n\nThis rule checks that the Filestream SQL-specific option is disabled.\nSELECT CASE \n        WHEN EXISTS (SELECT * \n                     FROM sys.configurations \n                     WHERE Name = 'filestream access level' \n                            AND Cast(value AS INT) = 0) THEN 'No' \n        ELSE 'Yes'\n      END AS TSQLFileStreamAccess;\n\nIf the above query returns \"Yes\" in the \"FileStreamEnabled\" field, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable the use of Filestream.\n\n1. Delete all FILESTREAM columns from all tables. ALTER TABLE <name> DROP COLUMN <column name>\n2. Disassociate tables from the FILESTREAM filegroups. ALTER TABLE <name> SET (FILESTREAM_ON = 'NULL'\n3. Remove all FILESTREAM data containers. ALTER DATABASE <name> REMOVE FILE <file name>\n4. Remove all FILESTREAM filegroups. ALTER DATABASE <name> REMOVE FILEGROUP <file name>\n5. Disable FILESTREAM.\nEXEC sp_configure filestream_access_level, 0 \n    RECONFIGURE \n6. Restart the SQL Service.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274450r1111117_rule",
   "severity": "medium",

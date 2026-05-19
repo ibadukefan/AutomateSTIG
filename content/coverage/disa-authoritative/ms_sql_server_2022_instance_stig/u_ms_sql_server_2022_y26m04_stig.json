@@ -896,16 +896,17 @@
       "vuln_id": "V-271358"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271359",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271359r1137659_rule",
       "severity": "medium",
       "title": "SQL Server must maintain a separate execution domain for each executing process.",
-      "tracking_issue": "TODO-V-271359",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271359"
@@ -1170,46 +1171,49 @@
       "vuln_id": "V-274449"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274450",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-274450r1111117_rule",
       "severity": "medium",
       "title": "Filestream must be disabled unless specifically required and approved.",
-      "tracking_issue": "TODO-V-274450",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-274450"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274451",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-274451r1111120_rule",
       "severity": "medium",
       "title": "The Ole Automation Procedures feature must be disabled unless specifically required and approved.",
-      "tracking_issue": "TODO-V-274451",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-274451"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274452",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-274452r1111123_rule",
       "severity": "medium",
       "title": "The SQL Server User Options feature must be disabled unless specifically required and approved.",
-      "tracking_issue": "TODO-V-274452",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-274452"
