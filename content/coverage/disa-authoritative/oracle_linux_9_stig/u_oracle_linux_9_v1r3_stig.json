@@ -5166,16 +5166,17 @@
       "vuln_id": "V-271755"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271756",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271756r1091980_rule",
       "severity": "high",
       "title": "OL 9 local disk partitions must implement cryptographic mechanisms to prevent unauthorized disclosure or modification of all information that requires at rest protection.",
-      "tracking_issue": "TODO-V-271756",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271756"

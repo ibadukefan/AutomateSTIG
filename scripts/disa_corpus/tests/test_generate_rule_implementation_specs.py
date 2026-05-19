@@ -43,6 +43,41 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertEqual(less_complete['normalizer'], 'registry')
             self.assertEqual(json.loads(less_complete_path.read_text())['candidate_check']['check']['path'], 'HKLM\\Software\\Example')
 
+    def test_infers_linux_data_at_rest_encryption_candidate(self):
+        check = (
+            'Note: If there is a documented and approved reason for not having data at rest encryption, this requirement is Not Applicable.\n\n'
+            'Verify that OL 9 prevents unauthorized disclosure or modification of all information requiring at rest protection by using disk encryption.\n'
+            'Determine the partition layout for the system with the following command:\n\n'
+            '$ sudo fdisk -l\n\n'
+            'Verify all system partitions are encrypted with the following command:\n\n'
+            '$ sudo blkid\n'
+            'Every persistent disk partition present must be of type "crypto_LUKS". If any partitions other than the boot partition or pseudo file systems (such as /proc or /sys) are not type "crypto_LUKS", this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271756',
+            'title': 'OL 9 local disk partitions must implement cryptographic mechanisms to prevent unauthorized disclosure or modification of all information that requires at rest protection.',
+            'check_content': check,
+            'fix_text': 'Configure OL 9 to prevent unauthorized modification of all information at rest by using disk encryption.',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271756')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('findmnt', candidate['check']['command'])
+        self.assertIn('crypto_LUKS', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_does_not_infer_linux_data_at_rest_encryption_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-271756',
+            'title': 'OL 9 local disk partitions must implement cryptographic mechanisms to prevent unauthorized disclosure or modification of all information that requires at rest protection.',
+            'check_content': 'Verify disk encryption with blkid.',
+            'fix_text': 'Configure disk encryption.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Oracle_Linux_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Linux_9_STIG'))
+
     def test_infers_sql_server_2022_disabled_configuration_option_candidate(self):
         check = (
             'To determine if [Remote Access] is enabled, execute the following command:\n'

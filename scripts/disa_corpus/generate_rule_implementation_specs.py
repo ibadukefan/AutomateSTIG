@@ -1430,6 +1430,42 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
 
 
+def _linux_data_at_rest_encryption_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    supported_vulns = {'V-270747', 'V-271431', 'V-271756'}
+    if canonical_vuln_id not in supported_vulns or not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'data[-\s]at[-\s]rest|information\s+at\s+rest', content, re.IGNORECASE):
+        return None
+    if not re.search(r'\b(?:fdisk\s+-l|blkid)\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'crypto_LUKS', content):
+        return None
+    if not re.search(r'Every\s+persistent\s+disk\s+partition\s+present\s+must\s+be\s+of\s+type\s+["“]?crypto_LUKS["”]?', content, re.IGNORECASE):
+        return None
+    if not re.search(r'boot\s+partition\s+or\s+pseudo\s+file\s+systems', content, re.IGNORECASE):
+        return None
+    if not re.search(r'encrypt', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'findmnt -rn -t nosquashfs,notmpfs,nodevtmpfs,noproc,nosysfs,nocgroup,nocgroup2,nooverlay "
+        "-o SOURCE,TARGET 2>/dev/null | while read -r src tgt; do "
+        "case \"$tgt\" in /boot|/boot/*|/proc|/proc/*|/sys|/sys/*|/run|/run/*) continue;; esac; "
+        "dev=$(readlink -f \"$src\" 2>/dev/null || printf %s \"$src\"); [ -b \"$dev\" ] || continue; "
+        "lsblk -sno TYPE,FSTYPE \"$dev\" 2>/dev/null | grep -Eq \"(^|[[:space:]])(crypt|crypto_LUKS)([[:space:]]|$)\" || printf \"Unencrypted %s %s\\n\" \"$dev\" \"$tgt\"; "
+        "done'"
+    )
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_interactive_user_init_path_home_only_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -12333,6 +12369,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    linux_data_at_rest_candidate = _linux_data_at_rest_encryption_candidate(rule, stig_id)
+    if linux_data_at_rest_candidate:
+        return linux_data_at_rest_candidate
+
     ubuntu_dod_root_ca_candidate = _ubuntu_2004_dod_root_ca_certificate_candidate(rule, stig_id)
     if ubuntu_dod_root_ca_candidate:
         return ubuntu_dod_root_ca_candidate
