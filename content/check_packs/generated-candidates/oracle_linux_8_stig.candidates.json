@@ -1574,6 +1574,19 @@
     },
     {
       "check": {
+        "command": "python3 -c '\nimport datetime, pathlib, re, subprocess\nnow = datetime.date.today()\ndeadline = now + datetime.timedelta(days=3)\nname_re = re.compile(r'\"'\"'temp|temporary|emerg'\"'\"', re.IGNORECASE)\nfindings = []\nfor line in pathlib.Path('\"'\"'/etc/passwd'\"'\"').read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    fields = line.split('\"'\"':'\"'\"')\n    if len(fields) < 3:\n        continue\n    name = fields[0]\n    try:\n        uid = int(fields[2])\n    except ValueError:\n        continue\n    if not name_re.search(name) or (uid < 1000 and name != '\"'\"'root'\"'\"'):\n        continue\n    result = subprocess.run(['\"'\"'chage'\"'\"', '\"'\"'-l'\"'\"', name], text=True, capture_output=True, check=False)\n    if result.returncode != 0:\n        findings.append(f'\"'\"'{name}: unable to read account expiration'\"'\"')\n        continue\n    expiration = None\n    for output_line in result.stdout.splitlines():\n        if output_line.lower().startswith('\"'\"'account expires'\"'\"'):\n            expiration = output_line.split('\"'\"':'\"'\"', 1)[1].strip()\n            break\n    if not expiration or expiration.lower() == '\"'\"'never'\"'\"':\n        findings.append(f'\"'\"'{name}: Account expires {expiration or \"missing\"}'\"'\"')\n        continue\n    parsed = None\n    for fmt in ('\"'\"'%b %d, %Y'\"'\"', '\"'\"'%B %d, %Y'\"'\"', '\"'\"'%Y-%m-%d'\"'\"'):\n        try:\n            parsed = datetime.datetime.strptime(expiration, fmt).date()\n            break\n        except ValueError:\n            pass\n    if parsed is None or parsed > deadline:\n        findings.append(f'\"'\"'{name}: Account expires {expiration}'\"'\"')\nprint('\"'\"'\\n'\"'\"'.join(findings) if findings else '\"'\"'Compliant'\"'\"')\n'",
+        "type": "command_output"
+      },
+      "description": "OL 8 temporary user accounts must be provisioned with an expiration time of 72 hours or less.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248651"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/password-auth",
         "pattern": "auth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0",

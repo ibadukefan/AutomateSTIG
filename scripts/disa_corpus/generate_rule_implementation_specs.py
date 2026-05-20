@@ -1505,18 +1505,21 @@ def _linux_platform(stig_id: str) -> bool:
 
 def _linux_temporary_account_expiration_candidate(rule: dict, stig_id: str) -> dict | None:
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    normalized_stig_id = slug(stig_id).replace('-', '_')
     supported_targets = {
-        ('V-254523', 'RHEL_7_STIG'),
-        ('V-230331', 'RHEL_8_STIG'),
-        ('V-230374', 'RHEL_8_STIG'),
-        ('V-258047', 'RHEL_9_STIG'),
-        ('V-248651', 'Oracle_Linux_8_STIG'),
-        ('V-248708', 'Oracle_Linux_8_STIG'),
-        ('V-271843', 'Oracle_Linux_9_STIG'),
-        ('V-260548', 'CAN_Ubuntu_22-04_LTS_STIG'),
-        ('V-270682', 'CAN_Ubuntu_24-04_STIG'),
+        'V-254523': {'rhel_7_stig'},
+        'V-230331': {'rhel_8_stig'},
+        'V-230374': {'rhel_8_stig'},
+        'V-258047': {'rhel_9_stig'},
+        'V-248651': {'oracle_linux_8_stig'},
+        'V-248708': {'oracle_linux_8_stig'},
+        'V-271843': {'oracle_linux_9_stig'},
+        'V-238331': {'canonical_ubuntu_20_04_lts_stig'},
+        'V-260548': {'can_ubuntu_22_04_lts_stig'},
+        'V-270682': {'can_ubuntu_24_04_stig'},
+        'V-234866': {'sles_15_stig'},
     }
-    if (canonical_vuln_id, stig_id) not in supported_targets or not _linux_platform(stig_id):
+    if normalized_stig_id not in supported_targets.get(canonical_vuln_id, set()) or not _linux_platform(stig_id):
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -1525,8 +1528,9 @@ def _linux_temporary_account_expiration_candidate(rule: dict, stig_id: str) -> d
         return None
     required_patterns = (
         r'chage\s+-l\s+<?(?:temporary_|system_)?account(?:_name)?>?',
-        r'account\s+expires',
-        r'(?:within|after|of)\s+(?:a\s+)?72[-\s]?hour|\+3\s*days|\+3days',
+        r'account\s+expires|account\s+expiration|expiration\s+date|expire\s+within\s+["“]?72',
+        r'(?:within|after|of)\s+(?:a\s+)?["“]?72["”]?[-\s]?hour|\+3\s*days|\+3days',
+        r'chage\s+-E',
     )
     if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
         return None
