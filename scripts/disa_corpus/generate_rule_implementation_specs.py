@@ -2390,6 +2390,23 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221081':
+        combined = f"{rule.get('title', '')}\n{content}"
+        if not re.search(r'drop\s+all\s+fragmented\s+Internet\s+Control\s+Message\s+Protocol\s+\(ICMP\)\s+packets\s+destined\s+to\s+itself', combined, re.IGNORECASE):
+            return None
+        if not re.search(r'deny\s+icmp\s+(?:any|host\s+\S+|\S+)\s+(?:host\s+)?\S+\s+fragments(?:\s+log)?', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+drop\s+all\s+fragmented\s+ICMP\s+packets\s+destined\s+to\s+itself,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Configure\s+the\s+external\s+and\s+internal\s+ACLs\s+to\s+drop\s+all\s+fragmented\s+ICMP\s+packets\s+destined\s+to\s+itself.*?deny\s+icmp\s+(?:any|host\s+\S+|\S+)\s+(?:host\s+)?\S+\s+fragments', fix_text, re.IGNORECASE | re.DOTALL):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | include "deny icmp .* fragments"'},
+            'expected': {'type': 'contains', 'substring': 'deny icmp'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221086':
         if not re.search(r'Review\s+all\s+ACLs\s+used\s+to\s+filter\s+traffic\s+and\s+verify\s+that\s+packets\s+being\s+dropped\s+are\s+logged', content, re.IGNORECASE):
             return None
@@ -2400,6 +2417,31 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
         if not re.search(r'Configure\s+ACLs\s+to\s+log\s+packets\s+that\s+are\s+dropped.*?deny\s+ip\s+any\s+any\s+log', fix_text, re.IGNORECASE | re.DOTALL):
             return None
         command = 'show running-config | awk \'BEGIN{bad=0} /^[[:space:]]*[0-9]*[[:space:]]*deny[[:space:]]/ && $0 !~ /[[:space:]]log([[:space:]]|$)/ {bad=1} END{if(!bad) print "Compliant"}\''
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
+    if vuln_id == 'V-221099':
+        management_denies = (
+            'deny tcp any any eq tacacs log',
+            'deny tcp any any eq 22 log',
+            'deny udp any any eq snmp log',
+            'deny udp any any eq snmptrap log',
+            'deny udp any any eq syslog log',
+        )
+        if not re.search(r'outbound\s+ACL\s+on\s+the\s+egress\s+interface\s+to\s+block\s+all\s+management\s+traffic', content, re.IGNORECASE):
+            return None
+        if not all(re.search(re.escape(line), content, re.IGNORECASE) for line in management_denies):
+            return None
+        if not re.search(r'If\s+management\s+traffic\s+is\s+not\s+blocked\s+at\s+the\s+perimeter,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+            return None
+        if not all(re.search(re.escape(line), fix_text, re.IGNORECASE) for line in management_denies):
+            return None
+        tests = ' && '.join(f'grep -Fq "{line}" /tmp/nxmgmt.$$' for line in management_denies)
+        command = f'show running-config | sh -c \'cat > /tmp/nxmgmt.$$; {tests} && printf Compliant; rm -f /tmp/nxmgmt.$$\''
         return {
             'vuln_id': vuln_id,
             'platform': 'network',

@@ -3043,6 +3043,61 @@ SW1(config-acl)# end''',
             'description': 'The Cisco switch must be configured to log all packets that have been dropped at interfaces via an ACL.',
         })
 
+    def test_infers_cisco_nxos_fragmented_icmp_acl_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221081',
+            'title': 'The Cisco switch must be configured to drop all fragmented Internet Control Message Protocol (ICMP) packets destined to itself.',
+            'check_content': '''Review the external and internal ACLs to verify that the switch is configured drop all fragmented ICMP packets destined to itself.
+
+ip access-list EXTERNAL_ACL
+ 30 deny icmp any x.11.1.2/32 fragments log
+ip access-list INTERNAL_ACL
+ 10 deny icmp any host 10.1.12.2/32 fragments
+
+If the switch is not configured to drop all fragmented ICMP packets destined to itself, this is a finding.''',
+            'fix_text': '''Configure the external and internal ACLs to drop all fragmented ICMP packets destined to itself as shown in the example below:
+
+SW1(config)# ip access-list EXTERNAL_ACL
+SW1(config-acl)# 35 deny icmp any host x.11.1.2 fragments log
+SW1(config)# ip access-list INTERNAL_ACL
+SW1(config-acl)# 25 deny icmp any host 10.1.12.2 fragments log''',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221081')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'deny icmp'})
+        self.assertIn('fragments', candidate['check']['command'])
+
+    def test_infers_cisco_nxos_outbound_management_traffic_acl_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221099',
+            'title': 'The Cisco perimeter switch must be configured to block all outbound management traffic.',
+            'check_content': '''The perimeter switch of the managed network must be configured with an outbound ACL on the egress interface to block all management traffic.
+
+ip access-list EXTERNAL_ACL_OUTBOUND
+ 10 deny tcp any any eq tacacs log
+ 20 deny tcp any any eq 22 log
+ 30 deny udp any any eq snmp log
+ 40 deny udp any any eq snmptrap log
+ 50 deny udp any any eq syslog log
+
+If management traffic is not blocked at the perimeter, this is a finding.''',
+            'fix_text': '''Configure the perimeter switch of the managed network with an outbound ACL on the egress interface to block all management traffic.
+
+SW1(config)# ip access-list EXTERNAL_ACL_OUTBOUND
+SW1(config-acl)# deny tcp any any eq tacacs log
+SW1(config-acl)# deny tcp any any eq 22 log
+SW1(config-acl)# deny udp any any eq snmp log
+SW1(config-acl)# deny udp any any eq snmptrap log
+SW1(config-acl)# deny udp any any eq syslog log''',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221099')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('tacacs', candidate['check']['command'])
+        self.assertIn('snmptrap', candidate['check']['command'])
+
     def test_infers_cisco_nxos_bogon_source_acl_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221090',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"deny icmp .* fragments\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must be configured to drop all fragmented Internet Control Message Protocol (ICMP) packets destined to itself.",
+    "expected": {
+      "substring": "deny icmp",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221081"
+  },
   "check_content_excerpt": "Review the external and internal ACLs to verify that the switch is configured drop all fragmented ICMP packets destined to itself.\n\nip access-list EXTERNAL_ACL\n 10 permit tcp x.11.1.1/32 eq bgp x.11.1.2/32 \n 20 permit tcp x.11.1.1/32 x.11.1.2/32 eq bgp \n 30 deny icmp any x.11.1.2/32 fragments log\n 40 permit icmp x.11.1.1/32 x.11.1.2/32 echo \n\u2026\n\u2026\n\u2026\n90 deny ip any any log\n\nip access-list INTERNAL_ACL\n 10 deny icmp any host 10.1.12.2/32 fragments\n 20 permit icmp any any\n\nNote: Ensure the statement to deny ICMP fragments is before any permit statements for ICMP.\n\nIf the switch is not configured to drop all fragmented ICMP packets destined to itself, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "deny icmp",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the external and internal ACLs to drop all fragmented ICMP packets destined to itself as shown in the example below:\n\nSW1(config)# ip access-list EXTERNAL_ACL\nSW1(config-acl)# 35 deny icmp any host x.11.1.2 fragments log\nSW1(config-acl)# exit\n\nSW1(config)# ip access-list INTERNAL_ACL\nSW1(config-acl)# 25 deny icmp any host 10.1.12.2 fragments log\nSW1(config-acl)# end\n\nNote: Ensure the above statement is before any permit statements for ICMP.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221081r999690_rule",
   "severity": "medium",

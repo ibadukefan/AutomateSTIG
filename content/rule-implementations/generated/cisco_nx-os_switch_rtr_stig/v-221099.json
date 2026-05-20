@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | sh -c 'cat > /tmp/nxmgmt.$$; grep -Fq \"deny tcp any any eq tacacs log\" /tmp/nxmgmt.$$ && grep -Fq \"deny tcp any any eq 22 log\" /tmp/nxmgmt.$$ && grep -Fq \"deny udp any any eq snmp log\" /tmp/nxmgmt.$$ && grep -Fq \"deny udp any any eq snmptrap log\" /tmp/nxmgmt.$$ && grep -Fq \"deny udp any any eq syslog log\" /tmp/nxmgmt.$$ && printf Compliant; rm -f /tmp/nxmgmt.$$'",
+      "type": "command_output"
+    },
+    "description": "The Cisco perimeter switch must be configured to block all outbound management traffic.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221099"
+  },
   "check_content_excerpt": "The perimeter switch of the managed network must be configured with an outbound ACL on the egress interface to block all management traffic as shown in the example below:\n\nStep 1: Verify that all external interfaces has been configured with an outbound ACL as shown in the example below:\n\ninterface Ethernet2/2\n description link to DISN\n no switchport\n ip access-group EXTERNAL_ACL_OUTBOUND out\n ip address x.11.1.2 255.255.255.254\n\nStep 2: Verify that the outbound ACL discards management traffic as shown in the example below:\n\nip access-list EXTERNAL_ACL_OUTBOUND\n 10 deny tcp any any eq tacacs log \n 20 deny tcp any any eq 22 log \n 30 deny udp any any eq snmp log \n 40 deny udp any any eq snmptrap log \n 50 deny udp any any eq syslog log \n 60 permit tcp any any eq www log \n 70 deny ip any any log\n\nIf management traffic is not blocked at the perimeter, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the perimeter switch of the managed network with an outbound ACL on the egress interface to block all management traffic.\n\nStep 1: Configure an ACL to block egress management traffic.\n\nSW1(config)# ip access-list EXTERNAL_ACL_OUTBOUND\nSW1(config-acl)# deny tcp any any eq tacacs log\nSW1(config-acl)# deny tcp any any eq 22 log\nSW1(config-acl)# deny udp any any eq snmp log\nSW1(config-acl)# deny udp any any eq snmptrap log\nSW1(config-acl)# deny udp any any eq syslog log\nSW1(config-acl)# permit tcp any any eq www\nSW1(config-acl)# deny ip any any log\nSW1(config-acl)# exit\n\nNote: Permit commands would be configured to allow applicable outbound traffic. The example above is allowing web traffic.\n\nStep 2: Configure the external interfaces with the outbound ACL.\n\nSW1(config)#int e2/2\nSW1(config-if)# ip access-group EXTERNAL_ACL_OUTBOUND out",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221099r999708_rule",
   "severity": "medium",
