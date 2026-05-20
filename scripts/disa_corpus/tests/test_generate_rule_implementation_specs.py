@@ -15630,6 +15630,58 @@ Create REG_DWORD "UriScavengerPeriod"''',
         self.assertIn('UriMaxUriBytes', candidate['check']['command'])
         self.assertIn('UriScavengerPeriod', candidate['check']['command'])
 
+    def test_infers_sql_server_2022_endpoint_aes_candidates(self):
+        cases = (
+            (
+                'V-274447',
+                'The SQL Server Mirroring endpoint must use AES encryption.',
+                'If Database Mirroring is in use, run the following to check for encrypted transmissions:\n'
+                'SELECT name, type_desc, encryption_algorithm_desc\n'
+                'FROM sys.database_mirroring_endpoints\n'
+                'WHERE encryption_algorithm != 2\n\n'
+                'If any records are returned, this is a finding.',
+                'ALTER ENDPOINT <Endpoint Name>\nFOR DATABASE_MIRRORING\n(ENCRYPTION = REQUIRED ALGORITHM AES)',
+                'sys.database_mirroring_endpoints',
+            ),
+            (
+                'V-274448',
+                'The SQL Server Service Broker endpoint must use AES encryption.',
+                'If SQL Service Broker is in use, run the following to check for encrypted transmissions:\n'
+                'SELECT name, type_desc, encryption_algorithm_desc\n'
+                'FROM sys.service_broker_endpoints\n'
+                'WHERE encryption_algorithm != 2\n\n'
+                'If any records are returned, this is a finding.',
+                'ALTER ENDPOINT <EndpointName>\nFOR SERVICE_BROKER\n(ENCRYPTION = REQUIRED ALGORITHM AES)',
+                'sys.service_broker_endpoints',
+            ),
+        )
+        for vuln_id, title, check_content, fix_text, table_name in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': check_content,
+                    'fix_text': fix_text,
+                }, 'MS_SQL_Server_2022_Instance_STIG')
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertEqual(candidate['check']['type'], 'command_output')
+                self.assertIn(table_name, candidate['check']['command'])
+                self.assertIn('encryption_algorithm != 2', candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_does_not_infer_sql_server_endpoint_aes_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-274447',
+            'title': 'The SQL Server Mirroring endpoint must use AES encryption.',
+            'check_content': 'SELECT name FROM sys.database_mirroring_endpoints',
+            'fix_text': 'Configure encryption.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_SQL_Server_2022_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2022_Instance_STIG'))
+
 
 if __name__ == '__main__':
     unittest.main()

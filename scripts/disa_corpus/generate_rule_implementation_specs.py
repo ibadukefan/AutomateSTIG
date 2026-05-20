@@ -11243,6 +11243,41 @@ def _sql_server_audit_action_groups_candidate(rule: dict, stig_id: str) -> dict 
     }
 
 
+def _sql_server_endpoint_aes_encryption_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server_2022' not in stig_id.lower() and 'sql server 2022' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    endpoint_by_vuln = {
+        'V-274447': ('sys.database_mirroring_endpoints', 'DATABASE_MIRRORING'),
+        'V-274448': ('sys.service_broker_endpoints', 'SERVICE_BROKER'),
+    }
+    endpoint = endpoint_by_vuln.get(rule.get('vuln_id', ''))
+    if not endpoint:
+        return None
+    table_name, endpoint_type = endpoint
+    if not re.search(rf'FROM\s+{re.escape(table_name)}\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'WHERE\s+encryption_algorithm\s*!=\s*2\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+records\s+are\s+returned,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(rf'FOR\s+{endpoint_type}\s*\(\s*ENCRYPTION\s*=\s*REQUIRED\s+ALGORITHM\s+AES\s*\)', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; '
+        f'SELECT name, type_desc, encryption_algorithm_desc FROM {table_name} WHERE encryption_algorithm != 2;"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _sql_server_sa_login_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -13457,6 +13492,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_audit_action_groups_candidate = _sql_server_audit_action_groups_candidate(rule, stig_id)
     if sql_server_audit_action_groups_candidate:
         return sql_server_audit_action_groups_candidate
+
+    sql_server_endpoint_aes_candidate = _sql_server_endpoint_aes_encryption_candidate(rule, stig_id)
+    if sql_server_endpoint_aes_candidate:
+        return sql_server_endpoint_aes_candidate
 
     sql_server_sa_disabled_candidate = _sql_server_sa_login_disabled_candidate(rule, stig_id)
     if sql_server_sa_disabled_candidate:

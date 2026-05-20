@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name, type_desc, encryption_algorithm_desc FROM sys.service_broker_endpoints WHERE encryption_algorithm != 2;\"",
+      "type": "command_output"
+    },
+    "description": "The SQL Server Service Broker endpoint must use AES encryption.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "windows",
+    "vuln_id": "V-274448"
+  },
   "check_content_excerpt": "If the data owner does not have a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process, and the requirement is documented and authorized, this is not a finding.\n\nIf SQL Service Broker is in use, run the following to check for encrypted transmissions:\nSELECT name, type_desc, encryption_algorithm_desc\nFROM sys.service_broker_endpoints\nWHERE encryption_algorithm != 2\n\nIf any records are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Run the following to enable encryption on the Service Broker endpoint:\nALTER ENDPOINT <EndpointName>\nFOR SERVICE_BROKER\n(ENCRYPTION = REQUIRED ALGORITHM AES)",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274448r1111112_rule",
   "severity": "medium",

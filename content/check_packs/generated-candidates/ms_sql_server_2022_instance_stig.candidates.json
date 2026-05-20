@@ -236,6 +236,32 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name, type_desc, encryption_algorithm_desc FROM sys.database_mirroring_endpoints WHERE encryption_algorithm != 2;\"",
+        "type": "command_output"
+      },
+      "description": "The SQL Server Mirroring endpoint must use AES encryption.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-274447"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name, type_desc, encryption_algorithm_desc FROM sys.service_broker_endpoints WHERE encryption_algorithm != 2;\"",
+        "type": "command_output"
+      },
+      "description": "The SQL Server Service Broker endpoint must use AES encryption.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-274448"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'filestream access level';\"",
         "type": "command_output"
       },
@@ -274,7 +300,7 @@
       "vuln_id": "V-274452"
     }
   ],
-  "platform": "generic",
+  "platform": "windows",
   "stig_id": "MS_SQL_Server_2022_Instance_STIG",
   "version": "candidate-planned"
 }
