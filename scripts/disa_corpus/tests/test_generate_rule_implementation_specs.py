@@ -11,6 +11,30 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_ol8_firewalld_runtime_drop_candidate_with_bracketed_zone(self):
+        check = (
+            'Verify "firewalld" is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands:\n\n'
+            '     $ sudo firewall-cmd --state\n'
+            '     running\n\n'
+            '     $ sudo firewall-cmd --get-active-zones\n'
+            '     [custom]\n'
+            '     interfaces: ens33\n\n'
+            '     $ sudo firewall-cmd --info-zone=[custom] | grep target\n'
+            '     target: DROP\n\n'
+            'If no zones are active on the OL 8 interfaces or if the target is set to an option other than "DROP", this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248839',
+            'title': 'An OL 8 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.',
+            'check_content': check,
+            'fix_text': 'Configure firewalld to employ a deny-all, allow-by-exception policy.',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-248839')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('firewall-cmd --get-active-zones', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_ol8_aide_mail_cron_notification_candidate(self):
         check = (
             'Check the cron directories for scripts controlling the execution and notification of results of the file integrity application. '

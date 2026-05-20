@@ -5679,7 +5679,7 @@ def _firewalld_target_drop_candidate(rule: dict) -> dict | None:
         re.search(r'firewall-cmd\s+--get-active-zones', content, re.IGNORECASE)
         and re.search(r'firewall-cmd\s+--info-zone=[A-Za-z0-9_.\[\]-]+\s*\|\s*grep\s+target', content, re.IGNORECASE)
         and re.search(r'target:\s*DROP', content, re.IGNORECASE)
-        and re.search(r'If\s+no\s+zones\s+are\s+active[^.]*or\s+if\s+the\s+target\s+is\s+set\s+to\s+a\s+different\s+option\s+other\s+than\s+["“]DROP["”],?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL)
+        and re.search(r'If\s+no\s+zones\s+are\s+active[^.]*or\s+if\s+the\s+target\s+is\s+set\s+to\s+(?:a\s+different\s+)?(?:an?\s+)?option\s+other\s+than\s+["“]DROP["”],?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL)
     )
     if runtime_only_drop and not re.search(r'firewall-cmd\s+--permanent\s+--info-zone=', content, re.IGNORECASE):
         return {
