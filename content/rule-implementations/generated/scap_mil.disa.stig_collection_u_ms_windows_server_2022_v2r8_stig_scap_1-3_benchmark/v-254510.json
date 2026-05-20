@@ -1,8 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "SeProfileSingleProcessPrivilege",
+      "section": "Privilege Rights",
+      "type": "security_policy"
+    },
+    "description": "Windows Server 2022 profile single process user right must only be assigned to the Administrators group.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "windows",
+    "vuln_id": "V-254510"
+  },
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,12 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "xccdf_mil.disa.stig_rule_SV-254510r958726_rule",
   "severity": "medium",

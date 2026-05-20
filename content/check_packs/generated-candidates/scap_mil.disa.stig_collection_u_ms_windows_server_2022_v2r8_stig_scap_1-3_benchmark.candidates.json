@@ -30,6 +30,20 @@
     },
     {
       "check": {
+        "key": "SeProfileSingleProcessPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 profile single process user right must only be assigned to the Administrators group.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-254510"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "NoLMHash"

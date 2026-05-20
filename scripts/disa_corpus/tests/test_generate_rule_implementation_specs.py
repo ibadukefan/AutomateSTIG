@@ -1236,6 +1236,36 @@ CREATOR OWNER: Full Control, Subfolders and files only'''
             self.assertEqual(generated['vuln_id'], 'xccdf_mil.disa.stig_group_V-230298')
             self.assertEqual(generated['candidate_check']['check'], {'type': 'service', 'name': 'rsyslog', 'expected_status': 'running'})
 
+    def test_infers_kubernetes_static_path_permissions_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242466',
+            'title': 'The Kubernetes PKI CRT must have file permissions set to 644 or more restrictive.',
+            'check_content': 'Review the permissions of the Kubernetes PKI cert files by using the command:\n\nsudo find /etc/kubernetes/pki/* -name "*.crt" | xargs stat -c \'%n %a\'\n\nIf any of the files have permissions more permissive than "644", this is a finding.',
+            'fix_text': 'Change the ownership of the cert files to "644" by executing the command:\n\nfind /etc/kubernetes/pki -name "*.crt" | xargs chmod 644',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242466')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/etc/kubernetes/pki', candidate['check']['command'])
+        self.assertIn('*.crt', candidate['check']['command'])
+        self.assertIn('/133', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_kubernetes_static_path_owner_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242446',
+            'title': 'The Kubernetes conf files must be owned by root.',
+            'check_content': 'Review the Kubernetes conf files by using the command:\n\nstat -c %U:%G /etc/kubernetes/admin.conf | grep -v root:root\nstat -c %U:%G /etc/kubernetes/scheduler.conf | grep -v root:root\nstat -c %U:%G /etc/kubernetes/controller-manager.conf | grep -v root:root\n\nIf the command returns any non root:root file permissions, this is a finding.',
+            'fix_text': 'Change the ownership of the conf files to root: root by executing the command:\n\nchown root:root /etc/kubernetes/admin.conf\nchown root:root /etc/kubernetes/scheduler.conf\nchown root:root /etc/kubernetes/controller-manager.conf',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242446')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('/etc/kubernetes/admin.conf', candidate['check']['command'])
+        self.assertIn('root:root', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_kubernetes_api_server_request_timeout_positive_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242438',
@@ -9485,7 +9515,7 @@ If the command returns any non root:root file permissions, this is a finding.'''
         }, 'Kubernetes_STIG')
         self.assertEqual(candidate, {
             'vuln_id': 'V-242446',
-            'platform': 'generic',
+            'platform': 'linux',
             'check': {'type': 'command_output', 'command': 'stat -c %U:%G /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf | grep -v root:root'},
             'expected': {'type': 'equals', 'value': ''},
             'description': 'The Kubernetes conf files must be owned by root.',
@@ -9505,7 +9535,7 @@ If any of the files are have permissions more permissive than "644", this is a f
         }, 'Kubernetes_STIG')
         self.assertEqual(candidate, {
             'vuln_id': 'V-242460',
-            'platform': 'generic',
+            'platform': 'linux',
             'check': {
                 'type': 'command_output',
                 'command': 'find /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf -perm /133 -exec stat -c "%a %n" {} \\;',
@@ -9526,7 +9556,7 @@ If any of the files are have permissions more permissive than "644", this is a f
         }, 'Kubernetes_STIG')
         self.assertEqual(candidate, {
             'vuln_id': 'V-242456',
-            'platform': 'generic',
+            'platform': 'linux',
             'check': {
                 'type': 'command_output',
                 'command': 'find /var/lib/kubelet/config.yaml -perm /133 -exec stat -c "%a %n" {} \\;',
@@ -9547,7 +9577,7 @@ If any of the files have permissions more permissive than "600", this is a findi
         }, 'Kubernetes_STIG')
         self.assertEqual(candidate, {
             'vuln_id': 'V-242467',
-            'platform': 'generic',
+            'platform': 'linux',
             'check': {
                 'type': 'command_output',
                 'command': 'find /etc/kubernetes/pki -name "*.key" -perm /177 -exec stat -c "%n %a" {} \\;',
@@ -12994,7 +13024,7 @@ stat -c %U:%G /var/lib/kubelet/config.yaml| grep -v root:root
 
 If the command returns any non root:root file permissions, this is a finding.'''
         }, 'Kubernetes_STIG')
-        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['platform'], 'linux')
         self.assertEqual(candidate['check'], {
             'type': 'command_output',
             'command': 'stat -c %U:%G /var/lib/kubelet/config.yaml| grep -v root:root',
@@ -13011,7 +13041,7 @@ stat -c %U:%G /var/lib/etcd/* | grep -v etcd:etcd
 
 If the command returns any non etcd:etcd file permissions, this is a finding.'''
         }, 'Kubernetes_STIG')
-        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['platform'], 'linux')
         self.assertEqual(candidate['check'], {
             'type': 'command_output',
             'command': 'stat -c %U:%G /var/lib/etcd/* | grep -v etcd:etcd',

@@ -4302,7 +4302,7 @@
     },
     {
       "check_id": "V-254510",
-      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1-3_benchmark.candidates",
       "classification": "automated",
       "evidence_required": true,
       "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
@@ -4311,7 +4311,7 @@
       "title": "Windows Server 2022 profile single process user right must only be assigned to the Administrators group.",
       "tracking_issue": "",
       "validated_by": [
-        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/c7b24b9e84f1ba7f8088397bd2db20fabf5743d57179f357ee4cea0000122e23/U_MS_Windows_Server_2022_V2R7_STIG.zip"
       ],
       "vuln_id": "V-254510"

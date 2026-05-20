@@ -8486,7 +8486,7 @@ def _kubernetes_pki_mode_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),
-        'platform': 'generic',
+        'platform': 'linux',
         'check': {
             'type': 'command_output',
             'command': f'find /etc/kubernetes/pki -name "{command_match.group("glob")}" -perm /{prohibited_bits:o} -exec stat -c "%n %a" {{}} \\;',
@@ -8570,7 +8570,7 @@ def _kubernetes_fixed_file_mode_candidate(rule: dict, stig_id: str) -> dict | No
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),
-        'platform': 'generic',
+        'platform': 'linux',
         'check': {
             'type': 'command_output',
             'command': f'find {" ".join(paths)} -perm /{prohibited_bits:o} -exec stat -c "%a %n" {{}} \\;',
@@ -9884,7 +9884,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
                 if command:
                     return {
                         'vuln_id': rule.get('vuln_id', ''),
-                        'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
+                        'platform': 'linux' if (_linux_platform(stig_id) or 'kubernetes' in stig_id.lower()) else 'windows' if _windows_platform(stig_id) else 'generic',
                         'check': {'type': 'command_output', 'command': command},
                         'expected': {'type': 'equals', 'value': ''},
                         'description': rule.get('title', ''),
