@@ -862,6 +862,24 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyBatchLogonRight'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-546'})
 
+    def test_infers_windows_scap_fix_only_domain_and_all_system_deny_right_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220968',
+            'title': 'The Deny access to this computer from the network user right on workstations must be configured to prevent access from highly privileged domain accounts and local accounts on domain systems and unauthenticated access on all systems.',
+            'check_content': '',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> "Deny access to this computer from the network" to include the following.\n\nDomain Systems Only:\nEnterprise Admins group\nDomain Admins group\nLocal account (see Note below)\n\nAll Systems:\nGuests group\n\nNote: "Local account" is a built-in security group used to assign user rights and permissions to all local accounts.',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-220968')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('SeDenyNetworkLogonRight', candidate['check']['command'])
+        self.assertIn('S-1-5-32-546', candidate['check']['command'])
+        self.assertIn('S-1-5-113', candidate['check']['command'])
+        self.assertIn('512', candidate['check']['command'])
+        self.assertIn('519', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_windows_server_2025_network_logon_role_scoped_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278165',

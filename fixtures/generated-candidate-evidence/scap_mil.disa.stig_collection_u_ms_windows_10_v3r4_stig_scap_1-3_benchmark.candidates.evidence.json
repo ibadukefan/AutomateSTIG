@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 9,
+  "candidate_checks": 12,
   "cases": [
     {
       "check": {
@@ -163,6 +163,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyNetworkLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; $missing=@(); if ($domain) { $required=@('S-1-5-32-546','S-1-5-113'); $missing += @($required | Where-Object { $values -notcontains $_ }); $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($suffixes | Sort-Object -Unique) -notcontains '512') { $missing += 'Domain Admins' }; if (($suffixes | Sort-Object -Unique) -notcontains '519') { $missing += 'Enterprise Admins' } } else { if ($values -notcontains 'S-1-5-32-546') { $missing += 'Guests' } }; if ($missing.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Deny access to this computer from the network user right on workstations must be configured to prevent access from highly privileged domain accounts and local accounts on domain systems and unauthenticated access on all systems.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyNetworkLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; $missing=@(); if ($domain) { $required=@('S-1-5-32-546','S-1-5-113'); $missing += @($required | Where-Object { $values -notcontains $_ }); $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($suffixes | Sort-Object -Unique) -notcontains '512') { $missing += 'Domain Admins' }; if (($suffixes | Sort-Object -Unique) -notcontains '519') { $missing += 'Enterprise Admins' } } else { if ($values -notcontains 'S-1-5-32-546') { $missing += 'Guests' } }; if ($missing.Count -eq 0) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyNetworkLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; $missing=@(); if ($domain) { $required=@('S-1-5-32-546','S-1-5-113'); $missing += @($required | Where-Object { $values -notcontains $_ }); $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($suffixes | Sort-Object -Unique) -notcontains '512') { $missing += 'Domain Admins' }; if (($suffixes | Sort-Object -Unique) -notcontains '519') { $missing += 'Enterprise Admins' } } else { if ($values -notcontains 'S-1-5-32-546') { $missing += 'Guests' } }; if ($missing.Count -eq 0) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220968"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; if (-not $domain) { 'Compliant'; exit }; $cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyBatchLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if ((($suffixes | Sort-Object -Unique) -contains '512') -and (($suffixes | Sort-Object -Unique) -contains '519')) { 'Compliant' }\"",
         "type": "command_output"
       },
@@ -215,6 +241,58 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyInteractiveLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; $missing=@(); if ($domain) { $required=@('S-1-5-32-546'); $missing += @($required | Where-Object { $values -notcontains $_ }); $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($suffixes | Sort-Object -Unique) -notcontains '512') { $missing += 'Domain Admins' }; if (($suffixes | Sort-Object -Unique) -notcontains '519') { $missing += 'Enterprise Admins' } } else { if ($values -notcontains 'S-1-5-32-546') { $missing += 'Guests' } }; if ($missing.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Deny log on locally user right on workstations must be configured to prevent access from highly privileged domain accounts on domain systems and unauthenticated access on all systems.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyInteractiveLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; $missing=@(); if ($domain) { $required=@('S-1-5-32-546'); $missing += @($required | Where-Object { $values -notcontains $_ }); $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($suffixes | Sort-Object -Unique) -notcontains '512') { $missing += 'Domain Admins' }; if (($suffixes | Sort-Object -Unique) -notcontains '519') { $missing += 'Enterprise Admins' } } else { if ($values -notcontains 'S-1-5-32-546') { $missing += 'Guests' } }; if ($missing.Count -eq 0) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyInteractiveLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; $missing=@(); if ($domain) { $required=@('S-1-5-32-546'); $missing += @($required | Where-Object { $values -notcontains $_ }); $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($suffixes | Sort-Object -Unique) -notcontains '512') { $missing += 'Domain Admins' }; if (($suffixes | Sort-Object -Unique) -notcontains '519') { $missing += 'Enterprise Admins' } } else { if ($values -notcontains 'S-1-5-32-546') { $missing += 'Guests' } }; if ($missing.Count -eq 0) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220971"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyRemoteInteractiveLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; $missing=@(); if ($domain) { $required=@('S-1-5-32-546','S-1-5-113'); $missing += @($required | Where-Object { $values -notcontains $_ }); $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($suffixes | Sort-Object -Unique) -notcontains '512') { $missing += 'Domain Admins' }; if (($suffixes | Sort-Object -Unique) -notcontains '519') { $missing += 'Enterprise Admins' } } else { if ($values -notcontains 'S-1-5-32-546') { $missing += 'Guests' } }; if ($missing.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Deny log on through Remote Desktop Services user right on Windows 10 workstations must at a minimum be configured to prevent access from highly privileged domain accounts and local accounts on domain systems and unauthenticated access on all systems.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyRemoteInteractiveLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; $missing=@(); if ($domain) { $required=@('S-1-5-32-546','S-1-5-113'); $missing += @($required | Where-Object { $values -notcontains $_ }); $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($suffixes | Sort-Object -Unique) -notcontains '512') { $missing += 'Domain Admins' }; if (($suffixes | Sort-Object -Unique) -notcontains '519') { $missing += 'Enterprise Admins' } } else { if ($values -notcontains 'S-1-5-32-546') { $missing += 'Guests' } }; if ($missing.Count -eq 0) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object { $_ -like 'SeDenyRemoteInteractiveLogonRight*' } | Select-Object -First 1); Remove-Item $cfg -ErrorAction SilentlyContinue; $values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; $domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; $missing=@(); if ($domain) { $required=@('S-1-5-32-546','S-1-5-113'); $missing += @($required | Where-Object { $values -notcontains $_ }); $suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); if (($suffixes | Sort-Object -Unique) -notcontains '512') { $missing += 'Domain Admins' }; if (($suffixes | Sort-Object -Unique) -notcontains '519') { $missing += 'Enterprise Admins' } } else { if ($values -notcontains 'S-1-5-32-546') { $missing += 'Guests' } }; if ($missing.Count -eq 0) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220972"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Main",
         "type": "registry",
         "value_name": "NotifyDisableIEOptions"
@@ -246,5 +324,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark",
-  "validated_candidates": 9
+  "validated_candidates": 12
 }

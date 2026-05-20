@@ -4350,6 +4350,60 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                 fix_text,
                 re.IGNORECASE | re.DOTALL,
             )
+        fix_only_domain_all_deny_rights = {
+            'V-220968': 'SeDenyNetworkLogonRight',
+            'V-220971': 'SeDenyInteractiveLogonRight',
+            'V-220972': 'SeDenyRemoteInteractiveLogonRight',
+            'V-253491': 'SeDenyNetworkLogonRight',
+            'V-253494': 'SeDenyInteractiveLogonRight',
+            'V-253495': 'SeDenyRemoteInteractiveLogonRight',
+        }
+        canonical_vuln_ids = _canonical_vuln_ids(rule)
+        fix_only_domain_all_key = next((fix_only_domain_all_deny_rights[vuln_id] for vuln_id in canonical_vuln_ids if vuln_id in fix_only_domain_all_deny_rights), None)
+        fix_only_domain_all_match = re.search(
+            r'Domain\s+Systems\s+Only:\s*(?P<domain>.*?)\n\s*All\s+Systems:\s*(?P<all>.*?)(?:\n\s*(?:Privileged\s+Access\s+Workstations|Note:)|\Z)',
+            fix_text,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if fix_only_domain_all_key and fix_only_domain_all_match and not content.strip():
+            domain_body = fix_only_domain_all_match.group('domain')
+            all_body = fix_only_domain_all_match.group('all')
+            has_required_domain_principals = all(
+                re.search(pattern, domain_body, re.IGNORECASE)
+                for pattern in (r'Enterprise\s+Admins\s+group', r'Domain\s+Admins\s+group')
+            )
+            needs_local_account = fix_only_domain_all_key in {'SeDenyNetworkLogonRight', 'SeDenyRemoteInteractiveLogonRight'}
+            has_required_local_account = (not needs_local_account) or re.search(r'Local\s+account\s*\(', domain_body, re.IGNORECASE)
+            has_required_all_systems_principal = re.search(r'Guests\s+group', all_body, re.IGNORECASE)
+            has_local_account_note = (not needs_local_account) or re.search(r'"Local\s+account"\s+is\s+a\s+built-in\s+security\s+group', fix_text, re.IGNORECASE)
+            if has_required_domain_principals and has_required_local_account and has_required_all_systems_principal and has_local_account_note:
+                required_domain_sids = "@('S-1-5-32-546','S-1-5-113')"
+                if fix_only_domain_all_key == 'SeDenyInteractiveLogonRight':
+                    required_domain_sids = "@('S-1-5-32-546')"
+                command = (
+                    "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); "
+                    "secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; "
+                    f"$line=(Get-Content $cfg -ErrorAction SilentlyContinue | Where-Object {{ $_ -like '{fix_only_domain_all_key}*' }} | Select-Object -First 1); "
+                    "Remove-Item $cfg -ErrorAction SilentlyContinue; "
+                    "$values=@(); if ($line -match '=(.*)$') { $values=@($Matches[1].Split(',') | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ }) }; "
+                    "$domain=(Get-CimInstance Win32_ComputerSystem).PartOfDomain; "
+                    "$missing=@(); if ($domain) { "
+                    f"$required={required_domain_sids}; "
+                    "$missing += @($required | Where-Object { $values -notcontains $_ }); "
+                    "$suffixes=@($values | ForEach-Object { if ($_ -match 'S-1-5-.+-(512|519)$') { $Matches[1] } }); "
+                    "if (($suffixes | Sort-Object -Unique) -notcontains '512') { $missing += 'Domain Admins' }; "
+                    "if (($suffixes | Sort-Object -Unique) -notcontains '519') { $missing += 'Enterprise Admins' } "
+                    "} else { if ($values -notcontains 'S-1-5-32-546') { $missing += 'Guests' } }; "
+                    "if ($missing.Count -eq 0) { 'Compliant' }\""
+                )
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows',
+                    'check': {'type': 'command_output', 'command': command},
+                    'expected': {'type': 'equals', 'value': 'Compliant'},
+                    'description': rule.get('title', ''),
+                }
+
         if (
             fix_only_allowlist
             and not content.strip()

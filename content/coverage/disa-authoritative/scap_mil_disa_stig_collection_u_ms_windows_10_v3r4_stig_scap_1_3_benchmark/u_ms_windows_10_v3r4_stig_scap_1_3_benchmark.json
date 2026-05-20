@@ -3170,16 +3170,17 @@
       "vuln_id": "V-220967"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220968",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-220968 from source identifier xccdf_mil.disa.stig_group_V-220968.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-220968r958472_rule",
       "severity": "medium",
       "title": "The Deny access to this computer from the network user right on workstations must be configured to prevent access from highly privileged domain accounts and local accounts on domain systems and unauthenticated access on all systems.",
-      "tracking_issue": "TODO-V-220968",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-220968"
@@ -3217,31 +3218,33 @@
       "vuln_id": "V-220970"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220971",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-220971 from source identifier xccdf_mil.disa.stig_group_V-220971.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-220971r958472_rule",
       "severity": "medium",
       "title": "The Deny log on locally user right on workstations must be configured to prevent access from highly privileged domain accounts on domain systems and unauthenticated access on all systems.",
-      "tracking_issue": "TODO-V-220971",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-220971"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220972",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-220972 from source identifier xccdf_mil.disa.stig_group_V-220972.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-220972r958472_rule",
       "severity": "medium",
       "title": "The Deny log on through Remote Desktop Services user right on Windows 10 workstations must at a minimum be configured to prevent access from highly privileged domain accounts and local accounts on domain systems and unauthenticated access on all systems.",
-      "tracking_issue": "TODO-V-220972",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-220972"
