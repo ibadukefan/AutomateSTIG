@@ -11195,6 +11195,29 @@ def _oracle_database_exact_parameter_candidate(rule: dict, stig_id: str) -> dict
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     vuln_id = rule.get('vuln_id', '')
+    if vuln_id == 'V-270526':
+        if not re.search(r'(?:^|[^A-Za-z0-9])(?:v_?\$parameter|gv_\$parameter)(?:[^A-Za-z0-9]|$)', content, re.IGNORECASE):
+            return None
+        if not re.search(r'REMOTE_LOGIN_PASSWORDFILE', content, re.IGNORECASE):
+            return None
+        if not re.search(r"does\s+not\s+equal\s+['\"]EXCLUSIVE['\"]\s+or\s+['\"]NONE['\"]", content, re.IGNORECASE):
+            return None
+        if not re.search(r'REMOTE_LOGIN_PASSWORDFILE\s*=\s*(?:EXCLUSIVE|NONE)|value\s+of\s+NONE|value\s+of\s+EXCLUSIVE', fix_text, re.IGNORECASE):
+            return None
+        command = (
+            "sqlplus -s / as sysdba <<'SQL'\n"
+            "SET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\n"
+            "SELECT CASE WHEN UPPER(value) IN ('EXCLUSIVE','NONE') THEN 'Compliant' END FROM v$parameter WHERE UPPER(name) = 'REMOTE_LOGIN_PASSWORDFILE';\n"
+            "EXIT\n"
+            "SQL"
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     allowed = {
         'V-270524': ('remote_os_roles', 'FALSE'),
         'V-270525': ('sql92_security', 'TRUE'),
@@ -12366,6 +12389,36 @@ def _windows_domain_controller_anonymous_directory_access_candidate(rule: dict, 
     }
 
 
+def _windows_wifi_adapter_absent_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id) or rule.get('vuln_id', '') != 'V-278017':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    if not re.search(r'Windows\s+Server\s+2025\s+must\s+not\s+have\s+Wi-Fi\s+enabled', title, re.IGNORECASE):
+        return None
+    if not re.search(r'IP\s*Config\s*/All', content, re.IGNORECASE):
+        return None
+    if not re.search(r'connection\s+named\s+["“]Wi-Fi["”]\s+or\s+["“]Wireless["”],\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'remove/disable\s+the\s+Wi-Fi\s+adapter', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command "'
+        "Get-NetAdapter -ErrorAction SilentlyContinue | "
+        "Where-Object { $_.Name -match '(?i)(Wi-Fi|Wireless)' -and $_.Status -ne 'Disabled' } | "
+        "ForEach-Object { $_.Name }"
+        '"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': title,
+    }
+
+
 def _windows_bluetooth_support_service_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id) or rule.get('vuln_id', '') != 'V-278018':
         return None
@@ -13515,6 +13568,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         anonymous_directory_access_candidate = _windows_domain_controller_anonymous_directory_access_candidate(rule, stig_id)
         if anonymous_directory_access_candidate:
             return anonymous_directory_access_candidate
+
+        wifi_adapter_candidate = _windows_wifi_adapter_absent_candidate(rule, stig_id)
+        if wifi_adapter_candidate:
+            return wifi_adapter_candidate
 
         bluetooth_service_candidate = _windows_bluetooth_support_service_disabled_candidate(rule, stig_id)
         if bluetooth_service_candidate:

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"Get-NetAdapter -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '(?i)(Wi-Fi|Wireless)' -and $_.Status -ne 'Disabled' } | ForEach-Object { $_.Name }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2025 must not have Wi-Fi enabled unless required by the organization.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "windows",
+    "vuln_id": "V-278017"
+  },
   "check_content_excerpt": "Open PowerShell or a Command prompt.\n\nType \"IP Config /All\".\n\nIf there is a connection named \"Wi-Fi\" or \"Wireless\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Validate the site documentation to ensure the approval of use for Wi-Fi server connections.\n\nIf the connection (s) have not been approved, go to \"Settings\" then \"Network and Internet\" and remove/disable the Wi-Fi adapter. Any Wi-Fi connections listed or in use must be documented and approved by the information system security officer (ISSO) or authorizing official (AO).",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-278017r1180757_rule",
   "severity": "medium",

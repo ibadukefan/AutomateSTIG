@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 246,
+  "candidate_checks": 247,
   "cases": [
     {
       "check": {
@@ -364,6 +364,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278016"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"Get-NetAdapter -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '(?i)(Wi-Fi|Wireless)' -and $_.Status -ne 'Disabled' } | ForEach-Object { $_.Name }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must not have Wi-Fi enabled unless required by the organization.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Get-NetAdapter -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '(?i)(Wi-Fi|Wireless)' -and $_.Status -ne 'Disabled' } | ForEach-Object { $_.Name }\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Get-NetAdapter -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '(?i)(Wi-Fi|Wireless)' -and $_.Status -ne 'Disabled' } | ForEach-Object { $_.Name }\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278017"
     },
     {
       "check": {
@@ -6604,5 +6630,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 246
+  "validated_candidates": 247
 }

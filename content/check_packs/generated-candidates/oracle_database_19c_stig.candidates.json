@@ -28,6 +28,19 @@
     },
     {
       "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN UPPER(value) IN ('EXCLUSIVE','NONE') THEN 'Compliant' END FROM v$parameter WHERE UPPER(name) = 'REMOTE_LOGIN_PASSWORDFILE';\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "The Oracle password file ownership and permissions should be limited and the REMOTE_LOGIN_PASSWORDFILE parameter must be set to EXCLUSIVE or NONE.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270526"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT privilege FROM dba_sys_privs WHERE grantee = 'PUBLIC';\nEXIT\nSQL",
         "type": "command_output"
       },

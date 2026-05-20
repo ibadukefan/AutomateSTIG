@@ -11,6 +11,32 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_windows_server_2025_wifi_adapter_absent_candidate(self):
+        check = (
+            'Open PowerShell or a Command prompt.\n\n'
+            'Type "IP Config /All".\n\n'
+            'If there is a connection named "Wi-Fi" or "Wireless", this is a finding.'
+        )
+        fix = (
+            'Validate the site documentation to ensure the approval of use for Wi-Fi server connections. '
+            'If the connection(s) have not been approved, go to "Settings" then "Network and Internet" '
+            'and remove/disable the Wi-Fi adapter.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278017',
+            'title': 'Windows Server 2025 must not have Wi-Fi enabled unless required by the organization.',
+            'check_content': check,
+            'fix_text': fix,
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278017')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Get-NetAdapter', candidate['check']['command'])
+        self.assertIn('Wi-Fi', candidate['check']['command'])
+        self.assertIn('Wireless', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_ol8_firewalld_runtime_drop_candidate_with_bracketed_zone(self):
         check = (
             'Verify "firewalld" is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands:\n\n'
@@ -914,6 +940,19 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(candidate['platform'], 'generic')
         self.assertIn('fips.ora', candidate['check']['command'])
         self.assertIn('SSLFIPS_140', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_oracle_database_remote_login_passwordfile_allowed_values_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270526',
+            'title': 'The Oracle password file ownership and permissions should be limited and the REMOTE_LOGIN_PASSWORDFILE parameter must be set to EXCLUSIVE or NONE.',
+            'check_content': "From SQL*Plus:\nselect value from v$parameter where upper(name) = 'REMOTE_LOGIN_PASSWORDFILE';\nIf the value returned does not equal 'EXCLUSIVE' or 'NONE', this is a finding.",
+            'fix_text': 'Disable use of the REMOTE_LOGIN_PASSWORDFILE where remote administration is not authorized by specifying a value of NONE. If authorized, restrict use of a password file to exclusive use by each database by specifying a value of EXCLUSIVE. From SQL*Plus: alter system set REMOTE_LOGIN_PASSWORDFILE = EXCLUSIVE scope=spfile;',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270526')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('REMOTE_LOGIN_PASSWORDFILE', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
     def test_infers_oracle_database_archivelog_mode_candidate(self):
