@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 60,
+  "candidate_checks": 61,
   "cases": [
     {
       "check": {
@@ -260,6 +260,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242415"
+    },
+    {
+      "check": {
+        "command": "kubectl get pods --all-namespaces --no-headers 2>/dev/null | awk '$1 ~ /^(kube-node-lease|kube-public|kube-system)$/ {print}'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes must separate user functionality.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "kubectl get pods --all-namespaces --no-headers 2>/dev/null | awk '$1 ~ /^(kube-node-lease|kube-public|kube-system)$/ {print}'": "unexpected"
+        },
+        "platform": "kubernetes"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "kubectl get pods --all-namespaces --no-headers 2>/dev/null | awk '$1 ~ /^(kube-node-lease|kube-public|kube-system)$/ {print}'": ""
+        },
+        "platform": "kubernetes"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242417"
     },
     {
       "check": {
@@ -1567,5 +1593,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 60
+  "validated_candidates": 61
 }

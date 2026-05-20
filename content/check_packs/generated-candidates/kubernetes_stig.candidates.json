@@ -132,6 +132,19 @@
     },
     {
       "check": {
+        "command": "kubectl get pods --all-namespaces --no-headers 2>/dev/null | awk '$1 ~ /^(kube-node-lease|kube-public|kube-system)$/ {print}'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes must separate user functionality.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "kubernetes",
+      "vuln_id": "V-242417"
+    },
+    {
+      "check": {
         "command": "grep -h -- '--tls-cipher-suites' /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/manifests/* 2>/dev/null | head -n1",
         "type": "command_output"
       },
@@ -781,7 +794,7 @@
       "vuln_id": "V-274882"
     }
   ],
-  "platform": "linux",
+  "platform": "generic",
   "stig_id": "Kubernetes_STIG",
   "version": "candidate-planned"
 }

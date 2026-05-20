@@ -4424,6 +4424,80 @@ def _sysctl_candidate(rule: dict) -> dict | None:
     }
 
 
+def _kubernetes_user_pods_separate_namespaces_candidate(rule: dict, stig_id: str) -> dict | None:
+    raw_vuln_id = str(rule.get('vuln_id', ''))
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', raw_vuln_id)), raw_vuln_id)
+    if canonical_vuln_id != 'V-242417' or 'kubernetes' not in stig_id.lower():
+        return None
+    text = '\n'.join(str(rule.get(key, '')) for key in ('title', 'description', 'check_content', 'fix_text', 'check_content_excerpt', 'fix_text_excerpt'))
+    if not all(fragment in text.lower() for fragment in (
+        'kubectl get pods --all-namespaces',
+        'kube-node-lease',
+        'kube-public',
+        'kube-system',
+        'user pods',
+    )):
+        return None
+    if not re.search(r'any\s+user\s+pods\s+are\s+present\s+in\s+the\s+kubernetes\s+system\s+namespaces.*finding', text, re.IGNORECASE | re.DOTALL):
+        return None
+    command = "kubectl get pods --all-namespaces --no-headers 2>/dev/null | awk '$1 ~ /^(kube-node-lease|kube-public|kube-system)$/ {print}'"
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'kubernetes',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title') or 'Kubernetes must separate user pods from system namespaces.',
+    }
+
+
+def _oracle_linux_8_vlock_command_lock_candidate(rule: dict, stig_id: str) -> dict | None:
+    raw_vuln_id = rule.get('vuln_id', '')
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(raw_vuln_id))), raw_vuln_id)
+    if canonical_vuln_id != 'V-248678' or not _linux_platform(stig_id) or 'oracle_linux_8' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'grep\s+vlock\s+/usr/bin/\*', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Binary\s+file\s+/usr/bin/vlock\s+matches', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+["“]vlock["”]\s+is\s+not\s+installed,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'yum\s+install\s+kbd(?:\.x86_64)?', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'sh -c "[ -x /usr/bin/vlock ] && printf Compliant"'},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _linux_auditd_log_format_enriched_candidate(rule: dict, stig_id: str) -> dict | None:
+    raw_vuln_id = rule.get('vuln_id', '')
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(raw_vuln_id))), raw_vuln_id)
+    if canonical_vuln_id not in {'V-258169', 'V-271593'} or not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'grep\s+log_format\s+/etc/audit/auditd\.conf', content, re.IGNORECASE):
+        return None
+    if not re.search(r'^\s*log_format\s*=\s*ENRICHED\s*$', content, re.IGNORECASE | re.MULTILINE):
+        return None
+    if not re.search(r'If\s+the\s+["“]log_format["”]\s+option\s+is\s+not\s+["“]ENRICHED["”].*this\s+is\s+a\s+finding', content, re.IGNORECASE | re.DOTALL):
+        return None
+    if not re.search(r'^\s*log_format\s*=\s*ENRICHED\s*$', fix_text, re.IGNORECASE | re.MULTILINE):
+        return None
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'file_content', 'path': '/etc/audit/auditd.conf', 'pattern': r'^\s*log_format\s*=\s*ENRICHED\s*$'},
+        'expected': {'type': 'contains_regex'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_interactive_shadow_sha512_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     supported_vulns = {'V-258231', 'V-271628', 'V-248534', 'V-234887'}
@@ -12669,6 +12743,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     if linux_data_at_rest_candidate:
         return linux_data_at_rest_candidate
 
+    oracle_linux_8_vlock_candidate = _oracle_linux_8_vlock_command_lock_candidate(rule, stig_id)
+    if oracle_linux_8_vlock_candidate:
+        return oracle_linux_8_vlock_candidate
+
     ubuntu_dod_root_ca_candidate = _ubuntu_2004_dod_root_ca_certificate_candidate(rule, stig_id)
     if ubuntu_dod_root_ca_candidate:
         return ubuntu_dod_root_ca_candidate
@@ -13394,8 +13472,12 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     if grub_superusers_candidate:
         return grub_superusers_candidate
 
+    kubernetes_user_pods_candidate = _kubernetes_user_pods_separate_namespaces_candidate(rule, stig_id)
+    if kubernetes_user_pods_candidate:
+        return kubernetes_user_pods_candidate
+
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_user_init_path_home_only_candidate, _linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
+        for infer_with_stig in (_linux_interactive_user_init_path_home_only_candidate, _linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _oracle_linux_8_vlock_command_lock_candidate, _linux_auditd_log_format_enriched_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

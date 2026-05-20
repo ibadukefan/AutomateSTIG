@@ -1560,6 +1560,78 @@ kubectl create -f restricted.yml''',
         self.assertEqual(candidate['check'], {'type': 'sysctl', 'key': 'net.ipv4.conf.all.accept_redirects'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
 
+    def test_infers_kubernetes_user_pods_not_in_system_namespaces_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242417',
+            'title': 'Kubernetes must separate user functionality.',
+            'check_content': '''On the Control Plane, run the command: kubectl get pods --all-namespaces
+
+Review the namespaces and pods that are returned. Kubernetes system namespaces are kube-node-lease, kube-public, and kube-system.
+
+If any user pods are present in the Kubernetes system namespaces, this is a finding.''',
+            'fix_text': 'Move any user pods that are present in the Kubernetes system namespaces to user specific namespaces.',
+        }, 'Kubernetes_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242417')
+        self.assertEqual(candidate['platform'], 'kubernetes')
+        self.assertIn('kubectl get pods --all-namespaces', candidate['check']['command'])
+        self.assertIn('kube-system', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_oracle_linux_8_vlock_command_lock_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248678',
+            'title': 'OL 8 must enable a user session lock until that user reestablishes access using established identification and authentication procedures for command line sessions.',
+            'check_content': 'Verify OL 8 has the "vlock" package installed by running the following command:\n\n$ sudo grep vlock /usr/bin/*\n\nBinary file /usr/bin/vlock matches\n\nIf "vlock" is not installed, this is a finding.',
+            'fix_text': 'Install the "vlock" package, if it is not already installed, by running the following command:\n\n$ sudo yum install kbd.x86_64',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-248678')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/usr/bin/vlock', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_vlock_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-248678',
+            'title': 'Command line lock.',
+            'check_content': 'grep vlock /usr/bin/*',
+            'fix_text': 'Install kbd.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Oracle_Linux_8_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Linux_8_STIG'))
+
+    def test_infers_linux_auditd_log_format_enriched_candidate_from_exact_vulns(self):
+        for vuln_id, stig_id, product in (
+            ('V-258169', 'RHEL_9_STIG', 'RHEL 9'),
+            ('V-271593', 'Oracle_Linux_9_STIG', 'OL 9'),
+        ):
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'{product} must produce audit records containing information to establish the identity of any individual or process associated with the event.',
+                    'check_content': f'Verify that {product} audit system is configured to resolve audit information before writing to disk, with the following command:\n\n$ sudo grep log_format /etc/audit/auditd.conf\n\nlog_format = ENRICHED\n\nIf the "log_format" option is not "ENRICHED", or the line is commented out, this is a finding.',
+                    'fix_text': 'Edit the /etc/audit/auditd.conf file and add or update the "log_format" option:\n\nlog_format = ENRICHED\n\nThe audit daemon must be restarted for changes to take effect.',
+                }, stig_id)
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/audit/auditd.conf', 'pattern': '^\\s*log_format\\s*=\\s*ENRICHED\\s*$'})
+                self.assertEqual(candidate['expected'], {'type': 'contains_regex'})
+
+    def test_does_not_infer_linux_auditd_log_format_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-258169',
+            'title': 'Audit log format setting.',
+            'check_content': 'grep log_format /etc/audit/auditd.conf',
+            'fix_text': 'log_format = ENRICHED',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'RHEL_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+
     def test_infers_windows_server_2022_name_based_strong_mapping_candidate_from_exact_vuln_and_gpedit_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271427',
@@ -14408,8 +14480,8 @@ $ sudo yum install kbd.x86_64''',
         }, 'Oracle_Linux_8_STIG')
         self.assertIsNotNone(candidate)
         self.assertEqual(candidate['platform'], 'linux')
-        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep vlock /usr/bin/*'})
-        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Binary file /usr/bin/vlock matches'})
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'sh -c "[ -x /usr/bin/vlock ] && printf Compliant"'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
 
     def test_infers_windows_run_as_different_user_context_menu_candidate(self):
