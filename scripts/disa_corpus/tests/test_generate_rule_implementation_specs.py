@@ -11,6 +11,59 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_windows_ad_object_audit_settings_candidates(self):
+        cases = [
+            ('V-205786', 'Windows_Server_2019_STIG', 'Domain object', 'defaultNamingContext'),
+            ('V-254403', 'MS_Windows_Server_2022_STIG', 'Infrastructure object', 'CN=Infrastructure'),
+            ('V-278151', 'MS_Windows_Server_2025_STIG', 'Domain Controllers OU object', 'OU=Domain Controllers'),
+            ('V-278152', 'MS_Windows_Server_2025_STIG', 'AdminSDHolder object', 'CN=AdminSDHolder,CN=System'),
+            ('V-278153', 'MS_Windows_Server_2025_STIG', 'RID Manager$ object', 'CN=RID Manager$,CN=System'),
+        ]
+        for vuln_id, stig_id, object_label, command_fragment in cases:
+            with self.subTest(vuln_id=vuln_id):
+                check = (
+                    'This applies to domain controllers. It is not applicable for other systems.\n'
+                    f'Review the auditing configuration for the {object_label}.\n'
+                    f'If the audit settings on the {object_label} are not at least as inclusive as those below, this is a finding:\n'
+                    'Type - Fail\nPrincipal - Everyone\nAccess - Full Control\nInherited from - None\n'
+                    'Type - Success\nPrincipal - Everyone\nAccess - Special\nInherited from - None\n'
+                    'Access - Special = Permissions: Write all properties, Modify permissions, Modify owner\n'
+                )
+                fix = (
+                    f'Configure the audit settings for {object_label} to include the following:\n'
+                    'Type - Fail\nPrincipal - Everyone\nAccess - Full Control\nInherited from - None\n'
+                )
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'Windows Server must configure auditing for the {object_label}.',
+                    'check_content': check,
+                    'fix_text': fix,
+                }, stig_id)
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertEqual(candidate['check']['type'], 'command_output')
+                self.assertIn('Get-Acl', candidate['check']['command'])
+                self.assertIn(command_fragment, candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_windows_ad_object_audit_settings_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-278149',
+            'title': 'Windows Server must configure auditing for the Domain object.',
+            'check_content': (
+                'This applies to domain controllers. It is not applicable for other systems.\n'
+                'Review the auditing configuration for the Domain object.\n'
+                'If the audit settings on the Domain object are not at least as inclusive as those below, this is a finding:\n'
+                'Type - Fail\nPrincipal - Everyone\nAccess - Full Control\nInherited from - None\n'
+                'Type - Success\nPrincipal - Everyone\nAccess - Special\nInherited from - None\n'
+            ),
+            'fix_text': 'Configure the audit settings for Domain object to include Type - Fail Principal - Everyone Access - Full Control Inherited from - None.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2025_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2016_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': 'Review the auditing configuration for the Domain object.'}, 'MS_Windows_Server_2025_STIG'))
+
     def test_infers_windows_server_2025_wifi_adapter_absent_candidate(self):
         check = (
             'Open PowerShell or a Command prompt.\n\n'

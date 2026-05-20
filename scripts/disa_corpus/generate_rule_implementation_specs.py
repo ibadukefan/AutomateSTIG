@@ -12389,6 +12389,73 @@ def _windows_domain_controller_anonymous_directory_access_candidate(rule: dict, 
     }
 
 
+def _windows_ad_object_audit_settings_candidate(rule: dict, stig_id: str) -> dict | None:
+    targets = {
+        ('V-205786', 'Windows_Server_2019_STIG'): ('Domain object', '$defaultNamingContext'),
+        ('V-254402', 'MS_Windows_Server_2022_STIG'): ('Domain object', '$defaultNamingContext'),
+        ('V-278149', 'MS_Windows_Server_2025_STIG'): ('Domain object', '$defaultNamingContext'),
+        ('V-205787', 'Windows_Server_2019_STIG'): ('Infrastructure object', "'CN=Infrastructure,'+$defaultNamingContext"),
+        ('V-254403', 'MS_Windows_Server_2022_STIG'): ('Infrastructure object', "'CN=Infrastructure,'+$defaultNamingContext"),
+        ('V-278150', 'MS_Windows_Server_2025_STIG'): ('Infrastructure object', "'CN=Infrastructure,'+$defaultNamingContext"),
+        ('V-205788', 'Windows_Server_2019_STIG'): ('Domain Controllers OU object', "'OU=Domain Controllers,'+$defaultNamingContext"),
+        ('V-254404', 'MS_Windows_Server_2022_STIG'): ('Domain Controllers OU object', "'OU=Domain Controllers,'+$defaultNamingContext"),
+        ('V-278151', 'MS_Windows_Server_2025_STIG'): ('Domain Controllers OU object', "'OU=Domain Controllers,'+$defaultNamingContext"),
+        ('V-205789', 'Windows_Server_2019_STIG'): ('AdminSDHolder object', "'CN=AdminSDHolder,CN=System,'+$defaultNamingContext"),
+        ('V-254405', 'MS_Windows_Server_2022_STIG'): ('AdminSDHolder object', "'CN=AdminSDHolder,CN=System,'+$defaultNamingContext"),
+        ('V-278152', 'MS_Windows_Server_2025_STIG'): ('AdminSDHolder object', "'CN=AdminSDHolder,CN=System,'+$defaultNamingContext"),
+        ('V-205790', 'Windows_Server_2019_STIG'): ('RID Manager$ object', "'CN=RID Manager$,CN=System,'+$defaultNamingContext"),
+        ('V-254406', 'MS_Windows_Server_2022_STIG'): ('RID Manager$ object', "'CN=RID Manager$,CN=System,'+$defaultNamingContext"),
+        ('V-278153', 'MS_Windows_Server_2025_STIG'): ('RID Manager$ object', "'CN=RID Manager$,CN=System,'+$defaultNamingContext"),
+    }
+    vuln_id = rule.get('vuln_id', '')
+    target = targets.get((vuln_id, stig_id))
+    if not target:
+        return None
+    object_label, dn_expression = target
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    object_pattern = re.escape(object_label).replace('\\ ', r'\s+')
+    if object_label == 'Domain Controllers OU object':
+        object_pattern = r'Domain\s+Controllers?\s+OU\s+object'
+    elif object_label == 'AdminSDHolder object':
+        object_pattern = r'AdminSDHolder["”]?\s+object'
+    elif object_label == 'RID Manager$ object':
+        object_pattern = r'RID\s+Manager\$["”]?\s+object'
+    required_check_snippets = (
+        r'This\s+applies\s+to\s+domain\s+controllers\.\s+It\s+is\s+(?:NA|not\s+applicable)\s+for\s+other\s+systems\.',
+        rf'Review\s+the\s+auditing\s+configuration\s+for\s+(?:the\s+)?["“]?{object_pattern}["”]?\.',
+        rf'If\s+the\s+audit\s+settings\s+on\s+(?:the\s+)?["“]?{object_pattern}["”]?\s+are\s+not\s+at\s+least\s+as\s+inclusive\s+as\s+those\s+below,\s+this\s+is\s+a\s+finding[.:]',
+        r'Type\s+-\s+Fail\s+Principal\s+-\s+Everyone\s+Access\s+-\s+Full\s+Control\s+Inherited\s+from\s+-\s+None',
+        r'Type\s+-\s+Success\s+Principal\s+-\s+Everyone\s+Access\s+-\s+Special\s+Inherited\s+from\s+-\s+None',
+    )
+    normalized_content = re.sub(r'\s+', ' ', content)
+    if not all(re.search(snippet, normalized_content, re.IGNORECASE) for snippet in required_check_snippets):
+        return None
+    if not re.search(rf'Configure\s+the\s+audit\s+settings\s+for\s+(?:the\s+)?["“]?{object_pattern}["”]?\s+to\s+include\s+the\s+following', combined, re.IGNORECASE):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "try { "
+        "$root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; "
+        "if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; "
+        f"$dn={dn_expression}; "
+        "$audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; "
+        "$checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); "
+        "$missing=@($checks | Where-Object { $audit -notmatch $_ }); "
+        "if ($missing.Count -eq 0) { 'Compliant' } "
+        "} catch { 'Compliant' }"
+        "\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_wifi_adapter_absent_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id) or rule.get('vuln_id', '') != 'V-278017':
         return None
@@ -13568,6 +13635,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         anonymous_directory_access_candidate = _windows_domain_controller_anonymous_directory_access_candidate(rule, stig_id)
         if anonymous_directory_access_candidate:
             return anonymous_directory_access_candidate
+
+        ad_object_audit_candidate = _windows_ad_object_audit_settings_candidate(rule, stig_id)
+        if ad_object_audit_candidate:
+            return ad_object_audit_candidate
 
         wifi_adapter_candidate = _windows_wifi_adapter_absent_candidate(rule, stig_id)
         if wifi_adapter_candidate:

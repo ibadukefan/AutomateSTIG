@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 200,
+  "candidate_checks": 205,
   "cases": [
     {
       "check": {
@@ -2606,6 +2606,136 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205784"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn=$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 Active Directory Domain object must be configured with proper audit settings.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn=$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn=$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205786"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='CN=Infrastructure,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 Active Directory Infrastructure object must be configured with proper audit settings.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='CN=Infrastructure,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='CN=Infrastructure,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205787"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='OU=Domain Controllers,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 Active Directory Domain Controllers Organizational Unit (OU) object must be configured with proper audit settings.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='OU=Domain Controllers,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='OU=Domain Controllers,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205788"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='CN=AdminSDHolder,CN=System,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 Active Directory AdminSDHolder object must be configured with proper audit settings.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='CN=AdminSDHolder,CN=System,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='CN=AdminSDHolder,CN=System,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205789"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='CN=RID Manager$,CN=System,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 Active Directory RID Manager$ object must be configured with proper audit settings.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='CN=RID Manager$,CN=System,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"try { $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $dn='CN=RID Manager$,CN=System,'+$defaultNamingContext; $audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; $checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success'); $missing=@($checks | Where-Object { $audit -notmatch $_ }); if ($missing.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205790"
     },
     {
       "check": {
@@ -5382,5 +5512,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 200
+  "validated_candidates": 205
 }
