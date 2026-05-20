@@ -145,6 +145,19 @@
     },
     {
       "check": {
+        "command": "show running-config | section \"^router bgp\" | include \"^ maximum-prefix \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco BGP switch must be configured to use the maximum prefixes feature to protect against route table flooding and prefix de-aggregation attacks.",
+      "expected": {
+        "substring": "maximum-prefix",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221110"
+    },
+    {
+      "check": {
         "command": "show running-config | section \"^router bgp\" | include \"update-source (loopback|lo)[0-9]*$\"",
         "type": "command_output"
       },

@@ -2845,6 +2845,34 @@ If the switch is configured to disable checking whether a single-hop eBGP peer i
             'description': 'The Cisco BGP switch must be configured to check whether a single-hop eBGP peer is directly connected.',
         })
 
+    def test_infers_cisco_nxos_bgp_maximum_prefix_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221110',
+            'title': 'The Cisco BGP switch must be configured to use the maximum prefixes feature to protect against route table flooding and prefix de-aggregation attacks.',
+            'check_content': '''Review the switch configuration to verify that the number of received prefixes from each eBGP neighbor is controlled.
+
+router bgp xx
+ router-id 10.1.1.1
+ neighbor x.1.12.2 remote-as xx
+ address-family ipv4 unicast
+ maximum-prefix nnnnnnn
+
+If the switch is not configured to control the number of prefixes received from each peer to protect against route table flooding and prefix de-aggregation attacks, this is a finding.''',
+            'fix_text': '''Configure the switch to use the maximum prefixes feature to protect against route table flooding and prefix de-aggregation attacks as shown in the example below:
+
+SW1(config)# router bgp xx
+SW1(config-router)# neighbor x.1.12.2
+SW1(config-router-neighbor)# address-family ipv4 unicast
+SW1(config-router-neighbor-af)# maximum-prefix nnnnnnn''',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221110',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | section "^router bgp" | include "^ maximum-prefix "'},
+            'expected': {'type': 'contains', 'substring': 'maximum-prefix'},
+            'description': 'The Cisco BGP switch must be configured to use the maximum prefixes feature to protect against route table flooding and prefix de-aggregation attacks.',
+        })
+
     def test_infers_cisco_nxos_required_command_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221116',

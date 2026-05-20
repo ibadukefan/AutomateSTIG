@@ -2270,6 +2270,20 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221110':
+        if not re.search(r'Review\s+the\s+switch\s+configuration\s+to\s+verify\s+that\s+the\s+number\s+of\s+received\s+prefixes\s+from\s+each\s+eBGP\s+neighbor\s+is\s+controlled', content, re.IGNORECASE):
+            return None
+        if not re.search(r'maximum-prefix\s+\S+.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+control\s+the\s+number\s+of\s+prefixes\s+received\s+from\s+each\s+peer', content, re.IGNORECASE | re.DOTALL):
+            return None
+        if not re.search(r'Configure\s+the\s+switch\s+to\s+use\s+the\s+maximum\s+prefixes\s+feature.*?maximum-prefix\s+\S+', fix_text, re.IGNORECASE | re.DOTALL):
+            return None
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | section "^router bgp" | include "^ maximum-prefix "'},
+            'expected': {'type': 'contains', 'substring': 'maximum-prefix'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221116':
         if not re.search(r'Review\s+the\s+switch\s+configuration\s+to\s+verify\s+that\s+TTL\s+propagation\s+is\s+disabled.*?no\s+mpls\s+ip\s+propagate-ttl.*?If\s+the\s+MPLS\s+switch\s+is\s+not\s+configured\s+to\s+disable\s+TTL\s+propagation,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE | re.DOTALL):
             return None

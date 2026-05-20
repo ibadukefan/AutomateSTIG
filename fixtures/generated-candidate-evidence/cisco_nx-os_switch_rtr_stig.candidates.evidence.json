@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 29,
+  "candidate_checks": 30,
   "cases": [
     {
       "check": {
@@ -286,6 +286,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221108"
+    },
+    {
+      "check": {
+        "command": "show running-config | section \"^router bgp\" | include \"^ maximum-prefix \"",
+        "type": "command_output"
+      },
+      "description": "The Cisco BGP switch must be configured to use the maximum prefixes feature to protect against route table flooding and prefix de-aggregation attacks.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "maximum-prefix",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^router bgp\" | include \"^ maximum-prefix \"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | section \"^router bgp\" | include \"^ maximum-prefix \"": "before\nmaximum-prefix\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221110"
     },
     {
       "check": {
@@ -761,5 +787,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 29
+  "validated_candidates": 30
 }
