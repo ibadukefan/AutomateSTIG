@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 185,
+  "candidate_checks": 186,
   "cases": [
     {
       "check": {
@@ -3933,6 +3933,32 @@
     },
     {
       "check": {
+        "command": "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d ! \\( -group root -o -group sys -o -group bin \\) -print 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system world-writable directories must be group-owned by root, sys, bin, or an application group.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d ! \\( -group root -o -group sys -o -group bin \\) -print 2>/dev/null": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d ! \\( -group root -o -group sys -o -group bin \\) -print 2>/dev/null": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235002"
+    },
+    {
+      "check": {
         "expected_status": "stopped",
         "name": "kdump",
         "type": "service"
@@ -4885,5 +4911,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 185
+  "validated_candidates": 186
 }

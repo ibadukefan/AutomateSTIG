@@ -1962,6 +1962,33 @@ If any user pods are present in the Kubernetes system namespaces, this is a find
         self.assertIn('-perm -002', candidate['check']['command'])
         self.assertIn('! -perm -1000', candidate['check']['command'])
 
+    def test_infers_sles_world_writable_directory_group_owner_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-235002',
+            'title': 'All SUSE operating system world-writable directories must be group-owned by root, sys, bin, or an application group.',
+            'check_content': 'Verify all SUSE operating system world-writable directories are group-owned by root, sys, bin, or an application group.\n\nCheck the system for world-writable directories with the following command:\n\n> sudo find / -perm -002 -type d -exec ls -lLd {} \\;\n\nIf any world-writable directories are not owned by root, sys, bin, or an application group associated with the directory, this is a finding.',
+            'fix_text': 'Change the group of the SUSE operating system world-writable directories to root with the following command:\n\n> sudo chgrp root <directory>',
+        }, 'SLES_15_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-235002')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('-perm -002', candidate['check']['command'])
+        self.assertIn('! \\( -group root -o -group sys -o -group bin \\)', candidate['check']['command'])
+        self.assertIsNone(mod.infer_candidate_check({
+            'vuln_id': 'V-235002',
+            'title': 'All SUSE operating system world-writable directories must be group-owned by root, sys, bin, or an application group.',
+            'check_content': 'Find world-writable directories.',
+            'fix_text': 'Change group ownership.',
+        }, 'SLES_15_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({
+            'vuln_id': 'V-235002',
+            'title': 'All SUSE operating system world-writable directories must be group-owned by root, sys, bin, or an application group.',
+            'check_content': 'Verify all SUSE operating system world-writable directories are group-owned by root, sys, bin, or an application group. If any world-writable directories are not owned by root, sys, bin, or an application group associated with the directory, this is a finding.',
+            'fix_text': 'Change the group of the SUSE operating system world-writable directories to root with the following command: sudo chgrp root <directory>',
+        }, 'RHEL_8_STIG'))
+
     def test_infers_oracle_inactive_account_time_with_profile_name_placeholder(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270551',

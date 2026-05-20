@@ -2012,6 +2012,29 @@ def _sles_world_writable_directory_sticky_bit_candidate(rule: dict, stig_id: str
     }
 
 
+def _sles_world_writable_directory_group_owner_candidate(rule: dict, stig_id: str) -> dict | None:
+    if rule.get('vuln_id', '') != 'V-235002' or 'sles' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'world-writable\s+directories\s+are\s+group-owned\s+by\s+root,\s*sys,\s*bin,\s+or\s+an\s+application\s+group', content, re.IGNORECASE):
+        return None
+    if not re.search(r'find\s+/\s+-perm\s+-002\s+-type\s+d\s+-exec\s+ls\s+-lLd', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+world-writable\s+directories\s+are\s+not\s+owned\s+by\s+root,\s*sys,\s*bin,\s+or\s+an\s+application\s+group\s+associated\s+with\s+the\s+directory,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'chgrp\s+root\s+<directory>', fix_text, re.IGNORECASE):
+        return None
+    command = "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d ! \\( -group root -o -group sys -o -group bin \\) -print 2>/dev/null"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _rhel7_authconfig_custom_pam_symlink_candidate(rule: dict, stig_id: str) -> dict | None:
     if stig_id != 'RHEL_7_STIG' or rule.get('vuln_id', '') != 'V-255928':
         return None
@@ -13733,6 +13756,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sles_world_writable_directory_sticky_bit_candidate = _sles_world_writable_directory_sticky_bit_candidate(rule, stig_id)
     if sles_world_writable_directory_sticky_bit_candidate:
         return sles_world_writable_directory_sticky_bit_candidate
+
+    sles_world_writable_directory_group_owner_candidate = _sles_world_writable_directory_group_owner_candidate(rule, stig_id)
+    if sles_world_writable_directory_group_owner_candidate:
+        return sles_world_writable_directory_group_owner_candidate
 
     sles_noninteractive_accounts_candidate = _sles_noninteractive_accounts_no_login_shell_candidate(rule, stig_id)
     if sles_noninteractive_accounts_candidate:
