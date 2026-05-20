@@ -15746,5 +15746,42 @@ Create REG_DWORD "UriScavengerPeriod"''',
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2022_Instance_STIG'))
 
 
+    def test_infers_postgresql_unused_extensions_absent_candidate(self):
+        check = (
+            'To get a list of all extensions installed, use the following commands:\n'
+            '$ sudo su - postgres\n'
+            "$ psql -c \"select * from pg_extension where extname != 'plpgsql'\"\n"
+            'If any extensions exist that are not approved, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233592',
+            'title': 'Unused database components, PostgreSQL software, and database objects must be removed.',
+            'check_content': check,
+            'fix_text': (
+                'To remove extensions, use the following commands:\n'
+                '$ sudo su - postgres\n'
+                '$ psql -c "DROP EXTENSION <extension_name>"\n'
+                'Note: It is recommended that plpgsql not be removed.'
+            ),
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233592')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn("pg_extension", candidate['check']['command'])
+        self.assertIn("plpgsql", candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_does_not_infer_postgresql_unused_extensions_without_exact_evidence(self):
+        rule = {
+            'vuln_id': 'V-233592',
+            'title': 'Unused database components, PostgreSQL software, and database objects must be removed.',
+            'check_content': 'List installed extensions.',
+            'fix_text': 'Drop unused extensions.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Crunchy_Data_PostgreSQL_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Crunchy_Data_PostgreSQL_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+
 if __name__ == '__main__':
     unittest.main()

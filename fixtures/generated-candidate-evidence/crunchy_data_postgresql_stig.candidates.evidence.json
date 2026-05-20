@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 50,
+  "candidate_checks": 51,
   "cases": [
     {
       "check": {
@@ -965,6 +965,32 @@
     },
     {
       "check": {
+        "command": "sudo -u postgres psql -At -c 'select extname from pg_extension where extname != '\"'\"'plpgsql'\"'\"''",
+        "type": "command_output"
+      },
+      "description": "Unused database components, PostgreSQL software, and database objects must be removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'select extname from pg_extension where extname != '\"'\"'plpgsql'\"'\"''": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'select extname from pg_extension where extname != '\"'\"'plpgsql'\"'\"''": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233592"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW password_encryption\"",
         "type": "command_output"
       },
@@ -1307,5 +1333,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 50
+  "validated_candidates": 51
 }

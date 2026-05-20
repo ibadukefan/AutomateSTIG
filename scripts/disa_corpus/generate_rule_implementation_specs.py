@@ -8658,6 +8658,26 @@ def _postgresql_audit_outcome_config_candidate(rule: dict, stig_id: str) -> dict
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    postgresql_unused_extensions_absent = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233592'
+        and re.search(r'unused\s+database\s+components,\s+PostgreSQL\s+software,\s+and\s+database\s+objects\s+must\s+be\s+removed', rule.get('title', '') or '', re.IGNORECASE)
+        and re.search(r'psql\s+-c\s+["“]select\s+\*\s+from\s+pg_extension\s+where\s+extname\s+!=\s+\'plpgsql\'["”]', content, re.IGNORECASE)
+        and re.search(r'If\s+any\s+extensions\s+exist\s+that\s+are\s+not\s+approved,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'DROP\s+EXTENSION\s+<extension_name>', fix_text, re.IGNORECASE)
+        and re.search(r'plpgsql\s+not\s+be\s+removed', fix_text, re.IGNORECASE)
+    )
+    if postgresql_unused_extensions_absent:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'sudo -u postgres psql -At -c ' + shlex.quote("select extname from pg_extension where extname != 'plpgsql'"),
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     postgresql_audit_config_candidate = _postgresql_audit_explicit_config_candidate(rule, stig_id)
     if postgresql_audit_config_candidate:
         return postgresql_audit_config_candidate

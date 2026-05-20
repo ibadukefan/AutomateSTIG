@@ -483,6 +483,19 @@
     },
     {
       "check": {
+        "command": "sudo -u postgres psql -At -c 'select extname from pg_extension where extname != '\"'\"'plpgsql'\"'\"''",
+        "type": "command_output"
+      },
+      "description": "Unused database components, PostgreSQL software, and database objects must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-233592"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW password_encryption\"",
         "type": "command_output"
       },

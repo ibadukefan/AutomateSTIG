@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sudo -u postgres psql -At -c 'select extname from pg_extension where extname != '\"'\"'plpgsql'\"'\"''",
+      "type": "command_output"
+    },
+    "description": "Unused database components, PostgreSQL software, and database objects must be removed.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-233592"
+  },
   "check_content_excerpt": "To get a list of all extensions installed, use the following commands:\n\n$ sudo su - postgres\n$ psql -c \"select * from pg_extension where extname != 'plpgsql'\"\n\nIf any extensions exist that are not approved, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "To remove extensions, use the following commands:\n\n$ sudo su - postgres\n$ psql -c \"DROP EXTENSION <extension_name>\"\n\nNote: It is recommended that plpgsql not be removed.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233592r960963_rule",
   "severity": "medium",
