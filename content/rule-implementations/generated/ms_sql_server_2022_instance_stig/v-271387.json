@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$svc=Get-Service -Name SQLBrowser -ErrorAction SilentlyContinue; if($svc){ $start=(Get-CimInstance Win32_Service -Filter `\"Name='SQLBrowser'`\").StartMode; if($start -eq 'Disabled'){ 'Compliant'; exit } }; $hidden=(sqlcmd -h -1 -W -Q `\"SET NOCOUNT ON; DECLARE @HiddenInstance INT; EXEC master.dbo.Xp_instance_regread N'HKEY_LOCAL_MACHINE', N'Software\\Microsoft\\MSSQLServer\\MSSQLServer\\SuperSocketNetLib', N'HideInstance', @HiddenInstance OUTPUT; SELECT CASE WHEN ISNULL(@HiddenInstance,0)=0 AND CONVERT(int, SERVERPROPERTY('IsClustered'))=0 THEN 'No' ELSE 'Yes' END;`\" 2>$null | Select-Object -First 1).Trim(); if($hidden -eq 'Yes'){ 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "The SQL Server Browser service must be disabled unless specifically required and approved.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-271387"
+  },
   "check_content_excerpt": "Open SQL Server Configuration Manager. Select SQL Server Services. Review the Start Mode and State of SQL Server Browser.\n\nIf its Start Type is shown as \"Disabled\", this is not a finding.\n\nIf the need for the SQL Server Browser service is documented and authorized, verify the SQL Instances that do not require use of the SQL Browser Service are hidden with the following SQL script:\nDECLARE @HiddenInstance INT \nEXEC master.dbo.Xp_instance_regread \n N'HKEY_LOCAL_MACHINE', \n N'Software\\Microsoft\\MSSQLServer\\MSSQLServer\\SuperSocketNetLib', \n N'HideInstance', \n @HiddenInstance output \n\nSELECT CASE \n        WHEN @HiddenInstance = 0 \n             AND Serverproperty('IsClustered') = 0 THEN 'No' \n        ELSE 'Yes' \n      END AS [Hidden]\n\nIf the value of \"Hidden\" is \"Yes\", this is not a finding.\n\nIf the value of \"Hidden\" is \"No\" and the startup type of the \"SQL Server Browser\" service is not \"Disabled\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If SQL Server Browser is needed, document the justification and obtain the appropriate authorization. \n\nWhere SQL Server Browser is judged unnecessary, the Service can be disabled. \n\nTo disable, in the Services tool, double-click \"SQL Server Browser\". Set \"Startup Type\" to \"Disabled\". If \"Service Status\" is \"Running\", click \"Stop\" and then click \"OK\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271387r1111140_rule",
   "severity": "medium",

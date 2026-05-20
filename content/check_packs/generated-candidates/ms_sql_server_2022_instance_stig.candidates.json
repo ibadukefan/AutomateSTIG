@@ -210,6 +210,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$svc=Get-Service -Name SQLBrowser -ErrorAction SilentlyContinue; if($svc){ $start=(Get-CimInstance Win32_Service -Filter `\"Name='SQLBrowser'`\").StartMode; if($start -eq 'Disabled'){ 'Compliant'; exit } }; $hidden=(sqlcmd -h -1 -W -Q `\"SET NOCOUNT ON; DECLARE @HiddenInstance INT; EXEC master.dbo.Xp_instance_regread N'HKEY_LOCAL_MACHINE', N'Software\\Microsoft\\MSSQLServer\\MSSQLServer\\SuperSocketNetLib', N'HideInstance', @HiddenInstance OUTPUT; SELECT CASE WHEN ISNULL(@HiddenInstance,0)=0 AND CONVERT(int, SERVERPROPERTY('IsClustered'))=0 THEN 'No' ELSE 'Yes' END;`\" 2>$null | Select-Object -First 1).Trim(); if($hidden -eq 'Yes'){ 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The SQL Server Browser service must be disabled unless specifically required and approved.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-271387"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(is_disabled AS varchar(1)) FROM sys.sql_logins WHERE principal_id = 1;\"",
         "type": "command_output"
       },

@@ -11304,6 +11304,54 @@ def _sql_server_sa_login_disabled_candidate(rule: dict, stig_id: str) -> dict | 
     }
 
 
+def _sql_server_browser_disabled_or_hidden_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server_2022' not in stig_id.lower() and 'sql server 2022' not in stig_id.lower():
+        return None
+    if rule.get('vuln_id', '') != 'V-271387':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_content_patterns = (
+        r'SQL\s+Server\s+Browser',
+        r'Start\s+Type\s+is\s+shown\s+as\s+["“]Disabled["”],\s+this\s+is\s+not\s+a\s+finding',
+        r'EXEC\s+master\.dbo\.Xp_instance_regread',
+        r'HKEY_LOCAL_MACHINE',
+        r'Software\\Microsoft\\MSSQLServer\\MSSQLServer\\SuperSocketNetLib',
+        r'HideInstance',
+        r"Serverproperty\(\s*'IsClustered'\s*\)",
+        r'If\s+the\s+value\s+of\s+["“]Hidden["”]\s+is\s+["“]Yes["”],\s+this\s+is\s+not\s+a\s+finding',
+        r'If\s+the\s+value\s+of\s+["“]Hidden["”]\s+is\s+["“]No["”]\s+and\s+the\s+startup\s+type\s+of\s+the\s+["“]SQL\s+Server\s+Browser["”]\s+service\s+is\s+not\s+["“]Disabled["”],\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in required_content_patterns):
+        return None
+    if not re.search(r'Startup\s+Type["”]?\s+to\s+["“]Disabled["”]', fix_text, re.IGNORECASE):
+        return None
+    query = (
+        "SET NOCOUNT ON; "
+        "DECLARE @HiddenInstance INT; "
+        "EXEC master.dbo.Xp_instance_regread "
+        "N'HKEY_LOCAL_MACHINE', "
+        "N'Software\\Microsoft\\MSSQLServer\\MSSQLServer\\SuperSocketNetLib', "
+        "N'HideInstance', @HiddenInstance OUTPUT; "
+        "SELECT CASE WHEN ISNULL(@HiddenInstance,0)=0 AND CONVERT(int, SERVERPROPERTY('IsClustered'))=0 THEN 'No' ELSE 'Yes' END;"
+    )
+    script = (
+        "$svc=Get-Service -Name SQLBrowser -ErrorAction SilentlyContinue; "
+        "if($svc){ $start=(Get-CimInstance Win32_Service -Filter \"Name='SQLBrowser'\").StartMode; "
+        "if($start -eq 'Disabled'){ 'Compliant'; exit } }; "
+        f"$hidden=(sqlcmd -h -1 -W -Q \"{query}\" 2>$null | Select-Object -First 1).Trim(); "
+        "if($hidden -eq 'Yes'){ 'Compliant' }"
+    )
+    command = f'powershell -NoProfile -ExecutionPolicy Bypass -Command "{script.replace(chr(34), "`" + chr(34))}"'
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_audit_status_started_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -13500,6 +13548,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_sa_disabled_candidate = _sql_server_sa_login_disabled_candidate(rule, stig_id)
     if sql_server_sa_disabled_candidate:
         return sql_server_sa_disabled_candidate
+
+    sql_server_browser_candidate = _sql_server_browser_disabled_or_hidden_candidate(rule, stig_id)
+    if sql_server_browser_candidate:
+        return sql_server_browser_candidate
 
     sql_server_audit_status_started_candidate = _sql_server_audit_status_started_candidate(rule, stig_id)
     if sql_server_audit_status_started_candidate:

@@ -239,6 +239,46 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2019_Instance_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': 'review Remote Access'}, 'MS_SQL_Server_2022_Instance_STIG'))
 
+    def test_infers_sql_server_2022_browser_disabled_or_hidden_candidate(self):
+        check_content = (
+            'Open SQL Server Configuration Manager. Select SQL Server Services. Review the Start Mode and State of SQL Server Browser.\n'
+            'If its Start Type is shown as "Disabled", this is not a finding.\n'
+            'If the need for the SQL Server Browser service is documented and authorized, verify the SQL Instances that do not require use of the SQL Browser Service are hidden with the following SQL script:\n'
+            'DECLARE @HiddenInstance INT\n'
+            'EXEC master.dbo.Xp_instance_regread\n'
+            " N'HKEY_LOCAL_MACHINE',\n"
+            " N'Software\\Microsoft\\MSSQLServer\\MSSQLServer\\SuperSocketNetLib',\n"
+            " N'HideInstance',\n"
+            ' @HiddenInstance output\n'
+            'SELECT CASE WHEN @HiddenInstance = 0 AND Serverproperty(\'IsClustered\') = 0 THEN \'No\' ELSE \'Yes\' END AS [Hidden]\n'
+            'If the value of "Hidden" is "Yes", this is not a finding.\n'
+            'If the value of "Hidden" is "No" and the startup type of the "SQL Server Browser" service is not "Disabled", this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271387',
+            'title': 'The SQL Server Browser service must be disabled unless specifically required and approved.',
+            'check_content': check_content,
+            'fix_text': 'Where SQL Server Browser is judged unnecessary, the Service can be disabled. Set "Startup Type" to "Disabled".',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271387')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('SQLBrowser', candidate['check']['command'])
+        self.assertIn('Xp_instance_regread', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_sql_server_2022_browser_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-271387',
+            'title': 'The SQL Server Browser service must be disabled unless specifically required and approved.',
+            'check_content': 'Review SQL Server Browser service settings.',
+            'fix_text': 'Disable SQL Server Browser if not required.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2022_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_SQL_Server_2022_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2019_Instance_STIG'))
+
     def test_infers_sql_server_2022_sp_configure_disabled_option_variants(self):
         cases = (
             (
