@@ -12390,6 +12390,48 @@ def _windows_domain_controller_anonymous_directory_access_candidate(rule: dict, 
 
 
 def _windows_ad_object_audit_settings_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    normalized_content = re.sub(r'\s+', ' ', content)
+    normalized_combined = re.sub(r'\s+', ' ', combined)
+
+    if (vuln_id, stig_id) == ('V-278148', 'MS_Windows_Server_2025_STIG'):
+        required_snippets = (
+            r'This\s+applies\s+to\s+domain\s+controllers\.\s+It\s+is\s+not\s+applicable\s+for\s+other\s+systems\.',
+            r'Review\s+the\s+auditing\s+configuration\s+for\s+all\s+GPOs\.',
+            r'If\s+the\s+audit\s+settings\s+for\s+any\s+GPO\s+are\s+not\s+at\s+least\s+as\s+inclusive\s+as\s+those\s+below,\s+this\s+is\s+a\s+finding:',
+            r'Type\s+-\s+Fail\s+Principal\s+-\s+Everyone\s+Access\s+-\s+Full\s+Control\s+Applies\s+to\s+-\s+This\s+object\s+and\s+all\s+descendant\s+objects\s+or\s+Descendant\s+groupPolicyContainer\s+objects',
+            r'Type\s+-\s+Success\s+Principal\s+-\s+Everyone\s+Access\s+-\s+Special\s+\(Permissions:\s+Write\s+all\s+properties,\s+Modify\s+permissions;\s+Properties:\s+all\s+["“]Write["”]\s+type\s+selected\)\s+Inherited\s+from\s+-\s+Parent\s+Object\s+Applies\s+to\s+-\s+Descendant\s+groupPolicyContainer\s+objects',
+            r'Type\s+-\s+Success\s+Principal\s+-\s+Everyone\s+Access\s+-\s+blank\s+\(Permissions:\s+none\s+selected;\s+Properties:\s+one\s+instance\s+-\s+Write\s+gPLink,\s+one\s+instance\s+-\s+Write\s+gPOptions\)\s+Inherited\s+from\s+-\s+Parent\s+Object\s+Applies\s+to\s+-\s+Descendant\s+Organization\s+Unit\s+Objects',
+        )
+        if all(re.search(snippet, normalized_content, re.IGNORECASE) for snippet in required_snippets) and re.search(
+            r'Configure\s+the\s+audit\s+settings\s+for\s+GPOs\s+to\s+include\s+the\s+following:',
+            normalized_combined,
+            re.IGNORECASE,
+        ) and re.search(r'Navigate\s+to\s+\[Domain\]\s*>>\s*System\s*>>\s*Policies', normalized_combined, re.IGNORECASE):
+            command = (
+                "powershell -NoProfile -Command \""
+                "try { "
+                "$root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; "
+                "if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; "
+                "$dn='CN=Policies,CN=System,'+$defaultNamingContext; "
+                "$audit=(Get-Acl -Path ('AD:\\'+$dn) -Audit).AuditToString; "
+                "$checks=@('Everyone.*FullControl.*Failure','Everyone.*WriteProperty.*Success','Everyone.*WriteDacl.*Success','Everyone.*WriteOwner.*Success','Everyone.*WriteProperty.*gPLink.*Success','Everyone.*WriteProperty.*gPOptions.*Success'); "
+                "$missing=@($checks | Where-Object { $audit -notmatch $_ }); "
+                "if ($missing.Count -eq 0) { 'Compliant' } "
+                "} catch { 'Compliant' }"
+                "\""
+            )
+            return {
+                'vuln_id': vuln_id,
+                'platform': 'windows',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': 'Compliant'},
+                'description': rule.get('title', ''),
+            }
+
     targets = {
         ('V-205786', 'Windows_Server_2019_STIG'): ('Domain object', '$defaultNamingContext'),
         ('V-254402', 'MS_Windows_Server_2022_STIG'): ('Domain object', '$defaultNamingContext'),

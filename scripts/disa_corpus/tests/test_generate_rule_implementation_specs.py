@@ -47,6 +47,42 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertIn(command_fragment, candidate['check']['command'])
                 self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_windows_server_2025_gpo_audit_settings_candidate(self):
+        check = (
+            'This applies to domain controllers. It is not applicable for other systems.\n\n'
+            'Review the auditing configuration for all GPOs.\n\n'
+            'If the audit settings for any GPO are not at least as inclusive as those below, this is a finding:\n\n'
+            'Type - Fail\nPrincipal - Everyone\nAccess - Full Control\n'
+            'Applies to - This object and all descendant objects or Descendant groupPolicyContainer objects\n\n'
+            'Type - Success\nPrincipal - Everyone\nAccess - Special (Permissions: Write all properties, Modify permissions; Properties: all "Write" type selected)\n'
+            'Inherited from - Parent Object\nApplies to - Descendant groupPolicyContainer objects\n\n'
+            'Type - Success\nPrincipal - Everyone\nAccess - blank (Permissions: none selected; Properties: one instance - Write gPLink, one instance - Write gPOptions)\n'
+            'Inherited from - Parent Object\nApplies to - Descendant Organization Unit Objects\n'
+        )
+        fix = (
+            'Configure the audit settings for GPOs to include the following:\n\n'
+            'Navigate to [Domain] >> System >> Policies in the left panel.\n'
+            'Type - Fail\nPrincipal - Everyone\nAccess - Full Control\n'
+            'Applies to - This object and all descendant objects or Descendant groupPolicyContainer objects\n\n'
+            'Type - Success\nPrincipal - Everyone\nAccess - Special (Permissions: Write all properties, Modify permissions; Properties: all "Write" type selected)\n'
+            'Inherited from - Parent Object\nApplies to - Descendant groupPolicyContainer objects\n\n'
+            'Type - Success\nPrincipal - Everyone\nAccess - blank (Permissions: none selected; Properties: one instance - Write gPLink, one instance - Write gPOptions)\n'
+            'Inherited from - Parent Object\nApplies to - Descendant Organization Unit Objects\n'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278148',
+            'title': 'Windows Server 2025 Active Directory Group Policy Objects (GPOs) must be configured with proper audit settings.',
+            'check_content': check,
+            'fix_text': fix,
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278148')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('CN=Policies,CN=System', candidate['check']['command'])
+        self.assertIn('Get-Acl', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_does_not_infer_windows_ad_object_audit_settings_without_exact_guards(self):
         rule = {
             'vuln_id': 'V-278149',
