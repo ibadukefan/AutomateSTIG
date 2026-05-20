@@ -535,6 +535,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; for s in log_connections log_disconnections; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = on ] || bad=\"$bad $s=$v\"; done; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %c; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must produce audit records containing sufficient information to establish what type of events occurred.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-233604"
+    },
+    {
+      "check": {
         "command": "sh -c 'for s in tcp_keepalives_idle tcp_keepalives_interval tcp_keepalives_count statement_timeout; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = 0 ] && echo \"$s=0\"; done'",
         "type": "command_output"
       },
@@ -662,6 +675,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-233622"
+    },
+    {
+      "check": {
+        "command": "sh -c 'test \"$(cat /proc/sys/crypto/fips_enabled 2>/dev/null)\" = 1 && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The DBMS must be configured on a platform that has a NIST certified FIPS 140-2 or 140-3 installation of OpenSSL.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-233623"
     }
   ],
   "platform": "linux",

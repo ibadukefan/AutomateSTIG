@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 51,
+  "candidate_checks": 53,
   "cases": [
     {
       "check": {
@@ -1069,6 +1069,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; for s in log_connections log_disconnections; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = on ] || bad=\"$bad $s=$v\"; done; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %c; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must produce audit records containing sufficient information to establish what type of events occurred.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'bad=\"\"; for s in log_connections log_disconnections; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = on ] || bad=\"$bad $s=$v\"; done; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %c; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; printf %s \"$bad\"'": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'bad=\"\"; for s in log_connections log_disconnections; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = on ] || bad=\"$bad $s=$v\"; done; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %c; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; printf %s \"$bad\"'": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233604"
+    },
+    {
+      "check": {
         "command": "sh -c 'for s in tcp_keepalives_idle tcp_keepalives_interval tcp_keepalives_count statement_timeout; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = 0 ] && echo \"$s=0\"; done'",
         "type": "command_output"
       },
@@ -1326,6 +1352,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233622"
+    },
+    {
+      "check": {
+        "command": "sh -c 'test \"$(cat /proc/sys/crypto/fips_enabled 2>/dev/null)\" = 1 && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "The DBMS must be configured on a platform that has a NIST certified FIPS 140-2 or 140-3 installation of OpenSSL.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'test \"$(cat /proc/sys/crypto/fips_enabled 2>/dev/null)\" = 1 && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'test \"$(cat /proc/sys/crypto/fips_enabled 2>/dev/null)\" = 1 && printf Compliant'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233623"
     }
   ],
   "production_claim": false,
@@ -1333,5 +1385,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 51
+  "validated_candidates": 53
 }

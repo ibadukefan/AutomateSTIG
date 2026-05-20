@@ -1928,6 +1928,31 @@ If any user pods are present in the Kubernetes system namespaces, this is a find
         self.assertIn('log_disconnections', candidate['check']['command'])
         self.assertIn('%m %u %d %c', candidate['check']['command'])
 
+    def test_infers_postgresql_connection_audit_type_records_from_authoritative_org_phrase(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233604',
+            'title': 'PostgreSQL must produce audit records containing sufficient information to establish what type of events occurred.',
+            'check_content': 'As the database administrator (shown here as "postgres"), verify the current log_line_prefix setting:\n\n$ sudo su - postgres\n$ psql -c "SHOW log_line_prefix"\n\nVerify that the current settings are appropriate for the organization.\n\nIf the audit record does not log events required by the organization, this is a finding.\n\nNext, verify the current settings of log_connections and log_disconnections by running the following SQL:\n\n$ psql -c "SHOW log_connections"\n$ psql -c "SHOW log_disconnections"\n\nIf either setting is off, this is a finding.',
+            'fix_text': 'If logging is enabled the following configurations must be made to log connections, date/time, username and session identifier.\n\nlog_connections = on\nlog_disconnections = on\nlog_line_prefix = \'< %m %u %d %c: >\'',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233604')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('SHOW log_line_prefix', candidate['check']['command'])
+        self.assertIn('log_connections', candidate['check']['command'])
+        self.assertIn('log_disconnections', candidate['check']['command'])
+        self.assertIn('%m %u %d %c', candidate['check']['command'])
+
+    def test_rejects_postgresql_connection_audit_org_phrase_without_explicit_fix_tokens(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233604',
+            'title': 'PostgreSQL must produce audit records containing sufficient information to establish what type of events occurred.',
+            'check_content': '$ psql -c "SHOW log_line_prefix"\nIf the audit record does not log events required by the organization, this is a finding.\n$ psql -c "SHOW log_connections"\n$ psql -c "SHOW log_disconnections"\nIf either setting is off, this is a finding.',
+            'fix_text': 'Configure logging according to organization requirements.\nlog_connections = on\nlog_disconnections = on',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_sles_aide_selection_line_tokens_from_all_selection_lines_prose(self):
         cases = [
             ('V-234986', 'acl', 'Access Control Lists (ACLs)'),
@@ -3969,6 +3994,32 @@ If "fips" is not included in the OpenSSL version, this is a finding.''',
             'expected': {'type': 'contains', 'substring': 'fips'},
             'description': 'PostgreSQL must use NIST FIPS 140-2 or 140-3 validated cryptographic modules for cryptographic operations.',
         })
+
+    def test_infers_postgresql_platform_fips_enabled_from_authoritative_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233623',
+            'title': 'The DBMS must be configured on a platform that has a NIST certified FIPS 140-2 or 140-3 installation of OpenSSL.',
+            'check_content': '''If the deployment incorporates a custom build of the operating system and PostgreSQL guaranteeing the use of FIPS 140-2 or 140-3 compliant OpenSSL, this is not a finding.
+
+If PostgreSQL is not installed on an OS found in the CMVP (https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules), this is a finding.
+
+If FIPS encryption is not enabled, this is a finding.''',
+            'fix_text': 'Install PostgreSQL with FIPS-compliant cryptography enabled on an OS found in the CMVP (https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules) or by other means, ensure that FIPS 140-2 or 140-3 certified OpenSSL libraries are used by the DBMS.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233623')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('/proc/sys/crypto/fips_enabled', candidate['check']['command'])
+
+    def test_rejects_postgresql_platform_fips_enabled_without_local_fips_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233623',
+            'title': 'The DBMS must be configured on a platform that has a NIST certified FIPS 140-2 or 140-3 installation of OpenSSL.',
+            'check_content': 'PostgreSQL must be installed on an OS found in the CMVP.',
+            'fix_text': 'Install PostgreSQL with FIPS-compliant cryptography enabled and certified OpenSSL libraries.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNone(candidate)
 
     def test_infers_tomcat_ldap_realm_ldaps_candidate(self):
         candidate = mod.infer_candidate_check({

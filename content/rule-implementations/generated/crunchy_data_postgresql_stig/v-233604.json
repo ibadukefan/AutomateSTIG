@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'bad=\"\"; for s in log_connections log_disconnections; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = on ] || bad=\"$bad $s=$v\"; done; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %c; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; printf %s \"$bad\"'",
+      "type": "command_output"
+    },
+    "description": "PostgreSQL must produce audit records containing sufficient information to establish what type of events occurred.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-233604"
+  },
   "check_content_excerpt": "As the database administrator (shown here as \"postgres\"), verify the current log_line_prefix setting:\n\n$ sudo su - postgres\n$ psql -c \"SHOW log_line_prefix\"\n\nVerify that the current settings are appropriate for the organization.\n\nThe following is what is possible for logged information:\n\n# %a = application name\n# %u = user name\n# %d = database name\n# %r = remote host and port\n# %h = remote host\n# %p = process ID\n# %t = timestamp without milliseconds\n# %m = timestamp with milliseconds\n# %i = command tag\n# %e = SQL state\n# %c = session ID\n# %l = session line number\n# %s = session start timestamp\n# %v = virtual transaction ID\n# %x = transaction ID (0 if none)\n# %q = stop here in non-session processes\n\nIf the audit record does not log events required by the organization, this is a finding.\n\nNext, verify the current settings of log_connections and log_disconnections by running the following SQL:\n\n$ psql -c \"SHOW log_connections\"\n$ psql -c \"SHOW log_disconnections\"\n\nIf either setting is off, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nTo ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\u00a0\n\nIf logging is enabled the following configurations must be made to log connections, date/time, username and session identifier.\n\nFirst, edit the postgresql.conf file as a privileged user:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nEdit the following parameters based on the organization's needs (minimum requirements are as follows):\n\nlog_connections = on\nlog_disconnections = on\nlog_line_prefix = '< %m %u %d %c: >'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n$ sudo systemctl reload postgresql-${PGVER?}",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233604r960891_rule",
   "severity": "medium",

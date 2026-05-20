@@ -1423,16 +1423,17 @@
       "vuln_id": "V-233603"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233604",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233604r960891_rule",
       "severity": "medium",
       "title": "PostgreSQL must produce audit records containing sufficient information to establish what type of events occurred.",
-      "tracking_issue": "TODO-V-233604",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233604"
@@ -1718,16 +1719,17 @@
       "vuln_id": "V-233622"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233623",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233623r961050_rule",
       "severity": "high",
       "title": "The DBMS must be configured on a platform that has a NIST certified FIPS 140-2 or 140-3 installation of OpenSSL.",
-      "tracking_issue": "TODO-V-233623",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233623"

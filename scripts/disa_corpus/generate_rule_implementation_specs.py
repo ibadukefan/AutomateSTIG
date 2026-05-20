@@ -9195,6 +9195,14 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         and (
             re.search(r'If\s+log_line_prefix\s+does\s+not\s+contain\s+at\s+least\s+%m\s+%u\s+%d\s+%c,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
             or re.search(r'current\s+settings\s+do\s+not\s+provide\s+enough\s+information\s+regarding\s+the\s+source\s+of\s+the\s+event,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            or (
+                rule.get('vuln_id', '') == 'V-233604'
+                and re.search(
+                    r'If\s+the\s+audit\s+record\s+does\s+not\s+log\s+events\s+required\s+by\s+the\s+organization,\s+this\s+is\s+a\s+finding',
+                    content,
+                    re.IGNORECASE,
+                )
+            )
         )
         and re.search(r'^\s*log_connections\s*=\s*on\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
         and re.search(r'^\s*log_disconnections\s*=\s*on\s*$', fix_text, re.MULTILINE | re.IGNORECASE)
@@ -9393,6 +9401,27 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'platform': 'linux',
             'check': {'type': 'command_output', 'command': "sh -c 'openssl version | tr [:upper:] [:lower:]'"},
             'expected': {'type': 'contains', 'substring': 'fips'},
+            'description': rule.get('title', ''),
+        }
+
+    postgresql_platform_fips_enabled = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233623'
+        and re.search(r'FIPS\s+encryption\s+is\s+not\s+enabled,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'\bCMVP\b', content, re.IGNORECASE)
+        and re.search(r'FIPS\s+140-2\s+or\s+140-3', content, re.IGNORECASE)
+        and re.search(r'FIPS-compliant\s+cryptography', fix_text, re.IGNORECASE)
+        and re.search(r'certified\s+OpenSSL', fix_text, re.IGNORECASE)
+    )
+    if postgresql_platform_fips_enabled:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'sh -c \'test "$(cat /proc/sys/crypto/fips_enabled 2>/dev/null)" = 1 && printf Compliant\'',
+            },
+            'expected': {'type': 'equals', 'value': 'Compliant'},
             'description': rule.get('title', ''),
         }
     postgresql_log_timezone_utc = (
