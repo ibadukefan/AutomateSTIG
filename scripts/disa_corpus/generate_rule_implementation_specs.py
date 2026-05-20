@@ -342,6 +342,38 @@ def _apache_windows_httpd_conf_directive_candidate(rule: dict, stig_id: str) -> 
         'V-214342': ('mod_reqtimeout', 'reqtimeout_module', 'RequestReadTimeout'),
         'V-214346': ('mod_proxy', 'proxy_module', 'ProxyPass'),
     }
+    if vuln_id == 'V-214319':
+        combined = content + '\n' + fix_text
+        required_patterns = (
+            r'default\s+index\.html\s+or\s+welcome\s+page',
+            r'Apache\s+User\s+Manual\s+content\s+is\s+not\s+installed',
+            r'Server\s+Status\s+handler\s+configured',
+            r'Server\s+Information\s+handler\s+is\s+not\s+configured',
+            r'perl-status\s+is\s+not\s+enabled',
+            r'If\s+any\s+of\s+these\s+are\s+present,\s+this\s+is\s+a\s+finding',
+        )
+        if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+            return None
+        if not re.search(r'remove|uninstall|disable', fix_text, re.IGNORECASE):
+            return None
+        command = (
+            'powershell -NoProfile -Command '
+            '"$root=Join-Path $env:ProgramFiles \'Apache24\'; '
+            '$conf=Join-Path $root \'conf\'; '
+            '$files=@(); if (Test-Path $conf) { $files=Get-ChildItem -Path $conf -Recurse -File -ErrorAction SilentlyContinue }; '
+            '$badConfig=$files | Select-String -Pattern \'^\\s*(?:Alias\\s+/(?:manual|icons)|<Location\\s+/(?:server-status|server-info|perl-status)\\b|SetHandler\\s+(?:server-status|server-info)|PerlSetVar\\s+Status)\' -ErrorAction SilentlyContinue; '
+            '$doc=Join-Path $root \'htdocs\'; '
+            '$badDoc=$false; if (Test-Path $doc) { $badDoc = [bool](Get-ChildItem -Path (Join-Path $doc \'*\') -File -Include index.html,index.htm,*.html -ErrorAction SilentlyContinue | Select-Object -First 1) }; '
+            'if (-not $badConfig -and -not $badDoc) { \'Compliant\' }"'
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': title,
+        }
+
     module_directive_spec = module_directive_specs.get(vuln_id)
     if module_directive_spec:
         module_text, module_name, directive = module_directive_spec

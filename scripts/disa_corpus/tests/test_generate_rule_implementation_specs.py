@@ -11,6 +11,29 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_apache_windows_default_content_handlers_absent_candidate(self):
+        check = (
+            'Verify the document root directory and the configuration files do not provide for default index.html or welcome page.\n\n'
+            'Verify the Apache User Manual content is not installed by checking the configuration files for manual location directives.\n\n'
+            'Verify the Apache configuration files do not have the Server Status handler configured.\n\n'
+            'Verify that the Server Information handler is not configured.\n\n'
+            'Verify that any other handler configurations such as perl-status is not enabled.\n\n'
+            'If any of these are present, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214319',
+            'title': 'The Apache web server must only contain services and functions necessary for operation.',
+            'check_content': check,
+            'fix_text': 'Remove all unneeded default content, manual aliases, server-status, server-info, and other status handlers from the Apache configuration.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-214319')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Apache24', candidate['check']['command'])
+        self.assertIn('server-status', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_copies_duplicate_candidate_from_existing_completed_spec(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

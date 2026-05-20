@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 24,
+  "candidate_checks": 25,
   "cases": [
     {
       "check": {
@@ -182,6 +182,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-214314"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$root=Join-Path $env:ProgramFiles 'Apache24'; $conf=Join-Path $root 'conf'; $files=@(); if (Test-Path $conf) { $files=Get-ChildItem -Path $conf -Recurse -File -ErrorAction SilentlyContinue }; $badConfig=$files | Select-String -Pattern '^\\s*(?:Alias\\s+/(?:manual|icons)|<Location\\s+/(?:server-status|server-info|perl-status)\\b|SetHandler\\s+(?:server-status|server-info)|PerlSetVar\\s+Status)' -ErrorAction SilentlyContinue; $doc=Join-Path $root 'htdocs'; $badDoc=$false; if (Test-Path $doc) { $badDoc = [bool](Get-ChildItem -Path $doc -File -Include index.html,index.htm,*.html -ErrorAction SilentlyContinue | Select-Object -First 1) }; if (-not $badConfig -and -not $badDoc) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must only contain services and functions necessary for operation.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$root=Join-Path $env:ProgramFiles 'Apache24'; $conf=Join-Path $root 'conf'; $files=@(); if (Test-Path $conf) { $files=Get-ChildItem -Path $conf -Recurse -File -ErrorAction SilentlyContinue }; $badConfig=$files | Select-String -Pattern '^\\s*(?:Alias\\s+/(?:manual|icons)|<Location\\s+/(?:server-status|server-info|perl-status)\\b|SetHandler\\s+(?:server-status|server-info)|PerlSetVar\\s+Status)' -ErrorAction SilentlyContinue; $doc=Join-Path $root 'htdocs'; $badDoc=$false; if (Test-Path $doc) { $badDoc = [bool](Get-ChildItem -Path $doc -File -Include index.html,index.htm,*.html -ErrorAction SilentlyContinue | Select-Object -First 1) }; if (-not $badConfig -and -not $badDoc) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$root=Join-Path $env:ProgramFiles 'Apache24'; $conf=Join-Path $root 'conf'; $files=@(); if (Test-Path $conf) { $files=Get-ChildItem -Path $conf -Recurse -File -ErrorAction SilentlyContinue }; $badConfig=$files | Select-String -Pattern '^\\s*(?:Alias\\s+/(?:manual|icons)|<Location\\s+/(?:server-status|server-info|perl-status)\\b|SetHandler\\s+(?:server-status|server-info)|PerlSetVar\\s+Status)' -ErrorAction SilentlyContinue; $doc=Join-Path $root 'htdocs'; $badDoc=$false; if (Test-Path $doc) { $badDoc = [bool](Get-ChildItem -Path $doc -File -Include index.html,index.htm,*.html -ErrorAction SilentlyContinue | Select-Object -First 1) }; if (-not $badConfig -and -not $badDoc) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-214319"
     },
     {
       "check": {
@@ -631,5 +657,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apache_server_2-4_windows_server_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apache_Server_2-4_Windows_Server_STIG",
-  "validated_candidates": 24
+  "validated_candidates": 25
 }

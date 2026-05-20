@@ -93,6 +93,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$root=Join-Path $env:ProgramFiles 'Apache24'; $conf=Join-Path $root 'conf'; $files=@(); if (Test-Path $conf) { $files=Get-ChildItem -Path $conf -Recurse -File -ErrorAction SilentlyContinue }; $badConfig=$files | Select-String -Pattern '^\\s*(?:Alias\\s+/(?:manual|icons)|<Location\\s+/(?:server-status|server-info|perl-status)\\b|SetHandler\\s+(?:server-status|server-info)|PerlSetVar\\s+Status)' -ErrorAction SilentlyContinue; $doc=Join-Path $root 'htdocs'; $badDoc=$false; if (Test-Path $doc) { $badDoc = [bool](Get-ChildItem -Path $doc -File -Include index.html,index.htm,*.html -ErrorAction SilentlyContinue | Select-Object -First 1) }; if (-not $badConfig -and -not $badDoc) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must only contain services and functions necessary for operation.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214319"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $lines=Select-String -Path $p -Pattern '^\\s*ProxyRequests\\s+On\\s*(?:#.*)?$' -ErrorAction SilentlyContinue; if (-not $lines) { 'Compliant' }\"",
         "type": "command_output"
       },
