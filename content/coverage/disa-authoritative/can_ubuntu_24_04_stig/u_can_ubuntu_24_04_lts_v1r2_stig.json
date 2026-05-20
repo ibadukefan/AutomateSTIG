@@ -2752,16 +2752,17 @@
       "vuln_id": "V-270816"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270817",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270817r1066940_rule",
       "severity": "low",
       "title": "Ubuntu 24.04 LTS must have a crontab script running weekly to offload audit events of standalone systems.",
-      "tracking_issue": "TODO-V-270817",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270817"

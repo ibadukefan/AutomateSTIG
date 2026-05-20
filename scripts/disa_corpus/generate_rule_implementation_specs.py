@@ -1509,6 +1509,7 @@ def _ubuntu_weekly_audit_offload_script_candidate(rule: dict, stig_id: str) -> d
     supported_targets = {
         'V-238321': {'canonical_ubuntu_20_04_lts_stig'},
         'V-260587': {'can_ubuntu_22_04_lts_stig'},
+        'V-270817': {'can_ubuntu_24_04_stig', 'can_ubuntu_24_04_lts_stig'},
     }
     if normalized_stig_id not in supported_targets.get(canonical_vuln_id, set()) or not _linux_platform(stig_id):
         return None

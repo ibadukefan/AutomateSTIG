@@ -1642,6 +1642,7 @@ kubectl create -f restricted.yml''',
         for vuln_id, stig_id in (
             ('V-238321', 'Canonical_Ubuntu_20-04_LTS_STIG'),
             ('V-260587', 'CAN_Ubuntu_22-04_LTS_STIG'),
+            ('V-270817', 'CAN_Ubuntu_24-04_STIG'),
         ):
             with self.subTest(vuln_id=vuln_id):
                 candidate = mod.infer_candidate_check({

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'find /etc/cron.weekly -maxdepth 1 -type f -perm /111 -exec sh -c '\"'\"'for f do grep -Eqi \"/var/log/audit\" \"$f\" || continue; grep -Eqi \"(rsync|scp|sftp|curl|lftp|rclone|aws[[:space:]]+s3|azcopy|gsutil|/media/|/mnt/)\" \"$f\" || continue; echo Compliant; exit 0; done'\"'\"' sh {} + 2>/dev/null'",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must have a crontab script running weekly to offload audit events of standalone systems.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270817"
+  },
   "check_content_excerpt": "Note: If this is an interconnected system, this is not applicable.\n \nVerify there is a script that offloads audit data and that script runs weekly with the following command:\n\n$ ls /etc/cron.weekly \naudit-offload \n \nCheck if the script inside the file offloads audit logs to external media. \n \nIf the script file does not exist or does not offload audit logs, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Create a script that offloads audit logs to external media and runs weekly. \n \nThe script must be located in the \"/etc/cron.weekly\" directory.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270817r1066940_rule",
   "severity": "low",
