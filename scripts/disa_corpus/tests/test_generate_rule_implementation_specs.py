@@ -2994,6 +2994,78 @@ If the switch is configured to disable checking whether a single-hop eBGP peer i
             'description': 'The Cisco BGP switch must be configured to check whether a single-hop eBGP peer is directly connected.',
         })
 
+    def test_infers_cisco_nxos_acl_dropped_packets_logged_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221086',
+            'title': 'The Cisco switch must be configured to log all packets that have been dropped at interfaces via an ACL.',
+            'check_content': '''Review all ACLs used to filter traffic and verify that packets being dropped are logged as shown in the configuration below:
+
+ip access-list EXTERNAL_ACL
+ 10 permit tcp x.11.1.1/32 eq bgp x.11.1.2/32
+ 90 deny ip any any log
+
+If packets being dropped at an interface are not logged, this is a finding.''',
+            'fix_text': '''Configure ACLs to log packets that are dropped as shown in the example below:
+
+SW1(config)# ip access-list EXTERNAL_ACL
+SW1(config-acl)# 90 deny ip any any log
+SW1(config-acl)# end''',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221086',
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': 'show running-config | awk \'BEGIN{bad=0} /^[[:space:]]*[0-9]*[[:space:]]*deny[[:space:]]/ && $0 !~ /[[:space:]]log([[:space:]]|$)/ {bad=1} END{if(!bad) print "Compliant"}\''},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'The Cisco switch must be configured to log all packets that have been dropped at interfaces via an ACL.',
+        })
+
+    def test_infers_cisco_nxos_bogon_source_acl_candidate_from_exact_vuln_and_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221090',
+            'title': 'The Cisco perimeter switch must be configured to block inbound packets with source Bogon IP address prefixes.',
+            'check_content': '''Review the switch configuration to verify that an ingress ACL applied to all external interfaces is blocking packets with Bogon source addresses.
+
+ip access-list EXTERNAL_ACL
+ 10 deny ip 0.0.0.0/8 any log
+ 20 deny ip 10.0.0.0/8 any log
+ 30 deny ip 100.64.0.0/10 any log
+ 40 deny ip 127.0.0.0/8 any log
+ 50 deny ip 169.254.0.0/16 any log
+ 60 deny ip 172.16.0.0/12 any log
+ 70 deny ip 192.0.0.0/24 any log
+ 80 deny ip 192.0.2.0/24 any log
+ 90 deny ip 192.168.0.0/16 any log
+ 100 deny ip 198.18.0.0/15 any log
+ 110 deny ip 198.51.100.0/24 any log
+ 120 deny ip 203.0.113.0/24 any log
+ 130 deny ip 224.0.0.0/3 any log
+
+If the switch is not configured to block inbound packets with source Bogon IP address prefixes, this is a finding.''',
+            'fix_text': '''Configure the perimeter to block inbound packets with Bogon source addresses.
+
+SW1(config)# ip access-list EXTERNAL_ACL
+SW1(config-acl)# 10 deny ip 0.0.0.0/8 any log
+SW1(config-acl)# 20 deny ip 10.0.0.0/8 any log
+SW1(config-acl)# 30 deny ip 100.64.0.0/10 any log
+SW1(config-acl)# 40 deny ip 127.0.0.0/8 any log
+SW1(config-acl)# 50 deny ip 169.254.0.0/16 any log
+SW1(config-acl)# 60 deny ip 172.16.0.0/12 any log
+SW1(config-acl)# 70 deny ip 192.0.0.0/24 any log
+SW1(config-acl)# 80 deny ip 192.0.2.0/24 any log
+SW1(config-acl)# 90 deny ip 192.168.0.0/16 any log
+SW1(config-acl)# 100 deny ip 198.18.0.0/15 any log
+SW1(config-acl)# 110 deny ip 198.51.100.0/24 any log
+SW1(config-acl)# 120 deny ip 203.0.113.0/24 any log
+SW1(config-acl)# 130 deny ip 224.0.0.0/3 any log
+SW1(config-acl)# 140 deny ip 240.0.0.0/4 any log''',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221090')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('0.0.0.0/8', candidate['check']['command'])
+        self.assertIn('192.168.0.0/16', candidate['check']['command'])
+
     def test_infers_cisco_nxos_bgp_maximum_prefix_candidate_from_exact_vuln_and_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221110',

@@ -2390,6 +2390,47 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221086':
+        if not re.search(r'Review\s+all\s+ACLs\s+used\s+to\s+filter\s+traffic\s+and\s+verify\s+that\s+packets\s+being\s+dropped\s+are\s+logged', content, re.IGNORECASE):
+            return None
+        if not re.search(r'deny\s+ip\s+any\s+any\s+log', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+packets\s+being\s+dropped\s+at\s+an\s+interface\s+are\s+not\s+logged,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Configure\s+ACLs\s+to\s+log\s+packets\s+that\s+are\s+dropped.*?deny\s+ip\s+any\s+any\s+log', fix_text, re.IGNORECASE | re.DOTALL):
+            return None
+        command = 'show running-config | awk \'BEGIN{bad=0} /^[[:space:]]*[0-9]*[[:space:]]*deny[[:space:]]/ && $0 !~ /[[:space:]]log([[:space:]]|$)/ {bad=1} END{if(!bad) print "Compliant"}\''
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
+    if vuln_id == 'V-221090':
+        prefixes = (
+            '0.0.0.0/8', '10.0.0.0/8', '100.64.0.0/10', '127.0.0.0/8',
+            '169.254.0.0/16', '172.16.0.0/12', '192.0.0.0/24', '192.0.2.0/24',
+            '192.168.0.0/16', '198.18.0.0/15', '198.51.100.0/24', '203.0.113.0/24',
+            '224.0.0.0/3',
+        )
+        if not re.search(r'ingress\s+ACL\s+applied\s+to\s+all\s+external\s+interfaces\s+is\s+blocking\s+packets\s+with\s+Bogon\s+source\s+addresses', content, re.IGNORECASE):
+            return None
+        if not all(re.search(re.escape(prefix) + r'\s+any\s+log', content, re.IGNORECASE) for prefix in prefixes):
+            return None
+        if not all(re.search(re.escape(prefix.split('/')[0]) + r'\s+\S+\s+any\s+log', fix_text, re.IGNORECASE) or re.search(re.escape(prefix) + r'\s+any\s+log', fix_text, re.IGNORECASE) for prefix in prefixes):
+            return None
+        if not re.search(r'If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+block\s+inbound\s+packets\s+with\s+source\s+Bogon\s+IP\s+address\s+prefixes,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+            return None
+        tests = ' && '.join(f'grep -Fq "deny ip {prefix} any log" /tmp/acl.$$' for prefix in prefixes)
+        command = f'show running-config | sh -c \'cat > /tmp/acl.$$; {tests} && printf Compliant; rm -f /tmp/acl.$$\''
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221110':
         if not re.search(r'Review\s+the\s+switch\s+configuration\s+to\s+verify\s+that\s+the\s+number\s+of\s+received\s+prefixes\s+from\s+each\s+eBGP\s+neighbor\s+is\s+controlled', content, re.IGNORECASE):
             return None

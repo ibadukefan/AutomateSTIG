@@ -67,6 +67,32 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{bad=0} /^[[:space:]]*[0-9]*[[:space:]]*deny[[:space:]]/ && $0 !~ /[[:space:]]log([[:space:]]|$)/ {bad=1} END{if(!bad) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must be configured to log all packets that have been dropped at interfaces via an ACL.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221086"
+    },
+    {
+      "check": {
+        "command": "show running-config | sh -c 'cat > /tmp/acl.$$; grep -Fq \"deny ip 0.0.0.0/8 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 10.0.0.0/8 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 100.64.0.0/10 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 127.0.0.0/8 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 169.254.0.0/16 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 172.16.0.0/12 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 192.0.0.0/24 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 192.0.2.0/24 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 192.168.0.0/16 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 198.18.0.0/15 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 198.51.100.0/24 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 203.0.113.0/24 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 224.0.0.0/3 any log\" /tmp/acl.$$ && printf Compliant; rm -f /tmp/acl.$$'",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to block inbound packets with source Bogon IP address prefixes.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221090"
+    },
+    {
+      "check": {
         "command": "show running-config | include ^no ip source-route$",
         "type": "command_output"
       },

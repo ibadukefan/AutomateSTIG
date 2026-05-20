@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{bad=0} /^[[:space:]]*[0-9]*[[:space:]]*deny[[:space:]]/ && $0 !~ /[[:space:]]log([[:space:]]|$)/ {bad=1} END{if(!bad) print \"Compliant\"}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must be configured to log all packets that have been dropped at interfaces via an ACL.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221086"
+  },
   "check_content_excerpt": "Review all ACLs used to filter traffic and verify that packets being dropped are logged as shown in the configuration below:\n\nip access-list EXTERNAL_ACL\n 10 permit tcp x.11.1.1/32 eq bgp x.11.1.2/32 \n 20 permit tcp x.11.1.1/32 x.11.1.2/32 eq bgp \n 30 permit icmp x.11.1.1/32 x.11.1.2/32 echo \n\u2026\n \u2026\n \u2026\n90 deny ip any any log\n\nIf packets being dropped at an interface are not logged, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure ACLs to log packets that are dropped as shown in the example below:\n\nSW1(config)# ip access-list EXTERNAL_ACL\nSW1(config-acl)# 90 deny ip any any log\nSW1(config-acl)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221086r999695_rule",
   "severity": "low",
