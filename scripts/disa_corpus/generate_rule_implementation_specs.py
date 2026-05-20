@@ -1591,19 +1591,31 @@ def _windows_temporary_account_expiration_candidate(rule: dict, stig_id: str) ->
     supported_targets = {
         'V-254267': {'MS_Windows_Server_2022_STIG'},
         'V-278013': {'MS_Windows_Server_2025_STIG'},
+        'V-254268': {'MS_Windows_Server_2022_STIG'},
+        'V-278014': {'MS_Windows_Server_2025_STIG'},
     }
     if stig_id not in supported_targets.get(canonical_vuln_id, set()) or not _windows_platform(stig_id):
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     combined = f'{content}\n{fix_text}'
-    account_term = r'temporary'
+    if canonical_vuln_id in {'V-254268', 'V-278014'}:
+        account_intro_pattern = r'Determine\s+if\s+emergency\s+administrator\s+accounts\s+are\s+used\s+and\s+identify\s+any\s+that\s+exist'
+        account_expiration_pattern = r'AccountExpirationDate.*?(?:not\s+)?within\s+72\s+hours.*?emergency\s+administrator\s+account'
+        local_expiration_pattern = r'Account\s+expires.*?(?:not\s+)?within\s+72\s+hours.*?emergency\s+administrator\s+account'
+        crisis_pattern = r'disabled\s+or\s+removed\s+when\s+the\s+crisis\s+is\s+resolved|Remove\s+emergency\s+administrator\s+accounts\s+after\s+a\s+crisis\s+has\s+been\s+resolved'
+    else:
+        account_intro_pattern = r'Review\s+temporary.*?accounts?\s+for\s+expiration\s+dates'
+        account_expiration_pattern = r'AccountExpirationDate.*?within\s+72\s+hours'
+        local_expiration_pattern = r'Account\s+expires.*?within\s+72\s+hours'
+        crisis_pattern = r'temporary'
     required_patterns = (
-        rf'Review\s+{account_term}.*?accounts?\s+for\s+expiration\s+dates',
+        account_intro_pattern,
+        crisis_pattern,
         r'Search-ADAccount\s+-AccountExpiring',
-        r'AccountExpirationDate.*?within\s+72\s+hours',
+        account_expiration_pattern,
         r'Net\s+user\s+\[username\]',
-        r'Account\s+expires.*?within\s+72\s+hours',
+        local_expiration_pattern,
         r'Net\s+user\s+\[username\]\s+/expires:\[mm/dd/yyyy\]',
     )
     if not all(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):

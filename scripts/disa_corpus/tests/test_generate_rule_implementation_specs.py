@@ -113,6 +113,42 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertIn('temp|temporary|emerg', candidate['check']['command'])
                 self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_windows_emergency_account_expiration_candidates(self):
+        cases = [
+            ('V-254268', 'MS_Windows_Server_2022_STIG'),
+            ('V-278014', 'MS_Windows_Server_2025_STIG'),
+        ]
+        for vuln_id, stig_id in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': 'Windows Server must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours.',
+                    'check_content': (
+                        'Determine if emergency administrator accounts are used and identify any that exist. If none exist, this is NA.\n\n'
+                        'If emergency administrator accounts cannot be configured with an expiration date due to an ongoing crisis, the accounts must be disabled or removed when the crisis is resolved.\n\n'
+                        'If emergency administrator accounts have not been configured with an expiration date or have not been disabled or removed following the resolution of a crisis, this is a finding.\n\n'
+                        'Domain Controllers:\n\nOpen "PowerShell".\n\n'
+                        'Enter "Search-ADAccount -AccountExpiring | FT Name, AccountExpirationDate".\n\n'
+                        'If "AccountExpirationDate" has been defined and is not within 72 hours for an emergency administrator account, this is a finding.\n\n'
+                        'Member servers and standalone or nondomain-joined systems:\n\nOpen "Command Prompt".\n\n'
+                        'Run "Net user [username]", where [username] is the name of the emergency account.\n\n'
+                        'If "Account expires" has been defined and is not within 72 hours for an emergency administrator account, this is a finding.'
+                    ),
+                    'fix_text': (
+                        'Remove emergency administrator accounts after a crisis has been resolved or configure the accounts to automatically expire within 72 hours.\n\n'
+                        'Domain accounts can be configured with an account expiration date, under "Account" properties.\n\n'
+                        'Local accounts can be configured to expire with the command "Net user [username] /expires:[mm/dd/yyyy]", where [username] is the name of the temporary user account.'
+                    ),
+                }, stig_id)
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertEqual(candidate['check']['type'], 'command_output')
+                self.assertIn('Get-LocalUser', candidate['check']['command'])
+                self.assertIn('Get-ADUser', candidate['check']['command'])
+                self.assertIn('temp|temporary|emerg', candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_does_not_infer_windows_account_expiration_without_exact_guards(self):
         rule = {
             'vuln_id': 'V-254267',
@@ -123,6 +159,15 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2016_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2022_STIG'))
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+        emergency_rule = {
+            'vuln_id': 'V-254268',
+            'title': 'Windows Server must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours.',
+            'check_content': 'Determine if emergency administrator accounts are used and identify any that exist.',
+            'fix_text': 'Remove emergency administrator accounts after a crisis has been resolved.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(emergency_rule, 'MS_Windows_Server_2016_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**emergency_rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(emergency_rule, 'MS_Windows_Server_2022_STIG'))
 
     def test_infers_windows_ad_object_audit_settings_candidates(self):
         cases = [

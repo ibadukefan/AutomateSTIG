@@ -67,6 +67,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command '\n$deadline = (Get-Date).AddHours(72)\n$namePattern = '\"'\"'temp|temporary|emerg'\"'\"'\n$findings = New-Object System.Collections.Generic.List[string]\nfunction Test-StigAccountExpiration($Name, $Expiration, $Source) {\n    if ($Name -notmatch $namePattern) { return }\n    if ($null -eq $Expiration) {\n        $findings.Add(\"$Source/$Name: missing account expiration\")\n        return\n    }\n    if ([datetime]$Expiration -gt $deadline) {\n        $findings.Add(\"$Source/$Name: account expiration $Expiration exceeds 72 hours\")\n    }\n}\ntry {\n    Get-LocalUser -ErrorAction Stop | Where-Object { $_.Enabled -and ($_.Name -match $namePattern -or $_.Description -match $namePattern) } | ForEach-Object {\n        Test-StigAccountExpiration $_.Name $_.AccountExpires '\"'\"'local'\"'\"'\n    }\n} catch {\n    $findings.Add('\"'\"'local: unable to enumerate local users'\"'\"')\n}\ntry {\n    Import-Module ActiveDirectory -ErrorAction Stop\n    Get-ADUser -Filter * -Properties AccountExpirationDate,Description,Enabled -ErrorAction Stop | Where-Object { $_.Enabled -and ($_.Name -match $namePattern -or $_.SamAccountName -match $namePattern -or $_.Description -match $namePattern) } | ForEach-Object {\n        Test-StigAccountExpiration $_.SamAccountName $_.AccountExpirationDate '\"'\"'domain'\"'\"'\n    }\n} catch {\n    # Member servers and standalone systems are assessed with local users; the AD module is not always present.\n}\nif ($findings.Count) { $findings -join \"`n\" } else { '\"'\"'Compliant'\"'\"' }\n'",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 must automatically remove or disable emergency accounts after the crisis is resolved or within 72 hours.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254268"
+    },
+    {
+      "check": {
         "name": "Fax",
         "should_be_installed": false,
         "type": "windows_feature"
