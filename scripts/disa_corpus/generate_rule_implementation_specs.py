@@ -1630,6 +1630,7 @@ print('\n'.join(findings) if findings else 'Compliant')
 def _windows_temporary_account_expiration_candidate(rule: dict, stig_id: str) -> dict | None:
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
     supported_targets = {
+        'V-205624': {'Windows_Server_2019_STIG'},
         'V-254267': {'MS_Windows_Server_2022_STIG'},
         'V-278013': {'MS_Windows_Server_2025_STIG'},
         'V-254268': {'MS_Windows_Server_2022_STIG'},

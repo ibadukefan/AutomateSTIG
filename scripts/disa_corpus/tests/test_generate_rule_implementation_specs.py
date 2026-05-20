@@ -80,6 +80,7 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
 
     def test_infers_windows_temporary_account_expiration_candidates(self):
         cases = [
+            ('V-205624', 'Windows_Server_2019_STIG', 'temporary', 'temporary user accounts'),
             ('V-254267', 'MS_Windows_Server_2022_STIG', 'temporary', 'temporary user accounts'),
             ('V-278013', 'MS_Windows_Server_2025_STIG', 'temporary', 'temporary user accounts'),
         ]

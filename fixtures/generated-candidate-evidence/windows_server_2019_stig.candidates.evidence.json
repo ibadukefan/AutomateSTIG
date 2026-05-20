@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 206,
+  "candidate_checks": 207,
   "cases": [
+    {
+      "check": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command '\n$deadline = (Get-Date).AddHours(72)\n$namePattern = '\"'\"'temp|temporary|emerg'\"'\"'\n$findings = New-Object System.Collections.Generic.List[string]\nfunction Test-StigAccountExpiration($Name, $Expiration, $Source) {\n    if ($Name -notmatch $namePattern) { return }\n    if ($null -eq $Expiration) {\n        $findings.Add(\"$Source/$Name: missing account expiration\")\n        return\n    }\n    if ([datetime]$Expiration -gt $deadline) {\n        $findings.Add(\"$Source/$Name: account expiration $Expiration exceeds 72 hours\")\n    }\n}\ntry {\n    Get-LocalUser -ErrorAction Stop | Where-Object { $_.Enabled -and ($_.Name -match $namePattern -or $_.Description -match $namePattern) } | ForEach-Object {\n        Test-StigAccountExpiration $_.Name $_.AccountExpires '\"'\"'local'\"'\"'\n    }\n} catch {\n    $findings.Add('\"'\"'local: unable to enumerate local users'\"'\"')\n}\ntry {\n    Import-Module ActiveDirectory -ErrorAction Stop\n    Get-ADUser -Filter * -Properties AccountExpirationDate,Description,Enabled -ErrorAction Stop | Where-Object { $_.Enabled -and ($_.Name -match $namePattern -or $_.SamAccountName -match $namePattern -or $_.Description -match $namePattern) } | ForEach-Object {\n        Test-StigAccountExpiration $_.SamAccountName $_.AccountExpirationDate '\"'\"'domain'\"'\"'\n    }\n} catch {\n    # Member servers and standalone systems are assessed with local users; the AD module is not always present.\n}\nif ($findings.Count) { $findings -join \"`n\" } else { '\"'\"'Compliant'\"'\"' }\n'",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 must automatically remove or disable temporary user accounts after 72 hours.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -ExecutionPolicy Bypass -Command '\n$deadline = (Get-Date).AddHours(72)\n$namePattern = '\"'\"'temp|temporary|emerg'\"'\"'\n$findings = New-Object System.Collections.Generic.List[string]\nfunction Test-StigAccountExpiration($Name, $Expiration, $Source) {\n    if ($Name -notmatch $namePattern) { return }\n    if ($null -eq $Expiration) {\n        $findings.Add(\"$Source/$Name: missing account expiration\")\n        return\n    }\n    if ([datetime]$Expiration -gt $deadline) {\n        $findings.Add(\"$Source/$Name: account expiration $Expiration exceeds 72 hours\")\n    }\n}\ntry {\n    Get-LocalUser -ErrorAction Stop | Where-Object { $_.Enabled -and ($_.Name -match $namePattern -or $_.Description -match $namePattern) } | ForEach-Object {\n        Test-StigAccountExpiration $_.Name $_.AccountExpires '\"'\"'local'\"'\"'\n    }\n} catch {\n    $findings.Add('\"'\"'local: unable to enumerate local users'\"'\"')\n}\ntry {\n    Import-Module ActiveDirectory -ErrorAction Stop\n    Get-ADUser -Filter * -Properties AccountExpirationDate,Description,Enabled -ErrorAction Stop | Where-Object { $_.Enabled -and ($_.Name -match $namePattern -or $_.SamAccountName -match $namePattern -or $_.Description -match $namePattern) } | ForEach-Object {\n        Test-StigAccountExpiration $_.SamAccountName $_.AccountExpirationDate '\"'\"'domain'\"'\"'\n    }\n} catch {\n    # Member servers and standalone systems are assessed with local users; the AD module is not always present.\n}\nif ($findings.Count) { $findings -join \"`n\" } else { '\"'\"'Compliant'\"'\"' }\n'": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -ExecutionPolicy Bypass -Command '\n$deadline = (Get-Date).AddHours(72)\n$namePattern = '\"'\"'temp|temporary|emerg'\"'\"'\n$findings = New-Object System.Collections.Generic.List[string]\nfunction Test-StigAccountExpiration($Name, $Expiration, $Source) {\n    if ($Name -notmatch $namePattern) { return }\n    if ($null -eq $Expiration) {\n        $findings.Add(\"$Source/$Name: missing account expiration\")\n        return\n    }\n    if ([datetime]$Expiration -gt $deadline) {\n        $findings.Add(\"$Source/$Name: account expiration $Expiration exceeds 72 hours\")\n    }\n}\ntry {\n    Get-LocalUser -ErrorAction Stop | Where-Object { $_.Enabled -and ($_.Name -match $namePattern -or $_.Description -match $namePattern) } | ForEach-Object {\n        Test-StigAccountExpiration $_.Name $_.AccountExpires '\"'\"'local'\"'\"'\n    }\n} catch {\n    $findings.Add('\"'\"'local: unable to enumerate local users'\"'\"')\n}\ntry {\n    Import-Module ActiveDirectory -ErrorAction Stop\n    Get-ADUser -Filter * -Properties AccountExpirationDate,Description,Enabled -ErrorAction Stop | Where-Object { $_.Enabled -and ($_.Name -match $namePattern -or $_.SamAccountName -match $namePattern -or $_.Description -match $namePattern) } | ForEach-Object {\n        Test-StigAccountExpiration $_.SamAccountName $_.AccountExpirationDate '\"'\"'domain'\"'\"'\n    }\n} catch {\n    # Member servers and standalone systems are assessed with local users; the AD module is not always present.\n}\nif ($findings.Count) { $findings -join \"`n\" } else { '\"'\"'Compliant'\"'\"' }\n'": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205624"
+    },
     {
       "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
@@ -5538,5 +5564,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 206
+  "validated_candidates": 207
 }
