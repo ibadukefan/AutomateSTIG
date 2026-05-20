@@ -1503,6 +1503,85 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
 
 
+def _linux_temporary_account_expiration_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    supported_targets = {
+        ('V-254523', 'RHEL_7_STIG'),
+        ('V-230331', 'RHEL_8_STIG'),
+        ('V-230374', 'RHEL_8_STIG'),
+        ('V-258047', 'RHEL_9_STIG'),
+        ('V-248651', 'Oracle_Linux_8_STIG'),
+        ('V-248708', 'Oracle_Linux_8_STIG'),
+        ('V-271843', 'Oracle_Linux_9_STIG'),
+        ('V-260548', 'CAN_Ubuntu_22-04_LTS_STIG'),
+        ('V-270682', 'CAN_Ubuntu_24-04_STIG'),
+    }
+    if (canonical_vuln_id, stig_id) not in supported_targets or not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    if not re.search(r'temporary|emergency', combined, re.IGNORECASE):
+        return None
+    required_patterns = (
+        r'chage\s+-l\s+<?(?:temporary_|system_)?account(?:_name)?>?',
+        r'account\s+expires',
+        r'(?:within|after|of)\s+(?:a\s+)?72[-\s]?hour|\+3\s*days|\+3days',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    script = r'''
+import datetime, pathlib, re, subprocess
+now = datetime.date.today()
+deadline = now + datetime.timedelta(days=3)
+name_re = re.compile(r'temp|temporary|emerg', re.IGNORECASE)
+findings = []
+for line in pathlib.Path('/etc/passwd').read_text(errors='ignore').splitlines():
+    if not line or line.startswith('#'):
+        continue
+    fields = line.split(':')
+    if len(fields) < 3:
+        continue
+    name = fields[0]
+    try:
+        uid = int(fields[2])
+    except ValueError:
+        continue
+    if not name_re.search(name) or (uid < 1000 and name != 'root'):
+        continue
+    result = subprocess.run(['chage', '-l', name], text=True, capture_output=True, check=False)
+    if result.returncode != 0:
+        findings.append(f'{name}: unable to read account expiration')
+        continue
+    expiration = None
+    for output_line in result.stdout.splitlines():
+        if output_line.lower().startswith('account expires'):
+            expiration = output_line.split(':', 1)[1].strip()
+            break
+    if not expiration or expiration.lower() == 'never':
+        findings.append(f'{name}: Account expires {expiration or "missing"}')
+        continue
+    parsed = None
+    for fmt in ('%b %d, %Y', '%B %d, %Y', '%Y-%m-%d'):
+        try:
+            parsed = datetime.datetime.strptime(expiration, fmt).date()
+            break
+        except ValueError:
+            pass
+    if parsed is None or parsed > deadline:
+        findings.append(f'{name}: Account expires {expiration}')
+print('\n'.join(findings) if findings else 'Compliant')
+'''
+    command = f"python3 -c {shlex.quote(script)}"
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _ubuntu_2004_data_at_rest_crypttab_candidate(rule: dict, stig_id: str) -> dict | None:
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
     supported_stigs = {
@@ -13353,6 +13432,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    linux_temporary_account_candidate = _linux_temporary_account_expiration_candidate(rule, stig_id)
+    if linux_temporary_account_candidate:
+        return linux_temporary_account_candidate
+
     ubuntu_2004_data_at_rest_candidate = _ubuntu_2004_data_at_rest_crypttab_candidate(rule, stig_id)
     if ubuntu_2004_data_at_rest_candidate:
         return ubuntu_2004_data_at_rest_candidate

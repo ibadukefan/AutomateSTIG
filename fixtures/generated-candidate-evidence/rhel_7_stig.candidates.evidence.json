@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 171,
+  "candidate_checks": 172,
   "cases": [
     {
       "check": {
@@ -4404,6 +4404,32 @@
     },
     {
       "check": {
+        "command": "python3 -c '\nimport datetime, pathlib, re, subprocess\nnow = datetime.date.today()\ndeadline = now + datetime.timedelta(days=3)\nname_re = re.compile(r'\"'\"'temp|temporary|emerg'\"'\"', re.IGNORECASE)\nfindings = []\nfor line in pathlib.Path('\"'\"'/etc/passwd'\"'\"').read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    fields = line.split('\"'\"':'\"'\"')\n    if len(fields) < 3:\n        continue\n    name = fields[0]\n    try:\n        uid = int(fields[2])\n    except ValueError:\n        continue\n    if not name_re.search(name) or (uid < 1000 and name != '\"'\"'root'\"'\"'):\n        continue\n    result = subprocess.run(['\"'\"'chage'\"'\"', '\"'\"'-l'\"'\"', name], text=True, capture_output=True, check=False)\n    if result.returncode != 0:\n        findings.append(f'\"'\"'{name}: unable to read account expiration'\"'\"')\n        continue\n    expiration = None\n    for output_line in result.stdout.splitlines():\n        if output_line.lower().startswith('\"'\"'account expires'\"'\"'):\n            expiration = output_line.split('\"'\"':'\"'\"', 1)[1].strip()\n            break\n    if not expiration or expiration.lower() == '\"'\"'never'\"'\"':\n        findings.append(f'\"'\"'{name}: Account expires {expiration or \"missing\"}'\"'\"')\n        continue\n    parsed = None\n    for fmt in ('\"'\"'%b %d, %Y'\"'\"', '\"'\"'%B %d, %Y'\"'\"', '\"'\"'%Y-%m-%d'\"'\"'):\n        try:\n            parsed = datetime.datetime.strptime(expiration, fmt).date()\n            break\n        except ValueError:\n            pass\n    if parsed is None or parsed > deadline:\n        findings.append(f'\"'\"'{name}: Account expires {expiration}'\"'\"')\nprint('\"'\"'\\n'\"'\"'.join(findings) if findings else '\"'\"'Compliant'\"'\"')\n'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must automatically expire temporary accounts within 72 hours.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 -c '\nimport datetime, pathlib, re, subprocess\nnow = datetime.date.today()\ndeadline = now + datetime.timedelta(days=3)\nname_re = re.compile(r'\"'\"'temp|temporary|emerg'\"'\"', re.IGNORECASE)\nfindings = []\nfor line in pathlib.Path('\"'\"'/etc/passwd'\"'\"').read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    fields = line.split('\"'\"':'\"'\"')\n    if len(fields) < 3:\n        continue\n    name = fields[0]\n    try:\n        uid = int(fields[2])\n    except ValueError:\n        continue\n    if not name_re.search(name) or (uid < 1000 and name != '\"'\"'root'\"'\"'):\n        continue\n    result = subprocess.run(['\"'\"'chage'\"'\"', '\"'\"'-l'\"'\"', name], text=True, capture_output=True, check=False)\n    if result.returncode != 0:\n        findings.append(f'\"'\"'{name}: unable to read account expiration'\"'\"')\n        continue\n    expiration = None\n    for output_line in result.stdout.splitlines():\n        if output_line.lower().startswith('\"'\"'account expires'\"'\"'):\n            expiration = output_line.split('\"'\"':'\"'\"', 1)[1].strip()\n            break\n    if not expiration or expiration.lower() == '\"'\"'never'\"'\"':\n        findings.append(f'\"'\"'{name}: Account expires {expiration or \"missing\"}'\"'\"')\n        continue\n    parsed = None\n    for fmt in ('\"'\"'%b %d, %Y'\"'\"', '\"'\"'%B %d, %Y'\"'\"', '\"'\"'%Y-%m-%d'\"'\"'):\n        try:\n            parsed = datetime.datetime.strptime(expiration, fmt).date()\n            break\n        except ValueError:\n            pass\n    if parsed is None or parsed > deadline:\n        findings.append(f'\"'\"'{name}: Account expires {expiration}'\"'\"')\nprint('\"'\"'\\n'\"'\"'.join(findings) if findings else '\"'\"'Compliant'\"'\"')\n'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 -c '\nimport datetime, pathlib, re, subprocess\nnow = datetime.date.today()\ndeadline = now + datetime.timedelta(days=3)\nname_re = re.compile(r'\"'\"'temp|temporary|emerg'\"'\"', re.IGNORECASE)\nfindings = []\nfor line in pathlib.Path('\"'\"'/etc/passwd'\"'\"').read_text(errors='\"'\"'ignore'\"'\"').splitlines():\n    if not line or line.startswith('\"'\"'#'\"'\"'):\n        continue\n    fields = line.split('\"'\"':'\"'\"')\n    if len(fields) < 3:\n        continue\n    name = fields[0]\n    try:\n        uid = int(fields[2])\n    except ValueError:\n        continue\n    if not name_re.search(name) or (uid < 1000 and name != '\"'\"'root'\"'\"'):\n        continue\n    result = subprocess.run(['\"'\"'chage'\"'\"', '\"'\"'-l'\"'\"', name], text=True, capture_output=True, check=False)\n    if result.returncode != 0:\n        findings.append(f'\"'\"'{name}: unable to read account expiration'\"'\"')\n        continue\n    expiration = None\n    for output_line in result.stdout.splitlines():\n        if output_line.lower().startswith('\"'\"'account expires'\"'\"'):\n            expiration = output_line.split('\"'\"':'\"'\"', 1)[1].strip()\n            break\n    if not expiration or expiration.lower() == '\"'\"'never'\"'\"':\n        findings.append(f'\"'\"'{name}: Account expires {expiration or \"missing\"}'\"'\"')\n        continue\n    parsed = None\n    for fmt in ('\"'\"'%b %d, %Y'\"'\"', '\"'\"'%B %d, %Y'\"'\"', '\"'\"'%Y-%m-%d'\"'\"'):\n        try:\n            parsed = datetime.datetime.strptime(expiration, fmt).date()\n            break\n        except ValueError:\n            pass\n    if parsed is None or parsed > deadline:\n        findings.append(f'\"'\"'{name}: Account expires {expiration}'\"'\"')\nprint('\"'\"'\\n'\"'\"'.join(findings) if findings else '\"'\"'Compliant'\"'\"')\n'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254523"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256",
@@ -4591,5 +4617,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 171
+  "validated_candidates": 172
 }

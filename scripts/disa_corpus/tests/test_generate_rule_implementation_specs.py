@@ -11,6 +11,41 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_linux_temporary_account_expiration_candidates(self):
+        cases = [
+            ('V-258047', 'RHEL_9_STIG', 'RHEL 9'),
+            ('V-230374', 'RHEL_8_STIG', 'RHEL 8'),
+            ('V-248708', 'Oracle_Linux_8_STIG', 'OL 8'),
+            ('V-271843', 'Oracle_Linux_9_STIG', 'OL 9'),
+            ('V-260548', 'CAN_Ubuntu_22-04_LTS_STIG', 'Ubuntu 22.04 LTS'),
+            ('V-270682', 'CAN_Ubuntu_24-04_STIG', 'Ubuntu 24.04 LTS'),
+        ]
+        for vuln_id, stig_id, product in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'{product} must automatically expire temporary accounts within 72 hours.',
+                    'check_content': (
+                        'Verify temporary accounts have been provisioned with an expiration date of 72 hours.\n\n'
+                        'For every existing temporary account, run the following command to obtain its account expiration information:\n\n'
+                        '$ sudo chage -l <temporary_account_name> | grep -i "account expires"\n\n'
+                        'Verify each of these accounts has an expiration date set within 72 hours.\n\n'
+                        'If any temporary accounts have no expiration date set or do not expire within 72 hours, this is a finding.'
+                    ),
+                    'fix_text': (
+                        'Configure the operating system to expire temporary accounts after 72 hours with the following command:\n\n'
+                        '$ sudo chage -E $(date -d +3days +%Y-%m-%d) <temporary_account_name>'
+                    ),
+                }, stig_id)
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertEqual(candidate['check']['type'], 'command_output')
+                self.assertIn('/etc/passwd', candidate['check']['command'])
+                self.assertIn('chage', candidate['check']['command'])
+                self.assertIn('temp|temporary|emerg', candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_windows_ad_object_audit_settings_candidates(self):
         cases = [
             ('V-205786', 'Windows_Server_2019_STIG', 'Domain object', 'defaultNamingContext'),
