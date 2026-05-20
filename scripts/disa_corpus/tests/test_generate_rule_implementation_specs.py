@@ -1805,6 +1805,20 @@ kubectl create -f restricted.yml''',
         self.assertIn('ip msdp password', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'ip msdp password'})
 
+    def test_infers_cisco_nxos_rsvp_refresh_reduction_candidate_from_authoritative_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221115',
+            'title': 'The MPLS switch with RSVP-TE enabled must be configured with message pacing.',
+            'check_content': 'Review the switch configuration to determine if refresh reduction is enabled.\n\nStep 1: Determine if MPLS TE is enabled on any interface as shown in the example below:\n\ninterface Ethernet4/47\n mpls traffic-eng tunnels\n mpls ip\n\nStep 2: If MPLS TE is enabled, verify that message pacing is enabled.\n\nip rsvp\n signaling refresh reduction bundle-max-size\n\nIf the switch with RSVP-TE configured does not have refresh reduction features enabled, this is a finding.',
+            'fix_text': 'Configure the switch to rate limit RSVP messages per interface as shown in the example below.\n\nSW1(config)# ip rsvp\nSW1(config-ip-rsvp)# signaling refresh reduction\nSW1(config-ip-rsvp)# end',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221115')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertIn('traffic-eng', candidate['check']['command'])
+        self.assertIn('refresh', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_apache_windows_reqtimeout_module_and_directive_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-214342',

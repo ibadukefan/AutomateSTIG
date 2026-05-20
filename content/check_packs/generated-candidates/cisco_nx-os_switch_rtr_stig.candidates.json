@@ -249,6 +249,19 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{te=0;rr=0} /mpls[[:space:]]+traffic-eng[[:space:]]+tunnels/{te=1} /signaling[[:space:]]+refresh[[:space:]]+reduction/{rr=1} END{if(!te || rr) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The MPLS switch with RSVP-TE enabled must be configured with message pacing to adjust maximum burst and maximum number of RSVP messages to an output queue based on the link speed and input queue size of adjacent core switches.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221115"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^no mpls ip propagate-ttl$\"",
         "type": "command_output"
       },

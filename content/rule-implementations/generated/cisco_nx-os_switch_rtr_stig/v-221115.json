@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{te=0;rr=0} /mpls[[:space:]]+traffic-eng[[:space:]]+tunnels/{te=1} /signaling[[:space:]]+refresh[[:space:]]+reduction/{rr=1} END{if(!te || rr) print \"Compliant\"}'",
+      "type": "command_output"
+    },
+    "description": "The MPLS switch with RSVP-TE enabled must be configured with message pacing to adjust maximum burst and maximum number of RSVP messages to an output queue based on the link speed and input queue size of adjacent core switches.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221115"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if refresh reduction is enabled.\n\nStep 1: Determine if MPLS TE is enabled on any interface as shown in the example below: \n\ninterface Ethernet4/47\n mpls traffic-eng tunnels\n mpls ip\n\nStep 2: If MPLS TE is enabled, verify that message pacing is enabled.\n\nip rsvp \n signaling refresh reduction bundle-max-size\n\nIf the switch with RSVP-TE configured does not have refresh reduction features enabled, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to rate limit RSVP messages per interface as shown in the example below. Configure the MPLS switch to synchronize IGP and LDP, minimizing packet loss when an IGP adjacency is established prior to LDP peers completing label exchange.\n\nOSPF Example\n\nSW1(config)# router ospf 1\nSW1(config-switch)# mpls ldp sync\n\nIS-IS Example\n\nSW1(config)# router isis\nSW1(config-switch)# mpls ldp sync.\n\nSW1(config)# ip rsvp\nSW1(config-ip-rsvp)# signaling refresh reduction \nSW1(config-ip-rsvp)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221115r999724_rule",
   "severity": "low",

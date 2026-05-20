@@ -2709,6 +2709,27 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'contains', 'substring': 'maximum-prefix'},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221115':
+        if not re.search(r'Review\s+the\s+switch\s+configuration\s+to\s+determine\s+if\s+refresh\s+reduction\s+is\s+enabled', content, re.IGNORECASE):
+            return None
+        if not re.search(r'mpls\s+traffic-eng\s+tunnels', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+MPLS\s+TE\s+is\s+enabled,\s+verify\s+that\s+message\s+pacing\s+is\s+enabled', content, re.IGNORECASE):
+            return None
+        if not re.search(r'signaling\s+refresh\s+reduction', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+the\s+switch\s+with\s+RSVP-TE\s+configured\s+does\s+not\s+have\s+refresh\s+reduction\s+features\s+enabled,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Configure\s+the\s+switch\s+to\s+rate\s+limit\s+RSVP\s+messages.*?signaling\s+refresh\s+reduction', fix_text, re.IGNORECASE | re.DOTALL):
+            return None
+        command = 'show running-config | awk \'BEGIN{te=0;rr=0} /mpls[[:space:]]+traffic-eng[[:space:]]+tunnels/{te=1} /signaling[[:space:]]+refresh[[:space:]]+reduction/{rr=1} END{if(!te || rr) print "Compliant"}\''
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221116':
         if not re.search(r'Review\s+the\s+switch\s+configuration\s+to\s+verify\s+that\s+TTL\s+propagation\s+is\s+disabled.*?no\s+mpls\s+ip\s+propagate-ttl.*?If\s+the\s+MPLS\s+switch\s+is\s+not\s+configured\s+to\s+disable\s+TTL\s+propagation,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE | re.DOTALL):
             return None
