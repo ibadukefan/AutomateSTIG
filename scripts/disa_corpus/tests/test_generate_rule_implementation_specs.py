@@ -1638,6 +1638,44 @@ kubectl create -f restricted.yml''',
         rule['check_content'] = 'kubectl get podsecuritypolicy runAsUser supplementalGroups MustRunAsNonRoot'
         self.assertIsNone(mod.infer_candidate_check(rule, 'Kubernetes_STIG'))
 
+    def test_infers_ubuntu_weekly_audit_offload_script_candidate(self):
+        for vuln_id, stig_id in (
+            ('V-238321', 'Canonical_Ubuntu_20-04_LTS_STIG'),
+            ('V-260587', 'CAN_Ubuntu_22-04_LTS_STIG'),
+        ):
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': 'Ubuntu must have a crontab script running weekly to offload audit events of standalone systems.',
+                    'check_content': (
+                        'Note: If this is an interconnected system, this is Not Applicable.\n'
+                        'Verify there is a script that offloads audit data and that script runs weekly.\n'
+                        'Check if there is a script in the "/etc/cron.weekly" directory that offloads audit data.\n'
+                        'Check if the script inside the file does offloading of audit logs to external media.\n'
+                        'If the script file does not exist or does not offload audit logs, this is a finding.'
+                    ),
+                    'fix_text': (
+                        'Create a script that offloads audit logs to external media and runs weekly.\n'
+                        'The script must be located in the "/etc/cron.weekly" directory.'
+                    ),
+                }, stig_id)
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'linux')
+                self.assertEqual(candidate['check']['type'], 'command_output')
+                self.assertIn('/etc/cron.weekly', candidate['check']['command'])
+                self.assertIn('/var/log/audit', candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_ubuntu_weekly_audit_offload_without_exact_guards(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238321',
+            'title': 'Ubuntu must have weekly audit offload.',
+            'check_content': 'Check cron jobs.',
+            'fix_text': 'Configure a cron job.',
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_kubernetes_podsecurity_feature_gates_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254801',

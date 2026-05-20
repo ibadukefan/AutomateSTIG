@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 128,
+  "candidate_checks": 129,
   "cases": [
     {
       "check": {
@@ -1929,6 +1929,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'find /etc/cron.weekly -maxdepth 1 -type f -perm /111 -exec sh -c '\"'\"'for f do grep -Eqi \"/var/log/audit\" \"$f\" || continue; grep -Eqi \"(rsync|scp|sftp|curl|lftp|rclone|aws[[:space:]]+s3|azcopy|gsutil|/media/|/mnt/)\" \"$f\" || continue; echo Compliant; exit 0; done'\"'\"' sh {} + 2>/dev/null'",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must have a crontab script running weekly to offload audit events of standalone systems.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'find /etc/cron.weekly -maxdepth 1 -type f -perm /111 -exec sh -c '\"'\"'for f do grep -Eqi \"/var/log/audit\" \"$f\" || continue; grep -Eqi \"(rsync|scp|sftp|curl|lftp|rclone|aws[[:space:]]+s3|azcopy|gsutil|/media/|/mnt/)\" \"$f\" || continue; echo Compliant; exit 0; done'\"'\"' sh {} + 2>/dev/null'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'find /etc/cron.weekly -maxdepth 1 -type f -perm /111 -exec sh -c '\"'\"'for f do grep -Eqi \"/var/log/audit\" \"$f\" || continue; grep -Eqi \"(rsync|scp|sftp|curl|lftp|rclone|aws[[:space:]]+s3|azcopy|gsutil|/media/|/mnt/)\" \"$f\" || continue; echo Compliant; exit 0; done'\"'\"' sh {} + 2>/dev/null'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260587"
+    },
+    {
+      "check": {
         "name": "rsyslog",
         "should_be_installed": true,
         "type": "package"
@@ -3473,5 +3499,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 128
+  "validated_candidates": 129
 }

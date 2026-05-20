@@ -1503,6 +1503,46 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
 
 
+def _ubuntu_weekly_audit_offload_script_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    normalized_stig_id = slug(stig_id).replace('-', '_')
+    supported_targets = {
+        'V-238321': {'canonical_ubuntu_20_04_lts_stig'},
+        'V-260587': {'can_ubuntu_22_04_lts_stig'},
+    }
+    if normalized_stig_id not in supported_targets.get(canonical_vuln_id, set()) or not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{content}\n{fix_text}\n{rule.get('title', '') or ''}"
+    required_patterns = (
+        r'crontab\s+script\s+running\s+weekly\s+to\s+offload\s+audit\s+events\s+of\s+standalone\s+systems',
+        r'/etc/cron\.weekly',
+        r'offloads?\s+audit\s+(?:data|logs?)',
+        r'external\s+media',
+        r'If\s+the\s+script\s+file\s+does\s+not\s+exist\s+or\s+does\s+not\s+offload\s+audit\s+logs,\s+this\s+is\s+a\s+finding',
+        r'Create\s+a\s+script\s+that\s+offloads\s+audit\s+logs\s+to\s+external\s+media\s+and\s+runs\s+weekly',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "sh -c 'find /etc/cron.weekly -maxdepth 1 -type f -perm /111 -exec sh -c '\"'\"'"
+        "for f do "
+        "grep -Eqi \"/var/log/audit\" \"$f\" || continue; "
+        "grep -Eqi \"(rsync|scp|sftp|curl|lftp|rclone|aws[[:space:]]+s3|azcopy|gsutil|/media/|/mnt/)\" \"$f\" || continue; "
+        "echo Compliant; exit 0; "
+        "done"
+        "'\"'\"' sh {} + 2>/dev/null'"
+    )
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_temporary_account_expiration_candidate(rule: dict, stig_id: str) -> dict | None:
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
     normalized_stig_id = slug(stig_id).replace('-', '_')
@@ -14292,7 +14332,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return kubernetes_user_pods_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_linux_interactive_user_init_path_home_only_candidate, _linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _oracle_linux_8_vlock_command_lock_candidate, _linux_auditd_log_format_enriched_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
+        for infer_with_stig in (_ubuntu_weekly_audit_offload_script_candidate, _linux_interactive_user_init_path_home_only_candidate, _linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _oracle_linux_8_vlock_command_lock_candidate, _linux_auditd_log_format_enriched_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

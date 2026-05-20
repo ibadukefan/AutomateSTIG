@@ -1011,6 +1011,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'find /etc/cron.weekly -maxdepth 1 -type f -perm /111 -exec sh -c '\"'\"'for f do grep -Eqi \"/var/log/audit\" \"$f\" || continue; grep -Eqi \"(rsync|scp|sftp|curl|lftp|rclone|aws[[:space:]]+s3|azcopy|gsutil|/media/|/mnt/)\" \"$f\" || continue; echo Compliant; exit 0; done'\"'\"' sh {} + 2>/dev/null'",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must have a crontab script running weekly to offload audit events of standalone systems.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238321"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/limits.conf",
         "pattern": "/etc/security/limits.d/*.conf | grep -v '^#'",
