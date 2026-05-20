@@ -1586,6 +1586,68 @@ print('\n'.join(findings) if findings else 'Compliant')
     }
 
 
+def _windows_temporary_account_expiration_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    supported_targets = {
+        'V-254267': {'MS_Windows_Server_2022_STIG'},
+        'V-278013': {'MS_Windows_Server_2025_STIG'},
+    }
+    if stig_id not in supported_targets.get(canonical_vuln_id, set()) or not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    account_term = r'temporary'
+    required_patterns = (
+        rf'Review\s+{account_term}.*?accounts?\s+for\s+expiration\s+dates',
+        r'Search-ADAccount\s+-AccountExpiring',
+        r'AccountExpirationDate.*?within\s+72\s+hours',
+        r'Net\s+user\s+\[username\]',
+        r'Account\s+expires.*?within\s+72\s+hours',
+        r'Net\s+user\s+\[username\]\s+/expires:\[mm/dd/yyyy\]',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):
+        return None
+    ps_script = r'''
+$deadline = (Get-Date).AddHours(72)
+$namePattern = 'temp|temporary|emerg'
+$findings = New-Object System.Collections.Generic.List[string]
+function Test-StigAccountExpiration($Name, $Expiration, $Source) {
+    if ($Name -notmatch $namePattern) { return }
+    if ($null -eq $Expiration) {
+        $findings.Add("$Source/$Name: missing account expiration")
+        return
+    }
+    if ([datetime]$Expiration -gt $deadline) {
+        $findings.Add("$Source/$Name: account expiration $Expiration exceeds 72 hours")
+    }
+}
+try {
+    Get-LocalUser -ErrorAction Stop | Where-Object { $_.Enabled -and ($_.Name -match $namePattern -or $_.Description -match $namePattern) } | ForEach-Object {
+        Test-StigAccountExpiration $_.Name $_.AccountExpires 'local'
+    }
+} catch {
+    $findings.Add('local: unable to enumerate local users')
+}
+try {
+    Import-Module ActiveDirectory -ErrorAction Stop
+    Get-ADUser -Filter * -Properties AccountExpirationDate,Description,Enabled -ErrorAction Stop | Where-Object { $_.Enabled -and ($_.Name -match $namePattern -or $_.SamAccountName -match $namePattern -or $_.Description -match $namePattern) } | ForEach-Object {
+        Test-StigAccountExpiration $_.SamAccountName $_.AccountExpirationDate 'domain'
+    }
+} catch {
+    # Member servers and standalone systems are assessed with local users; the AD module is not always present.
+}
+if ($findings.Count) { $findings -join "`n" } else { 'Compliant' }
+'''
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': 'powershell -NoProfile -ExecutionPolicy Bypass -Command ' + shlex.quote(ps_script)},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _ubuntu_2004_data_at_rest_crypttab_candidate(rule: dict, stig_id: str) -> dict | None:
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
     supported_stigs = {
@@ -13439,6 +13501,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     linux_temporary_account_candidate = _linux_temporary_account_expiration_candidate(rule, stig_id)
     if linux_temporary_account_candidate:
         return linux_temporary_account_candidate
+
+    windows_temporary_account_candidate = _windows_temporary_account_expiration_candidate(rule, stig_id)
+    if windows_temporary_account_candidate:
+        return windows_temporary_account_candidate
 
     ubuntu_2004_data_at_rest_candidate = _ubuntu_2004_data_at_rest_crypttab_candidate(rule, stig_id)
     if ubuntu_2004_data_at_rest_candidate:

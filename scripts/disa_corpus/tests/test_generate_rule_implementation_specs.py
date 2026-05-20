@@ -78,6 +78,52 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertIn('chage', candidate['check']['command'])
                 self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_windows_temporary_account_expiration_candidates(self):
+        cases = [
+            ('V-254267', 'MS_Windows_Server_2022_STIG', 'temporary', 'temporary user accounts'),
+            ('V-278013', 'MS_Windows_Server_2025_STIG', 'temporary', 'temporary user accounts'),
+        ]
+        for vuln_id, stig_id, account_kind, finding_label in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': f'Windows Server must automatically remove or disable {finding_label} after 72 hours.',
+                    'check_content': (
+                        f'Review {finding_label} for expiration dates.\n\n'
+                        f'Determine if {finding_label} are used and identify any that exist. If none exist, this is NA.\n\n'
+                        'Domain Controllers:\n\nOpen "PowerShell".\n\n'
+                        'Enter "Search-ADAccount -AccountExpiring | FT Name, AccountExpirationDate".\n\n'
+                        f'If "AccountExpirationDate" has not been defined within 72 hours for any {account_kind} user account, this is a finding.\n\n'
+                        'Member servers and standalone or nondomain-joined systems:\n\nOpen "Command Prompt".\n\n'
+                        'Run "Net user [username]", where [username] is the name of the account.\n\n'
+                        f'If "Account expires" has not been defined within 72 hours for any {account_kind} user account, this is a finding.'
+                    ),
+                    'fix_text': (
+                        f'Configure {finding_label} to automatically expire within 72 hours.\n\n'
+                        'Domain accounts can be configured with an account expiration date, under "Account" properties.\n\n'
+                        'Local accounts can be configured to expire with the command "Net user [username] /expires:[mm/dd/yyyy]".'
+                    ),
+                }, stig_id)
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertEqual(candidate['check']['type'], 'command_output')
+                self.assertIn('Get-LocalUser', candidate['check']['command'])
+                self.assertIn('Get-ADUser', candidate['check']['command'])
+                self.assertIn('temp|temporary|emerg', candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_windows_account_expiration_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-254267',
+            'title': 'Windows Server must automatically remove or disable temporary accounts.',
+            'check_content': 'Review temporary accounts for expiration dates.',
+            'fix_text': 'Configure accounts to expire.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2016_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+
     def test_infers_windows_ad_object_audit_settings_candidates(self):
         cases = [
             ('V-205786', 'Windows_Server_2019_STIG', 'Domain object', 'defaultNamingContext'),
