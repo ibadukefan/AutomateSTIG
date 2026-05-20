@@ -12397,17 +12397,23 @@ def _windows_ad_object_audit_settings_candidate(rule: dict, stig_id: str) -> dic
     normalized_content = re.sub(r'\s+', ' ', content)
     normalized_combined = re.sub(r'\s+', ' ', combined)
 
-    if (vuln_id, stig_id) == ('V-278148', 'MS_Windows_Server_2025_STIG'):
+    if (vuln_id, stig_id) in {
+        ('V-205785', 'Windows_Server_2019_STIG'),
+        ('V-254401', 'MS_Windows_Server_2022_STIG'),
+        ('V-278148', 'MS_Windows_Server_2025_STIG'),
+    }:
+        gpo_label = r'(?:GPOs|Group\s+Policy\s+objects)'
+        gpo_item_label = r'(?:GPO|Group\s+Policy\s+object)'
         required_snippets = (
-            r'This\s+applies\s+to\s+domain\s+controllers\.\s+It\s+is\s+not\s+applicable\s+for\s+other\s+systems\.',
-            r'Review\s+the\s+auditing\s+configuration\s+for\s+all\s+GPOs\.',
-            r'If\s+the\s+audit\s+settings\s+for\s+any\s+GPO\s+are\s+not\s+at\s+least\s+as\s+inclusive\s+as\s+those\s+below,\s+this\s+is\s+a\s+finding:',
+            r'This\s+applies\s+to\s+domain\s+controllers\.\s+It\s+is\s+(?:NA|not\s+applicable)\s+for\s+other\s+systems\.',
+            rf'Review\s+the\s+auditing\s+configuration\s+for\s+all\s+{gpo_label}\.',
+            rf'If\s+the\s+audit\s+settings\s+for\s+any\s+{gpo_item_label}\s+are\s+not\s+at\s+least\s+as\s+inclusive\s+as\s+those\s+below,\s+this\s+is\s+a\s+finding:',
             r'Type\s+-\s+Fail\s+Principal\s+-\s+Everyone\s+Access\s+-\s+Full\s+Control\s+Applies\s+to\s+-\s+This\s+object\s+and\s+all\s+descendant\s+objects\s+or\s+Descendant\s+groupPolicyContainer\s+objects',
             r'Type\s+-\s+Success\s+Principal\s+-\s+Everyone\s+Access\s+-\s+Special\s+\(Permissions:\s+Write\s+all\s+properties,\s+Modify\s+permissions;\s+Properties:\s+all\s+["“]Write["”]\s+type\s+selected\)\s+Inherited\s+from\s+-\s+Parent\s+Object\s+Applies\s+to\s+-\s+Descendant\s+groupPolicyContainer\s+objects',
             r'Type\s+-\s+Success\s+Principal\s+-\s+Everyone\s+Access\s+-\s+blank\s+\(Permissions:\s+none\s+selected;\s+Properties:\s+one\s+instance\s+-\s+Write\s+gPLink,\s+one\s+instance\s+-\s+Write\s+gPOptions\)\s+Inherited\s+from\s+-\s+Parent\s+Object\s+Applies\s+to\s+-\s+Descendant\s+Organization\s+Unit\s+Objects',
         )
         if all(re.search(snippet, normalized_content, re.IGNORECASE) for snippet in required_snippets) and re.search(
-            r'Configure\s+the\s+audit\s+settings\s+for\s+GPOs\s+to\s+include\s+the\s+following:',
+            rf'Configure\s+the\s+audit\s+settings\s+for\s+{gpo_label}\s+to\s+include\s+the\s+following:',
             normalized_combined,
             re.IGNORECASE,
         ) and re.search(r'Navigate\s+to\s+\[Domain\]\s*>>\s*System\s*>>\s*Policies', normalized_combined, re.IGNORECASE):
