@@ -12200,6 +12200,30 @@ def _tomcat_service_account_nologin_candidate(rule: dict, stig_id: str) -> dict 
     }
 
 
+def _tomcat_process_not_root_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id') != 'V-222984':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    if not re.search(r'ps\s+-ef\s*\|\s*\{\s*head\s+-1;\s*grep\s+catalina;\s*\}\s*\|\s*cut\s+-f1\s+-d["“]\s+["”]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'cat\s+/etc/passwd\s*\|\s*grep\s+-i\s+<UID>\s*\|\s*cut\s+-f3\s+-d:', content, re.IGNORECASE):
+        return None
+    if not re.search(r'user\s+ID\s+field\s+of\s+the\s+passwd\s+file\s+is\s+set\s+to\s+0,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'useradd\s+tomcat', fix_text, re.IGNORECASE) or 'USER=tomcat' not in fix_text:
+        return None
+    command = "sh -c 'pids=$(pgrep -f \"org.apache.catalina|catalina\" 2>/dev/null || true); [ -n \"$pids\" ] || exit 0; for pid in $pids; do set -- $(grep \"^Uid:\" /proc/$pid/status 2>/dev/null || echo Uid: 0); uid=$2; [ \"$uid\" != 0 ] || exit 1; done; printf Compliant'"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _tomcat_fips_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower() or rule.get('vuln_id') != 'V-222968':
         return None
@@ -13729,6 +13753,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_service_account_candidate = _tomcat_service_account_nologin_candidate(rule, stig_id)
     if tomcat_service_account_candidate:
         return tomcat_service_account_candidate
+
+    tomcat_process_not_root_candidate = _tomcat_process_not_root_candidate(rule, stig_id)
+    if tomcat_process_not_root_candidate:
+        return tomcat_process_not_root_candidate
 
     tomcat_fips_mode_candidate = _tomcat_fips_mode_candidate(rule, stig_id)
     if tomcat_fips_mode_candidate:

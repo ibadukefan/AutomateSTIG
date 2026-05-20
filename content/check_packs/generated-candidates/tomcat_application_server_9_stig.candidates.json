@@ -327,6 +327,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'pids=$(pgrep -f \"org.apache.catalina|catalina\" 2>/dev/null || true); [ -n \"$pids\" ] || exit 0; for pid in $pids; do set -- $(grep \"^Uid:\" /proc/$pid/status 2>/dev/null || echo Uid: 0); uid=$2; [ \"$uid\" != 0 ] || exit 1; done; printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Tomcat user account must be a non-privileged user.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222984"
+    },
+    {
+      "check": {
         "command": "sh -c \"p=\\\"${CATALINA_BASE:-/opt/tomcat}/conf/server.xml\\\"; total=$(xmllint --xpath \\\"count(//Valve[contains(@className,'AccessLogValve')])\\\" \\\"$p\\\" 2>/dev/null || printf 0); bad=$(xmllint --xpath \\\"count(//Valve[contains(@className,'AccessLogValve') and not(contains(@pattern,'%u'))])\\\" \\\"$p\\\" 2>/dev/null || printf 1); [ \\\"$total\\\" != \\\"0\\\" ] && [ \\\"$bad\\\" = \\\"0\\\" ] && printf Compliant\"",
         "type": "command_output"
       },

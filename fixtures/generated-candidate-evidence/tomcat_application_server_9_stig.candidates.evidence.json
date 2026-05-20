@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 41,
+  "candidate_checks": 42,
   "cases": [
     {
       "check": {
@@ -653,6 +653,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'pids=$(pgrep -f \"org.apache.catalina|catalina\" 2>/dev/null || true); [ -n \"$pids\" ] || exit 0; for pid in $pids; do set -- $(grep \"^Uid:\" /proc/$pid/status 2>/dev/null || echo Uid: 0); uid=$2; [ \"$uid\" != 0 ] || exit 1; done; printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Tomcat user account must be a non-privileged user.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'pids=$(pgrep -f \"org.apache.catalina|catalina\" 2>/dev/null || true); [ -n \"$pids\" ] || exit 0; for pid in $pids; do set -- $(grep \"^Uid:\" /proc/$pid/status 2>/dev/null || echo Uid: 0); uid=$2; [ \"$uid\" != 0 ] || exit 1; done; printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'pids=$(pgrep -f \"org.apache.catalina|catalina\" 2>/dev/null || true); [ -n \"$pids\" ] || exit 0; for pid in $pids; do set -- $(grep \"^Uid:\" /proc/$pid/status 2>/dev/null || echo Uid: 0); uid=$2; [ \"$uid\" != 0 ] || exit 1; done; printf Compliant'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222984"
+    },
+    {
+      "check": {
         "command": "sh -c \"p=\\\"${CATALINA_BASE:-/opt/tomcat}/conf/server.xml\\\"; total=$(xmllint --xpath \\\"count(//Valve[contains(@className,'AccessLogValve')])\\\" \\\"$p\\\" 2>/dev/null || printf 0); bad=$(xmllint --xpath \\\"count(//Valve[contains(@className,'AccessLogValve') and not(contains(@pattern,'%u'))])\\\" \\\"$p\\\" 2>/dev/null || printf 1); [ \\\"$total\\\" != \\\"0\\\" ] && [ \\\"$bad\\\" = \\\"0\\\" ] && printf Compliant\"",
         "type": "command_output"
       },
@@ -1073,5 +1099,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 41
+  "validated_candidates": 42
 }

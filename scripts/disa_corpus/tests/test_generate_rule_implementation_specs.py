@@ -1014,6 +1014,32 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'Store the keystore file somewhere.'}, 'Tomcat_Application_Server_9_STIG'))
 
+    def test_infers_tomcat_process_not_root_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222984',
+            'title': 'Tomcat user account must be a non-privileged user.',
+            'check_content': 'Run the following command to identify the Tomcat process UID:\nps -ef | { head -1; grep catalina; } | cut -f1 -d" "\n\nRun the following command to obtain the OS user ID tied to the Tomcat process:\ncat /etc/passwd|grep -i <UID>|cut -f3 -d:\n\nIf the Tomcat process is running as a privileged user and is not documented and approved, this is a finding.\nIf the user ID field of the passwd file is set to 0, this is a finding.',
+            'fix_text': 'From the Tomcat server, create a tomcat user by adding a new non-privileged user OS account with the following command:\nsudo useradd tomcat\nEdit the systemd tomcat.service file or create one if it does not exist. Use the new "tomcat" user account by setting; USER=tomcat',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222984')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('pgrep', candidate['check']['command'])
+        self.assertIn('/proc', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_tomcat_process_not_root_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-222984',
+            'title': 'Tomcat user account must be a non-privileged user.',
+            'check_content': 'Review the Tomcat process owner.',
+            'fix_text': 'Run Tomcat as a service account.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Tomcat_Application_Server_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Tomcat_Application_Server_9_STIG'))
+
     def test_infers_vmware_esxi_snmp_disabled_or_v3_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256414',
