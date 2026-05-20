@@ -11,6 +11,74 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_ol8_aide_mail_cron_notification_candidate(self):
+        check = (
+            'Check the cron directories for scripts controlling the execution and notification of results of the file integrity application. '
+            'For example, if AIDE is installed on the system, use the following commands:\n'
+            '$ sudo grep -r aide /etc/cron* /var/spool/cron /etc/anacrontab 2>/dev/null\n'
+            '/etc/cron.daily/aide: /usr/sbin/aide --check | /bin/mail -s "$HOSTNAME - Daily AIDE integrity check run" root@example_server_name.mil\n'
+            'Verify the contents of the scripts listed in the output and confirm that AIDE is configured to run automatically on at least a weekly basis.\n'
+            'If the file integrity application does not exist, a script file controlling the execution of the integrity application does not exist, or the file integrity application does not notify designated personnel of changes, this is a finding.'
+        )
+        fix = (
+            'Configure the file integrity tool to run automatically on the system at least weekly and to notify designated personnel if baseline configurations are changed in an unauthorized manner. '
+            'The AIDE tool can be configured to email designated personnel with the use of the cron system.\n'
+            '$ sudo more /etc/cron.daily/aide\n#!/bin/bash\n/usr/sbin/aide --check |/bin/mail -s "$HOSTNAME - Daily AIDE integrity check run" root@example_server_name.mil'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248573',
+            'title': 'The OL 8 file integrity tool must notify the system administrator (SA) when changes to the baseline configuration or anomalies in the operation of any security functions are discovered within an organizationally defined frequency.',
+            'check_content': check,
+            'fix_text': fix,
+        }, 'Oracle_Linux_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-248573')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/usr/sbin/aide', candidate['check']['command'])
+        self.assertIn('/bin/mail', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_rhel8_scap_fix_only_login_defs_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-230365',
+            'title': 'RHEL 8 passwords for new users or password changes must have a 24 hours/1 day minimum password lifetime restriction in /etc/login.defs.',
+            'check_content': '',
+            'fix_text': 'Configure the operating system to enforce 24 hours/1 day as the minimum password lifetime. Add the following line in "/etc/login.defs" (or modify the line to have the required value): PASS_MIN_DAYS 1',
+        }, 'scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-230365')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/etc/login.defs', candidate['check']['command'])
+        self.assertIn('PASS_MIN_DAYS', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+
+    def test_infers_rhel8_scap_fix_only_sysctl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-230543',
+            'title': 'RHEL 8 must not allow interfaces to perform Internet Control Message Protocol (ICMP) redirects by default.',
+            'check_content': '',
+            'fix_text': 'Add or edit the following line in a system configuration file, in the "/etc/sysctl.d/" directory: net.ipv4.conf.default.send_redirects = 0',
+        }, 'scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-230543')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('sysctl -n net.ipv4.conf.default.send_redirects', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
+
+    def test_does_not_infer_rhel8_scap_fix_only_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-230365',
+            'title': 'RHEL 8 passwords for new users or password changes must have a 24 hours/1 day minimum password lifetime restriction in /etc/login.defs.',
+            'check_content': '',
+            'fix_text': 'Add PASS_MIN_DAYS 1 to /etc/login.defs.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'xccdf_mil.disa.stig_group_V-999999'}, 'scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_8_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark'))
+
     def test_infers_apache_windows_default_content_handlers_absent_candidate(self):
         check = (
             'Verify the document root directory and the configuration files do not provide for default index.html or welcome page.\n\n'

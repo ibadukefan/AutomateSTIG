@@ -1618,6 +1618,94 @@ def _linux_data_at_rest_encryption_candidate(rule: dict, stig_id: str) -> dict |
     }
 
 
+def _oracle_linux_8_aide_mail_cron_notification_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Oracle_Linux_8_STIG' or rule.get('vuln_id') != 'V-248573':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r'grep\s+-r\s+aide\s+/etc/cron\*\s+/var/spool/cron\s+/etc/anacrontab',
+        r'/usr/sbin/aide\s+--check\s*\|\s*/bin/mail',
+        r'configured\s+to\s+run\s+automatically\s+on\s+at\s+least\s+a\s+weekly\s+basis',
+        r'does\s+not\s+notify\s+designated\s+personnel\s+of\s+changes,\s+this\s+is\s+a\s+finding',
+        r'The\s+AIDE\s+tool\s+can\s+be\s+configured\s+to\s+email\s+designated\s+personnel\s+with\s+the\s+use\s+of\s+the\s+cron\s+system',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "sh -c 'grep -R -I -h -i aide /etc/cron* /var/spool/cron /etc/anacrontab 2>/dev/null "
+        "| grep -E \"/usr/sbin/aide[[:space:]]+--check[[:space:]]*\\|[[:space:]]*/bin/mail\" >/dev/null || printf Missing'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+def _rhel8_scap_fix_only_config_candidate(rule: dict, stig_id: str) -> dict | None:
+    """Infer a narrow set of RHEL 8 SCAP fix-text-only configuration checks."""
+    if 'scap' not in stig_id.lower() or 'rhel_8' not in stig_id.lower():
+        return None
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    fix_text = '\n'.join(str(rule.get(key, '')) for key in ('fix_text', 'fix_text_excerpt'))
+    login_defs = {
+        'V-230365': ('PASS_MIN_DAYS', '1'),
+        'V-230324': ('CREATE_HOME', 'yes'),
+    }
+    if canonical_vuln_id in login_defs:
+        key, expected = login_defs[canonical_vuln_id]
+        if '/etc/login.defs' not in fix_text or not re.search(rf'\b{re.escape(key)}\s+{re.escape(expected)}\b', fix_text):
+            return None
+        if canonical_vuln_id == 'V-230365' and not re.search(r'enforce\s+24\s+hours?/1\s+day\s+as\s+the\s+minimum\s+password\s+lifetime', fix_text, re.IGNORECASE):
+            return None
+        if canonical_vuln_id == 'V-230324' and not re.search(r'assign\s+home\s+directories\s+to\s+all\s+new\s+local\s+interactive\s+users', fix_text, re.IGNORECASE):
+            return None
+        command = f"awk '$1==\"{key}\"{{v=$2}} END{{if (v!=\"\") print v}}' /etc/login.defs 2>/dev/null"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': expected},
+            'description': rule.get('title', ''),
+        }
+    sysctl_values = {
+        'V-230543': ('net.ipv4.conf.default.send_redirects', '0'),
+        'V-244550': ('net.ipv4.conf.default.accept_redirects', '0'),
+        'V-230538': ('net.ipv6.conf.all.accept_source_route', '0'),
+    }
+    if canonical_vuln_id in sysctl_values:
+        name, expected = sysctl_values[canonical_vuln_id]
+        if not re.search(rf'\b{re.escape(name)}\s*=\s*{re.escape(expected)}\b', fix_text):
+            return None
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': f'sysctl -n {name} 2>/dev/null'},
+            'expected': {'type': 'equals', 'value': expected},
+            'description': rule.get('title', ''),
+        }
+    selinux_values = {
+        'V-230282': ('SELINUXTYPE', 'targeted'),
+    }
+    if canonical_vuln_id in selinux_values:
+        key, expected = selinux_values[canonical_vuln_id]
+        if '/etc/selinux/config' not in fix_text or not re.search(rf'\b{re.escape(key)}\s*=\s*{re.escape(expected)}\b', fix_text):
+            return None
+        command = f"awk -F= 'tolower($1)==tolower(\"{key}\"){{gsub(/[[:space:]]/,\"\",$2); v=$2}} END{{if (v!=\"\") print v}}' /etc/selinux/config 2>/dev/null"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': expected},
+            'description': rule.get('title', ''),
+        }
+    return None
+
+
 def _linux_interactive_user_init_path_home_only_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -12946,6 +13034,14 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     if linux_data_at_rest_candidate:
         return linux_data_at_rest_candidate
 
+    ol8_aide_mail_cron_candidate = _oracle_linux_8_aide_mail_cron_notification_candidate(rule, stig_id)
+    if ol8_aide_mail_cron_candidate:
+        return ol8_aide_mail_cron_candidate
+
+    rhel8_scap_fix_only_candidate = _rhel8_scap_fix_only_config_candidate(rule, stig_id)
+    if rhel8_scap_fix_only_candidate:
+        return rhel8_scap_fix_only_candidate
+
     oracle_linux_8_vlock_candidate = _oracle_linux_8_vlock_command_lock_candidate(rule, stig_id)
     if oracle_linux_8_vlock_candidate:
         return oracle_linux_8_vlock_candidate
@@ -13893,6 +13989,27 @@ def generate_specs(coverage_root: Path, implementation_root: Path, repo_root: Pa
                     enriched['check_content'] = existing_spec['check_content_excerpt']
                 if not enriched.get('fix_text') and existing_spec.get('fix_text_excerpt'):
                     enriched['fix_text'] = existing_spec['fix_text_excerpt']
+            if not enriched.get('fix_text'):
+                title_key = _normalized_title_key(enriched.get('title', ''))
+                canonical_ids = _canonical_vuln_ids(enriched)
+                if title_key and canonical_ids:
+                    for sibling in sorted(implementation_root.rglob('*.json')):
+                        if sibling == out:
+                            continue
+                        try:
+                            sibling_spec = json.loads(sibling.read_text())
+                        except Exception:
+                            continue
+                        if not sibling_spec.get('fix_text_excerpt'):
+                            continue
+                        if not canonical_ids.intersection(_canonical_vuln_ids(sibling_spec)):
+                            continue
+                        if _normalized_title_key(sibling_spec.get('title', '')) != title_key:
+                            continue
+                        enriched['fix_text'] = sibling_spec['fix_text_excerpt']
+                        if not enriched.get('check_content') and sibling_spec.get('check_content_excerpt'):
+                            enriched['check_content'] = sibling_spec['check_content_excerpt']
+                        break
             new_spec = spec_from_rule(manifest_path, manifest, enriched)
             if out.exists() and 'candidate_check' not in new_spec:
                 preserve_existing_candidate = bool(existing_spec.get('candidate_check'))

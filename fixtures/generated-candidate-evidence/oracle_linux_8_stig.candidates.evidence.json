@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 356,
+  "candidate_checks": 357,
   "cases": [
     {
       "check": {
@@ -1125,6 +1125,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248572"
+    },
+    {
+      "check": {
+        "command": "sh -c 'grep -R -I -h -i aide /etc/cron* /var/spool/cron /etc/anacrontab 2>/dev/null | grep -E \"/usr/sbin/aide[[:space:]]+--check[[:space:]]*\\|[[:space:]]*/bin/mail\" >/dev/null || printf Missing'",
+        "type": "command_output"
+      },
+      "description": "The OL 8 file integrity tool must notify the system administrator (SA) when changes to the baseline configuration or anomalies in the operation of any security functions are discovered within an organizationally defined frequency.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -R -I -h -i aide /etc/cron* /var/spool/cron /etc/anacrontab 2>/dev/null | grep -E \"/usr/sbin/aide[[:space:]]+--check[[:space:]]*\\|[[:space:]]*/bin/mail\" >/dev/null || printf Missing'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -R -I -h -i aide /etc/cron* /var/spool/cron /etc/anacrontab 2>/dev/null | grep -E \"/usr/sbin/aide[[:space:]]+--check[[:space:]]*\\|[[:space:]]*/bin/mail\" >/dev/null || printf Missing'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248573"
     },
     {
       "check": {
@@ -9650,5 +9676,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 356
+  "validated_candidates": 357
 }

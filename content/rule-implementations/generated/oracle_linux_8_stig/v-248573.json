@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'grep -R -I -h -i aide /etc/cron* /var/spool/cron /etc/anacrontab 2>/dev/null | grep -E \"/usr/sbin/aide[[:space:]]+--check[[:space:]]*\\|[[:space:]]*/bin/mail\" >/dev/null || printf Missing'",
+      "type": "command_output"
+    },
+    "description": "The OL 8 file integrity tool must notify the system administrator (SA) when changes to the baseline configuration or anomalies in the operation of any security functions are discovered within an organizationally defined frequency.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-248573"
+  },
   "check_content_excerpt": "Verify the operating system routinely checks the baseline configuration for unauthorized changes and notifies the SA when anomalies in the operation of any security functions are discovered.\n\nCheck that OL 8 routinely executes a file integrity scan for changes to the system baseline. The command used in the example will use a daily occurrence.\n\nCheck the cron directories for scripts controlling the execution and notification of results of the file integrity application. For example, if AIDE is installed on the system, use the following commands:\n\nTo search for an aide script:\n\n$ sudo find /usr/local/bin /root /usr/sbin /usr/bin -type f -name aide\n\nTo search for scheduled cron jobs:\n\n$ sudo grep -r aide /etc/cron* /var/spool/cron /etc/anacrontab 2>/dev/null\n/etc/cron.daily/aide: /usr/sbin/aide --check | /bin/mail -s \"$HOSTNAME - Daily AIDE integrity check run\" root@example_server_name.mil\n\nVerify the contents of the scripts listed in the output and confirm that AIDE is configured to run automatically on at least a weekly basis.\n\nIf the file integrity application does not exist, a script file controlling the execution of the integrity application does not exist, or the file integrity application does not notify designated personnel of changes, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the file integrity tool to run automatically on the system at least weekly and to notify designated personnel if baseline configurations are changed in an unauthorized manner. The AIDE tool can be configured to email designated personnel with the use of the cron system.\n\nThe following example output is generic. It will set cron to run AIDE daily and to send an email at the completion of the analysis. The file path in the more command is exemplary. Common paths include /etc/cron.d/<filename>, /etc/cron.daily/<filename>, /etc/cron.hourly/<filename>, /etc/cron.weekly/<filename>, or /etc/cron.monthly/<filename>.\n\n$ sudo more /etc/cron.daily/aide\n\n#!/bin/bash\n/usr/sbin/aide --check |/bin/mail -s \"$HOSTNAME - Daily AIDE integrity check run\" root@example_server_name.mil\n\nNote: Per requirement OL08-00-010358, the \"mailx\" package must be installed on the system to enable email functionality.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248573r1134847_rule",
   "severity": "medium",
