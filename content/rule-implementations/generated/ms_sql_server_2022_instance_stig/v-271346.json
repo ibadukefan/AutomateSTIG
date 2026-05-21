@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$domain=(sqlcmd -h -1 -W -Q 'SET NOCOUNT ON; SELECT DEFAULT_DOMAIN();' 2>$null | Select-Object -First 1).Trim(); if ($domain) { 'Compliant'; exit }; $source=(w32tm /query /source 2>$null | Select-Object -First 1).Trim(); if ($source -and $source -ne 'Local CMOS Clock') { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "SQL Server must record time stamps in audit records and application data that can be mapped to Coordinated Universal Time (UTC), formerly Greenwich Mean Time (GMT).",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-271346"
+  },
   "check_content_excerpt": "SQL Server Audits store the timestamp in UTC time. \n \nDetermine if the computer is joined to a domain. \n \nSELECT DEFAULT_DOMAIN()[DomainName]  \n \nIf this is not NULL, this is not a finding. \n \nIf the computer is not joined to a domain, determine what the time source is. (Run the following command in an elevated PowerShell session.) \n \n     w32tm /query /source \n \nIf the results of the command return \"Local CMOS Clock\" and this is not documented with justification and authorizing official (AO) authorization, this is a finding. \n \nIf the OS does not synchronize with a time server, review the procedure for maintaining accurate time on the system. \n \nIf such a procedure does not exist, this is a finding. \n \nIf the procedure exists, review evidence that the correct time is actually maintained. \n \nIf the evidence indicates otherwise, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Where possible, configure the operating system to automatic synchronize with an official time server, using NTP. \n \nWhere there is reason not to implement automatic synchronization with an official time server, using NTP, document the reason, and the procedure for maintaining the correct time, and obtain AO approval. Enforce the procedure.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271346r1109256_rule",
   "severity": "medium",

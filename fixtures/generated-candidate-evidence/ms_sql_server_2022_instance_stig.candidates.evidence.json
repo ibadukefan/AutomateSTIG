@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 24,
+  "candidate_checks": 25,
   "cases": [
     {
       "check": {
@@ -312,6 +312,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271328"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$domain=(sqlcmd -h -1 -W -Q 'SET NOCOUNT ON; SELECT DEFAULT_DOMAIN();' 2>$null | Select-Object -First 1).Trim(); if ($domain) { 'Compliant'; exit }; $source=(w32tm /query /source 2>$null | Select-Object -First 1).Trim(); if ($source -and $source -ne 'Local CMOS Clock') { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must record time stamps in audit records and application data that can be mapped to Coordinated Universal Time (UTC), formerly Greenwich Mean Time (GMT).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$domain=(sqlcmd -h -1 -W -Q 'SET NOCOUNT ON; SELECT DEFAULT_DOMAIN();' 2>$null | Select-Object -First 1).Trim(); if ($domain) { 'Compliant'; exit }; $source=(w32tm /query /source 2>$null | Select-Object -First 1).Trim(); if ($source -and $source -ne 'Local CMOS Clock') { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$domain=(sqlcmd -h -1 -W -Q 'SET NOCOUNT ON; SELECT DEFAULT_DOMAIN();' 2>$null | Select-Object -First 1).Trim(); if ($domain) { 'Compliant'; exit }; $source=(w32tm /query /source 2>$null | Select-Object -First 1).Trim(); if ($source -and $source -ne 'Local CMOS Clock') { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271346"
     },
     {
       "check": {
@@ -631,5 +657,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_SQL_Server_2022_Instance_STIG",
-  "validated_candidates": 24
+  "validated_candidates": 25
 }

@@ -12223,6 +12223,44 @@ def _sql_server_kerberos_spn_registration_candidate(rule: dict, stig_id: str) ->
     }
 
 
+def _sql_server_utc_time_source_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if rule.get('vuln_id', '') != 'V-271346':
+        return None
+    expected_title = 'sql server must record time stamps in audit records and application data that can be mapped to coordinated universal time (utc), formerly greenwich mean time (gmt).'
+    if rule.get('title', '').strip().lower() != expected_title:
+        return None
+    required_content_patterns = (
+        r'SQL\s+Server\s+Audits\s+store\s+the\s+timestamp\s+in\s+UTC\s+time',
+        r'SELECT\s+DEFAULT_DOMAIN\(\)\s*\[DomainName\]',
+        r'If\s+this\s+is\s+not\s+NULL,\s+this\s+is\s+not\s+a\s+finding',
+        r'w32tm\s+/query\s+/source',
+        r'If\s+the\s+results\s+of\s+the\s+command\s+return\s+["“]Local\s+CMOS\s+Clock["”]\s+and\s+this\s+is\s+not\s+documented\s+with\s+justification\s+and\s+authorizing\s+official\s+\(AO\)\s+authorization,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content_patterns):
+        return None
+    if not re.search(r'configure\s+the\s+operating\s+system\s+to\s+automatic\s+synchronize\s+with\s+an\s+official\s+time\s+server', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$domain=(sqlcmd -h -1 -W -Q \'SET NOCOUNT ON; SELECT DEFAULT_DOMAIN();\' 2>$null | Select-Object -First 1).Trim(); '
+        'if ($domain) { \'Compliant\'; exit }; '
+        '$source=(w32tm /query /source 2>$null | Select-Object -First 1).Trim(); '
+        'if ($source -and $source -ne \'Local CMOS Clock\') { \'Compliant\' }"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -14986,6 +15024,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_configuration_audit_candidate = _oracle_database_configuration_audit_candidate(rule, stig_id)
     if oracle_database_configuration_audit_candidate:
         return oracle_database_configuration_audit_candidate
+
+    sql_server_utc_time_source_candidate = _sql_server_utc_time_source_candidate(rule, stig_id)
+    if sql_server_utc_time_source_candidate:
+        return sql_server_utc_time_source_candidate
 
     sql_server_sample_databases_candidate = _sql_server_sample_databases_absent_candidate(rule, stig_id)
     if sql_server_sample_databases_candidate:

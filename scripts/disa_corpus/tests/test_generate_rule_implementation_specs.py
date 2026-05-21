@@ -1641,6 +1641,39 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'log_connections = off'}, 'Crunchy_Data_PostgreSQL_STIG'))
 
+    def test_infers_sql_server_utc_time_source_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271346',
+            'title': 'SQL Server must record time stamps in audit records and application data that can be mapped to Coordinated Universal Time (UTC), formerly Greenwich Mean Time (GMT).',
+            'check_content': (
+                'SQL Server Audits store the timestamp in UTC time.\n'
+                'Determine if the computer is joined to a domain.\n'
+                'SELECT DEFAULT_DOMAIN()[DomainName]\n'
+                'If this is not NULL, this is not a finding.\n'
+                'If the computer is not joined to a domain, determine what the time source is.\n'
+                'w32tm /query /source\n'
+                'If the results of the command return "Local CMOS Clock" and this is not documented with justification and authorizing official (AO) authorization, this is a finding.'
+            ),
+            'fix_text': 'Where possible, configure the operating system to automatic synchronize with an official time server, using NTP.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271346')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertIn('DEFAULT_DOMAIN()', candidate['check']['command'])
+        self.assertIn('w32tm /query /source', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_sql_server_utc_time_source_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-271346',
+            'title': 'SQL Server must record time stamps in audit records and application data that can be mapped to Coordinated Universal Time (UTC), formerly Greenwich Mean Time (GMT).',
+            'check_content': 'SELECT DEFAULT_DOMAIN()[DomainName]\nw32tm /query /source\nIf the results of the command return "Local CMOS Clock", this is a finding.',
+            'fix_text': 'Configure a time source.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_SQL_Server_2022_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': 'w32tm /query /source only'}, 'MS_SQL_Server_2022_Instance_STIG'))
+
     def test_infers_oracle_database_instance_names_do_not_reference_versions_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270521',
