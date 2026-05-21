@@ -2588,6 +2588,52 @@ def _windows_domain_controller_pki_certificate_exists_candidate(rule: dict, stig
     }
 
 
+def _windows_active_directory_gpo_acl_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '') or ''
+    if not _windows_platform(stig_id) or vuln_id not in {'V-205741', 'V-254393', 'V-278140'}:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+    required_patterns = (
+        r'Group\s+Policy\s+Objects?',
+        r'standard\s+user\s+accounts?\s+or\s+groups?.*greater\s+than\s+["“]Read["”]\s+and\s+["“]Apply\s+group\s+policy["”]',
+        r'Authenticated\s+Users\s+-\s+Read,\s*Apply\s+group\s+policy',
+        r'Domain\s+Admins\s+-\s+Read,\s*Write,\s*Create\s+all\s+child\s+objects',
+        r'Enterprise\s+Admins\s+-\s+Read,\s*Write,\s*Create\s+all\s+child\s+objects',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$ErrorActionPreference=\'SilentlyContinue\'; '
+        '$feature=Get-WindowsFeature AD-Domain-Services; '
+        "if (-not $feature -or -not $feature.Installed) { 'Compliant'; exit }; "
+        'Import-Module ActiveDirectory -ErrorAction SilentlyContinue; '
+        'Import-Module GroupPolicy -ErrorAction SilentlyContinue; '
+        '$domain=Get-ADDomain; $base=\'CN=Policies,CN=System,\' + $domain.DistinguishedName; '
+        '$allowedWrite=\'^(NT AUTHORITY\\\\SYSTEM|.*\\\\Domain Admins|.*\\\\Enterprise Admins|BUILTIN\\\\Administrators|CREATOR OWNER)$\'; '
+        '$standard=\'(Authenticated Users|Domain Users|Everyone|Users)$\'; '
+        '$writeMask=[System.DirectoryServices.ActiveDirectoryRights]\'CreateChild,DeleteChild,DeleteTree,WriteProperty,GenericAll,GenericWrite,WriteDacl,WriteOwner\'; '
+        '$bad=$false; '
+        'Get-GPO -All | ForEach-Object { '
+        '$path=\'AD:\\CN={\' + $_.Id.Guid + \'},\' + $base; '
+        'Get-Acl -Path $path | Select-Object -ExpandProperty Access | ForEach-Object { '
+        '$id=$_.IdentityReference.Value; '
+        '$hasWrite=($_.AccessControlType -eq \'Allow\') -and (($_.ActiveDirectoryRights -band $writeMask) -ne 0); '
+        'if ($hasWrite -and (($id -match $standard) -or ($id -notmatch $allowedWrite))) { $bad=$true } '
+        '} }; '
+        "if (-not $bad) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_domain_controller_ntds_acl_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '') or ''
     if not _windows_platform(stig_id) or vuln_id not in {'V-205739', 'V-254391', 'V-278138'}:
@@ -14232,6 +14278,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     windows_pki_certificate_candidate = _windows_domain_controller_pki_certificate_exists_candidate(rule, stig_id)
     if windows_pki_certificate_candidate:
         return windows_pki_certificate_candidate
+    windows_active_directory_gpo_acl_candidate = _windows_active_directory_gpo_acl_candidate(rule, stig_id)
+    if windows_active_directory_gpo_acl_candidate:
+        return windows_active_directory_gpo_acl_candidate
     windows_ntds_acl_candidate = _windows_domain_controller_ntds_acl_candidate(rule, stig_id)
     if windows_ntds_acl_candidate:
         return windows_ntds_acl_candidate

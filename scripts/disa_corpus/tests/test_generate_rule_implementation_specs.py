@@ -17210,5 +17210,43 @@ Create REG_DWORD "UriScavengerPeriod"''',
         self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2022_STIG'))
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2025_STIG'))
 
+    def test_infers_windows_active_directory_gpo_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254393',
+            'title': 'Windows Server 2022 Active Directory Group Policy objects must have proper access control permissions.',
+            'check_content': (
+                'This applies to domain controllers. It is NA for other systems.\n\n'
+                'Review the permissions on Group Policy objects.\n\n'
+                'Navigate to "Group Policy Objects" in the domain being reviewed.\n\n'
+                'If any standard user accounts or groups have "Allow" permissions greater than "Read" and "Apply group policy", this is a finding.\n\n'
+                'Authenticated Users - Read, Apply group policy, Special permissions\n\n'
+                'The special permissions for Authenticated Users are for Read-type Properties. If detailed permissions include any Create, Delete, Modify, or Write Permissions or Properties, this is a finding.\n\n'
+                'SYSTEM - Read, Write, Create all child objects, Delete all child objects, Special permissions\n'
+                'Domain Admins - Read, Write, Create all child objects, Delete all child objects, Special permissions\n'
+                'Enterprise Admins - Read, Write, Create all child objects, Delete all child objects, Special permissions\n'
+                'ENTERPRISE DOMAIN CONTROLLERS - Read, Special permissions'
+            ),
+            'fix_text': (
+                'Maintain the permissions on Group Policy objects to not allow greater than "Read" and "Apply group policy" for standard user accounts or groups. '
+                'The default permissions below meet this requirement.'
+            ),
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-254393')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('Get-GPO -All', candidate['check']['command'])
+        self.assertIn('Authenticated Users', candidate['check']['command'])
+        self.assertIn('WriteProperty', candidate['check']['command'])
+
+    def test_rejects_windows_active_directory_gpo_acl_candidate_without_exact_vuln_id(self):
+        rule = {
+            'vuln_id': 'V-999999',
+            'title': 'Windows Server 2022 Active Directory Group Policy objects must have proper access control permissions.',
+            'check_content': 'If any standard user accounts or groups have "Allow" permissions greater than "Read" and "Apply group policy", this is a finding.',
+            'fix_text': 'Maintain the permissions on Group Policy objects to not allow greater than "Read" and "Apply group policy" for standard user accounts or groups.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+
 if __name__ == '__main__':
     unittest.main()

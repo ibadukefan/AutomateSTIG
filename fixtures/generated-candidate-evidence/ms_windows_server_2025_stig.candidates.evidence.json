@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 259,
+  "candidate_checks": 260,
   "cases": [
     {
       "check": {
@@ -3637,6 +3637,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; $feature=Get-WindowsFeature AD-Domain-Services; if (-not $feature -or -not $feature.Installed) { 'Compliant'; exit }; Import-Module ActiveDirectory -ErrorAction SilentlyContinue; Import-Module GroupPolicy -ErrorAction SilentlyContinue; $domain=Get-ADDomain; $base='CN=Policies,CN=System,' + $domain.DistinguishedName; $allowedWrite='^(NT AUTHORITY\\\\SYSTEM|.*\\\\Domain Admins|.*\\\\Enterprise Admins|BUILTIN\\\\Administrators|CREATOR OWNER)$'; $standard='(Authenticated Users|Domain Users|Everyone|Users)$'; $writeMask=[System.DirectoryServices.ActiveDirectoryRights]'CreateChild,DeleteChild,DeleteTree,WriteProperty,GenericAll,GenericWrite,WriteDacl,WriteOwner'; $bad=$false; Get-GPO -All | ForEach-Object { $path='AD:\\CN={' + $_.Id.Guid + '},' + $base; Get-Acl -Path $path | Select-Object -ExpandProperty Access | ForEach-Object { $id=$_.IdentityReference.Value; $hasWrite=($_.AccessControlType -eq 'Allow') -and (($_.ActiveDirectoryRights -band $writeMask) -ne 0); if ($hasWrite -and (($id -match $standard) -or ($id -notmatch $allowedWrite))) { $bad=$true } } }; if (-not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 Active Directory (AD) Group Policy Objects (GPOs) must have proper access control permissions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; $feature=Get-WindowsFeature AD-Domain-Services; if (-not $feature -or -not $feature.Installed) { 'Compliant'; exit }; Import-Module ActiveDirectory -ErrorAction SilentlyContinue; Import-Module GroupPolicy -ErrorAction SilentlyContinue; $domain=Get-ADDomain; $base='CN=Policies,CN=System,' + $domain.DistinguishedName; $allowedWrite='^(NT AUTHORITY\\\\SYSTEM|.*\\\\Domain Admins|.*\\\\Enterprise Admins|BUILTIN\\\\Administrators|CREATOR OWNER)$'; $standard='(Authenticated Users|Domain Users|Everyone|Users)$'; $writeMask=[System.DirectoryServices.ActiveDirectoryRights]'CreateChild,DeleteChild,DeleteTree,WriteProperty,GenericAll,GenericWrite,WriteDacl,WriteOwner'; $bad=$false; Get-GPO -All | ForEach-Object { $path='AD:\\CN={' + $_.Id.Guid + '},' + $base; Get-Acl -Path $path | Select-Object -ExpandProperty Access | ForEach-Object { $id=$_.IdentityReference.Value; $hasWrite=($_.AccessControlType -eq 'Allow') -and (($_.ActiveDirectoryRights -band $writeMask) -ne 0); if ($hasWrite -and (($id -match $standard) -or ($id -notmatch $allowedWrite))) { $bad=$true } } }; if (-not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; $feature=Get-WindowsFeature AD-Domain-Services; if (-not $feature -or -not $feature.Installed) { 'Compliant'; exit }; Import-Module ActiveDirectory -ErrorAction SilentlyContinue; Import-Module GroupPolicy -ErrorAction SilentlyContinue; $domain=Get-ADDomain; $base='CN=Policies,CN=System,' + $domain.DistinguishedName; $allowedWrite='^(NT AUTHORITY\\\\SYSTEM|.*\\\\Domain Admins|.*\\\\Enterprise Admins|BUILTIN\\\\Administrators|CREATOR OWNER)$'; $standard='(Authenticated Users|Domain Users|Everyone|Users)$'; $writeMask=[System.DirectoryServices.ActiveDirectoryRights]'CreateChild,DeleteChild,DeleteTree,WriteProperty,GenericAll,GenericWrite,WriteDacl,WriteOwner'; $bad=$false; Get-GPO -All | ForEach-Object { $path='AD:\\CN={' + $_.Id.Guid + '},' + $base; Get-Acl -Path $path | Select-Object -ExpandProperty Access | ForEach-Object { $id=$_.IdentityReference.Value; $hasWrite=($_.AccessControlType -eq 'Allow') -and (($_.ActiveDirectoryRights -band $writeMask) -ne 0); if ($hasWrite -and (($id -match $standard) -or ($id -notmatch $allowedWrite))) { $bad=$true } } }; if (-not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278140"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; $feature=Get-WindowsFeature AD-Domain-Services; if (-not $feature -or -not $feature.Installed) { 'Compliant'; exit }; Import-Module ActiveDirectory -ErrorAction SilentlyContinue; $domain=Get-ADDomain; $ou='AD:\\OU=Domain Controllers,' + $domain.DistinguishedName; $allowed='^(NT AUTHORITY\\\\SYSTEM|.*\\\\Domain Admins|.*\\\\Enterprise Admins|BUILTIN\\\\Administrators)$'; $writeMask=[System.DirectoryServices.ActiveDirectoryRights]'CreateChild,DeleteChild,DeleteTree,WriteProperty,GenericAll,GenericWrite,WriteDacl,WriteOwner'; $bad=Get-Acl -Path $ou | Select-Object -ExpandProperty Access | Where-Object { ($_.AccessControlType -eq 'Allow') -and (($_.ActiveDirectoryRights -band $writeMask) -ne 0) -and ($_.IdentityReference.Value -notmatch $allowed) }; if (-not $bad) { 'Compliant' }\"",
         "type": "command_output"
       },
@@ -6942,5 +6968,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 259
+  "validated_candidates": 260
 }
