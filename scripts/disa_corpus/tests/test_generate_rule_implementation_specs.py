@@ -89,6 +89,25 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertEqual(updated['normalizer'], 'command_output')
             self.assertEqual(updated['evaluator'], 'candidate_template')
 
+    def test_infers_windows_certificate_installation_files_removed_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278008',
+            'title': 'Windows Server 2025 must have software certificate installation files removed.',
+            'check_content': (
+                'Search all drives for *.p12 and *.pfx files.\n\n'
+                'If any files with these extensions exist, this is a finding.\n\n'
+                'This does not apply to server-based applications that have a requirement for .p12 certificate files or Adobe PreFlight certificate files.'
+            ),
+            'fix_text': 'Remove any certificate installation files (*.p12 and *.pfx) found on a system.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278008')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('Get-PSDrive -PSProvider FileSystem', candidate['check']['command'])
+        self.assertIn('*.p12', candidate['check']['command'])
+        self.assertIn('*.pfx', candidate['check']['command'])
+
     def test_infers_postgresql_pgdata_config_owner_permissions_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233518',

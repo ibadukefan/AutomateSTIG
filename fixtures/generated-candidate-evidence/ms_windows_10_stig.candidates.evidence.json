@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 221,
+  "candidate_checks": 222,
   "cases": [
     {
       "check": {
@@ -158,6 +158,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220722"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; Get-PSDrive -PSProvider FileSystem | ForEach-Object { Get-ChildItem -LiteralPath ($_.Root) -Recurse -Force -Include '*.p12','*.pfx' -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName } | Select-Object -First 1\"",
+        "type": "command_output"
+      },
+      "description": "Software certificate installation files must be removed from Windows 10.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; Get-PSDrive -PSProvider FileSystem | ForEach-Object { Get-ChildItem -LiteralPath ($_.Root) -Recurse -Force -Include '*.p12','*.pfx' -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName } | Select-Object -First 1\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; Get-PSDrive -PSProvider FileSystem | ForEach-Object { Get-ChildItem -LiteralPath ($_.Root) -Recurse -Force -Include '*.p12','*.pfx' -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName } | Select-Object -First 1\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220723"
     },
     {
       "check": {
@@ -5950,5 +5976,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 221
+  "validated_candidates": 222
 }

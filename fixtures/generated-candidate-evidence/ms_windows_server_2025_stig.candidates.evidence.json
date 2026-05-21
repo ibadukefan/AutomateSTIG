@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 255,
+  "candidate_checks": 256,
   "cases": [
     {
       "check": {
@@ -286,6 +286,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278005"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; Get-PSDrive -PSProvider FileSystem | ForEach-Object { Get-ChildItem -LiteralPath ($_.Root) -Recurse -Force -Include '*.p12','*.pfx' -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName } | Select-Object -First 1\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must have software certificate installation files removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; Get-PSDrive -PSProvider FileSystem | ForEach-Object { Get-ChildItem -LiteralPath ($_.Root) -Recurse -Force -Include '*.p12','*.pfx' -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName } | Select-Object -First 1\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; Get-PSDrive -PSProvider FileSystem | ForEach-Object { Get-ChildItem -LiteralPath ($_.Root) -Recurse -Force -Include '*.p12','*.pfx' -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName } | Select-Object -First 1\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278008"
     },
     {
       "check": {
@@ -6838,5 +6864,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 255
+  "validated_candidates": 256
 }

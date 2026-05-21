@@ -9256,9 +9256,46 @@ def _postgresql_audit_outcome_config_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _windows_certificate_installation_files_absent_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-205852', 'V-220723', 'V-278008'}:
+        return None
+    if not re.search(r'windows', stig_id, re.IGNORECASE):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    if not re.search(r'certificate\s+installation\s+files?\s+(?:must\s+be\s+)?removed', title, re.IGNORECASE):
+        return None
+    if not re.search(r'Search\s+all\s+drives\s+for\s+\*\.p12\s+and\s+\*\.pfx\s+files', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+any\s+files\s+with\s+these\s+extensions\s+exist,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Remove\s+any\s+certificate\s+installation\s+files\s+\(\*\.p12\s+and\s+\*\.pfx\)', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "$ErrorActionPreference='SilentlyContinue'; "
+        "Get-PSDrive -PSProvider FileSystem | ForEach-Object { "
+        "Get-ChildItem -LiteralPath ($_.Root) -Recurse -Force -Include '*.p12','*.pfx' -File -ErrorAction SilentlyContinue | "
+        "Select-Object -First 1 -ExpandProperty FullName } | Select-Object -First 1"
+        "\""
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    windows_certificate_installation_files_absent = _windows_certificate_installation_files_absent_candidate(rule, stig_id)
+    if windows_certificate_installation_files_absent:
+        return windows_certificate_installation_files_absent
     postgresql_unused_extensions_absent = (
         'postgresql' in stig_id.lower()
         and rule.get('vuln_id', '') == 'V-233592'

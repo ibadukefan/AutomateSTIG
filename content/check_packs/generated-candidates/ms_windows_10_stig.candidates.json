@@ -82,6 +82,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; Get-PSDrive -PSProvider FileSystem | ForEach-Object { Get-ChildItem -LiteralPath ($_.Root) -Recurse -Force -Include '*.p12','*.pfx' -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName } | Select-Object -First 1\"",
+        "type": "command_output"
+      },
+      "description": "Software certificate installation files must be removed from Windows 10.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-220723"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$profiles=Get-NetFirewallProfile -ErrorAction SilentlyContinue; if ($profiles -and -not ($profiles | Where-Object { -not $_.Enabled })) { 'Compliant' }\"",
         "type": "command_output"
       },
