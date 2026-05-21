@@ -1704,6 +1704,51 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('log_mode', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'ARCHIVELOG'})
 
+    def test_infers_oracle_database_redo_log_group_member_minimum_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-276000',
+            'title': 'A minimum of three Oracle redo log groups/files must be defined and configured to be stored on separate, archived physical disks or archived directories on a RAID device. In addition, each Oracle redo log group must have a minimum of two Oracle redo log members (files).',
+            'check_content': (
+                'From SQL*Plus:\n\n'
+                '-- Check to see how many Oracle redo log groups there are:\n'
+                'select group#, bytes, members, status, archived from v$log;\n\n'
+                '-- Check to see how many Oracle redo log members there are:\n'
+                'select * from v$logfile;\n\n'
+                'This is a finding if there are less than three Oracle redo log groups a RAID storage device, or equivalent storage system, is not being used.\n\n'
+                'If one or more groups (group#) has only a single member this is a finding.\n\n'
+                'select count(*) from V$LOG;\n\n'
+                'If the value of the count returned is less than 3, this is a finding.\n\n'
+                'From SQL*Plus:\n\n'
+                'select count(*) from V$LOG where members > 1;\n\n'
+                'If the value of the count returned is less than 3 and a RAID storage device is not being used, this is a finding.'
+            ),
+            'fix_text': (
+                'To define additional redo log file groups:\n\n'
+                'From SQL*Plus (Example):\n\n'
+                'alter database add logfile group 2 (\'diska:log2.log\', \'diskb:log2.log\') size 50K;\n\n'
+                'To add additional redo log file [members] to an existing redo log file group:\n\n'
+                'alter database add logfile member \'diskc:log2.log\' to group 2;'
+            ),
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-276000')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('v$log', candidate['check']['command'])
+        self.assertIn('COUNT(*) FROM v$log', candidate['check']['command'])
+        self.assertIn('members < 2', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_oracle_database_redo_log_candidate_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-276000',
+            'title': 'A minimum of three Oracle redo log groups/files must be defined and configured to be stored on separate, archived physical disks or archived directories on a RAID device. In addition, each Oracle redo log group must have a minimum of two Oracle redo log members (files).',
+            'check_content': 'Review Oracle redo log configuration.',
+            'fix_text': 'Configure redo logs as required.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Oracle_Database_19c_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
+
     def test_does_not_infer_oracle_database_archivelog_without_exact_guards(self):
         rule = {
             'vuln_id': 'V-270573',

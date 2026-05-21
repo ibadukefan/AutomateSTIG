@@ -12115,6 +12115,41 @@ def _oracle_database_archivelog_mode_candidate(rule: dict, stig_id: str) -> dict
     }
 
 
+def _oracle_database_redo_log_group_member_minimum_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-276000':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'minimum\s+of\s+three\s+Oracle\s+redo\s+log\s+groups/files', rule.get('title', ''), re.IGNORECASE):
+        return None
+    required_patterns = (
+        r'select\s+group#\s*,\s*bytes\s*,\s*members\s*,\s*status\s*,\s*archived\s+from\s+v\$log',
+        r'select\s+\*\s+from\s+v\$logfile',
+        r'select\s+count\s*\(\s*\*\s*\)\s+from\s+V\$LOG',
+        r'select\s+count\s*\(\s*\*\s*\)\s+from\s+V\$LOG\s+where\s+members\s*>\s*1',
+        r'value\s+of\s+the\s+count\s+returned\s+is\s+less\s+than\s+3,\s+this\s+is\s+a\s+finding',
+        r'one\s+or\s+more\s+groups\s*\(\s*group#\s*\)\s+has\s+only\s+a\s+single\s+member\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'alter\s+database\s+add\s+logfile\s+group', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'alter\s+database\s+add\s+logfile\s+member', fix_text, re.IGNORECASE):
+        return None
+    sql = (
+        "SELECT CASE WHEN (SELECT COUNT(*) FROM v$log) >= 3 "
+        "AND NOT EXISTS (SELECT 1 FROM v$log WHERE members < 2) "
+        "THEN 'Compliant' ELSE 'Finding' END FROM dual;"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': _oracle_sqlplus_command(sql)},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_configuration_audit_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270540':
         return None
@@ -14943,6 +14978,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_archivelog_mode_candidate = _oracle_database_archivelog_mode_candidate(rule, stig_id)
     if oracle_database_archivelog_mode_candidate:
         return oracle_database_archivelog_mode_candidate
+
+    oracle_database_redo_log_candidate = _oracle_database_redo_log_group_member_minimum_candidate(rule, stig_id)
+    if oracle_database_redo_log_candidate:
+        return oracle_database_redo_log_candidate
 
     oracle_database_configuration_audit_candidate = _oracle_database_configuration_audit_candidate(rule, stig_id)
     if oracle_database_configuration_audit_candidate:

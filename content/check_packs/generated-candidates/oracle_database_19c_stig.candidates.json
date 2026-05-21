@@ -246,6 +246,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-270573"
+    },
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN (SELECT COUNT(*) FROM v$log) >= 3 AND NOT EXISTS (SELECT 1 FROM v$log WHERE members < 2) THEN 'Compliant' ELSE 'Finding' END FROM dual;\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "A minimum of three Oracle redo log groups/files must be defined and configured to be stored on separate, archived physical disks or archived directories on a RAID device. In addition, each Oracle redo log group must have a minimum of two Oracle redo log members (files).",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-276000"
     }
   ],
   "platform": "generic",
