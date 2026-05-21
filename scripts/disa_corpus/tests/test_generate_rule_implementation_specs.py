@@ -11,6 +11,73 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_copies_duplicate_candidate_for_lowercase_xccdf_group_vuln_ids(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            source_path = root / 'full' / 'v-123456.json'
+            target_path = root / 'scap' / 'xccdf_mil.disa.stig_group_v-123456.json'
+            source_candidate = {
+                'vuln_id': 'V-123456',
+                'platform': 'linux',
+                'check': {'type': 'command_output', 'command': 'true'},
+                'expected': {'type': 'equals', 'value': ''},
+                'description': 'Example duplicate rule',
+            }
+            source = {
+                'vuln_id': 'V-123456',
+                'title': 'Example duplicate rule',
+                'candidate_check': source_candidate,
+                'normalizer': 'command_output',
+                'evaluator': 'candidate_template',
+                'expected_values': source_candidate['expected'],
+            }
+            target = {
+                'vuln_id': 'xccdf_mil.disa.stig_group_v-123456',
+                'title': 'Example duplicate rule',
+                'normalizer': 'planned',
+                'evaluator': 'planned',
+                'expected_values': {},
+            }
+            mod.write_json(source_path, source)
+            mod.write_json(target_path, target)
+            written_specs = {source_path: source, target_path: target}
+
+            mod._copy_duplicate_candidate_to_less_complete_specs(written_specs, implementation_root=root)
+
+            updated = json.loads(target_path.read_text())
+            self.assertEqual(updated['candidate_check']['vuln_id'], 'xccdf_mil.disa.stig_group_v-123456')
+            self.assertEqual(updated['candidate_check']['check'], source_candidate['check'])
+            self.assertEqual(updated['normalizer'], 'command_output')
+            self.assertEqual(updated['evaluator'], 'candidate_template')
+
+    def test_infers_cisco_nxos_multicast_admin_scope_boundary_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221134',
+            'title': 'The Cisco multicast edge switch must be configured to establish boundaries for administratively scoped multicast traffic.',
+            'check_content': (
+                'Multicast boundary for NX-OS can be established via combination of the border command along with an ACL to filter admin-scoped multicast traffic.\n\n'
+                'Step 1: Verify that the interface at the multicast domain edge has been configured with both an ingress and egress ACL.\n\n'
+                'interface Ethernet2/1\n ip access-group FILTER_TRAFFIC_IN in\n ip access-group FILTER_TRAFFIC_OUT out\n ip pim sparse-mode\n ip pim border\n\n'
+                'Step 2: Verify that the ingress and egress ACLs block the address range for administratively scoped multicast traffic.\n\n'
+                'ip access-list FILTER_TRAFFIC_IN\n 10 deny ip any 239.0.0.0/8\n 90 deny ip any any log\n\n'
+                'ip access-list FILTER_TRAFFIC_OUT\n 10 deny ip any 239.0.0.0/8\n 80 permit ip any any\n\n'
+                'If the switch is not configured to establish boundaries for administratively scoped multicast traffic, this is a finding.'
+            ),
+            'fix_text': (
+                'Step 1: Configure an ingress and egress ACL to block administratively scoped multicast traffic.\n\n'
+                'SW1(config)# ip access-list FILTER_TRAFFIC_IN\nSW1(config-acl)# deny 239.0.0.0/8\n\n'
+                'SW1(config)# ip access-list FILTER_TRAFFIC_OUT\nSW1(config-acl)# deny 239.0.0.0/8\n\n'
+                'Step 2: Apply the ingress and egress ACL to the applicable interfaces.\n'
+                'SW1(config-if)# ip access-group FILTER_TRAFFIC_IN in\nSW1(config-if)# ip access-group FILTER_TRAFFIC_OUT out'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221134')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('ip pim border', candidate['check']['command'])
+        self.assertIn('239\\.0\\.0\\.0\\/8', candidate['check']['command'])
+
     def test_infers_linux_temporary_account_expiration_candidates(self):
         cases = [
             ('V-258047', 'RHEL_9_STIG', 'RHEL 9'),

@@ -353,6 +353,19 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{border=0;deny=0} /ip pim border/{border=1} /deny ip any 239\\.0\\.0\\.0\\/8/{deny=1} END{if(border&&deny) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco multicast edge switch must be configured to establish boundaries for administratively scoped multicast traffic.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221134"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ ip igmp state-limit \"",
         "type": "command_output"
       },

@@ -2811,6 +2811,12 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'content': r'class-map\s+match-all\s+SCAVENGER\s+match\s+ip\s+dscp\s+cs1.*?policy-map\s+\S+.*?class\s+SCAVENGER\s+bandwidth\s+percent\s+5.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+enforce\s+a\s+QoS\s+policy\s+to\s+limit\s+the\s+effects\s+of\s+packet\s+flooding\s+DoS\s+attacks,\s+this\s+is\s+a\s+finding',
             'fix': r'class-map\s+match-all\s+SCAVENGER.*?match\s+ip\s+dscp\s+cs1.*?class\s+SCAVENGER.*?bandwidth\s+percent\s+5',
         },
+        'V-221134': {
+            'command': 'show running-config | awk \'BEGIN{border=0;deny=0} /ip pim border/{border=1} /deny ip any 239\\.0\\.0\\.0\\/8/{deny=1} END{if(border&&deny) print "Compliant"}\'',
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'content': r'Multicast\s+boundary\s+for\s+NX-OS.*?ip\s+pim\s+border.*?deny\s+ip\s+any\s+239\.0\.0\.0/8.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+establish\s+boundaries\s+for\s+administratively\s+scoped\s+multicast\s+traffic,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+an\s+ingress\s+and\s+egress\s+ACL\s+to\s+block\s+administratively\s+scoped\s+multicast\s+traffic.*?deny(?:\s+ip\s+any)?\s+239\.0\.0\.0/8.*?Apply\s+the\s+ingress\s+and\s+egress\s+ACL\s+to\s+the\s+applicable\s+interfaces',
+        },
         'V-221141': {
             'command': 'show running-config | include "^ip pim spt-threshold infinity "',
             'expected': {'type': 'contains', 'substring': 'ip pim spt-threshold infinity'},
@@ -14404,11 +14410,14 @@ def spec_from_rule(manifest_path: Path, manifest: dict, rule: dict) -> dict:
     return spec
 
 
+def _extract_vuln_ids(value: object) -> set[str]:
+    return {match.upper() for match in re.findall(r'V-\d+', str(value or ''), re.IGNORECASE)}
+
+
 def _artifact_rule_keys(rule: dict) -> set[str]:
     keys = {str(value) for value in (rule.get('vuln_id'), rule.get('rule_id')) if value}
     for value in list(keys):
-        for match in re.findall(r'V-\d+', value):
-            keys.add(match)
+        keys.update(_extract_vuln_ids(value))
     return keys
 
 
@@ -14451,9 +14460,7 @@ def write_json(path: Path, payload: dict) -> None:
 def _canonical_vuln_ids(rule: dict) -> set[str]:
     ids: set[str] = set()
     for value in (rule.get('vuln_id'), rule.get('rule_id')):
-        if not value:
-            continue
-        ids.update(re.findall(r'V-\d+', str(value)))
+        ids.update(_extract_vuln_ids(value))
     return ids
 
 
