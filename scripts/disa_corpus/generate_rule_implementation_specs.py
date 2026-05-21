@@ -927,6 +927,40 @@ def _windows_host_firewall_enabled_candidate(rule: dict, stig_id: str) -> dict |
     }
 
 
+def _windows_11_absent_non_system_file_shares_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if stig_id != 'Microsoft_Windows_11_STIG' or vuln_id != 'V-253267':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_content_patterns = (
+        r'Non-system-created\s+shares\s+must\s+not\s+exist\s+on\s+workstations',
+        r'Shared\s+Folders\s*>>\s*Shares',
+        r'ADMIN\$',
+        r'\bC\$',
+        r'IPC\$',
+        r'If\s+the\s+only\s+shares\s+listed\s+are\s+["“]ADMIN\$["”],\s+["“]C\$["”]\s+and\s+["“]IPC\$["”],\s+this\s+is\s+NA',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content_patterns):
+        return None
+    if not re.search(r'Remove\s+any\s+unnecessary\s+non-system-created\s+shares', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$allowed=@(\'ADMIN$\',\'C$\',\'IPC$\'); '
+        '$shares=Get-SmbShare -ErrorAction Stop; '
+        '$bad=$shares | Where-Object { $allowed -notcontains $_.Name }; '
+        'if ($shares -and -not $bad) { \'Compliant\' }"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_workstation_bitlocker_all_fixed_volumes_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-220702', 'V-253259'}:
@@ -14041,6 +14075,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     windows_run_as_different_user_candidate = _windows_run_as_different_user_context_menu_candidate(rule, stig_id)
     if windows_run_as_different_user_candidate:
         return windows_run_as_different_user_candidate
+    windows_11_absent_non_system_file_shares_candidate = _windows_11_absent_non_system_file_shares_candidate(rule, stig_id)
+    if windows_11_absent_non_system_file_shares_candidate:
+        return windows_11_absent_non_system_file_shares_candidate
     ol9_crypto_policy_not_overridden_candidate = _ol9_crypto_policy_not_overridden_candidate(rule, stig_id)
     if ol9_crypto_policy_not_overridden_candidate:
         return ol9_crypto_policy_not_overridden_candidate

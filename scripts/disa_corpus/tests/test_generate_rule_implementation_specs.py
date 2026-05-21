@@ -3498,6 +3498,46 @@ By using this IS, you consent to the following conditions:
         self.assertEqual(candidate['check']['type'], 'command_output')
         self.assertIn('System32\\Eventvwr.exe', candidate['check']['command'])
 
+    def test_infers_windows_11_absent_non_system_file_shares_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253267',
+            'title': 'Non-system-created file shares on a system must limit access to groups that require it.',
+            'check_content': '''Non-system-created shares must not exist on workstations.
+
+If only system-created shares exist on the system, this is NA.
+
+Run "Computer Management". Navigate to System Tools >> Shared Folders >> Shares.
+
+If the only shares listed are "ADMIN$", "C$" and "IPC$", this is NA.
+
+Right-click any non-system-created shares. Select "Properties". Select the "Share Permissions" tab.
+
+If the file shares have not been reconfigured to restrict permissions to the specific groups or accounts that require access, this is a finding.''',
+            'fix_text': 'If a non-system-created share is required on a system, configure the share and NTFS permissions to limit access to the specific groups or accounts that require it. Remove any unnecessary non-system-created shares.',
+        }, 'Microsoft_Windows_11_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-253267')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Get-SmbShare', candidate['check']['command'])
+        self.assertIn("'ADMIN$'", candidate['check']['command'])
+        self.assertIn("'C$'", candidate['check']['command'])
+        self.assertIn("'IPC$'", candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_windows_11_absent_non_system_file_shares_without_exact_guards(self):
+        base = {
+            'vuln_id': 'V-253267',
+            'title': 'Non-system-created file shares on a system must limit access to groups that require it.',
+            'check_content': 'Non-system-created shares must not exist on workstations. Run "Computer Management". Navigate to System Tools >> Shared Folders >> Shares. If the only shares listed are "ADMIN$", "C$" and "IPC$", this is NA.',
+            'fix_text': 'Remove any unnecessary non-system-created shares.',
+        }
+
+        self.assertIsNone(mod.infer_candidate_check(dict(base, vuln_id='V-999999'), 'Microsoft_Windows_11_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(base, 'MS_Windows_10_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(dict(base, check_content='Non-system-created shares must not exist on workstations.'), 'Microsoft_Windows_11_STIG'))
+
     def test_generate_specs_copies_exact_vuln_title_candidate_to_less_complete_scap_duplicate(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
