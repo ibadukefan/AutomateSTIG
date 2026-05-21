@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; $feature=Get-WindowsFeature AD-Domain-Services; if (-not $feature -or -not $feature.Installed) { 'Compliant'; exit }; Import-Module ActiveDirectory -ErrorAction SilentlyContinue; $domain=Get-ADDomain; $ou='AD:\\OU=Domain Controllers,' + $domain.DistinguishedName; $allowed='^(NT AUTHORITY\\\\SYSTEM|.*\\\\Domain Admins|.*\\\\Enterprise Admins|BUILTIN\\\\Administrators)$'; $writeMask=[System.DirectoryServices.ActiveDirectoryRights]'CreateChild,DeleteChild,DeleteTree,WriteProperty,GenericAll,GenericWrite,WriteDacl,WriteOwner'; $bad=Get-Acl -Path $ou | Select-Object -ExpandProperty Access | Where-Object { ($_.AccessControlType -eq 'Allow') -and (($_.ActiveDirectoryRights -band $writeMask) -ne 0) -and ($_.IdentityReference.Value -notmatch $allowed) }; if (-not $bad) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must have the proper access control permissions.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-254394"
+  },
   "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nReview the permissions on the Domain Controllers OU.\n\nOpen \"Active Directory Users and Computers\" (available from various menus or run \"dsa.msc\").\n\nSelect \"Advanced Features\" in the \"View\" menu if not previously selected.\n\nSelect the \"Domain Controllers\" OU (folder in folder icon).\n\nRight-click and select \"Properties\".\n\nSelect the \"Security\" tab.\n\nIf the permissions on the Domain Controllers OU do not restrict changes to System, Domain Admins, Enterprise Admins and Administrators, this is a finding.\n\nThe default permissions listed below satisfy this requirement.\n\nDomains supporting Microsoft Exchange will have additional Exchange related permissions on the Domain Controllers OU. These may include some change related permissions and are not a finding.\n\nThe permissions shown are at the summary level. More detailed permissions can be viewed by selecting the \"Advanced\" button, the desired Permission entry, and the \"View\" or \"Edit\" button.\n\nExcept where noted otherwise, the special permissions may include a wide range of permissions and properties and are acceptable for this requirement.\n\nCREATOR OWNER - Special permissions\n\nSELF - Special permissions\n\nAuthenticated Users - Read, Special permissions\n\nThe special permissions for Authenticated Users are Read types.\n\nIf detailed permissions include any Create, Delete, Modify, or Write Permissions or Properties, this is a finding.\n\nSYSTEM - Full Control\n\nDomain Admins - Read, Write, Create all child objects, Generate resultant set of policy (logging), Generate resultant set of policy (planning), Special permissions\n\nEnterprise Admins - Full Control\n\nKey Admins - Special permissions\n\nEnterprise Key Admins - Special permissions\n\nAdministrators - Read, Write, Create all child objects, Generate resultant set of policy (logging), Generate resultant set of policy (planning), Special permissions\n\nPre-Windows 2000 Compatible Access - Special permissions\n\nThe Special permissions for Pre-Windows 2000 Compatible Access are Read types.\n\nIf detailed permissions include any Create, Delete, Modify, or Write Permissions or Properties, this is a finding.\n\nENTERPRISE DOMAIN CONTROLLERS - Read, Special permissions",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Limit the permissions on the Domain Controllers OU to restrict changes to System, Domain Admins, Enterprise Admins and Administrators.\n\nThe default permissions listed below satisfy this requirement.\n\nDomains supporting Microsoft Exchange will have additional Exchange related permissions on the Domain Controllers OU. These may include some change related permissions.\n\nCREATOR OWNER - Special permissions\n\nSELF - Special permissions\n\nAuthenticated Users - Read, Special permissions\n\nThe special permissions for Authenticated Users are Read types.\n\nSYSTEM - Full Control\n\nDomain Admins - Read, Write, Create all child objects, Generate resultant set of policy (logging), Generate resultant set of policy (planning), Special permissions\n\nEnterprise Admins - Full Control\n\nKey Admins - Special permissions\n\nEnterprise Key Admins - Special permissions\n\nAdministrators - Read, Write, Create all child objects, Generate resultant set of policy (logging), Generate resultant set of policy (planning), Special permissions\n\nPre-Windows 2000 Compatible Access - Special permissions\n\nThe special permissions for Pre-Windows 2000 Compatible Access are Read types.\n\nENTERPRISE DOMAIN CONTROLLERS - Read, Special permissions",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-254394r958726_rule",
   "severity": "high",

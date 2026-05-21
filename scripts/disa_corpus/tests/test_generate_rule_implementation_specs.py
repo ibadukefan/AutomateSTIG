@@ -5170,6 +5170,53 @@ ALTER SYSTEM SET remote_os_roles = FALSE scope=spfile;''',
             'description': 'The Oracle REMOTE_OS_ROLES parameter must be set to FALSE.',
         })
 
+    def test_infers_windows_domain_controllers_ou_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254394',
+            'title': 'Windows Server 2022 Active Directory Domain Controllers Organizational Unit (OU) object must have the proper access control permissions.',
+            'check_content': '''This applies to domain controllers. It is NA for other systems.
+
+Review the permissions on the Domain Controllers OU.
+
+If the permissions on the Domain Controllers OU do not restrict changes to System, Domain Admins, Enterprise Admins and Administrators, this is a finding.''',
+            'fix_text': 'Limit the permissions on the Domain Controllers OU to restrict changes to System, Domain Admins, Enterprise Admins and Administrators.',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['vuln_id'], 'V-254394')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('OU=Domain Controllers', candidate['check']['command'])
+        self.assertIn('Get-Acl', candidate['check']['command'])
+        self.assertIn('ActiveDirectoryRights', candidate['check']['command'])
+
+    def test_infers_oracle_database_audit_sys_operations_or_unified_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270540',
+            'title': 'Changes to configuration options must be audited.',
+            'check_content': '''For Unified or mixed auditing, from SQL*Plus:
+
+select count(*) from audit_unified_enabled_policies where entity_name = 'SYS';
+
+If the count is less than one row, this is a finding.
+
+For Standard auditing, from SQL*Plus:
+
+select value from v$parameter where name = 'audit_sys_operations';
+
+If the value returned is FALSE, this is a finding.''',
+            'fix_text': '''For Standard auditing, from SQL*Plus:
+
+alter system set audit_sys_operations = TRUE scope = spfile;
+
+If Unified Auditing is used, create or enable an audit policy for SYS.''',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270540',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN (SELECT COUNT(*) FROM audit_unified_enabled_policies WHERE entity_name = 'SYS') >= 1 OR EXISTS (SELECT 1 FROM v$parameter WHERE name = 'audit_sys_operations' AND UPPER(value) = 'TRUE') THEN 'Compliant' END FROM dual;\nEXIT\nSQL"},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Changes to configuration options must be audited.',
+        })
+
     def test_infers_oracle_database_sample_schema_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270552',

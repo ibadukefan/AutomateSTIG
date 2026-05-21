@@ -800,6 +800,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; $feature=Get-WindowsFeature AD-Domain-Services; if (-not $feature -or -not $feature.Installed) { 'Compliant'; exit }; Import-Module ActiveDirectory -ErrorAction SilentlyContinue; $domain=Get-ADDomain; $ou='AD:\\OU=Domain Controllers,' + $domain.DistinguishedName; $allowed='^(NT AUTHORITY\\\\SYSTEM|.*\\\\Domain Admins|.*\\\\Enterprise Admins|BUILTIN\\\\Administrators)$'; $writeMask=[System.DirectoryServices.ActiveDirectoryRights]'CreateChild,DeleteChild,DeleteTree,WriteProperty,GenericAll,GenericWrite,WriteDacl,WriteOwner'; $bad=Get-Acl -Path $ou | Select-Object -ExpandProperty Access | Where-Object { ($_.AccessControlType -eq 'Allow') -and (($_.ActiveDirectoryRights -band $writeMask) -ne 0) -and ($_.IdentityReference.Value -notmatch $allowed) }; if (-not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 Active Directory Domain Controllers Organizational Unit (OU) object must have the proper access control permissions.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205742"
+    },
+    {
+      "check": {
         "key": "SeMachineAccountPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"

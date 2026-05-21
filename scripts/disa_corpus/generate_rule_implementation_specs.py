@@ -203,6 +203,48 @@ def _oracle_linux_8_nx_bit_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _windows_domain_controllers_ou_acl_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    allowed = {
+        'V-205742': {'windows_server_2019_stig'},
+        'V-254394': {'ms_windows_server_2022_stig'},
+        'V-278141': {'ms_windows_server_2025_stig'},
+    }
+    if slug(stig_id) not in allowed.get(canonical_vuln_id, set()):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'applies\s+to\s+domain\s+controllers',
+        r'Domain\s+Controllers\s+OU',
+        r'restrict\s+changes\s+to\s+System,\s*Domain\s+Admins,\s*Enterprise\s+Admins(?:,?\s+and|,?)\s+Administrators',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'Limit\s+the\s+permissions\s+on\s+the\s+Domain\s+Controllers\s+OU\s+to\s+restrict\s+changes\s+to\s+System,\s*Domain\s+Admins,\s*Enterprise\s+Admins(?:,?\s+and|,?)\s+Administrators', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "$ErrorActionPreference='SilentlyContinue'; "
+        "$feature=Get-WindowsFeature AD-Domain-Services; "
+        "if (-not $feature -or -not $feature.Installed) { 'Compliant'; exit }; "
+        "Import-Module ActiveDirectory -ErrorAction SilentlyContinue; "
+        "$domain=Get-ADDomain; $ou='AD:\\OU=Domain Controllers,' + $domain.DistinguishedName; "
+        "$allowed='^(NT AUTHORITY\\\\SYSTEM|.*\\\\Domain Admins|.*\\\\Enterprise Admins|BUILTIN\\\\Administrators)$'; "
+        "$writeMask=[System.DirectoryServices.ActiveDirectoryRights]'CreateChild,DeleteChild,DeleteTree,WriteProperty,GenericAll,GenericWrite,WriteDacl,WriteOwner'; "
+        "$bad=Get-Acl -Path $ou | Select-Object -ExpandProperty Access | Where-Object { ($_.AccessControlType -eq 'Allow') -and (($_.ActiveDirectoryRights -band $writeMask) -ne 0) -and ($_.IdentityReference.Value -notmatch $allowed) }; "
+        "if (-not $bad) { 'Compliant' }"
+        "\""
+    )
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_defender_registry_absent_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -11685,6 +11727,39 @@ def _oracle_database_inactive_account_time_candidate(rule: dict, stig_id: str) -
     }
 
 
+def _oracle_database_audit_sys_operations_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270540':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required = (
+        r'select\s+count\s*\(\s*\*\s*\)\s+from\s+audit_unified_enabled_policies\s+where\s+entity_name\s*=\s*["\']SYS["\']',
+        r'count\s+is\s+less\s+than\s+one\s+row,\s+this\s+is\s+a\s+finding',
+        r"select\s+value\s+from\s+v\$parameter\s+where\s+name\s*=\s*['\"]audit_sys_operations['\"]",
+        r'value\s+returned\s+is\s+FALSE,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required):
+        return None
+    if not re.search(r'alter\s+system\s+set\s+audit_sys_operations\s*=\s*TRUE\s+scope\s*=\s*spfile', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sqlplus -s / as sysdba <<'SQL'\n"
+        "SET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\n"
+        "SELECT CASE WHEN (SELECT COUNT(*) FROM audit_unified_enabled_policies WHERE entity_name = 'SYS') >= 1 "
+        "OR EXISTS (SELECT 1 FROM v$parameter WHERE name = 'audit_sys_operations' AND UPPER(value) = 'TRUE') "
+        "THEN 'Compliant' END FROM dual;\n"
+        "EXIT\n"
+        "SQL"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_exact_parameter_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE):
         return None
@@ -13954,6 +14029,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     windows_ntds_acl_candidate = _windows_domain_controller_ntds_acl_candidate(rule, stig_id)
     if windows_ntds_acl_candidate:
         return windows_ntds_acl_candidate
+    windows_domain_controllers_ou_acl_candidate = _windows_domain_controllers_ou_acl_candidate(rule, stig_id)
+    if windows_domain_controllers_ou_acl_candidate:
+        return windows_domain_controllers_ou_acl_candidate
     windows_legal_notice_caption_candidate = _windows_legal_notice_caption_candidate(rule, stig_id)
     if windows_legal_notice_caption_candidate:
         return windows_legal_notice_caption_candidate
@@ -14534,6 +14612,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_computer_account_logins_candidate = _sql_server_computer_account_logins_absent_candidate(rule, stig_id)
     if sql_server_computer_account_logins_candidate:
         return sql_server_computer_account_logins_candidate
+
+    oracle_database_audit_sys_operations_candidate = _oracle_database_audit_sys_operations_candidate(rule, stig_id)
+    if oracle_database_audit_sys_operations_candidate:
+        return oracle_database_audit_sys_operations_candidate
 
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:
