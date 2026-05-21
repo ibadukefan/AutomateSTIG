@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 4,
+  "candidate_checks": 5,
   "cases": [
     {
       "check": {
@@ -84,6 +84,32 @@
     },
     {
       "check": {
+        "name": "PowerShell-v2",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2022 must not have Windows PowerShell 2.0 installed.",
+      "evidence_type": "windows_feature_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "PowerShell-v2": true
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "packages": {
+          "PowerShell-v2": false
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "xccdf_mil.disa.stig_group_V-254278"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "NoLMHash"
@@ -115,5 +141,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1-3_benchmark.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark",
-  "validated_candidates": 4
+  "validated_candidates": 5
 }

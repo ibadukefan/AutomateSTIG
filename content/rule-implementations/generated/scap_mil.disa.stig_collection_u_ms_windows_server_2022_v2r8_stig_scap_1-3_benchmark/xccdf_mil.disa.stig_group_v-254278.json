@@ -1,8 +1,21 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "PowerShell-v2",
+      "should_be_installed": false,
+      "type": "windows_feature"
+    },
+    "description": "Windows Server 2022 must not have Windows PowerShell 2.0 installed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "windows",
+    "vuln_id": "xccdf_mil.disa.stig_group_V-254278"
+  },
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,13 +23,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Uninstall the \"Windows PowerShell 2.0 Engine\".\n\nStart \"Server Manager\".\n\nSelect the server with the feature.\n\nScroll down to \"ROLES AND FEATURES\" in the right pane.\n\nSelect \"Remove Roles and Features\" from the drop-down \"TASKS\" list.\n\nSelect the appropriate server on the \"Server Selection\" page and click \"Next\".\n\nDeselect \"Windows PowerShell 2.0 Engine\" under \"Windows PowerShell\" on the \"Features\" page.\n\nClick \"Next\" and \"Remove\" as prompted.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "windows_feature",
   "remediation": "planned",
   "rule_id": "xccdf_mil.disa.stig_rule_SV-254278r958478_rule",
   "severity": "medium",

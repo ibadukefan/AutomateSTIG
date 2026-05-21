@@ -50,6 +50,45 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertEqual(updated['normalizer'], 'command_output')
             self.assertEqual(updated['evaluator'], 'candidate_template')
 
+    def test_copies_duplicate_candidate_when_scap_title_has_group_id_prefix(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            source_path = root / 'full' / 'v-654321.json'
+            target_path = root / 'scap' / 'xccdf_mil.disa.stig_group_v-654321.json'
+            source_candidate = {
+                'vuln_id': 'V-654321',
+                'platform': 'windows',
+                'check': {'type': 'command_output', 'command': 'Get-WindowsFeature PowerShell-v2'},
+                'expected': {'type': 'matches', 'pattern': '^(?:Available|Removed)$'},
+                'description': 'Windows Server must not have Windows PowerShell 2.0 installed.',
+            }
+            source = {
+                'vuln_id': 'V-654321',
+                'title': 'Windows Server must not have Windows PowerShell 2.0 installed.',
+                'candidate_check': source_candidate,
+                'normalizer': 'command_output',
+                'evaluator': 'candidate_template',
+                'expected_values': source_candidate['expected'],
+            }
+            target = {
+                'vuln_id': 'xccdf_mil.disa.stig_group_V-654321',
+                'title': 'xccdf_mil.disa.stig_group_V-654321 Windows Server must not have Windows PowerShell 2.0 installed.',
+                'normalizer': 'planned',
+                'evaluator': 'planned',
+                'expected_values': {},
+            }
+            mod.write_json(source_path, source)
+            mod.write_json(target_path, target)
+            written_specs = {source_path: source, target_path: target}
+
+            mod._copy_duplicate_candidate_to_less_complete_specs(written_specs, implementation_root=root)
+
+            updated = json.loads(target_path.read_text())
+            self.assertEqual(updated['candidate_check']['vuln_id'], 'xccdf_mil.disa.stig_group_V-654321')
+            self.assertEqual(updated['candidate_check']['check'], source_candidate['check'])
+            self.assertEqual(updated['normalizer'], 'command_output')
+            self.assertEqual(updated['evaluator'], 'candidate_template')
+
     def test_infers_cisco_nxos_multicast_admin_scope_boundary_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221134',

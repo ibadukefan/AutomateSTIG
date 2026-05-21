@@ -14494,7 +14494,13 @@ def _canonical_vuln_ids(rule: dict) -> set[str]:
 
 
 def _normalized_title_key(title: str) -> str:
-    return re.sub(r'\s+', ' ', (title or '').strip().lower())
+    normalized = re.sub(r'\s+', ' ', (title or '').strip().lower())
+    # Some SCAP-derived specs prefix the human title with the XCCDF group id
+    # (for example, "xccdf_mil.disa.stig_group_V-254278 Windows Server ...").
+    # Keep duplicate propagation keyed by the exact canonical V-number, but
+    # normalize away that metadata prefix so an already inferred candidate from
+    # the full DISA STIG can be reused for the same rule in the SCAP feed.
+    return re.sub(r'^xccdf_mil\.disa\.stig_group_v-\d+\s+', '', normalized)
 
 
 def _copy_duplicate_candidate_to_less_complete_specs(written_specs: dict[Path, dict], implementation_root: Path | None = None) -> None:
