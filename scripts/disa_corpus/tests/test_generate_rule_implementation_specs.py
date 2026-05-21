@@ -162,6 +162,59 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('ip pim border', candidate['check']['command'])
         self.assertIn('239\\.0\\.0\\.0\\/8', candidate['check']['command'])
 
+    def test_infers_cisco_nxos_bgp_bogon_prefix_filter_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221103',
+            'title': 'The Cisco BGP switch must be configured to reject inbound route advertisements for any Bogon prefixes.',
+            'check_content': (
+                'Review the switch configuration to verify that it will reject BGP routes for any Bogon prefixes.\n\n'
+                'Step 1: Verify a prefix list has been configured containing the current Bogon prefixes as shown in the example below:\n\n'
+                'ip prefix-list PREFIX_FILTER seq 5 deny 0.0.0.0/8 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 10 deny 10.0.0.0/8 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 15 deny 100.64.0.0/10 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 20 deny 127.0.0.0/8 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 25 deny 169.254.0.0/16 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 30 deny 172.16.0.0/12 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 35 deny 192.0.2.0/24 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 40 deny 192.88.99.0/24 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 45 deny 192.168.0.0/16 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 50 deny 198.18.0.0/15 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 55 deny 198.51.100.0/24 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 60 deny 203.0.113.0/24 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 65 deny 224.0.0.0/4 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 70 deny 240.0.0.0/4 le 32\n'
+                'ip prefix-list PREFIX_FILTER seq 75 permit 0.0.0.0/0 ge 8\n\n'
+                'Step 2: Verify that the prefix list has been applied to all external BGP peers.\n\n'
+                'If the switch is not configured to reject inbound route advertisements for any Bogon prefixes, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure the switch to reject inbound route advertisements for any Bogon prefixes.\n\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 5 deny 0.0.0.0/8 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 10 deny 10.0.0.0/8 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 15 deny 100.64.0.0/10 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 20 deny 127.0.0.0/8 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 25 deny 169.254.0.0/16 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 30 deny 172.16.0.0/12 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 35 deny 192.0.2.0/24 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 40 deny 192.88.99.0/24 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 45 deny 192.168.0.0/16 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 50 deny 198.18.0.0/15 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 55 deny 198.51.100.0/24 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 60 deny 203.0.113.0/24 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 65 deny 224.0.0.0/4 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 70 deny 240.0.0.0/4 le 32\n'
+                'SW1(config)# ip prefix-list PREFIX_FILTER seq 75 permit 0.0.0.0/0 ge 8\n'
+                'SW1(config-router-af)# prefix-list PREFIX_FILTER in'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221103')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('0.0.0.0/8', candidate['check']['command'])
+        self.assertIn('240.0.0.0/4', candidate['check']['command'])
+        self.assertIn('prefix-list', candidate['check']['command'])
+
     def test_infers_cisco_nxos_routing_key_lifetime_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221073',

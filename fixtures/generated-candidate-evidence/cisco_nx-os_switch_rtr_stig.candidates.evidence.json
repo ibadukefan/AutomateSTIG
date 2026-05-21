@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 37,
+  "candidate_checks": 38,
   "cases": [
     {
       "check": {
@@ -390,6 +390,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221101"
+    },
+    {
+      "check": {
+        "command": "show running-config | awk '/^ip prefix-list / && $5==\"deny\" && $7==\"le\" && $8==\"32\" {name=$3; seen[name]=seen[name] \",\" $6} /^[[:space:]]*prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {applied[$2]=1} END{for(name in applied){if(index(seen[name], \",0.0.0.0/8\") > 0 && index(seen[name], \",10.0.0.0/8\") > 0 && index(seen[name], \",100.64.0.0/10\") > 0 && index(seen[name], \",127.0.0.0/8\") > 0 && index(seen[name], \",169.254.0.0/16\") > 0 && index(seen[name], \",172.16.0.0/12\") > 0 && index(seen[name], \",192.0.2.0/24\") > 0 && index(seen[name], \",192.88.99.0/24\") > 0 && index(seen[name], \",192.168.0.0/16\") > 0 && index(seen[name], \",198.18.0.0/15\") > 0 && index(seen[name], \",198.51.100.0/24\") > 0 && index(seen[name], \",203.0.113.0/24\") > 0 && index(seen[name], \",224.0.0.0/4\") > 0 && index(seen[name], \",240.0.0.0/4\") > 0){print \"Compliant\"; exit}}}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco BGP switch must be configured to reject inbound route advertisements for any Bogon prefixes.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | awk '/^ip prefix-list / && $5==\"deny\" && $7==\"le\" && $8==\"32\" {name=$3; seen[name]=seen[name] \",\" $6} /^[[:space:]]*prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {applied[$2]=1} END{for(name in applied){if(index(seen[name], \",0.0.0.0/8\") > 0 && index(seen[name], \",10.0.0.0/8\") > 0 && index(seen[name], \",100.64.0.0/10\") > 0 && index(seen[name], \",127.0.0.0/8\") > 0 && index(seen[name], \",169.254.0.0/16\") > 0 && index(seen[name], \",172.16.0.0/12\") > 0 && index(seen[name], \",192.0.2.0/24\") > 0 && index(seen[name], \",192.88.99.0/24\") > 0 && index(seen[name], \",192.168.0.0/16\") > 0 && index(seen[name], \",198.18.0.0/15\") > 0 && index(seen[name], \",198.51.100.0/24\") > 0 && index(seen[name], \",203.0.113.0/24\") > 0 && index(seen[name], \",224.0.0.0/4\") > 0 && index(seen[name], \",240.0.0.0/4\") > 0){print \"Compliant\"; exit}}}'": "unexpected-Compliant"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | awk '/^ip prefix-list / && $5==\"deny\" && $7==\"le\" && $8==\"32\" {name=$3; seen[name]=seen[name] \",\" $6} /^[[:space:]]*prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {applied[$2]=1} END{for(name in applied){if(index(seen[name], \",0.0.0.0/8\") > 0 && index(seen[name], \",10.0.0.0/8\") > 0 && index(seen[name], \",100.64.0.0/10\") > 0 && index(seen[name], \",127.0.0.0/8\") > 0 && index(seen[name], \",169.254.0.0/16\") > 0 && index(seen[name], \",172.16.0.0/12\") > 0 && index(seen[name], \",192.0.2.0/24\") > 0 && index(seen[name], \",192.88.99.0/24\") > 0 && index(seen[name], \",192.168.0.0/16\") > 0 && index(seen[name], \",198.18.0.0/15\") > 0 && index(seen[name], \",198.51.100.0/24\") > 0 && index(seen[name], \",203.0.113.0/24\") > 0 && index(seen[name], \",224.0.0.0/4\") > 0 && index(seen[name], \",240.0.0.0/4\") > 0){print \"Compliant\"; exit}}}'": "Compliant"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221103"
     },
     {
       "check": {
@@ -969,5 +995,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 37
+  "validated_candidates": 38
 }

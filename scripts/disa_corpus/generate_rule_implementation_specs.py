@@ -2720,6 +2720,37 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': 'Compliant'},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221103':
+        prefixes = (
+            '0.0.0.0/8', '10.0.0.0/8', '100.64.0.0/10', '127.0.0.0/8',
+            '169.254.0.0/16', '172.16.0.0/12', '192.0.2.0/24', '192.88.99.0/24',
+            '192.168.0.0/16', '198.18.0.0/15', '198.51.100.0/24', '203.0.113.0/24',
+            '224.0.0.0/4', '240.0.0.0/4',
+        )
+        if not re.search(r'reject\s+BGP\s+routes\s+for\s+any\s+Bogon\s+prefixes', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+reject\s+inbound\s+route\s+advertisements\s+for\s+any\s+Bogon\s+prefixes,\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+            return None
+        if not all(re.search(r'ip\s+prefix-list\s+\S+\s+seq\s+\d+\s+deny\s+' + re.escape(prefix) + r'\s+le\s+32', content, re.IGNORECASE) for prefix in prefixes):
+            return None
+        if not all(re.search(r'ip\s+prefix-list\s+\S+\s+seq\s+\d+\s+deny\s+' + re.escape(prefix) + r'\s+le\s+32', fix_text, re.IGNORECASE) for prefix in prefixes):
+            return None
+        tests = ' && '.join(
+            f'index(seen[name], ",{prefix}") > 0'
+            for prefix in prefixes
+        )
+        command = (
+            'show running-config | awk \'/^ip prefix-list / && $5=="deny" && $7=="le" && $8=="32" {name=$3; seen[name]=seen[name] "," $6} '
+            '/^[[:space:]]*prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {applied[$2]=1} '
+            f'END{{for(name in applied){{if({tests}){{print "Compliant"; exit}}}}}}\''
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221110':
         if not re.search(r'Review\s+the\s+switch\s+configuration\s+to\s+verify\s+that\s+the\s+number\s+of\s+received\s+prefixes\s+from\s+each\s+eBGP\s+neighbor\s+is\s+controlled', content, re.IGNORECASE):
             return None

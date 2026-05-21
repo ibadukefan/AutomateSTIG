@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk '/^ip prefix-list / && $5==\"deny\" && $7==\"le\" && $8==\"32\" {name=$3; seen[name]=seen[name] \",\" $6} /^[[:space:]]*prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {applied[$2]=1} END{for(name in applied){if(index(seen[name], \",0.0.0.0/8\") > 0 && index(seen[name], \",10.0.0.0/8\") > 0 && index(seen[name], \",100.64.0.0/10\") > 0 && index(seen[name], \",127.0.0.0/8\") > 0 && index(seen[name], \",169.254.0.0/16\") > 0 && index(seen[name], \",172.16.0.0/12\") > 0 && index(seen[name], \",192.0.2.0/24\") > 0 && index(seen[name], \",192.88.99.0/24\") > 0 && index(seen[name], \",192.168.0.0/16\") > 0 && index(seen[name], \",198.18.0.0/15\") > 0 && index(seen[name], \",198.51.100.0/24\") > 0 && index(seen[name], \",203.0.113.0/24\") > 0 && index(seen[name], \",224.0.0.0/4\") > 0 && index(seen[name], \",240.0.0.0/4\") > 0){print \"Compliant\"; exit}}}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco BGP switch must be configured to reject inbound route advertisements for any Bogon prefixes.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221103"
+  },
   "check_content_excerpt": "Review the switch configuration to verify that it will reject BGP routes for any Bogon prefixes.\n\nStep 1: Verify a prefix list has been configured containing the current Bogon prefixes as shown in the example below:\n\nip prefix-list PREFIX_FILTER seq 5 deny 0.0.0.0/8 le 32 \nip prefix-list PREFIX_FILTER seq 10 deny 10.0.0.0/8 le 32 \nip prefix-list PREFIX_FILTER seq 15 deny 100.64.0.0/10 le 32 \nip prefix-list PREFIX_FILTER seq 20 deny 127.0.0.0/8 le 32 \nip prefix-list PREFIX_FILTER seq 25 deny 169.254.0.0/16 le 32 \nip prefix-list PREFIX_FILTER seq 30 deny 172.16.0.0/12 le 32 \nip prefix-list PREFIX_FILTER seq 35 deny 192.0.2.0/24 le 32 \nip prefix-list PREFIX_FILTER seq 40 deny 192.88.99.0/24 le 32 \nip prefix-list PREFIX_FILTER seq 45 deny 192.168.0.0/16 le 32 \nip prefix-list PREFIX_FILTER seq 50 deny 198.18.0.0/15 le 32 \nip prefix-list PREFIX_FILTER seq 55 deny 198.51.100.0/24 le 32 \nip prefix-list PREFIX_FILTER seq 60 deny 203.0.113.0/24 le 32 \nip prefix-list PREFIX_FILTER seq 65 deny 224.0.0.0/4 le 32 \nip prefix-list PREFIX_FILTER seq 70 deny 240.0.0.0/4 le 32 \nip prefix-list PREFIX_FILTER seq 75 permit 0.0.0.0/0 ge 8\n\nStep 2: Verify that the prefix list has been applied to all external BGP peers as shown in the example below:\n\nrouter bgp xx\n router-id 10.1.1.1\n neighbor x.1.12.2 remote-as xx\n password 3 7b07d1b3023056a9\n address-family ipv4 unicast\n prefix-list PREFIX_FILTER in\n neighbor x.2.44.4 remote-as xx\n password 3 f07a10cb41db8bb6f8f0a340049a9b02\n address-family ipv4 unicast\n prefix-list PREFIX_FILTER in\n\nRoute Map Alternative \n\nVerify that the route map applied to the external neighbors references the configured Bogon prefix list shown above.\n\nroute-map FILTER_PREFIX_MAP permit 10\n match ip address prefix-list PREFIX_FILTER\n\u2026\n\u2026\n\u2026\nrouter bgp xx\n router-id 10.1.1.1\n neighbor x.1.12.2 remote-as xx\n password 3 7b07d1b3023056a9\n address-family ipv4 unicast\n route-map FILTER_PREFIX_MAP in\n neighbor x.2.44.4 remote-as xx\n password 3 f07a10cb41db8bb6f8f0a340049a9b02\n address-family ipv4 unicast\n route-map FILTER_PREFIX_MAP in\n\nIf the switch is not configured to reject inbound route advertisements for any Bogon prefixes, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to reject inbound route advertisements for any Bogon prefixes.\n\nStep 1: Configure a prefix list containing the current Bogon prefixes as shown below:\n\nSW1(config)# ip prefix-list PREFIX_FILTER seq 5 deny 0.0.0.0/8 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 10 deny 10.0.0.0/8 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 15 deny 100.64.0.0/10 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 20 deny 127.0.0.0/8 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 25 deny 169.254.0.0/16 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 30 deny 172.16.0.0/12 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 35 deny 192.0.2.0/24 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 40 deny 192.88.99.0/24 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 45 deny 192.168.0.0/16 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 50 deny 198.18.0.0/15 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 55 deny 198.51.100.0/24 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 60 deny 203.0.113.0/24 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 65 deny 224.0.0.0/4 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 70 deny 240.0.0.0/4 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER seq 75 permit 0.0.0.0/0 ge 8\n\nStep 2: Apply the prefix list filter inbound to each external BGP neighbor as shown in the example below:\n\nSW1(config)# router bgp xx\nSW1(config-router)# neighbor x.1.12.2\nSW1(config-router-neighbor)# address-family ipv4 unicast\nSW1(config-router-neighbor-af)# prefix-list PREFIX_FILTER in\nSW1(config-router-neighbor-af)# exit\nSW1(config-router-neighbor)# exit\nSW1(config-router)# neighbor x.2.44.4\nSW1(config-router-neighbor)# address-family ipv4 unicast\nSW1(config-router-neighbor-af)# prefix-list PREFIX_FILTER in\nSW1(config-router-neighbor-af)# end\n\nRoute Map Alternative \n\nStep 1: Configure the route map referencing the configured prefix list above.\n\nSW1(config)# route-map FILTER_PREFIX_MAP permit 10\nSW1(config-route-map)# match ip address prefix-list PREFIX_FILTER\nSW1(config-route-map)# exit\n\nStep 2: Apply the route-map inbound to each external BGP neighbor as shown in the example below:\n\nSW1(config)# router bgp xx\nSW1(config-router)# neighbor x.1.12.2\nSW1(config-router-neighbor)# address-family ipv4 unicast\nSW1(config-router-neighbor-af)# route-map FILTER_PREFIX_MAP in\nSW1(config-router-neighbor-af)# exit\nSW1(config-router-neighbor)# exit\nSW1(config-router)# neighbor x.2.44.4\nSW1(config-router-neighbor)# address-family ipv4 unicast\nSW1(config-router-neighbor-af)# route-map FILTER_PREFIX_MAP in\nSW1(config-router-neighbor-af)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221103r1137894_rule",
   "severity": "medium",

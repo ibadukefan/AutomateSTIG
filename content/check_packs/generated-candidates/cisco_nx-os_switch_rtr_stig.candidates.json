@@ -197,6 +197,19 @@
     },
     {
       "check": {
+        "command": "show running-config | awk '/^ip prefix-list / && $5==\"deny\" && $7==\"le\" && $8==\"32\" {name=$3; seen[name]=seen[name] \",\" $6} /^[[:space:]]*prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {applied[$2]=1} END{for(name in applied){if(index(seen[name], \",0.0.0.0/8\") > 0 && index(seen[name], \",10.0.0.0/8\") > 0 && index(seen[name], \",100.64.0.0/10\") > 0 && index(seen[name], \",127.0.0.0/8\") > 0 && index(seen[name], \",169.254.0.0/16\") > 0 && index(seen[name], \",172.16.0.0/12\") > 0 && index(seen[name], \",192.0.2.0/24\") > 0 && index(seen[name], \",192.88.99.0/24\") > 0 && index(seen[name], \",192.168.0.0/16\") > 0 && index(seen[name], \",198.18.0.0/15\") > 0 && index(seen[name], \",198.51.100.0/24\") > 0 && index(seen[name], \",203.0.113.0/24\") > 0 && index(seen[name], \",224.0.0.0/4\") > 0 && index(seen[name], \",240.0.0.0/4\") > 0){print \"Compliant\"; exit}}}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco BGP switch must be configured to reject inbound route advertisements for any Bogon prefixes.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221103"
+    },
+    {
+      "check": {
         "command": "show running-config | section \"^router bgp\" | include \"^ no enforce-first-as$\"",
         "type": "command_output"
       },
