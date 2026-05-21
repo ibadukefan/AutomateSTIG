@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 260,
+  "candidate_checks": 261,
   "cases": [
     {
       "check": {
@@ -782,6 +782,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278028"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$cfg=(w32tm /query /configuration 2>$null) -join [Environment]::NewLine; $type=''; $server=''; if ($cfg -match '(?im)^\\s*Type:\\s*([^\\s]+)') { $type=$Matches[1] }; if ($cfg -match '(?im)^\\s*NtpServer:\\s*([^\\r\\n]+)') { $server=$Matches[1] }; $cs=Get-CimInstance Win32_ComputerSystem; $isPdc=$false; try { Import-Module ActiveDirectory -ErrorAction Stop; $domain=Get-ADDomain -ErrorAction Stop; $isPdc=($env:COMPUTERNAME -ieq (($domain.PDCEmulator -split '\\\\.')[0])) } catch {}; if ($cs.PartOfDomain -and -not $isPdc) { if ($type -ieq 'NT5DS') { 'Compliant' } } elseif ($type -ieq 'NTP' -and $server -like '*usno.navy.mil*') { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Windows Server 2025 time service must synchronize with an appropriate DOD time source.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=(w32tm /query /configuration 2>$null) -join [Environment]::NewLine; $type=''; $server=''; if ($cfg -match '(?im)^\\s*Type:\\s*([^\\s]+)') { $type=$Matches[1] }; if ($cfg -match '(?im)^\\s*NtpServer:\\s*([^\\r\\n]+)') { $server=$Matches[1] }; $cs=Get-CimInstance Win32_ComputerSystem; $isPdc=$false; try { Import-Module ActiveDirectory -ErrorAction Stop; $domain=Get-ADDomain -ErrorAction Stop; $isPdc=($env:COMPUTERNAME -ieq (($domain.PDCEmulator -split '\\\\.')[0])) } catch {}; if ($cs.PartOfDomain -and -not $isPdc) { if ($type -ieq 'NT5DS') { 'Compliant' } } elseif ($type -ieq 'NTP' -and $server -like '*usno.navy.mil*') { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=(w32tm /query /configuration 2>$null) -join [Environment]::NewLine; $type=''; $server=''; if ($cfg -match '(?im)^\\s*Type:\\s*([^\\s]+)') { $type=$Matches[1] }; if ($cfg -match '(?im)^\\s*NtpServer:\\s*([^\\r\\n]+)') { $server=$Matches[1] }; $cs=Get-CimInstance Win32_ComputerSystem; $isPdc=$false; try { Import-Module ActiveDirectory -ErrorAction Stop; $domain=Get-ADDomain -ErrorAction Stop; $isPdc=($env:COMPUTERNAME -ieq (($domain.PDCEmulator -split '\\\\.')[0])) } catch {}; if ($cs.PartOfDomain -and -not $isPdc) { if ($type -ieq 'NT5DS') { 'Compliant' } } elseif ($type -ieq 'NTP' -and $server -like '*usno.navy.mil*') { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278029"
     },
     {
       "check": {
@@ -6968,5 +6994,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 260
+  "validated_candidates": 261
 }

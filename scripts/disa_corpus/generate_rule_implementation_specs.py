@@ -945,6 +945,46 @@ def _windows_server_2025_antivirus_service_candidate(rule: dict, stig_id: str) -
     }
 
 
+def _windows_server_2025_time_service_candidate(rule: dict, stig_id: str) -> dict | None:
+    if (rule.get('vuln_id'), stig_id) != ('V-278029', 'MS_Windows_Server_2025_STIG'):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_content_patterns = (
+        r'W32tm\s*/query\s*/configuration',
+        r'Domain-joined\s+systems\s*\(excluding\s+the\s+domain\s+controller\s+with\s+the\s+PDC\s+emulator\s+role\)',
+        r'value\s+for\s+["“]Type["”]\s+under\s+["“]NTP\s+Client["”]\s+is\s+not\s+["“]NT5DS["”]',
+        r'systems\s+are\s+configured\s+with\s+a\s+["“]Type["”]\s+of\s+["“]NTP["”].*?do\s+not\s+have\s+a\s+DOD\s+time\s+server\s+defined\s+for\s+["“]NTPServer["”]',
+        r'Get-ADDomain\s*\|\s*FT\s+PDCEmulator',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in required_content_patterns):
+        return None
+    if not re.search(r'US\s+Naval\s+Observatory\s+operates\s+stratum\s+one-time\s+servers', fix_text, re.IGNORECASE):
+        return None
+    if 'usno.navy.mil/USNO/time/ntp/DOD-customers' not in fix_text:
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "$cfg=(w32tm /query /configuration 2>$null) -join [Environment]::NewLine; "
+        "$type=''; $server=''; "
+        "if ($cfg -match '(?im)^\\s*Type:\\s*([^\\s]+)') { $type=$Matches[1] }; "
+        "if ($cfg -match '(?im)^\\s*NtpServer:\\s*([^\\r\\n]+)') { $server=$Matches[1] }; "
+        "$cs=Get-CimInstance Win32_ComputerSystem; "
+        "$isPdc=$false; "
+        "try { Import-Module ActiveDirectory -ErrorAction Stop; $domain=Get-ADDomain -ErrorAction Stop; $isPdc=($env:COMPUTERNAME -ieq (($domain.PDCEmulator -split '\\\\.')[0])) } catch {}; "
+        "if ($cs.PartOfDomain -and -not $isPdc) { if ($type -ieq 'NT5DS') { 'Compliant' } } "
+        "elseif ($type -ieq 'NTP' -and $server -like '*usno.navy.mil*') { 'Compliant' }"
+        "\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_host_firewall_enabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -14660,6 +14700,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         windows_server_2025_antivirus_candidate = _windows_server_2025_antivirus_service_candidate(rule, stig_id)
         if windows_server_2025_antivirus_candidate:
             return windows_server_2025_antivirus_candidate
+
+        windows_server_2025_time_service_candidate = _windows_server_2025_time_service_candidate(rule, stig_id)
+        if windows_server_2025_time_service_candidate:
+            return windows_server_2025_time_service_candidate
 
         host_firewall_candidate = _windows_host_firewall_enabled_candidate(rule, stig_id)
         if host_firewall_candidate:

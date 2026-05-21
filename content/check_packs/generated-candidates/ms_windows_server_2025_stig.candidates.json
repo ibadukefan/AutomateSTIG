@@ -394,6 +394,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$cfg=(w32tm /query /configuration 2>$null) -join [Environment]::NewLine; $type=''; $server=''; if ($cfg -match '(?im)^\\s*Type:\\s*([^\\s]+)') { $type=$Matches[1] }; if ($cfg -match '(?im)^\\s*NtpServer:\\s*([^\\r\\n]+)') { $server=$Matches[1] }; $cs=Get-CimInstance Win32_ComputerSystem; $isPdc=$false; try { Import-Module ActiveDirectory -ErrorAction Stop; $domain=Get-ADDomain -ErrorAction Stop; $isPdc=($env:COMPUTERNAME -ieq (($domain.PDCEmulator -split '\\\\.')[0])) } catch {}; if ($cs.PartOfDomain -and -not $isPdc) { if ($type -ieq 'NT5DS') { 'Compliant' } } elseif ($type -ieq 'NTP' -and $server -like '*usno.navy.mil*') { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Windows Server 2025 time service must synchronize with an appropriate DOD time source.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278029"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$cfg=Join-Path $env:TEMP ('automatestig-'+[guid]::NewGuid()+'.inf'); secedit /export /areas USER_RIGHTS /cfg $cfg | Out-Null; $content=Get-Content $cfg -ErrorAction SilentlyContinue; Remove-Item $cfg -ErrorAction SilentlyContinue; $known=@('S-1-5-11','S-1-5-113','S-1-5-114','S-1-5-19','S-1-5-20','S-1-5-32-544','S-1-5-32-546','S-1-5-6','S-1-5-9'); $sids=@($content | ForEach-Object { if ($_ -match '=(.*)$') { $Matches[1].Split(',') } } | ForEach-Object { $_.Trim().TrimStart('*') } | Where-Object { $_ -match '^S-1-' }); $unknown=@($sids | Where-Object { ($known -notcontains $_) -and ($_ -notmatch '^S-1-5-[0-9-]+-(512|519)$') -and ($_ -ne 'S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420') }); if ($unknown.Count -eq 0) { 'Compliant' }\"",
         "type": "command_output"
       },

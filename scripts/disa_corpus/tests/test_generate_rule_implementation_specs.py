@@ -122,6 +122,43 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         }, 'MS_Windows_Server_2025_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_windows_server_2025_time_service_nt5ds_or_usno_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278029',
+            'title': 'The Windows Server 2025 time service must synchronize with an appropriate DOD time source.',
+            'check_content': (
+                'Review the Windows time service configuration.\n\n'
+                'Enter "W32tm /query /configuration".\n\n'
+                'Domain-joined systems (excluding the domain controller with the PDC emulator role):\n\n'
+                'If the value for "Type" under "NTP Client" is not "NT5DS", this is a finding.\n\n'
+                'Other systems:\n\n'
+                'If systems are configured with a "Type" of "NTP", including stand-alone or nondomain-joined systems and the domain controller with the PDC Emulator role, and do not have a DOD time server defined for "NTPServer", this is a finding.\n\n'
+                'To determine the domain controller with the PDC Emulator role:\n\n'
+                'Enter "Get-ADDomain | FT PDCEmulator".'
+            ),
+            'fix_text': (
+                'Configure the system to synchronize time with an appropriate DOD time source.\n\n'
+                'Domain-joined systems use NT5DS to synchronize time from other systems in the domain by default.\n\n'
+                'The US Naval Observatory operates stratum one-time servers, identified at https://www.usno.navy.mil/USNO/time/ntp/DOD-customers.'
+            ),
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278029')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('w32tm /query /configuration', candidate['check']['command'])
+        self.assertIn('NT5DS', candidate['check']['command'])
+        self.assertIn('usno.navy.mil', candidate['check']['command'])
+
+    def test_rejects_windows_server_time_service_candidate_without_usno_fix_evidence(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278029',
+            'title': 'The Windows Server 2025 time service must synchronize with an appropriate DOD time source.',
+            'check_content': 'If the value for "Type" under "NTP Client" is not "NT5DS", this is a finding.',
+            'fix_text': 'Configure the system to synchronize time with an appropriate DOD time source.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_windows_certificate_installation_files_removed_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278008',
