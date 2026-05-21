@@ -9500,6 +9500,31 @@ If the output does not contain "pgaudit", this is a finding.''',
             'description': 'PostgreSQL must generate audit records when unsuccessful attempts to delete categorized information occur.',
         })
 
+    def test_infers_postgresql_pgdata_owner_only_permissions_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233617',
+            'title': 'Access to database files must be limited to relevant processes and to authorized, administrative users.',
+            'check_content': '''Note: The following instructions use the PGDATA environment variable.
+
+Review the permissions granted to users by the operating system/file system on the database files, database log files and database backup files.
+
+To verify that all files are owned by the database administrator and have the correct permissions, run the following as the database administrator (shown here as "postgres"):
+
+$ sudo su - postgres
+$ ls -lR ${PGDATA?}
+
+If any files are not owned by the database administrator or allow anyone but the database administrator to read/write/execute, this is a finding.''',
+            'fix_text': '''Any files (for example: extra configuration files) created in ${PGDATA?} must be owned by the database administrator, with only owner permissions to read, write, and execute.''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233617')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('${PGDATA?}', candidate['check']['command'])
+        self.assertIn('! -user postgres', candidate['check']['command'])
+        self.assertIn('-perm /077', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_postgresql_client_min_messages_error_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233516',

@@ -613,6 +613,19 @@
     },
     {
       "check": {
+        "command": "find \"${PGDATA?}\" \\( ! -user postgres -o -perm /077 \\) -print -quit",
+        "type": "command_output"
+      },
+      "description": "Access to database files must be limited to relevant processes and to authorized, administrative users.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-233617"
+    },
+    {
+      "check": {
         "command": "psql -tAc \"SHOW log_file_mode\"",
         "type": "command_output"
       },

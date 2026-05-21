@@ -9564,6 +9564,21 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    postgresql_pgdata_owner_only_permissions = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233617'
+        and re.search(r'^\s*[$#>]\s*ls\s+-lR\s+\$\{PGDATA\?\}\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+any\s+files\s+are\s+not\s+owned\s+by\s+the\s+database\s+administrator\s+or\s+allow\s+anyone\s+but\s+the\s+database\s+administrator\s+to\s+read/write/execute,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'\$\{PGDATA\?\}.*owned\s+by\s+the\s+database\s+administrator,\s+with\s+only\s+owner\s+permissions\s+to\s+read,\s+write,\s+and\s+execute', fix_text, re.IGNORECASE | re.DOTALL)
+    )
+    if postgresql_pgdata_owner_only_permissions:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'find "${PGDATA?}" \\( ! -user postgres -o -perm /077 \\) -print -quit'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     postgresql_client_min_messages_error = (
         'postgresql' in stig_id.lower()
         and re.search(r"\bSELECT\s+current_setting\([\"']client_min_messages[\"']\);", content, re.IGNORECASE)

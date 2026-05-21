@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 53,
+  "candidate_checks": 54,
   "cases": [
     {
       "check": {
@@ -1225,6 +1225,32 @@
     },
     {
       "check": {
+        "command": "find \"${PGDATA?}\" \\( ! -user postgres -o -perm /077 \\) -print -quit",
+        "type": "command_output"
+      },
+      "description": "Access to database files must be limited to relevant processes and to authorized, administrative users.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find \"${PGDATA?}\" \\( ! -user postgres -o -perm /077 \\) -print -quit": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find \"${PGDATA?}\" \\( ! -user postgres -o -perm /077 \\) -print -quit": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233617"
+    },
+    {
+      "check": {
         "command": "psql -tAc \"SHOW log_file_mode\"",
         "type": "command_output"
       },
@@ -1385,5 +1411,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 53
+  "validated_candidates": 54
 }
