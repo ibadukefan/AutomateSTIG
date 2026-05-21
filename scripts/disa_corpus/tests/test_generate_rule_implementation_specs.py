@@ -117,6 +117,32 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('ip pim border', candidate['check']['command'])
         self.assertIn('239\\.0\\.0\\.0\\/8', candidate['check']['command'])
 
+    def test_infers_cisco_nxos_routing_key_lifetime_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221073',
+            'title': 'The Cisco switch must be configured to use keys with a duration not exceeding 180 days for authenticating routing protocol messages.',
+            'check_content': (
+                'Review the start times for each key within the configured key chains used for routing protocol authentication as shown in the example below:\n\n'
+                'key chain OSPF_KEY\n key 1\n key-string 7 070d2e4e4c10\n'
+                ' accept-lifetime 00:00:00 Oct 01 2019 01:05:00 Jan 01 2020\n'
+                ' send-lifetime 00:00:00 Oct 01 2019 23:59:59 Dec 31 2019\n\n'
+                'Note: Key chains must be configured to authenticate routing protocol messages as it is the only way to set an expiration.\n\n'
+                'If any key has a lifetime of more than 180 days, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure each key used for routing protocol authentication to have a lifetime of no more than 180 days as shown in the example below:\n\n'
+                'SW1(config-keychain-key)# send-lifetime 00:00:00 Jan 1 2020 23:59:59 Mar 31 2020\n'
+                'SW1(config-keychain-key)# accept-lifetime 23:55:00 Dec 31 2019 01:05:00 Apr 1 2020'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221073')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('accept-lifetime', candidate['check']['command'])
+        self.assertIn('send-lifetime', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_infers_linux_temporary_account_expiration_candidates(self):
         cases = [
             ('V-258047', 'RHEL_9_STIG', 'RHEL 9'),

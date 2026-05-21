@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{split(\"Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec\",m); for(i=1;i<=12;i++) mo[m[i]]=i; bad=0; seen=0} /^[[:space:]]*(accept-lifetime|send-lifetime)[[:space:]]/ {seen=1; if($6==\"infinite\" || $7==\"infinite\"){bad=1; next} s=mktime($5\" \"mo[$4]\" \"$3\" \"gensub(/:/,\" \",\"g\",$2)); e=mktime($9\" \"mo[$8]\" \"$7\" \"gensub(/:/,\" \",\"g\",$6)); if(s<=0 || e<=0 || e-s > 180*24*60*60){bad=1}} END{if(seen && !bad) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must be configured to use keys with a duration not exceeding 180 days for authenticating routing protocol messages.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221073"
+    },
+    {
+      "check": {
         "command": "show running-config | section ^callhome | include \"^ enable$\"",
         "type": "command_output"
       },

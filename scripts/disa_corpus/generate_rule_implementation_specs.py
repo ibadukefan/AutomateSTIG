@@ -2612,6 +2612,31 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221073':
+        if not re.search(r'key\s+chains\s+used\s+for\s+routing\s+protocol\s+authentication', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+any\s+key\s+has\s+a\s+lifetime\s+of\s+more\s+than\s+180\s+days,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Configure\s+each\s+key\s+used\s+for\s+routing\s+protocol\s+authentication\s+to\s+have\s+a\s+lifetime\s+of\s+no\s+more\s+than\s+180\s+days', fix_text, re.IGNORECASE):
+            return None
+        if not all(token in content + '\n' + fix_text for token in ('accept-lifetime', 'send-lifetime')):
+            return None
+        command = (
+            'show running-config | awk \'BEGIN{split("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec",m); for(i=1;i<=12;i++) mo[m[i]]=i; bad=0; seen=0} '
+            '/^[[:space:]]*(accept-lifetime|send-lifetime)[[:space:]]/ {'
+            'seen=1; if($6=="infinite" || $7=="infinite"){bad=1; next} '
+            's=mktime($5" "mo[$4]" "$3" "gensub(/:/," ","g",$2)); '
+            'e=mktime($9" "mo[$8]" "$7" "gensub(/:/," ","g",$6)); '
+            'if(s<=0 || e<=0 || e-s > 180*24*60*60){bad=1}} '
+            'END{if(seen && !bad) print "Compliant"}\''
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221081':
         combined = f"{rule.get('title', '')}\n{content}"
         if not re.search(r'drop\s+all\s+fragmented\s+Internet\s+Control\s+Message\s+Protocol\s+\(ICMP\)\s+packets\s+destined\s+to\s+itself', combined, re.IGNORECASE):

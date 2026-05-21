@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{split(\"Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec\",m); for(i=1;i<=12;i++) mo[m[i]]=i; bad=0; seen=0} /^[[:space:]]*(accept-lifetime|send-lifetime)[[:space:]]/ {seen=1; if($6==\"infinite\" || $7==\"infinite\"){bad=1; next} s=mktime($5\" \"mo[$4]\" \"$3\" \"gensub(/:/,\" \",\"g\",$2)); e=mktime($9\" \"mo[$8]\" \"$7\" \"gensub(/:/,\" \",\"g\",$6)); if(s<=0 || e<=0 || e-s > 180*24*60*60){bad=1}} END{if(seen && !bad) print \"Compliant\"}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must be configured to use keys with a duration not exceeding 180 days for authenticating routing protocol messages.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221073"
+  },
   "check_content_excerpt": "Review the start times for each key within the configured key chains used for routing protocol authentication as shown in the example below:\n\nkey chain OSPF_KEY\n key 1\n key-string 7 070d2e4e4c10\n accept-lifetime 00:00:00 Oct 01 2019 01:05:00 Jan 01 2020\n send-lifetime 00:00:00 Oct 01 2019 23:59:59 Dec 31 2019\n key 2\n key-string 7 0704205e4b07\n accept-lifetime 23:55:00 Dec 31 2019 01:05:00 Apr 01 2020\n send-lifetime 00:00:00 Jan 01 2020 23:59:59 Mar 31 2020\n\nNote: Key chains must be configured to authenticate routing protocol messages as it is the only way to set an expiration.\n\nIf any key has a lifetime of more than 180 days, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure each key used for routing protocol authentication to have a lifetime of no more than 180 days as shown in the example below:\n\nSW1(config)# key chain OSPF_KEY\nSW1(config-keychain)# key 1\nSW1(config-keychain-key)# key-string xxxxxxxxxxxx\nSW1(config-keychain-key)# send-lifetime 00:00:00 Oct 1 2019 23:59:59 Dec 31 2019\nSW1(config-keychain-key)# accept-lifetime 00:00:00 Oct 1 2019 01:05:00 Jan 1 2020\nSW1(config-keychain-key)# key 2\nSW1(config-keychain-key)# key-string kxxxxxxxxxxxxx\nSW1(config-keychain-key)# send-lifetime 00:00:00 Jan 1 2020 23:59:59 Mar 31 2020 \nSW1(config-keychain-key)# accept-lifetime 23:55:00 Dec 31 2019 01:05:00 Apr 1 2020\nSW1(config-keychain-key)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221073r999682_rule",
   "severity": "medium",
