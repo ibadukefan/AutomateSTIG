@@ -3113,23 +3113,30 @@ def _sles_aide_cron_mail_notification_candidate(rule: dict, stig_id: str) -> dic
 
 def _ubuntu_chrony_usno_maxpoll_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
-    if vuln_id != 'V-260519' or 'ubuntu' not in stig_id.lower():
+    if vuln_id not in {'V-260519', 'V-270751'} or 'ubuntu' not in stig_id.lower():
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     combined = content + '\n' + fix_text
     required_hosts = ('tick.usno.navy.mil', 'tock.usno.navy.mil', 'ntp2.usno.navy.mil')
-    if not all(host in content for host in required_hosts):
+    if vuln_id == 'V-260519' and not all(host in content for host in required_hosts):
         return None
-    if not re.search(r'grep\s+maxpoll\s+-ir\s+/etc/chrony\*', content, re.IGNORECASE):
+    if not re.search(r'grep\s+-?ir\s+maxpoll\s+/etc/chrony\*|grep\s+maxpoll\s+-ir\s+/etc/chrony\*', content, re.IGNORECASE):
         return None
     if not re.search(r'maxpoll["”]?\s+option\s+is\s+set\s+to\s+a\s+number\s+greater\s+than\s+16', content, re.IGNORECASE):
         return None
-    if not re.search(r'server["”]?\s+is\s+not\s+defined,\s+is\s+not\s+set\s+to\s+an\s+authoritative\s+DOD\s+time\s+source', content, re.IGNORECASE):
-        return None
-    if not re.search(r'server\s+\[source\]\s+iburst\s+maxpoll\s*=\s*16', combined, re.IGNORECASE):
-        return None
-    command = 'sh -c \'grep -I -h -E "^[[:space:]]*server[[:space:]]+(tick\\.usno\\.navy\\.mil|tock\\.usno\\.navy\\.mil|ntp2\\.usno\\.navy\\.mil)[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS\''
+    if vuln_id == 'V-260519':
+        if not re.search(r'server["”]?\s+is\s+not\s+defined,\s+is\s+not\s+set\s+to\s+an\s+authoritative\s+DOD\s+time\s+source', content, re.IGNORECASE):
+            return None
+        if not re.search(r'server\s+\[source\]\s+iburst\s+maxpoll\s*=\s*16', combined, re.IGNORECASE):
+            return None
+        command = 'sh -c \'grep -I -h -E "^[[:space:]]*server[[:space:]]+(tick\\.usno\\.navy\\.mil|tock\\.usno\\.navy\\.mil|ntp2\\.usno\\.navy\\.mil)[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS\''
+    else:
+        if not re.search(r'parameter\s+"server"\s+is\s+not\s+set,\s+is\s+not\s+set\s+to\s+an\s+authoritative\s+DOD\s+time\s+source,\s+or\s+is\s+commented\s+out', content, re.IGNORECASE):
+            return None
+        if not re.search(r'server\s+\[source\]\s+iburst\s+maxpoll\s+16', combined, re.IGNORECASE):
+            return None
+        command = 'sh -c \'grep -I -h -E "^[[:space:]]*server[[:space:]]+[^#[:space:]][^[:space:]]*[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS\''
     return {
         'vuln_id': vuln_id,
         'platform': 'linux',
@@ -4386,10 +4393,39 @@ def _windows_user_rights_orphaned_sid_candidate(rule: dict, stig_id: str) -> dic
 
 
 def _windows_server_2025_network_logon_role_scoped_candidate(rule: dict, stig_id: str) -> dict | None:
-    if stig_id != 'MS_Windows_Server_2025_STIG':
+    allowed_stigs = {
+        'Windows_Server_2019_STIG',
+        'MS_Windows_Server_2022_STIG',
+        'MS_Windows_Server_2025_STIG',
+    }
+    if stig_id not in allowed_stigs:
         return None
     vuln_id = rule.get('vuln_id', '')
     expected_by_vuln = {
+        'V-205665': {
+            'scope': 'domain_controller',
+            'principals': ['*S-1-5-32-544', '*S-1-5-11', '*S-1-5-9'],
+            'content_patterns': (
+                r'This\s+applies\s+to\s+domain\s+controllers\.\s+It\s+is\s+(?:NA|not\s+applicable)\s+for\s+other\s+systems',
+                r'Administrators\.?\s*\n\s*-\s*Authenticated\s+Users\.?\s*\n\s*-\s*Enterprise\s+Domain\s+Controllers\.?',
+            ),
+        },
+        'V-254418': {
+            'scope': 'domain_controller',
+            'principals': ['*S-1-5-32-544', '*S-1-5-11', '*S-1-5-9'],
+            'content_patterns': (
+                r'This\s+applies\s+to\s+domain\s+controllers\.\s+It\s+is\s+(?:NA|not\s+applicable)\s+for\s+other\s+systems',
+                r'Administrators\.?\s*\n\s*-\s*Authenticated\s+Users\.?\s*\n\s*-\s*Enterprise\s+Domain\s+Controllers\.?',
+            ),
+        },
+        'V-254434': {
+            'scope': 'non_domain_controller',
+            'principals': ['*S-1-5-32-544', '*S-1-5-11'],
+            'content_patterns': (
+                r'This\s+applies\s+to\s+member\s+servers\s+and\s+standalone\s+or\s+nondomain-joined\s+systems\.\s+A\s+separate\s+version\s+applies\s+to\s+domain\s+controllers',
+                r'Administrators\.?\s*\n\s*-\s*Authenticated\s+Users\.?(?!\s*\n\s*-\s*Enterprise\s+Domain\s+Controllers)',
+            ),
+        },
         'V-278165': {
             'scope': 'domain_controller',
             'principals': ['*S-1-5-32-544', '*S-1-5-11', '*S-1-5-9'],
@@ -4417,7 +4453,14 @@ def _windows_server_2025_network_logon_role_scoped_candidate(rule: dict, stig_id
         return None
     if not re.search(r'If\s+any\s+accounts\s+or\s+groups\s+other\s+than\s+the\s+following\s+are\s+granted', content, re.IGNORECASE):
         return None
-    if not re.search(r'User\s+Rights\s+Assignment\s*>>\s*Access\s+this\s+computer\s+from\s+the\s+network\s+to\s+include\s+only\s+the\s+following\s+accounts\s+or\s+groups', fix_text, re.IGNORECASE):
+    if not re.search(r'If\s+any\s+SIDs\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"SeNetworkLogonRight"\s+user\s+right,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    for sid in (principal.lstrip('*') for principal in expected['principals']):
+        if not re.search(rf'\b{re.escape(sid)}\b', content):
+            return None
+    if expected['scope'] == 'non_domain_controller' and re.search(r'\bS-1-5-9\b', content):
+        return None
+    if not re.search(r'User\s+Rights\s+Assignment\s*>>\s*"?Access\s+this\s+computer\s+from\s+the\s+network"?\s+to\s+include\s+only\s+the\s+following\s+accounts\s+or\s+groups', fix_text, re.IGNORECASE):
         return None
     if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in expected['content_patterns']):
         return None

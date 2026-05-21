@@ -1411,6 +1411,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'grep -I -h -E \"^[[:space:]]*server[[:space:]]+[^#[:space:]][^[:space:]]*[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)\" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS'",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must compare internal information system clocks at least every 24 hours with an authoritative time server.",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270751"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/chrony/chrony.conf",
         "pattern": "makestep 1 -1",

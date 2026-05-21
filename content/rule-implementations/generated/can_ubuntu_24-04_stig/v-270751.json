@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'grep -I -h -E \"^[[:space:]]*server[[:space:]]+[^#[:space:]][^[:space:]]*[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)\" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS'",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must compare internal information system clocks at least every 24 hours with an authoritative time server.",
+    "expected": {
+      "type": "equals",
+      "value": "PASS"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270751"
+  },
   "check_content_excerpt": "Note: If the system is not networked, this requirement is not applicable.\n\nVerify Ubuntu 24.04 LTS is configured to compare the system clock at least every 24 hours to an authoritative time source with the following command:\n\n$ sudo grep -ir maxpoll /etc/chrony*\nserver [source] iburst maxpoll 16\n\nIf the parameter \"server\" is not set, is not set to an authoritative DOD time source, or is commented out, this is a finding.\n\nIf the \"maxpoll\" option is set to a number greater than 16, the line is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "PASS"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "To configure the system clock to compare to the authoritative time source at least every 24 hours, edit the \"/etc/chrony/chrony.conf\" file. Add or correct the following lines, by replacing \"[source]\" in the following line with an authoritative time source: \n\nserver [source] iburst maxpoll 16 \n\nIf the \"chrony\" service was running and the value of \"maxpoll\" or \"server\" was updated, the service must be restarted using the following command: \n\n$ sudo systemctl restart chrony.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270751r1066742_rule",
   "severity": "low",

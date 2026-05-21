@@ -188,6 +188,109 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('send-lifetime', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_ubuntu_24_chrony_authoritative_source_maxpoll_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270751',
+            'title': 'Ubuntu 24.04 LTS must compare internal information system clocks at least every 24 hours with an authoritative time server.',
+            'check_content': (
+                'Verify Ubuntu 24.04 LTS is configured to compare the system clock at least every 24 hours to an authoritative time source with the following command:\n\n'
+                '$ sudo grep -ir maxpoll /etc/chrony*\n'
+                'server [source] iburst maxpoll 16\n\n'
+                'If the parameter "server" is not set, is not set to an authoritative DOD time source, or is commented out, this is a finding.\n'
+                'If the "maxpoll" option is set to a number greater than 16, the line is commented out, or is missing, this is a finding.'
+            ),
+            'fix_text': (
+                'Add or correct the following lines, by replacing "[source]" in the following line with an authoritative time source:\n\n'
+                'server [source] iburst maxpoll 16'
+            ),
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270751')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'PASS'})
+        self.assertIn('maxpoll', candidate['check']['command'])
+        self.assertIn('/etc/chrony', candidate['check']['command'])
+        self.assertIn('1[0-6]', candidate['check']['command'])
+
+    def test_infers_windows_network_logon_role_scoped_candidates_for_prior_server_releases(self):
+        cases = [
+            (
+                'V-205665',
+                'Windows_Server_2019_STIG',
+                'This applies to domain controllers. It is NA for other systems.',
+                'Administrators\n- Authenticated Users\n- Enterprise Domain Controllers',
+                'S-1-5-32-544 (Administrators)\nS-1-5-11 (Authenticated Users)\nS-1-5-9 (Enterprise Domain Controllers)',
+                '$role -lt 4',
+                ['S-1-5-32-544', 'S-1-5-11', 'S-1-5-9'],
+            ),
+            (
+                'V-254418',
+                'MS_Windows_Server_2022_STIG',
+                'This applies to domain controllers. It is NA for other systems.',
+                'Administrators\n- Authenticated Users\n- Enterprise Domain Controllers',
+                'S-1-5-32-544 (Administrators)\nS-1-5-11 (Authenticated Users)\nS-1-5-9 (Enterprise Domain Controllers)',
+                '$role -lt 4',
+                ['S-1-5-32-544', 'S-1-5-11', 'S-1-5-9'],
+            ),
+            (
+                'V-254434',
+                'MS_Windows_Server_2022_STIG',
+                'This applies to member servers and standalone or nondomain-joined systems. A separate version applies to domain controllers.',
+                'Administrators\n- Authenticated Users',
+                'S-1-5-32-544 (Administrators)\nS-1-5-11 (Authenticated Users)',
+                '$role -ge 4',
+                ['S-1-5-32-544', 'S-1-5-11'],
+            ),
+        ]
+        for vuln_id, stig_id, scope_text, principals_text, sid_text, na_condition, expected_sids in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': 'Access this computer from the network user right must only include explicitly authorized groups.',
+                    'check_content': (
+                        f'{scope_text}\n\n'
+                        'If any accounts or groups other than the following are granted the "Access this computer from the network" right, this is a finding.\n\n'
+                        f'- {principals_text}\n\n'
+                        'Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt\n\n'
+                        'If any SIDs other than the following are granted the "SeNetworkLogonRight" user right, this is a finding.\n\n'
+                        f'{sid_text}'
+                    ),
+                    'fix_text': (
+                        'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> '
+                        '"Access this computer from the network" to include only the following accounts or groups:\n\n'
+                        f'- {principals_text}'
+                    ),
+                }, stig_id)
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'windows')
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+                command = candidate['check']['command']
+                self.assertIn('secedit /export /areas USER_RIGHTS', command)
+                self.assertIn('SeNetworkLogonRight', command)
+                self.assertIn(na_condition, command)
+                for sid in expected_sids:
+                    self.assertIn(sid, command)
+
+    def test_rejects_windows_network_logon_role_scope_without_authoritative_sid_allowlist(self):
+        candidate = mod._windows_server_2025_network_logon_role_scoped_candidate({
+            'vuln_id': 'V-254418',
+            'title': 'Access this computer from the network user right must only include explicitly authorized groups.',
+            'check_content': (
+                'This applies to domain controllers. It is NA for other systems.\n\n'
+                'If any accounts or groups other than the following are granted the "Access this computer from the network" right, this is a finding.\n\n'
+                '- Administrators\n- Authenticated Users\n- Enterprise Domain Controllers\n\n'
+                'If any SIDs other than the following are granted the "SeNetworkLogonRight" user right, this is a finding.\n\n'
+                'S-1-5-32-544 (Administrators)\nS-1-5-11 (Authenticated Users)'
+            ),
+            'fix_text': (
+                'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> '
+                '"Access this computer from the network" to include only the following accounts or groups:\n\n'
+                '- Administrators\n- Authenticated Users\n- Enterprise Domain Controllers'
+            ),
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_linux_temporary_account_expiration_candidates(self):
         cases = [
             ('V-258047', 'RHEL_9_STIG', 'RHEL 9'),
@@ -1474,7 +1577,7 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278165',
             'title': 'The Windows Server 2025 "Access this computer from the network" user right must only be assigned to the Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers.',
-            'check_content': 'This applies to domain controllers. It is not applicable for other systems.\n\nIf any accounts or groups other than the following are granted the "Access this computer from the network" right, this is a finding:\n- Administrators.\n- Authenticated Users.\n- Enterprise Domain Controllers.',
+            'check_content': 'This applies to domain controllers. It is not applicable for other systems.\n\nIf any accounts or groups other than the following are granted the "Access this computer from the network" right, this is a finding:\n- Administrators.\n- Authenticated Users.\n- Enterprise Domain Controllers.\n\nIf any SIDs other than the following are granted the "SeNetworkLogonRight" user right, this is a finding.\n\nS-1-5-32-544 (Administrators)\nS-1-5-11 (Authenticated Users)\nS-1-5-9 (Enterprise Domain Controllers)',
             'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Access this computer from the network to include only the following accounts or groups:\n- Administrators.\n- Authenticated Users.\n- Enterprise Domain Controllers.',
         }, 'MS_Windows_Server_2025_STIG')
         self.assertIsNotNone(candidate)

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 194,
+  "candidate_checks": 195,
   "cases": [
     {
       "check": {
@@ -2777,6 +2777,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'grep -I -h -E \"^[[:space:]]*server[[:space:]]+[^#[:space:]][^[:space:]]*[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)\" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS'",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must compare internal information system clocks at least every 24 hours with an authoritative time server.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -I -h -E \"^[[:space:]]*server[[:space:]]+[^#[:space:]][^[:space:]]*[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)\" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS'": "unexpected-PASS"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -I -h -E \"^[[:space:]]*server[[:space:]]+[^#[:space:]][^[:space:]]*[[:space:]].*maxpoll[[:space:]]+([0-9]|1[0-6])([[:space:]]|$)\" /etc/chrony* /etc/chrony/* 2>/dev/null | grep -q . && printf PASS'": "PASS"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270751"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/chrony/chrony.conf",
         "pattern": "makestep 1 -1",
@@ -5283,5 +5309,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 194
+  "validated_candidates": 195
 }
