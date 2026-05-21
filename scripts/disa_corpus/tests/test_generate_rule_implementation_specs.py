@@ -1540,6 +1540,48 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'Apple_macOS_15_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': ''}, 'Apple_macOS_14_STIG'))
 
+    def test_infers_macos_temporary_account_expiration_candidate(self):
+        check = (
+            'If there are no temporary or emergency accounts defined on the system, this is Not Applicable.\n\n'
+            'To check if the password policy is configured to disable a temporary or emergency account after 72 hours, '
+            'run the following command to output the password policy to the screen, substituting the correct user name in place of username:\n\n'
+            '/usr/bin/pwpolicy -u username getaccountpolicies | tail -n +2\n\n'
+            'Otherwise, look for the line "<key>policyCategoryAuthentication</key>".\n\n'
+            'In the array that follows, there should be a <dict> section that contains a check <string> that allows users to log in if '
+            '"policyAttributeCurrentTime" is less than the result of adding "policyAttributeCreationTime" to 72 hours (259299 seconds).\n\n'
+            'If the check does not exist or if the check adds too great an amount of time to "policyAttributeCreationTime", this is a finding.'
+        )
+        fix = (
+            'To set local policy to disable a temporary or emergency user, create a plain text file containing the following:\n'
+            '<key>policyContent</key>\n'
+            '<string>policyAttributeCurrentTime &lt; policyAttributeCreationTime+259299</string>\n'
+            '/usr/bin/pwpolicy -u username setaccountpolicies /path/to/file'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259424',
+            'title': 'The macOS system must automatically remove or disable temporary or emergency user accounts within 72 hours.',
+            'check_content': check,
+            'fix_text': fix,
+        }, 'Apple_macOS_14_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-259424')
+        self.assertEqual(candidate['platform'], 'macos')
+        self.assertIn('/usr/bin/pwpolicy', candidate['check']['command'])
+        self.assertIn('getaccountpolicies', candidate['check']['command'])
+        self.assertIn('policyAttributeCreationTime', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_macos_temporary_account_expiration_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-259424',
+            'title': 'The macOS system must automatically remove or disable temporary or emergency user accounts within 72 hours.',
+            'check_content': 'temporary accounts must expire after 72 hours',
+            'fix_text': 'set account policies',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Apple_macOS_14_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Apple_macOS_13_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': ''}, 'Apple_macOS_14_STIG'))
+
     def test_infers_windows_server_2025_absent_feature_candidate_from_fix_text(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278021',

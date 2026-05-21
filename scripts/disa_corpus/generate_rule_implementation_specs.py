@@ -1819,6 +1819,69 @@ print('\n'.join(findings) if findings else 'Compliant')
     }
 
 
+def _macos_temporary_account_expiration_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    supported_targets = {
+        'V-259424': {'Apple_macOS_14_STIG'},
+        'V-268426': {'Apple_macOS_15_STIG'},
+    }
+    if stig_id not in supported_targets.get(canonical_vuln_id, set()):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    required_patterns = (
+        r'temporary\s+or\s+emergency\s+accounts?',
+        r'/usr/bin/pwpolicy\s+-u\s+username\s+getaccountpolicies',
+        r'policyCategoryAuthentication',
+        r'policyAttributeCurrentTime',
+        r'policyAttributeCreationTime\s*(?:\+|&lt;|<).*?259299',
+        r'If\s+the\s+check\s+does\s+not\s+exist\s+or\s+if\s+the\s+check\s+adds\s+too\s+great\s+an\s+amount\s+of\s+time\s+to\s+["“]policyAttributeCreationTime["”],\s+this\s+is\s+a\s+finding',
+        r'/usr/bin/pwpolicy\s+-u\s+username\s+setaccountpolicies',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):
+        return None
+    script = r'''
+import plistlib, re, subprocess, sys
+users = subprocess.run(['/usr/bin/dscl', '.', '-list', '/Users'], text=True, capture_output=True, check=False)
+if users.returncode != 0:
+    sys.exit(0)
+names = [name.strip() for name in users.stdout.splitlines() if re.search(r'(temp|temporary|emerg)', name, re.I)]
+if not names:
+    print('Compliant', end='')
+    sys.exit(0)
+limit = 259299
+bad = []
+for name in names:
+    result = subprocess.run(['/usr/bin/pwpolicy', '-u', name, 'getaccountpolicies'], text=True, capture_output=True, check=False)
+    data = result.stdout.strip()
+    if not data:
+        bad.append(name)
+        continue
+    try:
+        policies = plistlib.loads(data.encode())
+        text = str(policies)
+    except Exception:
+        text = data
+    if 'policyCategoryAuthentication' not in text:
+        bad.append(name)
+        continue
+    matches = re.findall(r'policyAttributeCurrentTime\s*<\s*policyAttributeCreationTime\s*\+\s*(\d+)', text)
+    if not matches or min(int(value) for value in matches) > limit:
+        bad.append(name)
+if not bad:
+    print('Compliant', end='')
+'''
+    command = f"python3 -c {shlex.quote(script)}"
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'macos',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_temporary_account_expiration_candidate(rule: dict, stig_id: str) -> dict | None:
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
     supported_targets = {
@@ -14341,6 +14404,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     linux_temporary_account_candidate = _linux_temporary_account_expiration_candidate(rule, stig_id)
     if linux_temporary_account_candidate:
         return linux_temporary_account_candidate
+
+    macos_temporary_account_candidate = _macos_temporary_account_expiration_candidate(rule, stig_id)
+    if macos_temporary_account_candidate:
+        return macos_temporary_account_candidate
 
     windows_temporary_account_candidate = _windows_temporary_account_expiration_candidate(rule, stig_id)
     if windows_temporary_account_candidate:

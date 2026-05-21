@@ -80,6 +80,19 @@
     },
     {
       "check": {
+        "command": "python3 -c '\nimport plistlib, re, subprocess, sys\nusers = subprocess.run(['\"'\"'/usr/bin/dscl'\"'\"', '\"'\"'.'\"'\"', '\"'\"'-list'\"'\"', '\"'\"'/Users'\"'\"'], text=True, capture_output=True, check=False)\nif users.returncode != 0:\n    sys.exit(0)\nnames = [name.strip() for name in users.stdout.splitlines() if re.search(r'\"'\"'(temp|temporary|emerg)'\"'\"', name, re.I)]\nif not names:\n    print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"')\n    sys.exit(0)\nlimit = 259299\nbad = []\nfor name in names:\n    result = subprocess.run(['\"'\"'/usr/bin/pwpolicy'\"'\"', '\"'\"'-u'\"'\"', name, '\"'\"'getaccountpolicies'\"'\"'], text=True, capture_output=True, check=False)\n    data = result.stdout.strip()\n    if not data:\n        bad.append(name)\n        continue\n    try:\n        policies = plistlib.loads(data.encode())\n        text = str(policies)\n    except Exception:\n        text = data\n    if '\"'\"'policyCategoryAuthentication'\"'\"' not in text:\n        bad.append(name)\n        continue\n    matches = re.findall(r'\"'\"'policyAttributeCurrentTime\\s*<\\s*policyAttributeCreationTime\\s*\\+\\s*(\\d+)'\"'\"', text)\n    if not matches or min(int(value) for value in matches) > limit:\n        bad.append(name)\nif not bad:\n    print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"')\n'",
+        "type": "command_output"
+      },
+      "description": "The macOS system must automatically remove or disable temporary or emergency user accounts within 72 hours.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "macos",
+      "vuln_id": "V-268426"
+    },
+    {
+      "check": {
         "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.timed')\\",
         "type": "command_output"
       },
