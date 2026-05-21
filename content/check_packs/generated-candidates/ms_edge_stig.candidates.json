@@ -198,6 +198,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\PopupsAllowedForUrls')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "URLs must be allowlisted for plugin use if used.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "windows",
+      "vuln_id": "V-235753"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallBlocklist\\1",
         "type": "registry",
         "value_name": "1"
@@ -209,6 +222,19 @@
       },
       "platform": "windows",
       "vuln_id": "V-235754"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallAllowlist')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Extensions that are approved for use must be allowlisted if used.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "windows",
+      "vuln_id": "V-235755"
     },
     {
       "check": {
@@ -433,6 +459,19 @@
       },
       "platform": "windows",
       "vuln_id": "V-246736"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutoplayAllowlist')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "The list of domains media autoplay allows must be allowlisted if used.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "windows",
+      "vuln_id": "V-251694"
     },
     {
       "check": {

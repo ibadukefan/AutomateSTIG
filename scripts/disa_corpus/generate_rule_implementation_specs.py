@@ -14249,6 +14249,45 @@ def _ubuntu_2004_dod_root_ca_certificate_candidate(rule: dict, stig_id: str) -> 
     }
 
 
+def _browser_optional_allowlist_absent_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    supported = {
+        'V-235753': ('MS_Edge_STIG', 'PopupsAllowedForUrls'),
+        'V-235755': ('MS_Edge_STIG', 'ExtensionInstallAllowlist'),
+        'V-251694': ('MS_Edge_STIG', 'AutoplayAllowlist'),
+        'V-221596': ('Google_Chrome_Current_Windows', 'AutoplayAllowlist'),
+    }
+    expected = supported.get(canonical_vuln_id)
+    if not expected:
+        return None
+    expected_stig, value_key = expected
+    if stig_id != expected_stig:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'\bif\s+used\b', rule.get('title', ''), re.IGNORECASE):
+        return None
+    if not re.search(r'not\s+required;\s+this\s+is\s+optional', content, re.IGNORECASE):
+        return None
+    if not re.search(r'\ballowlist(?:ed)?\b', content + '\n' + fix_text, re.IGNORECASE):
+        return None
+    path_match = re.search(
+        rf'((?:HKLM|HKCU)\\SOFTWARE\\Policies\\(?:Microsoft\\Edge|Google\\Chrome)\\{re.escape(value_key)})\\\d+\s*=',
+        content,
+        re.IGNORECASE,
+    )
+    if not path_match:
+        return None
+    path = _normalize_registry_path(path_match.group(1))
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': _powershell_registry_key_absent_command(path)},
+        'expected': {'type': 'equals', 'value': 'Absent'},
+        'description': rule.get('title', ''),
+    }
+
+
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """Infer a conservative executable check candidate from DISA prose.
 
@@ -14583,6 +14622,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         office_exchange_candidate = _office_exchange_kerberos_authentication_candidate(rule, stig_id)
         if office_exchange_candidate:
             return office_exchange_candidate
+
+        browser_optional_allowlist_candidate = _browser_optional_allowlist_absent_candidate(rule, stig_id)
+        if browser_optional_allowlist_candidate:
+            return browser_optional_allowlist_candidate
 
         policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
         if policy_candidate:

@@ -161,6 +161,39 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('Get-SmbShare', candidate['check']['command'])
         self.assertIn('ADMIN$', candidate['check']['command'])
 
+    def test_infers_edge_optional_allowlist_registry_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-235755',
+            'title': 'Extensions that are approved for use must be allowlisted if used.',
+            'check_content': (
+                'This requirement for "Allow specific extensions to be installed" is not required; this is optional.\n\n'
+                'The policy value for "Computer Configuration/Administrative Templates/Microsoft Edge/Extensions/Allow specific extensions to be installed" must be set to "Enabled".\n\n'
+                'Use the Windows Registry Editor to navigate to the following key:\n'
+                'HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\n'
+                '"ExtensionInstallAllowlist" must be set as follows:\n'
+                'HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallAllowlist\\1 = "extension_id"\n\n'
+                'If configured, the list of extensions for Microsoft Edge must be allowlisted.'
+            ),
+            'fix_text': 'Configure only approved Edge extensions in the ExtensionInstallAllowlist policy.',
+        }, 'MS_Edge_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-235755')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Absent'})
+        self.assertIn('HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallAllowlist', candidate['check']['command'])
+
+    def test_rejects_browser_optional_allowlist_without_exact_supported_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Extensions must be allowlisted if used.',
+            'check_content': (
+                'This requirement for "Allow specific extensions to be installed" is not required; this is optional.\n'
+                'HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallAllowlist\\1 = "extension_id"'
+            ),
+            'fix_text': 'Configure only approved Edge extensions.',
+        }, 'MS_Edge_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_office_365_outlook_junk_mail_no_automatic_filtering_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223351',

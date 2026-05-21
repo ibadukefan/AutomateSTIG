@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\PopupsAllowedForUrls')) { 'Absent' }\"",
+      "type": "command_output"
+    },
+    "description": "URLs must be allowlisted for plugin use if used.",
+    "expected": {
+      "type": "equals",
+      "value": "Absent"
+    },
+    "platform": "windows",
+    "vuln_id": "V-235753"
+  },
   "check_content_excerpt": "This requirement for \"Allow pop-up windows on specific sites\" is not required; this is optional.\n\nThe policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Content settings/Allow pop-up windows on specific sites\" must be set to \"Enabled\".\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\n\"PopupsAllowedForUrls\" must be set as follows:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\PopupsAllowedForUrls\\1 = mydomain.com\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\PopupsAllowedForUrls\\2 = myagency.mil\n\nIf configured, the list of domains for which Microsoft Edge allows pop-ups may be allowlisted.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Absent"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Content settings/Allow pop-up windows on specific sites\" to \"Enabled\". A list of allowlisted URLs may be specified here.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-235753r1015297_rule",
   "severity": "low",

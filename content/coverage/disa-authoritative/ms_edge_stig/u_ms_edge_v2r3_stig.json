@@ -546,16 +546,17 @@
       "vuln_id": "V-235752"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235753",
+      "check_pack": "generated-candidates/ms_edge_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235753r1015297_rule",
       "severity": "low",
       "title": "URLs must be allowlisted for plugin use if used.",
-      "tracking_issue": "TODO-V-235753",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_edge_stig.candidates.json",
         "content/disa-corpus/artifacts/d9b69c64ab2c220169a91ca48355024a49e34d93049711d3fcf4f830583f5a73/U_MS_Edge_V2R3_STIG.zip"
       ],
       "vuln_id": "V-235753"
@@ -577,16 +578,17 @@
       "vuln_id": "V-235754"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235755",
+      "check_pack": "generated-candidates/ms_edge_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235755r961479_rule",
       "severity": "low",
       "title": "Extensions that are approved for use must be allowlisted if used.",
-      "tracking_issue": "TODO-V-235755",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_edge_stig.candidates.json",
         "content/disa-corpus/artifacts/d9b69c64ab2c220169a91ca48355024a49e34d93049711d3fcf4f830583f5a73/U_MS_Edge_V2R3_STIG.zip"
       ],
       "vuln_id": "V-235755"
@@ -863,16 +865,17 @@
       "vuln_id": "V-246736"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-251694",
+      "check_pack": "generated-candidates/ms_edge_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-251694r960963_rule",
       "severity": "low",
       "title": "The list of domains media autoplay allows must be allowlisted if used.",
-      "tracking_issue": "TODO-V-251694",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_edge_stig.candidates.json",
         "content/disa-corpus/artifacts/d9b69c64ab2c220169a91ca48355024a49e34d93049711d3fcf4f830583f5a73/U_MS_Edge_V2R3_STIG.zip"
       ],
       "vuln_id": "V-251694"

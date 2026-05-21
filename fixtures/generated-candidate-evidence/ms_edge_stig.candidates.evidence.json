@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 37,
+  "candidate_checks": 40,
   "cases": [
     {
       "check": {
@@ -381,6 +381,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\PopupsAllowedForUrls')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "URLs must be allowlisted for plugin use if used.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\PopupsAllowedForUrls')) { 'Absent' }\"": "unexpected-Absent"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\PopupsAllowedForUrls')) { 'Absent' }\"": "Absent"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235753"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallBlocklist\\1",
         "type": "registry",
         "value_name": "1"
@@ -405,6 +431,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-235754"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallAllowlist')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "Extensions that are approved for use must be allowlisted if used.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallAllowlist')) { 'Absent' }\"": "unexpected-Absent"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallAllowlist')) { 'Absent' }\"": "Absent"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235755"
     },
     {
       "check": {
@@ -840,6 +892,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutoplayAllowlist')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "The list of domains media autoplay allows must be allowlisted if used.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutoplayAllowlist')) { 'Absent' }\"": "unexpected-Absent"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutoplayAllowlist')) { 'Absent' }\"": "Absent"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251694"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
         "type": "registry",
         "value_name": "VisualSearchEnabled"
@@ -1006,5 +1084,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_edge_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Edge_STIG",
-  "validated_candidates": 37
+  "validated_candidates": 40
 }
