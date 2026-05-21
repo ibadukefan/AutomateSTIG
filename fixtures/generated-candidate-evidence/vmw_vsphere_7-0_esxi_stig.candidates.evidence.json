@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 35,
+  "candidate_checks": 36,
   "cases": [
     {
       "check": {
@@ -286,6 +286,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-256402"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$bad=@(Get-VMHost | ForEach-Object { $hp=$_ | Get-VMHostProfile; if ($null -eq $hp) { return }; $ad=$hp.ExtensionData.Config.ApplyProfile.Authentication.ActiveDirectory; if ($ad.Enabled) { $method=($ad | Select-Object -ExpandProperty Policy | Where-Object { $_.Id -eq 'JoinDomainMethodPolicy' }).Policyoption.Id; if ($method -ne 'FixedCAMConfigOption') { $_.Name } } }); if ($bad.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "ESXi hosts using Host Profiles and/or Auto Deploy must use the vSphere Authentication Proxy to protect passwords when adding themselves to Active Directory.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$bad=@(Get-VMHost | ForEach-Object { $hp=$_ | Get-VMHostProfile; if ($null -eq $hp) { return }; $ad=$hp.ExtensionData.Config.ApplyProfile.Authentication.ActiveDirectory; if ($ad.Enabled) { $method=($ad | Select-Object -ExpandProperty Policy | Where-Object { $_.Id -eq 'JoinDomainMethodPolicy' }).Policyoption.Id; if ($method -ne 'FixedCAMConfigOption') { $_.Name } } }); if ($bad.Count -eq 0) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "vmware-powercli"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$bad=@(Get-VMHost | ForEach-Object { $hp=$_ | Get-VMHostProfile; if ($null -eq $hp) { return }; $ad=$hp.ExtensionData.Config.ApplyProfile.Authentication.ActiveDirectory; if ($ad.Enabled) { $method=($ad | Select-Object -ExpandProperty Policy | Where-Object { $_.Id -eq 'JoinDomainMethodPolicy' }).Policyoption.Id; if ($method -ne 'FixedCAMConfigOption') { $_.Name } } }); if ($bad.Count -eq 0) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "vmware-powercli"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256403"
     },
     {
       "check": {
@@ -917,5 +943,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_7-0_esxi_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
-  "validated_candidates": 35
+  "validated_candidates": 36
 }

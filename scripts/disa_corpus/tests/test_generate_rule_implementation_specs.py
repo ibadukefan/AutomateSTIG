@@ -16674,6 +16674,41 @@ Create REG_DWORD "UriScavengerPeriod"''',
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2022_Instance_STIG'))
 
 
+    def test_infers_vmware_esxi_auth_proxy_for_host_profiles_candidate(self):
+        check = (
+            'If the organization is not using Host Profiles to join Active Directory, this is not applicable.\n\n'
+            'From a PowerCLI command prompt while connected to vCenter, run the following command:\n\n'
+            'Get-VMHost | Select Name, `\n'
+            '@{N="HostProfile";E={$_ | Get-VMHostProfile}}, `\n'
+            '@{N="JoinADEnabled";E={($_ | Get-VmHostProfile).ExtensionData.Config.ApplyProfile.Authentication.ActiveDirectory.Enabled}}, `\n'
+            '@{N="JoinDomainMethod";E={(($_ | Get-VMHostProfile).ExtensionData.Config.ApplyProfile.Authentication.ActiveDirectory | Select -ExpandProperty Policy | Where {$_.Id -eq "JoinDomainMethodPolicy"}).Policyoption.Id}}\n\n'
+            'If "JoinADEnabled" is "True" and "JoinDomainMethod" is not "FixedCAMConfigOption", this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256403',
+            'title': 'ESXi hosts using Host Profiles and/or Auto Deploy must use the vSphere Authentication Proxy to protect passwords when adding themselves to Active Directory.',
+            'check_content': check,
+            'fix_text': 'Set the "Join Domain Method" to "Use vSphere Authentication Proxy to add the host to domain".',
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-256403')
+        self.assertEqual(candidate['platform'], 'vmware-powercli')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('ActiveDirectory', candidate['check']['command'])
+        self.assertIn('FixedCAMConfigOption', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_vmware_esxi_auth_proxy_without_exact_evidence(self):
+        rule = {
+            'vuln_id': 'V-256403',
+            'title': 'ESXi hosts must use the vSphere Authentication Proxy.',
+            'check_content': 'Review Host Profiles.',
+            'fix_text': 'Configure Authentication Proxy.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'VMW_vSphere_7-0_ESXi_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'VMW_vSphere_7-0_ESXi_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+
     def test_infers_postgresql_unused_extensions_absent_candidate(self):
         check = (
             'To get a list of all extensions installed, use the following commands:\n'

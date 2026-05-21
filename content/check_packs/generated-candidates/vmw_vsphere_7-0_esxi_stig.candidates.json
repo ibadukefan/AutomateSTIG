@@ -145,6 +145,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$bad=@(Get-VMHost | ForEach-Object { $hp=$_ | Get-VMHostProfile; if ($null -eq $hp) { return }; $ad=$hp.ExtensionData.Config.ApplyProfile.Authentication.ActiveDirectory; if ($ad.Enabled) { $method=($ad | Select-Object -ExpandProperty Policy | Where-Object { $_.Id -eq 'JoinDomainMethodPolicy' }).Policyoption.Id; if ($method -ne 'FixedCAMConfigOption') { $_.Name } } }); if ($bad.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "ESXi hosts using Host Profiles and/or Auto Deploy must use the vSphere Authentication Proxy to protect passwords when adding themselves to Active Directory.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "vmware-powercli",
+      "vuln_id": "V-256403"
+    },
+    {
+      "check": {
         "command": "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup | Select-Object -ExpandProperty Value",
         "type": "command_output"
       },

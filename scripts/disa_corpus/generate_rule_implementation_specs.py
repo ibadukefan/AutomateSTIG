@@ -3876,6 +3876,38 @@ def _ol9_crypto_policy_not_overridden_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _vmware_esxi_auth_proxy_host_profiles_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'vsphere' not in stig_id.lower() or 'esxi' not in stig_id.lower() or rule.get('vuln_id') != 'V-256403':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not all(phrase in content for phrase in (
+        'If the organization is not using Host Profiles to join Active Directory, this is not applicable.',
+        'Get-VMHost | Select Name',
+        'JoinADEnabled',
+        'JoinDomainMethod',
+        'FixedCAMConfigOption',
+        'If "JoinADEnabled" is "True" and "JoinDomainMethod" is not "FixedCAMConfigOption", this is a finding.',
+    )):
+        return None
+    if not re.search(r'Use\s+vSphere\s+Authentication\s+Proxy\s+to\s+add\s+the\s+host\s+to\s+domain', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "powershell -NoProfile -Command \"$bad=@(Get-VMHost | ForEach-Object { "
+        "$hp=$_ | Get-VMHostProfile; if ($null -eq $hp) { return }; "
+        "$ad=$hp.ExtensionData.Config.ApplyProfile.Authentication.ActiveDirectory; "
+        "if ($ad.Enabled) { $method=($ad | Select-Object -ExpandProperty Policy | Where-Object { $_.Id -eq 'JoinDomainMethodPolicy' }).Policyoption.Id; "
+        "if ($method -ne 'FixedCAMConfigOption') { $_.Name } } }); if ($bad.Count -eq 0) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'vmware-powercli',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _vmware_esxi_snmp_disabled_or_v3_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'vsphere' not in stig_id.lower() or 'esxi' not in stig_id.lower() or rule.get('vuln_id') != 'V-256414':
         return None
@@ -13776,6 +13808,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     ol9_crypto_policy_not_overridden_candidate = _ol9_crypto_policy_not_overridden_candidate(rule, stig_id)
     if ol9_crypto_policy_not_overridden_candidate:
         return ol9_crypto_policy_not_overridden_candidate
+    vmware_esxi_auth_proxy_candidate = _vmware_esxi_auth_proxy_host_profiles_candidate(rule, stig_id)
+    if vmware_esxi_auth_proxy_candidate:
+        return vmware_esxi_auth_proxy_candidate
     vmware_esxi_snmp_candidate = _vmware_esxi_snmp_disabled_or_v3_candidate(rule, stig_id)
     if vmware_esxi_snmp_candidate:
         return vmware_esxi_snmp_candidate
