@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 61,
+  "candidate_checks": 62,
   "cases": [
     {
       "check": {
@@ -1537,6 +1537,32 @@
     },
     {
       "check": {
+        "command": "python3 -c 'import glob,pathlib,re; base=pathlib.Path('\"'\"'/etc/kubernetes/manifests'\"'\"'); \nfor manifest in glob.glob('\"'\"'/etc/kubernetes/manifests/*.y*ml'\"'\"'): \n    text=pathlib.Path(manifest).read_text(errors='\"'\"'ignore'\"'\"'); \n    match=re.search(r'\"'\"'--admission-control-config-file=([^ \\t\\\"\\'\"'\"',]+)'\"'\"', text); \n    if not match: continue; \n    cfg=pathlib.Path(match.group(1)); \n    cfg = cfg if cfg.is_absolute() else base / cfg; \n    if not cfg.is_file(): continue; \n    config=cfg.read_text(errors='\"'\"'ignore'\"'\"'); \n    has_plugin=re.search(r'\"'\"'^\\s*-?\\s*name:\\s*PodSecurity\\s*$'\"'\"', config, re.MULTILINE); \n    least_privilege=re.search(r'\"'\"'^\\s*enforce:\\s*[\\\"\\'\"'\"']?(?:baseline|restricted)[\\\"\\'\"'\"']?\\s*$'\"'\"', config, re.MULTILINE); \n    if has_plugin and least_privilege: print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"'); break'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes must have a\u00a0Pod Security\u00a0Admission control file configured.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 -c 'import glob,pathlib,re; base=pathlib.Path('\"'\"'/etc/kubernetes/manifests'\"'\"'); \nfor manifest in glob.glob('\"'\"'/etc/kubernetes/manifests/*.y*ml'\"'\"'): \n    text=pathlib.Path(manifest).read_text(errors='\"'\"'ignore'\"'\"'); \n    match=re.search(r'\"'\"'--admission-control-config-file=([^ \\t\\\"\\'\"'\"',]+)'\"'\"', text); \n    if not match: continue; \n    cfg=pathlib.Path(match.group(1)); \n    cfg = cfg if cfg.is_absolute() else base / cfg; \n    if not cfg.is_file(): continue; \n    config=cfg.read_text(errors='\"'\"'ignore'\"'\"'); \n    has_plugin=re.search(r'\"'\"'^\\s*-?\\s*name:\\s*PodSecurity\\s*$'\"'\"', config, re.MULTILINE); \n    least_privilege=re.search(r'\"'\"'^\\s*enforce:\\s*[\\\"\\'\"'\"']?(?:baseline|restricted)[\\\"\\'\"'\"']?\\s*$'\"'\"', config, re.MULTILINE); \n    if has_plugin and least_privilege: print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"'); break'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 -c 'import glob,pathlib,re; base=pathlib.Path('\"'\"'/etc/kubernetes/manifests'\"'\"'); \nfor manifest in glob.glob('\"'\"'/etc/kubernetes/manifests/*.y*ml'\"'\"'): \n    text=pathlib.Path(manifest).read_text(errors='\"'\"'ignore'\"'\"'); \n    match=re.search(r'\"'\"'--admission-control-config-file=([^ \\t\\\"\\'\"'\"',]+)'\"'\"', text); \n    if not match: continue; \n    cfg=pathlib.Path(match.group(1)); \n    cfg = cfg if cfg.is_absolute() else base / cfg; \n    if not cfg.is_file(): continue; \n    config=cfg.read_text(errors='\"'\"'ignore'\"'\"'); \n    has_plugin=re.search(r'\"'\"'^\\s*-?\\s*name:\\s*PodSecurity\\s*$'\"'\"', config, re.MULTILINE); \n    least_privilege=re.search(r'\"'\"'^\\s*enforce:\\s*[\\\"\\'\"'\"']?(?:baseline|restricted)[\\\"\\'\"'\"']?\\s*$'\"'\"', config, re.MULTILINE); \n    if has_plugin and least_privilege: print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"'); break'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254800"
+    },
+    {
+      "check": {
         "command": "sh -c 'set -- /etc/kubernetes/manifests/*.y*ml; [ -e \"$1\" ] || exit 0; for f in \"$@\"; do grep -Eq -- \"--feature-gates=([^[:space:]\\\"'\"',]*,)*PodSecurity=true(,|[[:space:]\\\"'\"']|$)\" \"$f\" || exit 0; done; args=$(ps -ef | grep [k]ubelet || true); printf \"%s\" \"$args\" | grep -q -- \"--feature-gates\" && exit 0; cfg=$(printf \"%s\" \"$args\" | tr \" \" \"\\n\" | sed -n \"s/^--config=//p\" | head -n1); [ -n \"$cfg\" ] && awk '\"'\"'BEGIN{fg=0; ps=0} /^[[:space:]]*featureGates:[[:space:]]*$/ {fg=1; next} /^[^[:space:]]/ {fg=0} fg && /^[[:space:]]*PodSecurity:[[:space:]]*true[[:space:]]*$/ {ps=1} END{exit ps?0:1}'\"'\"' \"$cfg\" 2>/dev/null && printf Compliant'",
         "type": "command_output"
       },
@@ -1593,5 +1619,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 61
+  "validated_candidates": 62
 }

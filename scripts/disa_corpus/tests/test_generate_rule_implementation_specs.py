@@ -1878,6 +1878,42 @@ kubectl create -f restricted.yml''',
         self.assertIn('featureGates', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_kubernetes_podsecurity_admission_config_file_candidate(self):
+        rule = {
+            'vuln_id': 'V-254800',
+            'title': 'Kubernetes must have a Pod Security Admission control file configured.',
+            'check_content': (
+                'Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:\n\n'
+                '"grep -i admission-control-config-file *"\n\n'
+                'If the setting "--admission-control-config-file" is not configured in the Kubernetes API Server manifest file, this is a finding.\n\n'
+                'Inspect the .yaml file defined by the --admission-control-config-file. Verify PodSecurity is properly configured.\n'
+                'If least privilege is not represented, this is a finding.'
+            ),
+            'fix_text': (
+                'Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane.\n\n'
+                'Set the value of "--admission-control-config-file" to a valid path for the file.\n\n'
+                'Create an admission controller config file:\n'
+                'plugins:\n- name: PodSecurity\n  configuration:\n    defaults:\n      enforce: "restricted"'
+            ),
+        }
+
+        candidate = mod.infer_candidate_check(rule, 'Kubernetes_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-254800')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/etc/kubernetes/manifests', candidate['check']['command'])
+        self.assertIn('admission-control-config-file', candidate['check']['command'])
+        self.assertIn('PodSecurity', candidate['check']['command'])
+        self.assertIn('restricted', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+        missing_fix = dict(rule, fix_text='Set the admission control config file without naming PodSecurity.')
+        self.assertIsNone(mod.infer_candidate_check(missing_fix, 'Kubernetes_STIG'))
+        missing_finding = dict(rule, check_content='grep -i admission-control-config-file *')
+        self.assertIsNone(mod.infer_candidate_check(missing_finding, 'Kubernetes_STIG'))
+
     def test_infers_kubernetes_user_pods_host_privileged_ports_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242414',

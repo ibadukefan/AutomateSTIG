@@ -3576,6 +3576,50 @@ def _kubernetes_podsecurity_feature_gates_candidate(rule: dict, stig_id: str) ->
     }
 
 
+def _kubernetes_podsecurity_admission_config_file_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Kubernetes_STIG' or rule.get('vuln_id') != 'V-254800':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'/etc/kubernetes/manifests', content, re.IGNORECASE):
+        return None
+    if not re.search(r'grep\s+-i\s+admission-control-config-file\s+\*', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+setting\s+["“]--admission-control-config-file["”]\s+is\s+not\s+configured\s+in\s+the\s+Kubernetes\s+API\s+Server\s+manifest\s+file,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Verify\s+PodSecurity\s+is\s+properly\s+configured', content, re.IGNORECASE):
+        return None
+    if not re.search(r'least\s+privilege\s+is\s+not\s+represented,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Set\s+the\s+value\s+of\s+["“]--admission-control-config-file["”]\s+to\s+a\s+valid\s+path\s+for\s+the\s+file', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'PodSecurityConfiguration|name:\s*PodSecurity', fix_text, re.IGNORECASE):
+        return None
+    py_code = (
+        "import glob,pathlib,re; "
+        "base=pathlib.Path('/etc/kubernetes/manifests'); "
+        "\nfor manifest in glob.glob('/etc/kubernetes/manifests/*.y*ml'): "
+        "\n    text=pathlib.Path(manifest).read_text(errors='ignore'); "
+        "\n    match=re.search(r'--admission-control-config-file=([^ \\t\\\"\\\',]+)', text); "
+        "\n    if not match: continue; "
+        "\n    cfg=pathlib.Path(match.group(1)); "
+        "\n    cfg = cfg if cfg.is_absolute() else base / cfg; "
+        "\n    if not cfg.is_file(): continue; "
+        "\n    config=cfg.read_text(errors='ignore'); "
+        "\n    has_plugin=re.search(r'^\\s*-?\\s*name:\\s*PodSecurity\\s*$', config, re.MULTILINE); "
+        "\n    least_privilege=re.search(r'^\\s*enforce:\\s*[\\\"\\\']?(?:baseline|restricted)[\\\"\\\']?\\s*$', config, re.MULTILINE); "
+        "\n    if has_plugin and least_privilege: print('Compliant', end=''); break"
+    )
+    command = 'python3 -c ' + shlex.quote(py_code)
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _kubernetes_user_pods_host_privileged_ports_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'kubernetes' not in stig_id.lower() or rule.get('vuln_id') != 'V-242414':
         return None
@@ -13761,6 +13805,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_podsecurity_feature_gates_candidate = _kubernetes_podsecurity_feature_gates_candidate(rule, stig_id)
     if kubernetes_podsecurity_feature_gates_candidate:
         return kubernetes_podsecurity_feature_gates_candidate
+    kubernetes_podsecurity_admission_config_file_candidate = _kubernetes_podsecurity_admission_config_file_candidate(rule, stig_id)
+    if kubernetes_podsecurity_admission_config_file_candidate:
+        return kubernetes_podsecurity_admission_config_file_candidate
     kubernetes_user_pods_host_privileged_ports_candidate = _kubernetes_user_pods_host_privileged_ports_candidate(rule, stig_id)
     if kubernetes_user_pods_host_privileged_ports_candidate:
         return kubernetes_user_pods_host_privileged_ports_candidate
