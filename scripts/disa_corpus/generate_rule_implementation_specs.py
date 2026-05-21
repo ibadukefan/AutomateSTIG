@@ -929,21 +929,25 @@ def _windows_host_firewall_enabled_candidate(rule: dict, stig_id: str) -> dict |
 
 def _windows_11_absent_non_system_file_shares_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
-    if stig_id != 'Microsoft_Windows_11_STIG' or vuln_id != 'V-253267':
+    allowed_rules = {
+        ('Microsoft_Windows_11_STIG', 'V-253267'),
+        ('MS_Windows_10_STIG', 'V-220710'),
+    }
+    if (stig_id, vuln_id) not in allowed_rules:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
     required_content_patterns = (
-        r'Non-system-created\s+shares\s+must\s+not\s+exist\s+on\s+workstations',
+        r'(?:Non-system-created\s+shares\s+must\s+not\s+exist|Non\s+system-created\s+shares\s+should\s+not\s+typically\s+exist)\s+on\s+workstations',
         r'Shared\s+Folders\s*>>\s*Shares',
         r'ADMIN\$',
         r'\bC\$',
         r'IPC\$',
-        r'If\s+the\s+only\s+shares\s+listed\s+are\s+["“]ADMIN\$["”],\s+["“]C\$["”]\s+and\s+["“]IPC\$["”],\s+this\s+is\s+NA',
+        r'If\s+(?:the\s+)?only\s+system-created\s+shares\s+exist\s+on\s+the\s+system\s+this\s+is\s+NA|If\s+the\s+only\s+shares\s+listed\s+are\s+["“]ADMIN\$["”],\s+["“]C\$["”]\s+and\s+["“]IPC\$["”],\s+this\s+is\s+NA',
     )
     if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content_patterns):
         return None
-    if not re.search(r'Remove\s+any\s+unnecessary\s+non-system-created\s+shares', fix_text, re.IGNORECASE):
+    if not re.search(r'Remove\s+any\s+unnecessary\s+non-system[ -]created\s+shares', fix_text, re.IGNORECASE):
         return None
     command = (
         'powershell -NoProfile -Command '

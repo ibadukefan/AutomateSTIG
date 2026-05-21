@@ -43,6 +43,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$allowed=@('ADMIN$','C$','IPC$'); $shares=Get-SmbShare -ErrorAction Stop; $bad=$shares | Where-Object { $allowed -notcontains $_.Name }; if ($shares -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Non system-created file shares on a system must limit access to groups that require it.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220710"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$cutoff=(Get-Date).AddDays(-35); if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName } else { Get-CimInstance Win32_UserAccount -Filter 'LocalAccount=True and Disabled=False' | Where-Object { $_.Name -notin @('DefaultAccount','Guest') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | Select-Object -ExpandProperty Name }\"",
         "type": "command_output"
       },

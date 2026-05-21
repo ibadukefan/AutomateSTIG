@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 222,
+  "candidate_checks": 223,
   "cases": [
     {
       "check": {
@@ -80,6 +80,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220704"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$allowed=@('ADMIN$','C$','IPC$'); $shares=Get-SmbShare -ErrorAction Stop; $bad=$shares | Where-Object { $allowed -notcontains $_.Name }; if ($shares -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Non system-created file shares on a system must limit access to groups that require it.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$allowed=@('ADMIN$','C$','IPC$'); $shares=Get-SmbShare -ErrorAction Stop; $bad=$shares | Where-Object { $allowed -notcontains $_.Name }; if ($shares -and -not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$allowed=@('ADMIN$','C$','IPC$'); $shares=Get-SmbShare -ErrorAction Stop; $bad=$shares | Where-Object { $allowed -notcontains $_.Name }; if ($shares -and -not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220710"
     },
     {
       "check": {
@@ -5976,5 +6002,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 222
+  "validated_candidates": 223
 }

@@ -141,6 +141,26 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('*.p12', candidate['check']['command'])
         self.assertIn('*.pfx', candidate['check']['command'])
 
+    def test_infers_windows_10_absent_non_system_file_shares_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220710',
+            'title': 'Non system-created file shares on a system must limit access to groups that require it.',
+            'check_content': (
+                'Non system-created shares should not typically exist on workstations.\n\n'
+                'If only system-created shares exist on the system this is NA.\n\n'
+                'Run "Computer Management". Navigate to System Tools >> Shared Folders >> Shares.\n\n'
+                'If the only shares listed are "ADMIN$", "C$" and "IPC$", this is NA.\n\n'
+                'If the file shares have not been reconfigured to restrict permissions to the specific groups or accounts that require access, this is a finding.'
+            ),
+            'fix_text': 'Remove any unnecessary non-system created shares.',
+        }, 'MS_Windows_10_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-220710')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('Get-SmbShare', candidate['check']['command'])
+        self.assertIn('ADMIN$', candidate['check']['command'])
+
     def test_infers_office_365_outlook_junk_mail_no_automatic_filtering_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223351',
