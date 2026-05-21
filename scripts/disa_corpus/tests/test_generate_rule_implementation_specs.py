@@ -89,6 +89,32 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertEqual(updated['normalizer'], 'command_output')
             self.assertEqual(updated['evaluator'], 'candidate_template')
 
+    def test_infers_postgresql_pgdata_config_owner_permissions_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233518',
+            'title': 'PostgreSQL must limit privileges to change functions and triggers, and links to software external to PostgreSQL.',
+            'check_content': (
+                'Only owners of objects can change them. To view all functions, triggers, and trigger procedures, their ownership and source, '
+                'as the database administrator (shown here as "postgres") run the following SQL:\n\n'
+                '$ sudo su - postgres\n$ psql -x -c "\\df+"\n\n'
+                'Only the OS database owner user (shown here as "postgres") or a PostgreSQL superuser can change links to external software. '
+                'As the database administrator (shown here as "postgres"), check the permissions of configuration files for the database:\n\n'
+                '$ sudo su - postgres\n$ ls -la ${PGDATA?}\n\n'
+                'If any files are not owned by the database owner or have permissions allowing others to modify (write) configuration files, this is a finding.'
+            ),
+            'fix_text': (
+                '$ chown postgres:postgres ${PGDATA?}/postgresql.conf\n'
+                '$ chmod 0600 ${PGDATA?}/postgresql.conf'
+            ),
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233518')
+        self.assertEqual(candidate['platform'], 'postgresql')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('${PGDATA:?}', candidate['check']['command'])
+        self.assertIn('! -user postgres', candidate['check']['command'])
+        self.assertIn('-perm /022', candidate['check']['command'])
+
     def test_infers_cisco_nxos_multicast_admin_scope_boundary_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221134',

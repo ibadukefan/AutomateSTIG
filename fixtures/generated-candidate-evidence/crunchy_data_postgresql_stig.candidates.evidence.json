@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 54,
+  "candidate_checks": 55,
   "cases": [
     {
       "check": {
@@ -104,6 +104,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233517"
+    },
+    {
+      "check": {
+        "command": "sh -c 'find \"${PGDATA:?}\" -maxdepth 1 -type f \\( ! -user postgres -o -perm /022 \\) -print -quit 2>/dev/null'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must limit privileges to change functions and triggers, and links to software external to PostgreSQL.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'find \"${PGDATA:?}\" -maxdepth 1 -type f \\( ! -user postgres -o -perm /022 \\) -print -quit 2>/dev/null'": "unexpected"
+        },
+        "platform": "postgresql"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'find \"${PGDATA:?}\" -maxdepth 1 -type f \\( ! -user postgres -o -perm /022 \\) -print -quit 2>/dev/null'": ""
+        },
+        "platform": "postgresql"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233518"
     },
     {
       "check": {
@@ -1411,5 +1437,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 54
+  "validated_candidates": 55
 }

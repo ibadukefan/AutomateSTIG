@@ -9212,6 +9212,23 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     postgresql_audit_features_unauthorized_removal_candidate = _postgresql_audit_features_unauthorized_removal_candidate(rule, stig_id)
     if postgresql_audit_features_unauthorized_removal_candidate:
         return postgresql_audit_features_unauthorized_removal_candidate
+    postgresql_pgdata_config_owner_permissions = (
+        'postgresql' in stig_id.lower()
+        and rule.get('vuln_id', '') == 'V-233518'
+        and re.search(r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-la\s+\$\{PGDATA\?\}\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'If\s+any\s+files\s+are\s+not\s+owned\s+by\s+the\s+database\s+owner\s+or\s+have\s+permissions\s+allowing\s+others\s+to\s+modify\s+\(write\)\s+configuration\s+files,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'chown\s+postgres:postgres\s+\$\{PGDATA\?\}/postgresql\.conf', fix_text, re.IGNORECASE)
+        and re.search(r'chmod\s+0600\s+\$\{PGDATA\?\}/postgresql\.conf', fix_text, re.IGNORECASE)
+    )
+    if postgresql_pgdata_config_owner_permissions:
+        command = "sh -c 'find \"${PGDATA:?}\" -maxdepth 1 -type f \\( ! -user postgres -o -perm /022 \\) -print -quit 2>/dev/null'"
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'postgresql',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     postgresql_software_module_permissions = (
         'postgresql' in stig_id.lower()
         and rule.get('vuln_id', '') == 'V-233517'
