@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 258,
+  "candidate_checks": 259,
   "cases": [
     {
       "check": {
@@ -208,6 +208,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278001"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"Add-Type -AssemblyName System.Printing; $excluded=@('Microsoft Print to PDF','Microsoft XPS Document Writer'); $adminPatterns=@('BUILTIN\\\\Administrators','NT AUTHORITY\\\\SYSTEM','CREATOR OWNER','ALL APPLICATION PACKAGES'); $printers=Get-Printer -ErrorAction SilentlyContinue | Where-Object { $_.Shared -and ($excluded -notcontains $_.Name) }; $printers | ForEach-Object { Get-PrintConfiguration -PrinterName $_.Name -ErrorAction SilentlyContinue | Out-Null }; if (-not $printers) { 'Compliant'; exit }; $server=New-Object System.Printing.LocalPrintServer; $bad=$false; foreach ($p in $printers) { $queue=$server.GetPrintQueue($p.Name); $acl=$queue.GetAccessControl(); $acl.GetAccessRules($true,$true,[System.Security.Principal.NTAccount]) | ForEach-Object { $id=$_.IdentityReference.Value; $isStandard=-not ($adminPatterns | Where-Object { $id -like $_ }); $allowed=[System.Printing.PrintSystemRights]::Print; $rights=[System.Printing.PrintSystemRights]$_.PrintSystemRights; $hasExtra=(($rights -band (-bnot $allowed)) -ne 0); if ($_.AccessControlType -eq 'Allow' -and $isStandard -and $hasExtra) { $script:bad=$true } } } if (-not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 nonadministrative accounts or groups must only have print permissions on printer shares.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Add-Type -AssemblyName System.Printing; $excluded=@('Microsoft Print to PDF','Microsoft XPS Document Writer'); $adminPatterns=@('BUILTIN\\\\Administrators','NT AUTHORITY\\\\SYSTEM','CREATOR OWNER','ALL APPLICATION PACKAGES'); $printers=Get-Printer -ErrorAction SilentlyContinue | Where-Object { $_.Shared -and ($excluded -notcontains $_.Name) }; $printers | ForEach-Object { Get-PrintConfiguration -PrinterName $_.Name -ErrorAction SilentlyContinue | Out-Null }; if (-not $printers) { 'Compliant'; exit }; $server=New-Object System.Printing.LocalPrintServer; $bad=$false; foreach ($p in $printers) { $queue=$server.GetPrintQueue($p.Name); $acl=$queue.GetAccessControl(); $acl.GetAccessRules($true,$true,[System.Security.Principal.NTAccount]) | ForEach-Object { $id=$_.IdentityReference.Value; $isStandard=-not ($adminPatterns | Where-Object { $id -like $_ }); $allowed=[System.Printing.PrintSystemRights]::Print; $rights=[System.Printing.PrintSystemRights]$_.PrintSystemRights; $hasExtra=(($rights -band (-bnot $allowed)) -ne 0); if ($_.AccessControlType -eq 'Allow' -and $isStandard -and $hasExtra) { $script:bad=$true } } } if (-not $bad) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Add-Type -AssemblyName System.Printing; $excluded=@('Microsoft Print to PDF','Microsoft XPS Document Writer'); $adminPatterns=@('BUILTIN\\\\Administrators','NT AUTHORITY\\\\SYSTEM','CREATOR OWNER','ALL APPLICATION PACKAGES'); $printers=Get-Printer -ErrorAction SilentlyContinue | Where-Object { $_.Shared -and ($excluded -notcontains $_.Name) }; $printers | ForEach-Object { Get-PrintConfiguration -PrinterName $_.Name -ErrorAction SilentlyContinue | Out-Null }; if (-not $printers) { 'Compliant'; exit }; $server=New-Object System.Printing.LocalPrintServer; $bad=$false; foreach ($p in $printers) { $queue=$server.GetPrintQueue($p.Name); $acl=$queue.GetAccessControl(); $acl.GetAccessRules($true,$true,[System.Security.Principal.NTAccount]) | ForEach-Object { $id=$_.IdentityReference.Value; $isStandard=-not ($adminPatterns | Where-Object { $id -like $_ }); $allowed=[System.Printing.PrintSystemRights]::Print; $rights=[System.Printing.PrintSystemRights]$_.PrintSystemRights; $hasExtra=(($rights -band (-bnot $allowed)) -ne 0); if ($_.AccessControlType -eq 'Allow' -and $isStandard -and $hasExtra) { $script:bad=$true } } } if (-not $bad) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278002"
     },
     {
       "check": {
@@ -6916,5 +6942,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 258
+  "validated_candidates": 259
 }

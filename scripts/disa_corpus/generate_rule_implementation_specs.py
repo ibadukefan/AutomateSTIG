@@ -961,6 +961,52 @@ def _windows_11_absent_non_system_file_shares_candidate(rule: dict, stig_id: str
     }
 
 
+def _windows_server_2025_shared_printer_standard_users_print_only_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if stig_id != 'MS_Windows_Server_2025_STIG' or vuln_id != 'V-278002':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_content_patterns = (
+        r'If\s+there\s+are\s+no\s+printers\s+configured,\s+this\s+is\s+not\s+applicable',
+        r'Exclude\s+Microsoft\s+Print\s+to\s+PDF\s+and\s+Microsoft\s+XPS\s+Document\s+Writer',
+        r'If\s+["“]Share\s+this\s+printer["”]\s+is\s+checked,\s+select\s+the\s+["“]Security["”]\s+tab',
+        r'If\s+any\s+standard\s+user\s+accounts\s+or\s+groups\s+have\s+permissions\s+other\s+than\s+["“]Print["”],\s+this\s+is\s+a\s+finding',
+        r'["“]All\s+APPLICATION\s+PACKAGES["”]\s+and\s+["“]CREATOR\s+OWNER["”]\s+are\s+not\s+standard\s+user\s+accounts',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content_patterns):
+        return None
+    if not re.search(r'Configure\s+the\s+permissions\s+on\s+shared\s+printers\s+to\s+restrict\s+standard\s+users\s+to\s+only\s+have\s+Print\s+permissions', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"Add-Type -AssemblyName System.Printing; '
+        '$excluded=@(\'Microsoft Print to PDF\',\'Microsoft XPS Document Writer\'); '
+        '$adminPatterns=@(\'BUILTIN\\\\Administrators\',\'NT AUTHORITY\\\\SYSTEM\',\'CREATOR OWNER\',\'ALL APPLICATION PACKAGES\'); '
+        '$printers=Get-Printer -ErrorAction SilentlyContinue | Where-Object { $_.Shared -and ($excluded -notcontains $_.Name) }; '
+        '$printers | ForEach-Object { Get-PrintConfiguration -PrinterName $_.Name -ErrorAction SilentlyContinue | Out-Null }; '
+        'if (-not $printers) { \'Compliant\'; exit }; '
+        '$server=New-Object System.Printing.LocalPrintServer; $bad=$false; '
+        'foreach ($p in $printers) { '
+        '$queue=$server.GetPrintQueue($p.Name); $acl=$queue.GetAccessControl(); '
+        '$acl.GetAccessRules($true,$true,[System.Security.Principal.NTAccount]) | ForEach-Object { '
+        '$id=$_.IdentityReference.Value; '
+        '$isStandard=-not ($adminPatterns | Where-Object { $id -like $_ }); '
+        '$allowed=[System.Printing.PrintSystemRights]::Print; '
+        '$rights=[System.Printing.PrintSystemRights]$_.PrintSystemRights; '
+        '$hasExtra=(($rights -band (-bnot $allowed)) -ne 0); '
+        'if ($_.AccessControlType -eq \'Allow\' -and $isStandard -and $hasExtra) { $script:bad=$true } } } '
+        'if (-not $bad) { \'Compliant\' }"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_workstation_bitlocker_all_fixed_volumes_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-220702', 'V-253259'}:
@@ -14182,6 +14228,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     windows_11_absent_non_system_file_shares_candidate = _windows_11_absent_non_system_file_shares_candidate(rule, stig_id)
     if windows_11_absent_non_system_file_shares_candidate:
         return windows_11_absent_non_system_file_shares_candidate
+    windows_server_2025_shared_printer_candidate = _windows_server_2025_shared_printer_standard_users_print_only_candidate(rule, stig_id)
+    if windows_server_2025_shared_printer_candidate:
+        return windows_server_2025_shared_printer_candidate
     ol9_crypto_policy_not_overridden_candidate = _ol9_crypto_policy_not_overridden_candidate(rule, stig_id)
     if ol9_crypto_policy_not_overridden_candidate:
         return ol9_crypto_policy_not_overridden_candidate

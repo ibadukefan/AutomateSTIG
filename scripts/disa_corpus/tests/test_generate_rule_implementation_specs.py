@@ -89,6 +89,39 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertEqual(updated['normalizer'], 'command_output')
             self.assertEqual(updated['evaluator'], 'candidate_template')
 
+    def test_infers_windows_server_2025_shared_printer_standard_users_print_only_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278002',
+            'title': 'Windows Server 2025 nonadministrative accounts or groups must only have print permissions on printer shares.',
+            'check_content': (
+                'Open "Printers & scanners" in "Settings".\n\n'
+                'If there are no printers configured, this is not applicable. (Exclude Microsoft Print to PDF and Microsoft XPS Document Writer, which do not support sharing.)\n\n'
+                'If "Share this printer" is checked, select the "Security" tab.\n\n'
+                'If any standard user accounts or groups have permissions other than "Print", this is a finding.\n\n'
+                'The default is for the "Everyone" group to be given Print permission.\n\n'
+                '"All APPLICATION PACKAGES" and "CREATOR OWNER" are not standard user accounts.'
+            ),
+            'fix_text': 'Configure the permissions on shared printers to restrict standard users to only have Print permissions.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278002')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('Get-Printer', candidate['check']['command'])
+        self.assertIn('Get-PrintConfiguration', candidate['check']['command'])
+        self.assertIn('PrintSystemRights', candidate['check']['command'])
+        self.assertIn('ALL APPLICATION PACKAGES', candidate['check']['command'])
+        self.assertIn('CREATOR OWNER', candidate['check']['command'])
+
+    def test_rejects_shared_printer_candidate_without_exact_windows_server_2025_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Printer permissions must be reviewed.',
+            'check_content': 'If any standard user accounts or groups have permissions other than "Print", this is a finding.',
+            'fix_text': 'Configure the permissions on shared printers to restrict standard users to only have Print permissions.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_windows_certificate_installation_files_removed_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278008',

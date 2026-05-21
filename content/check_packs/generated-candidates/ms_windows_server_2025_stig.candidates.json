@@ -106,6 +106,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Add-Type -AssemblyName System.Printing; $excluded=@('Microsoft Print to PDF','Microsoft XPS Document Writer'); $adminPatterns=@('BUILTIN\\\\Administrators','NT AUTHORITY\\\\SYSTEM','CREATOR OWNER','ALL APPLICATION PACKAGES'); $printers=Get-Printer -ErrorAction SilentlyContinue | Where-Object { $_.Shared -and ($excluded -notcontains $_.Name) }; $printers | ForEach-Object { Get-PrintConfiguration -PrinterName $_.Name -ErrorAction SilentlyContinue | Out-Null }; if (-not $printers) { 'Compliant'; exit }; $server=New-Object System.Printing.LocalPrintServer; $bad=$false; foreach ($p in $printers) { $queue=$server.GetPrintQueue($p.Name); $acl=$queue.GetAccessControl(); $acl.GetAccessRules($true,$true,[System.Security.Principal.NTAccount]) | ForEach-Object { $id=$_.IdentityReference.Value; $isStandard=-not ($adminPatterns | Where-Object { $id -like $_ }); $allowed=[System.Printing.PrintSystemRights]::Print; $rights=[System.Printing.PrintSystemRights]$_.PrintSystemRights; $hasExtra=(($rights -band (-bnot $allowed)) -ne 0); if ($_.AccessControlType -eq 'Allow' -and $isStandard -and $hasExtra) { $script:bad=$true } } } if (-not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 nonadministrative accounts or groups must only have print permissions on printer shares.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278002"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$cutoff=(Get-Date).AddDays(-35); if ((Get-CimInstance Win32_ComputerSystem).DomainRole -ge 4) { Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 35.00:00:00 | Where-Object { $_.Enabled -eq $true } | Select-Object -ExpandProperty SamAccountName } else { Get-CimInstance Win32_UserAccount -Filter 'LocalAccount=True and Disabled=False' | Where-Object { $_.Name -notin @('DefaultAccount','Guest') -and (-not $_.LastUseTime -or ([Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime) -lt $cutoff)) } | Select-Object -ExpandProperty Name }\"",
         "type": "command_output"
       },

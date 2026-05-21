@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"Add-Type -AssemblyName System.Printing; $excluded=@('Microsoft Print to PDF','Microsoft XPS Document Writer'); $adminPatterns=@('BUILTIN\\\\Administrators','NT AUTHORITY\\\\SYSTEM','CREATOR OWNER','ALL APPLICATION PACKAGES'); $printers=Get-Printer -ErrorAction SilentlyContinue | Where-Object { $_.Shared -and ($excluded -notcontains $_.Name) }; $printers | ForEach-Object { Get-PrintConfiguration -PrinterName $_.Name -ErrorAction SilentlyContinue | Out-Null }; if (-not $printers) { 'Compliant'; exit }; $server=New-Object System.Printing.LocalPrintServer; $bad=$false; foreach ($p in $printers) { $queue=$server.GetPrintQueue($p.Name); $acl=$queue.GetAccessControl(); $acl.GetAccessRules($true,$true,[System.Security.Principal.NTAccount]) | ForEach-Object { $id=$_.IdentityReference.Value; $isStandard=-not ($adminPatterns | Where-Object { $id -like $_ }); $allowed=[System.Printing.PrintSystemRights]::Print; $rights=[System.Printing.PrintSystemRights]$_.PrintSystemRights; $hasExtra=(($rights -band (-bnot $allowed)) -ne 0); if ($_.AccessControlType -eq 'Allow' -and $isStandard -and $hasExtra) { $script:bad=$true } } } if (-not $bad) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2025 nonadministrative accounts or groups must only have print permissions on printer shares.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278002"
+  },
   "check_content_excerpt": "Open \"Printers & scanners\" in \"Settings\".\n\nIf there are no printers configured, this is not applicable. (Exclude Microsoft Print to PDF and Microsoft XPS Document Writer, which do not support sharing.)\n\nFor each printer:\n\nSelect the printer and \"Manage\". \n\nSelect \"Printer Properties\". \n\nSelect the \"Sharing\" tab. \n\nIf \"Share this printer\" is checked, select the \"Security\" tab.\n\nIf any standard user accounts or groups have permissions other than \"Print\", this is a finding.\n\nThe default is for the \"Everyone\" group to be given Print permission.\n\n\"All APPLICATION PACKAGES\" and \"CREATOR OWNER\" are not standard user accounts.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the permissions on shared printers to restrict standard users to only have Print permissions.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-278002r1181785_rule",
   "severity": "low",
