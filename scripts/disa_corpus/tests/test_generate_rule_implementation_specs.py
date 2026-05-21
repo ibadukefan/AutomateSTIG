@@ -898,6 +898,29 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('server-status', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_apache_windows_httpd_binary_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214353',
+            'title': 'The Apache web server must be protected from being stopped by a non-privileged user.',
+            'check_content': (
+                'Right-click <\'Install Path\'>\\bin\\httpd.exe.\n\n'
+                'Click "Properties" from the "Context" menu. Select the "Security" tab.\n\n'
+                'The following account may have Full control privileges:\n\n'
+                'TrustedInstaller\nWeb Managers\nWeb Manager designees\n\n'
+                'The following accounts may have read and execute, or read permissions:\n\n'
+                'Non Web Manager Administrators\nALL APPLICATION PACKAGES (built-in security group)\nSYSTEM\nUsers\n\n'
+                'If any other access is observed, this is a finding.'
+            ),
+            'fix_text': 'Restrict access to the web administration tool to only the Web Manager and the Web Manager\'s designees.',
+        }, 'Apache_Server_2-4_Windows_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-214353')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('httpd.exe', candidate['check']['command'])
+        self.assertIn('Get-Acl', candidate['check']['command'])
+        self.assertIn('Web Managers', candidate['check']['command'])
+
     def test_copies_duplicate_candidate_from_existing_completed_spec(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

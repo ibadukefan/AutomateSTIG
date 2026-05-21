@@ -301,6 +301,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$paths=@((Join-Path $env:ProgramFiles 'Apache24\\bin\\httpd.exe'),'C:\\Apache24\\bin\\httpd.exe') | Select-Object -Unique; $path=$paths | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1; if (-not $path) { exit }; $fullAllowed=@('NT SERVICE\\TrustedInstaller','TrustedInstaller','Web Managers'); $writeMask=[System.Security.AccessControl.FileSystemRights]'Write,Modify,FullControl,ChangePermissions,TakeOwnership,Delete'; $bad=$false; $acl=Get-Acl -LiteralPath $path; foreach ($ace in $acl.Access) { $id=$ace.IdentityReference.Value; $hasWrite=(($ace.FileSystemRights -band $writeMask) -ne 0); if ($ace.AccessControlType -eq 'Allow' -and $hasWrite -and ($fullAllowed -notcontains $id)) { $bad=$true } }; if (-not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Apache web server must be protected from being stopped by a non-privileged user.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-214353"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$p=Join-Path $env:ProgramFiles 'Apache24\\conf\\httpd.conf'; $lines=Select-String -Path $p -Pattern '^\\s*SSLCompression\\b' -ErrorAction SilentlyContinue; if ((-not $lines) -or ($lines | Where-Object { $_.Line -match '^\\s*SSLCompression\\s+off\\s*(?:#.*)?$' })) { 'Compliant' }\"",
         "type": "command_output"
       },

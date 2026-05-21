@@ -749,6 +749,49 @@ def _apache_windows_log_file_acl_candidate(rule: dict, stig_id: str) -> dict | N
     }
 
 
+def _apache_windows_httpd_binary_acl_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Apache_Server_2-4_Windows_Server_STIG' or rule.get('vuln_id') != 'V-214353':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r"<'Install\s+Path'>\\bin\\httpd\.exe",
+        r'The\s+following\s+account\s+may\s+have\s+Full\s+control\s+privileges',
+        r'TrustedInstaller',
+        r'Web\s+Managers',
+        r'Web\s+Manager\s+designees',
+        r'The\s+following\s+accounts\s+may\s+have\s+read\s+and\s+execute,\s+or\s+read\s+permissions',
+        r'ALL\s+APPLICATION\s+PACKAGES',
+        r'If\s+any\s+other\s+access\s+is\s+observed,\s+this\s+is\s+a\s+finding',
+        r'Restrict\s+access\s+to\s+the\s+web\s+administration\s+tool\s+to\s+only\s+the\s+Web\s+Manager\s+and\s+the\s+Web\s+Manager',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "$paths=@((Join-Path $env:ProgramFiles 'Apache24\\bin\\httpd.exe'),'C:\\Apache24\\bin\\httpd.exe') | Select-Object -Unique; "
+        "$path=$paths | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1; "
+        "if (-not $path) { exit }; "
+        "$fullAllowed=@('NT SERVICE\\TrustedInstaller','TrustedInstaller','Web Managers'); "
+        "$writeMask=[System.Security.AccessControl.FileSystemRights]'Write,Modify,FullControl,ChangePermissions,TakeOwnership,Delete'; "
+        "$bad=$false; $acl=Get-Acl -LiteralPath $path; "
+        "foreach ($ace in $acl.Access) { "
+        "$id=$ace.IdentityReference.Value; "
+        "$hasWrite=(($ace.FileSystemRights -band $writeMask) -ne 0); "
+        "if ($ace.AccessControlType -eq 'Allow' -and $hasWrite -and ($fullAllowed -notcontains $id)) { $bad=$true } "
+        "}; "
+        "if (-not $bad) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _apache_windows_module_candidate(rule: dict, stig_id: str) -> dict | None:
     if stig_id != 'Apache_Server_2-4_Windows_Server_STIG':
         return None
@@ -14590,6 +14633,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         apache_windows_log_file_acl_candidate = _apache_windows_log_file_acl_candidate(rule, stig_id)
         if apache_windows_log_file_acl_candidate:
             return apache_windows_log_file_acl_candidate
+
+        apache_windows_httpd_binary_acl_candidate = _apache_windows_httpd_binary_acl_candidate(rule, stig_id)
+        if apache_windows_httpd_binary_acl_candidate:
+            return apache_windows_httpd_binary_acl_candidate
 
         defender_registry_absent_candidate = _windows_defender_registry_absent_candidate(rule, stig_id)
         if defender_registry_absent_candidate:
