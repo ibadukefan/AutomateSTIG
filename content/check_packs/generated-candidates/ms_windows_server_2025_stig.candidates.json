@@ -1881,6 +1881,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$allowed=@('AD-Domain-Services','DNS','FileAndStorage-Services','Storage-Services'); $dc=Get-WindowsFeature -Name AD-Domain-Services -ErrorAction SilentlyContinue; if (-not $dc -or -not $dc.Installed) { 'Compliant'; exit 0 }; $extra=Get-WindowsFeature -ErrorAction SilentlyContinue | Where-Object { $_.Installed -and $_.FeatureType -eq 'Role' -and ($allowed -notcontains $_.Name) }; $appRegex='(?i)(IIS|Internet Information Services|Exchange|SQL Server|Database|MySQL|PostgreSQL|Oracle Database|MariaDB|Apache|Tomcat|Nginx|Web Server|Mail Server|SMTP)'; $apps=@(Get-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match $appRegex }); if (-not $extra -and $apps.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 domain controllers must run on a machine dedicated to that function.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278144"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"try { Add-Type -AssemblyName System.DirectoryServices.Protocols; $root=([ADSI]'LDAP://RootDSE'); $defaultNamingContext=[string]$root.defaultNamingContext; if ([string]::IsNullOrWhiteSpace($defaultNamingContext)) { 'Compliant'; exit 0 }; $conn=New-Object System.DirectoryServices.Protocols.LdapConnection('localhost'); $conn.AuthType=[System.DirectoryServices.Protocols.AuthType]::Anonymous; $conn.Bind(); $req=New-Object System.DirectoryServices.Protocols.SearchRequest($defaultNamingContext,'(objectClass=*)',[System.DirectoryServices.Protocols.SearchScope]::Base,$null); $resp=$conn.SendRequest($req); if ($resp.Entries.Count -eq 0) { 'Compliant' } } catch { 'Compliant' }\"",
         "type": "command_output"
       },

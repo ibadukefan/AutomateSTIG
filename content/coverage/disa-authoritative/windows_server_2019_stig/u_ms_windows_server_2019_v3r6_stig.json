@@ -1135,16 +1135,17 @@
       "vuln_id": "V-205694"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205695",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205695r958478_rule",
       "severity": "medium",
       "title": "Windows Server 2019 domain controllers must run on a machine dedicated to that function.",
-      "tracking_issue": "TODO-V-205695",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/de998bcf180eef5455fa320637cc7434bb0e732905bbc2a145829ca8bf1d1986/U_MS_Windows_Server_2019_V3R6_STIG.zip"
       ],
       "vuln_id": "V-205695"

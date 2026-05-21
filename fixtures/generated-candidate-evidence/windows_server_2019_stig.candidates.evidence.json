@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 209,
+  "candidate_checks": 210,
   "cases": [
     {
       "check": {
@@ -883,6 +883,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205694"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$allowed=@('AD-Domain-Services','DNS','FileAndStorage-Services','Storage-Services'); $dc=Get-WindowsFeature -Name AD-Domain-Services -ErrorAction SilentlyContinue; if (-not $dc -or -not $dc.Installed) { 'Compliant'; exit 0 }; $extra=Get-WindowsFeature -ErrorAction SilentlyContinue | Where-Object { $_.Installed -and $_.FeatureType -eq 'Role' -and ($allowed -notcontains $_.Name) }; $appRegex='(?i)(IIS|Internet Information Services|Exchange|SQL Server|Database|MySQL|PostgreSQL|Oracle Database|MariaDB|Apache|Tomcat|Nginx|Web Server|Mail Server|SMTP)'; $apps=@(Get-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match $appRegex }); if (-not $extra -and $apps.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 domain controllers must run on a machine dedicated to that function.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$allowed=@('AD-Domain-Services','DNS','FileAndStorage-Services','Storage-Services'); $dc=Get-WindowsFeature -Name AD-Domain-Services -ErrorAction SilentlyContinue; if (-not $dc -or -not $dc.Installed) { 'Compliant'; exit 0 }; $extra=Get-WindowsFeature -ErrorAction SilentlyContinue | Where-Object { $_.Installed -and $_.FeatureType -eq 'Role' -and ($allowed -notcontains $_.Name) }; $appRegex='(?i)(IIS|Internet Information Services|Exchange|SQL Server|Database|MySQL|PostgreSQL|Oracle Database|MariaDB|Apache|Tomcat|Nginx|Web Server|Mail Server|SMTP)'; $apps=@(Get-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match $appRegex }); if (-not $extra -and $apps.Count -eq 0) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$allowed=@('AD-Domain-Services','DNS','FileAndStorage-Services','Storage-Services'); $dc=Get-WindowsFeature -Name AD-Domain-Services -ErrorAction SilentlyContinue; if (-not $dc -or -not $dc.Installed) { 'Compliant'; exit 0 }; $extra=Get-WindowsFeature -ErrorAction SilentlyContinue | Where-Object { $_.Installed -and $_.FeatureType -eq 'Role' -and ($allowed -notcontains $_.Name) }; $appRegex='(?i)(IIS|Internet Information Services|Exchange|SQL Server|Database|MySQL|PostgreSQL|Oracle Database|MariaDB|Apache|Tomcat|Nginx|Web Server|Mail Server|SMTP)'; $apps=@(Get-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match $appRegex }); if (-not $extra -and $apps.Count -eq 0) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205695"
     },
     {
       "check": {
@@ -5616,5 +5642,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 209
+  "validated_candidates": 210
 }

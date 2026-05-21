@@ -12997,6 +12997,54 @@ def _tomcat_web_xml_boolean_param_candidate(rule: dict, stig_id: str) -> dict | 
     }
 
 
+def _windows_domain_controller_dedicated_roles_candidate(rule: dict, stig_id: str) -> dict | None:
+    targets = {
+        ('V-205695', 'Windows_Server_2019_STIG'),
+        ('V-254397', 'MS_Windows_Server_2022_STIG'),
+        ('V-278144', 'MS_Windows_Server_2025_STIG'),
+    }
+    vuln_id = rule.get('vuln_id', '')
+    if (vuln_id, stig_id) not in targets:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    normalized = re.sub(r'\s+', ' ', content)
+    required_patterns = (
+        r'This\s+applies\s+to\s+domain\s+controllers,?\s+it\s+is\s+(?:NA|not\s+applicable)\s+for\s+other\s+systems\.',
+        r'Review\s+the\s+installed\s+roles\s+the\s+domain\s+controller\s+is\s+supporting\.',
+        r'A\s+basic\s+domain\s+controller\s+setup\s+will\s+include\s+the\s+following:',
+        r'Active\s+Directory\s+Domain\s+Services',
+        r'DNS\s+Server',
+        r'File\s+and\s+Storage\s+Services',
+        r'(?:If\s+any\s+additional\s+server\s+roles\s+are\s+installed|If\s+any\s+roles\s+not\s+requiring\s+installation\s+on\s+a\s+domain\s+controller\s+are\s+installed),\s+this\s+is\s+a\s+finding\.',
+        r'Review\s+installed\s+applications\.',
+        r'If\s+any\s+applications\s+are\s+installed\s+that\s+are\s+not\s+required\s+for\s+the\s+domain\s+controller,\s+this\s+is\s+a\s+finding\.',
+    )
+    if not all(re.search(pattern, normalized, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'Remove\s+(?:any\s+unnecessary|additional)\s+roles(?:\s+or\s+applications\s+such\s+as\s+web,\s+database,\s+and\s+email)?\s+from\s+the\s+domain\s+controller', combined, re.IGNORECASE):
+        return None
+    command = (
+        'powershell -NoProfile -Command "'
+        "$allowed=@('AD-Domain-Services','DNS','FileAndStorage-Services','Storage-Services'); "
+        "$dc=Get-WindowsFeature -Name AD-Domain-Services -ErrorAction SilentlyContinue; "
+        "if (-not $dc -or -not $dc.Installed) { 'Compliant'; exit 0 }; "
+        "$extra=Get-WindowsFeature -ErrorAction SilentlyContinue | Where-Object { $_.Installed -and $_.FeatureType -eq 'Role' -and ($allowed -notcontains $_.Name) }; "
+        "$appRegex='(?i)(IIS|Internet Information Services|Exchange|SQL Server|Database|MySQL|PostgreSQL|Oracle Database|MariaDB|Apache|Tomcat|Nginx|Web Server|Mail Server|SMTP)'; "
+        "$apps=@(Get-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*','HKLM:\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match $appRegex }); "
+        "if (-not $extra -and $apps.Count -eq 0) { 'Compliant' }"
+        '"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_domain_controller_anonymous_directory_access_candidate(rule: dict, stig_id: str) -> dict | None:
     allowed_targets = {
         ('V-205875', 'Windows_Server_2019_STIG'),
@@ -14360,6 +14408,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         services_msc_candidate = _windows_services_msc_candidate(rule, stig_id)
         if services_msc_candidate:
             return services_msc_candidate
+
+        dedicated_domain_controller_candidate = _windows_domain_controller_dedicated_roles_candidate(rule, stig_id)
+        if dedicated_domain_controller_candidate:
+            return dedicated_domain_controller_candidate
 
         anonymous_directory_access_candidate = _windows_domain_controller_anonymous_directory_access_candidate(rule, stig_id)
         if anonymous_directory_access_candidate:

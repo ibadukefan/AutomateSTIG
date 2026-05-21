@@ -17090,5 +17090,42 @@ Create REG_DWORD "UriScavengerPeriod"''',
         self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Crunchy_Data_PostgreSQL_STIG'))
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
 
+    def test_infers_windows_domain_controller_dedicated_roles_candidate(self):
+        check = (
+            'This applies to domain controllers, it is NA for other systems.\n\n'
+            'Review the installed roles the domain controller is supporting.\n\n'
+            'A basic domain controller setup will include the following:\n\n'
+            '- Active Directory Domain Services\n'
+            '- DNS Server\n'
+            '- File and Storage Services\n\n'
+            'If any roles not requiring installation on a domain controller are installed, this is a finding.\n\n'
+            'Review installed applications.\n\n'
+            'If any applications are installed that are not required for the domain controller, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254397',
+            'title': 'Windows Server 2022 domain controllers must run on a machine dedicated to that function.',
+            'check_content': check,
+            'fix_text': 'Remove additional roles or applications such as web, database, and email from the domain controller.',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-254397')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('Get-WindowsFeature', candidate['check']['command'])
+        self.assertIn('AD-Domain-Services', candidate['check']['command'])
+        self.assertIn('DNS', candidate['check']['command'])
+
+    def test_does_not_infer_windows_domain_controller_dedicated_roles_without_exact_evidence(self):
+        rule = {
+            'vuln_id': 'V-254397',
+            'title': 'Windows Server 2022 domain controllers must run on a machine dedicated to that function.',
+            'check_content': 'Review installed roles on the server.',
+            'fix_text': 'Remove unnecessary roles.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_Windows_Server_2022_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2025_STIG'))
+
 if __name__ == '__main__':
     unittest.main()
