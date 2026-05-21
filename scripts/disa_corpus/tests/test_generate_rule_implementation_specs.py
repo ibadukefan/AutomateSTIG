@@ -1747,6 +1747,36 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'Store the keystore file somewhere.'}, 'Tomcat_Application_Server_9_STIG'))
 
+    def test_infers_tomcat_deployxml_false_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222955',
+            'title': 'The deployXML attribute must be set to false in hosted environments.',
+            'check_content': (
+                'If the SSP associated with the Host contains ISSM documented approvals for deployXML, this is not a finding.\n\n'
+                'From the Tomcat server as a privileged user:\n\n'
+                'sudo grep -i deployXML $CATALINA_BASE/conf/server.xml\n\n'
+                'deployXML="false"\n\n'
+                'If the deployXML="true" and there is no documented authorization to allow automatic deployment of applications, this is a finding.\n\n'
+                'If no results are generated, confirm the default behavior is "false".'
+            ),
+            'fix_text': 'Edit the $CATALINA_BASE/conf/server.xml file. Set deployXML="false".',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222955')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('deployXML', candidate['check']['command'])
+        self.assertIn('true', candidate['check']['command'])
+
+    def test_rejects_tomcat_deployxml_candidate_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The deployXML attribute must be set to false in hosted environments.',
+            'check_content': 'sudo grep -i deployXML $CATALINA_BASE/conf/server.xml If deployXML="true", this is a finding.',
+            'fix_text': 'Set deployXML="false".',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_tomcat_process_not_root_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222984',

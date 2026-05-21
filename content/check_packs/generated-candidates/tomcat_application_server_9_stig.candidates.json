@@ -67,6 +67,19 @@
     },
     {
       "check": {
+        "command": "python3 - <<'PY'\nimport os, xml.etree.ElementTree as ET\npath=os.path.join(os.environ.get('CATALINA_BASE','/opt/tomcat'),'conf','server.xml')\ntry:\n    root=ET.parse(path).getroot()\nexcept Exception:\n    raise SystemExit(0)\nfor host in root.iter('Host'):\n    if str(host.attrib.get('deployXML','')).strip().lower() == 'true':\n        print('true')\nPY",
+        "type": "command_output"
+      },
+      "description": "The deployXML attribute must be set to false in hosted environments.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-222955"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath \"count(//Host[not(@autoDeploy) or translate(@autoDeploy,'TRUE','true')='true'])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
         "type": "command_output"
       },

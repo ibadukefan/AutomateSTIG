@@ -6739,6 +6739,27 @@ def _tomcat_allow_backslash_false_candidate(rule: dict, stig_id: str) -> dict | 
     }
 
 
+def _tomcat_deployxml_false_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222955':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'grep\s+-i\s+deployXML\s+\$CATALINA_BASE/conf/server\.xml', content, re.IGNORECASE):
+        return None
+    if not re.search(r'deployXML\s*=\s*["“]true["”]?[^.]*this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'deployXML\s*=\s*["“]false["”]', content + '\n' + fix_text, re.IGNORECASE):
+        return None
+    command = "python3 - <<'PY'\nimport os, xml.etree.ElementTree as ET\npath=os.path.join(os.environ.get('CATALINA_BASE','/opt/tomcat'),'conf','server.xml')\ntry:\n    root=ET.parse(path).getroot()\nexcept Exception:\n    raise SystemExit(0)\nfor host in root.iter('Host'):\n    if str(host.attrib.get('deployXML','')).strip().lower() == 'true':\n        print('true')\nPY"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_autodeploy_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222956':
         return None
@@ -14678,6 +14699,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_allow_backslash_candidate = _tomcat_allow_backslash_false_candidate(rule, stig_id)
     if tomcat_allow_backslash_candidate:
         return tomcat_allow_backslash_candidate
+
+    tomcat_deployxml_candidate = _tomcat_deployxml_false_candidate(rule, stig_id)
+    if tomcat_deployxml_candidate:
+        return tomcat_deployxml_candidate
 
     tomcat_autodeploy_candidate = _tomcat_autodeploy_disabled_candidate(rule, stig_id)
     if tomcat_autodeploy_candidate:

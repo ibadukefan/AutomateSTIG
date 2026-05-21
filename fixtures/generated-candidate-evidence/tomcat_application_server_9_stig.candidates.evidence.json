@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 42,
+  "candidate_checks": 43,
   "cases": [
     {
       "check": {
@@ -130,6 +130,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222954"
+    },
+    {
+      "check": {
+        "command": "python3 - <<'PY'\nimport os, xml.etree.ElementTree as ET\npath=os.path.join(os.environ.get('CATALINA_BASE','/opt/tomcat'),'conf','server.xml')\ntry:\n    root=ET.parse(path).getroot()\nexcept Exception:\n    raise SystemExit(0)\nfor host in root.iter('Host'):\n    if str(host.attrib.get('deployXML','')).strip().lower() == 'true':\n        print('true')\nPY",
+        "type": "command_output"
+      },
+      "description": "The deployXML attribute must be set to false in hosted environments.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 - <<'PY'\nimport os, xml.etree.ElementTree as ET\npath=os.path.join(os.environ.get('CATALINA_BASE','/opt/tomcat'),'conf','server.xml')\ntry:\n    root=ET.parse(path).getroot()\nexcept Exception:\n    raise SystemExit(0)\nfor host in root.iter('Host'):\n    if str(host.attrib.get('deployXML','')).strip().lower() == 'true':\n        print('true')\nPY": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 - <<'PY'\nimport os, xml.etree.ElementTree as ET\npath=os.path.join(os.environ.get('CATALINA_BASE','/opt/tomcat'),'conf','server.xml')\ntry:\n    root=ET.parse(path).getroot()\nexcept Exception:\n    raise SystemExit(0)\nfor host in root.iter('Host'):\n    if str(host.attrib.get('deployXML','')).strip().lower() == 'true':\n        print('true')\nPY": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222955"
     },
     {
       "check": {
@@ -1099,5 +1125,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 42
+  "validated_candidates": 43
 }
