@@ -11560,6 +11560,36 @@ def _oracle_sqlplus_command(select_sql: str) -> str:
     )
 
 
+def _oracle_database_instance_name_version_reference_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270521':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if rule.get('title', '').strip().lower() != 'oracle instance names must not contain oracle version numbers.':
+        return None
+    required_patterns = (
+        r'select\s+instance_name\s*,\s*version\s+from\s+v\$instance',
+        r'select\s+name\s+from\s+v\$pdbs',
+        r'If\s+the\s+instance\s+name\s+returned\s+references\s+the\s+Oracle\s+release\s+number,\s+this\s+is\s+a\s+finding',
+        r'Numbers\s+used\s+that\s+include\s+version\s+numbers\s+by\s+coincidence\s+are\s+not\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'change\s+the\s+SID\s+for\s+the\s+database\s+without\s+recreating\s+the\s+database\s+to\s+a\s+value\s+that\s+does\s+not\s+identify\s+the\s+Oracle\s+version', fix_text, re.IGNORECASE):
+        return None
+    sql = (
+        "SELECT name FROM (SELECT instance_name AS name FROM v$instance UNION ALL SELECT name FROM v$pdbs) "
+        "WHERE REGEXP_LIKE(LOWER(name), '(8i|9i|10g|11g|12c|18c|19c|21c|23c)');"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': _oracle_sqlplus_command(sql)},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_public_empty_result_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE):
         return None
@@ -14657,6 +14687,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:
         return command_candidate
+
+    oracle_database_instance_name_candidate = _oracle_database_instance_name_version_reference_candidate(rule, stig_id)
+    if oracle_database_instance_name_candidate:
+        return oracle_database_instance_name_candidate
 
     oracle_database_public_empty_result_candidate = _oracle_database_public_empty_result_candidate(rule, stig_id)
     if oracle_database_public_empty_result_candidate:

@@ -1543,6 +1543,28 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'fix_text': 'log_connections = off'}, 'Crunchy_Data_PostgreSQL_STIG'))
 
+    def test_infers_oracle_database_instance_names_do_not_reference_versions_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270521',
+            'title': 'Oracle instance names must not contain Oracle version numbers.',
+            'check_content': (
+                'From SQL*Plus:\n\n'
+                'select instance_name, version from v$instance;\n\n'
+                'To check the pluggable databases (PDBs) within the CDB:\n\n'
+                'select name from v$pdbs;\n\n'
+                'If the instance name returned references the Oracle release number, this is a finding.\n\n'
+                'Numbers used that include version numbers by coincidence are not a finding.'
+            ),
+            'fix_text': 'Follow the instructions in Oracle MetaLink Note 15390.1 (and related documents) to change the SID for the database without recreating the database to a value that does not identify the Oracle version.',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270521')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('v$instance', candidate['check']['command'])
+        self.assertIn('v$pdbs', candidate['check']['command'])
+        self.assertIn('REGEXP_LIKE', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_oracle_database_fips_ora_true_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270569',

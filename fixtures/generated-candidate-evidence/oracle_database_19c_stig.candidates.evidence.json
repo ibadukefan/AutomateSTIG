@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 17,
+  "candidate_checks": 18,
   "cases": [
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT name FROM (SELECT instance_name AS name FROM v$instance UNION ALL SELECT name FROM v$pdbs) WHERE REGEXP_LIKE(LOWER(name), '(8i|9i|10g|11g|12c|18c|19c|21c|23c)');\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "Oracle instance names must not contain Oracle version numbers.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT name FROM (SELECT instance_name AS name FROM v$instance UNION ALL SELECT name FROM v$pdbs) WHERE REGEXP_LIKE(LOWER(name), '(8i|9i|10g|11g|12c|18c|19c|21c|23c)');\nEXIT\nSQL": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT name FROM (SELECT instance_name AS name FROM v$instance UNION ALL SELECT name FROM v$pdbs) WHERE REGEXP_LIKE(LOWER(name), '(8i|9i|10g|11g|12c|18c|19c|21c|23c)');\nEXIT\nSQL": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270521"
+    },
     {
       "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT value FROM v$parameter WHERE LOWER(name) = 'remote_os_roles';\nEXIT\nSQL",
@@ -449,5 +475,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_database_19c_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Database_19c_STIG",
-  "validated_candidates": 17
+  "validated_candidates": 18
 }
