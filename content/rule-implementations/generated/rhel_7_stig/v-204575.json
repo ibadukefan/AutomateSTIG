@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'grep -Ehs \"^[[:space:]]*\\$ModLoad[[:space:]]+(imtcp|imudp|imrelp)\\b\" /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null | grep -Ev \"^[[:space:]]*#\"'",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that the rsyslog daemon does not accept log messages from other servers unless the server is being used for log aggregation.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204575"
+  },
   "check_content_excerpt": "Verify that the system is not accepting \"rsyslog\" messages from other systems unless it is documented as a log aggregation server.\n\nCheck the configuration of \"rsyslog\" with the following command:\n\n# grep imtcp /etc/rsyslog.conf\n$ModLoad imtcp\n# grep imudp /etc/rsyslog.conf\n$ModLoad imudp\n# grep imrelp /etc/rsyslog.conf\n$ModLoad imrelp\n\nIf any of the above modules are being loaded in the \"/etc/rsyslog.conf\" file, ask to see the documentation for the system being used for log aggregation.\n\nIf the documentation does not exist, or does not specify the server as a log aggregation system, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Modify the \"/etc/rsyslog.conf\" file to remove the \"ModLoad imtcp\", \"ModLoad imudp\", and \"ModLoad imrelp\" configuration lines, or document the system as being used for log aggregation.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204575r991589_rule",
   "severity": "medium",

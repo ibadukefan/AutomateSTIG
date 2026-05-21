@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 172,
+  "candidate_checks": 173,
   "cases": [
     {
       "check": {
@@ -2429,6 +2429,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'grep -Ehs \"^[[:space:]]*\\$ModLoad[[:space:]]+(imtcp|imudp|imrelp)\\b\" /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null | grep -Ev \"^[[:space:]]*#\"'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the rsyslog daemon does not accept log messages from other servers unless the server is being used for log aggregation.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -Ehs \"^[[:space:]]*\\$ModLoad[[:space:]]+(imtcp|imudp|imrelp)\\b\" /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null | grep -Ev \"^[[:space:]]*#\"'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'grep -Ehs \"^[[:space:]]*\\$ModLoad[[:space:]]+(imtcp|imudp|imrelp)\\b\" /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null | grep -Ev \"^[[:space:]]*#\"'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204575"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/limits.conf",
         "pattern": "/etc/security/limits.d/*.conf",
@@ -4617,5 +4643,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 172
+  "validated_candidates": 173
 }

@@ -2908,6 +2908,32 @@ def _cisco_nxos_no_ip_source_route_candidate(rule: dict, stig_id: str) -> dict |
     }
 
 
+def _rhel7_rsyslog_no_remote_input_candidate(rule: dict, stig_id: str) -> dict | None:
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id != 'V-204575' or stig_id.lower() != 'rhel_7_stig':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f'{content}\n{fix_text}'
+    if not re.search(r'rsyslog.+does\s+not\s+accept\s+log\s+messages\s+from\s+other\s+servers', rule.get('title', '') or '', re.IGNORECASE):
+        return None
+    required_tokens = ('$ModLoad imtcp', '$ModLoad imudp', '$ModLoad imrelp')
+    if not all(token in combined for token in required_tokens):
+        return None
+    if not re.search(r'If\s+any\s+of\s+the\s+above\s+modules\s+are\s+being\s+loaded', content, re.IGNORECASE):
+        return None
+    if not re.search(r'remove\s+the\s+["“]ModLoad\s+imtcp["”].+["“]ModLoad\s+imudp["”].+["“]ModLoad\s+imrelp["”]', fix_text, re.IGNORECASE | re.DOTALL):
+        return None
+    command = "sh -c 'grep -Ehs \"^[[:space:]]*\\$ModLoad[[:space:]]+(imtcp|imudp|imrelp)\\b\" /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null | grep -Ev \"^[[:space:]]*#\"'"
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _ubuntu_rsyslog_remote_access_methods_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if vuln_id not in {'V-238324', 'V-260589', 'V-270681'}:
@@ -14044,6 +14070,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     if scap_fix_only_systemctl_service_candidate:
         return scap_fix_only_systemctl_service_candidate
 
+    rhel7_rsyslog_no_remote_input_candidate = _rhel7_rsyslog_no_remote_input_candidate(rule, stig_id)
+    if rhel7_rsyslog_no_remote_input_candidate:
+        return rhel7_rsyslog_no_remote_input_candidate
     ubuntu_rsyslog_candidate = _ubuntu_rsyslog_remote_access_methods_candidate(rule, stig_id)
     if ubuntu_rsyslog_candidate:
         return ubuntu_rsyslog_candidate

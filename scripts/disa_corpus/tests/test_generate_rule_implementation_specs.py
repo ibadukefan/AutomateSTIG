@@ -113,6 +113,33 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
                 self.assertIn('temp|temporary|emerg', candidate['check']['command'])
                 self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_rhel7_rsyslog_not_accepting_remote_messages_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204575',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured so that the rsyslog daemon does not accept log messages from other servers unless the server is being used for log aggregation.',
+            'check_content': (
+                'Verify that the system is not accepting "rsyslog" messages from other systems unless it is documented as a log aggregation server.\n\n'
+                'Check the configuration of "rsyslog" with the following command:\n\n'
+                '# grep imtcp /etc/rsyslog.conf\n$ModLoad imtcp\n'
+                '# grep imudp /etc/rsyslog.conf\n$ModLoad imudp\n'
+                '# grep imrelp /etc/rsyslog.conf\n$ModLoad imrelp\n\n'
+                'If any of the above modules are being loaded in the "/etc/rsyslog.conf" file, ask to see the documentation for the system being used for log aggregation.\n'
+                'If the system is not documented as a log aggregation server, this is a finding.'
+            ),
+            'fix_text': (
+                'Modify the "/etc/rsyslog.conf" file to remove the "ModLoad imtcp", "ModLoad imudp", and "ModLoad imrelp" configuration lines, '
+                'or document the system as being used for log aggregation.'
+            ),
+        }, 'RHEL_7_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-204575')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('imtcp', candidate['check']['command'])
+        self.assertIn('imudp', candidate['check']['command'])
+        self.assertIn('imrelp', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_legacy_temporary_account_expiration_candidates_from_expiration_date_prose(self):
         cases = [
             ('V-230331', 'rhel_8_stig', 'RHEL 8'),
