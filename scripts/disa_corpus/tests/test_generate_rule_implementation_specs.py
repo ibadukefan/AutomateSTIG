@@ -292,6 +292,27 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('240.0.0.0/4', candidate['check']['command'])
         self.assertIn('prefix-list', candidate['check']['command'])
 
+    def test_infers_cisco_nxos_source_route_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221095',
+            'title': 'The Cisco perimeter switch must be configured to block all packets with any IP options.',
+            'check_content': (
+                'In Cisco NX-OS, all packets with any header option other than the “source-route” header option are dropped. '
+                'By default, ipv4 source routing is enabled. Verify that source routing is disabled via the following command:\n\n'
+                'no ip source-route\n\n'
+                'If the switch is not configured to drop all packets with IP option source routing, this is a finding.'
+            ),
+            'fix_text': 'Configure the switch to drop all packets with IP option source routing.\n\nSW1(config)# no ip source-route',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221095')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'show running-config | include ^no ip source-route$',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'no ip source-route'})
+
     def test_infers_cisco_nxos_routing_key_lifetime_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221073',
@@ -16781,6 +16802,29 @@ If any roles are listed, this is a finding.""",
         }, 'Oracle_Database_19c_STIG')
         self.assertEqual(public_role['check']['command'], "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT granted_role FROM dba_role_privs WHERE grantee = 'PUBLIC';\nEXIT\nSQL")
         self.assertEqual(public_role['expected'], {'type': 'equals', 'value': ''})
+
+        database_links = mod.infer_candidate_check({
+            'vuln_id': 'V-270522',
+            'title': 'Fixed user and PUBLIC Database links must be authorized for use.',
+            'check_content': """If using a non-CDB database: Use the following query to get a list of database links.
+
+From SQL*Plus:
+
+select owner||': '||db_link from dba_db_links;
+
+If using a CDB database: Use the following query to get a list of database links.
+
+select con_id_to_con_name(con_id) con_id, owner, db_link, username, host from cdb_db_links order by 1,2,3;
+
+Check Results:
+
+If no rows are returned from the first SQL statement, this check is not a finding.
+
+If there are rows returned, verify the database links are required.""",
+            'fix_text': 'Remove all unauthorized remote database connection definitions from the database. From SQL*Plus: drop database link [link name]; OR drop public database link [link name];',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertEqual(database_links['check']['command'], "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT owner || ': ' || db_link FROM dba_db_links;\nEXIT\nSQL")
+        self.assertEqual(database_links['expected'], {'type': 'equals', 'value': ''})
 
     def test_infers_oracle_default_passwords_excluding_xs_null_from_exact_vuln(self):
         candidate = mod.infer_candidate_check({

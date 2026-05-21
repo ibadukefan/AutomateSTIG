@@ -11737,6 +11737,13 @@ def _oracle_database_public_empty_result_candidate(rule: dict, stig_id: str) -> 
     fix_text = rule.get('fix_text', '') or ''
     vuln_id = rule.get('vuln_id', '')
     allowed = {
+        'V-270522': {
+            'title': 'Fixed user and PUBLIC Database links must be authorized for use.',
+            'content_pattern': r"select\s+owner\s*\|\|\s*'\s*:\s*'\s*\|\|\s*db_link\s+from\s+dba_db_links",
+            'finding_pattern': r'If\s+no\s+rows\s+are\s+returned\s+from\s+the\s+first\s+SQL\s+statement,\s+this\s+check\s+is\s+not\s+a\s+finding\.',
+            'fix_pattern': r'drop\s+(?:public\s+)?database\s+link',
+            'sql': "SELECT owner || ': ' || db_link FROM dba_db_links;",
+        },
         'V-270528': {
             'title': 'System Privileges must not be granted to PUBLIC.',
             'content_pattern': r"Select\s+privilege\s+from\s+dba_sys_privs\s+where\s+grantee\s*=\s*'PUBLIC'",
