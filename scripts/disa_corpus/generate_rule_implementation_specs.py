@@ -12438,6 +12438,37 @@ def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> d
 
 
 
+def _sql_server_windows_authentication_only_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if rule.get('vuln_id', '') != 'V-271265':
+        return None
+    expected_title = 'sql server must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.'
+    if rule.get('title', '').strip().lower() != expected_title:
+        return None
+    required_content_patterns = (
+        r"SERVERPROPERTY\(\s*'IsIntegratedSecurityOnly'\s*\)",
+        r"WHEN\s+1\s+THEN\s+'Windows\s+Authentication'",
+        r"WHEN\s+0\s+THEN\s+'Windows\s+and\s+SQL\s+Server\s+Authentication'",
+        r'If\s+the\s+returned\s+value\s+in\s+the\s+["“]Authentication\s+Mode["”]\s+column\s+is\s+["“]Windows\s+Authentication["”],\s+this\s+is\s+not\s+a\s+finding',
+        r'If\s+the\s+returned\s+value\s+is\s+["“]Windows\s+and\s+SQL\s+Server\s+Authentication["”],\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content_patterns):
+        return None
+    if not re.search(r'Configure\s+SQL\s+Server\s+to\s+use\s+only\s+Windows\s+Authentication\s+Mode', fix_text, re.IGNORECASE):
+        return None
+    command = 'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; SELECT CASE SERVERPROPERTY(\'IsIntegratedSecurityOnly\') WHEN 1 THEN \'Windows Authentication\' WHEN 0 THEN \'Windows and SQL Server Authentication\' END;"'
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Windows Authentication'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_computer_account_logins_absent_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -15161,6 +15192,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_kerberos_spn_candidate = _sql_server_kerberos_spn_registration_candidate(rule, stig_id)
     if sql_server_kerberos_spn_candidate:
         return sql_server_kerberos_spn_candidate
+
+    sql_server_windows_auth_candidate = _sql_server_windows_authentication_only_candidate(rule, stig_id)
+    if sql_server_windows_auth_candidate:
+        return sql_server_windows_auth_candidate
 
     sql_server_computer_account_logins_candidate = _sql_server_computer_account_logins_absent_candidate(rule, stig_id)
     if sql_server_computer_account_logins_candidate:

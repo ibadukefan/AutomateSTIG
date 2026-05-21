@@ -5665,6 +5665,28 @@ If any sample databases are found, this is a finding.''',
             'description': 'Default demonstration and sample databases, database objects, and applications must be removed.',
         })
 
+    def test_infers_sql_server_windows_authentication_only_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271265',
+            'title': 'SQL Server must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.',
+            'check_content': '''Determine whether SQL Server is configured to use only Windows authentication.
+
+In a query interface such as the SSMS Transact-SQL editor, run the statement:
+
+SELECT CASE SERVERPROPERTY('IsIntegratedSecurityOnly') WHEN 1 THEN 'Windows Authentication' WHEN 0 THEN 'Windows and SQL Server Authentication' END as [Authentication Mode]
+
+If the returned value in the "Authentication Mode" column is "Windows Authentication", this is not a finding.
+If the returned value is "Windows and SQL Server Authentication", this is a finding.''',
+            'fix_text': 'Configure SQL Server to use only Windows Authentication Mode.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271265',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; SELECT CASE SERVERPROPERTY(\'IsIntegratedSecurityOnly\') WHEN 1 THEN \'Windows Authentication\' WHEN 0 THEN \'Windows and SQL Server Authentication\' END;"'},
+            'expected': {'type': 'equals', 'value': 'Windows Authentication'},
+            'description': 'SQL Server must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.',
+        })
+
     def test_infers_sql_server_computer_account_logins_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271267',

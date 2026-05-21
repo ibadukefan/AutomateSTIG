@@ -44,6 +44,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters",
+        "type": "registry",
+        "value_name": "SMB1"
+      },
+      "description": "Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "xccdf_mil.disa.stig_group_V-254276"
+    },
+    {
+      "check": {
         "name": "PowerShell-v2",
         "should_be_installed": false,
         "type": "windows_feature"
