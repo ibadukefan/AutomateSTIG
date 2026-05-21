@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Outlook\\Options\\Mail",
+      "type": "registry",
+      "value_name": "JunkMailProtection"
+    },
+    "description": "The junk email protection level must be set to No Automatic Filtering.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-223351"
+  },
   "check_content_excerpt": "Note: If the Outlook client application is not used to access Office 365 email (i.e., email is only accessed via Outlook Web Access [OWA]), this is not applicable.  \n\nVerify Outlook Junk E-mail protection is set to \"No Automatic Filtering\".\n\nIn Outlook, click Home tab >> Delete group >> Junk >> Junk E-mail Options.\n\nVerify Junk E-mail protection is set to \"No Automatic Filtering\".\n \nIf the system being inspected is not behind EEMSG, CBII, or O365 EOP, the Junk E-mail protection level must be set to \"High\". Otherwise, \"Low\" is acceptable.\n\nIf Junk E-mail protection is not set to \"No Automatic Filtering\", this is a finding.\n\nIf the system is not behind enterprise-level capabilities such as EEMSG, CBII, or O365 EOP and the Junk E-mail protection is not set to \"High\", this is a  finding.\n\nIf the system is behind enterprise-level capabilities such as EEMSG, CBII, or O365 EOP, and the Junk E-mail protection is not at least \"Low\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "In Outlook, click Home tab >> Delete group >> Junk >> Junk E-mail Options.\n\nSet the Junk E-mail protection level to \"No Automatic Filtering\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223351r1188335_rule",
   "severity": "medium",

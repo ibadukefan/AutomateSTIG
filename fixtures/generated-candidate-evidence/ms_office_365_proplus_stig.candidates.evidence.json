@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 138,
+  "candidate_checks": 139,
   "cases": [
     {
       "check": {
@@ -1878,6 +1878,33 @@
     },
     {
       "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Outlook\\Options\\Mail",
+        "type": "registry",
+        "value_name": "JunkMailProtection"
+      },
+      "description": "The junk email protection level must be set to No Automatic Filtering.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Outlook\\Options\\Mail\\JunkMailProtection": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Outlook\\Options\\Mail\\JunkMailProtection": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223351"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
         "type": "registry",
         "value_name": "allowactivexoneoffforms"
@@ -3714,5 +3741,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 138
+  "validated_candidates": 139
 }

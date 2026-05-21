@@ -967,6 +967,20 @@
     },
     {
       "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Outlook\\Options\\Mail",
+        "type": "registry",
+        "value_name": "JunkMailProtection"
+      },
+      "description": "The junk email protection level must be set to No Automatic Filtering.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223351"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
         "type": "registry",
         "value_name": "allowactivexoneoffforms"

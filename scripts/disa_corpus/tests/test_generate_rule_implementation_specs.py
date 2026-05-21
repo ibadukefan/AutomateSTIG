@@ -108,6 +108,30 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('*.p12', candidate['check']['command'])
         self.assertIn('*.pfx', candidate['check']['command'])
 
+    def test_infers_office_365_outlook_junk_mail_no_automatic_filtering_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223351',
+            'title': 'The junk email protection level must be set to No Automatic Filtering.',
+            'check_content': (
+                'Verify Outlook Junk E-mail protection is set to "No Automatic Filtering".\n\n'
+                'In Outlook, click Home tab >> Delete group >> Junk >> Junk E-mail Options.\n\n'
+                'If Junk E-mail protection is not set to "No Automatic Filtering", this is a finding.'
+            ),
+            'fix_text': (
+                'In Outlook, click Home tab >> Delete group >> Junk >> Junk E-mail Options.\n\n'
+                'Set the Junk E-mail protection level to "No Automatic Filtering".'
+            ),
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-223351')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {
+            'type': 'registry',
+            'path': 'HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Outlook\\Options\\Mail',
+            'value_name': 'JunkMailProtection',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
+
     def test_infers_postgresql_pgdata_config_owner_permissions_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233518',

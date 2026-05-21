@@ -1034,6 +1034,29 @@ def _windows_run_as_different_user_context_menu_candidate(rule: dict, stig_id: s
     }
 
 
+def _office_365_outlook_junk_mail_no_automatic_filtering_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    if canonical_vuln_id != 'V-223351' or slug(stig_id) != 'ms_office_365_proplus_stig':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'Junk\s+E-?mail\s+protection\s+is\s+set\s+to\s+["“]No\s+Automatic\s+Filtering["”]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Set\s+the\s+Junk\s+E-?mail\s+protection\s+level\s+to\s+["“]No\s+Automatic\s+Filtering["”]', fix_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': canonical_vuln_id,
+        'platform': 'windows',
+        'check': {
+            'type': 'registry',
+            'path': 'HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Outlook\\Options\\Mail',
+            'value_name': 'JunkMailProtection',
+        },
+        'expected': {'type': 'equals', 'value': 0},
+        'description': rule.get('title', ''),
+    }
+
+
 def _office_all_installed_programs_feature_control_candidate(rule: dict, stig_id: str) -> dict | None:
     vuln_id = rule.get('vuln_id', '')
     if 'office' not in stig_id.lower():
@@ -14105,6 +14128,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     windows_run_as_different_user_candidate = _windows_run_as_different_user_context_menu_candidate(rule, stig_id)
     if windows_run_as_different_user_candidate:
         return windows_run_as_different_user_candidate
+    office_365_junk_mail_candidate = _office_365_outlook_junk_mail_no_automatic_filtering_candidate(rule, stig_id)
+    if office_365_junk_mail_candidate:
+        return office_365_junk_mail_candidate
     windows_11_absent_non_system_file_shares_candidate = _windows_11_absent_non_system_file_shares_candidate(rule, stig_id)
     if windows_11_absent_non_system_file_shares_candidate:
         return windows_11_absent_non_system_file_shares_candidate
