@@ -4112,6 +4112,36 @@ If the file shares have not been reconfigured to restrict permissions to the spe
             })
             self.assertEqual(generated['candidate_check']['expected'], {'type': 'equals', 'value': 'Enabled'})
 
+    def test_infers_iis_arr_proxy_disabled_from_authoritative_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218794',
+            'title': 'The IIS 10.0 web server must not be both a website server and a proxy server.',
+            'check_content': '''Open the IIS 10.0 Manager.
+
+If, under the IIS installed features "Application Request Routing Cache" is not present, this is not a finding.
+
+From the right "Actions" pane under "Proxy", select "Server Proxy Settings...".
+
+In the "Application Request Routing" settings window, verify whether "Enable proxy" is selected.
+
+If "Enable proxy" is selected under the "Application Request Routing" settings, this is a finding.''',
+            'fix_text': 'In the "Application Request Routing" settings window, remove the check from the "Enable proxy" check box.',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-218794')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertIn('system.webServer/proxy', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_does_not_infer_iis_arr_proxy_disabled_without_exact_vuln(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The IIS 10.0 web server must not be both a website server and a proxy server.',
+            'check_content': 'If "Enable proxy" is selected under the "Application Request Routing" settings, this is a finding.',
+            'fix_text': 'Remove the check from the "Enable proxy" check box.',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_scap_rhel7_nfs_import_noexec_from_fix_only(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204483',

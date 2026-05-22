@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 12,
+  "candidate_checks": 13,
   "cases": [
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$appcmd=Join-Path $env:windir 'System32\\inetsrv\\appcmd.exe'; if (-not (Test-Path $appcmd)) { exit }; $enabled=& $appcmd list config /section:system.webServer/proxy /text:enabled 2>$null; if ($enabled -match '^(?i:true)$') { 'Enabled' }\"",
+        "type": "command_output"
+      },
+      "description": "The IIS 10.0 web server must not be both a website server and a proxy server.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$appcmd=Join-Path $env:windir 'System32\\inetsrv\\appcmd.exe'; if (-not (Test-Path $appcmd)) { exit }; $enabled=& $appcmd list config /section:system.webServer/proxy /text:enabled 2>$null; if ($enabled -match '^(?i:true)$') { 'Enabled' }\"": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$appcmd=Join-Path $env:windir 'System32\\inetsrv\\appcmd.exe'; if (-not (Test-Path $appcmd)) { exit }; $enabled=& $appcmd list config /section:system.webServer/proxy /text:enabled 2>$null; if ($enabled -match '^(?i:true)$') { 'Enabled' }\"": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-218794"
+    },
     {
       "check": {
         "command": "%windir%\\system32\\inetsrv\\appcmd.exe list config /section:system.web/sessionState /text:cookieless",
@@ -319,5 +345,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/iis_10-0_server_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "IIS_10-0_Server_STIG",
-  "validated_candidates": 12
+  "validated_candidates": 13
 }

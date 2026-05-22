@@ -14585,6 +14585,38 @@ def _browser_optional_allowlist_absent_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _iis_arr_proxy_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'IIS_10-0_Server_STIG' or rule.get('vuln_id') != 'V-218794':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'Application\s+Request\s+Routing\s+Cache',
+        r'Server\s+Proxy\s+Settings',
+        r'Enable\s+proxy',
+        r'If\s+["“]Enable\s+proxy["”]\s+is\s+selected\s+under\s+the\s+["“]Application\s+Request\s+Routing["”]\s+settings,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'remove\s+the\s+check\s+from\s+the\s+["“]Enable\s+proxy["”]\s+check\s+box', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "$appcmd=Join-Path $env:windir 'System32\\inetsrv\\appcmd.exe'; "
+        "if (-not (Test-Path $appcmd)) { exit }; "
+        "$enabled=& $appcmd list config /section:system.webServer/proxy /text:enabled 2>$null; "
+        "if ($enabled -match '^(?i:true)$') { 'Enabled' }\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """Infer a conservative executable check candidate from DISA prose.
 
@@ -14592,6 +14624,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    iis_arr_proxy_candidate = _iis_arr_proxy_disabled_candidate(rule, stig_id)
+    if iis_arr_proxy_candidate:
+        return iis_arr_proxy_candidate
+
     linux_temporary_account_candidate = _linux_temporary_account_expiration_candidate(rule, stig_id)
     if linux_temporary_account_candidate:
         return linux_temporary_account_candidate
