@@ -12452,12 +12452,31 @@ def _sql_server_windows_authentication_only_candidate(rule: dict, stig_id: str) 
         r"SERVERPROPERTY\(\s*'IsIntegratedSecurityOnly'\s*\)",
         r"WHEN\s+1\s+THEN\s+'Windows\s+Authentication'",
         r"WHEN\s+0\s+THEN\s+'Windows\s+and\s+SQL\s+Server\s+Authentication'",
-        r'If\s+the\s+returned\s+value\s+in\s+the\s+["“]Authentication\s+Mode["”]\s+column\s+is\s+["“]Windows\s+Authentication["”],\s+this\s+is\s+not\s+a\s+finding',
-        r'If\s+the\s+returned\s+value\s+is\s+["“]Windows\s+and\s+SQL\s+Server\s+Authentication["”],\s+this\s+is\s+a\s+finding',
+        r'(?:If\s+the\s+returned\s+value\s+in\s+the\s+)?["“]?Authentication\s+Mode["”]?(?:\s+column)?\s+is\s+["“]?Windows\s+Authentication(?:\s+Mode)?["”]?,\s+this\s+is\s+not\s+a\s+finding',
     )
     if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content_patterns):
         return None
-    if not re.search(r'Configure\s+SQL\s+Server\s+to\s+use\s+only\s+Windows\s+Authentication\s+Mode', fix_text, re.IGNORECASE):
+    mixed_mode_is_finding = re.search(
+        r'If\s+the\s+returned\s+value\s+is\s+["“]Windows\s+and\s+SQL\s+Server\s+Authentication["”],\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    mixed_mode_requires_approval = re.search(
+        r'Mixed\s+mode.*?documented\s+and\s+approved.*?this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    mixed_mode_missing_documentation_is_finding = re.search(
+        r'Windows\s+and\s+SQL\s+Server\s+Authentication.*?documentation\s+is\s+missing\s+or\s+incomplete,\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not (mixed_mode_is_finding or mixed_mode_requires_approval or mixed_mode_missing_documentation_is_finding):
+        return None
+    if not (
+        re.search(r'Configure\s+SQL\s+Server\s+to\s+use\s+only\s+Windows\s+Authentication\s+Mode', fix_text, re.IGNORECASE)
+        or re.search(r'Click\s+the\s+radio\s+button\s+for\s+["“]Windows\s+Authentication\s+Mode["”]', fix_text, re.IGNORECASE)
+    ):
         return None
     command = 'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; SELECT CASE SERVERPROPERTY(\'IsIntegratedSecurityOnly\') WHEN 1 THEN \'Windows Authentication\' WHEN 0 THEN \'Windows and SQL Server Authentication\' END;"'
     return {

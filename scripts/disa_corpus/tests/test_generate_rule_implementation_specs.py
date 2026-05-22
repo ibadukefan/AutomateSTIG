@@ -5687,6 +5687,36 @@ If the returned value is "Windows and SQL Server Authentication", this is a find
             'description': 'SQL Server must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.',
         })
 
+    def test_infers_sql_server_windows_authentication_only_candidate_from_documentation_exception_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271265',
+            'title': 'SQL Server must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.',
+            'check_content': '''Determine whether SQL Server is configured to use only Windows authentication.
+
+In a query interface such as the SSMS Transact-SQL editor, run the statement:
+SELECT CASE SERVERPROPERTY('IsIntegratedSecurityOnly')
+WHEN 1 THEN 'Windows Authentication'
+WHEN 0 THEN 'Windows and SQL Server Authentication'
+END as [Authentication Mode]
+
+If the returned value in the "Authentication Mode" column is "Windows Authentication", this is not a finding.
+
+If the returned value is "Windows and SQL Server Authentication", verify that the use and need of SQL Server authentication is documented with the information below:
+- Need and justification for mixed mode
+- Measures taken to ensure SQL Server authentication is kept to a minimum
+- Measures taken to safeguard passwords
+- A list of SQL Logins used
+
+If any of the documentation is missing or incomplete, this is a finding.''',
+            'fix_text': '''If mixed mode is required, document the need and justification; describe the measures taken to ensure the use of SQL Server authentication is kept to a minimum; describe the measures taken to safeguard passwords; and list or describe the SQL Logins used.
+
+Configure SQL Server to use only Windows Authentication Mode if SQL Server authentication is not required.''',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271265')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Windows Authentication'})
+        self.assertIn("IsIntegratedSecurityOnly", candidate['check']['command'])
+
     def test_infers_sql_server_computer_account_logins_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271267',

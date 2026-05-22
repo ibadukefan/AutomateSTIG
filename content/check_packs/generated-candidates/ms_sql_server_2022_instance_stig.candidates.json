@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CASE SERVERPROPERTY('IsIntegratedSecurityOnly') WHEN 1 THEN 'Windows Authentication' WHEN 0 THEN 'Windows and SQL Server Authentication' END;\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.",
+      "expected": {
+        "type": "equals",
+        "value": "Windows Authentication"
+      },
+      "platform": "generic",
+      "vuln_id": "V-271265"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$names=sqlcmd -h -1 -W -Q 'SET NOCOUNT ON; SELECT name FROM sys.server_principals WHERE type IN (''U'',''G'') AND name LIKE ''%$'';'; foreach ($n in $names) { $login=$n.Trim(); if (-not $login) { continue }; $sam=($login -split '\\\\')[-1] -replace '\\$$',''; if (([ADSISearcher]\"(&(ObjectCategory=Computer)(Name=$sam))\").FindOne()) { $login } }\"",
         "type": "command_output"
       },

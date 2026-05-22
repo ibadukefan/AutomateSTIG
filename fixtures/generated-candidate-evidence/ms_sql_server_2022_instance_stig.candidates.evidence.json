@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 25,
+  "candidate_checks": 26,
   "cases": [
     {
       "check": {
@@ -26,6 +26,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271264"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CASE SERVERPROPERTY('IsIntegratedSecurityOnly') WHEN 1 THEN 'Windows Authentication' WHEN 0 THEN 'Windows and SQL Server Authentication' END;\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Windows Authentication"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CASE SERVERPROPERTY('IsIntegratedSecurityOnly') WHEN 1 THEN 'Windows Authentication' WHEN 0 THEN 'Windows and SQL Server Authentication' END;\"": "unexpected-Windows Authentication"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CASE SERVERPROPERTY('IsIntegratedSecurityOnly') WHEN 1 THEN 'Windows Authentication' WHEN 0 THEN 'Windows and SQL Server Authentication' END;\"": "Windows Authentication"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271265"
     },
     {
       "check": {
@@ -657,5 +683,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_SQL_Server_2022_Instance_STIG",
-  "validated_candidates": 25
+  "validated_candidates": 26
 }
