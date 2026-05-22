@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 63,
+  "candidate_checks": 64,
   "cases": [
     {
       "check": {
@@ -416,6 +416,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233554"
+    },
+    {
+      "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to modify security objects occur.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233555"
     },
     {
       "check": {
@@ -1645,5 +1671,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 63
+  "validated_candidates": 64
 }

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+      "type": "command_output"
+    },
+    "description": "PostgreSQL must generate audit records when unsuccessful attempts to modify security objects occur.",
+    "expected": {
+      "type": "equals",
+      "value": "on"
+    },
+    "platform": "linux",
+    "vuln_id": "V-233555"
+  },
   "check_content_excerpt": "Note: The following instructions use the PGDATA and PGLOG environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-I for PGLOG.\n\nAs the database administrator (shown here as \"postgres\"), create a test role by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"CREATE ROLE bob\"\n\nNext, to test if audit records are generated from unsuccessful attempts at modifying security objects, run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SET ROLE bob; UPDATE pg_authid SET rolsuper = 't' WHERE rolname = 'bob';\"\n\nNext, as the database administrator (shown here as \"postgres\"), verify the denials were logged:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/${PGLOG?}/<latest_log>\n< 2016-03-17 10:34:00.017 EDT bob 56eabf52.b62 postgres: >ERROR: permission denied for relation pg_authid\n< 2016-03-17 10:34:00.017 EDT bob 56eabf52.b62 postgres: >STATEMENT: UPDATE pg_authid SET rolsuper = 't' WHERE rolname = 'bob';\n\nIf denials are not logged, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "on"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure PostgreSQL to produce audit records when unsuccessful attempts to modify security objects occur.\n\nUnsuccessful attempts to modify security objects can be logged if logging is enabled. To ensure logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233555r961803_rule",
   "severity": "medium",

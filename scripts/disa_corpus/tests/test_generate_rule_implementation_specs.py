@@ -141,6 +141,28 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'on'})
         self.assertIn('SHOW logging_collector', candidate['check']['command'])
 
+    def test_infers_postgresql_modify_security_objects_denial_logging_from_authoritative_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233555',
+            'title': 'PostgreSQL must generate audit records when unsuccessful attempts to modify security objects occur.',
+            'check_content': (
+                '$ psql -c "CREATE ROLE bob"\n'
+                '$ psql -c "SET ROLE bob; UPDATE pg_authid SET rolsuper = \'t\' WHERE rolname = \'bob\';"\n'
+                'ERROR: permission denied for relation pg_authid\n\n'
+                'If denials are not logged, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure PostgreSQL to produce audit records when unsuccessful attempts to modify security objects occur.\n\n'
+                'Unsuccessful attempts to modify security objects can be logged if logging is enabled. '
+                'To ensure logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.'
+            ),
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233555')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'on'})
+        self.assertIn('SHOW logging_collector', candidate['check']['command'])
+
     def test_infers_postgresql_invalid_input_logging_from_authoritative_syntax_error_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233544',

@@ -210,6 +210,19 @@
     },
     {
       "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to modify security objects occur.",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "platform": "linux",
+      "vuln_id": "V-233555"
+    },
+    {
+      "check": {
         "command": "sh -c 'cfg=\"${PGDATA?}/postgresql.conf\"; grep -Eq '\"'\"'^[[:space:]]*pgaudit\\.log[[:space:]]*=[[:space:]]*'\"'\"'\"'\"'\"'\"'\"'\"'[^'\"'\"'\"'\"'\"'\"'\"'\"']*\\brole\\b[^'\"'\"'\"'\"'\"'\"'\"'\"']*'\"'\"'\"'\"'\"'\"'\"'\"''\"'\"' \"$cfg\" && printf Compliant'",
         "type": "command_output"
       },
