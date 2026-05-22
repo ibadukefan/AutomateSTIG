@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 211,
+  "candidate_checks": 212,
   "cases": [
     {
       "check": {
@@ -3058,6 +3058,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$cfg=(w32tm /query /configuration 2>$null) -join [Environment]::NewLine; $type=''; $server=''; if ($cfg -match '(?im)^\\s*Type:\\s*([^\\s]+)') { $type=$Matches[1] }; if ($cfg -match '(?im)^\\s*NtpServer:\\s*([^\\r\\n]+)') { $server=$Matches[1] }; $cs=Get-CimInstance Win32_ComputerSystem; $isPdc=$false; try { Import-Module ActiveDirectory -ErrorAction Stop; $domain=Get-ADDomain -ErrorAction Stop; $isPdc=($env:COMPUTERNAME -ieq (($domain.PDCEmulator -split '\\\\.')[0])) } catch {}; if ($cs.PartOfDomain -and -not $isPdc) { if ($type -ieq 'NT5DS') { 'Compliant' } } elseif ($type -ieq 'NTP' -and ($server -like '*usno.navy.mil*' -or $server -like '*cnmoc.usff.navy.mil*')) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The Windows Server 2019 time service must synchronize with an appropriate DOD time source.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=(w32tm /query /configuration 2>$null) -join [Environment]::NewLine; $type=''; $server=''; if ($cfg -match '(?im)^\\s*Type:\\s*([^\\s]+)') { $type=$Matches[1] }; if ($cfg -match '(?im)^\\s*NtpServer:\\s*([^\\r\\n]+)') { $server=$Matches[1] }; $cs=Get-CimInstance Win32_ComputerSystem; $isPdc=$false; try { Import-Module ActiveDirectory -ErrorAction Stop; $domain=Get-ADDomain -ErrorAction Stop; $isPdc=($env:COMPUTERNAME -ieq (($domain.PDCEmulator -split '\\\\.')[0])) } catch {}; if ($cs.PartOfDomain -and -not $isPdc) { if ($type -ieq 'NT5DS') { 'Compliant' } } elseif ($type -ieq 'NTP' -and ($server -like '*usno.navy.mil*' -or $server -like '*cnmoc.usff.navy.mil*')) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$cfg=(w32tm /query /configuration 2>$null) -join [Environment]::NewLine; $type=''; $server=''; if ($cfg -match '(?im)^\\s*Type:\\s*([^\\s]+)') { $type=$Matches[1] }; if ($cfg -match '(?im)^\\s*NtpServer:\\s*([^\\r\\n]+)') { $server=$Matches[1] }; $cs=Get-CimInstance Win32_ComputerSystem; $isPdc=$false; try { Import-Module ActiveDirectory -ErrorAction Stop; $domain=Get-ADDomain -ErrorAction Stop; $isPdc=($env:COMPUTERNAME -ieq (($domain.PDCEmulator -split '\\\\.')[0])) } catch {}; if ($cs.PartOfDomain -and -not $isPdc) { if ($type -ieq 'NT5DS') { 'Compliant' } } elseif ($type -ieq 'NTP' -and ($server -like '*usno.navy.mil*' -or $server -like '*cnmoc.usff.navy.mil*')) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205800"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
         "type": "registry",
         "value_name": "EnableUserControl"
@@ -5668,5 +5694,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 211
+  "validated_candidates": 212
 }

@@ -2777,16 +2777,17 @@
       "vuln_id": "V-205799"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205800",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205800r1051077_rule",
       "severity": "low",
       "title": "The Windows Server 2019 time service must synchronize with an appropriate DOD time source.",
-      "tracking_issue": "TODO-V-205800",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205800"

@@ -946,7 +946,11 @@ def _windows_server_2025_antivirus_service_candidate(rule: dict, stig_id: str) -
 
 
 def _windows_server_2025_time_service_candidate(rule: dict, stig_id: str) -> dict | None:
-    if (rule.get('vuln_id'), stig_id) != ('V-278029', 'MS_Windows_Server_2025_STIG'):
+    allowed = {
+        ('V-278029', 'MS_Windows_Server_2025_STIG'),
+        ('V-205800', 'Windows_Server_2019_STIG'),
+    }
+    if (rule.get('vuln_id'), stig_id) not in allowed:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -959,9 +963,10 @@ def _windows_server_2025_time_service_candidate(rule: dict, stig_id: str) -> dic
     )
     if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in required_content_patterns):
         return None
-    if not re.search(r'US\s+Naval\s+Observatory\s+operates\s+stratum\s+one-time\s+servers', fix_text, re.IGNORECASE):
+    if not re.search(r'US\s+Naval\s+Observatory\s+operates\s+stratum\s+(?:one-time|1\s+time)\s+servers', fix_text, re.IGNORECASE):
         return None
-    if 'usno.navy.mil/USNO/time/ntp/DOD-customers' not in fix_text:
+    ntp_source_domains = ('usno.navy.mil/USNO/time/ntp/DOD-customers', 'cnmoc.usff.navy.mil/Our-Commands/United-States-Naval-Observatory/Precise-Time-Department/Network-Time-Protocol-NTP')
+    if not any(domain in fix_text for domain in ntp_source_domains):
         return None
     command = (
         "powershell -NoProfile -Command \""
@@ -973,7 +978,7 @@ def _windows_server_2025_time_service_candidate(rule: dict, stig_id: str) -> dic
         "$isPdc=$false; "
         "try { Import-Module ActiveDirectory -ErrorAction Stop; $domain=Get-ADDomain -ErrorAction Stop; $isPdc=($env:COMPUTERNAME -ieq (($domain.PDCEmulator -split '\\\\.')[0])) } catch {}; "
         "if ($cs.PartOfDomain -and -not $isPdc) { if ($type -ieq 'NT5DS') { 'Compliant' } } "
-        "elseif ($type -ieq 'NTP' -and $server -like '*usno.navy.mil*') { 'Compliant' }"
+        "elseif ($type -ieq 'NTP' -and ($server -like '*usno.navy.mil*' -or $server -like '*cnmoc.usff.navy.mil*')) { 'Compliant' }"
         "\""
     )
     return {
@@ -5754,11 +5759,49 @@ def _sles_ctrl_alt_del_burst_action_candidate(rule: dict, stig_id: str) -> dict 
 
 
 def _linux_dod_root_ca_trust_anchor_candidate(rule: dict, stig_id: str) -> dict | None:
-    supported_vulns = {'V-258131', 'V-271604'}
-    if rule.get('vuln_id', '') not in supported_vulns or not _linux_platform(stig_id):
-        return None
+    vuln_id = rule.get('vuln_id', '')
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    if vuln_id == 'V-271901' and stig_id == 'Oracle_Linux_9_STIG':
+        isrg_root_x2_id = 'pkcs11:id=%7C%42%96%AE%DE%4B%48%3B%FA%92%F8%9E%8C%CF%6D%8B%A9%72%37%95;type=cert'
+        required_content = (
+            r'\btrust\s+list\b',
+            re.escape(isrg_root_x2_id),
+            r'label:\s*ISRG\s+Root\s+X2',
+            r'trust:\s*anchor',
+            r'If\s+any\s+nonapproved\s+CAs\s+are\s+returned,\s+this\s+is\s+a\s+finding',
+        )
+        if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content):
+            return None
+        required_fix = (
+            rf'trust\s+dump\s+--filter\s+["“]{re.escape(isrg_root_x2_id)}["”]',
+            r'/etc/pki/ca-trust/source/blocklist/ISRGRootX2',
+            r'\bupdate-ca-trust\b',
+            r'trust\s+list\s+--filter=blocklist',
+            r'trust:\s*distrusted',
+        )
+        if not all(re.search(pattern, fix_text, re.IGNORECASE) for pattern in required_fix):
+            return None
+        command = (
+            f"sh -c \"id='{isrg_root_x2_id}'; "
+            "if trust list 2>/dev/null | awk -v id=\\\"$id\\\" '"
+            "$0 ~ id { in_block=1; anchor=0; label=0 } "
+            "in_block && /label:[[:space:]]*ISRG Root X2/ { label=1 } "
+            "in_block && /trust:[[:space:]]*anchor/ { anchor=1 } "
+            "in_block && /^$/ { if (label && anchor) bad=1; in_block=0 } "
+            "END { if (in_block && label && anchor) bad=1; exit bad ? 1 : 0 }"
+            "'; then printf Compliant; fi\""
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
+    supported_vulns = {'V-258131', 'V-271604'}
+    if vuln_id not in supported_vulns or not _linux_platform(stig_id):
+        return None
     if not re.search(r'/etc/sssd/pki/sssd_auth_ca_db\.pem', content):
         return None
     if not re.search(r'openssl\s+x509\s+-text\s+-in\s+/etc/sssd/pki/sssd_auth_ca_db\.pem', content, re.IGNORECASE):

@@ -150,6 +150,51 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('NT5DS', candidate['check']['command'])
         self.assertIn('usno.navy.mil', candidate['check']['command'])
 
+    def test_infers_windows_server_2019_time_service_nt5ds_or_usno_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-205800',
+            'title': 'The Windows Server 2019 time service must synchronize with an appropriate DOD time source.',
+            'check_content': (
+                'Review the Windows time service configuration.\n\n'
+                'Enter "W32tm /query /configuration".\n\n'
+                'Domain-joined systems (excluding the domain controller with the PDC emulator role):\n\n'
+                'If the value for "Type" under "NTP Client" is not "NT5DS", this is a finding.\n\n'
+                'Other systems:\n\n'
+                'If systems are configured with a "Type" of "NTP", including standalone or nondomain-joined systems and the domain controller with the PDC Emulator role, and do not have a DOD time server defined for "NTPServer", this is a finding.\n\n'
+                'To determine the domain controller with the PDC Emulator role:\n\n'
+                'Enter "Get-ADDomain | FT PDCEmulator".'
+            ),
+            'fix_text': (
+                'Domain-joined systems use NT5DS to synchronize time from other systems in the domain by default.\n\n'
+                'If the system needs to be configured to an NTP server, configure the system to point to an authorized time server.\n\n'
+                'The US Naval Observatory operates stratum 1 time servers, which are identified at: '
+                'https://www.cnmoc.usff.navy.mil/Our-Commands/United-States-Naval-Observatory/Precise-Time-Department/Network-Time-Protocol-NTP/'
+            ),
+        }, 'Windows_Server_2019_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-205800')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('w32tm /query /configuration', candidate['check']['command'])
+        self.assertIn('NT5DS', candidate['check']['command'])
+        self.assertIn('Get-ADDomain', candidate['check']['command'])
+        self.assertIn('cnmoc.usff.navy.mil', candidate['check']['command'])
+
+    def test_rejects_windows_server_time_service_candidate_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The Windows Server time service must synchronize with an appropriate DOD time source.',
+            'check_content': (
+                'Enter "W32tm /query /configuration".\n\n'
+                'Domain-joined systems (excluding the domain controller with the PDC emulator role):\n\n'
+                'If the value for "Type" under "NTP Client" is not "NT5DS", this is a finding.\n\n'
+                'If systems are configured with a "Type" of "NTP", including standalone or nondomain-joined systems and the domain controller with the PDC Emulator role, and do not have a DOD time server defined for "NTPServer", this is a finding.\n\n'
+                'Enter "Get-ADDomain | FT PDCEmulator".'
+            ),
+            'fix_text': 'The US Naval Observatory operates stratum 1 time servers, which are identified at https://www.cnmoc.usff.navy.mil/Our-Commands/United-States-Naval-Observatory/Precise-Time-Department/Network-Time-Protocol-NTP/',
+        }, 'Windows_Server_2019_STIG')
+        self.assertIsNone(candidate)
+
     def test_rejects_windows_server_time_service_candidate_without_usno_fix_evidence(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278029',
@@ -157,6 +202,51 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             'check_content': 'If the value for "Type" under "NTP Client" is not "NT5DS", this is a finding.',
             'fix_text': 'Configure the system to synchronize time with an appropriate DOD time source.',
         }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNone(candidate)
+
+    def test_infers_oracle_linux_9_isrg_root_x2_blocklisted_candidate(self):
+        pkcs11_id = 'pkcs11:id=%7C%42%96%AE%DE%4B%48%3B%FA%92%F8%9E%8C%CF%6D%8B%A9%72%37%95;type=cert'
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271901',
+            'title': 'OL 9 must only allow the use of DOD PKI-established certificate authorities for authentication in the establishment of protected sessions to OL 9.',
+            'check_content': (
+                'Verify OL 9 only allows the use of DOD PKI-established certificate authorities using the following command:\n\n'
+                '$ trust list\n\n'
+                f'{pkcs11_id}\n'
+                '    type: certificate\n'
+                '    label: ISRG Root X2\n'
+                '    trust: anchor\n'
+                '    category: authority\n\n'
+                'If any nonapproved CAs are returned, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure OL 9 to only allow the use of DOD PKI-established certificate authorities.\n\n'
+                'For each untrusted CA, export the certificate to a file and add it to the blocklist:\n\n'
+                f'$ trust dump --filter "{pkcs11_id}" > /etc/pki/ca-trust/source/blocklist/ISRGRootX2\n\n'
+                '$ update-ca-trust\n\n'
+                'Verify that the certificate is in the blocklist:\n\n'
+                '$ trust list --filter=blocklist\n'
+                f'{pkcs11_id}\n'
+                '    label: ISRG Root X2\n'
+                '    trust: distrusted'
+            ),
+        }, 'Oracle_Linux_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271901')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('trust list', candidate['check']['command'])
+        self.assertIn(pkcs11_id, candidate['check']['command'])
+        self.assertIn('ISRG Root X2', candidate['check']['command'])
+
+    def test_rejects_oracle_linux_9_isrg_root_x2_candidate_without_blocklist_fix(self):
+        pkcs11_id = 'pkcs11:id=%7C%42%96%AE%DE%4B%48%3B%FA%92%F8%9E%8C%CF%6D%8B%A9%72%37%95;type=cert'
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271901',
+            'title': 'OL 9 must only allow the use of DOD PKI-established certificate authorities.',
+            'check_content': f'$ trust list\n{pkcs11_id}\n    label: ISRG Root X2\n    trust: anchor\nIf any nonapproved CAs are returned, this is a finding.',
+            'fix_text': 'Configure OL 9 to only allow DOD PKI-established certificate authorities.',
+        }, 'Oracle_Linux_9_STIG')
         self.assertIsNone(candidate)
 
     def test_infers_windows_certificate_installation_files_removed_candidate(self):

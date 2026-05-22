@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c \"id='pkcs11:id=%7C%42%96%AE%DE%4B%48%3B%FA%92%F8%9E%8C%CF%6D%8B%A9%72%37%95;type=cert'; if trust list 2>/dev/null | awk -v id=\\\"$id\\\" '$0 ~ id { in_block=1; anchor=0; label=0 } in_block && /label:[[:space:]]*ISRG Root X2/ { label=1 } in_block && /trust:[[:space:]]*anchor/ { anchor=1 } in_block && /^$/ { if (label && anchor) bad=1; in_block=0 } END { if (in_block && label && anchor) bad=1; exit bad ? 1 : 0 }'; then printf Compliant; fi\"",
+      "type": "command_output"
+    },
+    "description": "OL 9 must only allow the use of DOD PKI-established certificate authorities for authentication in the establishment of protected sessions to OL 9.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271901"
+  },
   "check_content_excerpt": "Verify OL 9 only allows the use of DOD PKI-established certificate authorities using the following command:\n\n$ trust list\n\npkcs11:id=%7C%42%96%AE%DE%4B%48%3B%FA%92%F8%9E%8C%CF%6D%8B%A9%72%37%95;type=cert\n    type: certificate\n    label: ISRG Root X2\n    trust: anchor\n    category: authority\n\nIf any nonapproved CAs are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to only allow the use of DOD PKI-established certificate authorities.\n\nFor each untrusted CA, export the certificate to a file and add it to the blocklist:\n\n$ trust dump --filter \"pkcs11:id=%7C%42%96%AE%DE%4B%48%3B%FA%92%F8%9E%8C%CF%6D%8B%A9%72%37%95;type=cert\" > /etc/pki/ca-trust/source/blocklist/ISRGRootX2\n\n$ update-ca-trust \n\nVerify that the certificate is in the blocklist:\n\n$ trust list --filter=blocklist\np11-kit: overriding trust for anchor in blocklist: ISRGRootX2\npkcs11:id=%7C%42%96%AE%DE%4B%48%3B%FA%92%F8%9E%8C%CF%6D%8B%A9%72%37%95;type=cert\n    type: certificate\n    label: ISRG Root X2\n    trust: distrusted\n    category: authority\n\npkcs11:id=%88%68%BF%E0%8E%35%C4%3B%38%6B%62%F7%28%3B%84%81%C8%0C%D7%4D;type=cert\n    type: certificate\n    label: Explicitly Distrust DigiNotar Root CA\n    trust: distrusted\n    category: authority",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271901r1092415_rule",
   "severity": "medium",
