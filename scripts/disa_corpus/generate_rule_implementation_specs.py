@@ -9676,6 +9676,41 @@ def _postgresql_audit_explicit_config_candidate(rule: dict, stig_id: str) -> dic
             },
         },
     }
+    pgaudit_role_read_write_ddl_vuln_ids = {
+        'V-233567',
+        'V-233568',
+        'V-233570',
+        'V-233620',
+    }
+    if vuln_id in pgaudit_role_read_write_ddl_vuln_ids:
+        if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in (
+            r'psql\s+-c\s+["“]SHOW\s+shared_preload_libraries["”]',
+            r'If\s+the\s+output\s+does\s+not\s+contain\s+["“]?pgaudit["”]?,\s+this\s+is\s+a\s+finding',
+            r'psql\s+-c\s+["“]SHOW\s+pgaudit\.log["”]',
+            r'If\s+the\s+output\s+does\s+not\s+contain\s+role,\s+read,\s+write,\s+and\s+ddl,\s+this\s+is\s+a\s+finding',
+        )):
+            return None
+        pgaudit_log_match = re.search(r'pgaudit\.log\s*=\s*([\'\"])(?P<value>[^\'\"]+)\1', fix_text, re.IGNORECASE)
+        if not pgaudit_log_match:
+            return None
+        configured_tokens = {token.strip().lower() for token in re.split(r'[,\s]+', pgaudit_log_match.group('value')) if token.strip()}
+        if not {'role', 'read', 'write', 'ddl'}.issubset(configured_tokens):
+            return None
+        script = (
+            "libs=$(sudo -u postgres psql -At -c 'SHOW shared_preload_libraries' 2>/dev/null); "
+            "log=$(sudo -u postgres psql -At -c 'SHOW pgaudit.log' 2>/dev/null | tr ',\t' '  '); "
+            "printf '%s' \"$libs\" | grep -Eiq '(^|[,[:space:]])pgaudit([,[:space:]]|$)' || exit 0; "
+            "for token in role read write ddl; do printf '%s' \"$log\" | grep -Eiq \"(^|[[:space:]])$token([[:space:]]|$)\" || exit 0; done; "
+            "printf Compliant # requires role read write ddl"
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'sh -c ' + shlex.quote(script)},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
+
     denial_logging_vuln_ids = {
         'V-233552',
         'V-233555',
@@ -14663,6 +14698,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    postgresql_audit_config_candidate = _postgresql_audit_explicit_config_candidate(rule, stig_id)
+    if postgresql_audit_config_candidate:
+        return postgresql_audit_config_candidate
+
     windows_applocker_deny_by_default_candidate = _windows_applocker_deny_by_default_candidate(rule, stig_id)
     if windows_applocker_deny_by_default_candidate:
         return windows_applocker_deny_by_default_candidate

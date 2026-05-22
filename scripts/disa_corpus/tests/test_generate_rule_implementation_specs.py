@@ -17799,6 +17799,42 @@ Create REG_DWORD "UriScavengerPeriod"''',
             'check_content': 'AppLocker is an allowlisting application. Get-AppLockerPolicy -Effective -XML > c:\\temp\\file.xml',
             'fix_text': 'Configure an application allowlisting program.',
         }, 'MS_Windows_Server_2025_STIG'))
+    def test_infers_postgresql_pgaudit_role_read_write_ddl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233567',
+            'title': 'PostgreSQL must be able to generate audit records when security objects are accessed.',
+            'check_content': (
+                'First, as the database administrator, verify pgaudit is enabled by running the following SQL:\n\n'
+                '$ sudo su - postgres\n'
+                '$ psql -c "SHOW shared_preload_libraries"\n\n'
+                'If the output does not contain pgaudit, this is a finding.\n\n'
+                'Next, verify that role, read, write, and ddl auditing are enabled:\n\n'
+                '$ psql -c "SHOW pgaudit.log"\n\n'
+                'If the output does not contain role, read, write, and ddl, this is a finding.'
+            ),
+            'fix_text': (
+                'Using pgaudit PostgreSQL can be configured to audit these requests.\n'
+                'Add the following parameters (or edit existing parameters):\n\n'
+                "pgaudit.log = 'role, read, write, ddl'"
+            ),
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233567')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('SHOW shared_preload_libraries', candidate['check']['command'])
+        self.assertIn('SHOW pgaudit.log', candidate['check']['command'])
+        self.assertIn('role read write ddl', candidate['check']['command'])
+
+    def test_rejects_postgresql_pgaudit_candidate_without_authoritative_required_tokens(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233568',
+            'title': 'PostgreSQL audit logging must be reviewed.',
+            'check_content': 'Run SHOW pgaudit.log and review the result.',
+            'fix_text': "pgaudit.log = 'role'",
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNone(candidate)
+
 
 if __name__ == '__main__':
     unittest.main()
