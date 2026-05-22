@@ -9676,6 +9676,32 @@ def _postgresql_audit_explicit_config_candidate(rule: dict, stig_id: str) -> dic
             },
         },
     }
+    denial_logging_vuln_ids = {
+        'V-233552',
+        'V-233560',
+        'V-233561',
+        'V-233564',
+        'V-233572',
+        'V-233575',
+        'V-233576',
+    }
+    if vuln_id in denial_logging_vuln_ids:
+        title = rule.get('title', '') or ''
+        if not re.search(r'unsuccessful\s+(?:attempts|accesses)', title, re.IGNORECASE):
+            return None
+        if not re.search(r'(?:If\s+(?:the\s+)?denials?\s+(?:is|are)\s+not\s+logged|If\s+audit\s+logs\s+are\s+not\s+generated\s+when\s+unsuccessful\s+attempts|If\s+audit\s+records\s+are\s+not\s+produced|If\s+any\s+of\s+the\s+above\s+steps\s+did\s+not\s+create\s+audit\s+records|If\s+the\s+above\s+steps\s+cannot\s+verify\s+that\s+audit\s+records\s+are\s+produced)', content, re.IGNORECASE):
+            return None
+        if not re.search(r'All\s+(?:errors\s+and\s+)?denials\s+are\s+logged\s+(?:by\s+default\s+)?if\s+logging\s+is\s+enabled', fix_text, re.IGNORECASE):
+            return None
+        command = 'sudo -u postgres psql -At -c ' + shlex.quote('SHOW logging_collector')
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'on'},
+            'description': rule.get('title', ''),
+        }
+
     profile = profiles.get(vuln_id)
     if not profile:
         return None

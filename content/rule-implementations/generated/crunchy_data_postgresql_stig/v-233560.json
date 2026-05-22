@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+      "type": "command_output"
+    },
+    "description": "PostgreSQL must generate audit records when unsuccessful attempts to retrieve privileges/permissions occur.",
+    "expected": {
+      "type": "equals",
+      "value": "on"
+    },
+    "platform": "linux",
+    "vuln_id": "V-233560"
+  },
   "check_content_excerpt": "Note: The following instructions use the PGLOG environment variables. See supplementary content APPENDIX-I for instructions on configuring PGLOG.\n\nFirst, as the database administrator (shown here as \"postgres\"), create a role \"bob\" by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"CREATE ROLE bob\"\n\nNext, attempt to retrieve information from the pg_authid table:\n\n$ psql -c \"SET ROLE bob; SELECT * FROM pg_authid\"\n$ psql -c \"DROP ROLE bob;\"\n\nNow, as the database administrator (shown here as \"postgres\"), verify the event was logged in pg_log:\n\n$ sudo su - postgres\n$ cat ${PGLOG?}/<latest_log>\n< 2016-07-13 16:49:58.864 EDT postgres postgres ERROR: > permission denied for relation pg_authid\n< 2016-07-13 16:49:58.864 EDT postgres postgres STATEMENT: > SELECT * FROM pg_authid;\n\nIf the above steps cannot verify that audit records are produced when PostgreSQL denies retrieval of privileges/permissions/role memberships, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "on"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure PostgreSQL to produce audit records when unsuccessful attempts to access privileges occur.\n\nAll denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233560r960885_rule",
   "severity": "medium",

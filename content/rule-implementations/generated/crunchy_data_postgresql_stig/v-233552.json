@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+      "type": "command_output"
+    },
+    "description": "PostgreSQL must generate audit records when unsuccessful attempts to access security objects occur.",
+    "expected": {
+      "type": "equals",
+      "value": "on"
+    },
+    "platform": "linux",
+    "vuln_id": "V-233552"
+  },
   "check_content_excerpt": "Note: The following instructions use the PGDATA and PGLOG environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-I for PGLOG.\n\nFirst, as the database administrator (shown here as \"postgres\"), setup a test schema and revoke users privileges from using it by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"CREATE SCHEMA stig_test_schema AUTHORIZATION postgres\"\n$ psql -c \"REVOKE ALL ON SCHEMA stig_test_schema FROM public\"\n$ psql -c \"GRANT ALL ON SCHEMA stig_test_schema TO postgres\"\n\nNext, create a test table, insert a value into that table for the following checks by running the following SQL:\n\n$ psql -c \"CREATE TABLE stig_test_schema.stig_test_table(id INT)\"\n$ psql -c \"INSERT INTO stig_test_schema.stig_test_table(id) VALUES (0)\"\n\n#### CREATE\nAttempt to CREATE a table in the stig_test_schema schema with a role that does not have privileges by running the following SQL:\n\npsql -c \"CREATE ROLE bob; SET ROLE bob; CREATE TABLE stig_test_schema.test_table(id INT);\"\nERROR: permission denied for schema stig_test_schema\n\nNext, as a database administrator (shown here as \"postgres\"), verify that the denial was logged:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/${PGLOG?}/<latest_log>\n< 2016-03-09 09:55:19.423 EST postgres 56e0393f.186b postgres: >ERROR: permission denied for schema stig_test_schema at character 14\n< 2016-03-09 09:55:19.423 EST postgres 56e0393f.186b postgres: >STATEMENT: CREATE TABLE stig_test_schema.test_table(id INT);\n\nIf the denial is not logged, this is a finding.\n\n#### INSERT\nAs role bob, attempt to INSERT into the table created earlier, stig_test_table by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SET ROLE bob; INSERT INTO stig_test_schema.stig_test_table(id) VALUES (0);\"\n\nNext, as a database administrator (shown here as \"postgres\"), verify that the denial was logged:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/${PGLOG?}/<latest_log>\n< 2016-03-09 09:58:30.709 EST postgres 56e0393f.186b postgres: >ERROR: permission denied for schema stig_test_schema at character 13\n< 2016-03-09 09:58:30.709 EST postgres 56e0393f.186b postgres: >STATEMENT: INSERT INTO stig_test_schema.stig_test_table(id) VALUES (0);\n\nIf the denial is not logged, this is a finding.\n\n#### SELECT\nAs role bob, attempt to SELECT from the table created earlier, stig_test_table by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SET ROLE bob; SELECT * FROM stig_test_schema.stig_test_table;\"\n\nNext, as a database administrator (shown here as \"postgres\"), verify that the denial was logged:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/${PGLOG?}/<latest_log>\n< 2016-03-09 09:57:58.327 EST postgres 56e0393f.186b postgres: >ERROR: permission denied for schema stig_test_schema at character 15\n< 2016-03-09 09:57:58.327 EST postgres 56e0393f.186b postgres: >STATEMENT: SELECT * FROM stig_test_schema.stig_test_table;\n\nIf the denial is not logged, this is a finding.\n\n#### ALTER\nAs role bob, attempt to ALTER the table created earlier, stig_test_table by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SET ROLE bob; ALTER TABLE stig_test_schema.stig_test_table ADD COLUMN name TEXT;\"\n\nNext, as a database administrator (shown here as \"postgres\"), verify that the denial was logged:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/${PGLOG?}/<latest_log>\n< 2016-03-09 10:03:43.765 EST postgres 56e0393f.186b postgres: >STATEMENT: ALTER TABLE stig_test_schema.stig_test_table ADD COLUMN name TEXT;\n\nIf the denial is not logged, this is a finding.\n\n#### UPDATE\nAs role bob, attempt to UPDATE a row created earlier, stig_test_table by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SET ROLE bob; UPDATE stig_test_schema.stig_test_table SET id=1 WHERE id=0;\"\n\nNext, as a database administrator (shown here as \"postgres\"), verify that the denial was logged:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/${PGLOG?}/<latest_log>\n< 2016-03-09 10:08:27.696 EST postgres 56e0393f.186b postgres: >ERROR: permission deni",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "on"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure PostgreSQL to produce audit records when unsuccessful attempts to access security objects occur.\n\nAll denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233552r961791_rule",
   "severity": "medium",

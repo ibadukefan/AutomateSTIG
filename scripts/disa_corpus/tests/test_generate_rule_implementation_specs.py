@@ -122,6 +122,25 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         }, 'MS_Windows_Server_2025_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_postgresql_denial_audit_rules_from_authoritative_logging_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233552',
+            'title': 'PostgreSQL must generate audit records when unsuccessful attempts to access security objects occur.',
+            'check_content': (
+                'Create a test schema and revoke users privileges from using the schema.\n\n'
+                'If the denial is not logged, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure PostgreSQL to produce audit records when unsuccessful attempts to access security objects occur.\n\n'
+                'All denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.'
+            ),
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233552')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'on'})
+        self.assertIn('SHOW logging_collector', candidate['check']['command'])
+
     def test_infers_windows_server_2025_time_service_nt5ds_or_usno_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278029',

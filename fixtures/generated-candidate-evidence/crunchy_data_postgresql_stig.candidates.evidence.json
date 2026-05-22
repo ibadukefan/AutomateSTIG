@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 55,
+  "candidate_checks": 62,
   "cases": [
     {
       "check": {
@@ -315,6 +315,32 @@
     },
     {
       "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to access security objects occur.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233552"
+    },
+    {
+      "check": {
         "command": "sh -c 'cfg=\"${PGDATA?}/postgresql.conf\"; grep -Eq '\"'\"'^[[:space:]]*log_connections[[:space:]]*=[[:space:]]*on'\"'\"' \"$cfg\" && grep -Eq '\"'\"'^[[:space:]]*log_line_prefix[[:space:]]*=[[:space:]]*'\"'\"'\"'\"'\"'\"'\"'\"'<\\s*%m\\s+%u\\s+%c:\\s*>'\"'\"'\"'\"'\"'\"'\"'\"''\"'\"' \"$cfg\" && printf Compliant'",
         "type": "command_output"
       },
@@ -471,6 +497,58 @@
     },
     {
       "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to retrieve privileges/permissions occur.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233560"
+    },
+    {
+      "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to delete privileges/permissions occur.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233561"
+    },
+    {
+      "check": {
         "command": "sh -c 'cfg=\"${PGDATA?}/postgresql.conf\"; grep -Eq '\"'\"'^[[:space:]]*pgaudit\\.log_catalog[[:space:]]*=[[:space:]]*'\"'\"'\"'\"'\"'\"'\"'\"'on'\"'\"'\"'\"'\"'\"'\"'\"''\"'\"' \"$cfg\" && grep -Eq '\"'\"'^[[:space:]]*pgaudit\\.log[[:space:]]*=[[:space:]]*'\"'\"'\"'\"'\"'\"'\"'\"'[^'\"'\"'\"'\"'\"'\"'\"'\"']*\\bread\\b[^'\"'\"'\"'\"'\"'\"'\"'\"']*'\"'\"'\"'\"'\"'\"'\"'\"''\"'\"' \"$cfg\" && printf Compliant'",
         "type": "command_output"
       },
@@ -520,6 +598,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233563"
+    },
+    {
+      "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful accesses to objects occur.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233564"
     },
     {
       "check": {
@@ -705,6 +809,32 @@
     },
     {
       "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to execute privileged activities or other system-level access occur.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233572"
+    },
+    {
+      "check": {
         "command": "sh -c 'bad=\"\"; spl=$(psql -tAc \"SHOW shared_preload_libraries\"); printf %s \"$spl\" | grep -Fq pgaudit || bad=\"$bad missing:pgaudit\"; pal=$(psql -tAc \"SHOW pgaudit.log\"); for token in ddl role read write; do printf %s \"$pal\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; plc=$(psql -tAc \"SHOW pgaudit.log_catalog\" | tr -d \"[:space:]\"); [ \"$plc\" = on ] || bad=\"$bad pgaudit.log_catalog=$plc\"; printf %s \"$bad\"'",
         "type": "command_output"
       },
@@ -754,6 +884,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233574"
+    },
+    {
+      "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to modify privileges/permissions occur.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233575"
+    },
+    {
+      "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to add privileges/permissions occur.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233576"
     },
     {
       "check": {
@@ -1437,5 +1619,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 55
+  "validated_candidates": 62
 }
