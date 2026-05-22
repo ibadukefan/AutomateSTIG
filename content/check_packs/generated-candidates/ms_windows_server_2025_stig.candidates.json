@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-277992"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$tpm=Get-Tpm -ErrorAction SilentlyContinue; if ($tpm -and $tpm.TpmPresent -and $tpm.TpmReady) { 'Compliant' }\"",
         "type": "command_output"
       },

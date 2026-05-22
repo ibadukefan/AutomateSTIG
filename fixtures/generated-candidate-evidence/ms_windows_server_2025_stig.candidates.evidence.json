@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 261,
+  "candidate_checks": 262,
   "cases": [
     {
       "check": {
@@ -26,6 +26,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-277986"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-277992"
     },
     {
       "check": {
@@ -6994,5 +7020,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 261
+  "validated_candidates": 262
 }

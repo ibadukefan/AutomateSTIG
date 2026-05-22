@@ -1658,6 +1658,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205807"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
         "type": "registry",
         "value_name": "DisablePasswordSaving"

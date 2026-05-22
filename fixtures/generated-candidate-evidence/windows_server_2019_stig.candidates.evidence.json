@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 212,
+  "candidate_checks": 213,
   "cases": [
     {
       "check": {
@@ -3219,6 +3219,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205807"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
         "type": "registry",
         "value_name": "DisablePasswordSaving"
@@ -5694,5 +5720,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 212
+  "validated_candidates": 213
 }

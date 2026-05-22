@@ -17769,5 +17769,36 @@ Create REG_DWORD "UriScavengerPeriod"''',
         }
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_Windows_Server_2022_STIG'))
 
+    def test_infers_windows_applocker_deny_by_default_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-277992',
+            'title': 'Windows Server 2025 must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.',
+            'check_content': (
+                'Verify the operating system employs a deny-all, permit-by-exception policy to allow the execution of authorized software programs.\n\n'
+                'If an application allowlisting program is not in use on the system, this is a finding.\n\n'
+                'AppLocker is a allowlisting application built in to Windows Server. '
+                'A deny-by-default implementation is initiated by enabling any AppLocker rules within a category, only allowing what is specified by defined rules.\n\n'
+                'Execute the following command: Get-AppLockerPolicy -Effective -XML > c:\\temp\\file.xml'
+            ),
+            'fix_text': (
+                'Configure an application allowlisting program to employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.\n\n'
+                'AppLocker is a allowlisting application built in to Windows Server.'
+            ),
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-277992')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('Get-AppLockerPolicy -Effective -Xml', candidate['check']['command'])
+        self.assertIn('EnforcementMode', candidate['check']['command'])
+
+    def test_rejects_windows_applocker_deny_by_default_without_exact_vuln_id(self):
+        self.assertIsNone(mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Application allowlisting must be enabled.',
+            'check_content': 'AppLocker is an allowlisting application. Get-AppLockerPolicy -Effective -XML > c:\\temp\\file.xml',
+            'fix_text': 'Configure an application allowlisting program.',
+        }, 'MS_Windows_Server_2025_STIG'))
+
 if __name__ == '__main__':
     unittest.main()

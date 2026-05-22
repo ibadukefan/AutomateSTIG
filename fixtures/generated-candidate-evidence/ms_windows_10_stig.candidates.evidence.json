@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 223,
+  "candidate_checks": 224,
   "cases": [
     {
       "check": {
@@ -80,6 +80,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220704"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "The operating system must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220705"
     },
     {
       "check": {
@@ -6002,5 +6028,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 223
+  "validated_candidates": 224
 }

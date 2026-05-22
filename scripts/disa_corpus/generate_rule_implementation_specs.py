@@ -14618,6 +14618,44 @@ def _iis_arr_proxy_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
 
 
 
+def _windows_applocker_deny_by_default_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    allowed = {
+        'V-205807': {'windows_server_2019_stig'},
+        'V-220705': {'ms_windows_10_stig'},
+        'V-277992': {'ms_windows_server_2025_stig'},
+    }
+    if slug(stig_id) not in allowed.get(canonical_vuln_id, set()):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_content = (
+        r'deny-all,\s*permit-by-exception\s+policy',
+        r'application\s+allowlisting\s+program\s+is\s+not\s+in\s+use',
+        r'AppLocker\s+is\s+a[n]?\s+allowlisting\s+application',
+        r'deny-by-default\s+implementation\s+is\s+initiated\s+by\s+enabling\s+any\s+AppLocker\s+rules\s+within\s+a\s+category',
+        r'Get-AppLockerPolicy\s+-Effective\s+-XML',
+    )
+    if any(not re.search(pattern, content, re.IGNORECASE) for pattern in required_content):
+        return None
+    if not re.search(r'Configure\s+an\s+application\s+allowlisting\s+program\s+to\s+employ\s+a\s+deny-all,\s*permit-by-exception\s+policy', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; "
+        "$xml = [xml](Get-AppLockerPolicy -Effective -Xml); "
+        "$collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { "
+        "@('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); "
+        "if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """Infer a conservative executable check candidate from DISA prose.
 
@@ -14625,6 +14663,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    windows_applocker_deny_by_default_candidate = _windows_applocker_deny_by_default_candidate(rule, stig_id)
+    if windows_applocker_deny_by_default_candidate:
+        return windows_applocker_deny_by_default_candidate
+
     iis_arr_proxy_candidate = _iis_arr_proxy_disabled_candidate(rule, stig_id)
     if iis_arr_proxy_candidate:
         return iis_arr_proxy_candidate
