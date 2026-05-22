@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$expected=@{'TLS 1.2'=@{Enabled=1;DisabledByDefault=0};'TLS 1.0'=@{Enabled=0;DisabledByDefault=1};'TLS 1.1'=@{Enabled=0;DisabledByDefault=1};'SSL 3.0'=@{Enabled=0;DisabledByDefault=1}}; foreach($protocol in $expected.Keys){$path='HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\'+$protocol+'\\Server'; $item=Get-ItemProperty -Path $path -ErrorAction SilentlyContinue; if(-not $item){exit 1}; foreach($name in $expected[$protocol].Keys){ if([int]$item.$name -ne [int]$expected[$protocol][$name]){exit 1}}}; $fips=Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\FipsAlgorithmPolicy' -ErrorAction SilentlyContinue; if(-not $fips -or [int]$fips.Enabled -ne 1){exit 1}; 'Compliant'\"",
+      "type": "command_output"
+    },
+    "description": "The IIS 10.0 web server must maintain the confidentiality of controlled information during transmission through the use of an approved Transport Layer Security (TLS) version.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-218822"
+  },
   "check_content_excerpt": "Review the web server documentation and deployed configuration to determine which version of TLS is being used.\n\nIf the TLS version is not TLS 1.2 or higher, according to NIST SP 800-52, or if non-FIPS-approved algorithms are enabled, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the web server to use an approved TLS version according to NIST SP 800-52 and to disable all non-approved versions.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-218822r961632_rule",
   "severity": "medium",

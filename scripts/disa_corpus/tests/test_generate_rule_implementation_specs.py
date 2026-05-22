@@ -6345,6 +6345,27 @@ Create a REG_DWORD named "Enabled" with a  value of "0".''',
             'description': 'An IIS 10.0 web server must maintain the confidentiality of controlled information during transmission through the use of an approved Transport Layer Security (TLS) version.',
         })
 
+    def test_infers_iis_tls_12_or_higher_and_fips_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-218822',
+            'title': 'The IIS 10.0 web server must maintain the confidentiality of controlled information during transmission through the use of an approved Transport Layer Security (TLS) version.',
+            'check_content': '''Review the web server documentation and deployed configuration to determine which version of TLS is being used.
+
+If the TLS version is not TLS 1.2 or higher, according to NIST SP 800-52, or if non-FIPS-approved algorithms are enabled, this is a finding.''',
+            'fix_text': 'Configure the web server to use an approved TLS version according to NIST SP 800-52 and to disable all non-approved versions.',
+        }, 'IIS_10-0_Server_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-218822')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        command = candidate['check']['command']
+        self.assertIn('SCHANNEL\\Protocols', command)
+        self.assertIn('TLS 1.2', command)
+        self.assertIn('TLS 1.0', command)
+        self.assertIn('TLS 1.1', command)
+        self.assertIn('SSL 3.0', command)
+        self.assertIn('FipsAlgorithmPolicy', command)
+
     def test_infers_iis_machine_key_sha2_auto_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-218807',
