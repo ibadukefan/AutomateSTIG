@@ -141,6 +141,36 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'on'})
         self.assertIn('SHOW logging_collector', candidate['check']['command'])
 
+    def test_infers_postgresql_invalid_input_logging_from_authoritative_syntax_error_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233544',
+            'title': 'When invalid inputs are received, PostgreSQL must behave in a predictable and documented manner that reflects organizational and system objectives.',
+            'check_content': (
+                'As the database administrator, make a small SQL syntax error in psql by running the following:\n\n'
+                '$ psql -c "CREAT TABLEincorrect_syntax(id INT)"\n'
+                'ERROR: syntax error at or near "CREAT"\n\n'
+                'If no matching log entry containing the \'ERROR: syntax error\' is present, this is a finding.'
+            ),
+            'fix_text': (
+                'Enable logging.\n\n'
+                'All errors and denials are logged if logging is enabled.'
+            ),
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233544')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'on'})
+        self.assertIn('SHOW logging_collector', candidate['check']['command'])
+
+    def test_rejects_postgresql_invalid_input_logging_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'When invalid inputs are received, PostgreSQL must behave in a predictable and documented manner.',
+            'check_content': 'psql -c "CREAT TABLEincorrect_syntax(id INT)" ERROR: syntax error at or near "CREAT" If no matching log entry containing the \'ERROR: syntax error\' is present, this is a finding.',
+            'fix_text': 'All errors and denials are logged if logging is enabled.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_windows_server_2025_time_service_nt5ds_or_usno_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278029',

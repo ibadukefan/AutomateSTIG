@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 62,
+  "candidate_checks": 63,
   "cases": [
     {
       "check": {
@@ -260,6 +260,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233538"
+    },
+    {
+      "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "When invalid inputs are received, PostgreSQL must behave in a predictable and documented manner that reflects organizational and system objectives.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "unexpected-on"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -At -c 'SHOW logging_collector'": "on"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233544"
     },
     {
       "check": {
@@ -1619,5 +1645,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 62
+  "validated_candidates": 63
 }

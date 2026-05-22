@@ -9702,6 +9702,27 @@ def _postgresql_audit_explicit_config_candidate(rule: dict, stig_id: str) -> dic
             'description': rule.get('title', ''),
         }
 
+    if vuln_id == 'V-233544':
+        title = rule.get('title', '') or ''
+        if not re.search(r'invalid\s+inputs.*predictable\s+and\s+documented\s+manner', title, re.IGNORECASE):
+            return None
+        if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in (
+            r'psql\s+-c\s+["“]CREAT\s+TABLEincorrect_syntax\(id\s+INT\)["”]',
+            r'ERROR:\s+syntax\s+error\s+at\s+or\s+near\s+["“]CREAT["”]',
+            r'If\s+no\s+matching\s+log\s+entry\s+containing\s+the\s+[\'"“]?ERROR:\s+syntax\s+error',
+        )):
+            return None
+        if not re.search(r'All\s+errors\s+and\s+denials\s+are\s+logged\s+if\s+logging\s+is\s+enabled', fix_text, re.IGNORECASE):
+            return None
+        command = 'sudo -u postgres psql -At -c ' + shlex.quote('SHOW logging_collector')
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'on'},
+            'description': rule.get('title', ''),
+        }
+
     profile = profiles.get(vuln_id)
     if not profile:
         return None
