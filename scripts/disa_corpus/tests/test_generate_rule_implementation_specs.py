@@ -225,6 +225,43 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         }, 'Crunchy_Data_PostgreSQL_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_oracle_archive_destination_protection_noarchivelog_safe_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270534',
+            'title': 'The directories assigned to the LOG_ARCHIVE_DEST* parameters must be protected from unauthorized access.',
+            'check_content': (
+                "From SQL*Plus:\n\n"
+                "select log_mode from v$database;\n"
+                "select value from v$parameter where name = 'log_archive_dest';\n"
+                "select value from v$parameter where name = 'log_archive_duplex_dest';\n"
+                "select name, value from v$parameter where name LIKE 'log_archive_dest_%';\n"
+                "select value from v$parameter where name = 'db_recovery_file_dest';\n\n"
+                "If the value returned for LOG_MODE is NOARCHIVELOG, this check is not a finding.\n\n"
+                "If a value is not returned for LOG_ARCHIVE_DEST and no values are returned for any of the LOG_ARCHIVE_DEST_[1-10] parameters, and no value is returned for DB_RECOVERY_FILE_DEST, this is a finding.\n\n"
+                "On Unix Systems:\n\nls -ld [pathname]\n\n"
+                "If permissions are granted for world access, this is a finding.\n\n"
+                "On Windows systems (from Windows Explorer):\n"
+                "If permissions are granted to everyone, this is a finding."
+            ),
+            'fix_text': 'Specify a valid and protected directory for archive log files. Restrict access to the Oracle process and software owner accounts, DBAs, and backup operator accounts.',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270534')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn("NOARCHIVELOG", candidate['check']['command'])
+        self.assertIn("v$database", candidate['check']['command'])
+        self.assertIn("Compliant", candidate['check']['command'])
+
+    def test_rejects_oracle_archive_destination_protection_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Oracle archive directories must be protected.',
+            'check_content': "select log_mode from v$database; If the value returned for LOG_MODE is NOARCHIVELOG, this check is not a finding.",
+            'fix_text': 'Specify a valid and protected directory for archive log files.',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_windows_server_2025_time_service_nt5ds_or_usno_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278029',

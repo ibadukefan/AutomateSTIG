@@ -12512,6 +12512,39 @@ def _oracle_database_fips_ora_candidate(rule: dict, stig_id: str) -> dict | None
     }
 
 
+def _oracle_database_archive_destination_protection_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270534':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'select\s+log_mode\s+from\s+v\$database',
+        r"select\s+value\s+from\s+v\$parameter\s+where\s+name\s*=\s*'log_archive_dest'",
+        r"select\s+name\s*,\s*value\s+from\s+v\$parameter\s+where\s+name\s+LIKE\s+'log_archive_dest_%'",
+        r"select\s+value\s+from\s+v\$parameter\s+where\s+name\s*=\s*'db_recovery_file_dest'",
+        r'If\s+the\s+value\s+returned\s+for\s+LOG_MODE\s+is\s+NOARCHIVELOG,\s+this\s+check\s+is\s+not\s+a\s+finding',
+        r'If\s+a\s+value\s+is\s+not\s+returned\s+for\s+LOG_ARCHIVE_DEST\s+and\s+no\s+values\s+are\s+returned\s+for\s+any\s+of\s+the\s+LOG_ARCHIVE_DEST_\[1-10\]\s+parameters,\s+and\s+no\s+value\s+is\s+returned\s+for\s+DB_RECOVERY_FILE_DEST,\s+this\s+is\s+a\s+finding',
+        r'If\s+permissions\s+are\s+granted\s+for\s+world\s+access,\s+this\s+is\s+a\s+finding',
+        r'If\s+permissions\s+are\s+granted\s+to\s+everyone,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'Specify\s+a\s+valid\s+and\s+protected\s+directory\s+for\s+archive\s+log\s+files', fix_text, re.IGNORECASE):
+        return None
+    # The authoritative rule has human-review branches for DBA/developer account
+    # authorization.  This candidate intentionally returns Compliant only for the
+    # explicit NOARCHIVELOG not-a-finding short-circuit and otherwise leaves the
+    # rule in finding/needs-review territory rather than risk a false pass.
+    sql = "SELECT CASE WHEN UPPER(TRIM(log_mode)) = 'NOARCHIVELOG' THEN 'Compliant' ELSE 'Finding' END FROM v$database;"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': _oracle_sqlplus_command(sql)},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_archivelog_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270573':
         return None
@@ -15683,6 +15716,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_fips_ora_candidate = _oracle_database_fips_ora_candidate(rule, stig_id)
     if oracle_database_fips_ora_candidate:
         return oracle_database_fips_ora_candidate
+
+    oracle_database_archive_destination_candidate = _oracle_database_archive_destination_protection_candidate(rule, stig_id)
+    if oracle_database_archive_destination_candidate:
+        return oracle_database_archive_destination_candidate
 
     oracle_database_archivelog_mode_candidate = _oracle_database_archivelog_mode_candidate(rule, stig_id)
     if oracle_database_archivelog_mode_candidate:

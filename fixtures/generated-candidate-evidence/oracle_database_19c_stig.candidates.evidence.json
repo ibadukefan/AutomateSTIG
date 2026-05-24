@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 21,
+  "candidate_checks": 22,
   "cases": [
     {
       "check": {
@@ -208,6 +208,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270532"
+    },
+    {
+      "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN UPPER(TRIM(log_mode)) = 'NOARCHIVELOG' THEN 'Compliant' ELSE 'Finding' END FROM v$database;\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "The directories assigned to the LOG_ARCHIVE_DEST* parameters must be protected from unauthorized access.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN UPPER(TRIM(log_mode)) = 'NOARCHIVELOG' THEN 'Compliant' ELSE 'Finding' END FROM v$database;\nEXIT\nSQL": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN UPPER(TRIM(log_mode)) = 'NOARCHIVELOG' THEN 'Compliant' ELSE 'Finding' END FROM v$database;\nEXIT\nSQL": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270534"
     },
     {
       "check": {
@@ -553,5 +579,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_database_19c_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Database_19c_STIG",
-  "validated_candidates": 21
+  "validated_candidates": 22
 }

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN UPPER(TRIM(log_mode)) = 'NOARCHIVELOG' THEN 'Compliant' ELSE 'Finding' END FROM v$database;\nEXIT\nSQL",
+      "type": "command_output"
+    },
+    "description": "The directories assigned to the LOG_ARCHIVE_DEST* parameters must be protected from unauthorized access.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "generic",
+    "vuln_id": "V-270534"
+  },
   "check_content_excerpt": "From SQL*Plus:\n\nselect log_mode from v$database;\nselect value from v$parameter where name = 'log_archive_dest';\nselect value from v$parameter where name = 'log_archive_duplex_dest';\nselect name, value from v$parameter where name LIKE 'log_archive_dest_%';\nselect value from v$parameter where name = 'db_recovery_file_dest';\n\nIf the value returned for LOG_MODE is NOARCHIVELOG, this check is not a finding.\n\nIf a value is not returned for LOG_ARCHIVE_DEST and no values are returned for any of the LOG_ARCHIVE_DEST_[1-10] parameters, and no value is returned for DB_RECOVERY_FILE_DEST, this is a finding.\n\nNote: LOG_ARCHIVE_DEST and LOG_ARCHIVE_DUPLEX_DEST are incompatible with the LOG_ARCHIVE_DEST_n parameters, and must be defined as the null string (' ') when any LOG_ARCHIVE_DEST_n parameter has a value other than a null string.\n\nOn Unix Systems:\n\nls -ld [pathname]\n\nSubstitute [pathname] with the directory paths listed from the above SQL statements for log_archive_dest and log_archive_duplex_dest.\n\nIf permissions are granted for world access, this is a finding.\n\nOn Windows systems (from Windows Explorer):\n\nBrowse to the directory specified.\n\nSelect and right-click on the directory >> Properties >> Security tab.\n\nIf permissions are granted to everyone, this is a finding.\n\nIf any account other than the Oracle process and software owner accounts, administrators, database administrators (DBAs), system group, or developers authorized to write and debug applications on this database are listed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Specify a valid and protected directory for archive log files.\n\nRestrict access to the Oracle process and software owner accounts, DBAs, and backup operator accounts.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270534r1065274_rule",
   "severity": "medium",

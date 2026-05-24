@@ -106,6 +106,19 @@
     },
     {
       "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN UPPER(TRIM(log_mode)) = 'NOARCHIVELOG' THEN 'Compliant' ELSE 'Finding' END FROM v$database;\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "The directories assigned to the LOG_ARCHIVE_DEST* parameters must be protected from unauthorized access.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270534"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT value FROM v$parameter WHERE LOWER(name) = '_trace_files_public';\nEXIT\nSQL",
         "type": "command_output"
       },

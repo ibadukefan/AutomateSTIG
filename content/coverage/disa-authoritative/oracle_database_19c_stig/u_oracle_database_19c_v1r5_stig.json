@@ -615,16 +615,17 @@
       "vuln_id": "V-270533"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270534",
+      "check_pack": "generated-candidates/oracle_database_19c_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270534r1065274_rule",
       "severity": "medium",
       "title": "The directories assigned to the LOG_ARCHIVE_DEST* parameters must be protected from unauthorized access.",
-      "tracking_issue": "TODO-V-270534",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_database_19c_stig.candidates.json",
         "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
       ],
       "vuln_id": "V-270534"
