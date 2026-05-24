@@ -193,6 +193,38 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         }, 'Crunchy_Data_PostgreSQL_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_postgresql_config_change_denial_logging_from_authoritative_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233547',
+            'title': 'PostgreSQL must produce audit records of its enforcement of access restrictions associated with changes to the configuration of PostgreSQL or database(s).',
+            'check_content': (
+                'To verify that system denies are logged when unprivileged users attempt to change database configuration, '
+                'as the database administrator (shown here as "postgres"), run the following commands:\n\n'
+                '$ sudo su - postgres\n$ psql\n\n'
+                'CREATE ROLE bob;\nSET ROLE bob;\nSET pgaudit.role=\'test\';\nRESET ROLE;\nDROP ROLE bob;\n\n'
+                'Now check ${PGLOG?} (use the latest log). If denials are not logged, this is a finding.'
+            ),
+            'fix_text': (
+                'Enable logging.\n\n'
+                'All denials are logged by default if logging is enabled. '
+                'To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.'
+            ),
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233547')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'on'})
+        self.assertIn('SHOW logging_collector', candidate['check']['command'])
+
+    def test_rejects_postgresql_config_change_denial_logging_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'PostgreSQL must produce audit records of access restriction changes.',
+            'check_content': 'If denials are not logged, this is a finding.',
+            'fix_text': 'All denials are logged by default if logging is enabled.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_windows_server_2025_time_service_nt5ds_or_usno_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278029',

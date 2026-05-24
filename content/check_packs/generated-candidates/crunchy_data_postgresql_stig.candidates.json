@@ -145,6 +145,19 @@
     },
     {
       "check": {
+        "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must produce audit records of its enforcement of access restrictions associated with changes to the configuration of PostgreSQL or database(s).",
+      "expected": {
+        "type": "equals",
+        "value": "on"
+      },
+      "platform": "linux",
+      "vuln_id": "V-233547"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW log_file_mode\"",
         "type": "command_output"
       },

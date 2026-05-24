@@ -9772,6 +9772,7 @@ def _postgresql_audit_explicit_config_candidate(rule: dict, stig_id: str) -> dic
         }
 
     denial_logging_vuln_ids = {
+        'V-233547',
         'V-233552',
         'V-233555',
         'V-233560',
@@ -9783,7 +9784,15 @@ def _postgresql_audit_explicit_config_candidate(rule: dict, stig_id: str) -> dic
     }
     if vuln_id in denial_logging_vuln_ids:
         title = rule.get('title', '') or ''
-        if not re.search(r'unsuccessful\s+(?:attempts|accesses)', title, re.IGNORECASE):
+        if vuln_id == 'V-233547':
+            if not re.search(r'enforcement\s+of\s+access\s+restrictions\s+associated\s+with\s+changes\s+to\s+the\s+configuration', title, re.IGNORECASE):
+                return None
+            if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in (
+                r'system\s+denies\s+are\s+logged\s+when\s+unprivileged\s+users\s+attempt\s+to\s+change\s+database\s+configuration',
+                r'SET\s+pgaudit\.role\s*=\s*[\'"“]?test',
+            )):
+                return None
+        elif not re.search(r'unsuccessful\s+(?:attempts|accesses)', title, re.IGNORECASE):
             return None
         if not re.search(r'(?:If\s+(?:the\s+)?denials?\s+(?:is|are)\s+not\s+logged|If\s+audit\s+logs\s+are\s+not\s+generated\s+when\s+unsuccessful\s+attempts|If\s+audit\s+records\s+are\s+not\s+produced|If\s+any\s+of\s+the\s+above\s+steps\s+did\s+not\s+create\s+audit\s+records|If\s+the\s+above\s+steps\s+cannot\s+verify\s+that\s+audit\s+records\s+are\s+produced)', content, re.IGNORECASE):
             return None

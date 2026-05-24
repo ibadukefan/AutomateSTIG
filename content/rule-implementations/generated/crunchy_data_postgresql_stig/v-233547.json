@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sudo -u postgres psql -At -c 'SHOW logging_collector'",
+      "type": "command_output"
+    },
+    "description": "PostgreSQL must produce audit records of its enforcement of access restrictions associated with changes to the configuration of PostgreSQL or database(s).",
+    "expected": {
+      "type": "equals",
+      "value": "on"
+    },
+    "platform": "linux",
+    "vuln_id": "V-233547"
+  },
   "check_content_excerpt": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-I for PGLOG.\n\nTo verify that system denies are logged when unprivileged users attempt to change database configuration, as the database administrator (shown here as \"postgres\"), run the following commands:\n\n$ sudo su - postgres\n$ psql\n\nNext, create a role with no privileges, change the current role to that user and attempt to change a configuration by running the following SQL:\n\nCREATE ROLE bob;\nSET ROLE bob;\nSET pgaudit.role='test';\nRESET ROLE;\nDROP ROLE bob;\n\nNow check ${PGLOG?} (use the latest log):\n\n$ cat ${PGDATA?}/${PGLOG?}/postgresql-Thu.log\n< 2016-01-28 17:57:34.092 UTC bob postgres: >ERROR: permission denied to set parameter \"pgaudit.role\"\n< 2016-01-28 17:57:34.092 UTC bob postgres: >STATEMENT: SET pgaudit.role='test';\n\nIf the denial is not logged, this is a finding.\n\nBy default PostgreSQL configuration files are owned by the postgres user and cannot be edited by nonprivileged users:\n\n$ ls -la ${PGDATA?} | grep postgresql.conf\n-rw-------. 1 postgres postgres 21758 Jan 22 10:27 postgresql.conf\n\nIf postgresql.conf is not owned by the database owner and does not have read and write permissions for the owner, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "on"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable logging.\n\nAll denials are logged by default if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233547r998196_rule",
   "severity": "medium",
