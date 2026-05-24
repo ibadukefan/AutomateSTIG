@@ -7050,7 +7050,7 @@ def _tomcat_manager_localhost_remote_addr_valve_candidate(rule: dict, stig_id: s
 
 
 def _tomcat_dod_pki_truststore_candidate(rule: dict, stig_id: str) -> dict | None:
-    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222994':
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') not in {'V-222994', 'V-223001'}:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
