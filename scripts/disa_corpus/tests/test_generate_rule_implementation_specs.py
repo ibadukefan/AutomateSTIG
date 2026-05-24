@@ -2175,6 +2175,44 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
         self.assertIsNone(mod.infer_candidate_check(rule, 'Tomcat_Application_Server_9_STIG'))
 
+    def test_infers_tomcat_dod_pki_truststore_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222994',
+            'title': 'Certificates in the trust store must be issued/signed by an approved CA.',
+            'check_content': (
+                'For the systemd Ubuntu OS, check the tomcat.service file to read the content of the JAVA_OPTS environment variable setting.\n\n'
+                'sudo cat /etc/systemd/system/tomcat.service |grep -i truststore\n\n'
+                'If the variable is not set, use the default location command below. If the variable is set, use the alternate location command below and include the path and truststore file.\n\n'
+                '-Default location:\nkeytool -list -cacerts -v | grep -i issuer\n\n'
+                '-Alternate location:\nkeytool -list -keystore <location of trust store file> -v |grep -i issuer\n\n'
+                'If there are no CA certificates issued by a Certificate Authority (CA) that is part of the DoD PKI/PKE, this is a finding.'
+            ),
+            'fix_text': (
+                'Obtain and install the DoD PKI CA certificate bundles by accessing the DoD PKI office website at https://cyber.mil/pki-pke.\n\n'
+                'Download the certificate bundles and then use certificate management utilities such as keytool or openssl to import the DoD CA certificates into the trust store.'
+            ),
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222994')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('/etc/systemd/system/tomcat.service', candidate['check']['command'])
+        self.assertIn('trustStore', candidate['check']['command'])
+        self.assertIn('keytool -list', candidate['check']['command'])
+        self.assertIn('DoD|DOD|PKI|PKE', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_tomcat_dod_pki_truststore_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-222994',
+            'title': 'Certificates in the trust store must be issued/signed by an approved CA.',
+            'check_content': 'keytool -list -cacerts -v | grep -i issuer If there are no approved certificates, this is a finding.',
+            'fix_text': 'Import approved certificates into the trust store.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Tomcat_Application_Server_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Tomcat_Application_Server_9_STIG'))
+
     def test_infers_tomcat_keystore_file_permissions_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222967',

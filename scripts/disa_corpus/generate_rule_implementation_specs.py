@@ -7049,6 +7049,36 @@ def _tomcat_manager_localhost_remote_addr_valve_candidate(rule: dict, stig_id: s
     }
 
 
+def _tomcat_dod_pki_truststore_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222994':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r'/etc/systemd/system/tomcat\.service\s*\|\s*grep\s+-i\s+truststore',
+        r'keytool\s+-list\s+-cacerts\s+-v\s*\|\s*grep\s+-i\s+issuer',
+        r'keytool\s+-list\s+-keystore\s+<location\s+of\s+trust\s+store\s+file>\s+-v\s*\|\s*grep\s+-i\s+issuer',
+        r'no\s+CA\s+certificates\s+issued\s+by\s+a\s+Certificate\s+Authority\s*\(CA\)\s+that\s+is\s+part\s+of\s+the\s+DoD\s+PKI/PKE',
+        r'install\s+the\s+DoD\s+PKI\s+CA\s+certificate\s+bundles',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "sh -c 'svc=/etc/systemd/system/tomcat.service; "
+        "ts=$(grep -Eio -- \"-Djavax\\.net\\.ssl\\.trustStore=[^[:space:]\\\"'\"'\"']+\" \"$svc\" 2>/dev/null | head -1 | cut -d= -f2-); "
+        "if [ -n \"$ts\" ]; then keytool -list -keystore \"$ts\" -v 2>/dev/null; else keytool -list -cacerts -v 2>/dev/null; fi "
+        "| grep -Ei \"Issuer:.*(DoD|DOD|PKI|PKE)\" >/dev/null && printf Compliant'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_manager_client_cert_auth_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222993':
         return None
@@ -15380,6 +15410,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_manager_remote_addr_valve_candidate = _tomcat_manager_localhost_remote_addr_valve_candidate(rule, stig_id)
     if tomcat_manager_remote_addr_valve_candidate:
         return tomcat_manager_remote_addr_valve_candidate
+
+    tomcat_dod_pki_truststore_candidate = _tomcat_dod_pki_truststore_candidate(rule, stig_id)
+    if tomcat_dod_pki_truststore_candidate:
+        return tomcat_dod_pki_truststore_candidate
 
     tomcat_manager_client_cert_candidate = _tomcat_manager_client_cert_auth_candidate(rule, stig_id)
     if tomcat_manager_client_cert_candidate:

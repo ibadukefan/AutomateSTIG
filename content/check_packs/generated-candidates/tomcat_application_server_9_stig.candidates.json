@@ -470,6 +470,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'svc=/etc/systemd/system/tomcat.service; ts=$(grep -Eio -- \"-Djavax\\.net\\.ssl\\.trustStore=[^[:space:]\\\"'\"'\"']+\" \"$svc\" 2>/dev/null | head -1 | cut -d= -f2-); if [ -n \"$ts\" ]; then keytool -list -keystore \"$ts\" -v 2>/dev/null; else keytool -list -cacerts -v 2>/dev/null; fi | grep -Ei \"Issuer:.*(DoD|DOD|PKI|PKE)\" >/dev/null && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "Certificates in the trust store must be issued/signed by an approved CA.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222994"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath \"name(//Engine/Valve[contains(@className,'AccessLogValve')][1])\" $CATALINA_BASE/conf/server.xml 2>/dev/null",
         "type": "command_output"
       },
