@@ -704,6 +704,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; pglog_owner=$(stat -c %U:%G \"${PGLOG?}\" 2>/dev/null || true); [ \"$pglog_owner\" = postgres:postgres ] || bad=\"$bad PGLOG-owner=$pglog_owner\"; pgdata_owner=$(stat -c %U:%G \"${PGDATA?}\" 2>/dev/null || true); [ \"$pgdata_owner\" = postgres:postgres ] || bad=\"$bad PGDATA-owner=$pgdata_owner\"; pgaudit_owner=$(stat -c %U:%G /usr/pgsql-${PGVER?}/share/contrib/pgaudit 2>/dev/null || true); [ \"$pgaudit_owner\" = root:root ] || bad=\"$bad pgaudit-owner=$pgaudit_owner\"; psql -x -c '\\\\du' 2>/dev/null | awk 'BEGIN{role=\"\"} /^Role name[[:space:]]*\\|/{role=$0; sub(/^[^|]*\\|[[:space:]]*/,\"\",role); sub(/[[:space:]]*$/,\"\",role)} /^Attributes[[:space:]]*\\|/ && $0 ~ /Superuser/ && role != \"postgres\"{print role}' | grep -q . && bad=\"$bad unexpected-superuser-role\"; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must protect its audit features from unauthorized access.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-233607"
+    },
+    {
+      "check": {
         "command": "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'",
         "type": "command_output"
       },

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 65,
+  "candidate_checks": 66,
   "cases": [
     {
       "check": {
@@ -1407,6 +1407,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'bad=\"\"; pglog_owner=$(stat -c %U:%G \"${PGLOG?}\" 2>/dev/null || true); [ \"$pglog_owner\" = postgres:postgres ] || bad=\"$bad PGLOG-owner=$pglog_owner\"; pgdata_owner=$(stat -c %U:%G \"${PGDATA?}\" 2>/dev/null || true); [ \"$pgdata_owner\" = postgres:postgres ] || bad=\"$bad PGDATA-owner=$pgdata_owner\"; pgaudit_owner=$(stat -c %U:%G /usr/pgsql-${PGVER?}/share/contrib/pgaudit 2>/dev/null || true); [ \"$pgaudit_owner\" = root:root ] || bad=\"$bad pgaudit-owner=$pgaudit_owner\"; psql -x -c '\\\\du' 2>/dev/null | awk 'BEGIN{role=\"\"} /^Role name[[:space:]]*\\|/{role=$0; sub(/^[^|]*\\|[[:space:]]*/,\"\",role); sub(/[[:space:]]*$/,\"\",role)} /^Attributes[[:space:]]*\\|/ && $0 ~ /Superuser/ && role != \"postgres\"{print role}' | grep -q . && bad=\"$bad unexpected-superuser-role\"; printf %s \"$bad\"'",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must protect its audit features from unauthorized access.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'bad=\"\"; pglog_owner=$(stat -c %U:%G \"${PGLOG?}\" 2>/dev/null || true); [ \"$pglog_owner\" = postgres:postgres ] || bad=\"$bad PGLOG-owner=$pglog_owner\"; pgdata_owner=$(stat -c %U:%G \"${PGDATA?}\" 2>/dev/null || true); [ \"$pgdata_owner\" = postgres:postgres ] || bad=\"$bad PGDATA-owner=$pgdata_owner\"; pgaudit_owner=$(stat -c %U:%G /usr/pgsql-${PGVER?}/share/contrib/pgaudit 2>/dev/null || true); [ \"$pgaudit_owner\" = root:root ] || bad=\"$bad pgaudit-owner=$pgaudit_owner\"; psql -x -c '\\\\du' 2>/dev/null | awk 'BEGIN{role=\"\"} /^Role name[[:space:]]*\\|/{role=$0; sub(/^[^|]*\\|[[:space:]]*/,\"\",role); sub(/[[:space:]]*$/,\"\",role)} /^Attributes[[:space:]]*\\|/ && $0 ~ /Superuser/ && role != \"postgres\"{print role}' | grep -q . && bad=\"$bad unexpected-superuser-role\"; printf %s \"$bad\"'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'bad=\"\"; pglog_owner=$(stat -c %U:%G \"${PGLOG?}\" 2>/dev/null || true); [ \"$pglog_owner\" = postgres:postgres ] || bad=\"$bad PGLOG-owner=$pglog_owner\"; pgdata_owner=$(stat -c %U:%G \"${PGDATA?}\" 2>/dev/null || true); [ \"$pgdata_owner\" = postgres:postgres ] || bad=\"$bad PGDATA-owner=$pgdata_owner\"; pgaudit_owner=$(stat -c %U:%G /usr/pgsql-${PGVER?}/share/contrib/pgaudit 2>/dev/null || true); [ \"$pgaudit_owner\" = root:root ] || bad=\"$bad pgaudit-owner=$pgaudit_owner\"; psql -x -c '\\\\du' 2>/dev/null | awk 'BEGIN{role=\"\"} /^Role name[[:space:]]*\\|/{role=$0; sub(/^[^|]*\\|[[:space:]]*/,\"\",role); sub(/[[:space:]]*$/,\"\",role)} /^Attributes[[:space:]]*\\|/ && $0 ~ /Superuser/ && role != \"postgres\"{print role}' | grep -q . && bad=\"$bad unexpected-superuser-role\"; printf %s \"$bad\"'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233607"
+    },
+    {
+      "check": {
         "command": "sh -c 'out=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m; do printf %s \"$out\" | grep -Fq \"$token\" || echo \"$token\"; done'",
         "type": "command_output"
       },
@@ -1697,5 +1723,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 65
+  "validated_candidates": 66
 }

@@ -17982,6 +17982,55 @@ Create REG_DWORD "UriScavengerPeriod"''',
         }, 'Crunchy_Data_PostgreSQL_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_postgresql_audit_features_unauthorized_access_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233607',
+            'title': 'PostgreSQL must protect its audit features from unauthorized access.',
+            'check_content': '''Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA, APPENDIX-H for PGVER, and APPENDIX-I for PGLOG.
+Only the database owner and superuser can alter configuration of PostgreSQL.
+
+Ensure the PGLOG directory is owned by postgres user and group:
+$ sudo su - postgres
+$ ls -la ${PGLOG?}
+If PGLOG is not owned by the database owner, this is a finding.
+
+Ensure the data directory is owned by postgres user and group.
+$ sudo su - postgres
+$ ls -la ${PGDATA?}
+If PGDATA is not owned by the database owner, this is a finding.
+
+Ensure pgaudit installation is owned by root:
+$ sudo su - postgres
+$ ls -la /usr/pgsql-${PGVER?}/share/contrib/pgaudit
+If pgaudit installation is not owned by root, this is a finding.
+
+$ sudo su - postgres
+$ psql -x -c "\\du"
+If any role has "superuser" that should not, this is a finding.''',
+            'fix_text': '''If PGLOG or PGDATA are not owned by postgres user and group, configure them as follows:
+$ sudo chown -R postgres:postgres ${PGDATA?}
+$ sudo chown -R postgres:postgres ${PGLOG?}
+$ sudo chown -R root:root /usr/pgsql-${PGVER?}/share/contrib/pgaudit
+$ psql -c "ALTER ROLE <role-name> WITH NOSUPERUSER"''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233607')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('${PGLOG?}', candidate['check']['command'])
+        self.assertIn('${PGDATA?}', candidate['check']['command'])
+        self.assertIn('/usr/pgsql-${PGVER?}/share/contrib/pgaudit', candidate['check']['command'])
+        self.assertIn('unexpected-superuser-role', candidate['check']['command'])
+
+    def test_rejects_postgresql_audit_features_unauthorized_access_without_exact_vuln(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'PostgreSQL must protect its audit features from unauthorized access.',
+            'check_content': 'Ensure the PGLOG directory is owned by postgres user and group and PGDATA is not accessible by others.',
+            'fix_text': 'chown -R postgres:postgres ${PGLOG?}; chown -R postgres:postgres ${PGDATA?}',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNone(candidate)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -9693,6 +9693,47 @@ def _postgresql_audit_features_unauthorized_removal_candidate(rule: dict, stig_i
     }
 
 
+def _postgresql_audit_features_unauthorized_access_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if (
+        'postgresql' not in stig_id.lower()
+        or rule.get('vuln_id', '') != 'V-233607'
+        or not re.search(r'ls\s+-la\s+\$\{PGLOG\?\}', content, re.IGNORECASE)
+        or not re.search(r'PGLOG\s+is\s+not\s+owned\s+by\s+the\s+database\s+owner,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        or not re.search(r'ls\s+-la\s+\$\{PGDATA\?\}', content, re.IGNORECASE)
+        or not re.search(r'PGDATA\s+is\s+not\s+owned\s+by\s+the\s+database\s+owner,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        or not re.search(r'ls\s+-la\s+/usr/pgsql-\$\{PGVER\?\}/share/contrib/pgaudit\b', content, re.IGNORECASE)
+        or not re.search(r'pgaudit\s+installation\s+is\s+not\s+owned\s+by\s+root,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        or not re.search(r'psql\s+-x\s+-c\s+["“]\\du["”]', content, re.IGNORECASE)
+        or not re.search(r'any\s+role\s+has\s+["“]superuser["”]\s+that\s+should\s+not,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        or not re.search(r'chown\s+-R\s+postgres:postgres\s+\$\{PGLOG\?\}', fix_text, re.IGNORECASE)
+        or not re.search(r'chown\s+-R\s+postgres:postgres\s+\$\{PGDATA\?\}', fix_text, re.IGNORECASE)
+        or not re.search(r'chown\s+-R\s+root:root\s+/usr/pgsql-\$\{PGVER\?\}/share/contrib/pgaudit\b', fix_text, re.IGNORECASE)
+        or not re.search(r'ALTER\s+ROLE\s+<role-name>\s+WITH\s+NOSUPERUSER', fix_text, re.IGNORECASE)
+    ):
+        return None
+    command = (
+        "sh -c 'bad=\"\"; "
+        "pglog_owner=$(stat -c %U:%G \"${PGLOG?}\" 2>/dev/null || true); "
+        "[ \"$pglog_owner\" = postgres:postgres ] || bad=\"$bad PGLOG-owner=$pglog_owner\"; "
+        "pgdata_owner=$(stat -c %U:%G \"${PGDATA?}\" 2>/dev/null || true); "
+        "[ \"$pgdata_owner\" = postgres:postgres ] || bad=\"$bad PGDATA-owner=$pgdata_owner\"; "
+        "pgaudit_owner=$(stat -c %U:%G /usr/pgsql-${PGVER?}/share/contrib/pgaudit 2>/dev/null || true); "
+        "[ \"$pgaudit_owner\" = root:root ] || bad=\"$bad pgaudit-owner=$pgaudit_owner\"; "
+        "psql -x -c '\\\\du' 2>/dev/null | awk 'BEGIN{role=\"\"} /^Role name[[:space:]]*\\|/{role=$0; sub(/^[^|]*\\|[[:space:]]*/,\"\",role); sub(/[[:space:]]*$/,\"\",role)} /^Attributes[[:space:]]*\\|/ && $0 ~ /Superuser/ && role != \"postgres\"{print role}' | grep -q . && bad=\"$bad unexpected-superuser-role\"; "
+        "printf %s \"$bad\"'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _postgresql_audit_explicit_config_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'postgresql' not in stig_id.lower():
         return None
@@ -9956,6 +9997,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     postgresql_audit_features_unauthorized_removal_candidate = _postgresql_audit_features_unauthorized_removal_candidate(rule, stig_id)
     if postgresql_audit_features_unauthorized_removal_candidate:
         return postgresql_audit_features_unauthorized_removal_candidate
+    postgresql_audit_features_unauthorized_access_candidate = _postgresql_audit_features_unauthorized_access_candidate(rule, stig_id)
+    if postgresql_audit_features_unauthorized_access_candidate:
+        return postgresql_audit_features_unauthorized_access_candidate
     postgresql_pgdata_config_owner_permissions = (
         'postgresql' in stig_id.lower()
         and rule.get('vuln_id', '') == 'V-233518'
