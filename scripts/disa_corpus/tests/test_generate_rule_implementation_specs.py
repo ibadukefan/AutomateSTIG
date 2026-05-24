@@ -2937,6 +2937,44 @@ kubectl create -f restricted.yml''',
         self.assertIn('DBA_PROFILES', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'UNLIMITED'})
 
+    def test_infers_oracle_password_maximum_lifetime_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270563',
+            'title': 'Oracle Database must enforce password maximum lifetime restrictions.',
+            'check_content': (
+                "SELECT p1.profile, CASE DECODE(p1.limit, 'DEFAULT', p3.limit, p1.limit) "
+                "WHEN 'UNLIMITED' THEN 'UNLIMITED' ELSE CASE DECODE(p2.limit, 'DEFAULT', p4.limit, p2.limit) "
+                "WHEN 'UNLIMITED' THEN 'UNLIMITED' ELSE TO_CHAR(DECODE(p1.limit, 'DEFAULT', p3.limit, p1.limit) + "
+                "DECODE(p2.limit, 'DEFAULT', p4.limit, p2.limit)) END END effective_life_time "
+                "FROM dba_profiles p1, dba_profiles p2, dba_profiles p3, dba_profiles p4 "
+                "WHERE p1.resource_name='PASSWORD_LIFE_TIME' AND p2.resource_name='PASSWORD_GRACE_TIME';\n\n"
+                'If the EFFECTIVE_LIFE_TIME is greater than 60 for any profile applied to user accounts, '
+                'and the need for this has not been documented and approved, this is a finding.\n\n'
+                'If PASSWORD_LIFE_TIME or PASSWORD_GRACE_TIME is set to "UNLIMITED", this is a finding.'
+            ),
+            'fix_text': (
+                'For user accounts managed by Oracle, modify DBMS settings to force users to periodically change their passwords. '
+                'ALTER PROFILE PPPPPP LIMIT PASSWORD_LIFE_TIME 35 PASSWORD_GRACE_TIME 0; '
+                'set it to the standard DOD value of 60.'
+            ),
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270563')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('PASSWORD_LIFE_TIME', candidate['check']['command'])
+        self.assertIn('PASSWORD_GRACE_TIME', candidate['check']['command'])
+        self.assertIn('> 60', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_oracle_password_maximum_lifetime_candidate_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Oracle Database must enforce password maximum lifetime restrictions.',
+            'check_content': 'PASSWORD_LIFE_TIME PASSWORD_GRACE_TIME If PASSWORD_LIFE_TIME or PASSWORD_GRACE_TIME is set to "UNLIMITED", this is a finding.',
+            'fix_text': 'ALTER PROFILE PPPPPP LIMIT PASSWORD_LIFE_TIME 35 PASSWORD_GRACE_TIME 0;',
+        }, 'Oracle_Database_19c_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_oracle_sqlnet_allowed_logon_version_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270543',

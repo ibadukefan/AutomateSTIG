@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM (SELECT p1.profile, CASE DECODE(p1.limit, 'DEFAULT', p3.limit, p1.limit) WHEN 'UNLIMITED' THEN 'UNLIMITED' ELSE CASE DECODE(p2.limit, 'DEFAULT', p4.limit, p2.limit) WHEN 'UNLIMITED' THEN 'UNLIMITED' ELSE TO_CHAR(DECODE(p1.limit, 'DEFAULT', p3.limit, p1.limit) + DECODE(p2.limit, 'DEFAULT', p4.limit, p2.limit)) END END effective_life_time FROM dba_profiles p1, dba_profiles p2, dba_profiles p3, dba_profiles p4 WHERE p1.profile=p2.profile AND p3.profile='DEFAULT' AND p4.profile='DEFAULT' AND p1.resource_name='PASSWORD_LIFE_TIME' AND p2.resource_name='PASSWORD_GRACE_TIME' AND p3.resource_name='PASSWORD_LIFE_TIME' AND p4.resource_name='PASSWORD_GRACE_TIME') WHERE effective_life_time = 'UNLIMITED' OR TO_NUMBER(effective_life_time DEFAULT 999999 ON CONVERSION ERROR) > 60;\nEXIT\nSQL",
+      "type": "command_output"
+    },
+    "description": "Oracle Database must enforce password maximum lifetime restrictions.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "generic",
+    "vuln_id": "V-270563"
+  },
   "check_content_excerpt": "If all user accounts are authenticated by the OS or an enterprise-level authentication/access mechanism, and not by Oracle, this is not a finding.\n\nReview database management system (DBMS) settings to determine if passwords must be changed periodically. Run the following script:\n\nSELECT p1.profile,\nCASE DECODE(p1.limit, 'DEFAULT', p3.limit, p1.limit) WHEN 'UNLIMITED' THEN 'UNLIMITED' ELSE\nCASE DECODE(p2.limit, 'DEFAULT', p4.limit, p2.limit) WHEN 'UNLIMITED' THEN 'UNLIMITED' ELSE\nTO_CHAR(DECODE(p1.limit, 'DEFAULT', p3.limit, p1.limit) + DECODE(p2.limit, 'DEFAULT', p4.limit, p2.limit))\nEND\nEND effective_life_time\nFROM dba_profiles p1, dba_profiles p2, dba_profiles p3, dba_profiles p4\nWHERE p1.profile=p2.profile\nAND p3.profile='DEFAULT'\nAND p4.profile='DEFAULT'\nAND p1.resource_name='PASSWORD_LIFE_TIME'\nAND p2.resource_name='PASSWORD_GRACE_TIME'\nAND p3.resource_name='PASSWORD_LIFE_TIME' -- from DEFAULT profile\nAND p4.resource_name='PASSWORD_GRACE_TIME' -- from DEFAULT profile\norder by 1;\n\nIf the EFFECTIVE_LIFE_TIME is greater than 60 for any profile applied to user accounts, and the need for this has not been documented and approved, this is a finding.\n\nIf PASSWORD_LIFE_TIME or PASSWORD_GRACE_TIME is set to \"UNLIMITED\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "For user accounts managed by Oracle, modify DBMS settings to force users to periodically change their passwords. For example, using \"PPPPPP\" to stand for a profile name:\n\nALTER PROFILE PPPPPP LIMIT PASSWORD_LIFE_TIME 35 PASSWORD_GRACE_TIME 0;\n\nDo this for each profile applied to user accounts.\n\nNote: Although the DOD requirement is for a password change every 60 days, using a value of 35 facilitates the use of PASSWORD_LIFE_TIME as a means of locking accounts inactive for 35 days. But if 35 is not a practical or acceptable limit for password lifetime, set it to the standard DOD value of 60.\n\nWhere a password lifetime longer than 60 is needed, document the reasons and obtain information system security officer (ISSO) approval.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270563r1064967_rule",
   "severity": "medium",

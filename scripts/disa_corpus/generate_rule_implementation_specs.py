@@ -12065,6 +12065,42 @@ def _oracle_database_public_empty_result_candidate(rule: dict, stig_id: str) -> 
     }
 
 
+def _oracle_database_password_maximum_lifetime_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270563':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'PASSWORD_LIFE_TIME',
+        r'PASSWORD_GRACE_TIME',
+        r'EFFECTIVE_LIFE_TIME\s+is\s+greater\s+than\s+60\s+for\s+any\s+profile\s+applied\s+to\s+user\s+accounts',
+        r'PASSWORD_LIFE_TIME\s+or\s+PASSWORD_GRACE_TIME\s+is\s+set\s+to\s+["“]?UNLIMITED["”]?,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'ALTER\s+PROFILE\s+\S+\s+LIMIT\s+PASSWORD_LIFE_TIME\s+(?:35|60)\s+PASSWORD_GRACE_TIME\s+0', fix_text, re.IGNORECASE):
+        return None
+    sql = (
+        "SELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM ("
+        "SELECT p1.profile, "
+        "CASE DECODE(p1.limit, 'DEFAULT', p3.limit, p1.limit) WHEN 'UNLIMITED' THEN 'UNLIMITED' ELSE "
+        "CASE DECODE(p2.limit, 'DEFAULT', p4.limit, p2.limit) WHEN 'UNLIMITED' THEN 'UNLIMITED' ELSE "
+        "TO_CHAR(DECODE(p1.limit, 'DEFAULT', p3.limit, p1.limit) + DECODE(p2.limit, 'DEFAULT', p4.limit, p2.limit)) END END effective_life_time "
+        "FROM dba_profiles p1, dba_profiles p2, dba_profiles p3, dba_profiles p4 "
+        "WHERE p1.profile=p2.profile AND p3.profile='DEFAULT' AND p4.profile='DEFAULT' "
+        "AND p1.resource_name='PASSWORD_LIFE_TIME' AND p2.resource_name='PASSWORD_GRACE_TIME' "
+        "AND p3.resource_name='PASSWORD_LIFE_TIME' AND p4.resource_name='PASSWORD_GRACE_TIME') "
+        "WHERE effective_life_time = 'UNLIMITED' OR TO_NUMBER(effective_life_time DEFAULT 999999 ON CONVERSION ERROR) > 60;"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': _oracle_sqlplus_command(sql)},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_profile_password_lock_time_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270549':
         return None
@@ -15458,6 +15494,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_profile_password_lock_time_candidate = _oracle_database_profile_password_lock_time_candidate(rule, stig_id)
     if oracle_database_profile_password_lock_time_candidate:
         return oracle_database_profile_password_lock_time_candidate
+
+    oracle_database_password_maximum_lifetime_candidate = _oracle_database_password_maximum_lifetime_candidate(rule, stig_id)
+    if oracle_database_password_maximum_lifetime_candidate:
+        return oracle_database_password_maximum_lifetime_candidate
 
     oracle_database_cman_remote_admin_candidate = _oracle_database_cman_remote_admin_candidate(rule, stig_id)
     if oracle_database_cman_remote_admin_candidate:
