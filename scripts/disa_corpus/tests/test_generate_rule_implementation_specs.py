@@ -122,6 +122,41 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         }, 'MS_Windows_Server_2025_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_tomcat_connector_address_policy_backed_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223009',
+            'title': 'Connector address attribute must be set.',
+            'check_content': (
+                'Review SSP documentation for list of approved connectors and associated TCP/IP ports and interfaces.\n\n'
+                'Verify the address attribute is specified for each connector and is set to the network interface specified in the SSP.\n\n'
+                'Execute the following command to find configured Connectors:\n\n'
+                'sudo grep -i -B1 -A5 connector $CATALINA_BASE/conf/server.xml\n\n'
+                'Review results and examine the "address=" field for each connector.\n\n'
+                'If the connector address attribute is not specified as per the SSP, this is a finding.'
+            ),
+            'fix_text': (
+                'Ensure the address attribute for each connector and the network interfaces are specified in the SSP.\n\n'
+                'Edit the following file From the Tomcat server as a privileged user:\n\n'
+                '$CATALINA_BASE/conf/server.xml\n\n'
+                'Locate each Connector element then edit or add the "address=" field for each connector and specify the appropriate network IP address.'
+            ),
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-223009')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('AUTOMATESTIG_TOMCAT_CONNECTOR_ADDRESSES', candidate['check']['command'])
+        self.assertIn('server.xml', candidate['check']['command'])
+
+    def test_rejects_tomcat_connector_address_candidate_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Connector address attribute must be set.',
+            'check_content': 'If the connector address attribute is not specified as per the SSP, this is a finding.',
+            'fix_text': 'Locate each Connector element then edit or add the "address=" field.',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_postgresql_denial_audit_rules_from_authoritative_logging_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233552',

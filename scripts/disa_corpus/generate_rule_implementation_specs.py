@@ -7019,6 +7019,43 @@ def _tomcat_autodeploy_disabled_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _tomcat_connector_address_policy_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-223009':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r'Review\s+SSP\s+documentation\s+for\s+list\s+of\s+approved\s+connectors',
+        r'address\s+attribute\s+is\s+specified\s+for\s+each\s+connector\s+and\s+is\s+set\s+to\s+the\s+network\s+interface\s+specified\s+in\s+the\s+SSP',
+        r'grep\s+-i\s+-B1\s+-A5\s+connector\s+\$CATALINA_BASE/conf/server\.xml',
+        r'If\s+the\s+connector\s+address\s+attribute\s+is\s+not\s+specified\s+as\s+per\s+the\s+SSP,\s+this\s+is\s+a\s+finding',
+        r'Locate\s+each\s+Connector\s+element\s+then\s+edit\s+or\s+add\s+the\s+["“]address=["”]\s+field',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "python3 - <<'PY'\n"
+        "import os, sys, xml.etree.ElementTree as ET\n"
+        "policy=os.environ.get('AUTOMATESTIG_TOMCAT_CONNECTOR_ADDRESSES','').strip()\n"
+        "if not policy:\n    raise SystemExit(0)\n"
+        "allowed={item.strip() for item in policy.split(',') if item.strip()}\n"
+        "if not allowed:\n    raise SystemExit(0)\n"
+        "path=os.path.join(os.environ.get('CATALINA_BASE','/opt/tomcat'),'conf','server.xml')\n"
+        "try:\n    root=ET.parse(path).getroot()\nexcept Exception:\n    raise SystemExit(0)\n"
+        "connectors=list(root.iter('Connector'))\n"
+        "if connectors and all(connector.attrib.get('address','').strip() in allowed for connector in connectors):\n    print('Compliant', end='')\n"
+        "PY"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_manager_localhost_remote_addr_valve_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222970':
         return None
@@ -15524,6 +15561,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_autodeploy_candidate = _tomcat_autodeploy_disabled_candidate(rule, stig_id)
     if tomcat_autodeploy_candidate:
         return tomcat_autodeploy_candidate
+
+    tomcat_connector_address_candidate = _tomcat_connector_address_policy_candidate(rule, stig_id)
+    if tomcat_connector_address_candidate:
+        return tomcat_connector_address_candidate
 
     tomcat_manager_remote_addr_valve_candidate = _tomcat_manager_localhost_remote_addr_valve_candidate(rule, stig_id)
     if tomcat_manager_remote_addr_valve_candidate:
