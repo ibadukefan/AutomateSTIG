@@ -2136,6 +2136,45 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('DomainRole', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_tomcat_manager_localhost_remote_addr_valve_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222970',
+            'title': 'Access to Tomcat manager application must be restricted.',
+            'check_content': (
+                'If the manager application has been deleted from the system, this is not a finding.\n\n'
+                'From the Tomcat server as a privileged user, run the following command:\n\n'
+                'sudo grep -i -A1 "RemoteAddrValve\\|RemoteCIDRValve" $CATALINA_BASE/webapps/manager/META-INF/context.xml\n\n'
+                'If a RemoteAddrValve or RemoteCIDRValve element is not present, this is a finding.\n\n'
+                'If the RemoteAddrValve or RemoteCIDRValve element is commented out, this is a finding.\n\n'
+                'If the RemoteAddrValve or RemoteCIDRValve element is not configured to restrict access to localhost or the management network, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure the RemoteAddrValve or RemoteCIDRValve element in '
+                '$CATALINA_BASE/webapps/manager/META-INF/context.xml to restrict access to localhost or the management network.'
+            ),
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222970')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('CATALINA_BASE', candidate['check']['command'])
+        self.assertIn('webapps/manager', candidate['check']['command'])
+        self.assertIn('META-INF/context.xml', candidate['check']['command'])
+        self.assertIn('RemoteAddrValve', candidate['check']['command'])
+        self.assertIn('127', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_does_not_infer_tomcat_manager_remote_addr_valve_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-222970',
+            'title': 'Access to Tomcat manager application must be restricted.',
+            'check_content': 'sudo grep -i -A1 "RemoteAddrValve\\|RemoteCIDRValve" $CATALINA_BASE/webapps/manager/META-INF/context.xml If a RemoteAddrValve or RemoteCIDRValve element is not present, this is a finding.',
+            'fix_text': 'Configure the RemoteAddrValve or RemoteCIDRValve element.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'Tomcat_Application_Server_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Tomcat_Application_Server_9_STIG'))
+
     def test_infers_tomcat_keystore_file_permissions_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222967',

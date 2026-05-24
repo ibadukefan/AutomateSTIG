@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 43,
+  "candidate_checks": 44,
   "cases": [
     {
       "check": {
@@ -442,6 +442,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222968"
+    },
+    {
+      "check": {
+        "command": "sh -c \"base=${CATALINA_BASE:-/opt/tomcat}; d=\\\"$base/webapps/manager\\\"; p=\\\"$d/META-INF/context.xml\\\"; if [ ! -e \\\"$d\\\" ]; then printf Compliant; exit 0; fi; perl -0777 -ne 's/<!--.*?-->//gs; if (/<Valve\\b[^>]*(?:RemoteAddrValve|RemoteCIDRValve)[^>]*\\ballow\\s*=\\s*[\\\"\\047][^\\\"\\047>]*(?:127\\\\.0\\\\.0\\\\.1|::1|localhost)[^\\\"\\047>]*[\\\"\\047]/i) { print \\\"Compliant\\\" }' \\\"$p\\\" 2>/dev/null\"",
+        "type": "command_output"
+      },
+      "description": "Access to Tomcat manager application must be restricted.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"base=${CATALINA_BASE:-/opt/tomcat}; d=\\\"$base/webapps/manager\\\"; p=\\\"$d/META-INF/context.xml\\\"; if [ ! -e \\\"$d\\\" ]; then printf Compliant; exit 0; fi; perl -0777 -ne 's/<!--.*?-->//gs; if (/<Valve\\b[^>]*(?:RemoteAddrValve|RemoteCIDRValve)[^>]*\\ballow\\s*=\\s*[\\\"\\047][^\\\"\\047>]*(?:127\\\\.0\\\\.0\\\\.1|::1|localhost)[^\\\"\\047>]*[\\\"\\047]/i) { print \\\"Compliant\\\" }' \\\"$p\\\" 2>/dev/null\"": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"base=${CATALINA_BASE:-/opt/tomcat}; d=\\\"$base/webapps/manager\\\"; p=\\\"$d/META-INF/context.xml\\\"; if [ ! -e \\\"$d\\\" ]; then printf Compliant; exit 0; fi; perl -0777 -ne 's/<!--.*?-->//gs; if (/<Valve\\b[^>]*(?:RemoteAddrValve|RemoteCIDRValve)[^>]*\\ballow\\s*=\\s*[\\\"\\047][^\\\"\\047>]*(?:127\\\\.0\\\\.0\\\\.1|::1|localhost)[^\\\"\\047>]*[\\\"\\047]/i) { print \\\"Compliant\\\" }' \\\"$p\\\" 2>/dev/null\"": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222970"
     },
     {
       "check": {
@@ -1125,5 +1151,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 43
+  "validated_candidates": 44
 }

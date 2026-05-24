@@ -7019,6 +7019,36 @@ def _tomcat_autodeploy_disabled_candidate(rule: dict, stig_id: str) -> dict | No
     }
 
 
+def _tomcat_manager_localhost_remote_addr_valve_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222970':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r'manager\s+application\s+has\s+been\s+deleted\s+from\s+the\s+system,\s+this\s+is\s+not\s+a\s+finding',
+        r'grep\s+-i\s+-A1\s+["“]RemoteAddrValve\\\|RemoteCIDRValve["”]\s+\$CATALINA_BASE/webapps/manager/META-INF/context\.xml',
+        r'(?:RemoteAddrValve\s+or\s+RemoteCIDRValve\s+element\s+is\s+not\s+present|no\s+address\s+valves\s+exist)\s*,?\s+[^.]*this\s+is\s+a\s+finding',
+        r'(?:RemoteAddrValve\s+or\s+RemoteCIDRValve\s+element\s+is\s+commented\s+out|Remote\s+Address\s+Valve\s+settings\s+are\s+commented\s+out)\s*,?\s+[^.]*this\s+is\s+a\s+finding',
+        r'restrict\s+access\s+to\s+(?:the\s+)?(?:localhost\s+or\s+the\s+management\s+network|management\s+application)',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "sh -c \"base=${CATALINA_BASE:-/opt/tomcat}; "
+        "d=\\\"$base/webapps/manager\\\"; p=\\\"$d/META-INF/context.xml\\\"; "
+        "if [ ! -e \\\"$d\\\" ]; then printf Compliant; exit 0; fi; "
+        "perl -0777 -ne 's/<!--.*?-->//gs; if (/<Valve\\b[^>]*(?:RemoteAddrValve|RemoteCIDRValve)[^>]*\\ballow\\s*=\\s*[\\\"\\047][^\\\"\\047>]*(?:127\\\\.0\\\\.0\\\\.1|::1|localhost)[^\\\"\\047>]*[\\\"\\047]/i) { print \\\"Compliant\\\" }' \\\"$p\\\" 2>/dev/null\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_manager_client_cert_auth_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222993':
         return None
@@ -15346,6 +15376,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_autodeploy_candidate = _tomcat_autodeploy_disabled_candidate(rule, stig_id)
     if tomcat_autodeploy_candidate:
         return tomcat_autodeploy_candidate
+
+    tomcat_manager_remote_addr_valve_candidate = _tomcat_manager_localhost_remote_addr_valve_candidate(rule, stig_id)
+    if tomcat_manager_remote_addr_valve_candidate:
+        return tomcat_manager_remote_addr_valve_candidate
 
     tomcat_manager_client_cert_candidate = _tomcat_manager_client_cert_auth_candidate(rule, stig_id)
     if tomcat_manager_client_cert_candidate:

@@ -223,6 +223,19 @@
     },
     {
       "check": {
+        "command": "sh -c \"base=${CATALINA_BASE:-/opt/tomcat}; d=\\\"$base/webapps/manager\\\"; p=\\\"$d/META-INF/context.xml\\\"; if [ ! -e \\\"$d\\\" ]; then printf Compliant; exit 0; fi; perl -0777 -ne 's/<!--.*?-->//gs; if (/<Valve\\b[^>]*(?:RemoteAddrValve|RemoteCIDRValve)[^>]*\\ballow\\s*=\\s*[\\\"\\047][^\\\"\\047>]*(?:127\\\\.0\\\\.0\\\\.1|::1|localhost)[^\\\"\\047>]*[\\\"\\047]/i) { print \\\"Compliant\\\" }' \\\"$p\\\" 2>/dev/null\"",
+        "type": "command_output"
+      },
+      "description": "Access to Tomcat manager application must be restricted.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222970"
+    },
+    {
+      "check": {
         "command": "grep -i recycle_facades /etc/systemd/system/tomcat.service",
         "type": "command_output"
       },
