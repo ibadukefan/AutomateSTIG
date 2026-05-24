@@ -1067,16 +1067,17 @@
       "vuln_id": "V-271389"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271400",
+      "check_pack": "generated-candidates/ms_sql_server_2022_instance_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271400r1167497_rule",
       "severity": "medium",
       "title": "SQL Server must, for password-based authentication, require immediate selection of a new password upon account recovery.",
-      "tracking_issue": "TODO-V-271400",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271400"

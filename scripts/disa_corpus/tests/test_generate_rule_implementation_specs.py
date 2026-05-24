@@ -6055,6 +6055,41 @@ Configure SQL Server to use only Windows Authentication Mode if SQL Server authe
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Windows Authentication'})
         self.assertIn("IsIntegratedSecurityOnly", candidate['check']['command'])
 
+    def test_infers_sql_server_password_recovery_windows_authentication_not_applicable_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271400',
+            'title': 'SQL Server must, for password-based authentication, require immediate selection of a new password upon account recovery.',
+            'check_content': '''Check for use of SQL Server Authentication:
+
+SELECT CASE SERVERPROPERTY('IsIntegratedSecurityOnly') WHEN 1 THEN 'Windows Authentication' WHEN 0 THEN 'SQL Server Authentication' END as [Authentication Mode]
+
+If the returned value in the "Authentication Mode" column is "Windows Authentication", this is not a finding.
+
+If the returned value is not "Windows Authentication", verify SQL Server is configured to require immediate selection of a new password upon account recovery.
+
+All scripts, functions, triggers, and stored procedures used to create a user or reset a user's password for SQL logins should include a line similar to the following password_option:
+
+MUST_CHANGE
+
+If they do not, this is a finding.''',
+            'fix_text': 'Configure the DBMS to require immediate selection of a new password for accounts using SQL login upon account recovery.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271400')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Windows Authentication'})
+        self.assertIn("IsIntegratedSecurityOnly", candidate['check']['command'])
+        self.assertIn("SQL Server Authentication", candidate['check']['command'])
+
+    def test_rejects_sql_server_password_recovery_windows_authentication_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'SQL Server must, for password-based authentication, require immediate selection of a new password upon account recovery.',
+            'check_content': "SELECT CASE SERVERPROPERTY('IsIntegratedSecurityOnly') WHEN 1 THEN 'Windows Authentication' WHEN 0 THEN 'SQL Server Authentication' END as [Authentication Mode]\nIf the returned value in the Authentication Mode column is Windows Authentication, this is not a finding.",
+            'fix_text': 'Configure the DBMS to require immediate selection of a new password for accounts using SQL login upon account recovery.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_sql_server_computer_account_logins_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271267',

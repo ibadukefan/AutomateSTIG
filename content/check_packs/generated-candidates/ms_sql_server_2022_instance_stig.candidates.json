@@ -249,6 +249,19 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CASE SERVERPROPERTY('IsIntegratedSecurityOnly') WHEN 1 THEN 'Windows Authentication' WHEN 0 THEN 'SQL Server Authentication' END;\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must, for password-based authentication, require immediate selection of a new password upon account recovery.",
+      "expected": {
+        "type": "equals",
+        "value": "Windows Authentication"
+      },
+      "platform": "generic",
+      "vuln_id": "V-271400"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(is_disabled AS varchar(1)) FROM sys.sql_logins WHERE principal_id = 1;\"",
         "type": "command_output"
       },
