@@ -89,6 +89,36 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertEqual(updated['normalizer'], 'command_output')
             self.assertEqual(updated['evaluator'], 'candidate_template')
 
+    def test_infers_oracle_control_file_minimum_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-275999',
+            'title': 'A minimum of three Oracle Control Files must be created and each stored on a separate physical and logical device.',
+            'check_content': (
+                'Use the SQL statement below to obtain information on each currently existing Control File:\n\n'
+                'SELECT name FROM sys.v$controlfile ORDER BY 1;\n\n'
+                'Oracle Best Practice: Oracle recommends a minimum of three Oracle Control Files and each stored on a separate physical and logical device (RAID 1 + 0).\n\n'
+                'DOD guidance recommends: Each control file must be located on a separate physical and logical (virtual) storage device.\n\n'
+                'If the minimum of three control files is not met, this is a finding.'
+            ),
+            'fix_text': 'To prevent loss of service during disk failure, multiple copies of Oracle control files must be maintained on separate disks.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-275999')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('sys.v$controlfile', candidate['check']['command'])
+        self.assertIn('COUNT(*) >= 3', candidate['check']['command'])
+
+    def test_rejects_oracle_control_file_minimum_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'A minimum of three Oracle Control Files must be created.',
+            'check_content': 'SELECT name FROM sys.v$controlfile ORDER BY 1; If the minimum of three control files is not met, this is a finding.',
+            'fix_text': 'multiple copies of Oracle control files must be maintained',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_cisco_nxos_msdp_known_peer_acl_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221142',

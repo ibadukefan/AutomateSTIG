@@ -12303,6 +12303,32 @@ def _oracle_sqlplus_command(select_sql: str) -> str:
     )
 
 
+def _oracle_database_control_file_minimum_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-275999':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'SELECT\s+name\s+FROM\s+sys\.v\$controlfile\s+ORDER\s+BY\s+1', content, re.IGNORECASE):
+        return None
+    required_patterns = (
+        r'minimum\s+of\s+three\s+Oracle\s+Control\s+Files',
+        r'Each\s+control\s+file\s+must\s+be\s+located\s+on\s+a\s+separate\s+physical\s+and\s+logical',
+        r'If\s+the\s+minimum\s+of\s+three\s+control\s+files\s+is\s+not\s+met,?\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'multiple\s+copies\s+of\s+Oracle\s+control\s+files\s+must\s+be\s+maintained', fix_text, re.IGNORECASE):
+        return None
+    sql = "SELECT CASE WHEN COUNT(*) >= 3 THEN 'Compliant' END FROM sys.v$controlfile;"
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': _oracle_sqlplus_command(sql)},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_instance_name_version_reference_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270521':
         return None
@@ -15989,6 +16015,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:
         return command_candidate
+
+    oracle_database_control_file_candidate = _oracle_database_control_file_minimum_candidate(rule, stig_id)
+    if oracle_database_control_file_candidate:
+        return oracle_database_control_file_candidate
 
     oracle_database_instance_name_candidate = _oracle_database_instance_name_version_reference_candidate(rule, stig_id)
     if oracle_database_instance_name_candidate:

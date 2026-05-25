@@ -275,6 +275,19 @@
     },
     {
       "check": {
+        "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN COUNT(*) >= 3 THEN 'Compliant' END FROM sys.v$controlfile;\nEXIT\nSQL",
+        "type": "command_output"
+      },
+      "description": "A minimum of three Oracle Control Files must be created and each stored on a separate physical and logical device.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-275999"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN (SELECT COUNT(*) FROM v$log) >= 3 AND NOT EXISTS (SELECT 1 FROM v$log WHERE members < 2) THEN 'Compliant' ELSE 'Finding' END FROM dual;\nEXIT\nSQL",
         "type": "command_output"
       },
