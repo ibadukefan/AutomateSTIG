@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 187,
+  "candidate_checks": 188,
   "cases": [
     {
       "check": {
@@ -3827,6 +3827,32 @@
     },
     {
       "check": {
+        "command": "python3 -c '\nimport os, pathlib, pwd, re, shlex, sys\nallowed = {'\"'\"'/usr/local/sbin'\"'\"','\"'\"'/usr/local/bin'\"'\"','\"'\"'/usr/sbin'\"'\"','\"'\"'/usr/bin'\"'\"','\"'\"'/sbin'\"'\"','\"'\"'/bin'\"'\"'}\nbad = []\nfor entry in pwd.getpwall():\n    shell = entry.pw_shell or '\"'\"''\"'\"'\n    home = entry.pw_dir or '\"'\"''\"'\"'\n    if entry.pw_uid < 1000 or not home.startswith('\"'\"'/home/'\"'\"') or re.search(r'\"'\"'(nologin|false)$'\"'\"', shell):\n        continue\n    home_path = pathlib.Path(home)\n    if not home_path.is_dir():\n        continue\n    for path in home_path.glob('\"'\"'.*'\"'\"'):\n        if not path.is_file():\n            continue\n        try:\n            lines = path.read_text(errors='\"'\"'ignore'\"'\"').splitlines()\n        except OSError:\n            continue\n        for lineno, line in enumerate(lines, 1):\n            stripped = line.strip()\n            if not stripped or stripped.startswith('\"'\"'#'\"'\"') or not re.search(r'\"'\"'(^|\\b)(?:export\\s+)?PATH\\s*='\"'\"', stripped):\n                continue\n            rhs = re.split(r'\"'\"'='\"'\"', stripped, 1)[1]\n            rhs = rhs.split('\"'\"'#'\"'\"', 1)[0].strip().strip('\"'\"'\"\\'\"'\"''\"'\"')\n            for token in rhs.split('\"'\"':'\"'\"'):\n                token = token.strip().strip('\"'\"'\"\\'\"'\"''\"'\"')\n                if token in ('\"'\"'$PATH'\"'\"', '\"'\"'${PATH}'\"'\"', '\"'\"''\"'\"'):\n                    continue\n                expanded = token.replace('\"'\"'$HOME'\"'\"', home).replace('\"'\"'${HOME}'\"'\"', home)\n                if expanded.startswith('\"'\"'~/'\"'\"'):\n                    expanded = home + expanded[1:]\n                if expanded in allowed or expanded.startswith(home.rstrip('\"'\"'/'\"'\"') + '\"'\"'/'\"'\"'):\n                    continue\n                if expanded.startswith('\"'\"'$'\"'\"'):\n                    continue\n                bad.append(f'\"'\"'{path}:{lineno}:{token}'\"'\"')\nif not bad:\n    print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"')\n'",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system local interactive user initialization files executable search paths must contain only paths that resolve to the users home directory.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "python3 -c '\nimport os, pathlib, pwd, re, shlex, sys\nallowed = {'\"'\"'/usr/local/sbin'\"'\"','\"'\"'/usr/local/bin'\"'\"','\"'\"'/usr/sbin'\"'\"','\"'\"'/usr/bin'\"'\"','\"'\"'/sbin'\"'\"','\"'\"'/bin'\"'\"'}\nbad = []\nfor entry in pwd.getpwall():\n    shell = entry.pw_shell or '\"'\"''\"'\"'\n    home = entry.pw_dir or '\"'\"''\"'\"'\n    if entry.pw_uid < 1000 or not home.startswith('\"'\"'/home/'\"'\"') or re.search(r'\"'\"'(nologin|false)$'\"'\"', shell):\n        continue\n    home_path = pathlib.Path(home)\n    if not home_path.is_dir():\n        continue\n    for path in home_path.glob('\"'\"'.*'\"'\"'):\n        if not path.is_file():\n            continue\n        try:\n            lines = path.read_text(errors='\"'\"'ignore'\"'\"').splitlines()\n        except OSError:\n            continue\n        for lineno, line in enumerate(lines, 1):\n            stripped = line.strip()\n            if not stripped or stripped.startswith('\"'\"'#'\"'\"') or not re.search(r'\"'\"'(^|\\b)(?:export\\s+)?PATH\\s*='\"'\"', stripped):\n                continue\n            rhs = re.split(r'\"'\"'='\"'\"', stripped, 1)[1]\n            rhs = rhs.split('\"'\"'#'\"'\"', 1)[0].strip().strip('\"'\"'\"\\'\"'\"''\"'\"')\n            for token in rhs.split('\"'\"':'\"'\"'):\n                token = token.strip().strip('\"'\"'\"\\'\"'\"''\"'\"')\n                if token in ('\"'\"'$PATH'\"'\"', '\"'\"'${PATH}'\"'\"', '\"'\"''\"'\"'):\n                    continue\n                expanded = token.replace('\"'\"'$HOME'\"'\"', home).replace('\"'\"'${HOME}'\"'\"', home)\n                if expanded.startswith('\"'\"'~/'\"'\"'):\n                    expanded = home + expanded[1:]\n                if expanded in allowed or expanded.startswith(home.rstrip('\"'\"'/'\"'\"') + '\"'\"'/'\"'\"'):\n                    continue\n                if expanded.startswith('\"'\"'$'\"'\"'):\n                    continue\n                bad.append(f'\"'\"'{path}:{lineno}:{token}'\"'\"')\nif not bad:\n    print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"')\n'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "python3 -c '\nimport os, pathlib, pwd, re, shlex, sys\nallowed = {'\"'\"'/usr/local/sbin'\"'\"','\"'\"'/usr/local/bin'\"'\"','\"'\"'/usr/sbin'\"'\"','\"'\"'/usr/bin'\"'\"','\"'\"'/sbin'\"'\"','\"'\"'/bin'\"'\"'}\nbad = []\nfor entry in pwd.getpwall():\n    shell = entry.pw_shell or '\"'\"''\"'\"'\n    home = entry.pw_dir or '\"'\"''\"'\"'\n    if entry.pw_uid < 1000 or not home.startswith('\"'\"'/home/'\"'\"') or re.search(r'\"'\"'(nologin|false)$'\"'\"', shell):\n        continue\n    home_path = pathlib.Path(home)\n    if not home_path.is_dir():\n        continue\n    for path in home_path.glob('\"'\"'.*'\"'\"'):\n        if not path.is_file():\n            continue\n        try:\n            lines = path.read_text(errors='\"'\"'ignore'\"'\"').splitlines()\n        except OSError:\n            continue\n        for lineno, line in enumerate(lines, 1):\n            stripped = line.strip()\n            if not stripped or stripped.startswith('\"'\"'#'\"'\"') or not re.search(r'\"'\"'(^|\\b)(?:export\\s+)?PATH\\s*='\"'\"', stripped):\n                continue\n            rhs = re.split(r'\"'\"'='\"'\"', stripped, 1)[1]\n            rhs = rhs.split('\"'\"'#'\"'\"', 1)[0].strip().strip('\"'\"'\"\\'\"'\"''\"'\"')\n            for token in rhs.split('\"'\"':'\"'\"'):\n                token = token.strip().strip('\"'\"'\"\\'\"'\"''\"'\"')\n                if token in ('\"'\"'$PATH'\"'\"', '\"'\"'${PATH}'\"'\"', '\"'\"''\"'\"'):\n                    continue\n                expanded = token.replace('\"'\"'$HOME'\"'\"', home).replace('\"'\"'${HOME}'\"'\"', home)\n                if expanded.startswith('\"'\"'~/'\"'\"'):\n                    expanded = home + expanded[1:]\n                if expanded in allowed or expanded.startswith(home.rstrip('\"'\"'/'\"'\"') + '\"'\"'/'\"'\"'):\n                    continue\n                if expanded.startswith('\"'\"'$'\"'\"'):\n                    continue\n                bad.append(f'\"'\"'{path}:{lineno}:{token}'\"'\"')\nif not bad:\n    print('\"'\"'Compliant'\"'\"', end='\"'\"''\"'\"')\n'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234996"
+    },
+    {
+      "check": {
         "command": "find / -xdev -perm -002 -type f -exec ls -ld {} \\;",
         "type": "command_output"
       },
@@ -4937,5 +4963,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 187
+  "validated_candidates": 188
 }

@@ -2251,7 +2251,7 @@ def _linux_interactive_user_init_path_home_only_candidate(rule: dict, stig_id: s
     )
     if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
         return None
-    if not re.search(r'(?:remove|change)\s+any\s+(?:PATH\s+variable\s+statements|paths?)\s+that\s+reference\s+(?:directories|a\s+working\s+directory)\s+other\s+than\s+(?:the\s+)?(?:their\s+)?(?:user|home)', fix_text, re.IGNORECASE):
+    if not re.search(r'(?:remove|change)\s+any\s+(?:PATH\s+variable\s+statements|paths?)(?:\s+for\s+executables)?\s+that\s+reference\s+(?:directories|a\s+working\s+directory)\s+other\s+than\s+(?:the\s+)?(?:their\s+)?(?:user|home)', fix_text, re.IGNORECASE):
         return None
     script = r'''
 import os, pathlib, pwd, re, shlex, sys

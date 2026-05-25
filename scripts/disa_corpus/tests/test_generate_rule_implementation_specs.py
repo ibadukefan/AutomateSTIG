@@ -2303,6 +2303,32 @@ blacklist firewire-core''',
         self.assertIn('Compliant', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_sles_interactive_user_init_path_home_only_candidate_from_authoritative_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234996',
+            'title': 'All SUSE operating system local interactive user initialization files executable search paths must contain only paths that resolve to the users home directory.',
+            'check_content': (
+                'Verify that all SUSE operating system local interactive user initialization files executable search path statements do not contain statements '
+                'that will reference a working directory other than the user\'s home directory.\n\n'
+                'Check the executable search path statement for all operating system local interactive user initialization files in the user\'s home directory with the following commands:\n\n'
+                'Note: The example will be for the user "doduser", who has a home directory of "/home/doduser".\n\n'
+                '> sudo grep -i path= /home/doduser/.*\n'
+                '/home/doduser/.bash_profile:PATH=$PATH:$HOME/.local/bin:$HOME/bin\n\n'
+                'If any local interactive user initialization files have executable search path statements that include directories outside of their home directory, '
+                'and the additional path statements are not documented with the ISSO as an operational requirement, this is a finding.'
+            ),
+            'fix_text': (
+                'Edit the SUSE operating system local interactive user initialization files to change any PATH variable statements for executables that reference directories '
+                'other than their home directory. If a local interactive user requires path variables to reference a directory owned by the application, it must be documented with the ISSO.'
+            ),
+        }, 'SLES_15_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-234996')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('/home', candidate['check']['command'])
+        self.assertIn('PATH', candidate['check']['command'])
+
     def test_infers_rhel_ol9_system_accounts_no_interactive_shell_candidate(self):
         base_rule = {
             'vuln_id': 'V-258046',
