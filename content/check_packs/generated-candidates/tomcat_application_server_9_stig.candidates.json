@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "sh -c 'test ! -e \"${CATALINA_BASE:-/opt/tomcat}/webapps/manager\" && printf Absent'",
+        "type": "command_output"
+      },
+      "description": "The number of allowed simultaneous sessions to the manager application must be limited.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222926"
+    },
+    {
+      "check": {
         "command": "grep -i -A5 -B8 hstsEnable $CATALINA_BASE/conf/web.xml",
         "type": "command_output"
       },
@@ -145,6 +158,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'base=${CATALINA_BASE:-/opt/tomcat}; grep -REis \"<Context[^>]*[[:space:]]privileged=[\\\"'\"'\"']true[\\\"'\"'\"']\" \"$base/conf/context.xml\" \"$base/webapps\"/*/META-INF/context.xml 2>/dev/null || true'",
+        "type": "command_output"
+      },
+      "description": "Applications in privileged mode must be approved by the ISSO.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-222961"
+    },
+    {
+      "check": {
         "command": "sh -c 'base=${CATALINA_BASE:-/opt/tomcat}; if [ ! -e \"$base/webapps/manager\" ] && [ ! -e \"$base/webapps/host-manager\" ]; then printf Compliant; exit 0; fi; python3 - <<\"PY\"\nimport pathlib, re, os\nbase=os.environ.get(\"CATALINA_BASE\") or \"/opt/tomcat\"\np=pathlib.Path(base)/\"conf\"/\"server.xml\"\ntext=p.read_text(errors=\"ignore\") if p.exists() else \"\"\ntext=re.sub(r\"<!--.*?-->\", \"\", text, flags=re.S)\nprint(\"Compliant\" if re.search(r\"<\\s*Realm\\b[^>]*\\bclassName\\s*=\\s*['\\\"][^'\\\"]*JNDIRealm\\b\", text, re.I) else \"\")\nPY'",
         "type": "command_output"
       },
@@ -223,6 +249,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'grep -i -- jmxremote /etc/systemd/system/tomcat.service 2>/dev/null; ps -ef | grep -i -- jmxremote | grep -v grep || true'",
+        "type": "command_output"
+      },
+      "description": "Access to JMX management interface must be restricted.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-222969"
+    },
+    {
+      "check": {
         "command": "sh -c \"base=${CATALINA_BASE:-/opt/tomcat}; d=\\\"$base/webapps/manager\\\"; p=\\\"$d/META-INF/context.xml\\\"; if [ ! -e \\\"$d\\\" ]; then printf Compliant; exit 0; fi; perl -0777 -ne 's/<!--.*?-->//gs; if (/<Valve\\b[^>]*(?:RemoteAddrValve|RemoteCIDRValve)[^>]*\\ballow\\s*=\\s*[\\\"\\047][^\\\"\\047>]*(?:127\\\\.0\\\\.0\\\\.1|::1|localhost)[^\\\"\\047>]*[\\\"\\047]/i) { print \\\"Compliant\\\" }' \\\"$p\\\" 2>/dev/null\"",
         "type": "command_output"
       },
@@ -246,6 +285,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-222973"
+    },
+    {
+      "check": {
+        "command": "sh -c 'base=${CATALINA_BASE:-/opt/tomcat}; perl -0777 -ne '''s/<!--.*?-->//gs; print if /<Cluster\\b/i''' \"$base/conf/server.xml\" 2>/dev/null || true'",
+        "type": "command_output"
+      },
+      "description": "Clusters must operate on a trusted network.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-222974"
     },
     {
       "check": {

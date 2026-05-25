@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'base=${CATALINA_BASE:-/opt/tomcat}; grep -REis \"<Context[^>]*[[:space:]]privileged=[\\\"'\"'\"']true[\\\"'\"'\"']\" \"$base/conf/context.xml\" \"$base/webapps\"/*/META-INF/context.xml 2>/dev/null || true'",
+      "type": "command_output"
+    },
+    "description": "Applications in privileged mode must be approved by the ISSO.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-222961"
+  },
   "check_content_excerpt": "Individual Context elements may be explicitly defined in an individual file located at /META-INF/context.xml inside the application files or in the $CATALINA_BASE/conf/context.xml file. It is not recommended to store the context element in the server.xml file as changes will require a server restart.\n\nThe $CATALINA_BASE/conf/context element information will be loaded by all web applications, the META-INF/context.xml will only be loaded by that specific application.\n\nOn the Tomcat server as a privileged user run the following commands:\n\ngrep -i privileged $CATALINA_BASE/conf/context.xml\n\nRepeat the following command for each installed application:\n\ngrep -i privileged $CATALINA_BASE/webapps/<application name>META-INF/context.xml\n\nIf the privileged context attribute is set to true, confirm the application has been approved for privileged mode by the ISSO. If the application is not approved to run in privileged mode, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "On the Tomcat server as a privileged user, modify the relevant context.xml file and set the privileged attribute to false (privileged=false).\nA restart should not be required if the context element is not maintained in the server.xml file.\n\nIf privileged mode is required for a particular application, verify trust of application and obtain documented approval from the ISSO.  Document the applications that are approved to run in privileged mode and retain approvals in the system security plan (SSP) for CCRI reviews.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222961r1043177_rule",
   "severity": "medium",

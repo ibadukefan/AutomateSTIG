@@ -7240,6 +7240,129 @@ def _tomcat_jmx_false_property_absent_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _tomcat_manager_absent_not_in_use_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222926':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r'If\s+the\s+manager\s+application\s+is\s+not\s+in\s+use\s+or\s+has\s+been\s+deleted\s+from\s+the\s+system,\s+this\s+is\s+not\s+a\s+finding',
+        r'grep\s+-i\s+maxactivesessions\s+\$CATALINA_BASE/webapps/manager/\s+META-INF/context\.xml',
+        r'maxActiveSesions\s+setting\s+is\s+not\s+configured\s+according\s+to\s+the\s+number\s+of\s+connections\s+defined\s+in\s+the\s+SSP',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = 'sh -c \'test ! -e "${CATALINA_BASE:-/opt/tomcat}/webapps/manager" && printf Absent\''
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Absent'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _tomcat_jmx_absent_not_in_use_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222969':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r'grep\s+-i\s+jmxremote\s+/etc/systemd/system/tomcat\.service',
+        r'ps\s+-ef\s*\|\s*grep\s+-i\s+jmxremote',
+        r'If\s+there\s+are\s+no\s+results,\s+the\s+JMX\s+process\s+is\s+not\s+being\s+used,\s+and\s+this\s+is\s+not\s+a\s+finding',
+        r'(?:Disable\s+the\s+JMX\s+process\s+or\s+configure\s+the\s+JMX\s+process\s+to\s+listen\s+on\s+the\s+management\s+network|jmxremote\.host\s+setting\.\s+Set\s+the\s+host\s+parameter\s+to\s+an\s+IP\s+address\s+that\s+is\s+only\s+available\s+on\s+a\s+management\s+network)',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "sh -c 'grep -i -- jmxremote /etc/systemd/system/tomcat.service 2>/dev/null; "
+        "ps -ef | grep -i -- \"[j]mxremote\" || true'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+def _tomcat_privileged_context_absent_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222961':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r'grep\s+-i\s+privileged\s+\$CATALINA_BASE/conf/context\.xml',
+        r'grep\s+-i\s+privileged\s+\$CATALINA_BASE/webapps/<application\s+name>META-INF/context\.xml',
+        r'If\s+the\s+privileged\s+context\s+attribute\s+is\s+set\s+to\s+true',
+        r'(?:When\s+privileged\s+mode\s+is\s+approved|If\s+privileged\s+mode\s+is\s+required\s+for\s+a\s+particular\s+application)',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "python3 - <<'PY'\n"
+        "import os, pathlib, re\n"
+        "base = pathlib.Path(os.environ.get('CATALINA_BASE', '/opt/tomcat'))\n"
+        "paths = [base / 'conf' / 'context.xml'] + list((base / 'webapps').glob('*/META-INF/context.xml'))\n"
+        "for path in paths:\n"
+        "    try:\n"
+        "        text = path.read_text(errors='ignore')\n"
+        "    except OSError:\n"
+        "        continue\n"
+        "    text = re.sub(r'<!--.*?-->', '', text, flags=re.S)\n"
+        "    if re.search(r'<Context\\b[^>]*\\bprivileged\\s*=\\s*[\\\"\\']true[\\\"\\']', text, re.I):\n"
+        "        print(path)\n"
+        "PY"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+def _tomcat_cluster_absent_not_applicable_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'tomcat' not in stig_id.lower() or rule.get('vuln_id', '') != 'V-222974':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = content + '\n' + fix_text
+    required_patterns = (
+        r'grep\s+-i\s+-A2\s+-B2\s+["“]Cluster["”]\s+\$CATALINA_BASE/conf/server\.xml',
+        r'If\s+the\s+<Cluster/>\s+element\s+is\s+commented\s+out,\s+or\s+there\s+are\s+no\s+results\s+returned,\s+this\s+requirement\s+is\s+NA',
+        r'EncryptionInterceptor',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "python3 - <<'PY'\n"
+        "import os, pathlib, re\n"
+        "path = pathlib.Path(os.environ.get('CATALINA_BASE', '/opt/tomcat')) / 'conf' / 'server.xml'\n"
+        "try:\n"
+        "    text = path.read_text(errors='ignore')\n"
+        "except OSError:\n"
+        "    raise SystemExit(0)\n"
+        "text = re.sub(r'<!--.*?-->', '', text, flags=re.S)\n"
+        "if re.search(r'<Cluster\\b', text, re.I):\n"
+        "    print('Cluster')\n"
+        "PY"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_error_report_valve_boolean_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'tomcat' not in stig_id.lower():
         return None
@@ -15697,6 +15820,22 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_jmx_false_property_candidate = _tomcat_jmx_false_property_absent_candidate(rule, stig_id)
     if tomcat_jmx_false_property_candidate:
         return tomcat_jmx_false_property_candidate
+
+    tomcat_manager_absent_candidate = _tomcat_manager_absent_not_in_use_candidate(rule, stig_id)
+    if tomcat_manager_absent_candidate:
+        return tomcat_manager_absent_candidate
+
+    tomcat_jmx_absent_candidate = _tomcat_jmx_absent_not_in_use_candidate(rule, stig_id)
+    if tomcat_jmx_absent_candidate:
+        return tomcat_jmx_absent_candidate
+
+    tomcat_privileged_context_candidate = _tomcat_privileged_context_absent_candidate(rule, stig_id)
+    if tomcat_privileged_context_candidate:
+        return tomcat_privileged_context_candidate
+
+    tomcat_cluster_absent_candidate = _tomcat_cluster_absent_not_applicable_candidate(rule, stig_id)
+    if tomcat_cluster_absent_candidate:
+        return tomcat_cluster_absent_candidate
 
     tomcat_error_report_valve_candidate = _tomcat_error_report_valve_boolean_candidate(rule, stig_id)
     if tomcat_error_report_valve_candidate:

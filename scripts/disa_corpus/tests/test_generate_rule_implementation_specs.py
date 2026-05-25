@@ -2335,6 +2335,92 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
         self.assertIsNone(mod.infer_candidate_check(rule, 'Tomcat_Application_Server_9_STIG'))
 
+    def test_infers_tomcat_manager_absent_not_in_use_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222926',
+            'title': 'The number of allowed simultaneous sessions to the manager application must be limited.',
+            'check_content': (
+                'If the manager application is not in use or has been deleted from the system, this is not a finding.\n\n'
+                'sudo grep -i maxactivesessions $CATALINA_BASE/webapps/manager/ META-INF/context.xml\n\n'
+                'If the maxActiveSesions setting is not configured according to the number of connections defined in the SSP, this is a finding.'
+            ),
+            'fix_text': 'Configure maxActiveSessions setting according to admin access requirements defined in the SSP.',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222926')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Absent'})
+        self.assertIn('webapps/manager', candidate['check']['command'])
+
+    def test_infers_tomcat_jmx_absent_not_in_use_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222969',
+            'title': 'Access to JMX management interface must be restricted.',
+            'check_content': (
+                'From the Tomcat server as a privileged user, run the following command:\n\n'
+                'sudo grep -i jmxremote /etc/systemd/system/tomcat.service\n'
+                'sudo ps -ef |grep -i jmxremote\n\n'
+                'If there are no results, the JMX process is not being used, and this is not a finding.\n'
+                'If output includes jmxremote information, review the -Dcom.sun.management.jmxremote.host setting.'
+            ),
+            'fix_text': 'Disable the JMX process or configure the JMX process to listen on the management network.',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222969')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('jmxremote', candidate['check']['command'])
+        self.assertIn('/etc/systemd/system/tomcat.service', candidate['check']['command'])
+
+    def test_infers_tomcat_privileged_context_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222961',
+            'title': 'Applications in privileged mode must be approved by the ISSO.',
+            'check_content': (
+                'On the Tomcat server as a privileged user run the following commands:\n\n'
+                'grep -i privileged $CATALINA_BASE/conf/context.xml\n'
+                'grep -i privileged $CATALINA_BASE/webapps/<application name>META-INF/context.xml\n\n'
+                'If the privileged context attribute is set to true, confirm the application has been approved by the ISSO.'
+            ),
+            'fix_text': 'When privileged mode is approved, document the application and authorization.',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222961')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('privileged', candidate['check']['command'])
+        self.assertIn('CATALINA_BASE', candidate['check']['command'])
+
+    def test_infers_tomcat_cluster_absent_not_applicable_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222974',
+            'title': 'Clusters must operate on a trusted network.',
+            'check_content': (
+                'From the Tomcat server as a privileged user, run the following command:\n\n'
+                'sudo grep -i -A2 -B2 "Cluster" $CATALINA_BASE/conf/server.xml\n\n'
+                'If the <Cluster/> element is commented out, or there are no results returned, this requirement is NA.\n'
+                'If a cluster is in use, run grep -i EncryptInterceptor $CATALINA_BASE/conf/server.xml.'
+            ),
+            'fix_text': 'Configure the EncryptionInterceptor when clustering is enabled.',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222974')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('Cluster', candidate['check']['command'])
+        self.assertIn('server.xml', candidate['check']['command'])
+
+    def test_rejects_tomcat_absent_candidates_without_authoritative_na_prose(self):
+        self.assertIsNone(mod.infer_candidate_check({
+            'vuln_id': 'V-222969',
+            'title': 'Access to JMX management interface must be restricted.',
+            'check_content': 'sudo grep -i jmxremote /etc/systemd/system/tomcat.service',
+            'fix_text': 'Disable the JMX process.',
+        }, 'Tomcat_Application_Server_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({
+            'vuln_id': 'V-222974',
+            'title': 'Clusters must operate on a trusted network.',
+            'check_content': 'sudo grep -i -A2 -B2 "Cluster" $CATALINA_BASE/conf/server.xml',
+            'fix_text': 'Configure clusters.',
+        }, 'Tomcat_Application_Server_9_STIG'))
+
     def test_infers_tomcat_dod_pki_truststore_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222994',
