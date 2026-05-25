@@ -12319,6 +12319,52 @@ def _office_exchange_kerberos_authentication_candidate(rule: dict, stig_id: str)
     }
 
 
+def _postgresql_ssl_private_key_permissions_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'(?:postgresql|pgsql)', stig_id, re.IGNORECASE):
+        return None
+    if rule.get('vuln_id') != 'V-233602':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'pg_settings',
+        r'ssl_ca_file',
+        r'ssl_cert_file',
+        r'ssl_crl_file',
+        r'ssl_key_file',
+        r'If\s+the\s+directory\s+in\s+which\s+these\s+files\s+are\s+stored\s+is\s+not\s+protected,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'(?:private\s+keys?|SSL\s+private\s+keys?|PKI\s+private\s+keys?).*(?:restricted|protected|authorized)', fix_text, re.IGNORECASE):
+        return None
+    sql = (
+        "SELECT name || '|' || CASE "
+        "WHEN setting = '' THEN '<undefined>' "
+        "WHEN substring(setting, 1, 1) = '/' THEN setting "
+        "ELSE (SELECT setting FROM pg_settings WHERE name = 'data_directory') || '/' || setting END "
+        "FROM pg_settings WHERE name IN ('ssl_ca_file','ssl_cert_file','ssl_crl_file','ssl_key_file')"
+    )
+    command = (
+        'sudo -u postgres psql -Atqc ' + shlex.quote(sql) +
+        " | while IFS='|' read -r name path; do "
+        "[ -n \"$path\" ] || continue; [ \"$path\" != '<undefined>' ] || continue; [ -e \"$path\" ] || continue; "
+        "if [ -d \"$path\" ]; then dir=$path; else dir=$(dirname -- \"$path\"); fi; "
+        "mode=$(stat -c %a \"$dir\" 2>/dev/null) || continue; "
+        "case \"$mode\" in *[2367]?|*[0-7][2367]) printf '%s directory mode %s\\n' \"$name\" \"$mode\";; esac; "
+        "if [ \"$name\" = 'ssl_key_file' ]; then fmode=$(stat -c %a \"$path\" 2>/dev/null) || continue; "
+        "case \"$fmode\" in *00) ;; *) printf '%s file mode %s\\n' \"$name\" \"$fmode\";; esac; fi; "
+        'done'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _postgresql_show_ssl_on_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'(?:postgresql|pgsql)', stig_id, re.IGNORECASE):
         return None
@@ -15793,6 +15839,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     cisco_nxos_no_ip_source_route_candidate = _cisco_nxos_no_ip_source_route_candidate(rule, stig_id)
     if cisco_nxos_no_ip_source_route_candidate:
         return cisco_nxos_no_ip_source_route_candidate
+
+    postgresql_ssl_key_permissions_candidate = _postgresql_ssl_private_key_permissions_candidate(rule, stig_id)
+    if postgresql_ssl_key_permissions_candidate:
+        return postgresql_ssl_key_permissions_candidate
 
     postgresql_show_ssl_on_candidate = _postgresql_show_ssl_on_candidate(rule, stig_id)
     if postgresql_show_ssl_on_candidate:

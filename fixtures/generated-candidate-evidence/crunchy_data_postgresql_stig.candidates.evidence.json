@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 66,
+  "candidate_checks": 67,
   "cases": [
     {
       "check": {
@@ -1355,6 +1355,32 @@
     },
     {
       "check": {
+        "command": "sudo -u postgres psql -Atqc 'SELECT name || '\"'\"'|'\"'\"' || CASE WHEN setting = '\"'\"''\"'\"' THEN '\"'\"'<undefined>'\"'\"' WHEN substring(setting, 1, 1) = '\"'\"'/'\"'\"' THEN setting ELSE (SELECT setting FROM pg_settings WHERE name = '\"'\"'data_directory'\"'\"') || '\"'\"'/'\"'\"' || setting END FROM pg_settings WHERE name IN ('\"'\"'ssl_ca_file'\"'\"','\"'\"'ssl_cert_file'\"'\"','\"'\"'ssl_crl_file'\"'\"','\"'\"'ssl_key_file'\"'\"')' | while IFS='|' read -r name path; do [ -n \"$path\" ] || continue; [ \"$path\" != '<undefined>' ] || continue; [ -e \"$path\" ] || continue; if [ -d \"$path\" ]; then dir=$path; else dir=$(dirname -- \"$path\"); fi; mode=$(stat -c %a \"$dir\" 2>/dev/null) || continue; case \"$mode\" in *[2367]?|*[0-7][2367]) printf '%s directory mode %s\\n' \"$name\" \"$mode\";; esac; if [ \"$name\" = 'ssl_key_file' ]; then fmode=$(stat -c %a \"$path\" 2>/dev/null) || continue; case \"$fmode\" in *00) ;; *) printf '%s file mode %s\\n' \"$name\" \"$fmode\";; esac; fi; done",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must enforce authorized access to all PKI private keys stored/utilized by PostgreSQL.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -Atqc 'SELECT name || '\"'\"'|'\"'\"' || CASE WHEN setting = '\"'\"''\"'\"' THEN '\"'\"'<undefined>'\"'\"' WHEN substring(setting, 1, 1) = '\"'\"'/'\"'\"' THEN setting ELSE (SELECT setting FROM pg_settings WHERE name = '\"'\"'data_directory'\"'\"') || '\"'\"'/'\"'\"' || setting END FROM pg_settings WHERE name IN ('\"'\"'ssl_ca_file'\"'\"','\"'\"'ssl_cert_file'\"'\"','\"'\"'ssl_crl_file'\"'\"','\"'\"'ssl_key_file'\"'\"')' | while IFS='|' read -r name path; do [ -n \"$path\" ] || continue; [ \"$path\" != '<undefined>' ] || continue; [ -e \"$path\" ] || continue; if [ -d \"$path\" ]; then dir=$path; else dir=$(dirname -- \"$path\"); fi; mode=$(stat -c %a \"$dir\" 2>/dev/null) || continue; case \"$mode\" in *[2367]?|*[0-7][2367]) printf '%s directory mode %s\\n' \"$name\" \"$mode\";; esac; if [ \"$name\" = 'ssl_key_file' ]; then fmode=$(stat -c %a \"$path\" 2>/dev/null) || continue; case \"$fmode\" in *00) ;; *) printf '%s file mode %s\\n' \"$name\" \"$fmode\";; esac; fi; done": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sudo -u postgres psql -Atqc 'SELECT name || '\"'\"'|'\"'\"' || CASE WHEN setting = '\"'\"''\"'\"' THEN '\"'\"'<undefined>'\"'\"' WHEN substring(setting, 1, 1) = '\"'\"'/'\"'\"' THEN setting ELSE (SELECT setting FROM pg_settings WHERE name = '\"'\"'data_directory'\"'\"') || '\"'\"'/'\"'\"' || setting END FROM pg_settings WHERE name IN ('\"'\"'ssl_ca_file'\"'\"','\"'\"'ssl_cert_file'\"'\"','\"'\"'ssl_crl_file'\"'\"','\"'\"'ssl_key_file'\"'\"')' | while IFS='|' read -r name path; do [ -n \"$path\" ] || continue; [ \"$path\" != '<undefined>' ] || continue; [ -e \"$path\" ] || continue; if [ -d \"$path\" ]; then dir=$path; else dir=$(dirname -- \"$path\"); fi; mode=$(stat -c %a \"$dir\" 2>/dev/null) || continue; case \"$mode\" in *[2367]?|*[0-7][2367]) printf '%s directory mode %s\\n' \"$name\" \"$mode\";; esac; if [ \"$name\" = 'ssl_key_file' ]; then fmode=$(stat -c %a \"$path\" 2>/dev/null) || continue; case \"$fmode\" in *00) ;; *) printf '%s file mode %s\\n' \"$name\" \"$fmode\";; esac; fi; done": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233602"
+    },
+    {
+      "check": {
         "command": "sh -c 'bad=\"\"; for s in log_connections log_disconnections; do v=$(psql -tAc \"SHOW $s\" | tr -d \"[:space:]\"); [ \"$v\" = on ] || bad=\"$bad $s=$v\"; done; lp=$(psql -tAc \"SHOW log_line_prefix\"); for token in %m %u %d %c; do printf %s \"$lp\" | grep -Fq \"$token\" || bad=\"$bad missing:$token\"; done; printf %s \"$bad\"'",
         "type": "command_output"
       },
@@ -1723,5 +1749,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 66
+  "validated_candidates": 67
 }

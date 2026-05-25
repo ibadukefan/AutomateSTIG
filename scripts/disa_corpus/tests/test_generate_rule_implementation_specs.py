@@ -360,6 +360,38 @@ blacklist firewire-core''',
         }, 'Crunchy_Data_PostgreSQL_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_postgresql_ssl_private_key_directory_permission_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233602',
+            'title': 'PostgreSQL must enforce authorized access to all PKI private keys stored/utilized by PostgreSQL.',
+            'check_content': (
+                'First, as the database administrator (shown here as "postgres"), verify the following settings:\n\n'
+                '$ sudo su - postgres\n'
+                '$ psql -c "select name, case when setting = \'\' then \'<undefined>\' when substring(setting, 1, 1) = \'/\' then setting else (select setting from pg_settings where name = \'data_directory\') || \'/\' || setting end as setting from pg_settings where name in (\'ssl_ca_file\', \'ssl_cert_file\', \'ssl_crl_file\', \'ssl_key_file\');"\n\n'
+                'If the directory in which these files are stored is not protected, this is a finding.'
+            ),
+            'fix_text': 'Ensure access to PostgreSQL SSL private keys is restricted to authorized users and protected directories.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233602')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+        self.assertIn('ssl_key_file', candidate['check']['command'])
+        self.assertIn('pg_settings', candidate['check']['command'])
+        self.assertIn('stat -c %a', candidate['check']['command'])
+
+    def test_rejects_postgresql_ssl_private_key_directory_permission_without_exact_guards(self):
+        base = {
+            'vuln_id': 'V-233602',
+            'title': 'PostgreSQL must enforce authorized access to all PKI private keys stored/utilized by PostgreSQL.',
+            'check_content': 'select name from pg_settings where name in (\'ssl_key_file\'); If the directory in which these files are stored is not protected, this is a finding.',
+            'fix_text': 'Ensure access to PostgreSQL SSL private keys is restricted to authorized users and protected directories.',
+        }
+        self.assertIsNone(mod.infer_candidate_check(dict(base, vuln_id='V-999999'), 'Crunchy_Data_PostgreSQL_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(base, 'Oracle_Database_19c_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(dict(base, check_content='select name from pg_settings where name in (\'ssl_key_file\');'), 'Crunchy_Data_PostgreSQL_STIG'))
+
     def test_infers_oracle_archive_destination_protection_noarchivelog_safe_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270534',
