@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; USE [master]; DECLARE @xplist AS TABLE (xp_name sysname, source_dll nvarchar(255)); INSERT INTO @xplist EXEC sp_helpextendedproc; SELECT X.xp_name FROM @xplist X JOIN sys.all_objects O ON X.xp_name = O.name WHERE O.is_ms_shipped = 0 ORDER BY X.xp_name;\"",
+      "type": "command_output"
+    },
+    "description": "Access to nonstandard, extended stored procedures must be disabled or restricted, unless specifically required and approved.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-271300"
+  },
   "check_content_excerpt": "Extended stored procedures are DLLs that an instance of SQL Server can dynamically load and run. Extended stored procedures run directly in the address space of an instance of SQL Server and are programmed by using the SQL Server Extended Stored Procedure API.  \n \nNonstandard extended stored procedures can compromise the integrity of the SQL Server process. This feature will be removed in a future version of SQL Server. Do not use this feature in new development work and modify applications that currently use this feature as soon as possible. \n \nTo determine if nonstandard extended stored procedures exist, run the following:\n\nUSE [master]\nGO\nDECLARE @xplist AS TABLE\n(\n       xp_name sysname,\n       source_dll nvarchar(255)\n)\nINSERT INTO @xplist\nEXEC sp_helpextendedproc\n\nSELECT X.xp_name, X.source_dll, O.is_ms_shipped FROM @xplist X JOIN sys.all_objects O ON X.xp_name = O.name WHERE O.is_ms_shipped = 0 ORDER BY X.xp_name\n \nIf any records are returned, review the system documentation to determine whether the use of nonstandard extended stored procedures are required and approved.\n\nIf it is not approved, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove any nonstandard extended stored procedures that are not documented and approved using the following:\n \nsp_dropextendedproc 'proc name'",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271300r1109264_rule",
   "severity": "medium",

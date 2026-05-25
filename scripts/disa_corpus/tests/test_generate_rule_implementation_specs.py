@@ -1451,6 +1451,62 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIsNone(mod.infer_candidate_check(rule, 'MS_SQL_Server_2019_Instance_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': 'review Remote Access'}, 'MS_SQL_Server_2022_Instance_STIG'))
 
+    def test_infers_sql_server_2022_nonstandard_extended_procedures_absent_candidate(self):
+        check_content = (
+            'To determine if nonstandard extended stored procedures exist, run the following:\n'
+            'USE [master]\nGO\nDECLARE @xplist AS TABLE (xp_name sysname, source_dll nvarchar(255))\n'
+            'INSERT INTO @xplist EXEC sp_helpextendedproc\n'
+            'SELECT X.xp_name, X.source_dll, O.is_ms_shipped FROM @xplist X JOIN sys.all_objects O ON X.xp_name = O.name WHERE O.is_ms_shipped = 0 ORDER BY X.xp_name\n\n'
+            'If any records are returned, review the system documentation to determine whether the use of nonstandard extended stored procedures are required and approved.\n'
+            'If it is not approved, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271300',
+            'title': 'Access to nonstandard, extended stored procedures must be disabled or restricted, unless specifically required and approved.',
+            'check_content': check_content,
+            'fix_text': "Remove any nonstandard extended stored procedures that are not documented and approved using sp_dropextendedproc 'proc name'",
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271300')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('sp_helpextendedproc', candidate['check']['command'])
+        self.assertIn('O.is_ms_shipped = 0', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_sql_server_2022_registry_extended_procedure_execute_permissions_absent_candidate(self):
+        check_content = (
+            'To determine if permissions to execute registry extended stored procedures have been revoked from all users (other than dbo), execute the following command:\n'
+            'SELECT OBJECT_NAME(major_id) AS [Stored Procedure], dpr.NAME AS [Principal]\n'
+            'FROM sys.database_permissions AS dp\n'
+            'INNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id = dpr.principal_id\n'
+            "WHERE major_id IN (OBJECT_ID('xp_regaddmultistring'), OBJECT_ID('xp_regdeletekey'), OBJECT_ID('xp_regdeletevalue'), OBJECT_ID('xp_regenumvalues'), OBJECT_ID('xp_regenumkeys'), OBJECT_ID('xp_regremovemultistring'), OBJECT_ID('xp_regwrite'), OBJECT_ID('xp_instance_regaddmultistring'), OBJECT_ID('xp_instance_regdeletekey'), OBJECT_ID('xp_instance_regdeletevalue'), OBJECT_ID('xp_instance_regenumkeys'), OBJECT_ID('xp_instance_regenumvalues'), OBJECT_ID('xp_instance_regremovemultistring'), OBJECT_ID('xp_instance_regwrite'))\n"
+            "AND dp.[type] = 'EX'\nORDER BY dpr.NAME;\n\n"
+            'If any records are returned, review the system documentation to determine if accessing the registry via extended stored procedures is required and authorized. If it is not authorized, this is a finding.'
+        )
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-274449',
+            'title': 'SQL Server execute permissions to access the registry must be revoked unless specifically required and approved.',
+            'check_content': check_content,
+            'fix_text': 'Remove execute permissions to any registry extended stored procedure from all users (other than dbo): REVOKE EXECUTE ON [<procedureName>] FROM [<principal>]',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-274449')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn("OBJECT_ID('xp_regwrite')", candidate['check']['command'])
+        self.assertIn("dp.[type] = 'EX'", candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_does_not_infer_sql_server_2022_extended_procedure_guards_without_exact_ids(self):
+        base = {
+            'vuln_id': 'V-271300',
+            'title': 'Access to nonstandard, extended stored procedures must be disabled or restricted, unless specifically required and approved.',
+            'check_content': 'EXEC sp_helpextendedproc WHERE O.is_ms_shipped = 0',
+            'fix_text': 'sp_dropextendedproc',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**base, 'vuln_id': 'V-999999'}, 'MS_SQL_Server_2022_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(base, 'MS_SQL_Server_2019_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**base, 'check_content': 'EXEC sp_helpextendedproc'}, 'MS_SQL_Server_2022_Instance_STIG'))
+
     def test_infers_sql_server_2022_browser_disabled_or_hidden_candidate(self):
         check_content = (
             'Open SQL Server Configuration Manager. Select SQL Server Services. Review the Start Mode and State of SQL Server Browser.\n'

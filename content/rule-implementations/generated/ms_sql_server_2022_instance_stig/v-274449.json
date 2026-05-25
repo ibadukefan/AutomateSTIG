@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; USE [master]; SELECT OBJECT_NAME(major_id) AS [Stored Procedure], dpr.NAME AS [Principal] FROM sys.database_permissions AS dp INNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id = dpr.principal_id WHERE major_id IN (OBJECT_ID('xp_regaddmultistring'),OBJECT_ID('xp_regdeletekey'),OBJECT_ID('xp_regdeletevalue'),OBJECT_ID('xp_regenumvalues'),OBJECT_ID('xp_regenumkeys'),OBJECT_ID('xp_regremovemultistring'),OBJECT_ID('xp_regwrite'),OBJECT_ID('xp_instance_regaddmultistring'),OBJECT_ID('xp_instance_regdeletekey'),OBJECT_ID('xp_instance_regdeletevalue'),OBJECT_ID('xp_instance_regenumkeys'),OBJECT_ID('xp_instance_regenumvalues'),OBJECT_ID('xp_instance_regremovemultistring'),OBJECT_ID('xp_instance_regwrite')) AND dp.[type] = 'EX' ORDER BY dpr.NAME;\"",
+      "type": "command_output"
+    },
+    "description": "SQL Server execute permissions to access the registry must be revoked unless specifically required and approved.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-274449"
+  },
   "check_content_excerpt": "To determine if permissions to execute registry extended stored procedures have been revoked from all users (other than dbo), execute the following command:\nSELECT OBJECT_NAME(major_id) AS [Stored Procedure]\n,dpr.NAME AS [Principal]\nFROM sys.database_permissions AS dp\nINNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id = dpr.principal_id\nWHERE major_id IN (\n OBJECT_ID('xp_regaddmultistring')\n,OBJECT_ID('xp_regdeletekey')\n,OBJECT_ID('xp_regdeletevalue')\n,OBJECT_ID('xp_regenumvalues')\n,OBJECT_ID('xp_regenumkeys')\n,OBJECT_ID('xp_regremovemultistring')\n,OBJECT_ID('xp_regwrite')\n,OBJECT_ID('xp_instance_regaddmultistring')\n,OBJECT_ID('xp_instance_regdeletekey')\n,OBJECT_ID('xp_instance_regdeletevalue')\n,OBJECT_ID('xp_instance_regenumkeys')\n,OBJECT_ID('xp_instance_regenumvalues')\n,OBJECT_ID('xp_instance_regremovemultistring')\n,OBJECT_ID('xp_instance_regwrite')\n)\nAND dp.[type] = 'EX'\nORDER BY dpr.NAME;\n\nIf any records are returned, review the system documentation to determine if accessing the registry via extended stored procedures is required and authorized. If it is not authorized, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove execute permissions to any registry extended stored procedure from all users (other than dbo):\nUSE master\nGO\nREVOKE EXECUTE ON [<procedureName>] FROM [<principal>]\nGO",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274449r1111115_rule",
   "severity": "medium",

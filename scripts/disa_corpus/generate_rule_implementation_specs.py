@@ -13084,6 +13084,85 @@ def _sql_server_sa_login_disabled_candidate(rule: dict, stig_id: str) -> dict | 
     }
 
 
+def _sql_server_extended_procedure_absence_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server_2022' not in stig_id.lower() and 'sql server 2022' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id == 'V-271300':
+        expected_title = 'access to nonstandard, extended stored procedures must be disabled or restricted, unless specifically required and approved.'
+        if rule.get('title', '').strip().lower() != expected_title:
+            return None
+        required_content_patterns = (
+            r'EXEC\s+sp_helpextendedproc',
+            r'FROM\s+@xplist\s+X\s+JOIN\s+sys\.all_objects\s+O\s+ON\s+X\.xp_name\s*=\s*O\.name',
+            r'WHERE\s+O\.is_ms_shipped\s*=\s*0',
+            r'If\s+any\s+records\s+are\s+returned.*?nonstandard\s+extended\s+stored\s+procedures.*?required\s+and\s+approved',
+        )
+        if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in required_content_patterns):
+            return None
+        if not re.search(r'sp_dropextendedproc', fix_text, re.IGNORECASE):
+            return None
+        command = (
+            'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; USE [master]; '
+            'DECLARE @xplist AS TABLE (xp_name sysname, source_dll nvarchar(255)); '
+            'INSERT INTO @xplist EXEC sp_helpextendedproc; '
+            'SELECT X.xp_name FROM @xplist X JOIN sys.all_objects O ON X.xp_name = O.name '
+            'WHERE O.is_ms_shipped = 0 ORDER BY X.xp_name;"'
+        )
+    elif vuln_id == 'V-274449':
+        expected_title = 'sql server execute permissions to access the registry must be revoked unless specifically required and approved.'
+        if rule.get('title', '').strip().lower() != expected_title:
+            return None
+        required_procedures = (
+            'xp_regaddmultistring',
+            'xp_regdeletekey',
+            'xp_regdeletevalue',
+            'xp_regenumvalues',
+            'xp_regenumkeys',
+            'xp_regremovemultistring',
+            'xp_regwrite',
+            'xp_instance_regaddmultistring',
+            'xp_instance_regdeletekey',
+            'xp_instance_regdeletevalue',
+            'xp_instance_regenumkeys',
+            'xp_instance_regenumvalues',
+            'xp_instance_regremovemultistring',
+            'xp_instance_regwrite',
+        )
+        if not all(re.search(rf"OBJECT_ID\(\s*'{re.escape(proc)}'\s*\)", content, re.IGNORECASE) for proc in required_procedures):
+            return None
+        required_content_patterns = (
+            r'FROM\s+sys\.database_permissions\s+AS\s+dp',
+            r'JOIN\s+sys\.database_principals\s+AS\s+dpr\s+ON\s+dp\.grantee_principal_id\s*=\s*dpr\.principal_id',
+            r"dp\.\[type\]\s*=\s*'EX'",
+            r'If\s+any\s+records\s+are\s+returned.*?registry\s+via\s+extended\s+stored\s+procedures.*?required\s+and\s+authorized',
+        )
+        if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in required_content_patterns):
+            return None
+        if not re.search(r'REVOKE\s+EXECUTE\s+ON\s+\[<procedureName>\]\s+FROM\s+\[<principal>\]', fix_text, re.IGNORECASE):
+            return None
+        object_ids = ','.join(f"OBJECT_ID('{proc}')" for proc in required_procedures)
+        command = (
+            'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; USE [master]; '
+            'SELECT OBJECT_NAME(major_id) AS [Stored Procedure], dpr.NAME AS [Principal] '
+            'FROM sys.database_permissions AS dp '
+            'INNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id = dpr.principal_id '
+            f"WHERE major_id IN ({object_ids}) AND dp.[type] = 'EX' ORDER BY dpr.NAME;\""
+        )
+    else:
+        return None
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _sql_server_browser_disabled_or_hidden_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server_2022' not in stig_id.lower() and 'sql server 2022' not in stig_id.lower():
         return None
@@ -15805,6 +15884,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_browser_candidate = _sql_server_browser_disabled_or_hidden_candidate(rule, stig_id)
     if sql_server_browser_candidate:
         return sql_server_browser_candidate
+
+    sql_server_extended_procedure_candidate = _sql_server_extended_procedure_absence_candidate(rule, stig_id)
+    if sql_server_extended_procedure_candidate:
+        return sql_server_extended_procedure_candidate
 
     sql_server_audit_status_started_candidate = _sql_server_audit_status_started_candidate(rule, stig_id)
     if sql_server_audit_status_started_candidate:

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 27,
+  "candidate_checks": 29,
   "cases": [
     {
       "check": {
@@ -315,6 +315,32 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; USE [master]; DECLARE @xplist AS TABLE (xp_name sysname, source_dll nvarchar(255)); INSERT INTO @xplist EXEC sp_helpextendedproc; SELECT X.xp_name FROM @xplist X JOIN sys.all_objects O ON X.xp_name = O.name WHERE O.is_ms_shipped = 0 ORDER BY X.xp_name;\"",
+        "type": "command_output"
+      },
+      "description": "Access to nonstandard, extended stored procedures must be disabled or restricted, unless specifically required and approved.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; USE [master]; DECLARE @xplist AS TABLE (xp_name sysname, source_dll nvarchar(255)); INSERT INTO @xplist EXEC sp_helpextendedproc; SELECT X.xp_name FROM @xplist X JOIN sys.all_objects O ON X.xp_name = O.name WHERE O.is_ms_shipped = 0 ORDER BY X.xp_name;\"": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; USE [master]; DECLARE @xplist AS TABLE (xp_name sysname, source_dll nvarchar(255)); INSERT INTO @xplist EXEC sp_helpextendedproc; SELECT X.xp_name FROM @xplist X JOIN sys.all_objects O ON X.xp_name = O.name WHERE O.is_ms_shipped = 0 ORDER BY X.xp_name;\"": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271300"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'common criteria compliance enabled';\"",
         "type": "command_output"
       },
@@ -627,6 +653,32 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; USE [master]; SELECT OBJECT_NAME(major_id) AS [Stored Procedure], dpr.NAME AS [Principal] FROM sys.database_permissions AS dp INNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id = dpr.principal_id WHERE major_id IN (OBJECT_ID('xp_regaddmultistring'),OBJECT_ID('xp_regdeletekey'),OBJECT_ID('xp_regdeletevalue'),OBJECT_ID('xp_regenumvalues'),OBJECT_ID('xp_regenumkeys'),OBJECT_ID('xp_regremovemultistring'),OBJECT_ID('xp_regwrite'),OBJECT_ID('xp_instance_regaddmultistring'),OBJECT_ID('xp_instance_regdeletekey'),OBJECT_ID('xp_instance_regdeletevalue'),OBJECT_ID('xp_instance_regenumkeys'),OBJECT_ID('xp_instance_regenumvalues'),OBJECT_ID('xp_instance_regremovemultistring'),OBJECT_ID('xp_instance_regwrite')) AND dp.[type] = 'EX' ORDER BY dpr.NAME;\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server execute permissions to access the registry must be revoked unless specifically required and approved.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; USE [master]; SELECT OBJECT_NAME(major_id) AS [Stored Procedure], dpr.NAME AS [Principal] FROM sys.database_permissions AS dp INNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id = dpr.principal_id WHERE major_id IN (OBJECT_ID('xp_regaddmultistring'),OBJECT_ID('xp_regdeletekey'),OBJECT_ID('xp_regdeletevalue'),OBJECT_ID('xp_regenumvalues'),OBJECT_ID('xp_regenumkeys'),OBJECT_ID('xp_regremovemultistring'),OBJECT_ID('xp_regwrite'),OBJECT_ID('xp_instance_regaddmultistring'),OBJECT_ID('xp_instance_regdeletekey'),OBJECT_ID('xp_instance_regdeletevalue'),OBJECT_ID('xp_instance_regenumkeys'),OBJECT_ID('xp_instance_regenumvalues'),OBJECT_ID('xp_instance_regremovemultistring'),OBJECT_ID('xp_instance_regwrite')) AND dp.[type] = 'EX' ORDER BY dpr.NAME;\"": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; USE [master]; SELECT OBJECT_NAME(major_id) AS [Stored Procedure], dpr.NAME AS [Principal] FROM sys.database_permissions AS dp INNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id = dpr.principal_id WHERE major_id IN (OBJECT_ID('xp_regaddmultistring'),OBJECT_ID('xp_regdeletekey'),OBJECT_ID('xp_regdeletevalue'),OBJECT_ID('xp_regenumvalues'),OBJECT_ID('xp_regenumkeys'),OBJECT_ID('xp_regremovemultistring'),OBJECT_ID('xp_regwrite'),OBJECT_ID('xp_instance_regaddmultistring'),OBJECT_ID('xp_instance_regdeletekey'),OBJECT_ID('xp_instance_regdeletevalue'),OBJECT_ID('xp_instance_regenumkeys'),OBJECT_ID('xp_instance_regenumvalues'),OBJECT_ID('xp_instance_regremovemultistring'),OBJECT_ID('xp_instance_regwrite')) AND dp.[type] = 'EX' ORDER BY dpr.NAME;\"": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274449"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'filestream access level';\"",
         "type": "command_output"
       },
@@ -709,5 +761,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_SQL_Server_2022_Instance_STIG",
-  "validated_candidates": 27
+  "validated_candidates": 29
 }
