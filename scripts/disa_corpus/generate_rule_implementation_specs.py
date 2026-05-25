@@ -13007,6 +13007,37 @@ def _oracle_database_redo_log_group_member_minimum_candidate(rule: dict, stig_id
     }
 
 
+def _oracle_database_externaljob_nobody_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270555':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'External\s+jobs\s+are\s+run\s+using\s+the\s+account\s+["“]nobody["”]\s+by\s+default',
+        r'ORACLE_HOME/rdbms/admin/externaljob\.ora',
+        r'run_user=',
+        r'run_group=',
+        r'If\s+the\s+user\s+assigned\s+to\s+these\s+parameters\s+is\s+not\s+["“]nobody["”],\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'Limit\s+privileges\s+to\s+DBMS-related\s+OS\s+accounts\s+to\s+those\s+required', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'f=\"$ORACLE_HOME/rdbms/admin/externaljob.ora\"; "
+        "if [ -f \"$f\" ] && grep -Eiq \"^[[:space:]]*run_user[[:space:]]*=[[:space:]]*nobody[[:space:]]*$\" \"$f\" "
+        "&& grep -Eiq \"^[[:space:]]*run_group[[:space:]]*=[[:space:]]*nobody[[:space:]]*$\" \"$f\"; "
+        "then printf Compliant; fi'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_configuration_audit_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270540':
         return None
@@ -16298,6 +16329,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_redo_log_candidate = _oracle_database_redo_log_group_member_minimum_candidate(rule, stig_id)
     if oracle_database_redo_log_candidate:
         return oracle_database_redo_log_candidate
+
+    oracle_database_externaljob_nobody_candidate = _oracle_database_externaljob_nobody_candidate(rule, stig_id)
+    if oracle_database_externaljob_nobody_candidate:
+        return oracle_database_externaljob_nobody_candidate
 
     oracle_database_configuration_audit_candidate = _oracle_database_configuration_audit_candidate(rule, stig_id)
     if oracle_database_configuration_audit_candidate:

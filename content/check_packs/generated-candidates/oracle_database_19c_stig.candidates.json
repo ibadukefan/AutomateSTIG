@@ -236,6 +236,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'f=\"$ORACLE_HOME/rdbms/admin/externaljob.ora\"; if [ -f \"$f\" ] && grep -Eiq \"^[[:space:]]*run_user[[:space:]]*=[[:space:]]*nobody[[:space:]]*$\" \"$f\" && grep -Eiq \"^[[:space:]]*run_group[[:space:]]*=[[:space:]]*nobody[[:space:]]*$\" \"$f\"; then printf Compliant; fi'",
+        "type": "command_output"
+      },
+      "description": "OS accounts used to run external procedures called by Oracle Database must have limited privileges.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270555"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN COUNT(*) = 0 THEN 'Compliant' ELSE 'Finding' END FROM (SELECT p1.profile, CASE DECODE(p1.limit, 'DEFAULT', p3.limit, p1.limit) WHEN 'UNLIMITED' THEN 'UNLIMITED' ELSE CASE DECODE(p2.limit, 'DEFAULT', p4.limit, p2.limit) WHEN 'UNLIMITED' THEN 'UNLIMITED' ELSE TO_CHAR(DECODE(p1.limit, 'DEFAULT', p3.limit, p1.limit) + DECODE(p2.limit, 'DEFAULT', p4.limit, p2.limit)) END END effective_life_time FROM dba_profiles p1, dba_profiles p2, dba_profiles p3, dba_profiles p4 WHERE p1.profile=p2.profile AND p3.profile='DEFAULT' AND p4.profile='DEFAULT' AND p1.resource_name='PASSWORD_LIFE_TIME' AND p2.resource_name='PASSWORD_GRACE_TIME' AND p3.resource_name='PASSWORD_LIFE_TIME' AND p4.resource_name='PASSWORD_GRACE_TIME') WHERE effective_life_time = 'UNLIMITED' OR TO_NUMBER(effective_life_time DEFAULT 999999 ON CONVERSION ERROR) > 60;\nEXIT\nSQL",
         "type": "command_output"
       },

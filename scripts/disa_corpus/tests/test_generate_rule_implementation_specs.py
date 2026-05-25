@@ -150,6 +150,37 @@ blacklist firewire-core''',
 
         self.assertIsNone(candidate)
 
+    def test_infers_oracle_externaljob_nobody_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270555',
+            'title': 'OS accounts used to run external procedures called by Oracle Database must have limited privileges.',
+            'check_content': (
+                'External jobs are run using the account "nobody" by default.\n\n'
+                'Review the contents of the file ORACLE_HOME/rdbms/admin/externaljob.ora for the lines run_user= and run_group=.\n\n'
+                'If the user assigned to these parameters is not "nobody", this is a finding.'
+            ),
+            'fix_text': 'Limit privileges to DBMS-related OS accounts to those required to perform their DBMS specific functionality.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270555')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('$ORACLE_HOME/rdbms/admin/externaljob.ora', candidate['check']['command'])
+        self.assertIn('run_user', candidate['check']['command'])
+        self.assertIn('run_group', candidate['check']['command'])
+        self.assertIn('nobody', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_oracle_externaljob_nobody_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'OS accounts used to run external procedures called by Oracle Database must have limited privileges.',
+            'check_content': 'Review ORACLE_HOME/rdbms/admin/externaljob.ora for run_user= and run_group=. If not nobody this is a finding.',
+            'fix_text': 'Limit privileges to DBMS-related OS accounts.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_cisco_nxos_msdp_known_peer_acl_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221142',
