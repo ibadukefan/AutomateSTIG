@@ -1049,22 +1049,34 @@ def _windows_11_absent_non_system_file_shares_candidate(rule: dict, stig_id: str
     allowed_rules = {
         ('Microsoft_Windows_11_STIG', 'V-253267'),
         ('MS_Windows_10_STIG', 'V-220710'),
+        ('MS_Windows_Server_2025_STIG', 'V-278007'),
     }
     if (stig_id, vuln_id) not in allowed_rules:
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
-    required_content_patterns = (
-        r'(?:Non-system-created\s+shares\s+must\s+not\s+exist|Non\s+system-created\s+shares\s+should\s+not\s+typically\s+exist)\s+on\s+workstations',
+    base_patterns = (
         r'Shared\s+Folders\s*>>\s*Shares',
         r'ADMIN\$',
         r'\bC\$',
         r'IPC\$',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in base_patterns):
+        return None
+    workstation_patterns = (
+        r'(?:Non-system-created\s+shares\s+must\s+not\s+exist|Non\s+system-created\s+shares\s+should\s+not\s+typically\s+exist)\s+on\s+workstations',
         r'If\s+(?:the\s+)?only\s+system-created\s+shares\s+exist\s+on\s+the\s+system\s+this\s+is\s+NA|If\s+the\s+only\s+shares\s+listed\s+are\s+["“]ADMIN\$["”],\s+["“]C\$["”]\s+and\s+["“]IPC\$["”],\s+this\s+is\s+NA',
     )
-    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content_patterns):
+    server_2025_patterns = (
+        r'If\s+only\s+system-created\s+shares\s+such\s+as\s+["“]ADMIN\$["”],\s+["“]C\$["”],\s+and\s+["“]IPC\$["”]\s+exist\s+on\s+the\s+system,?\s+this\s+is\s+not\s+applicable',
+        r'If\s+the\s+file\s+shares\s+have\s+not\s+been\s+configured\s+to\s+restrict\s+permissions\s+to\s+the\s+specific\s+groups\s+or\s+accounts\s+that\s+require\s+access,\s+this\s+is\s+a\s+finding',
+    )
+    if vuln_id == 'V-278007':
+        if not all(re.search(pattern, content, re.IGNORECASE) for pattern in server_2025_patterns):
+            return None
+    elif not all(re.search(pattern, content, re.IGNORECASE) for pattern in workstation_patterns):
         return None
-    if not re.search(r'Remove\s+any\s+unnecessary\s+non-system[ -]created\s+shares', fix_text, re.IGNORECASE):
+    if not re.search(r'Remove\s+any\s+unnecessary\s+(?:non-system[ -]created|nonsystem-created)\s+shares', fix_text, re.IGNORECASE):
         return None
     command = (
         'powershell -NoProfile -Command '

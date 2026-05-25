@@ -374,6 +374,40 @@ blacklist firewire-core''',
         }, 'MS_Windows_Server_2025_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_windows_server_2025_no_non_system_file_shares_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278007',
+            'title': 'Windows Server 2025 nonsystem-created file shares must limit access to groups that require it.',
+            'check_content': (
+                'If only system-created shares such as "ADMIN$", "C$", and "IPC$" exist on the system, this is not applicable.\n\n'
+                'Run "Computer Management".\n\n'
+                'Navigate to System Tools >> Shared Folders >> Shares.\n\n'
+                'Right-click any nonsystem-created shares.\n\n'
+                'If the file shares have not been configured to restrict permissions to the specific groups or accounts that require access, this is a finding.\n\n'
+                'If the permissions have not been configured to restrict permissions to the specific groups or accounts that require access, this is a finding.'
+            ),
+            'fix_text': (
+                'If a nonsystem-created share is required on a system, configure the share and NTFS permissions to limit access to the specific groups or accounts that require it.\n\n'
+                'Remove any unnecessary nonsystem-created shares.'
+            ),
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-278007')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('Get-SmbShare', candidate['check']['command'])
+        self.assertIn('ADMIN$', candidate['check']['command'])
+        self.assertIn('IPC$', candidate['check']['command'])
+
+    def test_rejects_windows_server_2025_file_shares_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Windows Server 2025 nonsystem-created file shares must limit access to groups that require it.',
+            'check_content': 'If only system-created shares such as "ADMIN$", "C$", and "IPC$" exist on the system, this is not applicable.',
+            'fix_text': 'Remove any unnecessary nonsystem-created shares.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_tomcat_connector_address_policy_backed_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223009',

@@ -171,6 +171,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$allowed=@('ADMIN$','C$','IPC$'); $shares=Get-SmbShare -ErrorAction Stop; $bad=$shares | Where-Object { $allowed -notcontains $_.Name }; if ($shares -and -not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 nonsystem-created file shares must limit access to groups that require it.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278007"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$ErrorActionPreference='SilentlyContinue'; Get-PSDrive -PSProvider FileSystem | ForEach-Object { Get-ChildItem -LiteralPath ($_.Root) -Recurse -Force -Include '*.p12','*.pfx' -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName } | Select-Object -First 1\"",
         "type": "command_output"
       },
