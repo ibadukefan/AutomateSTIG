@@ -210,6 +210,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$bad = Get-VMHost | Get-AdvancedSetting -Name Net.DVFilterBindIpAddress | Where-Object { $_.Value -and $_.Value.ToString().Trim().Length -gt 0 }; if (-not $bad) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Use of the dvFilter network application programming interfaces (APIs) must be restricted.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "vmware-esxi",
+      "vuln_id": "V-256423"
+    },
+    {
+      "check": {
         "command": "Get-VMHost | Get-AdvancedSetting -Name UserVars.ESXiVPsDisabledProtocols | Select-Object -ExpandProperty Value",
         "type": "command_output"
       },

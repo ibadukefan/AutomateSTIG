@@ -3204,6 +3204,31 @@ If the line, SQLNET.FIPS_140=TRUE is not found in $ORACLE_HOME/network/admin/sql
         self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': rule['check_content'] + ' public v3targets'}, 'VMW_vSphere_7-0_ESXi_STIG'))
 
+    def test_infers_vmware_esxi_dvfilter_bind_ip_blank_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256423',
+            'title': 'Use of the dvFilter network application programming interfaces (APIs) must be restricted.',
+            'check_content': 'From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nSelect the "Net.DVFilterBindIpAddress" value and verify the value is blank or the correct IP address of a security appliance if in use.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Net.DVFilterBindIpAddress\n\nIf the "Net.DVFilterBindIpAddress" is not blank and security appliances are not in use on the host, this is a finding.',
+            'fix_text': 'From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick "Edit".\n\nSelect the "Net.DVFilterBindIpAddress" value and configure it to be blank or the correct IP address of a security appliance if in use.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Net.DVFilterBindIpAddress | Set-AdvancedSetting -Value ""',
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-256423')
+        self.assertEqual(candidate['platform'], 'vmware-esxi')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('Get-AdvancedSetting -Name Net.DVFilterBindIpAddress', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_vmware_esxi_dvfilter_bind_ip_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-256423',
+            'title': 'Use of dvFilter APIs must be restricted.',
+            'check_content': 'Run Get-AdvancedSetting -Name Net.DVFilterBindIpAddress and review the value.',
+            'fix_text': 'Configure Net.DVFilterBindIpAddress.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'VMW_vSphere_7-0_ESXi_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'RHEL_9_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'VMW_vSphere_7-0_ESXi_STIG'))
+
     def test_infers_tomcat_allow_backslash_false_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223004',

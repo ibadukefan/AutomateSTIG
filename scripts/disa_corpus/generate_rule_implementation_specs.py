@@ -4532,6 +4532,36 @@ def _vmware_esxi_auth_proxy_host_profiles_candidate(rule: dict, stig_id: str) ->
     }
 
 
+def _vmware_esxi_dvfilter_bind_ip_blank_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'vsphere' not in stig_id.lower() or 'esxi' not in stig_id.lower() or rule.get('vuln_id') != 'V-256423':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'Net\.DVFilterBindIpAddress',
+        r'Get-VMHost\s*\|\s*Get-AdvancedSetting\s+-Name\s+Net\.DVFilterBindIpAddress',
+        r'value\s+is\s+blank\s+or\s+the\s+correct\s+IP\s+address\s+of\s+a\s+security\s+appliance\s+if\s+in\s+use',
+        r'If\s+the\s+["“]Net\.DVFilterBindIpAddress["”]\s+is\s+not\s+blank\s+and\s+security\s+appliances\s+are\s+not\s+in\s+use\s+on\s+the\s+host,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'Set-AdvancedSetting\s+-Value\s+["“]["”]', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "$bad = Get-VMHost | Get-AdvancedSetting -Name Net.DVFilterBindIpAddress | "
+        "Where-Object { $_.Value -and $_.Value.ToString().Trim().Length -gt 0 }; "
+        "if (-not $bad) { 'Compliant' }\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'vmware-esxi',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _vmware_esxi_snmp_disabled_or_v3_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'vsphere' not in stig_id.lower() or 'esxi' not in stig_id.lower() or rule.get('vuln_id') != 'V-256414':
         return None
@@ -15795,6 +15825,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     vmware_esxi_auth_proxy_candidate = _vmware_esxi_auth_proxy_host_profiles_candidate(rule, stig_id)
     if vmware_esxi_auth_proxy_candidate:
         return vmware_esxi_auth_proxy_candidate
+    vmware_esxi_dvfilter_candidate = _vmware_esxi_dvfilter_bind_ip_blank_candidate(rule, stig_id)
+    if vmware_esxi_dvfilter_candidate:
+        return vmware_esxi_dvfilter_candidate
     vmware_esxi_snmp_candidate = _vmware_esxi_snmp_disabled_or_v3_candidate(rule, stig_id)
     if vmware_esxi_snmp_candidate:
         return vmware_esxi_snmp_candidate
