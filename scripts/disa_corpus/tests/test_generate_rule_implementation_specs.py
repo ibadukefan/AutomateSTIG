@@ -89,6 +89,45 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertEqual(updated['normalizer'], 'command_output')
             self.assertEqual(updated['evaluator'], 'candidate_template')
 
+    def test_infers_cisco_nxos_msdp_known_peer_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221142',
+            'title': 'The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to only accept MSDP packets from known MSDP peers.',
+            'check_content': (
+                'Review the switch configuration to determine if there is a receive path or interface filter to only accept MSDP packets from known MSDP peers.\n\n'
+                'Step 1: Verify that interfaces used for MSDP peering have an inbound ACL as shown in the example below:\n\n'
+                'interface Ethernet2/3\n no switchport\n ip access-group EXTERNAL_ACL_INBOUND in\n ip address x.1.28.8/24\n ip pim sparse-mode\n\n'
+                'ip access-list EXTERNAL_ACL_INBOUND\n 10 permit tcp any any established\n 20 permit tcp x.1.28.2/32 x.1.28.8/32 eq 639\n 30 deny tcp any x.1.28.8/32 eq 639 log\n\n'
+                'Note: MSDP connections are via TCP port 639.\n\n'
+                'If the switch is not configured to only accept MSDP packets from known MSDP peers, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure the receive path or interface ACLs to only accept MSDP packets from known MSDP peers.\n\n'
+                'SW1(config)# ip access-list EXTERNAL_ACL_INBOUND\n'
+                'SW1(config-acl)# permit tcp host x.1.28.2 host x.1.28.8 eq 639\n'
+                'SW1(config-acl)# deny tcp any host x.1.28.8 eq 639 log'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221142')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('show running-config', candidate['check']['command'])
+        self.assertIn('ip[[:space:]]+access-group', candidate['check']['command'])
+        self.assertIn('eq[[:space:]]+639', candidate['check']['command'])
+        self.assertIn('{inbound[$3]=1}', candidate['check']['command'])
+
+    def test_rejects_cisco_nxos_msdp_known_peer_acl_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'MSDP packets must be accepted only from known MSDP peers.',
+            'check_content': 'ip msdp peer x.1.28.2 connect-source Ethernet2/1 remote-as nn\nIf the switch is not configured to only accept MSDP packets from known MSDP peers, this is a finding.\neq 639',
+            'fix_text': 'Configure the receive path or interface ACLs to only accept MSDP packets from known MSDP peers. eq 639',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_windows_server_2025_shared_printer_standard_users_print_only_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278002',

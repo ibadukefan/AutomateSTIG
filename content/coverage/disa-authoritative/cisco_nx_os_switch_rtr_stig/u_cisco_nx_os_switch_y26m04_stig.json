@@ -1069,16 +1069,17 @@
       "vuln_id": "V-221141"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221142",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221142r999751_rule",
       "severity": "medium",
       "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to only accept MSDP packets from known MSDP peers.",
-      "tracking_issue": "TODO-V-221142",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221142"

@@ -2987,6 +2987,35 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221142':
+        combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+        required_patterns = (
+            r'only\s+accept\s+MSDP\s+packets\s+from\s+known\s+MSDP\s+peers',
+            r'ip\s+access-group\s+\S+\s+in',
+            r'\beq\s+639\b',
+            r'deny\s+tcp\s+any\s+\S+\s+eq\s+639',
+            r'Configure\s+the\s+receive\s+path\s+or\s+interface\s+ACLs\s+to\s+only\s+accept\s+MSDP\s+packets\s+from\s+known\s+MSDP\s+peers',
+        )
+        if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+            return None
+        command = (
+            'show running-config | awk \'BEGIN{inacl=""; iface=0} '
+            '/^ip[[:space:]]+access-list[[:space:]]+/ {inacl=$3; next} '
+            '/^[^[:space:]]/ {inacl=""} '
+            'inacl != "" && /^[[:space:]]*[0-9]*[[:space:]]*permit[[:space:]]+tcp[[:space:]]+/ && $0 ~ /[[:space:]]eq[[:space:]]+639([[:space:]]|$)/ && $0 !~ /^[[:space:]]*[0-9]*[[:space:]]*permit[[:space:]]+tcp[[:space:]]+any[[:space:]]+any[[:space:]]+established/ {permit[inacl]=1} '
+            'inacl != "" && /^[[:space:]]*[0-9]*[[:space:]]*deny[[:space:]]+tcp[[:space:]]+any[[:space:]]+/ && $0 ~ /[[:space:]]eq[[:space:]]+639([[:space:]]|$)/ {deny[inacl]=1} '
+            '/^interface[[:space:]]+/ {iface=1; next} '
+            '/^[^[:space:]]/ {iface=0} '
+            'iface && /^[[:space:]]*ip[[:space:]]+access-group[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound[$3]=1} '
+            'END{for(acl in inbound){if(permit[acl] && deny[acl]){print "Compliant"; exit}}}\''
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221073':
         if not re.search(r'key\s+chains\s+used\s+for\s+routing\s+protocol\s+authentication', content, re.IGNORECASE):
             return None

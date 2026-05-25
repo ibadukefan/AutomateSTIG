@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 38,
+  "candidate_checks": 39,
   "cases": [
     {
       "check": {
@@ -835,6 +835,32 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{inacl=\"\"; iface=0} /^ip[[:space:]]+access-list[[:space:]]+/ {inacl=$3; next} /^[^[:space:]]/ {inacl=\"\"} inacl != \"\" && /^[[:space:]]*[0-9]*[[:space:]]*permit[[:space:]]+tcp[[:space:]]+/ && $0 ~ /[[:space:]]eq[[:space:]]+639([[:space:]]|$)/ && $0 !~ /^[[:space:]]*[0-9]*[[:space:]]*permit[[:space:]]+tcp[[:space:]]+any[[:space:]]+any[[:space:]]+established/ {permit[inacl]=1} inacl != \"\" && /^[[:space:]]*[0-9]*[[:space:]]*deny[[:space:]]+tcp[[:space:]]+any[[:space:]]+/ && $0 ~ /[[:space:]]eq[[:space:]]+639([[:space:]]|$)/ {deny[inacl]=1} /^interface[[:space:]]+/ {iface=1; next} /^[^[:space:]]/ {iface=0} iface && /^[[:space:]]*ip[[:space:]]+access-group[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound[$2]=1} END{for(acl in inbound){if(permit[acl] && deny[acl]){print \"Compliant\"; exit}}}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to only accept MSDP packets from known MSDP peers.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{inacl=\"\"; iface=0} /^ip[[:space:]]+access-list[[:space:]]+/ {inacl=$3; next} /^[^[:space:]]/ {inacl=\"\"} inacl != \"\" && /^[[:space:]]*[0-9]*[[:space:]]*permit[[:space:]]+tcp[[:space:]]+/ && $0 ~ /[[:space:]]eq[[:space:]]+639([[:space:]]|$)/ && $0 !~ /^[[:space:]]*[0-9]*[[:space:]]*permit[[:space:]]+tcp[[:space:]]+any[[:space:]]+any[[:space:]]+established/ {permit[inacl]=1} inacl != \"\" && /^[[:space:]]*[0-9]*[[:space:]]*deny[[:space:]]+tcp[[:space:]]+any[[:space:]]+/ && $0 ~ /[[:space:]]eq[[:space:]]+639([[:space:]]|$)/ {deny[inacl]=1} /^interface[[:space:]]+/ {iface=1; next} /^[^[:space:]]/ {iface=0} iface && /^[[:space:]]*ip[[:space:]]+access-group[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound[$2]=1} END{for(acl in inbound){if(permit[acl] && deny[acl]){print \"Compliant\"; exit}}}'": "unexpected-Compliant"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{inacl=\"\"; iface=0} /^ip[[:space:]]+access-list[[:space:]]+/ {inacl=$3; next} /^[^[:space:]]/ {inacl=\"\"} inacl != \"\" && /^[[:space:]]*[0-9]*[[:space:]]*permit[[:space:]]+tcp[[:space:]]+/ && $0 ~ /[[:space:]]eq[[:space:]]+639([[:space:]]|$)/ && $0 !~ /^[[:space:]]*[0-9]*[[:space:]]*permit[[:space:]]+tcp[[:space:]]+any[[:space:]]+any[[:space:]]+established/ {permit[inacl]=1} inacl != \"\" && /^[[:space:]]*[0-9]*[[:space:]]*deny[[:space:]]+tcp[[:space:]]+any[[:space:]]+/ && $0 ~ /[[:space:]]eq[[:space:]]+639([[:space:]]|$)/ {deny[inacl]=1} /^interface[[:space:]]+/ {iface=1; next} /^[^[:space:]]/ {iface=0} iface && /^[[:space:]]*ip[[:space:]]+access-group[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound[$2]=1} END{for(acl in inbound){if(permit[acl] && deny[acl]){print \"Compliant\"; exit}}}'": "Compliant"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221142"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ip msdp password \"",
         "type": "command_output"
       },
@@ -995,5 +1021,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 38
+  "validated_candidates": 39
 }

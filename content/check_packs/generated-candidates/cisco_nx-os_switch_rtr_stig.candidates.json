@@ -418,6 +418,19 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{inacl=\"\"; iface=0} /^ip[[:space:]]+access-list[[:space:]]+/ {inacl=$3; next} /^[^[:space:]]/ {inacl=\"\"} inacl != \"\" && /^[[:space:]]*[0-9]*[[:space:]]*permit[[:space:]]+tcp[[:space:]]+/ && $0 ~ /[[:space:]]eq[[:space:]]+639([[:space:]]|$)/ && $0 !~ /^[[:space:]]*[0-9]*[[:space:]]*permit[[:space:]]+tcp[[:space:]]+any[[:space:]]+any[[:space:]]+established/ {permit[inacl]=1} inacl != \"\" && /^[[:space:]]*[0-9]*[[:space:]]*deny[[:space:]]+tcp[[:space:]]+any[[:space:]]+/ && $0 ~ /[[:space:]]eq[[:space:]]+639([[:space:]]|$)/ {deny[inacl]=1} /^interface[[:space:]]+/ {iface=1; next} /^[^[:space:]]/ {iface=0} iface && /^[[:space:]]*ip[[:space:]]+access-group[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound[$2]=1} END{for(acl in inbound){if(permit[acl] && deny[acl]){print \"Compliant\"; exit}}}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to only accept MSDP packets from known MSDP peers.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221142"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ip msdp password \"",
         "type": "command_output"
       },
