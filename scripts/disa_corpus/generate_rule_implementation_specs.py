@@ -13084,6 +13084,39 @@ def _oracle_database_externaljob_nobody_candidate(rule: dict, stig_id: str) -> d
     }
 
 
+def _oracle_database_admin_privileges_empty_result_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270519':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'SELECT\s+grantee\s*,\s*privilege\s+FROM\s+dba_sys_privs',
+        r'SELECT\s+username\s+FROM\s+dba_users\s+WHERE\s+username\s+NOT\s+IN',
+        r"privilege\s+NOT\s+IN\s*\([^)]*'UNLIMITED\s+TABLESPACE'[^)]*'REFERENCES'[^)]*'INDEX'[^)]*'SYSDBA'[^)]*'SYSOPER'[^)]*'CREATE\s+SESSION'[^)]*\)",
+        r'If\s+any\s+administrative\s+privileges\s+have\s+been\s+assigned\s+directly\s+to\s+(?:a\s+database\s+account|Oracle\s+accounts),?\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'Create\s+roles\s+for\s+administrative\s+function\s+assignments', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'Do\s+not\s+assign\s+administrative\s+privileges\s+directly\s+to\s+users', fix_text, re.IGNORECASE):
+        return None
+    sql = (
+        "SELECT grantee || ': ' || privilege FROM dba_sys_privs WHERE grantee IN "
+        "(SELECT username FROM dba_users WHERE username NOT IN "
+        "('XDB','SYSTEM','SYS','LBACSYS','DVSYS','DVF','SYSMAN_RO','SYSMAN_BIPLATFORM','SYSMAN_MDS','SYSMAN_OPSS','SYSMAN_STB','DBSNMP','SYSMAN','APEX_040200','WMSYS','SYSDG','SYSBACKUP','SPATIAL_WFS_ADMIN_USR','SPATIAL_CSW_ADMIN_US','GSMCATUSER','OLAPSYS','SI_INFORMTN_SCHEMA','OUTLN','ORDSYS','ORDDATA','OJVMSYS','ORACLE_OCM','MDSYS','ORDPLUGINS','GSMADMIN_INTERNAL','MDDATA','FLOWS_FILES','DIP','CTXSYS','AUDSYS','APPQOSSYS','APEX_PUBLIC_USER','ANONYMOUS','SYSKM','SYSMAN_TYPES','MGMT_VIEW','EUS_ENGINE_USER','EXFSYS','SYSMAN_APM')) "
+        "AND privilege NOT IN ('UNLIMITED TABLESPACE','REFERENCES','INDEX','SYSDBA','SYSOPER','CREATE SESSION') ORDER BY 1, 2;"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': _oracle_sqlplus_command(sql)},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _oracle_database_configuration_audit_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270540':
         return None
@@ -16383,6 +16416,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_database_externaljob_nobody_candidate = _oracle_database_externaljob_nobody_candidate(rule, stig_id)
     if oracle_database_externaljob_nobody_candidate:
         return oracle_database_externaljob_nobody_candidate
+
+    oracle_database_admin_privileges_candidate = _oracle_database_admin_privileges_empty_result_candidate(rule, stig_id)
+    if oracle_database_admin_privileges_candidate:
+        return oracle_database_admin_privileges_candidate
 
     oracle_database_configuration_audit_candidate = _oracle_database_configuration_audit_candidate(rule, stig_id)
     if oracle_database_configuration_audit_candidate:

@@ -150,6 +150,37 @@ blacklist firewire-core''',
 
         self.assertIsNone(candidate)
 
+    def test_infers_oracle_database_admin_privileges_empty_result_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270519',
+            'title': 'The role(s)/group(s) used to modify database structure must be restricted to authorized users.',
+            'check_content': (
+                'Review accounts for direct assignment of administrative privileges. Connected as SYSDBA, run the query:\n\n'
+                'SELECT grantee, privilege FROM dba_sys_privs WHERE grantee IN\n'
+                '( SELECT username FROM dba_users WHERE username NOT IN\n'
+                "( 'XDB', 'SYSTEM', 'SYS', 'LBACSYS' ) ) AND privilege NOT IN ('UNLIMITED TABLESPACE' , 'REFERENCES', 'INDEX', 'SYSDBA', 'SYSOPER', 'CREATE SESSION' ) ORDER BY 1, 2;\n\n"
+                'If any administrative privileges have been assigned directly to Oracle accounts, this is a finding.'
+            ),
+            'fix_text': 'Create roles for administrative function assignments. Assign the necessary privileges for the administrative functions to a role. Do not assign administrative privileges directly to users, except for those that Oracle does not permit to be assigned via roles.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270519')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('dba_sys_privs', candidate['check']['command'])
+        self.assertIn('dba_users', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_rejects_oracle_database_admin_privileges_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The role(s)/group(s) used to modify database structure must be restricted to authorized users.',
+            'check_content': "SELECT grantee, privilege FROM dba_sys_privs WHERE grantee IN ( SELECT username FROM dba_users WHERE username NOT IN ( 'XDB' ) ) AND privilege NOT IN ('UNLIMITED TABLESPACE' , 'REFERENCES', 'INDEX', 'SYSDBA', 'SYSOPER', 'CREATE SESSION' ) ORDER BY 1, 2; If any administrative privileges have been assigned directly to Oracle accounts, this is a finding.",
+            'fix_text': 'Create roles for administrative function assignments. Do not assign administrative privileges directly to users.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_oracle_diag_directory_owner_only_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270541',
