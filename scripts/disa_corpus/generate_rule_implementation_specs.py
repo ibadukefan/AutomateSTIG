@@ -12640,6 +12640,44 @@ def _oracle_database_fips_140_configuration_candidate(rule: dict, stig_id: str) 
     }
 
 
+def _oracle_database_password_transmission_tls_sqlnet_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270565':
+        return None
+    if rule.get('title', '').strip().lower() != 'if passwords are used for authentication, the oracle database must transmit only encrypted representations of passwords.':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'passwords\s+in\s+transit\s+across\s+the\s+network',
+        r'\$ORACLE_HOME/network/admin/sqlnet\.ora',
+        r'WALLET_LOCATION\s*=',
+        r'SSL_CIPHER_SUITES\s*=',
+        r'SSL_VERSION\s*=\s*1\.1\s+or\s+1\.2',
+        r'SSL_CLIENT_AUTHENTICATION\s*=\s*TRUE',
+        r'If\s+the\s+sqlnet\.ora\s+file\s+does\s+not\s+contain\s+such\s+entries,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'Configure\s+the\s+database\s+to\s+support\s+TLS\s+protocols\s+and\s+the\s+Oracle\s+Wallet', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'f=\"$ORACLE_HOME/network/admin/sqlnet.ora\"; "
+        "if [ -f \"$f\" ] && "
+        "grep -Eiq \"^[[:space:]]*WALLET_LOCATION[[:space:]]*=\" \"$f\" && "
+        "grep -Eiq \"^[[:space:]]*SSL_CIPHER_SUITES[[:space:]]*=\" \"$f\" && "
+        "grep -Eiq \"^[[:space:]]*SSL_VERSION[[:space:]]*=[[:space:]]*(1\\.1|1\\.2)[[:space:]]*$\" \"$f\" && "
+        "grep -Eiq \"^[[:space:]]*SSL_CLIENT_AUTHENTICATION[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$\" \"$f\"; "
+        "then printf Compliant; fi'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_control_file_minimum_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-275999':
         return None
@@ -15742,6 +15780,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_fips_140_candidate = _oracle_database_fips_140_configuration_candidate(rule, stig_id)
     if oracle_fips_140_candidate:
         return oracle_fips_140_candidate
+
+    oracle_password_transmission_tls_candidate = _oracle_database_password_transmission_tls_sqlnet_candidate(rule, stig_id)
+    if oracle_password_transmission_tls_candidate:
+        return oracle_password_transmission_tls_candidate
 
     oracle_diag_candidate = _oracle_database_19c_diag_directory_owner_only_candidate(rule, stig_id)
     if oracle_diag_candidate:

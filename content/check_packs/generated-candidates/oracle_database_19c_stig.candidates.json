@@ -288,6 +288,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'f=\"$ORACLE_HOME/network/admin/sqlnet.ora\"; if [ -f \"$f\" ] && grep -Eiq \"^[[:space:]]*WALLET_LOCATION[[:space:]]*=\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_CIPHER_SUITES[[:space:]]*=\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_VERSION[[:space:]]*=[[:space:]]*(1\\.1|1\\.2)[[:space:]]*$\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_CLIENT_AUTHENTICATION[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$\" \"$f\"; then printf Compliant; fi'",
+        "type": "command_output"
+      },
+      "description": "If passwords are used for authentication, the Oracle Database must transmit only encrypted representations of passwords.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270565"
+    },
+    {
+      "check": {
         "command": "sh -c 'for f in \"${FIPS_HOME:-}\"/fips.ora \"${ORACLE_HOME:-}/ldap/admin/fips.ora\"; do [ -f \"$f\" ] && grep -Eiq \"^[[:space:]]*SSLFIPS_140[[:space:]]*=[[:space:]]*TRUE([[:space:]]|$)\" \"$f\" && printf Compliant && exit 0; done'",
         "type": "command_output"
       },

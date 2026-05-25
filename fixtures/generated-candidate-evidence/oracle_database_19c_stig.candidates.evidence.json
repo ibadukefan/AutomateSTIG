@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 27,
+  "candidate_checks": 28,
   "cases": [
     {
       "check": {
@@ -575,6 +575,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'f=\"$ORACLE_HOME/network/admin/sqlnet.ora\"; if [ -f \"$f\" ] && grep -Eiq \"^[[:space:]]*WALLET_LOCATION[[:space:]]*=\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_CIPHER_SUITES[[:space:]]*=\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_VERSION[[:space:]]*=[[:space:]]*(1\\.1|1\\.2)[[:space:]]*$\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_CLIENT_AUTHENTICATION[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$\" \"$f\"; then printf Compliant; fi'",
+        "type": "command_output"
+      },
+      "description": "If passwords are used for authentication, the Oracle Database must transmit only encrypted representations of passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'f=\"$ORACLE_HOME/network/admin/sqlnet.ora\"; if [ -f \"$f\" ] && grep -Eiq \"^[[:space:]]*WALLET_LOCATION[[:space:]]*=\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_CIPHER_SUITES[[:space:]]*=\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_VERSION[[:space:]]*=[[:space:]]*(1\\.1|1\\.2)[[:space:]]*$\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_CLIENT_AUTHENTICATION[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$\" \"$f\"; then printf Compliant; fi'": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'f=\"$ORACLE_HOME/network/admin/sqlnet.ora\"; if [ -f \"$f\" ] && grep -Eiq \"^[[:space:]]*WALLET_LOCATION[[:space:]]*=\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_CIPHER_SUITES[[:space:]]*=\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_VERSION[[:space:]]*=[[:space:]]*(1\\.1|1\\.2)[[:space:]]*$\" \"$f\" && grep -Eiq \"^[[:space:]]*SSL_CLIENT_AUTHENTICATION[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$\" \"$f\"; then printf Compliant; fi'": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270565"
+    },
+    {
+      "check": {
         "command": "sh -c 'for f in \"${FIPS_HOME:-}\"/fips.ora \"${ORACLE_HOME:-}/ldap/admin/fips.ora\"; do [ -f \"$f\" ] && grep -Eiq \"^[[:space:]]*SSLFIPS_140[[:space:]]*=[[:space:]]*TRUE([[:space:]]|$)\" \"$f\" && printf Compliant && exit 0; done'",
         "type": "command_output"
       },
@@ -709,5 +735,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_database_19c_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Database_19c_STIG",
-  "validated_candidates": 27
+  "validated_candidates": 28
 }

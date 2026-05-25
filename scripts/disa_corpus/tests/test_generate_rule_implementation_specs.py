@@ -276,6 +276,59 @@ If the line, SQLNET.FIPS_140=TRUE is not found in $ORACLE_HOME/network/admin/sql
 
         self.assertIsNone(candidate)
 
+    def test_infers_oracle_password_transmission_tls_sqlnet_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270565',
+            'title': 'If passwords are used for authentication, the Oracle Database must transmit only encrypted representations of passwords.',
+            'check_content': '''Review configuration settings for encrypting passwords in transit across the network. If passwords are not encrypted, this is a finding.
+
+The database supports PKI-based authentication by using digital certificates over TLS in addition to the native encryption and data integrity capabilities of these protocols.
+
+Verify the $ORACLE_HOME/network/admin/sqlnet.ora contains entries similar to the following to confirm TLS is installed:
+
+WALLET_LOCATION = (SOURCE=
+(METHOD = FILE)
+(METHOD_DATA =
+DIRECTORY=/wallet)
+
+SSL_CIPHER_SUITES=(SSL_cipher_suiteExample)
+SSL_VERSION = 1.1 or 1.2
+SSL_CLIENT_AUTHENTICATION=TRUE
+
+If the sqlnet.ora file does not contain such entries, this is a finding.''',
+            'fix_text': 'Configure the database to support TLS protocols and the Oracle Wallet to store authentication and signing credentials, including private keys.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270565')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('$ORACLE_HOME/network/admin/sqlnet.ora', candidate['check']['command'])
+        self.assertIn('WALLET_LOCATION', candidate['check']['command'])
+        self.assertIn('SSL_CIPHER_SUITES', candidate['check']['command'])
+        self.assertIn('SSL_VERSION', candidate['check']['command'])
+        self.assertIn('SSL_CLIENT_AUTHENTICATION', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_oracle_password_transmission_tls_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'If passwords are used for authentication, the Oracle Database must transmit only encrypted representations of passwords.',
+            'check_content': '$ORACLE_HOME/network/admin/sqlnet.ora WALLET_LOCATION SSL_CIPHER_SUITES SSL_VERSION = 1.1 or 1.2 SSL_CLIENT_AUTHENTICATION=TRUE If the sqlnet.ora file does not contain such entries, this is a finding.',
+            'fix_text': 'Configure the database to support TLS protocols and the Oracle Wallet.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNone(candidate)
+
+    def test_rejects_oracle_password_transmission_tls_missing_required_entry(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270565',
+            'title': 'If passwords are used for authentication, the Oracle Database must transmit only encrypted representations of passwords.',
+            'check_content': '$ORACLE_HOME/network/admin/sqlnet.ora WALLET_LOCATION SSL_VERSION = 1.1 or 1.2 SSL_CLIENT_AUTHENTICATION=TRUE If the sqlnet.ora file does not contain such entries, this is a finding.',
+            'fix_text': 'Configure the database to support TLS protocols and the Oracle Wallet.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_oracle_database_admin_privileges_empty_result_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270519',
