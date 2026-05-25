@@ -177,6 +177,40 @@ def _office_disabled_policy_registry_key_absent_candidate(rule: dict, stig_id: s
     }
 
 
+def _oracle_database_19c_diag_directory_owner_only_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    if canonical_vuln_id != 'V-270541' or slug(stig_id) != 'oracle_database_19c_stig':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r"select\s+value\s+from\s+v\$parameter\s+where\s+name\s*=\s*'diagnostic_dest'",
+        r'ls\s+-ld\s+\[pathname\]/diag',
+        r'If\s+permissions\s+are\s+granted\s+for\s+world\s+access,?\s+this\s+is\s+a\s+finding',
+        r'If\s+any\s+groups\s+that\s+include\s+members\s+other\s+than\s+the\s+Oracle\s+process\s+and\s+software\s+owner\s+accounts,\s*DBAs,\s*auditors,\s*or\s*backup\s+accounts\s+are\s+listed,?\s+this\s+is\s+a\s+finding',
+    )
+    combined = f"{content}\n{fix_text}"
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "sh -c 'dest=$(sqlplus -s / as sysdba <<\"SQL\" 2>/dev/null | "
+        "awk \"NF { line=\\$0 } END { gsub(/^[[:space:]]+|[[:space:]]+$/, \\\"\\\", line); print line }\"\n"
+        "set heading off feedback off pages 0 verify off echo off\n"
+        "select value from v$parameter where name='\"'\"'diagnostic_dest'\"'\"';\n"
+        "exit\nSQL\n); "
+        "dir=${dest%/}/diag; "
+        "mode=$(stat -c %a \"$dir\" 2>/dev/null || stat -f %Lp \"$dir\" 2>/dev/null || true); "
+        "case \"$mode\" in [0-7]00|[0-7]000) printf Compliant;; esac'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_linux_8_nx_bit_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -15500,6 +15534,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     postgresql_audit_config_candidate = _postgresql_audit_explicit_config_candidate(rule, stig_id)
     if postgresql_audit_config_candidate:
         return postgresql_audit_config_candidate
+
+    oracle_diag_candidate = _oracle_database_19c_diag_directory_owner_only_candidate(rule, stig_id)
+    if oracle_diag_candidate:
+        return oracle_diag_candidate
 
     windows_applocker_deny_by_default_candidate = _windows_applocker_deny_by_default_candidate(rule, stig_id)
     if windows_applocker_deny_by_default_candidate:

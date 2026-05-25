@@ -145,6 +145,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'dest=$(sqlplus -s / as sysdba <<\"SQL\" 2>/dev/null | awk \"NF { line=\\$0 } END { gsub(/^[[:space:]]+|[[:space:]]+$/, \\\"\\\", line); print line }\"\nset heading off feedback off pages 0 verify off echo off\nselect value from v$parameter where name='\"'\"'diagnostic_dest'\"'\"';\nexit\nSQL\n); dir=${dest%/}/diag; mode=$(stat -c %a \"$dir\" 2>/dev/null || stat -f %Lp \"$dir\" 2>/dev/null || true); case \"$mode\" in [0-7]00|[0-7]000) printf Compliant;; esac'",
+        "type": "command_output"
+      },
+      "description": "The /diag subdirectory under the directory assigned to the DIAGNOSTIC_DEST parameter must be protected from unauthorized access.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270541"
+    },
+    {
+      "check": {
         "command": "sh -c 'f=\"$ORACLE_HOME/network/admin/cman.ora\"; if [ ! -f \"$f\" ] || grep -Eiq \"^[[:space:]]*REMOTE_ADMIN[[:space:]]*=[[:space:]]*NO([[:space:]]|$)\" \"$f\"; then printf Compliant; fi'",
         "type": "command_output"
       },

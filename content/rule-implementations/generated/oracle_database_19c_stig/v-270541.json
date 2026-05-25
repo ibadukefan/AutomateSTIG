@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'dest=$(sqlplus -s / as sysdba <<\"SQL\" 2>/dev/null | awk \"NF { line=\\$0 } END { gsub(/^[[:space:]]+|[[:space:]]+$/, \\\"\\\", line); print line }\"\nset heading off feedback off pages 0 verify off echo off\nselect value from v$parameter where name='\"'\"'diagnostic_dest'\"'\"';\nexit\nSQL\n); dir=${dest%/}/diag; mode=$(stat -c %a \"$dir\" 2>/dev/null || stat -f %Lp \"$dir\" 2>/dev/null || true); case \"$mode\" in [0-7]00|[0-7]000) printf Compliant;; esac'",
+      "type": "command_output"
+    },
+    "description": "The /diag subdirectory under the directory assigned to the DIAGNOSTIC_DEST parameter must be protected from unauthorized access.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "generic",
+    "vuln_id": "V-270541"
+  },
   "check_content_excerpt": "From SQL*Plus:\n\nselect value from v$parameter where name='diagnostic_dest';\n\nOn Unix Systems:\n\nls -ld [pathname]/diag\n\nSubstitute [pathname] with the directory path listed from the above SQL command, and append \"/diag\" to it, as shown.\n\nIf permissions are granted for world access, this is a finding.\n\nIf any groups that include members other than the Oracle process and software owner accounts, DBAs, auditors, or backup accounts are listed, this is a finding.\n\nOn Windows Systems (from Windows Explorer):\n\nBrowse to the \\diag directory under the directory specified.\n\nSelect and right-click on the directory >> Properties >> Security tab.\n\nIf permissions are granted to everyone, this is a finding.\n\nIf any account other than the Oracle process and software owner accounts, administrators, database administrators (DBAs), system group or developers authorized to write and debug applications on this database are listed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Alter host system permissions to the <DIAGNOSTIC_DEST>/diag directory to the Oracle process and software owner accounts, DBAs, system administrators (SAs) (if required), and developers or other users that may specifically require access for debugging or other purposes.\n\nAuthorize and document user access requirements to the directory outside of the Oracle, DBA, and SA account list.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270541r1065276_rule",
   "severity": "medium",

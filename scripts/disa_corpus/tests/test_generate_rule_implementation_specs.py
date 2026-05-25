@@ -150,6 +150,39 @@ blacklist firewire-core''',
 
         self.assertIsNone(candidate)
 
+    def test_infers_oracle_diag_directory_owner_only_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270541',
+            'title': 'The /diag subdirectory under the directory assigned to the DIAGNOSTIC_DEST parameter must be protected from unauthorized access.',
+            'check_content': (
+                "From SQL*Plus:\n\n"
+                "select value from v$parameter where name='diagnostic_dest';\n\n"
+                "On Unix Systems:\n\n"
+                "ls -ld [pathname]/diag\n\n"
+                "If permissions are granted for world access, this is a finding.\n\n"
+                "If any groups that include members other than the Oracle process and software owner accounts, DBAs, auditors, or backup accounts are listed, this is a finding."
+            ),
+            'fix_text': 'Configure the permissions on the /diag directory under the DIAGNOSTIC_DEST parameter to protect it from unauthorized access.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270541')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn("v$parameter", candidate['check']['command'])
+        self.assertIn("/diag", candidate['check']['command'])
+        self.assertIn("stat -c %a", candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_oracle_diag_directory_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The /diag subdirectory must be protected from unauthorized access.',
+            'check_content': "select value from v$parameter where name='diagnostic_dest'; ls -ld [pathname]/diag If permissions are granted for world access, this is a finding.",
+            'fix_text': 'Configure permissions on the /diag directory.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_oracle_externaljob_nobody_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270555',
