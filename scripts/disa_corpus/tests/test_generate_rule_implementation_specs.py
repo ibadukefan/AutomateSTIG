@@ -189,6 +189,81 @@ blacklist firewire-core''',
 
         self.assertIsNone(candidate)
 
+    def test_infers_cisco_nxos_bgp_as_path_origin_filter_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221109',
+            'title': 'The Cisco BGP switch must be configured to reject route advertisements from CE switches with an originating AS in the AS_PATH attribute that does not belong to that customer.',
+            'check_content': (
+                'Review the switch configuration to verify the switch is configured to deny updates received from eBGP peers that do not list their AS number as the first AS in the AS_PATH attribute.\n\n'
+                'Step 1: Review switch configuration and verify that there is an as-path access-list statement defined to only accept routes from a CE switch whose AS did not originate the route. The configuration should look similar to the following:\n\n'
+                'ip as-path access-list AS_PATH permit ^yy$\n'
+                'ip as-path access-list AS_PATH deny .*\n\n'
+                'Step 2: Verify that the as-path access-list is referenced by the filter-list inbound for the appropriate BGP neighbors as shown in the example below:\n\n'
+                'router bgp xx\n neighbor x.11.1.1\n  remote-as yy\n  address-family ipv4 unicast\n   filter-list AS_PATH in\n\n'
+                'If the switch is not configured to reject updates from peers that do not list their AS number as the first AS in the AS_PATH attribute, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure the switch to deny updates received from eBGP peers that do not list their AS number as the first AS in the AS_PATH attribute.\n\n'
+                'ip as-path access-list AS_PATH permit ^22$\n'
+                'ip as-path access-list AS_PATH deny .*\n'
+                'router bgp xx\n neighbor x.11.1.1\n  address-family ipv4 unicast\n   filter-list AS_PATH in'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221109')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('ip[[:space:]]+as-path[[:space:]]+access-list', candidate['check']['command'])
+        self.assertIn('filter-list[[:space:]]+[^[:space:]]+[[:space:]]+in', candidate['check']['command'])
+
+    def test_rejects_cisco_nxos_bgp_as_path_origin_filter_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'BGP route advertisements from CE switches must be filtered by AS_PATH.',
+            'check_content': 'ip as-path access-list AS_PATH permit ^22$\nip as-path access-list AS_PATH deny .*\nfilter-list AS_PATH in\nIf the switch is not configured to reject updates from peers that do not list their AS number as the first AS in the AS_PATH attribute, this is a finding.',
+            'fix_text': 'Configure the switch to deny updates received from eBGP peers. ip as-path access-list AS_PATH permit ^22$ ip as-path access-list AS_PATH deny .* filter-list AS_PATH in',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNone(candidate)
+
+    def test_infers_cisco_nxos_bgp_inbound_prefix_length_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221111',
+            'title': 'The Cisco BGP switch must be configured to limit the prefix size on any inbound route advertisement to /24, or the least significant prefixes issued to the customer.',
+            'check_content': (
+                'Step 1: Verify that a route filter has been configured to reject prefixes longer than /24 as shown in the example below:\n\n'
+                'ip prefix-list FILTER_PREFIX_LENGTH seq 5 permit 0.0.0.0/0 ge 8 le 24\n'
+                'ip prefix-list FILTER_PREFIX_LENGTH seq 10 deny 0.0.0.0/0 le 32\n\n'
+                'Step 2: Verify that prefix filtering has been applied to each eBGP peer as shown in the example below:\n\n'
+                'router bgp xx\n neighbor x.11.1.1\n  remote-as yy\n  address-family ipv4 unicast\n   prefix-list FILTER_PREFIX_LENGTH in\n\n'
+                'If the switch is not configured to limit the prefix size on any inbound route advertisement to /24 or the least significant prefixes issued to the customer, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure the switch to limit the prefix size on any route advertisement to /24 or the least significant prefixes issued to the customer.\n\n'
+                'ip prefix-list FILTER_PREFIX_LENGTH permit 0.0.0.0/0 ge 8 le 24\n'
+                'ip prefix-list FILTER_PREFIX_LENGTH deny 0.0.0.0/0 le 32\n'
+                'Apply the prefix list to all eBGP peers.'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221111')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('ip[[:space:]]+prefix-list', candidate['check']['command'])
+        self.assertIn('prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in', candidate['check']['command'])
+
+    def test_rejects_cisco_nxos_bgp_inbound_prefix_length_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'BGP inbound route advertisements must be limited to /24.',
+            'check_content': 'ip prefix-list FILTER_PREFIX_LENGTH permit 0.0.0.0/0 ge 8 le 24\nip prefix-list FILTER_PREFIX_LENGTH deny 0.0.0.0/0 le 32\nprefix-list FILTER_PREFIX_LENGTH in\nIf the switch is not configured to limit the prefix size on any inbound route advertisement to /24 or the least significant prefixes issued to the customer, this is a finding.',
+            'fix_text': 'Configure the switch to limit the prefix size on any route advertisement to /24. ip prefix-list FILTER_PREFIX_LENGTH permit 0.0.0.0/0 ge 8 le 24 ip prefix-list FILTER_PREFIX_LENGTH deny 0.0.0.0/0 le 32 Apply the prefix list inbound to each eBGP peer.',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_windows_server_2025_shared_printer_standard_users_print_only_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278002',

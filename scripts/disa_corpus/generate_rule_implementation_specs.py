@@ -2987,6 +2987,58 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221109':
+        combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+        required_patterns = (
+            r'reject\s+(?:route\s+advertisements|updates)\s+from\s+(?:CE\s+switches|peers).*?AS_PATH\s+attribute',
+            r'ip\s+as-path\s+access-list\s+\S+\s+permit\s+\^\S+\$',
+            r'ip\s+as-path\s+access-list\s+\S+\s+deny\s+\.\*',
+            r'filter-list\s+\S+\s+in',
+            r'Configure\s+the\s+switch\s+to\s+deny\s+updates\s+received\s+from\s+eBGP\s+peers',
+        )
+        if not all(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):
+            return None
+        command = (
+            'show running-config | awk \'BEGIN{has_permit=0; has_deny=0} '
+            '/^ip[[:space:]]+as-path[[:space:]]+access-list[[:space:]]+/ {'
+            'name=$4; if ($0 ~ /[[:space:]]permit[[:space:]]+\\^[^[:space:]]+\\$/) permit[name]=1; '
+            'if ($0 ~ /[[:space:]]deny[[:space:]]+\\.\\*/) deny[name]=1} '
+            '/^[[:space:]]*filter-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound[$1]=1} '
+            'END{for(name in inbound){if(permit[name] && deny[name]){print "Compliant"; exit}}}\''
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
+    if vuln_id == 'V-221111':
+        combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+        required_patterns = (
+            r'limit\s+the\s+prefix\s+size\s+on\s+any\s+inbound\s+route\s+advertisement\s+to\s+/24',
+            r'ip\s+prefix-list\s+\S+(?:\s+seq\s+\d+)?\s+permit\s+0\.0\.0\.0/0\s+ge\s+8\s+le\s+24',
+            r'ip\s+prefix-list\s+\S+(?:\s+seq\s+\d+)?\s+deny\s+0\.0\.0\.0/0\s+le\s+32',
+            r'prefix-list\s+\S+\s+in',
+            r'Apply\s+the\s+prefix\s+list\s+(?:inbound\s+to\s+each|to\s+all)\s+eBGP\s+peers?',
+        )
+        if not all(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):
+            return None
+        command = (
+            'show running-config | awk \'BEGIN{ } '
+            '/^ip[[:space:]]+prefix-list[[:space:]]+/ {'
+            'name=$3; if ($0 ~ /[[:space:]]permit[[:space:]]+0\\.0\\.0\\.0\\/0[[:space:]]+ge[[:space:]]+8[[:space:]]+le[[:space:]]+24/) permit[name]=1; '
+            'if ($0 ~ /[[:space:]]deny[[:space:]]+0\\.0\\.0\\.0\\/0[[:space:]]+le[[:space:]]+32/) deny[name]=1} '
+            '/^[[:space:]]*prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound[$1]=1} '
+            'END{for(name in inbound){if(permit[name] && deny[name]){print "Compliant"; exit}}}\''
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221142':
         combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
         required_patterns = (

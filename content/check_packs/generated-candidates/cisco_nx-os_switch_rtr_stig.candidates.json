@@ -236,6 +236,19 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{good_acl=\"\"; has_permit=0; has_deny=0; inbound=0} /^ip[[:space:]]+as-path[[:space:]]+access-list[[:space:]]+/ {name=$4; if ($0 ~ /[[:space:]]permit[[:space:]]+\\^[^[:space:]]+\\$/) {good_acl=name; has_permit=1} if ($0 ~ /[[:space:]]deny[[:space:]]+\\.\\*/) {has_deny=1}} /^[[:space:]]*filter-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound=1} END{if(has_permit && has_deny && inbound) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco BGP switch must be configured to reject route advertisements from CE switches with an originating AS in the AS_PATH attribute that does not belong to that customer.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221109"
+    },
+    {
+      "check": {
         "command": "show running-config | section \"^router bgp\" | include \"^ maximum-prefix \"",
         "type": "command_output"
       },
@@ -246,6 +259,19 @@
       },
       "platform": "network",
       "vuln_id": "V-221110"
+    },
+    {
+      "check": {
+        "command": "show running-config | awk 'BEGIN{has_permit=0; has_deny=0; inbound=0} /^ip[[:space:]]+prefix-list[[:space:]]+/ {if ($0 ~ /[[:space:]]permit[[:space:]]+0\\.0\\.0\\.0\\/0[[:space:]]+ge[[:space:]]+8[[:space:]]+le[[:space:]]+24/) has_permit=1; if ($0 ~ /[[:space:]]deny[[:space:]]+0\\.0\\.0\\.0\\/0[[:space:]]+le[[:space:]]+32/) has_deny=1} /^[[:space:]]*prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound=1} END{if(has_permit && has_deny && inbound) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco BGP switch must be configured to limit the prefix size on any inbound route advertisement to /24, or the least significant prefixes issued to the customer.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221111"
     },
     {
       "check": {

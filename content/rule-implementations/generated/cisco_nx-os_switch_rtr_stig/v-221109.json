@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{good_acl=\"\"; has_permit=0; has_deny=0; inbound=0} /^ip[[:space:]]+as-path[[:space:]]+access-list[[:space:]]+/ {name=$4; if ($0 ~ /[[:space:]]permit[[:space:]]+\\^[^[:space:]]+\\$/) {good_acl=name; has_permit=1} if ($0 ~ /[[:space:]]deny[[:space:]]+\\.\\*/) {has_deny=1}} /^[[:space:]]*filter-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound=1} END{if(has_permit && has_deny && inbound) print \"Compliant\"}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco BGP switch must be configured to reject route advertisements from CE switches with an originating AS in the AS_PATH attribute that does not belong to that customer.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221109"
+  },
   "check_content_excerpt": "Review the switch configuration to verify the switch is configured to deny updates received from eBGP peers that do not list their AS number as the first AS in the AS_PATH attribute.\n\nStep 1: Review switch configuration and verify that there is an as-path access-list statement defined to only accept routes from a CE switch whose AS did not originate the route. The configuration should look similar to the following:\n\nip as-path access-list AS_PATH permit ^yy$\nip as-path access-list 10 AS_PATH .*\n\nNote: the characters \u201c^\u201d and \u201c$\u201d representing the beginning and the end of the expression respectively are optional and are implicitly defined if omitted.\n\nStep 2: Verify that the as-path access-list is referenced by the filter-list inbound for the appropriate BGP neighbors as shown in the example below:\n\nrouter bgp xx\n router-id 10.1.1.1\n neighbor x.1.12.2 remote-as xx\n password 3 7b07d1b3023056a9\n address-family ipv4 unicast\n filter-list AS_PATH in\n\nIf the switch is not configured to reject updates from peers that do not list their AS number as the first AS in the AS_PATH attribute, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to deny updates received from eBGP peers that do not list their AS number as the first AS in the AS_PATH attribute.\n\nStep 1: Configure the as-path ACL as shown in the example below:\n\nSW1(config)# ip as-path access-list AS_PATH permit ^22$\nSW1(config)# ip as-path access-list AS_PATH deny .*\n\nStep 2: Apply the as-path filter inbound as shown in the example below:\n\nSW1(config)# router bgp xx\nSW1(config-router)# neighbor x.1.12.2\nSW1(config-router-neighbor)# address-family ipv4 unicast \nSW1(config-router-neighbor-af)# filter-list AS_PATH in\nSW1(config-router-neighbor-af)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221109r1137905_rule",
   "severity": "low",

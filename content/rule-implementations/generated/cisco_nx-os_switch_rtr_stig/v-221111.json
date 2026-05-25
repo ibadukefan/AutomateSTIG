@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{has_permit=0; has_deny=0; inbound=0} /^ip[[:space:]]+prefix-list[[:space:]]+/ {if ($0 ~ /[[:space:]]permit[[:space:]]+0\\.0\\.0\\.0\\/0[[:space:]]+ge[[:space:]]+8[[:space:]]+le[[:space:]]+24/) has_permit=1; if ($0 ~ /[[:space:]]deny[[:space:]]+0\\.0\\.0\\.0\\/0[[:space:]]+le[[:space:]]+32/) has_deny=1} /^[[:space:]]*prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {inbound=1} END{if(has_permit && has_deny && inbound) print \"Compliant\"}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco BGP switch must be configured to limit the prefix size on any inbound route advertisement to /24, or the least significant prefixes issued to the customer.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221111"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if it is compliant with this requirement.\n\nStep 1: Verify that a route filter has been configured to reject prefixes longer than /24 or the least significant prefixes issued to the customers as shown in the example below:\n\nip prefix-list FILTER_PREFIX_LENGTH seq 5 permit 0.0.0.0/0 ge 8 le 24\nip prefix-list FILTER_PREFIX_LENGTH seq 10 deny 0.0.0.0/0 le 32\n\nStep 2: Verify that prefix filtering has been applied to each eBGP peer as shown in the example below:\n\nrouter bgp xx\n router-id 10.1.1.1\n neighbor x.1.12.2 remote-as xx\n password 3 7b07d1b3023056a9\n address-family ipv4 unicast\n prefix-list FILTER_PREFIX_LENGTH in\n neighbor x.2.44.4 remote-as xx\n password 3 f07a10cb41db8bb6f8f0a340049a9b02\n address-family ipv4 unicast\n prefix-list FILTER_PREFIX_LENGTH in\n\nIf the switch is not configured to limit the prefix size on any inbound route advertisement to /24 or the least significant prefixes issued to the customer, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to limit the prefix size on any route advertisement to /24 or the least significant prefixes issued to the customer.\n\nStep 1: Configure a prefix list to reject any prefix that is longer than /24.\n\nSW1(config)# ip prefix-list FILTER_PREFIX_LENGTH permit 0.0.0.0/0 ge 8 le 24\nSW1(config)# ip prefix-list FILTER_PREFIX_LENGTH deny 0.0.0.0/0 le 32\n\nStep 2: Apply the prefix list to all eBGP peers as shown in the example below:\n\nSW1(config)# router bgp xx\nSW1(config-router)# neighbor x.1.12.2\nSW1(config-router-neighbor)# address-family ipv4 unicast\nSW1(config-router-neighbor-af)# prefix-list FILTER_PREFIX_LENGTH in\nSW1(config-router-neighbor-af)# exit\nSW1(config-router-neighbor)# exit\nSW1(config-router)# neighbor x.2.44.4\nSW1(config-router-neighbor)# address-family ipv4 unicast\nSW1(config-router-neighbor-af)# prefix-list FILTER_PREFIX_LENGTH in\nSW1(config-router-neighbor-af)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221111r999720_rule",
   "severity": "low",

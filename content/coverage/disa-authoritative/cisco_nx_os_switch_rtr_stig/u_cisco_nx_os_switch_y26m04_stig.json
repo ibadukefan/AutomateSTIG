@@ -560,16 +560,17 @@
       "vuln_id": "V-221108"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221109",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221109r1137905_rule",
       "severity": "low",
       "title": "The Cisco BGP switch must be configured to reject route advertisements from CE switches with an originating AS in the AS_PATH attribute that does not belong to that customer.",
-      "tracking_issue": "TODO-V-221109",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221109"
@@ -591,16 +592,17 @@
       "vuln_id": "V-221110"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221111",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221111r999720_rule",
       "severity": "low",
       "title": "The Cisco BGP switch must be configured to limit the prefix size on any inbound route advertisement to /24, or the least significant prefixes issued to the customer.",
-      "tracking_issue": "TODO-V-221111",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221111"
