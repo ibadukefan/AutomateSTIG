@@ -457,6 +457,19 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{iface=\"\"; pim=0; policy=0; bad=0} /^interface[[:space:]]+/ {if(iface != \"\" && pim && !policy){bad=1}; iface=$0; pim=0; policy=0; next} /^[[:space:]]+ip[[:space:]]+pim[[:space:]]+sparse-mode[[:space:]]*$/ {pim=1} /^[[:space:]]+ip[[:space:]]+pim[[:space:]]+neighbor-policy[[:space:]]+prefix-list[[:space:]]+[^[:space:]]+/ {policy=1} END{if(iface != \"\" && pim && !policy){bad=1}; if(!bad){print \"Compliant\"}}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco multicast switch must be configured to bind a Protocol Independent Multicast (PIM) neighbor filter to interfaces that have PIM enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221133"
+    },
+    {
+      "check": {
         "command": "show running-config | awk 'BEGIN{border=0;deny=0} /ip pim border/{border=1} /deny ip any 239\\.0\\.0\\.0\\/8/{deny=1} END{if(border&&deny) print \"Compliant\"}'",
         "type": "command_output"
       },

@@ -19107,5 +19107,114 @@ $ psql -c "ALTER ROLE <role-name> WITH NOSUPERUSER"''',
         self.assertIsNone(candidate)
 
 
+    def test_infers_windows_firewall_public_log_successful_connections_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242008',
+            'title': 'Windows Defender Firewall with Advanced Security must log successful connections when connected to a public network.',
+            'check_content': '''If the firewall's Public Profile is not enabled (see V-17417), this requirement is also a finding.
+
+If the following policy-based registry value exists and is not configured as specified, this is a finding.
+
+Registry Hive:  HKEY_LOCAL_MACHINE
+Registry Path:  \\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\\
+
+Value Name:  LogSuccessfulConnections
+
+Type:  REG_DWORD
+Value:  0x00000001 (1)
+
+If the policy-based registry value does not exist, verify the following registry value. If it is not configured as specified, this is a finding.
+
+Registry Hive:  HKEY_LOCAL_MACHINE
+Registry Path:  \\SYSTEM\\CurrentControlSet\\Services\\SharedAccess\\Parameters\\FirewallPolicy\\PublicProfile\\Logging\\
+
+Value Name:  LogSuccessfulConnections
+
+Type:  REG_DWORD
+Value:  0x00000001 (1)''' ,
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Windows Defender Firewall with Advanced Security >> Windows Defender Firewall Properties >> Public Profile tab >> Logging (select Customize), "Logged successful connections" to "Yes".',
+        }, 'Windows_Firewall_with_Advanced_Security')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-242008')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertIn('LogSuccessfulConnections', candidate['check']['command'])
+        self.assertIn('SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging', candidate['check']['command'])
+        self.assertIn('SYSTEM\\CurrentControlSet\\Services\\SharedAccess\\Parameters\\FirewallPolicy\\PublicProfile\\Logging', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_windows_firewall_public_log_successful_connections_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Windows Defender Firewall with Advanced Security must log successful connections when connected to a public network.',
+            'check_content': 'Registry Path: \\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\\ Value Name: LogSuccessfulConnections Type: REG_DWORD Value: 0x00000001 (1)',
+            'fix_text': 'Logged successful connections" to "Yes".',
+        }, 'Windows_Firewall_with_Advanced_Security')
+
+        self.assertIsNone(candidate)
+
+    def test_infers_windows_fix_only_feature_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254273',
+            'title': 'Windows Server 2022 must not have the Telnet Client installed.',
+            'check_content': '',
+            'fix_text': 'Uninstall the "Telnet Client" feature. Start "Server Manager". Select the server with the feature. Scroll down to "ROLES AND FEATURES" in the right pane. Select "Remove Roles and Features" from the drop-down TASKS list.',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-254273')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': 'Telnet-Client', 'should_be_installed': False})
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
+    def test_rejects_windows_fix_only_feature_absent_candidate_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-999999',
+            'title': 'Windows Server 2022 must not have the Telnet Client installed.',
+            'check_content': '',
+            'fix_text': 'Uninstall the "Telnet Client" feature.',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+
+        self.assertIsNone(candidate)
+
+    def test_infers_cisco_nxos_pim_neighbor_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221133',
+            'title': 'The Cisco multicast switch must be configured to bind a Protocol Independent Multicast (PIM) neighbor filter to interfaces that have PIM enabled.',
+            'check_content': '''Step 1: Verify all interfaces enabled for PIM have a neighbor policy bound to the interface as shown in the example below:
+
+interface Ethernet2/1
+ no switchport
+ ip address 10.1.12.1/24
+ ip pim sparse-mode
+ ip pim neighbor-policy prefix-list PIM_NEIGHBOR
+ no shutdown
+
+Step 2: Review the configured prefix list for filtering PIM neighbors as shown in the example below:
+
+ip prefix-list PIM_NEIGHBOR seq 5 permit 10.1.12.2/32
+ip prefix-list PIM_NEIGHBOR seq 10 deny 0.0.0.0/0 le 32
+
+If PIM neighbor ACLs are not bound to all interfaces that have PIM enabled, this is a finding.''' ,
+            'fix_text': 'Configure neighbor prefix lists to only accept PIM control plane traffic from documented PIM neighbors. Apply a prefix to all interfaces enabled for PIM. SW1(config-if)# ip pim neighbor-policy prefix-list PIM_NEIGHBOR',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221133')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertIn('pim[[:space:]]+sparse-mode', candidate['check']['command'])
+        self.assertIn('pim[[:space:]]+neighbor-policy', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_cisco_nxos_pim_neighbor_policy_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The Cisco multicast switch must be configured to bind a Protocol Independent Multicast (PIM) neighbor filter to interfaces that have PIM enabled.',
+            'check_content': 'ip pim sparse-mode ip pim neighbor-policy prefix-list PIM_NEIGHBOR If PIM neighbor ACLs are not bound to all interfaces that have PIM enabled, this is a finding.',
+            'fix_text': 'ip pim neighbor-policy prefix-list PIM_NEIGHBOR',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNone(candidate)
+
 if __name__ == '__main__':
     unittest.main()

@@ -1053,6 +1053,44 @@ def _windows_server_2025_time_service_candidate(rule: dict, stig_id: str) -> dic
     }
 
 
+def _windows_firewall_public_log_successful_connections_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Windows_Firewall_with_Advanced_Security' or rule.get('vuln_id') != 'V-242008':
+        return None
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{title}\n{content}\n{fix_text}"
+    required_patterns = (
+        r'Windows\s+Defender\s+Firewall\s+with\s+Advanced\s+Security\s+must\s+log\s+successful\s+connections\s+when\s+connected\s+to\s+a\s+public\s+network',
+        r'SOFTWARE\\+Policies\\+Microsoft\\+WindowsFirewall\\+PublicProfile\\+Logging',
+        r'SYSTEM\\+CurrentControlSet\\+Services\\+SharedAccess\\+Parameters\\+FirewallPolicy\\+PublicProfile\\+Logging',
+        r'Value\s+Name:\s*LogSuccessfulConnections',
+        r'Type:\s*REG_DWORD',
+        r'Value:\s*0x00000001\s*\(1\)',
+        r'policy-based\s+registry\s+value\s+does\s+not\s+exist',
+        r'Logged\s+successful\s+connections["”]?\s+to\s+["“]Yes["”]',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        'powershell -NoProfile -Command "'
+        "$name='LogSuccessfulConnections'; "
+        "$policy='HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging'; "
+        "$runtime='HKLM:\\SYSTEM\\CurrentControlSet\\Services\\SharedAccess\\Parameters\\FirewallPolicy\\PublicProfile\\Logging'; "
+        "$item=Get-ItemProperty -Path $policy -Name $name -ErrorAction SilentlyContinue; "
+        "if (-not $item) { $item=Get-ItemProperty -Path $runtime -Name $name -ErrorAction SilentlyContinue }; "
+        "if ($item -and $item.$name -eq 1) { 'Compliant' }"
+        '"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': title,
+    }
+
+
 def _windows_host_firewall_enabled_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -3031,6 +3069,32 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'platform': 'network',
             'check': {'type': 'command_output', 'command': spec['command']},
             'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
+    if vuln_id == 'V-221133':
+        combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+        required_patterns = (
+            r'Verify\s+all\s+interfaces\s+enabled\s+for\s+PIM\s+have\s+a\s+neighbor\s+policy\s+bound\s+to\s+the\s+interface',
+            r'ip\s+pim\s+sparse-mode',
+            r'ip\s+pim\s+neighbor-policy\s+prefix-list\s+\S+',
+            r'If\s+PIM\s+neighbor\s+ACLs\s+are\s+not\s+bound\s+to\s+all\s+interfaces\s+that\s+have\s+PIM\s+enabled,\s+this\s+is\s+a\s+finding',
+            r'Apply\s+a\s+prefix\s+to\s+all\s+interfaces\s+enabled\s+for\s+PIM',
+        )
+        if not all(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):
+            return None
+        command = (
+            "show running-config | awk '"
+            "BEGIN{iface=\"\"; pim=0; policy=0; bad=0} "
+            "/^interface[[:space:]]+/ {if(iface != \"\" && pim && !policy){bad=1}; iface=$0; pim=0; policy=0; next} "
+            "/^[[:space:]]+ip[[:space:]]+pim[[:space:]]+sparse-mode[[:space:]]*$/ {pim=1} "
+            "/^[[:space:]]+ip[[:space:]]+pim[[:space:]]+neighbor-policy[[:space:]]+prefix-list[[:space:]]+[^[:space:]]+/ {policy=1} "
+            "END{if(iface != \"\" && pim && !policy){bad=1}; if(!bad){print \"Compliant\"}}'"
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
             'description': rule.get('title', ''),
         }
     if vuln_id == 'V-221109':
@@ -16039,7 +16103,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     if iis_server_exact_candidate:
         return iis_server_exact_candidate
 
-    if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'office', 'adobe', 'acrobat')):
+    if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'firewall', 'office', 'adobe', 'acrobat')):
         firmware_state_candidate = _windows_firmware_state_candidate(rule, stig_id)
         if firmware_state_candidate:
             return firmware_state_candidate
@@ -16063,6 +16127,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         windows_server_2025_time_service_candidate = _windows_server_2025_time_service_candidate(rule, stig_id)
         if windows_server_2025_time_service_candidate:
             return windows_server_2025_time_service_candidate
+
+        firewall_log_success_candidate = _windows_firewall_public_log_successful_connections_candidate(rule, stig_id)
+        if firewall_log_success_candidate:
+            return firewall_log_success_candidate
 
         host_firewall_candidate = _windows_host_firewall_enabled_candidate(rule, stig_id)
         if host_firewall_candidate:

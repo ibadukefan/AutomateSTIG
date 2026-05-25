@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{iface=\"\"; pim=0; policy=0; bad=0} /^interface[[:space:]]+/ {if(iface != \"\" && pim && !policy){bad=1}; iface=$0; pim=0; policy=0; next} /^[[:space:]]+ip[[:space:]]+pim[[:space:]]+sparse-mode[[:space:]]*$/ {pim=1} /^[[:space:]]+ip[[:space:]]+pim[[:space:]]+neighbor-policy[[:space:]]+prefix-list[[:space:]]+[^[:space:]]+/ {policy=1} END{if(iface != \"\" && pim && !policy){bad=1}; if(!bad){print \"Compliant\"}}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco multicast switch must be configured to bind a Protocol Independent Multicast (PIM) neighbor filter to interfaces that have PIM enabled.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221133"
+  },
   "check_content_excerpt": "Step 1: Verify all interfaces enabled for PIM have a neighbor policy bound to the interface as shown in the example below:\n\ninterface Ethernet2/1\n no switchport\n ip address 10.1.12.1/24\n ip pim sparse-mode\n ip pim neighbor-policy prefix-list PIM_NEIGHBOR\n no shutdown\n\nStep 2: Review the configured prefix list for filtering PIM neighbors as shown in the example below:\n\nip prefix-list PIM_NEIGHBOR seq 5 permit 10.1.12.2/32\nip prefix-list PIM_NEIGHBOR seq 10 deny 0.0.0.0/0 le 32\n\nIf PIM neighbor ACLs are not bound to all interfaces that have PIM enabled, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure neighbor prefix lists to only accept PIM control plane traffic from documented PIM neighbors. \n\nStep 1: Configure prefix list for each PIM neighbor.\n\nSW1(config)# ip prefix-list PIM_NEIGHBOR seq 5 permit 10.1.12.2/32\nSW1(config)# ip prefix-list PIM_NEIGHBOR deny 0.0.0.0/0 le 32\n\nStep 2: Apply a prefix to all interfaces enabled for PIM.\n\nSW1(config)# int e2/1\nSW1(config-if)# ip pim neighbor-policy prefix-list PIM_NEIGHBOR \nSW1(config-if)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221133r1137911_rule",
   "severity": "medium",

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 45,
+  "candidate_checks": 46,
   "cases": [
     {
       "check": {
@@ -913,6 +913,32 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{iface=\"\"; pim=0; policy=0; bad=0} /^interface[[:space:]]+/ {if(iface != \"\" && pim && !policy){bad=1}; iface=$0; pim=0; policy=0; next} /^[[:space:]]+ip[[:space:]]+pim[[:space:]]+sparse-mode[[:space:]]*$/ {pim=1} /^[[:space:]]+ip[[:space:]]+pim[[:space:]]+neighbor-policy[[:space:]]+prefix-list[[:space:]]+[^[:space:]]+/ {policy=1} END{if(iface != \"\" && pim && !policy){bad=1}; if(!bad){print \"Compliant\"}}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco multicast switch must be configured to bind a Protocol Independent Multicast (PIM) neighbor filter to interfaces that have PIM enabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{iface=\"\"; pim=0; policy=0; bad=0} /^interface[[:space:]]+/ {if(iface != \"\" && pim && !policy){bad=1}; iface=$0; pim=0; policy=0; next} /^[[:space:]]+ip[[:space:]]+pim[[:space:]]+sparse-mode[[:space:]]*$/ {pim=1} /^[[:space:]]+ip[[:space:]]+pim[[:space:]]+neighbor-policy[[:space:]]+prefix-list[[:space:]]+[^[:space:]]+/ {policy=1} END{if(iface != \"\" && pim && !policy){bad=1}; if(!bad){print \"Compliant\"}}'": "unexpected-Compliant"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{iface=\"\"; pim=0; policy=0; bad=0} /^interface[[:space:]]+/ {if(iface != \"\" && pim && !policy){bad=1}; iface=$0; pim=0; policy=0; next} /^[[:space:]]+ip[[:space:]]+pim[[:space:]]+sparse-mode[[:space:]]*$/ {pim=1} /^[[:space:]]+ip[[:space:]]+pim[[:space:]]+neighbor-policy[[:space:]]+prefix-list[[:space:]]+[^[:space:]]+/ {policy=1} END{if(iface != \"\" && pim && !policy){bad=1}; if(!bad){print \"Compliant\"}}'": "Compliant"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221133"
+    },
+    {
+      "check": {
         "command": "show running-config | awk 'BEGIN{border=0;deny=0} /ip pim border/{border=1} /deny ip any 239\\.0\\.0\\.0\\/8/{deny=1} END{if(border&&deny) print \"Compliant\"}'",
         "type": "command_output"
       },
@@ -1177,5 +1203,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 45
+  "validated_candidates": 46
 }
