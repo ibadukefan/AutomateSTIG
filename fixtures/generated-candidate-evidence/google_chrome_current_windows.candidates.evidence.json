@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 24,
+  "candidate_checks": 25,
   "cases": [
     {
       "check": {
@@ -216,6 +216,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221595"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\Software\\Policies\\Google\\Chrome\\AutoplayAllowlist')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "URLs must be allowlisted for Autoplay use.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\Software\\Policies\\Google\\Chrome\\AutoplayAllowlist')) { 'Absent' }\"": "unexpected-Absent"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\Software\\Policies\\Google\\Chrome\\AutoplayAllowlist')) { 'Absent' }\"": "Absent"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221596"
     },
     {
       "check": {
@@ -655,5 +681,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Google_Chrome_Current_Windows",
-  "validated_candidates": 24
+  "validated_candidates": 25
 }

@@ -114,6 +114,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\Software\\Policies\\Google\\Chrome\\AutoplayAllowlist')) { 'Absent' }\"",
+        "type": "command_output"
+      },
+      "description": "URLs must be allowlisted for Autoplay use.",
+      "expected": {
+        "type": "equals",
+        "value": "Absent"
+      },
+      "platform": "windows",
+      "vuln_id": "V-221596"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Google\\Chrome",
         "type": "registry",
         "value_name": "UrlKeyedAnonymizedDataCollectionEnabled"

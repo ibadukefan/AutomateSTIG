@@ -691,6 +691,35 @@ blacklist firewire-core''',
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Absent'})
         self.assertIn('HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallAllowlist', candidate['check']['command'])
 
+    def test_infers_chrome_autoplay_optional_allowlist_registry_absent_candidate_from_base_policy_path(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221596',
+            'title': 'URLs must be allowlisted for Autoplay use.',
+            'check_content': (
+                'Universal method:\n'
+                '1. In the omnibox (address bar), type chrome://policy.\n'
+                '2. If “AutoplayAllowlist” under the “Policy Name” column may be set to a list of administrator-approved URLs under the “Policy Value” column. This requirement is optional.\n\n'
+                'Windows method:\n'
+                '1. Start regedit.\n'
+                '2. Navigate to HKLM\\Software\\Policies\\Google\\Chrome\\\n'
+                '3. If the “AutoplayAllowlist” key may contain a list of administrator-approved URLs. This requirement is optional.'
+            ),
+            'fix_text': (
+                'Windows group policy:\n'
+                'Policy Path: Computer Configuration\\Administrative Templates\\Google\\Google Chrome\n'
+                'Policy Name: Allow media autoplay on a allowlist of URL patterns.\n'
+                'Policy State: Enabled\n'
+                'Policy Value 1: [*.]mil\n'
+                'Policy Value 2: [*.]gov\n'
+                'Note: Policy values are examples.'
+            ),
+        }, 'Google_Chrome_Current_Windows')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221596')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Absent'})
+        self.assertIn('HKLM:\\Software\\Policies\\Google\\Chrome\\AutoplayAllowlist', candidate['check']['command'])
+
     def test_rejects_browser_optional_allowlist_without_exact_supported_vuln_id(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-999999',

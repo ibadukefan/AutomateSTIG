@@ -15282,20 +15282,31 @@ def _browser_optional_allowlist_absent_candidate(rule: dict, stig_id: str) -> di
         return None
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
-    if not re.search(r'\bif\s+used\b', rule.get('title', ''), re.IGNORECASE):
+    combined = content + '\n' + fix_text
+    title_has_if_used = re.search(r'\bif\s+used\b', rule.get('title', ''), re.IGNORECASE)
+    content_optional = re.search(r'(?:not\s+required;\s+this\s+is\s+optional|this\s+requirement\s+is\s+optional)', content, re.IGNORECASE)
+    if not content_optional or (not title_has_if_used and canonical_vuln_id != 'V-221596'):
         return None
-    if not re.search(r'not\s+required;\s+this\s+is\s+optional', content, re.IGNORECASE):
-        return None
-    if not re.search(r'\ballowlist(?:ed)?\b', content + '\n' + fix_text, re.IGNORECASE):
+    if not re.search(r'\ballowlist(?:ed)?\b', combined, re.IGNORECASE):
         return None
     path_match = re.search(
         rf'((?:HKLM|HKCU)\\SOFTWARE\\Policies\\(?:Microsoft\\Edge|Google\\Chrome)\\{re.escape(value_key)})\\\d+\s*=',
         content,
         re.IGNORECASE,
     )
-    if not path_match:
-        return None
-    path = _normalize_registry_path(path_match.group(1))
+    if path_match:
+        path = _normalize_registry_path(path_match.group(1))
+    else:
+        if canonical_vuln_id != 'V-221596':
+            return None
+        base_path_match = re.search(
+            r'(HKLM\\Software\\Policies\\Google\\Chrome)\\?',
+            content,
+            re.IGNORECASE,
+        )
+        if not base_path_match or not re.search(r'\bAutoplayAllowlist\b', content):
+            return None
+        path = _normalize_registry_path(base_path_match.group(1) + '\\' + value_key)
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'windows',

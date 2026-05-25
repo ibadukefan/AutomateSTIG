@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"if (-not (Test-Path -LiteralPath 'HKLM:\\Software\\Policies\\Google\\Chrome\\AutoplayAllowlist')) { 'Absent' }\"",
+      "type": "command_output"
+    },
+    "description": "URLs must be allowlisted for Autoplay use.",
+    "expected": {
+      "type": "equals",
+      "value": "Absent"
+    },
+    "platform": "windows",
+    "vuln_id": "V-221596"
+  },
   "check_content_excerpt": "Universal method:\n1. In the omnibox (address bar), type chrome://policy.\n2. If \u201cAutoplayAllowlist\u201d under the \u201cPolicy Name\u201d column may be set to a list of administrator-approved URLs under the \u201cPolicy Value\u201d column. This requirement is optional.\n\nWindows method:\n1. Start regedit.\n2. Navigate to HKLM\\Software\\Policies\\Google\\Chrome\\\n3. If the \u201cAutoplayAllowlist\u201d key may contain a list of administrator-approved URLs. This requirement is optional.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Absent"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Windows group policy:\n1. Open the \u201cgroup policy editor\u201d tool with gpedit.msc.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Google\\Google Chrome\n- Policy Name: Allow media autoplay on a allowlist of URL patterns.\n- Policy State: Enabled\n- Policy Value 1: [*.]mil\n- Policy Value 2: [*.]gov\n\nNote: Policy values are examples.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221596r961092_rule",
   "severity": "medium",
