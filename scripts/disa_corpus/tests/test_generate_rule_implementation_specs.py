@@ -11,6 +11,37 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_quoted_scap_modprobe_fix_only_kernel_module_disable(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-257806',
+            'title': 'RHEL 9 must be configured to disable the FireWire kernel module.',
+            'check_content': '',
+            'fix_text': '''To configure the system to prevent the firewire-core kernel module from being loaded, add the following lines to the file "/etc/modprobe.d/firewire-core.conf" (or create "firewire-core.conf" if it does not exist):
+
+install firewire-core /bin/false
+blacklist firewire-core''',
+        }, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'xccdf_mil.disa.stig_group_V-257806')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('modprobe -n -v firewire-core', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_infers_tomcat_auditd_mail_alert_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223010',
+            'title': 'The application server must alert the system administrator (SA) and information system security offer (ISSO), at a minimum, in the event of a log processing failure.',
+            'check_content': 'This requirement cannot be met by the Tomcat server natively and must be done at the OS. Review the operating system. Ensure the OS is configured to alert the ISSO and SA in the event of an audit processing failure. If the OS is not configured to alert the ISSO and SA in the event of an audit processing failure, this is a finding.',
+            'fix_text': 'Configure "auditd" service to notify the SA and ISSO in the event of an audit processing failure. Edit the following line in "/etc/audit/auditd.conf" to ensure that administrators are notified via email for those situations:\n\naction_mail_acct = root\n\nRestart the auditd service so the changes take effect.',
+        }, 'Tomcat_Application_Server_9_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-223010')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('/etc/audit/auditd.conf', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
     def test_copies_duplicate_candidate_for_lowercase_xccdf_group_vuln_ids(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

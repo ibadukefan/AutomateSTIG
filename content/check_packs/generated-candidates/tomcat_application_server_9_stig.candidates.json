@@ -662,6 +662,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-223009"
+    },
+    {
+      "check": {
+        "command": "sh -c \"grep -E '^[[:space:]]*action_mail_acct[[:space:]]*=[[:space:]]*root[[:space:]]*$' /etc/audit/auditd.conf >/dev/null 2>&1 && printf Compliant\"",
+        "type": "command_output"
+      },
+      "description": "The application server must alert the system administrator (SA) and information system security offer (ISSO), at a minimum, in the event of a log processing failure.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-223010"
     }
   ],
   "platform": "linux",

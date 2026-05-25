@@ -2308,7 +2308,7 @@ def _linux_kernel_module_disabled_from_modprobe_fix_candidate(rule: dict, stig_i
         return None
     fix_text = rule.get('fix_text', '') or ''
     module_match = re.search(
-        r'add\s+the\s+following\s+lines\s+to\s+the\s+file\s+/etc/modprobe\.d/[A-Za-z0-9_.-]+\.conf.*?\n\s*install\s+([A-Za-z0-9_-]+)\s+/bin/false\s*\n\s*blacklist\s+([A-Za-z0-9_-]+)(?:\s|$)',
+        r'add\s+the\s+following\s+lines\s+to\s+the\s+file\s+["“]?/etc/modprobe\.d/[A-Za-z0-9_.-]+\.conf["”]?.*?\n\s*install\s+([A-Za-z0-9_-]+)\s+/bin/false\s*\n\s*blacklist\s+([A-Za-z0-9_-]+)(?:\s|$)',
         fix_text,
         re.IGNORECASE | re.DOTALL,
     )
@@ -7654,6 +7654,27 @@ def _tomcat_lockout_realm_candidate(rule: dict, stig_id: str) -> dict | None:
         'platform': 'generic',
         'check': {'type': 'command_output', 'command': f"xmllint --xpath 'string(//Realm[contains(@className,\"LockOutRealm\")]/@{attr_name})' $CATALINA_BASE/conf/server.xml 2>/dev/null"},
         'expected': {'type': 'equals', 'value': expected_value},
+        'description': rule.get('title', ''),
+    }
+
+
+def _tomcat_auditd_action_mail_acct_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Tomcat_Application_Server_9_STIG' or rule.get('vuln_id') != 'V-223010':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if not re.search(r'alert\s+the\s+ISSO\s+and\s+SA\s+in\s+the\s+event\s+of\s+an\s+audit\s+processing\s+failure', content, re.IGNORECASE):
+        return None
+    if not re.search(r'/etc/audit/auditd\.conf', fix_text, re.IGNORECASE):
+        return None
+    if not re.search(r'(?m)^\s*action_mail_acct\s*=\s*root\s*$', fix_text):
+        return None
+    command = "sh -c \"grep -E '^[[:space:]]*action_mail_acct[[:space:]]*=[[:space:]]*root[[:space:]]*$' /etc/audit/auditd.conf >/dev/null 2>&1 && printf Compliant\""
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
         'description': rule.get('title', ''),
     }
 
@@ -16159,6 +16180,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     tomcat_lockout_realm_candidate = _tomcat_lockout_realm_candidate(rule, stig_id)
     if tomcat_lockout_realm_candidate:
         return tomcat_lockout_realm_candidate
+
+    tomcat_action_mail_candidate = _tomcat_auditd_action_mail_acct_candidate(rule, stig_id)
+    if tomcat_action_mail_candidate:
+        return tomcat_action_mail_candidate
 
     tomcat_auditctl_candidate = _tomcat_auditctl_expected_rule_candidate(rule, stig_id)
     if tomcat_auditctl_candidate:

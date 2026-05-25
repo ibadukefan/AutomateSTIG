@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 51,
+  "candidate_checks": 52,
   "cases": [
     {
       "check": {
@@ -1326,6 +1326,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223009"
+    },
+    {
+      "check": {
+        "command": "sh -c \"grep -E '^[[:space:]]*action_mail_acct[[:space:]]*=[[:space:]]*root[[:space:]]*$' /etc/audit/auditd.conf >/dev/null 2>&1 && printf Compliant\"",
+        "type": "command_output"
+      },
+      "description": "The application server must alert the system administrator (SA) and information system security offer (ISSO), at a minimum, in the event of a log processing failure.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"grep -E '^[[:space:]]*action_mail_acct[[:space:]]*=[[:space:]]*root[[:space:]]*$' /etc/audit/auditd.conf >/dev/null 2>&1 && printf Compliant\"": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"grep -E '^[[:space:]]*action_mail_acct[[:space:]]*=[[:space:]]*root[[:space:]]*$' /etc/audit/auditd.conf >/dev/null 2>&1 && printf Compliant\"": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223010"
     }
   ],
   "production_claim": false,
@@ -1333,5 +1359,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 51
+  "validated_candidates": 52
 }
