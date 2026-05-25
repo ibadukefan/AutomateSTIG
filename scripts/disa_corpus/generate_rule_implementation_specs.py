@@ -3016,6 +3016,34 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': 'Compliant'},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221074':
+        combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+        required_patterns = (
+            r'For\s+every\s+routing\s+protocol\s+that\s+affects\s+the\s+routing\s+or\s+forwarding\s+tables',
+            r'encrypting\s+the\s+authentication\s+key',
+            r'If\s+the\s+routing\s+protocol\s+is\s+not\s+encrypting\s+the\s+authentication\s+key,\s+this\s+is\s+a\s+finding',
+            r'Configure\s+all\s+routing\s+protocol\s+authentications\s+to\s+encrypt\s+the\s+authentication\s+key',
+            r'\bpassword\s+3\s+',
+            r'authentication\s+mode\s+(?:eigrp\s+\d+\s+)?md5',
+            r'isis\s+authentication-type\s+md5',
+            r'ip\s+ospf\s+authentication\s+message-digest',
+            r'ip\s+rip\s+authentication\s+mode\s+md5',
+        )
+        if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+            return None
+        command = (
+            'show running-config | awk \'BEGIN{seen=0;bad=0} '
+            '/password[[:space:]]+3[[:space:]]/ || /authentication[[:space:]]+mode([[:space:]]+[[:alnum:]_-]+)*[[:space:]]+md5/ || /authentication-type[[:space:]]+md5/ || /message-digest/ {seen=1} '
+            '/password[[:space:]]+(0|7)[[:space:]]/ || /authentication[[:space:]]+mode([[:space:]]+[[:alnum:]_-]+)*[[:space:]]+text/ {bad=1} '
+            'END{if(seen && !bad) print "Compliant"}\''
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221073':
         if not re.search(r'key\s+chains\s+used\s+for\s+routing\s+protocol\s+authentication', content, re.IGNORECASE):
             return None

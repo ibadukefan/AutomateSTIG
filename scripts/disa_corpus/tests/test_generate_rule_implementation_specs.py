@@ -743,6 +743,47 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertIn('send-lifetime', candidate['check']['command'])
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
 
+    def test_infers_cisco_nxos_routing_protocol_authentication_encryption_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221074',
+            'title': 'The Cisco switch must be configured to encrypt routing protocol authentication keys.',
+            'check_content': (
+                'Review the switch configuration. For every routing protocol that affects the routing or forwarding tables, '
+                'verify that neighbor switch authentication is encrypting the authentication key as shown in the examples below:\n\n'
+                'BGP Example\nrouter bgp 1\n neighbor 10.1.12.2 remote-as 2\n neighbor 10.1.12.2 password 3 3ec66c90c104ad13\n\n'
+                'EIGRP Example\ninterface Ethernet2/21\n ip authentication mode eigrp 1 md5\n\n'
+                'IS-IS Example\ninterface Ethernet2/20\n isis authentication-type md5 level-1\n\n'
+                'OSPF Example\ninterface Ethernet2/2\n ip ospf authentication message-digest\n ip ospf message-digest-key 1 md5 3 3ec66c90c104ad13\n\n'
+                'RIP Example\ninterface Ethernet2/8\n ip rip authentication mode md5\n\n'
+                'If the routing protocol is not encrypting the authentication key, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure all routing protocol authentications to encrypt the authentication key.\n'
+                'BGP Example\nSW1(config-switch)#neighbor x.x.x.x password xxxxxx\n'
+                'EIGRP Example\nSW1(config-router)# authentication mode md5\n'
+                'IS-IS Example\nSW1(config-if)# isis authentication-type md5 level-1\n'
+                'OSPF Example\nSW1(config-if)# ip ospf authentication message-digest\n'
+                'RIP Example\nSW1(config-if)# ip rip authentication mode md5'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221074')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('show running-config', candidate['check']['command'])
+        self.assertIn('password[[:space:]]+3', candidate['check']['command'])
+        self.assertIn('authentication[[:space:]]+mode', candidate['check']['command'])
+        self.assertIn('message-digest', candidate['check']['command'])
+
+    def test_rejects_cisco_nxos_routing_protocol_authentication_encryption_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The Cisco switch must be configured to encrypt routing protocol authentication keys.',
+            'check_content': 'If the routing protocol is not encrypting the authentication key, this is a finding. ip ospf authentication message-digest',
+            'fix_text': 'Configure all routing protocol authentications to encrypt the authentication key. authentication mode md5',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_ubuntu_24_chrony_authoritative_source_maxpoll_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270751',

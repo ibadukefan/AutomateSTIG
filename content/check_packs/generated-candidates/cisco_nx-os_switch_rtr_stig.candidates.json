@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{seen=0;bad=0} /password[[:space:]]+3[[:space:]]/ || /authentication[[:space:]]+mode([[:space:]]+[[:alnum:]_-]+)*[[:space:]]+md5/ || /authentication-type[[:space:]]+md5/ || /message-digest/ {seen=1} /password[[:space:]]+(0|7)[[:space:]]/ || /authentication[[:space:]]+mode([[:space:]]+[[:alnum:]_-]+)*[[:space:]]+text/ {bad=1} END{if(seen && !bad) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco switch must be configured to use encryption for routing protocol authentication.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221074"
+    },
+    {
+      "check": {
         "command": "show running-config | section ^callhome | include \"^ enable$\"",
         "type": "command_output"
       },

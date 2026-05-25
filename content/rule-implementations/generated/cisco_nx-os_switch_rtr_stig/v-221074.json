@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{seen=0;bad=0} /password[[:space:]]+3[[:space:]]/ || /authentication[[:space:]]+mode([[:space:]]+[[:alnum:]_-]+)*[[:space:]]+md5/ || /authentication-type[[:space:]]+md5/ || /message-digest/ {seen=1} /password[[:space:]]+(0|7)[[:space:]]/ || /authentication[[:space:]]+mode([[:space:]]+[[:alnum:]_-]+)*[[:space:]]+text/ {bad=1} END{if(seen && !bad) print \"Compliant\"}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must be configured to use encryption for routing protocol authentication.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221074"
+  },
   "check_content_excerpt": "Review the switch configuration. For every routing protocol that affects the routing or forwarding tables, verify that neighbor switch authentication is encrypting the authentication key as shown in the examples below:\n\nBGP Example\n\nrouter bgp 1\n router-id 1.1.1.1\n address-family ipv4 unicast\n neighbor 10.1.12.2 remote-as 2\n password 3 3ec66c90c104ad13\n\nNote: BGP authentication uses MD5. \n\nEIGRP Example\n\ninterface Ethernet2/21\n no switchport\n ip router eigrp 1\n ip authentication mode eigrp 1 md5\n\nor\n\nrouter eigrp 1\n authentication mode md5\n\nNote: Interface authentication overrides process authentication.\n\nIS-IS Example\n\ninterface Ethernet2/20\n no switchport\n isis authentication-type md5 level-1\n\nOSPF Example\n\ninterface Ethernet2/2\n no switchport\n mac-address 0000.0000.002f\n ip ospf authentication message-digest\n ip ospf message-digest-key 1 md5 3 3ec66c90c104ad13\n\nRIP Example\n\ninterface Ethernet2/8\n no switchport\n ip rip authentication mode md5\n\nIf the routing protocol is not encrypting the authentication key, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure all routing protocol authentications to encrypt the authentication key.\n\nBGP Example\n\nSW1(config)#switch bgp nn\nSW1(config-switch)#neighbor x.x.x.x password xxxxxx\n\nEIGRP Example\n\nSW1(config)# router eigrp 1\nSW1(config-router)# authentication mode md5\nSW1(config-router)# end\n\nor\n\nAuthentication for the EIGRP neighbor\n\nSW1(config)# int e2/21\nSW1(config-if)# ip authentication mode eigrp 1 md5 \nSW1(config-if)# end\n\nNote: Interface authentication overrides process authentication.\n\nIS-IS Example\n\nSW1(config)# int e2/20\nSW1(config-if)# isis authentication-type md5 level-1\n\nOSPF Example\n\nSW1(config)# int e2/2\nSW1(config-if)# ip ospf authentication message-digest \nSW1(config-if)# ip ospf message-digest-key 1 md5 xxxxxxxxxxx\n\nRIP Example\n\nSW1(config)# int e2/8\nSW1(config-if)# ip rip authentication mode md5",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221074r999683_rule",
   "severity": "medium",
