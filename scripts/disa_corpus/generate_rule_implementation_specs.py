@@ -3114,6 +3114,36 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': 'Compliant'},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221075':
+        combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+        required_patterns = (
+            r'NIST-validated\s+FIPS\s+198-1',
+            r'message\s+authentication\s+code\s+algorithm',
+            r'cryptographic-algorithm\s+hmac-sha-256',
+            r'ip\s+ospf\s+authentication\s+key-chain\s+\S+',
+            r'BGP,\s*RIP,\s*EIGRP,\s*IS-IS\s+do\s+not\s+support\s+any\s+FIPS\s+198-1\s+HMAC\s+algorithms',
+            r'If\s+a\s+NIST-validated\s+FIPS\s+198-1\s+(?:MAC|message\s+authentication\s+code)\s+algorithm\s+is\s+not\s+(?:being\s+)?used\s+to\s+authenticate\s+routing\s+protocol\s+messages,\s+this\s+is\s+a\s+finding',
+        )
+        if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+            return None
+        command = (
+            'show running-config | awk \'BEGIN{chain=""; key=""; seen=0; bad=0} '
+            '/^key[[:space:]]+chain[[:space:]]+/ {chain=$3; key=""; next} '
+            '/^[^[:space:]]/ && $1 != "key" {chain=""; key=""} '
+            'chain != "" && /^[[:space:]]*key[[:space:]]+[0-9]+/ {key=$2; keys[chain SUBSEP key]=1; next} '
+            'chain != "" && key != "" && /^[[:space:]]*cryptographic-algorithm[[:space:]]+hmac-sha-256[[:space:]]*$/ {ok[chain SUBSEP key]=1} '
+            '/^[[:space:]]*ip[[:space:]]+ospf[[:space:]]+authentication[[:space:]]+key-chain[[:space:]]+/ {used[$5]=1; seen=1} '
+            '/^[[:space:]]*ip[[:space:]]+ospf[[:space:]]+authentication[[:space:]]+message-digest/ || /^[[:space:]]*ip[[:space:]]+ospf[[:space:]]+message-digest-key/ {bad=1} '
+            '/^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+password[[:space:]]/ || /^[[:space:]]*authentication[[:space:]]+mode([[:space:]]+[[:alnum:]_-]+)*[[:space:]]+md5/ || /^[[:space:]]*isis[[:space:]]+authentication/ || /^[[:space:]]*ip[[:space:]]+rip[[:space:]]+authentication/ {bad=1} '
+            'END{for(c in used){ck=0; for(k in keys){split(k,a,SUBSEP); if(a[1]==c){ck=1; if(!(k in ok)) bad=1}} if(!ck) bad=1} if(seen && !bad) print "Compliant"}\''
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221074':
         combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
         required_patterns = (

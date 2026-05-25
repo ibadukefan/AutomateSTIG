@@ -1214,6 +1214,42 @@ If the line, SQLNET.FIPS_140=TRUE is not found in $ORACLE_HOME/network/admin/sql
         }, 'Cisco_NX-OS_Switch_RTR_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_cisco_nxos_routing_protocol_fips_hmac_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221075',
+            'title': 'The Cisco switch must be configured to authenticate all routing protocol messages using NIST-validated FIPS 198-1 message authentication code algorithm.',
+            'check_content': (
+                'Review the switch configuration. Verify that all routing protocol messages are authenticated using a NIST-validated FIPS 198-1 '
+                'message authentication code algorithm.\n\n'
+                'Note: BGP, RIP, EIGRP, IS-IS do not support any FIPS 198-1 HMAC algorithms.\n\n'
+                'OSPF Example\nkey chain OSPF_KEY\n key 1\n  key-string 7 070C285F4D06\n  cryptographic-algorithm hmac-sha-256\n'
+                'interface Ethernet2/2\n ip ospf authentication key-chain OSPF_KEY\n\n'
+                'If a NIST-validated FIPS 198-1 MAC algorithm is not used to authenticate routing protocol messages, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure OSPF authentication to use a NIST-validated FIPS 198-1 message authentication code algorithm.\n'
+                'SW1(config-keychain-key)# cryptographic-algorithm hmac-sha-256\n'
+                'SW1(config-if)# ip ospf authentication key-chain OSPF_KEY'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221075')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('show running-config', candidate['check']['command'])
+        self.assertIn('cryptographic-algorithm', candidate['check']['command'])
+        self.assertIn('hmac-sha-256', candidate['check']['command'])
+        self.assertIn('ip[[:space:]]+ospf[[:space:]]+authentication[[:space:]]+key-chain', candidate['check']['command'])
+
+    def test_rejects_cisco_nxos_routing_protocol_fips_hmac_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The Cisco switch must be configured to authenticate all routing protocol messages using NIST-validated FIPS 198-1 message authentication code algorithm.',
+            'check_content': 'NIST-validated FIPS 198-1 cryptographic-algorithm hmac-sha-256 ip ospf authentication key-chain OSPF_KEY If a NIST-validated FIPS 198-1 MAC algorithm is not used to authenticate routing protocol messages, this is a finding.',
+            'fix_text': 'Configure OSPF authentication to use cryptographic-algorithm hmac-sha-256.',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_ubuntu_24_chrony_authoritative_source_maxpoll_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270751',
