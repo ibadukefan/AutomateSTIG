@@ -12542,6 +12542,44 @@ def _oracle_sqlplus_command(select_sql: str) -> str:
     )
 
 
+def _oracle_database_fips_140_configuration_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270571':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r"SELECT\s+\*\s+FROM\s+SYS\.V\$PARAMETER\s+WHERE\s+NAME\s*=\s*'DBFIPS_140'",
+        r'If\s+Oracle\s+returns\s+the\s+value\s+["“]FALSE["”],\s+or\s+returns\s+no\s+rows,\s+this\s+is\s+a\s+finding',
+        r'If\s+the\s+line\s*,?\s+SQLNET\.FIPS_140=TRUE\s+is\s+not\s+found\s+in\s+\$ORACLE_HOME/network/admin/sqlnet\.ora,\s+this\s+is\s+a\s+finding',
+        r'If\s+the\s+line\s+["“]SSLFIPS_140=TRUE["”]\s+is\s+not\s+found\s+in\s+fips\.ora,\s+or\s+the\s+file\s+does\s+not\s+exist,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'Create\s+or\s+modify\s+fips\.ora\s+to\s+include\s+the\s+line\s+["“]SSLFIPS_140=TRUE["”]', fix_text, re.IGNORECASE):
+        return None
+    sql = "SELECT CASE WHEN UPPER(value) = 'TRUE' THEN 'DBFIPS_OK' END FROM sys.v$parameter WHERE name = 'DBFIPS_140';"
+    sql_for_shell = sql.replace('$', r'\$')
+    command = (
+        'sh -c "dbfips=$(sqlplus -s / as sysdba <<\'SQL\' 2>/dev/null | tr -d \'[:space:]\'\n'
+        'SET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\n'
+        f'{sql_for_shell}\n'
+        'EXIT\nSQL\n); '
+        'fips_file=\\"${FIPS_HOME:-${ORACLE_HOME:-}/ldap/admin}/fips.ora\\"; '
+        'sqlnet_file=\\"${ORACLE_HOME:-}/network/admin/sqlnet.ora\\"; '
+        'if [ \\"$dbfips\\" = DBFIPS_OK ] && '
+        'grep -Eiq \'^[[:space:]]*SSLFIPS_140[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$\' \\"$fips_file\\" && '
+        'grep -Eiq \'^[[:space:]]*SQLNET\\.FIPS_140[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$\' \\"$sqlnet_file\\"; '
+        'then printf Compliant; fi"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_control_file_minimum_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-275999':
         return None
@@ -15601,6 +15639,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     postgresql_audit_config_candidate = _postgresql_audit_explicit_config_candidate(rule, stig_id)
     if postgresql_audit_config_candidate:
         return postgresql_audit_config_candidate
+
+    oracle_fips_140_candidate = _oracle_database_fips_140_configuration_candidate(rule, stig_id)
+    if oracle_fips_140_candidate:
+        return oracle_fips_140_candidate
 
     oracle_diag_candidate = _oracle_database_19c_diag_directory_owner_only_candidate(rule, stig_id)
     if oracle_diag_candidate:

@@ -202,6 +202,42 @@ blacklist firewire-core''',
 
         self.assertIsNone(candidate)
 
+    def test_infers_oracle_fips_140_configuration_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270571',
+            'title': 'Oracle Database must implement NIST FIPS 140-2/140-3 validated cryptographic modules to protect unclassified information requiring confidentiality and cryptographic protection, in accordance with the data owner\'s requirements.',
+            'check_content': '''To verify if Oracle is configured for FIPS 140 Transparent Data Encryption and/or DBMS_CRYPTO, enter the following SQL*Plus command:
+SHOW PARAMETER DBFIPS_140
+or the following SQL query:
+SELECT * FROM SYS.V$PARAMETER WHERE NAME = 'DBFIPS_140';
+
+If Oracle returns the value "FALSE", or returns no rows, this is a finding.
+
+If the line "SSLFIPS_140=TRUE" is not found in fips.ora, or the file does not exist, this is a finding.
+
+For (Native) Network Data Encryption:
+If the line, SQLNET.FIPS_140=TRUE is not found in $ORACLE_HOME/network/admin/sqlnet.ora, this is a finding.''',
+            'fix_text': 'Create or modify fips.ora to include the line "SSLFIPS_140=TRUE". More information on implementing FIPS settings can be found at https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/oracle-database-fips-140-settings.html.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270571')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('DBFIPS_140', candidate['check']['command'])
+        self.assertIn('SSLFIPS_140', candidate['check']['command'])
+        self.assertIn('SQLNET\\.FIPS_140', candidate['check']['command'])
+
+    def test_rejects_oracle_fips_140_candidate_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Oracle Database must implement NIST FIPS 140-2/140-3 validated cryptographic modules.',
+            'check_content': 'SELECT * FROM SYS.V$PARAMETER WHERE NAME = \'DBFIPS_140\'; If Oracle returns the value "FALSE", or returns no rows, this is a finding. SSLFIPS_140=TRUE SQLNET.FIPS_140=TRUE',
+            'fix_text': 'Create or modify fips.ora to include the line "SSLFIPS_140=TRUE".',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_oracle_database_admin_privileges_empty_result_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270519',

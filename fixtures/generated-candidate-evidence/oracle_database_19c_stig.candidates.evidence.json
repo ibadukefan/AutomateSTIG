@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 26,
+  "candidate_checks": 27,
   "cases": [
     {
       "check": {
@@ -601,6 +601,32 @@
     },
     {
       "check": {
+        "command": "sh -c \"dbfips=$(sqlplus -s / as sysdba <<'SQL' 2>/dev/null | tr -d '[:space:]'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN UPPER(value) = 'TRUE' THEN 'DBFIPS_OK' END FROM sys.v\\$parameter WHERE name = 'DBFIPS_140';\nEXIT\nSQL\n); fips_file=\\\"${FIPS_HOME:-${ORACLE_HOME:-}/ldap/admin}/fips.ora\\\"; sqlnet_file=\\\"${ORACLE_HOME:-}/network/admin/sqlnet.ora\\\"; if [ \\\"$dbfips\\\" = DBFIPS_OK ] && grep -Eiq '^[[:space:]]*SSLFIPS_140[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$' \\\"$fips_file\\\" && grep -Eiq '^[[:space:]]*SQLNET\\.FIPS_140[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$' \\\"$sqlnet_file\\\"; then printf Compliant; fi\"",
+        "type": "command_output"
+      },
+      "description": "Oracle Database must implement NIST FIPS 140-2/140-3 validated cryptographic modules to protect unclassified information requiring confidentiality and cryptographic protection, in accordance with the data owner's requirements.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c \"dbfips=$(sqlplus -s / as sysdba <<'SQL' 2>/dev/null | tr -d '[:space:]'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN UPPER(value) = 'TRUE' THEN 'DBFIPS_OK' END FROM sys.v\\$parameter WHERE name = 'DBFIPS_140';\nEXIT\nSQL\n); fips_file=\\\"${FIPS_HOME:-${ORACLE_HOME:-}/ldap/admin}/fips.ora\\\"; sqlnet_file=\\\"${ORACLE_HOME:-}/network/admin/sqlnet.ora\\\"; if [ \\\"$dbfips\\\" = DBFIPS_OK ] && grep -Eiq '^[[:space:]]*SSLFIPS_140[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$' \\\"$fips_file\\\" && grep -Eiq '^[[:space:]]*SQLNET\\.FIPS_140[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$' \\\"$sqlnet_file\\\"; then printf Compliant; fi\"": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c \"dbfips=$(sqlplus -s / as sysdba <<'SQL' 2>/dev/null | tr -d '[:space:]'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN UPPER(value) = 'TRUE' THEN 'DBFIPS_OK' END FROM sys.v\\$parameter WHERE name = 'DBFIPS_140';\nEXIT\nSQL\n); fips_file=\\\"${FIPS_HOME:-${ORACLE_HOME:-}/ldap/admin}/fips.ora\\\"; sqlnet_file=\\\"${ORACLE_HOME:-}/network/admin/sqlnet.ora\\\"; if [ \\\"$dbfips\\\" = DBFIPS_OK ] && grep -Eiq '^[[:space:]]*SSLFIPS_140[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$' \\\"$fips_file\\\" && grep -Eiq '^[[:space:]]*SQLNET\\.FIPS_140[[:space:]]*=[[:space:]]*TRUE[[:space:]]*$' \\\"$sqlnet_file\\\"; then printf Compliant; fi\"": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270571"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT log_mode FROM v$database;\nEXIT\nSQL",
         "type": "command_output"
       },
@@ -683,5 +709,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_database_19c_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Database_19c_STIG",
-  "validated_candidates": 26
+  "validated_candidates": 27
 }
