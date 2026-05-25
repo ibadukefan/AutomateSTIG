@@ -2479,6 +2479,52 @@ blacklist firewire-core''',
         self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
         self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': 'w32tm /query /source only'}, 'MS_SQL_Server_2022_Instance_STIG'))
 
+    def test_infers_sql_server_empty_result_set_controls_candidate(self):
+        cases = [
+            (
+                'V-274446',
+                'Execution of startup stored procedures must be restricted to necessary cases only.',
+                "Select [name] as StoredProc\nFrom sys.procedures\nWhere OBJECTPROPERTY(OBJECT_ID, 'ExecIsStartup') = 1\nIf any stored procedures are returned that are not documented, this is a finding.",
+                'ExecIsStartup',
+            ),
+            (
+                'V-271299',
+                'Access to linked servers must be disabled or restricted, unless specifically required and approved.',
+                'To obtain a list of linked servers, execute the following command:\nSELECT name\nFROM sys.servers s\nWHERE s.is_linked = 1\nReview the system documentation to determine whether the linked servers listed are required and approved. If it is not approved, this is a finding.',
+                'is_linked = 1',
+            ),
+            (
+                'V-271381',
+                'SQL Server must generate audit records for all direct access to the database(s).',
+                'Determine whether any Server Audits are configured to filter records. From SQL Server Management Studio, execute the following query:\nSELECT name AS AuditName, predicate AS AuditFilter\nFROM sys.server_audits\nWHERE predicate IS NOT NULL\nIf any audits are returned, review the associated filters. If any direct access to the database(s) is being excluded, this is a finding.',
+                'predicate IS NOT NULL',
+            ),
+        ]
+        for vuln_id, title, check_content, command_fragment in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': check_content,
+                    'fix_text': 'Remove or restrict the returned configuration unless documented and approved.',
+                }, 'MS_SQL_Server_2022_Instance_STIG')
+                self.assertIsNotNone(candidate)
+                self.assertEqual(candidate['vuln_id'], vuln_id)
+                self.assertEqual(candidate['platform'], 'generic')
+                self.assertIn(command_fragment, candidate['check']['command'])
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_does_not_infer_sql_server_empty_result_set_controls_without_exact_guards(self):
+        rule = {
+            'vuln_id': 'V-274446',
+            'title': 'Execution of startup stored procedures must be restricted to necessary cases only.',
+            'check_content': "Select [name] as StoredProc From sys.procedures Where OBJECTPROPERTY(OBJECT_ID, 'ExecIsStartup') = 1",
+            'fix_text': 'Remove undocumented startup stored procedures.',
+        }
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'vuln_id': 'V-999999'}, 'MS_SQL_Server_2022_Instance_STIG'))
+        self.assertIsNone(mod.infer_candidate_check(rule, 'Oracle_Database_19c_STIG'))
+        self.assertIsNone(mod.infer_candidate_check({**rule, 'check_content': 'OBJECTPROPERTY only'}, 'MS_SQL_Server_2022_Instance_STIG'))
+
     def test_infers_oracle_database_instance_names_do_not_reference_versions_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270521',

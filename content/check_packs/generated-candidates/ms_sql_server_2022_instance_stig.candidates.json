@@ -158,6 +158,19 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name FROM sys.servers s WHERE s.is_linked = 1;\"",
+        "type": "command_output"
+      },
+      "description": "Access to linked servers must be disabled or restricted, unless specifically required and approved.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-271299"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; USE [master]; DECLARE @xplist AS TABLE (xp_name sysname, source_dll nvarchar(255)); INSERT INTO @xplist EXEC sp_helpextendedproc; SELECT X.xp_name FROM @xplist X JOIN sys.all_objects O ON X.xp_name = O.name WHERE O.is_ms_shipped = 0 ORDER BY X.xp_name;\"",
         "type": "command_output"
       },
@@ -249,6 +262,19 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name AS AuditName, predicate AS AuditFilter FROM sys.server_audits WHERE predicate IS NOT NULL;\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must generate audit records for all direct access to the database(s).",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-271381"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$svc=Get-Service -Name SQLBrowser -ErrorAction SilentlyContinue; if($svc){ $start=(Get-CimInstance Win32_Service -Filter `\"Name='SQLBrowser'`\").StartMode; if($start -eq 'Disabled'){ 'Compliant'; exit } }; $hidden=(sqlcmd -h -1 -W -Q `\"SET NOCOUNT ON; DECLARE @HiddenInstance INT; EXEC master.dbo.Xp_instance_regread N'HKEY_LOCAL_MACHINE', N'Software\\Microsoft\\MSSQLServer\\MSSQLServer\\SuperSocketNetLib', N'HideInstance', @HiddenInstance OUTPUT; SELECT CASE WHEN ISNULL(@HiddenInstance,0)=0 AND CONVERT(int, SERVERPROPERTY('IsClustered'))=0 THEN 'No' ELSE 'Yes' END;`\" 2>$null | Select-Object -First 1).Trim(); if($hidden -eq 'Yes'){ 'Compliant' }\"",
         "type": "command_output"
       },
@@ -298,6 +324,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-274445"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT [name] AS StoredProc FROM sys.procedures WHERE OBJECTPROPERTY(OBJECT_ID, 'ExecIsStartup') = 1;\"",
+        "type": "command_output"
+      },
+      "description": "Execution of startup stored procedures must be restricted to necessary cases only.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-274446"
     },
     {
       "check": {

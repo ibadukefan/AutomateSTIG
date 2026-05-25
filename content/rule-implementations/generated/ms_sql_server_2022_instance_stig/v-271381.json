@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name AS AuditName, predicate AS AuditFilter FROM sys.server_audits WHERE predicate IS NOT NULL;\"",
+      "type": "command_output"
+    },
+    "description": "SQL Server must generate audit records for all direct access to the database(s).",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-271381"
+  },
   "check_content_excerpt": "Determine whether any Server Audits are configured to filter records. From SQL Server Management Studio, execute the following query:\nSELECT name AS AuditName, predicate AS AuditFilter\nFROM sys.server_audits\nWHERE predicate IS NOT NULL\n\nIf any audits are returned, review the associated filters. If any direct access to the database(s) is being excluded, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Check the system documentation for required SQL Server Audits. Remove any Audit filters that exclude or reduce required auditing. Update filters to ensure direct access is not excluded.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271381r1111095_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT [name] AS StoredProc FROM sys.procedures WHERE OBJECTPROPERTY(OBJECT_ID, 'ExecIsStartup') = 1;\"",
+      "type": "command_output"
+    },
+    "description": "Execution of startup stored procedures must be restricted to necessary cases only.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-274446"
+  },
   "check_content_excerpt": "Review the system documentation to obtain a listing of documented stored procedures used by SQL Server during startup. Execute the following query:\nSelect [name] as StoredProc\nFrom sys.procedures\nWhere OBJECTPROPERTY(OBJECT_ID, 'ExecIsStartup') = 1\n\nIf any stored procedures are returned that are not documented, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "To disable startup stored procedure(s), run the following in Master for each undocumented procedure:\nsp_procoption @procname = '<procedure name>', @OptionName = 'Startup', @optionValue = 'Off'",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274446r1111106_rule",
   "severity": "medium",

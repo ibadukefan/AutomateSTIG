@@ -13149,6 +13149,55 @@ def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> d
 
 
 
+def _sql_server_empty_result_set_control_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    checks = {
+        'V-274446': {
+            'title': 'execution of startup stored procedures must be restricted to necessary cases only.',
+            'patterns': (
+                r"OBJECTPROPERTY\s*\(\s*OBJECT_ID\s*,\s*'ExecIsStartup'\s*\)\s*=\s*1",
+                r'If\s+any\s+stored\s+procedures\s+are\s+returned\s+that\s+are\s+not\s+documented,\s+this\s+is\s+a\s+finding',
+            ),
+            'query': "SELECT [name] AS StoredProc FROM sys.procedures WHERE OBJECTPROPERTY(OBJECT_ID, 'ExecIsStartup') = 1;",
+        },
+        'V-271299': {
+            'title': 'access to linked servers must be disabled or restricted, unless specifically required and approved.',
+            'patterns': (
+                r'FROM\s+sys\.servers\s+s\s+WHERE\s+s\.is_linked\s*=\s*1',
+                r'(?:If\s+any\s+linked\s+servers\s+are\s+not\s+required\s+and\s+approved|Review\s+the\s+system\s+documentation\s+to\s+determine\s+whether\s+the\s+linked\s+servers\s+listed\s+are\s+required\s+and\s+approved\.\s+If\s+it\s+is\s+not\s+approved),\s+this\s+is\s+a\s+finding',
+            ),
+            'query': 'SELECT name FROM sys.servers s WHERE s.is_linked = 1;',
+        },
+        'V-271381': {
+            'title': 'sql server must generate audit records for all direct access to the database(s).',
+            'patterns': (
+                r'FROM\s+sys\.server_audits\s+WHERE\s+predicate\s+IS\s+NOT\s+NULL',
+                r'If\s+any\s+audits\s+are\s+returned,\s+review\s+the\s+associated\s+filters',
+                r'direct\s+access\s+to\s+the\s+database\(s\)\s+is\s+being\s+excluded,\s+this\s+is\s+a\s+finding',
+            ),
+            'query': 'SELECT name AS AuditName, predicate AS AuditFilter FROM sys.server_audits WHERE predicate IS NOT NULL;',
+        },
+    }
+    spec = checks.get(rule.get('vuln_id', ''))
+    if not spec:
+        return None
+    if rule.get('title', '').strip().lower() != spec['title']:
+        return None
+    if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in spec['patterns']):
+        return None
+    escaped_query = spec['query'].replace('"', '\\"')
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': f'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; {escaped_query}"'},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _sql_server_windows_authentication_only_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -16261,6 +16310,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_sample_databases_candidate = _sql_server_sample_databases_absent_candidate(rule, stig_id)
     if sql_server_sample_databases_candidate:
         return sql_server_sample_databases_candidate
+
+    sql_server_empty_result_set_control_candidate = _sql_server_empty_result_set_control_candidate(rule, stig_id)
+    if sql_server_empty_result_set_control_candidate:
+        return sql_server_empty_result_set_control_candidate
 
     sql_server_nt_authority_system_permissions_candidate = _sql_server_nt_authority_system_permissions_candidate(rule, stig_id)
     if sql_server_nt_authority_system_permissions_candidate:

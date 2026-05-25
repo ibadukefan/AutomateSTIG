@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 29,
+  "candidate_checks": 32,
   "cases": [
     {
       "check": {
@@ -315,6 +315,32 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name FROM sys.servers s WHERE s.is_linked = 1;\"",
+        "type": "command_output"
+      },
+      "description": "Access to linked servers must be disabled or restricted, unless specifically required and approved.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name FROM sys.servers s WHERE s.is_linked = 1;\"": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name FROM sys.servers s WHERE s.is_linked = 1;\"": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271299"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; USE [master]; DECLARE @xplist AS TABLE (xp_name sysname, source_dll nvarchar(255)); INSERT INTO @xplist EXEC sp_helpextendedproc; SELECT X.xp_name FROM @xplist X JOIN sys.all_objects O ON X.xp_name = O.name WHERE O.is_ms_shipped = 0 ORDER BY X.xp_name;\"",
         "type": "command_output"
       },
@@ -497,6 +523,32 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name AS AuditName, predicate AS AuditFilter FROM sys.server_audits WHERE predicate IS NOT NULL;\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must generate audit records for all direct access to the database(s).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name AS AuditName, predicate AS AuditFilter FROM sys.server_audits WHERE predicate IS NOT NULL;\"": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT name AS AuditName, predicate AS AuditFilter FROM sys.server_audits WHERE predicate IS NOT NULL;\"": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271381"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$svc=Get-Service -Name SQLBrowser -ErrorAction SilentlyContinue; if($svc){ $start=(Get-CimInstance Win32_Service -Filter `\"Name='SQLBrowser'`\").StartMode; if($start -eq 'Disabled'){ 'Compliant'; exit } }; $hidden=(sqlcmd -h -1 -W -Q `\"SET NOCOUNT ON; DECLARE @HiddenInstance INT; EXEC master.dbo.Xp_instance_regread N'HKEY_LOCAL_MACHINE', N'Software\\Microsoft\\MSSQLServer\\MSSQLServer\\SuperSocketNetLib', N'HideInstance', @HiddenInstance OUTPUT; SELECT CASE WHEN ISNULL(@HiddenInstance,0)=0 AND CONVERT(int, SERVERPROPERTY('IsClustered'))=0 THEN 'No' ELSE 'Yes' END;`\" 2>$null | Select-Object -First 1).Trim(); if($hidden -eq 'Yes'){ 'Compliant' }\"",
         "type": "command_output"
       },
@@ -598,6 +650,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-274445"
+    },
+    {
+      "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT [name] AS StoredProc FROM sys.procedures WHERE OBJECTPROPERTY(OBJECT_ID, 'ExecIsStartup') = 1;\"",
+        "type": "command_output"
+      },
+      "description": "Execution of startup stored procedures must be restricted to necessary cases only.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT [name] AS StoredProc FROM sys.procedures WHERE OBJECTPROPERTY(OBJECT_ID, 'ExecIsStartup') = 1;\"": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT [name] AS StoredProc FROM sys.procedures WHERE OBJECTPROPERTY(OBJECT_ID, 'ExecIsStartup') = 1;\"": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274446"
     },
     {
       "check": {
@@ -761,5 +839,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_SQL_Server_2022_Instance_STIG",
-  "validated_candidates": 29
+  "validated_candidates": 32
 }
