@@ -18219,5 +18219,43 @@ $ psql -c "ALTER ROLE <role-name> WITH NOSUPERUSER"''',
         self.assertIsNone(candidate)
 
 
+    def test_infers_rhel7_graphical_display_manager_absent_candidate_from_authoritative_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204624',
+            'title': 'The Red Hat Enterprise Linux operating system must not have a graphical display manager installed unless approved.',
+            'check_content': (
+                'Verify the system is configured to boot to the command line:\n\n'
+                '$ systemctl get-default\n'
+                'multi-user.target\n\n'
+                'If the system default target is not set to "multi-user.target" and the Information System Security Officer (ISSO) lacks a documented requirement for a graphical user interface, this is a finding.\n\n'
+                'Verify a graphical user interface is not installed:\n\n'
+                '$ rpm -qa | grep xorg | grep server\n\n'
+                'If the use of a graphical user interface on the system is not documented with the ISSO, this is a finding.'
+            ),
+            'fix_text': (
+                'Document the requirement for a graphical user interface with the ISSO or reinstall the operating system without the graphical user interface. '
+                'If reinstallation is not feasible, then continue with the following procedure:\n\n'
+                '$ sudo systemctl set-default multi-user.target\n\n'
+                '$ sudo yum remove xorg-x11-server-Xorg xorg-x11-server-common xorg-x11-server-utils'
+            ),
+        }, 'RHEL_7_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-204624')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('systemctl get-default', candidate['check']['command'])
+        self.assertIn('rpm -qa', candidate['check']['command'])
+        self.assertIn('xorg-x11-server', candidate['check']['command'])
+
+    def test_rejects_rhel7_graphical_display_manager_absent_candidate_without_exact_vuln(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The Red Hat Enterprise Linux operating system must not have a graphical display manager installed unless approved.',
+            'check_content': '$ systemctl get-default\nmulti-user.target\n$ rpm -qa | grep xorg | grep server',
+            'fix_text': '$ sudo systemctl set-default multi-user.target\n$ sudo yum remove xorg-x11-server-Xorg xorg-x11-server-common xorg-x11-server-utils',
+        }, 'RHEL_7_STIG')
+        self.assertIsNone(candidate)
+
+
 if __name__ == '__main__':
     unittest.main()

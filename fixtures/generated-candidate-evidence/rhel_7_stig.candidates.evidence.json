@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 173,
+  "candidate_checks": 174,
   "cases": [
     {
       "check": {
@@ -3704,6 +3704,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'default_target=$(systemctl get-default 2>/dev/null || true); xorg_packages=$(rpm -qa 2>/dev/null | grep -E \"^xorg-x11-server-(Xorg|common|utils)\" || true); if [ \"$default_target\" = \"multi-user.target\" ] && [ -z \"$xorg_packages\" ]; then printf Compliant; else printf \"default_target=%s xorg_packages=%s\" \"$default_target\" \"$xorg_packages\"; fi'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have a graphical display manager installed unless approved.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'default_target=$(systemctl get-default 2>/dev/null || true); xorg_packages=$(rpm -qa 2>/dev/null | grep -E \"^xorg-x11-server-(Xorg|common|utils)\" || true); if [ \"$default_target\" = \"multi-user.target\" ] && [ -z \"$xorg_packages\" ]; then printf Compliant; else printf \"default_target=%s xorg_packages=%s\" \"$default_target\" \"$xorg_packages\"; fi'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'default_target=$(systemctl get-default 2>/dev/null || true); xorg_packages=$(rpm -qa 2>/dev/null | grep -E \"^xorg-x11-server-(Xorg|common|utils)\" || true); if [ \"$default_target\" = \"multi-user.target\" ] && [ -z \"$xorg_packages\" ]; then printf Compliant; else printf \"default_target=%s xorg_packages=%s\" \"$default_target\" \"$xorg_packages\"; fi'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204624"
+    },
+    {
+      "check": {
         "key": "-a",
         "type": "sysctl"
       },
@@ -4643,5 +4669,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 173
+  "validated_candidates": 174
 }

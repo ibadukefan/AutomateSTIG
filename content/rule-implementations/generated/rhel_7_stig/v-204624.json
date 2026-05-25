@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'default_target=$(systemctl get-default 2>/dev/null || true); xorg_packages=$(rpm -qa 2>/dev/null | grep -E \"^xorg-x11-server-(Xorg|common|utils)\" || true); if [ \"$default_target\" = \"multi-user.target\" ] && [ -z \"$xorg_packages\" ]; then printf Compliant; else printf \"default_target=%s xorg_packages=%s\" \"$default_target\" \"$xorg_packages\"; fi'",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must not have a graphical display manager installed unless approved.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204624"
+  },
   "check_content_excerpt": "Verify the system is configured to boot to the command line:\n\n$ systemctl get-default\nmulti-user.target\n\nIf the system default target is not set to \"multi-user.target\" and the Information System Security Officer (ISSO) lacks a documented requirement for a graphical user interface, this is a finding.\n\nVerify a graphical user interface is not installed:\n\n$ rpm -qa | grep xorg | grep server\n\nAsk the System Administrator if use of a graphical user interface is an operational requirement.\n\nIf the use of a graphical user interface on the system is not documented with the ISSO, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Document the requirement for a graphical user interface with the ISSO or reinstall the operating system without the graphical user interface. If reinstallation is not feasible, then continue with the following procedure:\n\nOpen an SSH session and enter the following commands:\n\n$ sudo systemctl set-default multi-user.target\n\n$ sudo yum remove xorg-x11-server-Xorg xorg-x11-server-common xorg-x11-server-utils\n\nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204624r991589_rule",
   "severity": "medium",

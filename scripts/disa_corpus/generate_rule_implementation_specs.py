@@ -203,6 +203,35 @@ def _oracle_linux_8_nx_bit_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _rhel7_graphical_display_manager_absent_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'RHEL_7_STIG' or rule.get('vuln_id') != 'V-204624':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+    required_patterns = (
+        r'systemctl\s+get-default',
+        r'multi-user\.target',
+        r'rpm\s+-qa\s*\|\s*grep\s+xorg\s*\|\s*grep\s+server',
+        r'yum\s+remove\s+xorg-x11-server-Xorg\s+xorg-x11-server-common\s+xorg-x11-server-utils',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "sh -c 'default_target=$(systemctl get-default 2>/dev/null || true); "
+        "xorg_packages=$(rpm -qa 2>/dev/null | grep -E \"^xorg-x11-server-(Xorg|common|utils)\" || true); "
+        "if [ \"$default_target\" = \"multi-user.target\" ] && [ -z \"$xorg_packages\" ]; then printf Compliant; "
+        "else printf \"default_target=%s xorg_packages=%s\" \"$default_target\" \"$xorg_packages\"; fi'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_domain_controllers_ou_acl_candidate(rule: dict, stig_id: str) -> dict | None:
     canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
     allowed = {
@@ -15918,7 +15947,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return kubernetes_user_pods_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_ubuntu_weekly_audit_offload_script_candidate, _linux_interactive_user_init_path_home_only_candidate, _linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _oracle_linux_8_vlock_command_lock_candidate, _linux_auditd_log_format_enriched_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
+        for infer_with_stig in (_ubuntu_weekly_audit_offload_script_candidate, _linux_interactive_user_init_path_home_only_candidate, _linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _oracle_linux_8_vlock_command_lock_candidate, _linux_auditd_log_format_enriched_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _rhel7_graphical_display_manager_absent_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate
