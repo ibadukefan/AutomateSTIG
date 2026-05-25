@@ -3297,6 +3297,18 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'description': rule.get('title', ''),
         }
     presence_commands = {
+        'V-221093': {
+            'command': 'show running-config | include "ip access-group .* in"',
+            'expected': {'type': 'contains', 'substring': 'ip access-group'},
+            'content': r'inbound\s+ACL\s+is\s+configured\s+on\s+all\s+external\s+interfaces.*?ip\s+access-group\s+\S+\s+in.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+filter\s+traffic\s+entering\s+the\s+network\s+at\s+all\s+external\s+interfaces\s+in\s+an\s+inbound\s+direction,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+the\s+switch\s+to\s+use\s+an\s+inbound\s+ACL\s+on\s+all\s+external\s+interfaces.*?ip\s+access-group\s+\S+\s+in',
+        },
+        'V-221094': {
+            'command': 'show running-config | include "ip access-group .* in"',
+            'expected': {'type': 'contains', 'substring': 'ip access-group'},
+            'content': r'egress\s+ACL\s+is\s+bound\s+to\s+the\s+internal\s+interface\s+in\s+an\s+inbound\s+direction.*?ip\s+access-group\s+\S+\s+in.*?If\s+the\s+switch\s+is\s+not\s+configured\s+to\s+filter\s+traffic\s+leaving\s+the\s+network\s+at\s+the\s+internal\s+interface\s+in\s+an\s+inbound\s+direction,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+the\s+switch\s+to\s+use\s+an\s+inbound\s+ACL\s+on\s+all\s+internal\s+interfaces.*?ip\s+access-group\s+\S+\s+in',
+        },
         'V-221097': {
             'command': 'show running-config | include "^no cdp enable$"',
             'expected': {'type': 'contains', 'substring': 'no cdp enable'},

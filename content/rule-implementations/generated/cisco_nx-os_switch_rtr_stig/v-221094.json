@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"ip access-group .* in\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco perimeter switch must be configured to filter egress traffic at the internal interface on an inbound direction.",
+    "expected": {
+      "substring": "ip access-group",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221094"
+  },
   "check_content_excerpt": "Review the switch configuration to verify that the egress ACL is bound to the internal interface in an inbound direction.\n\ninterface Ethernet2/4\n description downstream link to LAN\n no switchport\n ip access-group EGRESS_FILTER in\n ip address 10.1.12.1/24\n\nIf the switch is not configured to filter traffic leaving the network at the internal interface in an inbound direction, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "ip access-group",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to use an inbound ACL on all internal interfaces as shown in the example below:\n\nSW1(config)# int e2/4\nSW1(config-if)# ip access-group EGRESS_FILTER in\nSW1(config-if)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221094r999703_rule",
   "severity": "medium",

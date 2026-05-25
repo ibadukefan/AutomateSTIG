@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 42,
+  "candidate_checks": 44,
   "cases": [
     {
       "check": {
@@ -260,6 +260,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221090"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"ip access-group .* in\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to filter ingress traffic at the external interface on an inbound direction.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ip access-group",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include \"ip access-group .* in\"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include \"ip access-group .* in\"": "before\nip access-group\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221093"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"ip access-group .* in\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to filter egress traffic at the internal interface on an inbound direction.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ip access-group",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | include \"ip access-group .* in\"": "before\nafter\n"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | include \"ip access-group .* in\"": "before\nip access-group\nafter\n"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221094"
     },
     {
       "check": {
@@ -1099,5 +1151,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 42
+  "validated_candidates": 44
 }

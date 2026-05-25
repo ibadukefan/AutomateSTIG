@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | include \"ip access-group .* in\"",
+      "type": "command_output"
+    },
+    "description": "The Cisco perimeter switch must be configured to filter ingress traffic at the external interface on an inbound direction.",
+    "expected": {
+      "substring": "ip access-group",
+      "type": "contains"
+    },
+    "platform": "network",
+    "vuln_id": "V-221093"
+  },
   "check_content_excerpt": "Review the switch configuration to verify that an inbound ACL is configured on all external interfaces as shown in the example below:\n\ninterface Ethernet2/2\n description link to DISN\n no switchport\n ip access-group EXTERNAL_ACL in\n\nIf the switch is not configured to filter traffic entering the network at all external interfaces in an inbound direction, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "ip access-group",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to use an inbound ACL on all external interfaces as shown in the example below:\n\nSW1(config)#int e2/2\nSW1(config-if)# ip access-group EXTERNAL_ACL in\nSW1(config-if)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221093r999702_rule",
   "severity": "medium",

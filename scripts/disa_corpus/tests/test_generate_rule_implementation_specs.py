@@ -189,6 +189,52 @@ blacklist firewire-core''',
 
         self.assertIsNone(candidate)
 
+    def test_infers_cisco_nxos_inbound_external_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221093',
+            'title': 'The Cisco perimeter switch must be configured to filter ingress traffic at the external interface on an inbound direction.',
+            'check_content': (
+                'Review the switch configuration to verify that an inbound ACL is configured on all external interfaces as shown in the example below: '
+                'interface Ethernet2/2 description link to DISN no switchport ip access-group EXTERNAL_ACL in '
+                'If the switch is not configured to filter traffic entering the network at all external interfaces in an inbound direction, this is a finding.'
+            ),
+            'fix_text': 'Configure the switch to use an inbound ACL on all external interfaces as shown in the example below: SW1(config-if)# ip access-group EXTERNAL_ACL in',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221093')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertIn('ip access-group .* in', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'ip access-group'})
+
+    def test_rejects_cisco_nxos_inbound_external_acl_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The Cisco perimeter switch must be configured to filter ingress traffic at the external interface on an inbound direction.',
+            'check_content': 'ip access-group EXTERNAL_ACL in If the switch is not configured to filter traffic entering the network at all external interfaces in an inbound direction, this is a finding.',
+            'fix_text': 'Configure the switch to use an inbound ACL on all external interfaces. ip access-group EXTERNAL_ACL in',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNone(candidate)
+
+    def test_infers_cisco_nxos_internal_egress_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221094',
+            'title': 'The Cisco perimeter switch must be configured to filter egress traffic at the internal interface on an inbound direction.',
+            'check_content': (
+                'Review the switch configuration to verify that the egress ACL is bound to the internal interface in an inbound direction. '
+                'interface Ethernet2/4 description downstream link to LAN no switchport ip access-group EGRESS_FILTER in ip address 10.1.12.1/24 '
+                'If the switch is not configured to filter traffic leaving the network at the internal interface in an inbound direction, this is a finding.'
+            ),
+            'fix_text': 'Configure the switch to use an inbound ACL on all internal interfaces as shown in the example below: SW1(config-if)# ip access-group EGRESS_FILTER in',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221094')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertIn('ip access-group .* in', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'ip access-group'})
+
     def test_infers_cisco_nxos_bgp_as_path_origin_filter_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221109',

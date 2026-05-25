@@ -132,6 +132,32 @@
     },
     {
       "check": {
+        "command": "show running-config | include \"ip access-group .* in\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to filter ingress traffic at the external interface on an inbound direction.",
+      "expected": {
+        "substring": "ip access-group",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221093"
+    },
+    {
+      "check": {
+        "command": "show running-config | include \"ip access-group .* in\"",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to filter egress traffic at the internal interface on an inbound direction.",
+      "expected": {
+        "substring": "ip access-group",
+        "type": "contains"
+      },
+      "platform": "network",
+      "vuln_id": "V-221094"
+    },
+    {
+      "check": {
         "command": "show running-config | include ^no ip source-route$",
         "type": "command_output"
       },
