@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 174,
+  "candidate_checks": 175,
   "cases": [
     {
       "check": {
@@ -3808,6 +3808,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'if systemctl is-active --quiet firewalld 2>/dev/null; then zone=$(firewall-cmd --get-default-zone 2>/dev/null || printf public); firewall-cmd --list-all --zone=\"$zone\" 2>/dev/null | awk -F: '\"'\"'/^[[:space:]]*(services|ports|protocols|sources|source-ports|forward-ports|rich rules):/ { gsub(/^[[:space:]]+|[[:space:]]+$/, \"\", $2); if ($2 != \"\") found=1 } END { if (found) print \"Compliant\" }'\"'\"'; else [ -s /etc/hosts.allow ] && [ -s /etc/hosts.deny ] && printf Compliant; fi'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system access control program must be configured to grant or deny system access to specific hosts and services.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'if systemctl is-active --quiet firewalld 2>/dev/null; then zone=$(firewall-cmd --get-default-zone 2>/dev/null || printf public); firewall-cmd --list-all --zone=\"$zone\" 2>/dev/null | awk -F: '\"'\"'/^[[:space:]]*(services|ports|protocols|sources|source-ports|forward-ports|rich rules):/ { gsub(/^[[:space:]]+|[[:space:]]+$/, \"\", $2); if ($2 != \"\") found=1 } END { if (found) print \"Compliant\" }'\"'\"'; else [ -s /etc/hosts.allow ] && [ -s /etc/hosts.deny ] && printf Compliant; fi'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'if systemctl is-active --quiet firewalld 2>/dev/null; then zone=$(firewall-cmd --get-default-zone 2>/dev/null || printf public); firewall-cmd --list-all --zone=\"$zone\" 2>/dev/null | awk -F: '\"'\"'/^[[:space:]]*(services|ports|protocols|sources|source-ports|forward-ports|rich rules):/ { gsub(/^[[:space:]]+|[[:space:]]+$/, \"\", $2); if ($2 != \"\") found=1 } END { if (found) print \"Compliant\" }'\"'\"'; else [ -s /etc/hosts.allow ] && [ -s /etc/hosts.deny ] && printf Compliant; fi'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204628"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ipsec.conf",
         "pattern": "/etc/ipsec.d/*.conf",
@@ -4669,5 +4695,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 174
+  "validated_candidates": 175
 }

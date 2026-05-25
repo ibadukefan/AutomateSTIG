@@ -11,6 +11,58 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_rhel7_access_control_firewalld_or_tcpwrappers_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204628',
+            'title': 'The Red Hat Enterprise Linux operating system access control program must be configured to grant or deny system access to specific hosts and services.',
+            'check_content': '''If the "firewalld" package is not installed, ask the System Administrator (SA) if another firewall application (such as iptables) is installed. If an application firewall is not installed, this is a finding.
+
+Verify the system's access control program is configured to grant or deny system access to specific hosts.
+
+Check to see if "firewalld" is active with the following command:
+
+# systemctl status firewalld
+firewalld.service - firewalld - dynamic firewall daemon
+Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled)
+Active: active (running) since Sun 2014-04-20 14:06:46 BST; 30s ago
+
+If "firewalld" is active, check to see if it is configured to grant or deny access to specific hosts or services with the following commands:
+
+# firewall-cmd --get-default-zone
+public
+
+# firewall-cmd --list-all --zone=public
+public (active)
+target: default
+services: mdns ssh
+ports:
+
+If "firewalld" is not active, determine whether "tcpwrappers" is being used by checking whether the "hosts.allow" and "hosts.deny" files are empty with the following commands:
+
+# ls -al /etc/hosts.allow
+# ls -al /etc/hosts.deny
+
+If "firewalld" is active and is not configured to grant access to specific hosts or "tcpwrappers" is not configured to grant or deny access to specific hosts, this is a finding.''',
+            'fix_text': 'If "firewalld" is installed and active on the system, configure rules for allowing specific services and hosts. If "firewalld" is not "active", enable "tcpwrappers" by configuring "/etc/hosts.allow" and "/etc/hosts.deny" to allow or deny access to specific hosts.',
+        }, 'RHEL_7_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-204628')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('firewall-cmd --list-all', candidate['check']['command'])
+        self.assertIn('/etc/hosts.allow', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_rhel7_access_control_candidate_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The Red Hat Enterprise Linux operating system access control program must be configured to grant or deny system access to specific hosts and services.',
+            'check_content': 'systemctl status firewalld firewall-cmd --list-all --zone=public hosts.allow hosts.deny If both files are empty, this is a finding.',
+            'fix_text': 'configure rules for allowing specific services and hosts',
+        }, 'RHEL_7_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_quoted_scap_modprobe_fix_only_kernel_module_disable(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'xccdf_mil.disa.stig_group_V-257806',

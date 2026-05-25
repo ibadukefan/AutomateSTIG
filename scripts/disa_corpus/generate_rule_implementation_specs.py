@@ -6742,6 +6742,40 @@ def _dconf_media_automount_literal_candidate(rule: dict) -> dict | None:
     }
 
 
+def _rhel7_access_control_firewalld_or_tcpwrappers_candidate(rule: dict, stig_id: str) -> dict | None:
+    canonical_vuln_id = next(iter(re.findall(r'V-\d+', str(rule.get('vuln_id', '')))), '')
+    if canonical_vuln_id != 'V-204628' or stig_id != 'RHEL_7_STIG':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'systemctl\s+status\s+firewalld',
+        r'firewall-cmd\s+--list-all\s+--zone=public',
+        r'hosts\.allow',
+        r'hosts\.deny',
+        r'If\s+"firewalld"\s+is\s+active\s+and\s+is\s+not\s+configured\s+to\s+grant\s+access\s+to\s+specific\s+hosts\s+or\s+"tcpwrappers"\s+is\s+not\s+configured\s+to\s+grant\s+or\s+deny\s+access\s+to\s+specific\s+hosts,?\s+this\s+is\s+a\s+finding',
+        r'configure\s+rules\s+for\s+allowing\s+specific\s+services\s+and\s+hosts',
+        r'configur(?:e|ing)\s+"/etc/hosts\.allow"\s+and\s+"/etc/hosts\.deny"\s+to\s+allow\s+or\s+deny\s+access\s+to\s+specific\s+hosts',
+    )
+    combined = f"{content}\n{fix_text}"
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        "sh -c 'if systemctl is-active --quiet firewalld 2>/dev/null; then "
+        "zone=$(firewall-cmd --get-default-zone 2>/dev/null || printf public); "
+        "firewall-cmd --list-all --zone=\"$zone\" 2>/dev/null | "
+        "awk -F: '\"'\"'/^[[:space:]]*(services|ports|protocols|sources|source-ports|forward-ports|rich rules):/ { gsub(/^[[:space:]]+|[[:space:]]+$/, \"\", $2); if ($2 != \"\") found=1 } END { if (found) print \"Compliant\" }'\"'\"'; "
+        "else [ -s /etc/hosts.allow ] && [ -s /etc/hosts.deny ] && printf Compliant; fi'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _firewalld_target_drop_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -16498,7 +16532,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return kubernetes_user_pods_candidate
 
     if _linux_platform(stig_id):
-        for infer_with_stig in (_ubuntu_weekly_audit_offload_script_candidate, _linux_interactive_user_init_path_home_only_candidate, _linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _oracle_linux_8_vlock_command_lock_candidate, _linux_auditd_log_format_enriched_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _rhel7_graphical_display_manager_absent_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate):
+        for infer_with_stig in (_ubuntu_weekly_audit_offload_script_candidate, _linux_interactive_user_init_path_home_only_candidate, _linux_kernel_module_disabled_from_modprobe_fix_candidate, _linux_postfix_unrestricted_mail_relay_candidate, _oracle_linux_8_vlock_command_lock_candidate, _linux_auditd_log_format_enriched_candidate, _linux_interactive_shadow_sha512_candidate, _linux_sudoers_default_include_directory_candidate, _linux_shadow_password_lifetime_candidate, _rhel7_duplicate_uid_zero_candidate, _rhel7_graphical_display_manager_absent_candidate, _sles_bios_grub_password_pbkdf2_candidate, _linux_sudoers_no_nopasswd_or_no_authenticate_candidate, _sles_ctrl_alt_del_burst_action_candidate, _linux_dod_root_ca_trust_anchor_candidate, _linux_sssd_certmap_candidate, _sles_mfa_required_packages_candidate, _linux_removable_media_mount_option_candidate, _linux_nfs_imported_mount_option_candidate, _linux_fixed_mount_option_candidate, _linux_interactive_home_mount_option_candidate, _rhel7_interactive_home_directory_candidate, _sles_interactive_home_nosuid_candidate, _rhel9_scap_fix_only_package_candidate, _linux_audit_configuration_file_modes_candidate, _linux_faillock_conf_exact_setting_candidate, _linux_login_defs_fix_line_candidate, _linux_passwd_home_directory_assigned_candidate, _linux_aide_selection_line_token_candidate, _linux_vendor_supported_release_candidate, _rhel7_access_control_firewalld_or_tcpwrappers_candidate):
             candidate = infer_with_stig(rule, stig_id)
             if candidate:
                 return candidate

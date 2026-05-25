@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'if systemctl is-active --quiet firewalld 2>/dev/null; then zone=$(firewall-cmd --get-default-zone 2>/dev/null || printf public); firewall-cmd --list-all --zone=\"$zone\" 2>/dev/null | awk -F: '\"'\"'/^[[:space:]]*(services|ports|protocols|sources|source-ports|forward-ports|rich rules):/ { gsub(/^[[:space:]]+|[[:space:]]+$/, \"\", $2); if ($2 != \"\") found=1 } END { if (found) print \"Compliant\" }'\"'\"'; else [ -s /etc/hosts.allow ] && [ -s /etc/hosts.deny ] && printf Compliant; fi'",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system access control program must be configured to grant or deny system access to specific hosts and services.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204628"
+  },
   "check_content_excerpt": "If the \"firewalld\" package is not installed, ask the System Administrator (SA) if another firewall application (such as iptables) is installed. If an application firewall is not installed, this is a finding. \n\nVerify the system's access control program is configured to grant or deny system access to specific hosts.\n\nCheck to see if \"firewalld\" is active with the following command:\n\n# systemctl status firewalld\nfirewalld.service - firewalld - dynamic firewall daemon\nLoaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled)\nActive: active (running) since Sun 2014-04-20 14:06:46 BST; 30s ago\n\nIf \"firewalld\" is active, check to see if it is configured to grant or deny access to specific hosts or services with the following commands:\n\n# firewall-cmd --get-default-zone\npublic\n\n# firewall-cmd --list-all --zone=public\npublic (active)\ntarget: default\nicmp-block-inversion: no\ninterfaces: eth0\nsources:\nservices: mdns ssh\nports:\nprotocols:\nmasquerade: no\nforward-ports:\nicmp-blocks:\n\nIf \"firewalld\" is not active, determine whether \"tcpwrappers\" is being used by checking whether the \"hosts.allow\" and \"hosts.deny\" files are empty with the following commands:\n\n# ls -al /etc/hosts.allow\nrw-r----- 1 root root 9 Aug 2 23:13 /etc/hosts.allow\n\n# ls -al /etc/hosts.deny\n-rw-r----- 1 root root 9 Apr 9 2007 /etc/hosts.deny\n\nIf \"firewalld\" and \"tcpwrappers\" are not installed, configured, and active, ask the SA if another access control program (such as iptables) is installed and active. Ask the SA to show that the running configuration grants or denies access to specific hosts or services.\n\nIf \"firewalld\" is active and is not configured to grant access to specific hosts or \"tcpwrappers\" is not configured to grant or deny access to specific hosts, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If \"firewalld\" is installed and active on the system, configure rules for allowing specific services and hosts. \n\nIf \"firewalld\" is not \"active\", enable \"tcpwrappers\" by configuring \"/etc/hosts.allow\" and \"/etc/hosts.deny\" to allow or deny access to specific hosts.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204628r991589_rule",
   "severity": "medium",
