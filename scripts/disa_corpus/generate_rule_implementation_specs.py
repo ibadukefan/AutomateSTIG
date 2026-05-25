@@ -13360,6 +13360,45 @@ def _sql_server_utc_time_source_candidate(rule: dict, stig_id: str) -> dict | No
 
 
 
+def _sql_server_instant_file_initialization_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    if rule.get('vuln_id', '') != 'V-271327':
+        return None
+    expected_title = 'sql server must prevent unauthorized and unintended information transfer via instant file initialization (ifi).'
+    if rule.get('title', '').strip().lower() != expected_title:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+    required_content_patterns = (
+        r'Instant\s+File\s+Initialization\s+\(IFI\)',
+        r'instant_file_initialization_enabled',
+        r'FROM\s+sys\.dm_server_services',
+        r'If\s+the\s+column\s+instant_file_initialization_enabled\s+returns\s+a\s+value\s+of\s+["“]Y["”],\s+then\s+IFI\s+is\s+enabled',
+        r'Perform\s+volume\s+maintenance\s+tasks',
+        r'this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_content_patterns):
+        return None
+    if not re.search(r'Perform\s+volume\s+maintenance\s+tasks', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        'sqlcmd -h -1 -W -Q "SET NOCOUNT ON; '
+        "SELECT CASE WHEN EXISTS (SELECT 1 FROM sys.dm_server_services "
+        "WHERE instant_file_initialization_enabled = 'Y') "
+        "THEN 'IFI_ENABLED' ELSE 'Compliant' END;\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -16567,6 +16606,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_utc_time_source_candidate = _sql_server_utc_time_source_candidate(rule, stig_id)
     if sql_server_utc_time_source_candidate:
         return sql_server_utc_time_source_candidate
+
+    sql_server_ifi_candidate = _sql_server_instant_file_initialization_disabled_candidate(rule, stig_id)
+    if sql_server_ifi_candidate:
+        return sql_server_ifi_candidate
 
     sql_server_sample_databases_candidate = _sql_server_sample_databases_absent_candidate(rule, stig_id)
     if sql_server_sample_databases_candidate:

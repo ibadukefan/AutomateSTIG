@@ -11,6 +11,44 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_sql_server_instant_file_initialization_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271327',
+            'title': 'SQL Server must prevent unauthorized and unintended information transfer via Instant File Initialization (IFI).',
+            'check_content': '''Review system configuration to determine whether IFI support has been enabled (IFI is enabled by default).
+
+Run the following query in SSMS:
+
+SELECT
+	servicename
+	,instant_file_initialization_enabled
+FROM sys.dm_server_services
+
+If the column instant_file_initialization_enabled returns a value of "Y", then IFI is enabled.
+
+Alternatively, navigate to Start >> Control Panel >> System and Security >> Administrative Tools >> Local Security Policy >> Local Policies >> User Rights Assignment >> Perform volume maintenance tasks.
+
+If the SQL service account or SQL service SID has been granted "Perform volume maintenance tasks" Local Rights Assignment, this means IFI is enabled and this is a finding.''',
+            'fix_text': 'Configure the SQL Server service account to not have the "Perform volume maintenance tasks" Local Rights Assignment to disable IFI.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271327')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('sys.dm_server_services', candidate['check']['command'])
+        self.assertIn('instant_file_initialization_enabled', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_sql_server_instant_file_initialization_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'SQL Server must prevent unauthorized and unintended information transfer via Instant File Initialization (IFI).',
+            'check_content': 'SELECT servicename, instant_file_initialization_enabled FROM sys.dm_server_services If the column instant_file_initialization_enabled returns a value of "Y", then IFI is enabled.',
+            'fix_text': 'Configure the SQL Server service account to not have the "Perform volume maintenance tasks" Local Rights Assignment to disable IFI.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_rhel7_access_control_firewalld_or_tcpwrappers_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204628',

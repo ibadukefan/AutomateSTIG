@@ -184,6 +184,19 @@
     },
     {
       "check": {
+        "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CASE WHEN EXISTS (SELECT 1 FROM sys.dm_server_services WHERE instant_file_initialization_enabled = 'Y') THEN 'IFI_ENABLED' ELSE 'Compliant' END;\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must prevent unauthorized and unintended information transfer via Instant File Initialization (IFI).",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-271327"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CAST(value_in_use AS varchar(1)) FROM sys.configurations WHERE name = 'common criteria compliance enabled';\"",
         "type": "command_output"
       },

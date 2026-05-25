@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CASE WHEN EXISTS (SELECT 1 FROM sys.dm_server_services WHERE instant_file_initialization_enabled = 'Y') THEN 'IFI_ENABLED' ELSE 'Compliant' END;\"",
+      "type": "command_output"
+    },
+    "description": "SQL Server must prevent unauthorized and unintended information transfer via Instant File Initialization (IFI).",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "generic",
+    "vuln_id": "V-271327"
+  },
   "check_content_excerpt": "Review system configuration to determine whether IFI support has been enabled (IFI is enabled by default).\n\nRun the following query in SSMS:\n\nSELECT\n\tservicename\n\t,instant_file_initialization_enabled\nFROM sys.dm_server_services \n\nIf the column instant_file_initialization_enabled returns a value of \"Y\", then IFI is enabled.\n\nAlternatively, navigate to Start >> Control Panel >> System and Security >> Administrative Tools >> Local Security Policy >> Local Policies >> User Rights Assignment >> Perform volume maintenance tasks.\n\nThe default SQL service account for a default instance is NT SERVICE\\MSSQLSERVER or for a named instance is NT SERVICE\\MSSQL$InstanceName.\n\nIf the SQL service account or SQL service SID has been granted \"Perform volume maintenance tasks\" Local Rights Assignment, this means that IFI is enabled.\n\nReview the system documentation to determine if IFI is required.\n\nIf IFI is enabled but not documented as required, this is a finding.\n\nIf IFI is not enabled, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If IFI is not documented as being required, disable instant file initialization for the instance of SQL Server by removing the SQL Service SID and/or service account from the \"Perform volume maintenance tasks\" local rights assignment.\n\nTo grant an account the \"Perform volume maintenance tasks\" permission:\n\n1. On the computer where the data file will be created, open the Local Security Policy application (secpol.msc).\n2. In the left pane, expand \"Local Policies\" then select \"User Rights Assignment\".\n3. In the right pane, double-click \"Perform volume maintenance tasks\".\n4. Select \"Add User or Group\" and add the SQL Server service account.\n5. Select \"Apply\", then close all Local Security Policy dialog boxes.\n6. Restart the SQL Server service.\n7. Check the SQL Server error log at startup.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271327r1137657_rule",
   "severity": "medium",
