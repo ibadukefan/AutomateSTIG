@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If new packages are available for PostgreSQL, they can be reviewed in the package manager appropriate for the server operating system:\n\nTo list the version of installed PostgreSQL using psql:\n\n$ sudo su - postgres\n$ psql --version\n\nTo list the current version of software for RPM:\n\n$ rpm -qa | grep postgres\n\nTo list the current version of software for APT:\n\n$ apt-cache policy postgres\n\nAll versions of PostgreSQL will be listed here:\nhttp://www.postgresql.org/support/versioning/\n\nAll security-relevant software updates for PostgreSQL will be listed here:\nhttp://www.postgresql.org/support/security/\n\nIf PostgreSQL is not at the latest version, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

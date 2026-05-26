@@ -178,16 +178,17 @@
       "vuln_id": "V-213128"
     },
     {
-      "check_id": "",
+      "check_id": "V-213129",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-213129r400525_rule",
       "severity": "high",
       "title": "The Adobe Acrobat Pro DC Continuous latest security-related software updates must be installed.",
-      "tracking_issue": "TODO-V-213129",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/adobe_acrobat_pro_dc_continuous_stig/v-213129.json",
         "content/disa-corpus/artifacts/8ea394c92c22c364f51fa3ab665216ec6bfebe66d7e66f87d82ccbf3dd6a7cb9/U_Adobe_Acrobat_Pro_DC_Continuous_V2R1_STIG.zip"
       ],
       "vuln_id": "V-213129"

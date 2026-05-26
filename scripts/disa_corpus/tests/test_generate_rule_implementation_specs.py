@@ -19467,5 +19467,34 @@ If users with accounts in the Backup Operators group do not have separate accoun
 
         self.assertIsNone(candidate)
 
+    def test_marks_exact_external_supported_version_rules_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Edge_STIG', 'version': 'U_MS_Edge.zip'}, {
+            'vuln_id': 'V-235758',
+            'rule_id': 'SV-235758r1117151_rule',
+            'title': 'The version of Microsoft Edge running on the system must be a supported version.',
+            'severity': 'high',
+            'check_content': 'Cross-reference the build information displayed with the Microsoft Edge site to identify, at minimum, the oldest supported build available. If the installed version of Edge is not supported by Microsoft, this is a finding.',
+            'fix_text': 'Install a supported version of Edge.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertEqual(spec['implementation_status'], 'planned')
+        self.assertEqual(spec['vuln_id'], 'V-235758')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_does_not_mark_supported_version_text_without_exact_external_vuln_id(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Edge_STIG', 'version': 'U_MS_Edge.zip'}, {
+            'vuln_id': 'V-999999',
+            'rule_id': 'SV-999999_rule',
+            'title': 'The version of Microsoft Edge running on the system must be a supported version.',
+            'severity': 'high',
+            'check_content': 'Cross-reference the build information displayed with the Microsoft Edge site. If the installed version of Edge is not supported by Microsoft, this is a finding.',
+            'fix_text': 'Install a supported version of Edge.',
+        })
+
+        self.assertEqual(spec['classification'], 'automated')
+        self.assertNotEqual(spec['collector_type'], 'manual_evidence_workflow')
+
 if __name__ == '__main__':
     unittest.main()

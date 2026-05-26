@@ -386,16 +386,17 @@
       "vuln_id": "V-213191"
     },
     {
-      "check_id": "",
+      "check_id": "V-213192",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-213192r400525_rule",
       "severity": "high",
       "title": "Adobe Reader DC must have the latest Security-related Software Updates installed.",
-      "tracking_issue": "TODO-V-213192",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/adobe_acrobat_reader_dc_continuous_track_stig/v-213192.json",
         "content/disa-corpus/artifacts/8634004ba60e17988f8b27068da1f49a637f262bf9eb767423f851719d49a179/U_Adobe_Acrobat_Reader_DC_Continuous_V2R1_STIG.zip"
       ],
       "vuln_id": "V-213192"

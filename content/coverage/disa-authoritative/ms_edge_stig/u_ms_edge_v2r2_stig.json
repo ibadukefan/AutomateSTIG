@@ -610,16 +610,17 @@
       "vuln_id": "V-235756"
     },
     {
-      "check_id": "",
+      "check_id": "V-235758",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-235758r961683_rule",
       "severity": "high",
       "title": "The version of Microsoft Edge running on the system must be a supported version.",
-      "tracking_issue": "TODO-V-235758",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_edge_stig/v-235758.json",
         "content/disa-corpus/artifacts/ef73230820d1df8f0f7e6588a37833cf4e354b6f25af0b4f6f392c78dc3d1327/U_MS_Edge_V2R2_STIG.zip"
       ],
       "vuln_id": "V-235758"

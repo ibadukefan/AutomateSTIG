@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Universal method: \n1. In the omnibox (address bar) type chrome://settings/help\n2. Cross-reference the build information displayed with the Google Chrome site to identify, at minimum, the oldest supported build available.  As of July 2019, this is 74.x.x.\n3. If the installed version of Chrome is not supported by Google, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

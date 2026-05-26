@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the operating system documentation and configuration to determine if the system checks in with a patch management system to install security-relevant software updates within a timeframe directed by an authoritative source. \n\nIf the operating system does not install security-relevant patches within the time period directed by the authoritative source, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "windows_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

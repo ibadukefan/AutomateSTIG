@@ -338,16 +338,17 @@
       "vuln_id": "V-221581"
     },
     {
-      "check_id": "",
+      "check_id": "V-221584",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-221584r961683_rule",
       "severity": "medium",
       "title": "The version of Google Chrome running on the system must be a supported version.",
-      "tracking_issue": "TODO-V-221584",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/google_chrome_current_windows/v-221584.json",
         "content/disa-corpus/artifacts/04f577373ec9a151eff12481ae377b69d119b3ea7b114d8476faa59fb34e109d/U_Google_Chrome_V2R11_STIG.zip"
       ],
       "vuln_id": "V-221584"

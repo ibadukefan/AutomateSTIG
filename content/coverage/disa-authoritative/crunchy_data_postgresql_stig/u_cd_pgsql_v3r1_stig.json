@@ -1773,16 +1773,17 @@
       "vuln_id": "V-233623"
     },
     {
-      "check_id": "",
+      "check_id": "V-265871",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-265871r999519_rule",
       "severity": "high",
       "title": "PostgreSQL products must be a version supported by the vendor.",
-      "tracking_issue": "TODO-V-265871",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-265871.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-265871"

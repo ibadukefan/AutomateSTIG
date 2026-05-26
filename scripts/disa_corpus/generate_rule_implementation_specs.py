@@ -17082,8 +17082,35 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     return None
 
 
+EXTERNAL_SUPPORTED_VERSION_MANUAL_RULES = {
+    # These DISA checks require comparing the installed product or platform
+    # against an external, moving vendor support/security-update baseline. Keep
+    # them mapped as exact-Vuln-ID manual evidence workflows rather than
+    # inventing an unsafe static pass/fail threshold.
+    'V-213129',  # Adobe Acrobat Pro DC Continuous latest security-related updates
+    'V-213192',  # Adobe Reader DC latest security-related updates
+    'V-221584',  # Google Chrome supported version
+    'V-235758',  # Microsoft Edge supported version
+    'V-265871',  # PostgreSQL vendor-supported version
+    'V-268575',  # macOS 15 security-relevant software updates within external window
+    'V-277982',  # Windows Server 2025 security-relevant software updates within external window
+}
+
+
+def _external_supported_version_manual_mapping(rule: dict) -> tuple[str, str] | None:
+    canonical_ids = _canonical_vuln_ids(rule)
+    if not canonical_ids.intersection(EXTERNAL_SUPPORTED_VERSION_MANUAL_RULES):
+        return None
+    combined = '\n'.join(str(rule.get(key, '') or '') for key in ('title', 'check_content', 'fix_text'))
+    if not re.search(r'\b(?:supported version|vendor supported|security-related software updates|security-relevant software updates)\b', combined, re.IGNORECASE):
+        return None
+    if not re.search(r'\b(?:supported by|vendor|microsoft|google|adobe|security updates|authoritative source|latest security)\b', combined, re.IGNORECASE):
+        return None
+    return 'manual', 'manual_evidence_workflow'
+
+
 def spec_from_rule(manifest_path: Path, manifest: dict, rule: dict) -> dict:
-    classification, collector = classify_rule(rule.get('title', ''))
+    classification, collector = _external_supported_version_manual_mapping(rule) or classify_rule(rule.get('title', ''))
     spec = {
         'vuln_id': rule.get('vuln_id', ''),
         'rule_id': rule.get('rule_id', ''),

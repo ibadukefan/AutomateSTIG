@@ -2,16 +2,17 @@
   "generated_from": "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip",
   "rules": [
     {
-      "check_id": "",
+      "check_id": "V-277982",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-277982r1181944_rule",
       "severity": "medium",
       "title": "Windows Server 2025 must install security-relevant software updates within 30 days unless the time period is directed by an authoritative source (e.g., IAVM, CTOs, DTMs, STIGs).",
-      "tracking_issue": "TODO-V-277982",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2025_stig/v-277982.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-277982"
