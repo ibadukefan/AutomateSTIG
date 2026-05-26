@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 52,
+  "candidate_checks": 53,
   "cases": [
     {
       "check": {
@@ -442,6 +442,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-222965"
+    },
+    {
+      "check": {
+        "command": "sh -c 'service=/etc/systemd/system/tomcat.service; opts=$(grep -i \"javax.net.ssl.trustStore\" \"$service\" 2>/dev/null || true); store=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStore=\\([^ \\\"\\']*\\).*/\\1/p\" | head -n 1); pass=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStorePassword=\\([^ \\\"\\']*\\).*/\\1/p\" | head -n 1); if [ -n \"$store\" ]; then if [ -n \"$pass\" ]; then out=$(keytool -list -keystore \"$store\" -storepass \"$pass\" -v 2>/dev/null || true); else out=$(keytool -list -keystore \"$store\" -v 2>/dev/null || true); fi; else out=$(keytool -list -cacerts -v 2>/dev/null || true); fi; printf \"%s\" \"$out\" | grep -Eiq \"Issuer:.*(DOD|DoD).*Root CA|Owner:.*(DOD|DoD).*Root CA\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "DOD root CA certificates must be installed in Tomcat trust store.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'service=/etc/systemd/system/tomcat.service; opts=$(grep -i \"javax.net.ssl.trustStore\" \"$service\" 2>/dev/null || true); store=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStore=\\([^ \\\"\\']*\\).*/\\1/p\" | head -n 1); pass=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStorePassword=\\([^ \\\"\\']*\\).*/\\1/p\" | head -n 1); if [ -n \"$store\" ]; then if [ -n \"$pass\" ]; then out=$(keytool -list -keystore \"$store\" -storepass \"$pass\" -v 2>/dev/null || true); else out=$(keytool -list -keystore \"$store\" -v 2>/dev/null || true); fi; else out=$(keytool -list -cacerts -v 2>/dev/null || true); fi; printf \"%s\" \"$out\" | grep -Eiq \"Issuer:.*(DOD|DoD).*Root CA|Owner:.*(DOD|DoD).*Root CA\" && printf Compliant'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'service=/etc/systemd/system/tomcat.service; opts=$(grep -i \"javax.net.ssl.trustStore\" \"$service\" 2>/dev/null || true); store=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStore=\\([^ \\\"\\']*\\).*/\\1/p\" | head -n 1); pass=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStorePassword=\\([^ \\\"\\']*\\).*/\\1/p\" | head -n 1); if [ -n \"$store\" ]; then if [ -n \"$pass\" ]; then out=$(keytool -list -keystore \"$store\" -storepass \"$pass\" -v 2>/dev/null || true); else out=$(keytool -list -keystore \"$store\" -v 2>/dev/null || true); fi; else out=$(keytool -list -cacerts -v 2>/dev/null || true); fi; printf \"%s\" \"$out\" | grep -Eiq \"Issuer:.*(DOD|DoD).*Root CA|Owner:.*(DOD|DoD).*Root CA\" && printf Compliant'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222966"
     },
     {
       "check": {
@@ -1359,5 +1385,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 52
+  "validated_candidates": 53
 }

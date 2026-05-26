@@ -15979,6 +15979,41 @@ def _windows_server_2025_ftp_site_system_drive_candidate(rule: dict, stig_id: st
     }
 
 
+def _tomcat_dod_root_ca_truststore_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Tomcat_Application_Server_9_STIG' or rule.get('vuln_id', '') != 'V-222966':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{content}\n{fix_text}"
+    required_patterns = (
+        r'JAVA_OPTS.*javax\.net\.ssl\.trustStore',
+        r'keytool\s+-list\s+-cacerts\s+-v\s*\|\s*grep\s+-i\s+issuer',
+        r'keytool\s+-list\s+-keystore\s+<location\s+of\s+trust\s+store\s+file>\s+-v\s*\|\s*grep\s+-i\s+issuer',
+        r'If\s+there\s+are\s+no\s+CA\s+certificates\s+issued\s+by\s+a\s+CA\s+that\s+are\s+part\s+of\s+the\s+DOD\s+PKI/PKE,?\s+this\s+is\s+a\s+finding',
+        r'Import\s+the\s+DOD\s+CA\s+certificates',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):
+        return None
+    command = (
+        "sh -c 'service=/etc/systemd/system/tomcat.service; "
+        "opts=$(grep -i \"javax.net.ssl.trustStore\" \"$service\" 2>/dev/null || true); "
+        "store=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStore=\\([^ \\\"\\\']*\\).*/\\1/p\" | head -n 1); "
+        "pass=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStorePassword=\\([^ \\\"\\\']*\\).*/\\1/p\" | head -n 1); "
+        "if [ -n \"$store\" ]; then "
+        "if [ -n \"$pass\" ]; then out=$(keytool -list -keystore \"$store\" -storepass \"$pass\" -v 2>/dev/null || true); "
+        "else out=$(keytool -list -keystore \"$store\" -v 2>/dev/null || true); fi; "
+        "else out=$(keytool -list -cacerts -v 2>/dev/null || true); fi; "
+        "printf \"%s\" \"$out\" | grep -Eiq \"Issuer:.*(DOD|DoD).*Root CA|Owner:.*(DOD|DoD).*Root CA\" && printf Compliant'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _ubuntu_2004_dod_root_ca_certificate_candidate(rule: dict, stig_id: str) -> dict | None:
     if stig_id != 'Canonical_Ubuntu_20-04_LTS_STIG' or rule.get('vuln_id', '') != 'V-238364':
         return None
@@ -16192,6 +16227,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     oracle_linux_8_vlock_candidate = _oracle_linux_8_vlock_command_lock_candidate(rule, stig_id)
     if oracle_linux_8_vlock_candidate:
         return oracle_linux_8_vlock_candidate
+
+    tomcat_dod_root_ca_candidate = _tomcat_dod_root_ca_truststore_candidate(rule, stig_id)
+    if tomcat_dod_root_ca_candidate:
+        return tomcat_dod_root_ca_candidate
 
     ubuntu_dod_root_ca_candidate = _ubuntu_2004_dod_root_ca_certificate_candidate(rule, stig_id)
     if ubuntu_dod_root_ca_candidate:

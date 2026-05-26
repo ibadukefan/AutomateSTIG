@@ -223,6 +223,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'service=/etc/systemd/system/tomcat.service; opts=$(grep -i \"javax.net.ssl.trustStore\" \"$service\" 2>/dev/null || true); store=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStore=\\([^ \\\"\\']*\\).*/\\1/p\" | head -n 1); pass=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStorePassword=\\([^ \\\"\\']*\\).*/\\1/p\" | head -n 1); if [ -n \"$store\" ]; then if [ -n \"$pass\" ]; then out=$(keytool -list -keystore \"$store\" -storepass \"$pass\" -v 2>/dev/null || true); else out=$(keytool -list -keystore \"$store\" -v 2>/dev/null || true); fi; else out=$(keytool -list -cacerts -v 2>/dev/null || true); fi; printf \"%s\" \"$out\" | grep -Eiq \"Issuer:.*(DOD|DoD).*Root CA|Owner:.*(DOD|DoD).*Root CA\" && printf Compliant'",
+        "type": "command_output"
+      },
+      "description": "DOD root CA certificates must be installed in Tomcat trust store.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222966"
+    },
+    {
+      "check": {
         "command": "sh -c 'set -eu; cfg=\"$CATALINA_BASE/conf/server.xml\"; path=$(grep -Eio \"keystoreFile[[:space:]]*=[[:space:]]*\\\"[^\\\"]+\\\"\" \"$cfg\" | head -n1 | sed -E \"s/.*=\\\"([^\\\"]+)\\\"/\\\\1/I\"); [ -n \"$path\" ] && [ -f \"$path\" ] || exit 0; case \"$path\" in \"$CATALINA_BASE\"/*|\"${CATALINA_HOME:-$CATALINA_BASE}\"/*|/opt/tomcat/*) ;; *) exit 0;; esac; [ \"$(stat -c \"%a %U %G\" \"$path\")\" = \"640 root tomcat\" ] && printf Compliant'",
         "type": "command_output"
       },

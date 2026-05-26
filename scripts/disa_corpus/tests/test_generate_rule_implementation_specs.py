@@ -19932,5 +19932,46 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
         self.assertNotIn('candidate_check', spec)
 
+    def test_infers_tomcat_dod_root_ca_truststore_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222966',
+            'title': 'DOD root CA certificates must be installed in Tomcat trust store.',
+            'check_content': '''For the systemd Ubuntu OS, check the tomcat.service file to read the content of the JAVA_OPTS environment variable setting.
+
+sudo cat /etc/systemd/system/tomcat.service |grep -i truststore
+
+EXAMPLE output:
+set JAVA_OPTS="-Djavax.net.ssl.trustStore=/path/to/truststore" "-Djavax.net.ssl.trustStorePassword=************"
+
+If the variable is not set, use the default location command below. If the variable is set, use the alternate location command below and include the path and truststore file.
+
+-Default location:
+keytool -list -cacerts -v | grep -i issuer
+
+-Alternate location:
+keytool -list -keystore <location of trust store file> -v |grep -i issuer
+
+If there are no CA certificates issued by a CA that are part of the DOD PKI/PKE, this is a finding.''',
+            'fix_text': 'Obtain and install the DOD PKI CA certificate bundles by accessing the DOD PKI office website at cyber.mil/pki-pke. Import the DOD CA certificates.',
+        }, 'Tomcat_Application_Server_9_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-222966')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('keytool -list -cacerts -v', candidate['check']['command'])
+        self.assertIn('javax.net.ssl.trustStore', candidate['check']['command'])
+        self.assertIn('DOD', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_tomcat_dod_root_ca_truststore_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'DOD root CA certificates must be installed in Tomcat trust store.',
+            'check_content': 'keytool -list -cacerts -v | grep -i issuer If there are no CA certificates issued by a CA that are part of the DOD PKI/PKE, this is a finding.',
+            'fix_text': 'Import the DOD CA certificates.',
+        }, 'Tomcat_Application_Server_9_STIG')
+
+        self.assertIsNone(candidate)
+
 if __name__ == '__main__':
     unittest.main()

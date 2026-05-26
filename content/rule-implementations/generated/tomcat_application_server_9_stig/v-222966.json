@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sh -c 'service=/etc/systemd/system/tomcat.service; opts=$(grep -i \"javax.net.ssl.trustStore\" \"$service\" 2>/dev/null || true); store=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStore=\\([^ \\\"\\']*\\).*/\\1/p\" | head -n 1); pass=$(printf \"%s\" \"$opts\" | sed -n \"s/.*-Djavax.net.ssl.trustStorePassword=\\([^ \\\"\\']*\\).*/\\1/p\" | head -n 1); if [ -n \"$store\" ]; then if [ -n \"$pass\" ]; then out=$(keytool -list -keystore \"$store\" -storepass \"$pass\" -v 2>/dev/null || true); else out=$(keytool -list -keystore \"$store\" -v 2>/dev/null || true); fi; else out=$(keytool -list -cacerts -v 2>/dev/null || true); fi; printf \"%s\" \"$out\" | grep -Eiq \"Issuer:.*(DOD|DoD).*Root CA|Owner:.*(DOD|DoD).*Root CA\" && printf Compliant'",
+      "type": "command_output"
+    },
+    "description": "DOD root CA certificates must be installed in Tomcat trust store.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-222966"
+  },
   "check_content_excerpt": "This is a mutual authentication requirement where both the Tomcat server and the client are required to authenticate themselves via mutual TLS. Review system security plan and other system documentation. If the system has no connections requiring mutual authentication (e.g., proxy servers or other hosts specified in the system documentation), this requirement is Not Applicable.\n\nFor the systemd Ubuntu OS, check the tomcat.service file to read the content of the JAVA_OPTS environment variable setting.\n\nsudo cat /etc/systemd/system/tomcat.service |grep -i truststore\n\nEXAMPLE output:\nset JAVA_OPTS=\"-Djavax.net.ssl.trustStore=/path/to/truststore\" \"-Djavax.net.ssl.trustStorePassword=************\"\n\nIf the variable is not set, use the default location command below. If the variable is set, use the alternate location command below and include the path and truststore file. \n\n-Default location:\nkeytool -list -cacerts -v | grep -i issuer\n\n-Alternate location:\nkeytool -list -keystore <location of trust store file> -v |grep -i issuer\n\nIf there are no CA certificates issued by a CA that are part of the DOD PKI/PKE, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Obtain and install the DOD PKI CA certificate bundles by accessing the DOD PKI office website at cyber.mil/pki-pke.\n\nImport the DOD CA certificates.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222966r985891_rule",
   "severity": "medium",
