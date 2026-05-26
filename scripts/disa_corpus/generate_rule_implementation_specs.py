@@ -1008,6 +1008,35 @@ def _windows_server_2025_antivirus_service_candidate(rule: dict, stig_id: str) -
     }
 
 
+def _windows_server_2025_empty_backup_operators_candidate(rule: dict, stig_id: str) -> dict | None:
+    if (rule.get('vuln_id'), stig_id) != ('V-277988', 'MS_Windows_Server_2025_STIG'):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_content_patterns = (
+        r'If\s+no\s+accounts\s+are\s+members\s+of\s+the\s+Backup\s+Operators\s+group,\s+this\s+is\s+not\s+applicable',
+        r'Verify\s+users\s+with\s+accounts\s+in\s+the\s+Backup\s+Operators\s+group\s+have\s+a\s+separate\s+user\s+account\s+for\s+backup\s+functions',
+        r'If\s+users\s+with\s+accounts\s+in\s+the\s+Backup\s+Operators\s+group\s+do\s+not\s+have\s+separate\s+accounts\s+for\s+backup\s+functions\s+and\s+standard\s+user\s+functions,\s+this\s+is\s+a\s+finding',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE) for pattern in required_content_patterns):
+        return None
+    if not re.search(r'Ensure\s+each\s+member\s+of\s+the\s+Backup\s+Operators\s+group\s+has\s+separate\s+accounts\s+for\s+backup\s+functions\s+and\s+standard\s+user\s+functions', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "powershell -NoProfile -Command \""
+        "$members=@(Get-LocalGroupMember -Group 'Backup Operators' -ErrorAction SilentlyContinue); "
+        "if ($members.Count -eq 0) { 'Compliant' }"
+        "\""
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_server_2025_time_service_candidate(rule: dict, stig_id: str) -> dict | None:
     allowed = {
         ('V-278029', 'MS_Windows_Server_2025_STIG'),
@@ -16363,6 +16392,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         windows_server_2025_antivirus_candidate = _windows_server_2025_antivirus_service_candidate(rule, stig_id)
         if windows_server_2025_antivirus_candidate:
             return windows_server_2025_antivirus_candidate
+
+        windows_server_2025_backup_operators_candidate = _windows_server_2025_empty_backup_operators_candidate(rule, stig_id)
+        if windows_server_2025_backup_operators_candidate:
+            return windows_server_2025_backup_operators_candidate
 
         windows_server_2025_time_service_candidate = _windows_server_2025_time_service_candidate(rule, stig_id)
         if windows_server_2025_time_service_candidate:

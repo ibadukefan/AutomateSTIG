@@ -19436,5 +19436,36 @@ If any non-administrative role has the attribute "Superuser", "Create role", "Cr
 
         self.assertIsNone(candidate)
 
+    def test_infers_windows_server_2025_empty_backup_operators_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-277988',
+            'title': 'Windows Server 2025 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks.',
+            'check_content': '''Determine the members of the Backup Operators group.
+
+If no accounts are members of the Backup Operators group, this is not applicable.
+
+Verify users with accounts in the Backup Operators group have a separate user account for backup functions and for performing normal user tasks.
+
+If users with accounts in the Backup Operators group do not have separate accounts for backup functions and standard user functions, this is a finding.''',
+            'fix_text': 'Ensure each member of the Backup Operators group has separate accounts for backup functions and standard user functions.',
+        }, 'MS_Windows_Server_2025_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-277988')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertIn('Get-LocalGroupMember', candidate['check']['command'])
+        self.assertIn('Backup Operators', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_windows_server_2025_empty_backup_operators_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Windows Server 2025 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks.',
+            'check_content': 'If no accounts are members of the Backup Operators group, this is not applicable.',
+            'fix_text': 'Ensure each member of the Backup Operators group has separate accounts for backup functions and standard user functions.',
+        }, 'MS_Windows_Server_2025_STIG')
+
+        self.assertIsNone(candidate)
+
 if __name__ == '__main__':
     unittest.main()

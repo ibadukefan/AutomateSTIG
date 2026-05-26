@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$members=@(Get-LocalGroupMember -Group 'Backup Operators' -ErrorAction SilentlyContinue); if ($members.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-277988"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"Import-Module AppLocker -ErrorAction Stop; $xml = [xml](Get-AppLockerPolicy -Effective -Xml); $collections = @($xml.AppLockerPolicy.RuleCollection | Where-Object { @('Exe','Msi','Script','Dll','Appx') -contains $_.Type -and $_.EnforcementMode -eq 'Enabled' }); if ($collections.Count -gt 0 -and -not ($collections | Where-Object { -not $_.ChildNodes -or $_.ChildNodes.Count -eq 0 })) { 'Compliant' }\"",
         "type": "command_output"
       },

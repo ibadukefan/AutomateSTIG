@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"$members=@(Get-LocalGroupMember -Group 'Backup Operators' -ErrorAction SilentlyContinue); if ($members.Count -eq 0) { 'Compliant' }\"",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2025 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "windows",
+    "vuln_id": "V-277988"
+  },
   "check_content_excerpt": "If no accounts are members of the Backup Operators group, this is not applicable.\n\nVerify users with accounts in the Backup Operators group have a separate user account for backup functions and for performing normal user tasks.\n\nIf users with accounts in the Backup Operators group do not have separate accounts for backup functions and standard user functions, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Ensure each member of the Backup Operators group has separate accounts for backup functions and standard user functions.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-277988r1182011_rule",
   "severity": "medium",
