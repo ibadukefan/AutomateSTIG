@@ -652,6 +652,105 @@ If the sqlnet.ora file does not contain such entries, this is a finding.''',
 
         self.assertIsNone(candidate)
 
+    def test_infers_cisco_nxos_default_deny_inbound_acl_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221087',
+            'title': 'The Cisco perimeter switch must be configured to deny network traffic by default and allow network traffic by exception.',
+            'check_content': (
+                'Review the switch configuration to verify that the inbound ACL applied to all external interfaces is configured to allow specific ports and protocols and deny all other traffic.\n\n'
+                'Step 1: Verify that an inbound ACL is applied to all external interfaces as shown in the example below:\n'
+                'interface Ethernet1/2\n no switchport\n ip access-group EXTERNAL_ACL in\n\n'
+                'Step 2: Review inbound ACL to verify that it is configured to deny all other traffic that is not explicitly allowed.\n'
+                'ip access-list EXTERNAL_ACL\n 10 permit tcp any any established\n 90 deny ip any any log\n\n'
+                'If the ACL is not configured to allow specific ports and protocols and deny all other traffic, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure an inbound ACL to deny all other traffic by default as shown in the example below:\n'
+                'SW1(config)# ip access-list EXTERNAL_ACL\nSW1(config-acl)# deny ip any any log\n'
+                'Apply the ingress filter to all external interfaces. SW1(config-if)# ip access-group EXTERNAL_ACL in'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221087')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('show running-config', candidate['check']['command'])
+        self.assertIn('ip[[:space:]]+access-group', candidate['check']['command'])
+        self.assertIn('{acl=$3; applied[acl]=1}', candidate['check']['command'])
+        self.assertIn('deny[[:space:]]+ip[[:space:]]+any[[:space:]]+any[[:space:]]+log', candidate['check']['command'])
+
+    def test_rejects_cisco_nxos_default_deny_inbound_acl_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Network traffic must be denied by default.',
+            'check_content': 'ip access-group EXTERNAL_ACL in deny ip any any log If the ACL is not configured to allow specific ports and protocols and deny all other traffic, this is a finding.',
+            'fix_text': 'Configure an inbound ACL to deny all other traffic by default. deny ip any any log ip access-group EXTERNAL_ACL in',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNone(candidate)
+
+    def test_infers_cisco_nxos_msdp_inbound_sa_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221144',
+            'title': 'The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter received source-active multicast advertisements.',
+            'check_content': (
+                'Step 1: Verify that an inbound source-active filter is bound to each MSDP peer.\n'
+                'ip msdp peer x.1.28.2 connect-source Ethernet2/1 remote-as nn\n'
+                'ip msdp sa-policy x.1.28.2 prefix-list INBOUND_MSDP_SA_FILTER in\n\n'
+                'ip prefix-list INBOUND_MSDP_SA_FILTER seq 10 deny 224.0.1.3/32\n'
+                'ip prefix-list INBOUND_MSDP_SA_FILTER seq 50 deny 232.0.0.0/8 le 32\n'
+                'ip prefix-list INBOUND_MSDP_SA_FILTER seq 55 deny 239.0.0.0/8 le 32\n'
+                'ip prefix-list INBOUND_MSDP_SA_FILTER seq 60 deny 10.0.0.0/8 le 32\n'
+                'ip prefix-list INBOUND_MSDP_SA_FILTER seq 70 deny 172.16.0.0/12 le 32\n'
+                'If the switch is not configured with an import policy to filter undesirable SA multicast advertisements, this is a finding.'
+            ),
+            'fix_text': 'Configure the MSDP switch to filter received source-active multicast advertisements. ip msdp sa-policy x.1.28.2 prefix-list INBOUND_MSDP_SA_FILTER in',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221144')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('$2=="msdp"', candidate['check']['command'])
+        self.assertIn('$6=="deny"', candidate['check']['command'])
+        self.assertIn('deny[$7]=1', candidate['check']['command'])
+        self.assertIn('INBOUND_MSDP_SA_FILTER', candidate['check']['command'])
+
+    def test_infers_cisco_nxos_msdp_outbound_sa_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221145',
+            'title': 'The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter local source-active multicast advertisements.',
+            'check_content': (
+                'Step 1: Verify that an outbound source-active filter is bound to each MSDP peer as shown in the example below:\n'
+                'ip msdp peer x.1.28.2 connect-source Ethernet2/1 remote-as nn\n'
+                'ip msdp sa-policy x.1.28.2 prefix-list OUTBOUND_MSDP_SA_FILTER out\n\n'
+                'ip prefix-list OUTBOUND_MSDP_SA_FILTER seq 10 deny 10.0.0.0/8 le 32\n'
+                'ip prefix-list OUTBOUND_MSDP_SA_FILTER seq 20 permit 0.0.0.0/0 ge 8\n'
+                'If the switch is not configured with an export policy to filter local source-active multicast advertisements, this is a finding.'
+            ),
+            'fix_text': 'Configure the switch with an export policy to avoid global visibility of local multicast states. ip msdp sa-policy x.1.28.2 prefix-list OUTBOUND_MSDP_SA_FILTER out',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221145')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('$2=="msdp"', candidate['check']['command'])
+        self.assertIn('$6=="deny"', candidate['check']['command'])
+        self.assertIn('$7=="10.0.0.0/8"', candidate['check']['command'])
+        self.assertIn('OUTBOUND_MSDP_SA_FILTER', candidate['check']['command'])
+
+    def test_rejects_cisco_nxos_msdp_sa_policy_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'MSDP source-active advertisements must be filtered.',
+            'check_content': 'ip msdp sa-policy x.1.28.2 prefix-list OUTBOUND_MSDP_SA_FILTER out If the switch is not configured with an export policy to filter local source-active multicast advertisements, this is a finding.',
+            'fix_text': 'Configure the switch with an export policy. ip msdp sa-policy x.1.28.2 prefix-list OUTBOUND_MSDP_SA_FILTER out',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_cisco_nxos_internal_egress_acl_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221094',

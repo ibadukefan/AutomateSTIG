@@ -145,6 +145,19 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{acl=\"\"} /^[[:space:]]*ip[[:space:]]+access-group[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {acl=$2; applied[acl]=1} /^ip[[:space:]]+access-list[[:space:]]+/ {acl=$3} /^[[:space:]]*([0-9]+[[:space:]]+)?deny[[:space:]]+ip[[:space:]]+any[[:space:]]+any[[:space:]]+log[[:space:]]*$/ && acl != \"\" {deny[acl]=1} END{for (acl in applied) if (deny[acl]) {print \"Compliant\"; exit}}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to deny network traffic by default and allow network traffic by exception.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221087"
+    },
+    {
+      "check": {
         "command": "show running-config | sh -c 'cat > /tmp/acl.$$; grep -Fq \"deny ip 0.0.0.0/8 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 10.0.0.0/8 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 100.64.0.0/10 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 127.0.0.0/8 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 169.254.0.0/16 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 172.16.0.0/12 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 192.0.0.0/24 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 192.0.2.0/24 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 192.168.0.0/16 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 198.18.0.0/15 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 198.51.100.0/24 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 203.0.113.0/24 any log\" /tmp/acl.$$ && grep -Fq \"deny ip 224.0.0.0/3 any log\" /tmp/acl.$$ && printf Compliant; rm -f /tmp/acl.$$'",
         "type": "command_output"
       },
@@ -558,6 +571,32 @@
       },
       "platform": "network",
       "vuln_id": "V-221143"
+    },
+    {
+      "check": {
+        "command": "show running-config | awk 'BEGIN{policy=\"INBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"in\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"deny\" {deny[$6]=1} END{if(bound && deny[\"224.0.1.3/32\"] && deny[\"232.0.0.0/8\"] && deny[\"239.0.0.0/8\"] && deny[\"10.0.0.0/8\"] && deny[\"172.16.0.0/12\"]) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter received source-active multicast advertisements for any undesirable multicast groups and sources.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221144"
+    },
+    {
+      "check": {
+        "command": "show running-config | awk 'BEGIN{policy=\"OUTBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"out\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"deny\" && $6==\"10.0.0.0/8\" && $7==\"le\" && $8==\"32\" {deny=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"permit\" && $6==\"0.0.0.0/0\" && $7==\"ge\" && $8==\"8\" {permit=1} END{if(bound && deny && permit) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter source-active multicast advertisements to external MSDP peers to avoid global visibility of local-only multicast sources and groups.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221145"
     },
     {
       "check": {

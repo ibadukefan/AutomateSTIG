@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 48,
+  "candidate_checks": 51,
   "cases": [
     {
       "check": {
@@ -286,6 +286,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221086"
+    },
+    {
+      "check": {
+        "command": "show running-config | awk 'BEGIN{acl=\"\"} /^[[:space:]]*ip[[:space:]]+access-group[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {acl=$2; applied[acl]=1} /^ip[[:space:]]+access-list[[:space:]]+/ {acl=$3} /^[[:space:]]*([0-9]+[[:space:]]+)?deny[[:space:]]+ip[[:space:]]+any[[:space:]]+any[[:space:]]+log[[:space:]]*$/ && acl != \"\" {deny[acl]=1} END{for (acl in applied) if (deny[acl]) {print \"Compliant\"; exit}}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco perimeter switch must be configured to deny network traffic by default and allow network traffic by exception.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{acl=\"\"} /^[[:space:]]*ip[[:space:]]+access-group[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {acl=$2; applied[acl]=1} /^ip[[:space:]]+access-list[[:space:]]+/ {acl=$3} /^[[:space:]]*([0-9]+[[:space:]]+)?deny[[:space:]]+ip[[:space:]]+any[[:space:]]+any[[:space:]]+log[[:space:]]*$/ && acl != \"\" {deny[acl]=1} END{for (acl in applied) if (deny[acl]) {print \"Compliant\"; exit}}'": "unexpected-Compliant"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{acl=\"\"} /^[[:space:]]*ip[[:space:]]+access-group[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {acl=$2; applied[acl]=1} /^ip[[:space:]]+access-list[[:space:]]+/ {acl=$3} /^[[:space:]]*([0-9]+[[:space:]]+)?deny[[:space:]]+ip[[:space:]]+any[[:space:]]+any[[:space:]]+log[[:space:]]*$/ && acl != \"\" {deny[acl]=1} END{for (acl in applied) if (deny[acl]) {print \"Compliant\"; exit}}'": "Compliant"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221087"
     },
     {
       "check": {
@@ -1121,6 +1147,58 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{policy=\"INBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"in\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"deny\" {deny[$6]=1} END{if(bound && deny[\"224.0.1.3/32\"] && deny[\"232.0.0.0/8\"] && deny[\"239.0.0.0/8\"] && deny[\"10.0.0.0/8\"] && deny[\"172.16.0.0/12\"]) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter received source-active multicast advertisements for any undesirable multicast groups and sources.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{policy=\"INBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"in\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"deny\" {deny[$6]=1} END{if(bound && deny[\"224.0.1.3/32\"] && deny[\"232.0.0.0/8\"] && deny[\"239.0.0.0/8\"] && deny[\"10.0.0.0/8\"] && deny[\"172.16.0.0/12\"]) print \"Compliant\"}'": "unexpected-Compliant"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{policy=\"INBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"in\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"deny\" {deny[$6]=1} END{if(bound && deny[\"224.0.1.3/32\"] && deny[\"232.0.0.0/8\"] && deny[\"239.0.0.0/8\"] && deny[\"10.0.0.0/8\"] && deny[\"172.16.0.0/12\"]) print \"Compliant\"}'": "Compliant"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221144"
+    },
+    {
+      "check": {
+        "command": "show running-config | awk 'BEGIN{policy=\"OUTBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"out\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"deny\" && $6==\"10.0.0.0/8\" && $7==\"le\" && $8==\"32\" {deny=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"permit\" && $6==\"0.0.0.0/0\" && $7==\"ge\" && $8==\"8\" {permit=1} END{if(bound && deny && permit) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter source-active multicast advertisements to external MSDP peers to avoid global visibility of local-only multicast sources and groups.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{policy=\"OUTBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"out\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"deny\" && $6==\"10.0.0.0/8\" && $7==\"le\" && $8==\"32\" {deny=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"permit\" && $6==\"0.0.0.0/0\" && $7==\"ge\" && $8==\"8\" {permit=1} END{if(bound && deny && permit) print \"Compliant\"}'": "unexpected-Compliant"
+        },
+        "platform": "network"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "show running-config | awk 'BEGIN{policy=\"OUTBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"out\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"deny\" && $6==\"10.0.0.0/8\" && $7==\"le\" && $8==\"32\" {deny=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"permit\" && $6==\"0.0.0.0/0\" && $7==\"ge\" && $8==\"8\" {permit=1} END{if(bound && deny && permit) print \"Compliant\"}'": "Compliant"
+        },
+        "platform": "network"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221145"
+    },
+    {
+      "check": {
         "command": "show running-config | include \"^ip msdp sa-limit \"",
         "type": "command_output"
       },
@@ -1255,5 +1333,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
-  "validated_candidates": 48
+  "validated_candidates": 51
 }

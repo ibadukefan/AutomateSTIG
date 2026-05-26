@@ -3494,6 +3494,25 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': 'Compliant'},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221087':
+        if not re.search(r'inbound\s+ACL\s+applied\s+to\s+all\s+external\s+interfaces.*?deny\s+all\s+other\s+traffic', content, re.IGNORECASE | re.DOTALL):
+            return None
+        if not re.search(r'ip\s+access-group\s+\S+\s+in', content, re.IGNORECASE):
+            return None
+        if not re.search(r'deny\s+ip\s+any\s+any\s+log', content, re.IGNORECASE):
+            return None
+        if not re.search(r'If\s+the\s+ACL\s+is\s+not\s+configured\s+to\s+allow\s+specific\s+ports\s+and\s+protocols\s+and\s+deny\s+all\s+other\s+traffic,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            return None
+        if not re.search(r'Configure\s+an\s+inbound\s+ACL\s+to\s+deny\s+all\s+other\s+traffic\s+by\s+default.*?deny\s+ip\s+any\s+any\s+log.*?ip\s+access-group\s+\S+\s+in', fix_text, re.IGNORECASE | re.DOTALL):
+            return None
+        command = "show running-config | awk 'BEGIN{acl=\"\"} /^[[:space:]]*ip[[:space:]]+access-group[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {acl=$3; applied[acl]=1} /^ip[[:space:]]+access-list[[:space:]]+/ {acl=$3} /^[[:space:]]*([0-9]+[[:space:]]+)?deny[[:space:]]+ip[[:space:]]+any[[:space:]]+any[[:space:]]+log[[:space:]]*$/ && acl != \"\" {deny[acl]=1} END{for (acl in applied) if (deny[acl]) {print \"Compliant\"; exit}}'"
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221110':
         if not re.search(r'Review\s+the\s+switch\s+configuration\s+to\s+verify\s+that\s+the\s+number\s+of\s+received\s+prefixes\s+from\s+each\s+eBGP\s+neighbor\s+is\s+controlled', content, re.IGNORECASE):
             return None
@@ -3675,6 +3694,18 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'contains', 'substring': 'ip msdp password'},
             'content': r'ip\s+msdp\s+peer\s+\S+\s+remote-as\s+\S+.*?ip\s+msdp\s+password(?:\s+peer)?\s+\S+\s+\S+.*?If\s+the\s+switch\s+does\s+not\s+(?:authenticate\s+received\s+MSDP\s+packets|require\s+MSDP\s+authentication)',
             'fix': r'Configure\s+the\s+switch\s+to\s+authenticate\s+MSDP\s+messages.*?ip\s+msdp\s+password',
+        },
+        'V-221144': {
+            'command': "show running-config | awk 'BEGIN{policy=\"INBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"in\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $6==\"deny\" {deny[$7]=1} END{if(bound && deny[\"224.0.1.3/32\"] && deny[\"232.0.0.0/8\"] && deny[\"239.0.0.0/8\"] && deny[\"10.0.0.0/8\"] && deny[\"172.16.0.0/12\"]) print \"Compliant\"}'",
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'content': r'inbound\s+source-active\s+filter\s+is\s+bound\s+to\s+each\s+MSDP\s+peer.*?ip\s+msdp\s+sa-policy\s+\S+\s+prefix-list\s+INBOUND_MSDP_SA_FILTER\s+in.*?ip\s+prefix-list\s+INBOUND_MSDP_SA_FILTER.*?deny\s+224\.0\.1\.3/32.*?deny\s+232\.0\.0\.0/8\s+le\s+32.*?deny\s+239\.0\.0\.0/8\s+le\s+32.*?deny\s+10\.0\.0\.0/8\s+le\s+32.*?deny\s+172\.16\.0\.0/12\s+le\s+32.*?If\s+the\s+switch\s+is\s+not\s+configured\s+with\s+an\s+import\s+policy\s+to\s+filter\s+undesirable\s+SA\s+multicast\s+advertisements,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+the\s+MSDP\s+switch\s+to\s+filter\s+received\s+source-active\s+multicast\s+advertisements.*?ip\s+msdp\s+sa-policy\s+\S+\s+prefix-list\s+INBOUND_MSDP_SA_FILTER\s+in',
+        },
+        'V-221145': {
+            'command': "show running-config | awk 'BEGIN{policy=\"OUTBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"out\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $6==\"deny\" && $7==\"10.0.0.0/8\" && $8==\"le\" && $9==\"32\" {deny=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $6==\"permit\" && $7==\"0.0.0.0/0\" && $8==\"ge\" && $9==\"8\" {permit=1} END{if(bound && deny && permit) print \"Compliant\"}'",
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'content': r'outbound\s+source-active\s+filter\s+is\s+bound\s+to\s+each\s+MSDP\s+peer.*?ip\s+msdp\s+sa-policy\s+\S+\s+prefix-list\s+OUTBOUND_MSDP_SA_FILTER\s+out.*?ip\s+prefix-list\s+OUTBOUND_MSDP_SA_FILTER.*?deny\s+10\.0\.0\.0/8\s+le\s+32.*?permit\s+0\.0\.0\.0/0\s+ge\s+8.*?If\s+the\s+switch\s+is\s+not\s+configured\s+with\s+an\s+export\s+policy\s+to\s+filter\s+local\s+source-active\s+multicast\s+advertisements,\s+this\s+is\s+a\s+finding',
+            'fix': r'Configure\s+the\s+switch\s+with\s+an\s+export\s+policy\s+to\s+avoid\s+global\s+visibility\s+of\s+local\s+multicast.*?ip\s+msdp\s+sa-policy\s+\S+\s+prefix-list\s+OUTBOUND_MSDP_SA_FILTER\s+out',
         },
         'V-221147': {
             'command': 'show running-config | include "^ip msdp peer .* connect-source "',

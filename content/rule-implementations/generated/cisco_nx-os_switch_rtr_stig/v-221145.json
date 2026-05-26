@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{policy=\"OUTBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"out\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"deny\" && $6==\"10.0.0.0/8\" && $7==\"le\" && $8==\"32\" {deny=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"permit\" && $6==\"0.0.0.0/0\" && $7==\"ge\" && $8==\"8\" {permit=1} END{if(bound && deny && permit) print \"Compliant\"}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter source-active multicast advertisements to external MSDP peers to avoid global visibility of local-only multicast sources and groups.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221145"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if there is export policy to block local source-active multicast advertisements.\n\nStep 1: Verify that an outbound source-active filter is bound to each MSDP peer as shown in the example below:\n\nip msdp peer x.1.28.2 connect-source Ethernet2/1 remote-as nn\nip msdp sa-policy x.1.28.2 prefix-list OUTBOUND_MSDP_SA_FILTER out\n\nStep 2: Review the access lists referenced by the source-active filters and verify that MSDP source-active messages being sent to MSDP peers do not leak advertisements that are local.\n\nip prefix-list OUTBOUND_MSDP_SA_FILTER seq 10 deny 10.0.0.0/8 le 32\nip prefix-list OUTBOUND_MSDP_SA_FILTER seq 20 permit 0.0.0.0/0 ge 8\n\nIf the switch is not configured with an export policy to filter local source-active multicast advertisements, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch with an export policy to avoid global visibility of local multicast (S, G) states. The example below will prevent exporting multicast active sources belonging to the private network.\n\nSW1(config)# ip prefix-list OUTBOUND_MSDP_SA_FILTER seq 10 deny 10.0.0.0/8 le 32\nSW1(config)# ip prefix-list OUTBOUND_MSDP_SA_FILTER seq 20 permit 0.0.0.0/0 ge 8\nSW1(config)# exit\nSW1(config)# ip msdp sa-policy x.1.28.2 prefix-list OUTBOUND_MSDP_SA_FILTER out\nSW1(config)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221145r1137902_rule",
   "severity": "low",

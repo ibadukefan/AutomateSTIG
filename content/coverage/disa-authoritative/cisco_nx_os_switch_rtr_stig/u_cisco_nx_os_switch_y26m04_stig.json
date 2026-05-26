@@ -224,16 +224,17 @@
       "vuln_id": "V-221086"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221087",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221087r1137935_rule",
       "severity": "high",
       "title": "The Cisco perimeter switch must be configured to deny network traffic by default and allow network traffic by exception.",
-      "tracking_issue": "TODO-V-221087",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221087"
@@ -1117,31 +1118,33 @@
       "vuln_id": "V-221143"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221144",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221144r1137900_rule",
       "severity": "low",
       "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter received source-active multicast advertisements for any undesirable multicast groups and sources.",
-      "tracking_issue": "TODO-V-221144",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221144"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221145",
+      "check_pack": "generated-candidates/cisco_nx-os_switch_rtr_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-221145r1137902_rule",
       "severity": "low",
       "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter source-active multicast advertisements to external MSDP peers to avoid global visibility of local-only multicast sources and groups.",
-      "tracking_issue": "TODO-V-221145",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/cisco_nx-os_switch_rtr_stig.candidates.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221145"

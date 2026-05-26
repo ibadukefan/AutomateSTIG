@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{policy=\"INBOUND_MSDP_SA_FILTER\"} $1==\"ip\" && $2==\"msdp\" && $3==\"sa-policy\" && $5==\"prefix-list\" && $6==policy && $7==\"in\" {bound=1} $1==\"ip\" && $2==\"prefix-list\" && $3==policy && $5==\"deny\" {deny[$6]=1} END{if(bound && deny[\"224.0.1.3/32\"] && deny[\"232.0.0.0/8\"] && deny[\"239.0.0.0/8\"] && deny[\"10.0.0.0/8\"] && deny[\"172.16.0.0/12\"]) print \"Compliant\"}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter received source-active multicast advertisements for any undesirable multicast groups and sources.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221144"
+  },
   "check_content_excerpt": "Review the switch configuration to determine if there is import policy to block source-active multicast advertisements for any undesirable multicast groups, as well as any (S, G) states with undesirable source addresses. \n\nStep 1: Verify that an inbound source-active filter is bound to each MSDP peer.\n\nip msdp peer x.1.28.2 connect-source Ethernet2/1 remote-as nn\nip msdp sa-policy x.1.28.2 prefix-list INBOUND_MSDP_SA_FILTER in\n\nStep 2: Review the prefix-list or route-map referenced by the source-active filter to verify that undesirable multicast groups, auto-RP, single source multicast (SSM) groups, and advertisements from undesirable sources are blocked.\n\nip prefix-list INBOUND_MSDP_SA_FILTER seq 10 deny 224.0.1.3/32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 15 deny 224.0.1.24/32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 20 deny 224.0.1.22/32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 25 deny 224.0.1.2/32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 30 deny 224.0.1.35/32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 35 deny 224.0.1.60/32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 40 deny 224.0.1.39/32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 45 deny 224.0.1.40/32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 50 deny 232.0.0.0/8 le 32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 55 deny 239.0.0.0/8 le 32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 60 deny 10.0.0.0/8 le 32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 70 deny 172.16.0.0/12 le 32 \nip prefix-list INBOUND_MSDP_SA_FILTER seq 75 permit 0.0.0.0/0 ge 8\n\nIf the switch is not configured with an import policy to filter undesirable SA multicast advertisements, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the MSDP switch to filter received source-active multicast advertisements for any undesirable multicast groups and sources as shown in the example below:\n\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 10 deny 224.0.1.3/32 \nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 15 deny 224.0.1.24/32\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 20 deny 224.0.1.22/32\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 25 deny 224.0.1.2/32\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 30 deny 224.0.1.35/32\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 35 deny 224.0.1.60/32\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 40 deny 224.0.1.39/32\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 45 deny 224.0.1.40/32\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 50 deny 232.0.0.0/8 le 32 \nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 55 deny 239.0.0.0/8 le 32 \nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 60 deny 10.0.0.0/8 le 32\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 165 deny 127.0.0.0/8 le 32\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 70 deny 172.16.0.0/12 le 32\nSW1(config)# ip prefix-list INBOUND_MSDP_SA_FILTER seq 75 permit 0.0.0.0/0 ge 8\nSW1(config)# exit\nSW1(config)# ip msdp sa-policy x.1.28.2 prefix-list INBOUND_MSDP_SA_FILTER in\nSW1(config)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221144r1137900_rule",
   "severity": "low",
