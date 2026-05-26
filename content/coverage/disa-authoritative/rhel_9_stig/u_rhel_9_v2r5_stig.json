@@ -4354,16 +4354,17 @@
       "vuln_id": "V-258057"
     },
     {
-      "check_id": "",
+      "check_id": "V-258058",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-258058r1045148_rule",
       "severity": "medium",
       "title": "RHEL 9 must not have unauthorized accounts.",
-      "tracking_issue": "TODO-V-258058",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_9_stig/v-258058.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-258058"

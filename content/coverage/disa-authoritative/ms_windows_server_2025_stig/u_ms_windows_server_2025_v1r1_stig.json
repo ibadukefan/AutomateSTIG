@@ -349,16 +349,17 @@
       "vuln_id": "V-278005"
     },
     {
-      "check_id": "",
+      "check_id": "V-278006",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-278006r1182237_rule",
       "severity": "medium",
       "title": "Windows Server 2025 system files must be monitored for unauthorized changes.",
-      "tracking_issue": "TODO-V-278006",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2025_stig/v-278006.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278006"
@@ -2506,16 +2507,17 @@
       "vuln_id": "V-278141"
     },
     {
-      "check_id": "",
+      "check_id": "V-278142",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-278142r1182090_rule",
       "severity": "high",
       "title": "Windows Server 2025 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions.",
-      "tracking_issue": "TODO-V-278142",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2025_stig/v-278142.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278142"

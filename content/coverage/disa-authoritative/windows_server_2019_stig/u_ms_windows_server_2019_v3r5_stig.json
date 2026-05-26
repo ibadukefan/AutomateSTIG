@@ -1666,16 +1666,17 @@
       "vuln_id": "V-205727"
     },
     {
-      "check_id": "",
+      "check_id": "V-205728",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205728r1000127_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Endpoint Security Solution (ESS) is used; 30 days, for any additional internal network scans not covered by ESS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP).",
-      "tracking_issue": "TODO-V-205728",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205728.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205728"
@@ -1889,16 +1890,17 @@
       "vuln_id": "V-205742"
     },
     {
-      "check_id": "",
+      "check_id": "V-205743",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205743r958726_rule",
       "severity": "high",
       "title": "Windows Server 2019 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions.",
-      "tracking_issue": "TODO-V-205743",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205743.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205743"
@@ -2832,16 +2834,17 @@
       "vuln_id": "V-205802"
     },
     {
-      "check_id": "",
+      "check_id": "V-205803",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205803r958794_rule",
       "severity": "medium",
       "title": "Windows Server 2019 system files must be monitored for unauthorized changes.",
-      "tracking_issue": "TODO-V-205803",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205803.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205803"

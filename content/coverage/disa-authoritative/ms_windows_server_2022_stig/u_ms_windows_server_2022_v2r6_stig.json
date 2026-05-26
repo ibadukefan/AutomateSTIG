@@ -338,16 +338,17 @@
       "vuln_id": "V-254258"
     },
     {
-      "check_id": "",
+      "check_id": "V-254259",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-254259r958794_rule",
       "severity": "medium",
       "title": "Windows Server 2022 system files must be monitored for unauthorized changes.",
-      "tracking_issue": "TODO-V-254259",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2022_stig/v-254259.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254259"
@@ -449,16 +450,17 @@
       "vuln_id": "V-254265"
     },
     {
-      "check_id": "",
+      "check_id": "V-254266",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-254266r1000154_rule",
       "severity": "medium",
       "title": "Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: continuously, where Endpoint Security Solution (ESS) is used; 30 days, for any additional internal network scans not covered by ESS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP).",
-      "tracking_issue": "TODO-V-254266",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2022_stig/v-254266.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254266"
@@ -2496,16 +2498,17 @@
       "vuln_id": "V-254394"
     },
     {
-      "check_id": "",
+      "check_id": "V-254395",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-254395r958726_rule",
       "severity": "high",
       "title": "Windows Server 2022 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions.",
-      "tracking_issue": "TODO-V-254395",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2022_stig/v-254395.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254395"

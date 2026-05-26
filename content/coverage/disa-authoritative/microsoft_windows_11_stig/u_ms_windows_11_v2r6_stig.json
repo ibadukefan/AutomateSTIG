@@ -66,16 +66,17 @@
       "vuln_id": "V-253257"
     },
     {
-      "check_id": "",
+      "check_id": "V-253258",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-253258r1000099_rule",
       "severity": "medium",
       "title": "Windows 11 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: Continuously, where ESS is used; 30 days, for any additional internal network scans not covered by ESS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP).",
-      "tracking_issue": "TODO-V-253258",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/microsoft_windows_11_stig/v-253258.json",
         "content/disa-corpus/artifacts/8afad703810cf91f6ef3193523e49f3b935cab8b20b2a56a1a27a1d330515505/U_MS_Windows_11_V2R6_STIG.zip"
       ],
       "vuln_id": "V-253258"

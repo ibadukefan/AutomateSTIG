@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Interview the System Administrator and Web Manager.\n\nAsk for documentation for the IIS 10.0 web server administration.\n\nVerify there are documented procedures for shutting down an IIS 10.0 website in the event of an attack. The procedure should, at a minimum, provide the following steps:\n\nDetermine the respective website for the application at risk of an attack.\n\nAccess the IIS 10.0 web server IIS Manager.\n\nSelect the respective website.\n\nIn the \"Actions\" pane, under \"Manage Website\", click \"Stop\".\n\nIf necessary, stop all websites.\n\nIf necessary, stop the IIS 10.0 web server by selecting the web server in the IIS Manager.\n\nIn the \"Actions\" pane, under \"Manage Server\", click \"Stop\".\n\nIf the web server is not capable or cannot be configured to disconnect or disable remote access to the hosted applications when necessary, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

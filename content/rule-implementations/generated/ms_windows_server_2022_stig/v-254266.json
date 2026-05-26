@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Verify DOD-approved ESS software is installed and properly operating. Ask the site information system security manager (ISSM) for documentation of the ESS software installation and configuration.\n\nIf the ISSM is not able to provide a documented configuration for an installed ESS or if the ESS software is not properly maintained or used, this is a finding.\n\nNote: Example of documentation can be a copy of the site's configuration control board (CCB)-approved software baseline with version of software noted or a memo from the ISSM stating current ESS software and version.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "windows_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

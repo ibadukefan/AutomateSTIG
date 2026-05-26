@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Interview the System Administrator for the IIS 10.0 web server.\n\nAsk for documentation on the disaster recovery methods tested and planned for the IIS 10.0 web server in the event of the necessity for rollback.\n\nIf documentation for a disaster recovery has not been established, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

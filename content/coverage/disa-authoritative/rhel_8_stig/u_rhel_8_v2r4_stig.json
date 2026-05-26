@@ -2402,16 +2402,17 @@
       "vuln_id": "V-230378"
     },
     {
-      "check_id": "",
+      "check_id": "V-230379",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-230379r1017190_rule",
       "severity": "medium",
       "title": "RHEL 8 must not have unnecessary accounts.",
-      "tracking_issue": "TODO-V-230379",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_8_stig/v-230379.json",
         "content/disa-corpus/artifacts/24c655685e7d3bff479d1d23b412c016b6e5c641729ca7d6e865d4223749fc95/U_RHEL_8_V2R4_STIG.zip"
       ],
       "vuln_id": "V-230379"

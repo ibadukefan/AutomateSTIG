@@ -19651,5 +19651,75 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
         self.assertNotIn('candidate_check', spec)
 
+    def test_marks_authorized_interactive_user_inventory_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'RHEL_9_STIG', 'version': 'U_RHEL_9.zip'}, {
+            'vuln_id': 'V-258058',
+            'rule_id': 'SV-258058r1045123_rule',
+            'title': 'RHEL 9 must not have unauthorized accounts.',
+            'severity': 'medium',
+            'check_content': 'Obtain the list of interactive user accounts authorized to be on the system from the system administrator or information system security officer (ISSO) and compare it to the list of local interactive user accounts on the system. If there are unauthorized local user accounts on the system, this is a finding.',
+            'fix_text': 'Remove unauthorized local interactive user accounts.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_administrator_interview_documentation_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Apache_Server_2-4_Windows_Server_STIG', 'version': 'U_Apache.zip'}, {
+            'vuln_id': 'V-214344',
+            'rule_id': 'SV-214344r879588_rule',
+            'title': 'The Apache web server must be configured to immediately disconnect or disable remote access to the hosted applications.',
+            'severity': 'medium',
+            'check_content': 'Interview the System Administrator and Web Manager. Ask for documentation for the Apache web server administration. If there are not documented procedures for shutting down an Apache website in the event of an attack, this is a finding.',
+            'fix_text': 'Prepare documented procedures for shutting down an Apache website in the event of an attack.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_windows_system_file_monitoring_solution_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2022_STIG', 'version': 'U_WS2022.zip'}, {
+            'vuln_id': 'V-254259',
+            'rule_id': 'SV-254259r958388_rule',
+            'title': 'Windows Server 2022 system files must be monitored for unauthorized changes.',
+            'severity': 'medium',
+            'check_content': 'Determine whether the system is monitored for unauthorized changes to system files against a baseline on a weekly basis. If system files are not monitored for unauthorized changes, this is a finding. An approved and properly configured solution will contain both a list of baselines and a file comparison task that is scheduled to run at least weekly.',
+            'fix_text': 'Monitor the system for unauthorized changes to system files against a baseline on a weekly basis.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_windows_ou_additional_permissions_isso_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2022_STIG', 'version': 'U_WS2022.zip'}, {
+            'vuln_id': 'V-254395',
+            'rule_id': 'SV-254395r958392_rule',
+            'title': 'Windows Server 2022 organization created Active Directory Organizational Unit (OU) objects must have proper access control permissions.',
+            'severity': 'medium',
+            'check_content': 'Review the permissions on domain-defined OUs. If the Allow type permissions on the OU are not at least as restrictive as the listed defaults, this is a finding.',
+            'fix_text': 'Maintain the Allow type permissions on domain-defined OUs to be at least as restrictive as the defaults. Document any additional permissions above Read with the ISSO if an approved distributed administration model is implemented.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_ess_documented_configuration_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2022_STIG', 'version': 'U_WS2022.zip'}, {
+            'vuln_id': 'V-254266',
+            'rule_id': 'SV-254266r958388_rule',
+            'title': 'Windows Server 2022 must employ automated mechanisms to determine the state of system components with regard to flaw remediation.',
+            'severity': 'medium',
+            'check_content': 'Verify DOD-approved ESS software is installed and properly operating. Ask the site information system security manager (ISSM) for documentation of the ESS software installation and configuration. If the ISSM is not able to provide a documented configuration for an installed ESS or if the ESS software is not properly maintained or used, this is a finding.',
+            'fix_text': 'Install a DOD-approved ESS software and ensure it is operating continuously.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
 if __name__ == '__main__':
     unittest.main()

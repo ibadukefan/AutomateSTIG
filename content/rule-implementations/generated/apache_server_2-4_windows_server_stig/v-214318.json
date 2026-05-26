@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Interview the System Administrator (SA) about the role of the Apache web server.\n\nIf the web server is hosting an application, have the SA provide supporting documentation on how the application's user management is accomplished outside of the web server.\n\nIf the web server is not hosting an application, this is Not Applicable.\n\nIf the web server is performing user management for hosted applications, this is a finding.\n\nIf the web server is hosting an application and the SA cannot provide supporting documentation on how the application's user management is accomplished outside of the Apache web server, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

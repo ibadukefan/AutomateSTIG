@@ -17148,6 +17148,11 @@ def _authoritative_human_evidence_manual_mapping(rule: dict) -> tuple[str, str] 
         r'\baccounts?\s+that\s+do\s+not\s+have\s+responsibility\s+for\s+administration\s+of\s+the\s+system\s+are\s+members\s+of\s+the\s+local\s+Administrators\s+group\b',
         r'\bprohibited\s+accounts?\s+are\s+members\s+of\s+the\s+local\s+administrators\s+group\b',
         r'\baudit\s+records,?\s+at\s+a\s+minimum,?\s+are\s+offloaded\s+for\s+interconnected\s+systems\s+in\s+real\s+time\s+and\s+offloaded\s+for\s+standalone\s+or\s+nondomain-joined\s+systems\s+weekly\b',
+        r'\bobtain\s+the\s+list\s+of\s+(?:local\s+)?(?:interactive\s+)?user\s+accounts?\s+authorized\s+to\s+be\s+on\s+the\s+system\s+from\s+the\s+system\s+administrator\s+or\s+information\s+system\s+security\s+officer\b',
+        r'\binterview\s+the\s+(?:system\s+administrator|SA)\b.*\b(?:ask\s+for|provide|supporting)\s+documentation\b',
+        r'\bsystem\s+files\s+are\s+not\s+monitored\s+for\s+unauthorized\s+changes\b.*\bapproved\s+and\s+properly\s+configured\s+solution\b.*\bfile\s+comparison\s+task\s+that\s+is\s+scheduled\s+to\s+run\s+at\s+least\s+weekly\b',
+        r'\bdocument\s+any\s+additional\s+permissions\s+above\s+Read\s+with\s+the\s+ISSO\b',
+        r'\bAsk\s+the\s+site\s+information\s+system\s+security\s+manager\s+\(ISSM\)\s+for\s+documentation\s+of\s+the\s+ESS\s+software\s+installation\s+and\s+configuration\b',
     )
     if any(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in manual_evidence_patterns):
         return 'manual', 'manual_evidence_workflow'

@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Interview the System Administrator and Web Manager.\n\nAsk for documentation for the Apache web server administration.\n\nVerify there are documented procedures for shutting down an Apache website in the event of an attack. The procedure should, at a minimum, provide the following steps:\n\nDetermine the respective website for the application at risk of an attack.\n\nStop the Apache service.\n\nIf the web server is not capable of or cannot be configured to disconnect or disable remote access to the hosted applications when necessary, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

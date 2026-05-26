@@ -176,16 +176,17 @@
       "vuln_id": "V-214316"
     },
     {
-      "check_id": "",
+      "check_id": "V-214318",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-214318r960963_rule",
       "severity": "medium",
       "title": "The Apache web server must not perform user management for hosted applications.",
-      "tracking_issue": "TODO-V-214318",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/apache_server_2-4_windows_server_stig/v-214318.json",
         "content/disa-corpus/artifacts/c6871e97d3db853502fe512e1579689c33d5883834edfddc50e7db9035214cb9/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-214318"
@@ -428,16 +429,17 @@
       "vuln_id": "V-214335"
     },
     {
-      "check_id": "",
+      "check_id": "V-214336",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-214336r961122_rule",
       "severity": "medium",
       "title": "The Apache web server must be built to fail to a known safe state if system initialization fails, shutdown fails, or aborts fail.",
-      "tracking_issue": "TODO-V-214336",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/apache_server_2-4_windows_server_stig/v-214336.json",
         "content/disa-corpus/artifacts/c6871e97d3db853502fe512e1579689c33d5883834edfddc50e7db9035214cb9/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-214336"
@@ -554,16 +556,17 @@
       "vuln_id": "V-214343"
     },
     {
-      "check_id": "",
+      "check_id": "V-214344",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-214344r961281_rule",
       "severity": "medium",
       "title": "The Apache web server must be configured to immediately disconnect or disable remote access to the hosted applications.",
-      "tracking_issue": "TODO-V-214344",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/apache_server_2-4_windows_server_stig/v-214344.json",
         "content/disa-corpus/artifacts/c6871e97d3db853502fe512e1579689c33d5883834edfddc50e7db9035214cb9/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-214344"

@@ -66,16 +66,17 @@
       "vuln_id": "V-218791"
     },
     {
-      "check_id": "",
+      "check_id": "V-218792",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-218792r960963_rule",
       "severity": "medium",
       "title": "The IIS 10.0 web server must not perform user management for hosted applications.",
-      "tracking_issue": "TODO-V-218792",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/iis_10-0_server_stig/v-218792.json",
         "content/disa-corpus/artifacts/5cb7f837811e6bf524d5713d808fc8e90ef4948da4fb7f04feaea1b9d211226e/U_MS_IIS_10-0_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-218792"
@@ -271,16 +272,17 @@
       "vuln_id": "V-218805"
     },
     {
-      "check_id": "",
+      "check_id": "V-218806",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-218806r961122_rule",
       "severity": "medium",
       "title": "The IIS 10.0 web server must augment re-creation to a stable and known baseline.",
-      "tracking_issue": "TODO-V-218806",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/iis_10-0_server_stig/v-218806.json",
         "content/disa-corpus/artifacts/5cb7f837811e6bf524d5713d808fc8e90ef4948da4fb7f04feaea1b9d211226e/U_MS_IIS_10-0_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-218806"
@@ -350,16 +352,17 @@
       "vuln_id": "V-218812"
     },
     {
-      "check_id": "",
+      "check_id": "V-218813",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-218813r961281_rule",
       "severity": "medium",
       "title": "The IIS 10.0 web server must provide the capability to immediately disconnect or disable remote access to the hosted applications.",
-      "tracking_issue": "TODO-V-218813",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/iis_10-0_server_stig/v-218813.json",
         "content/disa-corpus/artifacts/5cb7f837811e6bf524d5713d808fc8e90ef4948da4fb7f04feaea1b9d211226e/U_MS_IIS_10-0_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-218813"
@@ -587,16 +590,17 @@
       "vuln_id": "V-218827"
     },
     {
-      "check_id": "",
+      "check_id": "V-228572",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-228572r960963_rule",
       "severity": "medium",
       "title": "An IIS Server configured to be a SMTP relay must require authentication.",
-      "tracking_issue": "TODO-V-228572",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/iis_10-0_server_stig/v-228572.json",
         "content/disa-corpus/artifacts/5cb7f837811e6bf524d5713d808fc8e90ef4948da4fb7f04feaea1b9d211226e/U_MS_IIS_10-0_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-228572"
