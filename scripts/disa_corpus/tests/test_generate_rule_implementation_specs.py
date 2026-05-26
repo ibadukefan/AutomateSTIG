@@ -19524,6 +19524,35 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['classification'], 'automated')
         self.assertNotEqual(spec['collector_type'], 'manual_evidence_workflow')
 
+    def test_marks_authorized_user_review_rules_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Oracle_Database_19c_STIG', 'version': 'U_Oracle_Database_19c.zip'}, {
+            'vuln_id': 'V-270516',
+            'rule_id': 'SV-270516r1105200_rule',
+            'title': 'The Oracle Database software installation account must be restricted to authorized users.',
+            'severity': 'medium',
+            'check_content': 'Review procedures for controlling and granting access to use of the database management system (DBMS) software installation account. If access or use of this account is not restricted to the minimum number of personnel required, or if unauthorized access to the account has been granted, this is a finding.',
+            'fix_text': 'Develop, document, and implement procedures to restrict use of the DBMS software installation account.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertEqual(spec['implementation_status'], 'planned')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_postgresql_install_account_procedure_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Crunchy_Data_PostgreSQL_STIG', 'version': 'U_CD_PGSQL.zip'}, {
+            'vuln_id': 'V-233540',
+            'rule_id': 'SV-233540r879600_rule',
+            'title': 'The PostgreSQL software installation account must be restricted to authorized users.',
+            'severity': 'high',
+            'check_content': 'Review procedures for controlling, granting access to, and tracking use of the PostgreSQL software installation account(s). If access or use of this account is not restricted to the minimum number of personnel required, this is a finding.',
+            'fix_text': 'Develop, document, and implement procedures to restrict use of the PostgreSQL software installation account.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
     def test_marks_macos_authoritative_usno_time_server_as_manual_evidence(self):
         spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Apple_macOS_15_STIG', 'version': 'U_Apple_macOS_15.zip'}, {
             'vuln_id': 'V-268449',

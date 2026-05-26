@@ -17139,8 +17139,12 @@ def _authoritative_human_evidence_manual_mapping(rule: dict) -> tuple[str, str] 
         r'\bPPSM\b|\bPorts,\s+Protocols,\s+and\s+Services\s+Management\b',
         r'\bIAVMs?\b|\bCTOs?\b|\bDTMs?\b',
         r'\bbacked\s+up\s+(?:onto|to)\s+a\s+different\s+system\s+or\s+media\b',
+        r'\busers?\s+not\s+authorized\s+to\s+[^.]+\s+have\s+access\b',
+        r'\brestrict\s+(?:use\s+of\s+)?[^.]+\s+to\s+authorized\s+users\b',
+        r'\bReview\s+procedures\s+for\s+controlling\s+and\s+granting\s+access\b.*\bunauthorized\s+access\s+to\s+the\s+account\s+has\s+been\s+granted\b',
+        r'Review\s+procedures\s+for\s+controlling,\s+granting\s+access\s+to,\s+and\s+tracking\s+use\s+of\s+the\s+PostgreSQL\s+software\s+installation\s+account\(s\).*\bnot\s+restricted\s+to\s+the\s+minimum\s+number\s+of\s+personnel\s+required\b',
     )
-    if any(re.search(pattern, combined, re.IGNORECASE) for pattern in manual_evidence_patterns):
+    if any(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in manual_evidence_patterns):
         return 'manual', 'manual_evidence_workflow'
     return None
 
