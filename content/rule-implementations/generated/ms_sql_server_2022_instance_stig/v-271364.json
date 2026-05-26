@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Obtain evidence that software patches are consistently applied to SQL Server within the time frame defined for each patch. To be considered supported, Microsoft must report that the version is supported by security patches to known vulnerability. Review the Support dates at https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates.\n \nCheck the SQL Server version by running the following script: \n\nPrint @@version \n \nIf the SQL Server version is not shown as supported, this is a finding. \n \nIf such evidence cannot be obtained, or the evidence that is obtained indicates a pattern of noncompliance, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

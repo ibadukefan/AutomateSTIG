@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Authenticate on the Kubernetes Control Plane. Run the command:\nkubectl version --short\n\nIf kubectl version has a setting not supporting Kubernetes skew policy, this is a finding.\n\nNote: Kubernetes Skew Policy can be found at: https://kubernetes.io/docs/setup/release/version-skew-policy/#supported-versions",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

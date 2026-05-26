@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "From the vSphere Client, select the ESXi host and go to Configure >> Networking >> VMkernel adapters.\n\nSelect each VMkernel adapter that is \"Enabled\" for management traffic and, in the bottom pane, view the \"Enabled services\".\n\nIf any services other than \"Management\" are enabled on the Management VMkernel adapter, this is a finding.\n\nFrom the vSphere Client, select the ESXi host and go to Configure >> Networking >> VMkernel adapters.\n\nReview the VLAN associated with each VMkernel that is \"Enabled\" for management traffic. Verify with the system administrator that they are dedicated for that purpose and are logically separated from other functions.\n\nIf the network segment is accessible, except to networks where other management-related entities are located such as vCenter, this is a finding.\n\nIf there are any other systems or devices such as VMs on the ESXi management segment, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

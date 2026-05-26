@@ -4545,16 +4545,17 @@
       "vuln_id": "V-248834"
     },
     {
-      "check_id": "",
+      "check_id": "V-248835",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-248835r958480_rule",
       "severity": "medium",
       "title": "OL 8 must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services as defined in the Ports, Protocols, and Services Management (PPSM) Category Assignments List (CAL) and vulnerability assessments.",
-      "tracking_issue": "TODO-V-248835",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/oracle_linux_8_stig/v-248835.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248835"

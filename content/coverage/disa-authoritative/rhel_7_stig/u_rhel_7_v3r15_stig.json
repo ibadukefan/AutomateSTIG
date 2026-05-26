@@ -1025,16 +1025,17 @@
       "vuln_id": "V-204458"
     },
     {
-      "check_id": "",
+      "check_id": "V-204459",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-204459r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system security patches and updates must be installed and up to date.",
-      "tracking_issue": "TODO-V-204459",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_7_stig/v-204459.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204459"
@@ -2527,16 +2528,17 @@
       "vuln_id": "V-204576"
     },
     {
-      "check_id": "",
+      "check_id": "V-204577",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-204577r958480_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management Component Local Service Assessment (PPSM CLSA) and vulnerability assessments.",
-      "tracking_issue": "TODO-V-204577",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_7_stig/v-204577.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204577"

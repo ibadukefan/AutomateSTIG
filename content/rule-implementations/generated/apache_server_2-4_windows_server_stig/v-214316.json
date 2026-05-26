@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Interview the Information System Security Officer (ISSO), System Administrator (SA), Web Manager, Webmaster, or developers as necessary to determine whether a tested and verifiable backup strategy has been implemented for web server software as well as all web server data files.\n\nProposed Questions:\nWho maintains the backup and recovery procedures?\nDo you have a copy of the backup and recovery procedures?\nWhere is the off-site backup location?\nIs the contingency plan documented?\nWhen was the last time the contingency plan was tested?\nAre the test dates and results documented?\n\nIf there is not a backup and recovery process for the web server, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

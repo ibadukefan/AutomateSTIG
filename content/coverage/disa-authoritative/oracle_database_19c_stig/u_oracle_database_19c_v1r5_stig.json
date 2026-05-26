@@ -398,16 +398,17 @@
       "vuln_id": "V-270519"
     },
     {
-      "check_id": "",
+      "check_id": "V-270520",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-270520r1115964_rule",
       "severity": "medium",
       "title": "Oracle Database must be configured in accordance with the security configuration settings based on DOD security configuration and implementation guidance, including STIGs, NSA configuration guides, CTOs, DTMs, and IAVMs.",
-      "tracking_issue": "TODO-V-270520",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/oracle_database_19c_stig/v-270520.json",
         "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
       ],
       "vuln_id": "V-270520"

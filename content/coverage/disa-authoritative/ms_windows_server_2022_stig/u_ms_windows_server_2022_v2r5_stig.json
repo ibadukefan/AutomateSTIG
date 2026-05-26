@@ -895,16 +895,17 @@
       "vuln_id": "V-254293"
     },
     {
-      "check_id": "",
+      "check_id": "V-254294",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-254294r958754_rule",
       "severity": "medium",
       "title": "Windows Server 2022 audit records must be backed up to a different system or media than the system being audited.",
-      "tracking_issue": "TODO-V-254294",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2022_stig/v-254294.json",
         "content/disa-corpus/artifacts/005f1c728455ec0925e3a1720409429d0291d15e312744fe666a5d2ce3308a12/U_MS_Windows_Server_2022_V2R5_STIG.zip"
       ],
       "vuln_id": "V-254294"

@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Inspect the firewall configuration and running services to verify that it is configured to prohibit or restrict the use of functions, ports, protocols, and/or services that are unnecessary or prohibited.\n\nCheck which services are currently active with the following command:\n\n# firewall-cmd --list-all\npublic (default, active)\n  interfaces: enp0s3\n  sources: \n  services: dhcpv6-client dns http https ldaps rpc-bind ssh\n  ports: \n  masquerade: no\n  forward-ports: \n  icmp-blocks: \n  rich rules: \n\nAsk the System Administrator for the site or program PPSM CLSA. Verify the services allowed by the firewall match the PPSM CLSA. \n\nIf there are additional ports, protocols, or services that are not in the PPSM CLSA, or there are ports, protocols, or services that are prohibited by the PPSM Category Assurance List (CAL), this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "linux_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

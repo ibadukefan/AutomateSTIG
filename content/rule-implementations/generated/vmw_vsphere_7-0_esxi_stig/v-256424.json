@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Note: This control addresses ESXi standard switches. Distributed switches are addressed in the vCenter STIG. If there is no standard switch on the ESXi host, this is not applicable.\n\nFrom the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> Networking >> Virtual switches.\n\nFor each standard switch, review the \"VLAN ID\" on each port group. Verify they are not set to the native VLAN ID of the attached physical switch.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VirtualPortGroup -Standard | Select Name, VLanId\n\nIf any port group is configured with the native VLAN of the attached physical switch, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

@@ -546,16 +546,17 @@
       "vuln_id": "V-256408"
     },
     {
-      "check_id": "",
+      "check_id": "V-256409",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-256409r1038976_rule",
       "severity": "medium",
       "title": "The ESXi host must configure NTP time synchronization.",
-      "tracking_issue": "TODO-V-256409",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/vmw_vsphere_7-0_esxi_stig/v-256409.json",
         "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
       ],
       "vuln_id": "V-256409"
@@ -593,16 +594,17 @@
       "vuln_id": "V-256411"
     },
     {
-      "check_id": "",
+      "check_id": "V-256412",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-256412r958908_rule",
       "severity": "medium",
       "title": "The ESXi host must protect the confidentiality and integrity of transmitted information by protecting ESXi management traffic.",
-      "tracking_issue": "TODO-V-256412",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/vmw_vsphere_7-0_esxi_stig/v-256412.json",
         "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
       ],
       "vuln_id": "V-256412"
@@ -783,16 +785,17 @@
       "vuln_id": "V-256423"
     },
     {
-      "check_id": "",
+      "check_id": "V-256424",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-256424r959010_rule",
       "severity": "medium",
       "title": "All port groups on standard switches must be configured to a value other than that of the native virtual local area network (VLAN).",
-      "tracking_issue": "TODO-V-256424",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/vmw_vsphere_7-0_esxi_stig/v-256424.json",
         "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
       ],
       "vuln_id": "V-256424"

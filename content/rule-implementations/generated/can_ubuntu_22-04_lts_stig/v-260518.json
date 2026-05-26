@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Check the firewall configuration for any unnecessary or prohibited functions, ports, protocols, and/or services by using the following command: \n  \n     $ sudo ufw show raw \n     Chain INPUT (policy ACCEPT 0 packets, 0 bytes)  \n          pkts      bytes target     prot opt in     out     source               destination  \n  \n     Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)  \n         pkts      bytes target     prot opt in     out     source               destination  \n  \n     Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)  \n         pkts      bytes target     prot opt in     out     source               destination  \n  \nAsk the system administrator for the site or program PPSM CLSA. Verify the services allowed by the firewall match the PPSM CLSA.   \n  \nIf there are any additional ports, protocols, or services that are not included in the PPSM CLSA, this is a finding.  \n  \nIf there are any ports, protocols, or services that are prohibited by the PPSM CAL, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

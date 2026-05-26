@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Verify OL 9 is configured to prohibit or restrict the use of functions, ports, protocols, and/or services that are unnecessary or prohibited. \n\nInspect the firewall configuration and running services to verify which services are currently active with the following command:\n\n$ sudo firewall-cmd --list-all-zones\ncustom (active)\ntarget: DROP\nicmp-block-inversion: no\ninterfaces: ens33\nsources: \nservices: dhcpv6-client dns http https ldaps rpc-bind ssh\nports: \nmasquerade: no\nforward-ports: \nicmp-blocks: \nrich rules: \n\nAsk the system administrator for the site or program PPSM Component Local Service Assessment (CLSA). Verify the services allowed by the firewall match the PPSM CLSA. \n\nIf there are additional ports, protocols, or services that are not in the PPSM CLSA, or there are ports, protocols, or services that are prohibited by the PPSM CAL, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

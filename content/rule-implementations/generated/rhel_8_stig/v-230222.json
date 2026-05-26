@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Note: If the system is not an internet connected system, this is not applicable.\n\nVerify the operating system security patches and updates are installed and up to date. Updates are required to be applied with a frequency determined by the site or Program Management Office (PMO).\n\nObtain the list of available package security updates from Red Hat. The URL for updates is https://rhn.redhat.com/errata/. It is important to note that updates provided by Red Hat may not be present on the system if the underlying packages are not installed.\n\nCheck that the available package security updates have been installed on the system with the following command:\n\n$ sudo yum history list | more\n\nLoaded plugins: langpacks, product-id, subscription-manager\nID | Command line | Date and time | Action(s) | Altered\n-------------------------------------------------------------------------------\n70 | install aide | 2020-03-05 10:58 | Install | 1 \n69 | update -y | 2020-03-04 14:34 | Update | 18 EE\n68 | install vlc | 2020-02-21 17:12 | Install | 21 \n67 | update -y | 2020-02-21 17:04 | Update | 7 EE\n\nIf package updates have not been performed on the system within the timeframe the site/program documentation requires, this is a finding.\n\nTypical update frequency may be overridden by Information Assurance Vulnerability Alert (IAVA) notifications from CYBERCOM.\n\nIf the operating system is in non-compliance with the Information Assurance Vulnerability Management (IAVM) process, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "linux_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

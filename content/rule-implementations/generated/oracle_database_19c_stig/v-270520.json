@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Oracle Database Security Assessment Tool (DBSAT) provides prioritized recommendations on how to mitigate identified security risks or gaps within Oracle Databases.\n\nWith DBSAT, DISA STIG rules that are process-related, such as review system documentation to identify accounts authorized to own database objects, are now included, and marked as \"Evaluate\" and display details that help customers validate compliance. DBSAT automates the STIG checks whenever possible, and if the checks are process-related, DBSAT provides visibility so they can be  tracked and manually validated.\n\nDownload the latest version of the Oracle Database Security Assessment Tool (DBSAT). DBSAT is provided by Oracle at no additional cost:\nhttps://www.oracle.com/database/technologies/security/dbsat.html\n\nDBSAT analyzes information on the database and listener configuration to identify configuration settings that may unnecessarily introduce risk. DBSAT goes beyond simple configuration checking, examining user accounts, privilege and role grants, authorization control, separation of duties, fine-grained access control, data encryption and key management, auditing policies, and OS file permissions. DBSAT applies rules to quickly assess the current security status of a database and produce findings in all the areas above. \n\nIn addition, to the Oracle database STIG checks, DBSAT helps identify areas where your database configuration, operation, or implementation introduces risks and recommends changes and controls to mitigate those risks according Oracle database security best practices.\n\nIf there is evidence that the DBSAT tool is not used with the output reviewed regularly (annually), this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

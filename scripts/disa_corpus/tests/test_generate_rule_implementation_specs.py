@@ -19496,5 +19496,33 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['classification'], 'automated')
         self.assertNotEqual(spec['collector_type'], 'manual_evidence_workflow')
 
+    def test_marks_authoritative_human_approval_exception_rules_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Windows_Server_2019_STIG', 'version': 'U_MS_Windows_Server_2019.zip'}, {
+            'vuln_id': 'V-205699',
+            'rule_id': 'SV-205699r958482_rule',
+            'title': 'Windows Server 2019 shared user accounts must not be permitted.',
+            'severity': 'medium',
+            'check_content': 'Determine whether any shared accounts exist. Shared accounts may be approved by the organization. This must be documented with the ISSO. If unapproved shared accounts exist, this is a finding.',
+            'fix_text': 'Remove unapproved shared accounts from the system. Document required shared accounts with the ISSO.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertEqual(spec['implementation_status'], 'planned')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_does_not_mark_human_approval_exception_without_authoritative_finding_prose(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Windows_Server_2019_STIG', 'version': 'U_MS_Windows_Server_2019.zip'}, {
+            'vuln_id': 'V-205699',
+            'rule_id': 'SV-205699r958482_rule',
+            'title': 'Windows Server 2019 shared user accounts must not be permitted.',
+            'severity': 'medium',
+            'check_content': 'Shared accounts are sometimes approved by the organization.',
+            'fix_text': 'Document required shared accounts with the ISSO.',
+        })
+
+        self.assertEqual(spec['classification'], 'automated')
+        self.assertNotEqual(spec['collector_type'], 'manual_evidence_workflow')
+
 if __name__ == '__main__':
     unittest.main()

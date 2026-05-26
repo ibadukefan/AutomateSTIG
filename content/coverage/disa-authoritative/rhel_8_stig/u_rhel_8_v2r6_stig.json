@@ -18,16 +18,17 @@
       "vuln_id": "V-230221"
     },
     {
-      "check_id": "",
+      "check_id": "V-230222",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-230222r1017041_rule",
       "severity": "medium",
       "title": "RHEL 8 vendor packaged system security patches and updates must be installed and up to date.",
-      "tracking_issue": "TODO-V-230222",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_8_stig/v-230222.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-230222"
@@ -3888,16 +3889,17 @@
       "vuln_id": "V-230499"
     },
     {
-      "check_id": "",
+      "check_id": "V-230500",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-230500r1101900_rule",
       "severity": "medium",
       "title": "RHEL 8 must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management (PPSM) Category Assignments List (CAL) and vulnerability assessments.",
-      "tracking_issue": "TODO-V-230500",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_8_stig/v-230500.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-230500"

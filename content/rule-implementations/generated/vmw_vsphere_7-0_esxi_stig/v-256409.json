@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Time Configuration.\n\nUnder \"Current Time Configuration\", verify \"Time Synchronization\" is set to \"Network Time Protocol\". \n\nUnder \"Network Time Protocol\", verify the \"NTP Servers\" are authorized DOD time sources.\n\nIf the ESXi host is not configured to pull time from authoritative DOD time sources, this is a finding.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\nGet-VMHost | Get-VMHostNTPServer\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq \"NTP Daemon\"}\n\nIf the NTP service is not configured with authoritative DOD time sources or the service does not have a \"Policy\" of \"on\" or is stopped, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

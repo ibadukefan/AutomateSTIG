@@ -1778,16 +1778,17 @@
       "vuln_id": "V-238327"
     },
     {
-      "check_id": "",
+      "check_id": "V-238328",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-238328r958480_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments.",
-      "tracking_issue": "TODO-V-238328",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/canonical_ubuntu_20-04_lts_stig/v-238328.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238328"

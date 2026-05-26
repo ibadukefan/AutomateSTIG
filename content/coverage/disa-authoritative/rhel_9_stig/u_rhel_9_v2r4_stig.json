@@ -2546,16 +2546,17 @@
       "vuln_id": "V-257939"
     },
     {
-      "check_id": "",
+      "check_id": "V-257940",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-257940r958480_rule",
       "severity": "medium",
       "title": "RHEL 9 must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management (PPSM) Category Assignments List (CAL) and vulnerability assessments.",
-      "tracking_issue": "TODO-V-257940",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_9_stig/v-257940.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257940"

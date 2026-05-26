@@ -498,16 +498,17 @@
       "vuln_id": "V-242409"
     },
     {
-      "check_id": "",
+      "check_id": "V-242410",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-242410r1043177_rule",
       "severity": "medium",
       "title": "The Kubernetes API Server must enforce ports, protocols, and services (PPS) that adhere to the Ports, Protocols, and Services Management Category Assurance List (PPSM CAL).",
-      "tracking_issue": "TODO-V-242410",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/kubernetes_stig/v-242410.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242410"
@@ -942,16 +943,17 @@
       "vuln_id": "V-242442"
     },
     {
-      "check_id": "",
+      "check_id": "V-242443",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-242443r1137649_rule",
       "severity": "medium",
       "title": "Kubernetes must contain the latest updates as authorized by IAVMs, CTOs, DTMs, and STIGs.",
-      "tracking_issue": "TODO-V-242443",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/kubernetes_stig/v-242443.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242443"

@@ -34,16 +34,17 @@
       "vuln_id": "V-233512"
     },
     {
-      "check_id": "",
+      "check_id": "V-233513",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233513r961683_rule",
       "severity": "medium",
       "title": "Security-relevant software updates to PostgreSQL must be installed within the time period directed by an authoritative source (e.g., IAVM, CTOs, DTMs, and STIGs).",
-      "tracking_issue": "TODO-V-233513",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233513.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233513"
@@ -566,16 +567,17 @@
       "vuln_id": "V-233547"
     },
     {
-      "check_id": "",
+      "check_id": "V-233548",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233548r961470_rule",
       "severity": "medium",
       "title": "PostgreSQL must disable network functions, ports, protocols, and services deemed by the organization to be nonsecure, in accord with the Ports, Protocols, and Services Management (PPSM) guidance.",
-      "tracking_issue": "TODO-V-233548",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233548.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233548"

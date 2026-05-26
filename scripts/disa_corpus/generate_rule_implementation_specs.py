@@ -17109,8 +17109,43 @@ def _external_supported_version_manual_mapping(rule: dict) -> tuple[str, str] | 
     return 'manual', 'manual_evidence_workflow'
 
 
+def _authoritative_human_evidence_manual_mapping(rule: dict) -> tuple[str, str] | None:
+    """Map exact DISA rules with explicit human/external evidence prose to manual workflows.
+
+    These mappings intentionally do not create automated pass/fail candidates.  They
+    only convert unsupported exact Vuln ID specs into planned manual evidence
+    workflows when the authoritative check text itself says a finding depends on
+    approval, documentation, administrator confirmation, external authoritative
+    sources, or local network policy facts that cannot be safely inferred from a
+    host-local command alone.
+    """
+    if not _canonical_vuln_ids(rule):
+        return None
+    combined = '\n'.join(str(rule.get(key, '') or '') for key in ('title', 'check_content', 'fix_text'))
+    if not re.search(r'\bthis\s+is\s+a\s+finding\b', combined, re.IGNORECASE):
+        return None
+    manual_evidence_patterns = (
+        r'\bapproved\s+by\s+the\s+organization\b',
+        r'\bmust\s+be\s+documented\s+with\s+the\s+(?:ISSO|ISSM)\b',
+        r'\bdocument(?:ed)?\s+required\s+.+\s+with\s+the\s+(?:ISSO|ISSM)\b',
+        r'\bverify\s+with\s+the\s+system\s+administrator\b',
+        r'\bauthorized\s+DOD\s+time\s+sources?\b',
+        r'\bnative\s+VLAN(?:\s+ID)?\s+of\s+the\s+attached\s+physical\s+switch\b',
+        r'\bPPSM\b|\bPorts,\s+Protocols,\s+and\s+Services\s+Management\b',
+        r'\bIAVMs?\b|\bCTOs?\b|\bDTMs?\b',
+        r'\bbacked\s+up\s+(?:onto|to)\s+a\s+different\s+system\s+or\s+media\b',
+    )
+    if any(re.search(pattern, combined, re.IGNORECASE) for pattern in manual_evidence_patterns):
+        return 'manual', 'manual_evidence_workflow'
+    return None
+
+
 def spec_from_rule(manifest_path: Path, manifest: dict, rule: dict) -> dict:
-    classification, collector = _external_supported_version_manual_mapping(rule) or classify_rule(rule.get('title', ''))
+    classification, collector = (
+        _external_supported_version_manual_mapping(rule)
+        or _authoritative_human_evidence_manual_mapping(rule)
+        or classify_rule(rule.get('title', ''))
+    )
     spec = {
         'vuln_id': rule.get('vuln_id', ''),
         'rule_id': rule.get('rule_id', ''),

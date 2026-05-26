@@ -941,16 +941,17 @@
       "vuln_id": "V-271362"
     },
     {
-      "check_id": "",
+      "check_id": "V-271364",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271364r1137667_rule",
       "severity": "medium",
       "title": "Security-relevant software updates to SQL Server must be installed within the time period directed by an authoritative source (e.g., IAVM, CTOs, DTMs, and STIGs).",
-      "tracking_issue": "TODO-V-271364",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_sql_server_2022_instance_stig/v-271364.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271364"

@@ -1186,16 +1186,17 @@
       "vuln_id": "V-270718"
     },
     {
-      "check_id": "",
+      "check_id": "V-270719",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-270719r1067172_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management\u00a0Category Assurance List (PPSM CAL) and vulnerability assessments.",
-      "tracking_issue": "TODO-V-270719",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/can_ubuntu_24-04_stig/v-270719.json",
         "content/disa-corpus/artifacts/6abfdf294296013732f9d73914f9d5b969163275f6d19d2d81f59c501f0004a8/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip"
       ],
       "vuln_id": "V-270719"

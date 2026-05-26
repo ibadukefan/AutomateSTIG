@@ -641,31 +641,33 @@
       "vuln_id": "V-271470"
     },
     {
-      "check_id": "",
+      "check_id": "V-271471",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271471r1091125_rule",
       "severity": "medium",
       "title": "OL 9 must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management (PPSM) Category Assignments List (CAL) and vulnerability assessments.",
-      "tracking_issue": "TODO-V-271471",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/oracle_linux_9_stig/v-271471.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271471"
     },
     {
-      "check_id": "",
+      "check_id": "V-271472",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271472r1091128_rule",
       "severity": "medium",
       "title": "OL 9 must control remote access methods.",
-      "tracking_issue": "TODO-V-271472",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/oracle_linux_9_stig/v-271472.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271472"

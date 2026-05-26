@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "The IIS 10.0 web server and website log files should be backed up by the system backup.\n\nTo determine if log files are backed up by the system backup, determine the location of the web server log files and each website's log files.\n\nOpen the IIS 10.0 Manager.\n\nClick the IIS 10.0 server name.\n\nClick the \"Logging\" icon.\n\nUnder \"Log File\" >> \"Directory\" obtain the path of the log file.\n\nOnce all locations are known, consult with the System Administrator to review the server's backup procedure and policy.\n\nVerify the paths of all log files are part of the system backup.\nVerify log files are backed up to an unrelated system or onto separate media on which the system the web server is running.\n\nIf the paths of all log files are not part of the system backup and/or not backed up to a separate media, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",
