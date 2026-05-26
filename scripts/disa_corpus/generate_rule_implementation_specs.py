@@ -3097,6 +3097,37 @@ def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dic
             'expected': {'type': 'equals', 'value': 'Compliant'},
             'description': rule.get('title', ''),
         }
+    if vuln_id == 'V-221102':
+        combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+        required_patterns = (
+            r'use\s+a\s+unique\s+key\s+for\s+each\s+autonomous\s+system\s+\(AS\)\s+that\s+it\s+peers\s+with',
+            r'peering\s+with\s+multiple\s+autonomous\s+systems',
+            r'neighbor\s+\S+\s+remote-as\s+\S+',
+            r'password\s+\d+\s+\S+',
+            r'If\s+unique\s+keys\s+are\s+not\s+being\s+used,\s+this\s+is\s+a\s+finding',
+            r'Configure\s+the\s+switch\s+to\s+use\s+unique\s+keys\s+for\s+each\s+AS\s+that\s+it\s+peers\s+with',
+        )
+        if not all(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):
+            return None
+        command = (
+            'show running-config | awk \'BEGIN{neighbor=""; bad=0} '
+            '/^router[[:space:]]+bgp[[:space:]]+/ {inbgp=1; neighbor=""; next} '
+            '/^[^[:space:]]/ && $1 != "router" {inbgp=0; neighbor=""} '
+            '!inbgp {next} '
+            '/^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]*$/ {neighbor=$2; next} '
+            '/^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+remote-as[[:space:]]+/ {n=$2; neighbor=n; peer_as[n]=$4; next} '
+            '/^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+password[[:space:]]+/ {n=$2; key=$0; sub(/.*password[[:space:]]+([0-9]+[[:space:]]+)?/,"",key); peer_key[n]=key; next} '
+            'neighbor != "" && /^[[:space:]]*remote-as[[:space:]]+/ {peer_as[neighbor]=$2; next} '
+            'neighbor != "" && /^[[:space:]]*password[[:space:]]+/ {key=$0; sub(/^[[:space:]]*password[[:space:]]+([0-9]+[[:space:]]+)?/,"",key); peer_key[neighbor]=key; next} '
+            'END{seen=0; for(n in peer_as){seen=1; if(!(n in peer_key)){bad=1; continue}; key=peer_key[n]; asn=peer_as[n]; if((key in key_to_as) && key_to_as[key] != asn){bad=1}; key_to_as[key]=asn} if(seen && !bad) print "Compliant"}\''
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'network',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     if vuln_id == 'V-221109':
         combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
         required_patterns = (

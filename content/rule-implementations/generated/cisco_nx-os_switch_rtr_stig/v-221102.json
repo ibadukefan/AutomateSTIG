@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{neighbor=\"\"; bad=0} /^router[[:space:]]+bgp[[:space:]]+/ {inbgp=1; neighbor=\"\"; next} /^[^[:space:]]/ && $1 != \"router\" {inbgp=0; neighbor=\"\"} !inbgp {next} /^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]*$/ {neighbor=$2; next} /^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+remote-as[[:space:]]+/ {n=$2; peer_as[n]=$4; next} /^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+password[[:space:]]+/ {n=$2; key=$0; sub(/.*password[[:space:]]+([0-9]+[[:space:]]+)?/,\"\",key); peer_key[n]=key; next} neighbor != \"\" && /^[[:space:]]*remote-as[[:space:]]+/ {peer_as[neighbor]=$2; next} neighbor != \"\" && /^[[:space:]]*password[[:space:]]+/ {key=$0; sub(/^[[:space:]]*password[[:space:]]+([0-9]+[[:space:]]+)?/,\"\",key); peer_key[neighbor]=key; next} END{seen=0; for(n in peer_as){seen=1; if(!(n in peer_key)){bad=1; continue}; key=peer_key[n]; asn=peer_as[n]; if((key in key_to_as) && key_to_as[key] != asn){bad=1}; key_to_as[key]=asn} if(seen && !bad) print \"Compliant\"}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco BGP switch must be configured to use a unique key for each autonomous system (AS) that it peers with.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221102"
+  },
   "check_content_excerpt": "Review the BGP configuration to determine if it is peering with multiple autonomous systems. Interview the ISSM and switch administrator to determine if unique keys are being used. \n\nrouter bgp xx\n router-id 10.1.1.1\n neighbor x.1.12.2 remote-as 2\n password 3 7b07d1b3023056a9\n address-family ipv4 unicast\n neighbor x.2.44.4 remote-as xx\n password 3 f07a10cb41db8bb6f8f0a340049a9b02\n address-family ipv4 unicast\n\nIf unique keys are not being used, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the switch to use unique keys for each AS that it peers with as shown in the example below:\n\nSW1(config)# router bgp xx\nSW1(config-router)# neighbor x.1.12.2\nSW1(config-router-neighbor)# password yyyyyyyyy\nSW1(config-router-neighbor)# exit\nSW1(config-router)# neighbor x.2.44.4\nSW1(config-router-neighbor)# password zzzzzzzzzz\nSW1(config-router-neighbor)# end",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221102r999711_rule",
   "severity": "medium",

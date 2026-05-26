@@ -249,6 +249,19 @@
     },
     {
       "check": {
+        "command": "show running-config | awk 'BEGIN{neighbor=\"\"; bad=0} /^router[[:space:]]+bgp[[:space:]]+/ {inbgp=1; neighbor=\"\"; next} /^[^[:space:]]/ && $1 != \"router\" {inbgp=0; neighbor=\"\"} !inbgp {next} /^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]*$/ {neighbor=$2; next} /^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+remote-as[[:space:]]+/ {n=$2; peer_as[n]=$4; next} /^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+password[[:space:]]+/ {n=$2; key=$0; sub(/.*password[[:space:]]+([0-9]+[[:space:]]+)?/,\"\",key); peer_key[n]=key; next} neighbor != \"\" && /^[[:space:]]*remote-as[[:space:]]+/ {peer_as[neighbor]=$2; next} neighbor != \"\" && /^[[:space:]]*password[[:space:]]+/ {key=$0; sub(/^[[:space:]]*password[[:space:]]+([0-9]+[[:space:]]+)?/,\"\",key); peer_key[neighbor]=key; next} END{seen=0; for(n in peer_as){seen=1; if(!(n in peer_key)){bad=1; continue}; key=peer_key[n]; asn=peer_as[n]; if((key in key_to_as) && key_to_as[key] != asn){bad=1}; key_to_as[key]=asn} if(seen && !bad) print \"Compliant\"}'",
+        "type": "command_output"
+      },
+      "description": "The Cisco BGP switch must be configured to use a unique key for each autonomous system (AS) that it peers with.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "network",
+      "vuln_id": "V-221102"
+    },
+    {
+      "check": {
         "command": "show running-config | awk '/^ip prefix-list / && $5==\"deny\" && $7==\"le\" && $8==\"32\" {name=$3; seen[name]=seen[name] \",\" $6} /^[[:space:]]*prefix-list[[:space:]]+[^[:space:]]+[[:space:]]+in[[:space:]]*$/ {applied[$2]=1} END{for(name in applied){if(index(seen[name], \",0.0.0.0/8\") > 0 && index(seen[name], \",10.0.0.0/8\") > 0 && index(seen[name], \",100.64.0.0/10\") > 0 && index(seen[name], \",127.0.0.0/8\") > 0 && index(seen[name], \",169.254.0.0/16\") > 0 && index(seen[name], \",172.16.0.0/12\") > 0 && index(seen[name], \",192.0.2.0/24\") > 0 && index(seen[name], \",192.88.99.0/24\") > 0 && index(seen[name], \",192.168.0.0/16\") > 0 && index(seen[name], \",198.18.0.0/15\") > 0 && index(seen[name], \",198.51.100.0/24\") > 0 && index(seen[name], \",203.0.113.0/24\") > 0 && index(seen[name], \",224.0.0.0/4\") > 0 && index(seen[name], \",240.0.0.0/4\") > 0){print \"Compliant\"; exit}}}'",
         "type": "command_output"
       },

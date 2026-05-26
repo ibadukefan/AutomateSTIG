@@ -501,6 +501,41 @@ If the sqlnet.ora file does not contain such entries, this is a finding.''',
 
         self.assertIsNone(candidate)
 
+    def test_infers_cisco_nxos_bgp_unique_key_per_as_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221102',
+            'title': 'The Cisco BGP switch must be configured to use a unique key for each autonomous system (AS) that it peers with.',
+            'check_content': (
+                'Review the BGP configuration to determine if it is peering with multiple autonomous systems. '
+                'router bgp xx neighbor x.1.12.2 remote-as 2 password 3 7b07d1b3023056a9 '
+                'neighbor x.2.44.4 remote-as xx password 3 f07a10cb41db8bb6f8f0a340049a9b02 '
+                'If unique keys are not being used, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure the switch to use unique keys for each AS that it peers with as shown in the example below: '
+                'router bgp xx neighbor x.1.12.2 password yyyyyyyyy neighbor x.2.44.4 password zzzzzzzzzz'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221102')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('show running-config', candidate['check']['command'])
+        self.assertIn('remote-as', candidate['check']['command'])
+        self.assertIn('password', candidate['check']['command'])
+        self.assertIn('key_to_as', candidate['check']['command'])
+
+    def test_rejects_cisco_nxos_bgp_unique_key_per_as_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The Cisco BGP switch must be configured to use a unique key for each AS.',
+            'check_content': 'router bgp xx neighbor x.1.12.2 remote-as 2 password 3 abc If unique keys are not being used, this is a finding.',
+            'fix_text': 'Configure the switch to use unique keys for each AS that it peers with.',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_cisco_nxos_inbound_external_acl_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221093',
