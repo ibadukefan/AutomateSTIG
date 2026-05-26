@@ -10225,6 +10225,34 @@ def _linux_postfix_root_alias_candidate(rule: dict, stig_id: str) -> dict | None
     }
 
 
+def _postgresql_replaced_versions_removed_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if (
+        stig_id != 'Crunchy_Data_PostgreSQL_STIG'
+        or rule.get('vuln_id', '') != 'V-233550'
+        or not re.search(r'rpm\s+-qa\s*\|\s*grep\s+postgres', content, re.IGNORECASE)
+        or not re.search(r'If\s+multiple\s+versions\s+of\s+postgres\s+are\s+installed\s+but\s+are\s+unused,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        or not re.search(r'Use\s+package\s+managers\s+\(RPM\s+or\s+apt-get\)\s+for\s+installing\s+PostgreSQL', fix_text, re.IGNORECASE)
+        or not re.search(r'Unused\s+software\s+is\s+removed\s+when\s+updated', fix_text, re.IGNORECASE)
+    ):
+        return None
+    command = (
+        "sh -c 'if ! command -v rpm >/dev/null 2>&1; then exit 0; fi; "
+        "majors=$(rpm -qa | grep -Ei \"postgres|pgsql\" | "
+        "awk '\"'\"'{if (match($0, /(postgresql|pgsql)[-_]?([0-9]{2,})/, m)) print m[2]}'\"'\"' | sort -u); "
+        "count=$(printf \"%s\\n\" \"$majors\" | awk '\"'\"'NF{c++} END{print c+0}'\"'\"'); "
+        "if [ \"$count\" -le 1 ]; then printf Compliant; fi'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _postgresql_audit_features_unauthorized_removal_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -15940,6 +15968,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    postgresql_replaced_versions_candidate = _postgresql_replaced_versions_removed_candidate(rule, stig_id)
+    if postgresql_replaced_versions_candidate:
+        return postgresql_replaced_versions_candidate
+
     postgresql_audit_config_candidate = _postgresql_audit_explicit_config_candidate(rule, stig_id)
     if postgresql_audit_config_candidate:
         return postgresql_audit_config_candidate

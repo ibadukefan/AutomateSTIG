@@ -171,6 +171,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'if ! command -v rpm >/dev/null 2>&1; then exit 0; fi; majors=$(rpm -qa | grep -Ei \"postgres|pgsql\" | awk '\"'\"'{if (match($0, /(postgresql|pgsql)[-_]?([0-9]{2,})/, m)) print m[2]}'\"'\"' | sort -u); count=$(printf \"%s\\n\" \"$majors\" | awk '\"'\"'NF{c++} END{print c+0}'\"'\"'); if [ \"$count\" -le 1 ]; then printf Compliant; fi'",
+        "type": "command_output"
+      },
+      "description": "When updates are applied to PostgreSQL software, any software components that have been replaced or made unnecessary must be removed.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "linux",
+      "vuln_id": "V-233550"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW pgaudit.log\"",
         "type": "command_output"
       },

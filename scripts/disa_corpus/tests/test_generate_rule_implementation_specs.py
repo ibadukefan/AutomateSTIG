@@ -759,6 +759,33 @@ If the sqlnet.ora file does not contain such entries, this is a finding.''',
         }, 'Tomcat_Application_Server_9_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_postgresql_replaced_versions_removed_from_authoritative_rpm_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233550',
+            'title': 'When updates are applied to PostgreSQL software, any software components that have been replaced or made unnecessary must be removed.',
+            'check_content': (
+                'To check software installed by packages, as the system administrator, run the following command:\n\n'
+                '$ sudo rpm -qa | grep postgres\n\n'
+                'If multiple versions of postgres are installed but are unused, this is a finding.'
+            ),
+            'fix_text': 'Use package managers (RPM or apt-get) for installing PostgreSQL. Unused software is removed when updated.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233550')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('rpm -qa', candidate['check']['command'])
+        self.assertIn('postgres', candidate['check']['command'])
+
+    def test_rejects_postgresql_replaced_versions_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'When updates are applied to PostgreSQL software, any software components that have been replaced or made unnecessary must be removed.',
+            'check_content': '$ sudo rpm -qa | grep postgres\n\nIf multiple versions of postgres are installed but are unused, this is a finding.',
+            'fix_text': 'Use package managers (RPM or apt-get) for installing PostgreSQL. Unused software is removed when updated.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_postgresql_denial_audit_rules_from_authoritative_logging_prose(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233552',

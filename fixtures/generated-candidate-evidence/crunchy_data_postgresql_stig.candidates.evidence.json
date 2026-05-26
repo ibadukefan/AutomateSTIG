@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 68,
+  "candidate_checks": 69,
   "cases": [
     {
       "check": {
@@ -338,6 +338,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233549"
+    },
+    {
+      "check": {
+        "command": "sh -c 'if ! command -v rpm >/dev/null 2>&1; then exit 0; fi; majors=$(rpm -qa | grep -Ei \"postgres|pgsql\" | awk '\"'\"'{if (match($0, /(postgresql|pgsql)[-_]?([0-9]{2,})/, m)) print m[2]}'\"'\"' | sort -u); count=$(printf \"%s\\n\" \"$majors\" | awk '\"'\"'NF{c++} END{print c+0}'\"'\"'); if [ \"$count\" -le 1 ]; then printf Compliant; fi'",
+        "type": "command_output"
+      },
+      "description": "When updates are applied to PostgreSQL software, any software components that have been replaced or made unnecessary must be removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'if ! command -v rpm >/dev/null 2>&1; then exit 0; fi; majors=$(rpm -qa | grep -Ei \"postgres|pgsql\" | awk '\"'\"'{if (match($0, /(postgresql|pgsql)[-_]?([0-9]{2,})/, m)) print m[2]}'\"'\"' | sort -u); count=$(printf \"%s\\n\" \"$majors\" | awk '\"'\"'NF{c++} END{print c+0}'\"'\"'); if [ \"$count\" -le 1 ]; then printf Compliant; fi'": "unexpected-Compliant"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'if ! command -v rpm >/dev/null 2>&1; then exit 0; fi; majors=$(rpm -qa | grep -Ei \"postgres|pgsql\" | awk '\"'\"'{if (match($0, /(postgresql|pgsql)[-_]?([0-9]{2,})/, m)) print m[2]}'\"'\"' | sort -u); count=$(printf \"%s\\n\" \"$majors\" | awk '\"'\"'NF{c++} END{print c+0}'\"'\"'); if [ \"$count\" -le 1 ]; then printf Compliant; fi'": "Compliant"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233550"
     },
     {
       "check": {
@@ -1775,5 +1801,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 68
+  "validated_candidates": 69
 }
