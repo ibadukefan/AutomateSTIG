@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "This applies to domain controllers. A separate version applies to other systems.\n\nReview the Administrators group. Only the appropriate administrator groups or accounts responsible for administration of the system may be members of the group.\n\nStandard user accounts must not be members of the local administrator group.\n\nIf prohibited accounts are members of the local administrators group, this is a finding.\n\nIf the built-in Administrator account or other required administrative accounts are found on the system, this is not a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "windows_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

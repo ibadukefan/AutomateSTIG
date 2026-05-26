@@ -241,16 +241,17 @@
       "vuln_id": "V-253268"
     },
     {
-      "check_id": "",
+      "check_id": "V-253269",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-253269r958702_rule",
       "severity": "high",
       "title": "Only accounts responsible for the administration of a system must have Administrator rights on the system.",
-      "tracking_issue": "TODO-V-253269",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/microsoft_windows_11_stig/v-253269.json",
         "content/disa-corpus/artifacts/e54bb1eadc995ee26f8976c8a516dab75c8da61dc97127488b36847f7b0943ac/U_MS_Windows_11_V2R4_STIG.zip"
       ],
       "vuln_id": "V-253269"

@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If no accounts are members of the Backup Operators group, this is NA.\n\nVerify users with accounts in the Backup Operators group have a separate user account for backup functions and for performing normal user tasks.\n\nIf users with accounts in the Backup Operators group do not have separate accounts for backup functions and standard user functions, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "windows_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

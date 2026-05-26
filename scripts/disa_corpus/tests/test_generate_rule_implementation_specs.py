@@ -19553,6 +19553,34 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
         self.assertNotIn('candidate_check', spec)
 
+    def test_marks_windows_administrative_separate_account_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2022_STIG', 'version': 'U_MS_Windows_Server_2022.zip'}, {
+            'vuln_id': 'V-254238',
+            'rule_id': 'SV-254238r958390_rule',
+            'title': 'Windows Server 2022 users with Administrative privileges must have separate accounts for administrative duties and normal operational tasks.',
+            'severity': 'medium',
+            'check_content': 'Verify each user with administrative privileges has been assigned a unique administrative account separate from their standard user account. If users with administrative privileges do not have separate accounts for administrative functions and standard user functions, this is a finding.',
+            'fix_text': 'Ensure each user with administrative privileges has a separate account for user duties and one for privileged duties.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_windows_administrator_responsibility_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2022_STIG', 'version': 'U_MS_Windows_Server_2022.zip'}, {
+            'vuln_id': 'V-254428',
+            'rule_id': 'SV-254428r958392_rule',
+            'title': 'Windows Server 2022 must only allow administrators responsible for the member server or standalone or nondomain-joined system to have Administrator rights on the system.',
+            'severity': 'medium',
+            'check_content': 'Open Computer Management. Navigate to Groups under Local Users and Groups. Review the Administrators group. Only the appropriate administrator groups or accounts responsible for administration of the system may be members of this group. If groups or accounts that are not responsible for administration of the system are members of the Administrators group, this is a finding.',
+            'fix_text': 'Configure the local Administrators group to include only administrator groups or accounts responsible for administration of the system. Remove any standard user accounts.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
     def test_marks_macos_authoritative_usno_time_server_as_manual_evidence(self):
         spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Apple_macOS_15_STIG', 'version': 'U_Apple_macOS_15.zip'}, {
             'vuln_id': 'V-268449',

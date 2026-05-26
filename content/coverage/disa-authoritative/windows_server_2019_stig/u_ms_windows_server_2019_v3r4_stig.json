@@ -1809,16 +1809,17 @@
       "vuln_id": "V-205737"
     },
     {
-      "check_id": "",
+      "check_id": "V-205738",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205738r958726_rule",
       "severity": "high",
       "title": "Windows Server 2019 must only allow administrators responsible for the domain controller to have Administrator rights on the system.",
-      "tracking_issue": "TODO-V-205738",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205738.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205738"
@@ -1935,16 +1936,17 @@
       "vuln_id": "V-205745"
     },
     {
-      "check_id": "",
+      "check_id": "V-205746",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205746r958726_rule",
       "severity": "high",
       "title": "Windows Server 2019 must only allow Administrators responsible for the member server or standalone or nondomain-joined system to have Administrator rights on the system.",
-      "tracking_issue": "TODO-V-205746",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205746.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205746"
@@ -3453,31 +3455,33 @@
       "vuln_id": "V-205842"
     },
     {
-      "check_id": "",
+      "check_id": "V-205843",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205843r959008_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must, at a minimum, offload audit records of interconnected systems in real time and offload standalone or nondomain-joined systems weekly.",
-      "tracking_issue": "TODO-V-205843",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205843.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205843"
     },
     {
-      "check_id": "",
+      "check_id": "V-205844",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205844r991589_rule",
       "severity": "high",
       "title": "Windows Server 2019 users with Administrative privileges must have separate accounts for administrative duties and normal operational tasks.",
-      "tracking_issue": "TODO-V-205844",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205844.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205844"
@@ -3498,16 +3502,17 @@
       "vuln_id": "V-205845"
     },
     {
-      "check_id": "",
+      "check_id": "V-205846",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205846r991589_rule",
       "severity": "medium",
       "title": "Windows Server 2019 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks.",
-      "tracking_issue": "TODO-V-205846",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205846.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205846"

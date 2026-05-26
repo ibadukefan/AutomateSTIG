@@ -17143,6 +17143,11 @@ def _authoritative_human_evidence_manual_mapping(rule: dict) -> tuple[str, str] 
         r'\brestrict\s+(?:use\s+of\s+)?[^.]+\s+to\s+authorized\s+users\b',
         r'\bReview\s+procedures\s+for\s+controlling\s+and\s+granting\s+access\b.*\bunauthorized\s+access\s+to\s+the\s+account\s+has\s+been\s+granted\b',
         r'Review\s+procedures\s+for\s+controlling,\s+granting\s+access\s+to,\s+and\s+tracking\s+use\s+of\s+the\s+PostgreSQL\s+software\s+installation\s+account\(s\).*\bnot\s+restricted\s+to\s+the\s+minimum\s+number\s+of\s+personnel\s+required\b',
+        r'\busers?\s+with\s+(?:administrative\s+privileges|accounts\s+in\s+the\s+Backup\s+Operators\s+group)\s+do\s+not\s+have\s+separate\s+accounts?\s+for\s+[^.]+\s+and\s+[^.]+\s+functions\b',
+        r'\bgroups?\s+or\s+accounts?\s+that\s+are\s+not\s+responsible\s+for\s+administration\s+of\s+the\s+system\s+are\s+members\s+of\s+the\s+Administrators\s+group\b',
+        r'\baccounts?\s+that\s+do\s+not\s+have\s+responsibility\s+for\s+administration\s+of\s+the\s+system\s+are\s+members\s+of\s+the\s+local\s+Administrators\s+group\b',
+        r'\bprohibited\s+accounts?\s+are\s+members\s+of\s+the\s+local\s+administrators\s+group\b',
+        r'\baudit\s+records,?\s+at\s+a\s+minimum,?\s+are\s+offloaded\s+for\s+interconnected\s+systems\s+in\s+real\s+time\s+and\s+offloaded\s+for\s+standalone\s+or\s+nondomain-joined\s+systems\s+weekly\b',
     )
     if any(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in manual_evidence_patterns):
         return 'manual', 'manual_evidence_workflow'
