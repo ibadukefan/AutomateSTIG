@@ -1023,16 +1023,17 @@
       "vuln_id": "V-222995"
     },
     {
-      "check_id": "",
+      "check_id": "V-222996",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-222996r1067548_rule",
       "severity": "medium",
       "title": "Tomcat server must be patched for security vulnerabilities.",
-      "tracking_issue": "TODO-V-222996",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/tomcat_application_server_9_stig/v-222996.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222996"

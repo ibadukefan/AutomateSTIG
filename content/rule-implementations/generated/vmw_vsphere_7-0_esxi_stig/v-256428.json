@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Determine the current version and build:\n\nFrom the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Summary. Note the version string next to \"Hypervisor:\".\n\nor\n\nFrom a Secure Shell (SSH) session connected to the ESXi host, or from the ESXi shell, run the following command:\n\n# vmware -v\n\nBecause ESXi hosts should never be able to touch the internet, manually compare the current ESXi version and patch level to the latest available on vmware.com:\n\nhttps://kb.vmware.com/s/article/2143832\n\nIf the ESXi host does not have the latest patches, this is a finding.\n\nIf the ESXi host is not on a supported release, this is a finding.\n\nVMware also publishes Advisories on security patches and offers a way to subscribe to email alerts for them.\n\nGo to: https://www.vmware.com/support/policies/security_response",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

@@ -19524,5 +19524,75 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['classification'], 'automated')
         self.assertNotEqual(spec['collector_type'], 'manual_evidence_workflow')
 
+    def test_marks_macos_authoritative_usno_time_server_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Apple_macOS_15_STIG', 'version': 'U_Apple_macOS_15.zip'}, {
+            'vuln_id': 'V-268449',
+            'rule_id': 'SV-268449r1101234_rule',
+            'title': 'The macOS system must be configured to use an authorized time server.',
+            'severity': 'medium',
+            'check_content': "Verify the macOS system is configured to use an authorized time server with objectForKey('timeServer'). If the result is not an authoritative time server that is synchronized with redundant USNO time servers as designated for the appropriate DOD network, this is a finding.",
+            'fix_text': 'Configure the system to use an authoritative time server synchronized with redundant USNO time servers as designated for the appropriate DOD network.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_tomcat_external_latest_secure_version_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Tomcat_Application_Server_9_STIG', 'version': 'U_Tomcat_9.zip'}, {
+            'vuln_id': 'V-222996',
+            'rule_id': 'SV-222996r879587_rule',
+            'title': 'Tomcat server must be patched for security vulnerabilities.',
+            'severity': 'high',
+            'check_content': 'Refer to https://tomcat.apache.org/security-9.html and identify the latest secure version. Run sudo $CATALINA_HOME/bin/version.sh |grep -i server. If the version is more than one version behind the most recent patch level, this is a finding.',
+            'fix_text': 'Upgrade to the latest secure version of Tomcat.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_sql_server_vendor_lifecycle_version_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_SQL_Server_2022_Instance_STIG', 'version': 'U_MS_SQL_Server_2022.zip'}, {
+            'vuln_id': 'V-271365',
+            'rule_id': 'SV-271365r1108580_rule',
+            'title': 'Microsoft SQL Server products must be a version supported by the vendor.',
+            'severity': 'high',
+            'check_content': 'Verify the SQL Server version with SELECT @@VERSION. Access the vendor website and verify the version is still supported. If the installed version or any software components are not supported by the vendor, this is a finding.',
+            'fix_text': 'Upgrade to a SQL Server version supported by the vendor.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_esxi_external_patch_support_baseline_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'VMW_vSphere_7-0_ESXi_STIG', 'version': 'U_VMW_vSphere_7-0.zip'}, {
+            'vuln_id': 'V-256428',
+            'rule_id': 'SV-256428r960948_rule',
+            'title': 'The ESXi host must have all security patches and updates installed.',
+            'severity': 'high',
+            'check_content': 'From an SSH session run vmware -v and manually compare the current ESXi version and patch level to the latest available on vmware.com, https://kb.vmware.com/s/article/2143832. If the ESXi host does not have the latest patches or is not on a supported release, this is a finding.',
+            'fix_text': 'Install the latest patches and update the host to a supported release.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_oracle_quarterly_cpu_patch_level_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Oracle_Database_19c_STIG', 'version': 'U_Oracle_Database_19c.zip'}, {
+            'vuln_id': 'V-270585',
+            'rule_id': 'SV-270585r1106678_rule',
+            'title': 'Oracle Database software must be evaluated and patched against newly found vulnerabilities.',
+            'severity': 'high',
+            'check_content': 'When the Quarterly CPU is released, check the CPU Notice and note the specific patch number. SELECT patch_id, source_version, action, status, description from dba_registry_sqlpatch. If the currently installed patch levels are lower than the latest, this is a finding.',
+            'fix_text': 'Apply the latest Oracle Critical Patch Update patches.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
 if __name__ == '__main__':
     unittest.main()

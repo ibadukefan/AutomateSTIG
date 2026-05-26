@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "When the Quarterly CPU is released, check the CPU Notice and note the specific patch number for the system. Then, issue the following command:\n\nSELECT patch_id, source_version, action, status, description from dba_registry_sqlpatch;\n\nThis will generate the patch levels for the home and any specific patches that have been applied to it.\n\nIf the currently installed patch levels are lower than the latest, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

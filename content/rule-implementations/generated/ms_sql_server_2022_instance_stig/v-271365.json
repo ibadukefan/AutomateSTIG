@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the system documentation and interview the database administrator.\n\nIdentify all database software components.\n\nReview the version and release information.\n\nVerify the SQL Server version via one of the following methods: \n\nConnect to the server by using Object Explorer in SQL Server Management Studio. After Object Explorer is connected, it will show the version information in parentheses with the username used to connect to the specific instance of SQL Server.\n\nOr, from SQL Server Management Studio execute the following:\nSELECT @@VERSION;\n\nMore information for finding the version is available at the following link: https://learn.microsoft.com/en-us/troubleshoot/sql/releases/find-my-sql-version.\n\nAccess the vendor website or use other means to verify the version is still supported. Refer to https://learn.microsoft.com/en-us/lifecycle/products/sql-server-2016.\n\nIf the installed version or any of the software components are not supported by the vendor, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

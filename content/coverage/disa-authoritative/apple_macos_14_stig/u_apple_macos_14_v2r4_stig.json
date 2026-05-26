@@ -466,16 +466,17 @@
       "vuln_id": "V-259449"
     },
     {
-      "check_id": "",
+      "check_id": "V-259450",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-259450r1038944_rule",
       "severity": "medium",
       "title": "The macOS system must be configured to use an authorized time server.",
-      "tracking_issue": "TODO-V-259450",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/apple_macos_14_stig/v-259450.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259450"

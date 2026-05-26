@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Refer to https://tomcat.apache.org/security-9.html and identify the latest secure version of Tomcat with no known vulnerabilities.\n\nAs a privileged user from the Tomcat server, run the following command:\n\nsudo $CATALINA_HOME/bin/version.sh |grep -i server\n\nCompare the version running on the system to the latest secure version of Tomcat.\n\nNote: If TCAT-AS-000950 is compliant, users may need to leverage a different management interface. There is commonly a version.bat script in CATALINA_HOME/bin that will also output the current version of Tomcat.\n\nIf the version is more than one version behind the most recent patch level, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

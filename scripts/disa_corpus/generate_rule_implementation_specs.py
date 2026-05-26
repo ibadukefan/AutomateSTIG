@@ -17091,8 +17091,12 @@ EXTERNAL_SUPPORTED_VERSION_MANUAL_RULES = {
     'V-213192',  # Adobe Reader DC latest security-related updates
     'V-221584',  # Google Chrome supported version
     'V-235758',  # Microsoft Edge supported version
+    'V-222996',  # Tomcat 9 latest secure patch level from external Apache advisory baseline
+    'V-256428',  # VMware ESXi latest patch/support baseline from external VMware advisory baseline
     'V-265871',  # PostgreSQL vendor-supported version
     'V-268575',  # macOS 15 security-relevant software updates within external window
+    'V-270585',  # Oracle Database 19c quarterly CPU/latest patch level from external Oracle baseline
+    'V-271365',  # SQL Server 2022 vendor lifecycle/support status
     'V-277982',  # Windows Server 2025 security-relevant software updates within external window
 }
 
@@ -17102,9 +17106,9 @@ def _external_supported_version_manual_mapping(rule: dict) -> tuple[str, str] | 
     if not canonical_ids.intersection(EXTERNAL_SUPPORTED_VERSION_MANUAL_RULES):
         return None
     combined = '\n'.join(str(rule.get(key, '') or '') for key in ('title', 'check_content', 'fix_text'))
-    if not re.search(r'\b(?:supported version|vendor supported|security-related software updates|security-relevant software updates)\b', combined, re.IGNORECASE):
+    if not re.search(r'\b(?:supported version|vendor supported|security-related software updates|security-relevant software updates|latest secure version|latest patches|supported release|quarterly CPU|Critical Patch Update|patch levels?|vendor website)\b', combined, re.IGNORECASE):
         return None
-    if not re.search(r'\b(?:supported by|vendor|microsoft|google|adobe|security updates|authoritative source|latest security)\b', combined, re.IGNORECASE):
+    if not re.search(r'\b(?:supported by|vendor|microsoft|google|adobe|security updates|authoritative source|latest security|latest secure|latest patches|supported release|tomcat\.apache\.org|vmware\.com|dba_registry_sqlpatch|CPU Notice|Critical Patch Update)\b', combined, re.IGNORECASE):
         return None
     return 'manual', 'manual_evidence_workflow'
 
@@ -17130,6 +17134,7 @@ def _authoritative_human_evidence_manual_mapping(rule: dict) -> tuple[str, str] 
         r'\bdocument(?:ed)?\s+required\s+.+\s+with\s+the\s+(?:ISSO|ISSM)\b',
         r'\bverify\s+with\s+the\s+system\s+administrator\b',
         r'\bauthorized\s+DOD\s+time\s+sources?\b',
+        r'\bauthoritative\s+time\s+server\s+(?:which|that)\s+is\s+synchronized\s+with\s+redundant\s+USNO\s+time\s+servers\s+as\s+designated\s+for\s+the\s+appropriate\s+DOD\s+network\b',
         r'\bnative\s+VLAN(?:\s+ID)?\s+of\s+the\s+attached\s+physical\s+switch\b',
         r'\bPPSM\b|\bPorts,\s+Protocols,\s+and\s+Services\s+Management\b',
         r'\bIAVMs?\b|\bCTOs?\b|\bDTMs?\b',
