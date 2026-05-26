@@ -1439,16 +1439,17 @@
       "vuln_id": "V-274882"
     },
     {
-      "check_id": "",
+      "check_id": "V-274883",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-274883r1107239_rule",
       "severity": "high",
       "title": "Sensitive information must be stored using Kubernetes Secrets or an external Secret store provider.",
-      "tracking_issue": "TODO-V-274883",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/kubernetes_stig/v-274883.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-274883"

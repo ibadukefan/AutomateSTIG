@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Ensure there is a documented policy or procedure in place that nonpersistent VM sessions do not exceed 24 hours. If the system is NOT a nonpersistent VM, this is Not Applicable.\n\nIf no such documented policy or procedure is in place, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "windows_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

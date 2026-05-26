@@ -19964,6 +19964,48 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
         self.assertNotIn('candidate_check', spec)
 
+    def test_marks_documented_nonpersistent_vm_session_policy_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_10_STIG', 'version': 'U_MS_Windows_10.zip'}, {
+            'vuln_id': 'V-220738',
+            'rule_id': 'SV-220738r958552_rule',
+            'title': 'Windows 10 nonpersistent VM sessions must not exceed 24 hours.',
+            'severity': 'medium',
+            'check_content': 'Ensure there is a documented policy or procedure in place that nonpersistent VM sessions do not exceed 24 hours. If the system is NOT a nonpersistent VM, this is Not Applicable. If no such documented policy or procedure is in place, this is a finding.',
+            'fix_text': 'Set nonpersistent VM sessions to not exceed 24 hours.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_unauthorized_hardware_inventory_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2025_STIG', 'version': 'U_WS2025.zip'}, {
+            'vuln_id': 'V-277983',
+            'rule_id': 'SV-277983r1180655_rule',
+            'title': 'Windows Server 2025 must prohibit the use or connection of unauthorized hardware components.',
+            'severity': 'high',
+            'check_content': 'Verify the operating system is configured to prohibit the use or connection of unauthorized hardware components. If the operating system is using undocumented or unapproved hardware, this is a finding.',
+            'fix_text': 'Remove unauthorized hardware components or document and approve connected hardware.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_kubernetes_sensitive_secret_manual_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Kubernetes_STIG', 'version': 'U_Kubernetes.zip'}, {
+            'vuln_id': 'V-274883',
+            'rule_id': 'SV-274883r1107239_rule',
+            'title': 'Sensitive information must be stored using Kubernetes Secrets or an external Secret store provider.',
+            'severity': 'medium',
+            'check_content': 'On the Kubernetes Master node, run kubectl get all,cm -A -o yaml. Manually review the output for sensitive information. If any sensitive information is found, this is a finding.',
+            'fix_text': 'Any sensitive information found must be stored in an approved external Secret store provider or use Kubernetes Secrets.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
     def test_infers_tomcat_dod_root_ca_truststore_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222966',

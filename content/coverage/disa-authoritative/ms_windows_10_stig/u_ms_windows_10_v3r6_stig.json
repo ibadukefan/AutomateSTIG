@@ -624,16 +624,17 @@
       "vuln_id": "V-220737"
     },
     {
-      "check_id": "",
+      "check_id": "V-220738",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-220738r958552_rule",
       "severity": "medium",
       "title": "Windows 10 nonpersistent VM sessions must not exceed 24 hours.",
-      "tracking_issue": "TODO-V-220738",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_10_stig/v-220738.json",
         "content/disa-corpus/artifacts/bee65d971714589e58963be80fbe3e8ca04493e040fc94cf87336a06f9e882f5/U_MS_Windows_10_V3R6_STIG.zip"
       ],
       "vuln_id": "V-220738"

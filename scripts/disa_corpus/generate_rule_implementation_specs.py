@@ -17276,6 +17276,9 @@ def _authoritative_human_evidence_manual_mapping(rule: dict) -> tuple[str, str] 
         r'\bAsk\s+the\s+site\s+information\s+system\s+security\s+manager\s+\(ISSM\)\s+for\s+documentation\s+of\s+the\s+ESS\s+software\s+installation\s+and\s+configuration\b',
         r'\bObtain\s+the\s+list\s+of\s+authorized\s+system\s+accounts\s+from\s+the\s+Information\s+System\s+Security\s+Officer\s+\(ISSO\).*\bprovided\s+documentation\b',
         r'\bDetermine\s+whether\s+organization\s+policy,\s+at\s+a\s+minimum,\s+prohibits\s+administrative\s+accounts\s+from\s+using\s+applications\s+that\s+access\s+the\s+internet\b',
+        r'\bIf\s+no\s+such\s+documented\s+policy\s+or\s+procedure\s+is\s+in\s+place,?\s+this\s+is\s+a\s+finding\b',
+        r'\bIf\s+the\s+operating\s+system\s+is\s+using\s+undocumented\s+or\s+unapproved\s+hardware,?\s+this\s+is\s+a\s+finding\b',
+        r'\bManually\s+review\s+the\s+output\s+for\s+sensitive\s+information\b.*\bIf\s+any\s+sensitive\s+information\s+is\s+found,?\s+this\s+is\s+a\s+finding\b',
     )
     if any(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in manual_evidence_patterns):
         return 'manual', 'manual_evidence_workflow'
