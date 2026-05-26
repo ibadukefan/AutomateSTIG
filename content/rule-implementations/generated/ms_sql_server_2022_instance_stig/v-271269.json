@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Obtain the list of authorized SQL Server accounts in the system documentation. \n \nDetermine if any accounts are shared. A shared account is defined as a username and password that are used by multiple individuals to log into SQL Server. An example of a shared account is the SQL Server installation account. Windows Groups are not shared accounts as the group itself does not have a password. \n \nIf accounts are determined to be shared, determine if individuals are first individually authenticated. \n \nIf individuals are not individually authenticated before using the shared account (e.g., by the operating system or by an application making calls to the database), this is a finding. \n \nThe key is individual accountability. If this can be traced, this is not a finding. \n \nIf accounts are determined to be shared, determine if they are directly accessible to end users. If so, this is a finding. \n \nReview contents of audit logs, traces, and data tables to confirm that the identity of the individual user performing the action is captured. \n \nIf shared identifiers are found and are not accompanied by individual identifiers, this is a finding. \n \nNote: Privileged installation accounts may be required to be accessed by the DBA or other administrators for system maintenance. In these cases, each use of the account must be logged in some manner to assign accountability for any actions taken during the use of the account.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

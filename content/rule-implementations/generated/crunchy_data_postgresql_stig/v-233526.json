@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review PostgreSQL code (trigger procedures, functions), application code, settings, column and field definitions, and constraints to determine whether the database is protected against invalid input.\n\nIf code exists that allows invalid data to be acted upon or input into the database, this is a finding.\n\nIf column/field definitions do not exist in the database, this is a finding.\n\nIf columns/fields do not contain constraints and validity checking where required, this is a finding.\n\nWhere a column/field is noted in the system documentation as necessarily free-form, even though its name and context suggest that it should be strongly typed and constrained, the absence of these protections is not a finding.\n\nWhere a column/field is clearly identified by name, caption, or context as Notes, Comments, Description, Text, etc., the absence of these protections is not a finding.\n\nCheck application code that interacts with PostgreSQL for the use of prepared statements. If prepared statements are not used, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

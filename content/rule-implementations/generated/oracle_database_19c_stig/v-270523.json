@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Execute the query:\n\nselect grantee||': '||owner||'.'||table_name\nfrom dba_tab_privs \nwhere grantable = 'YES' \nand grantee not in (select distinct owner from dba_objects)\nand grantee not in (select grantee from dba_role_privs where granted_role = 'DBA')\nand table_name not like 'SYS_PLSQL_%'\norder by grantee;\n\nIf any accounts are listed, verify accounts are documented and approved for the WITH GRANT option.\nIf non-DBA interactive user or application accounts have WITH GRANT without being documented and approved, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

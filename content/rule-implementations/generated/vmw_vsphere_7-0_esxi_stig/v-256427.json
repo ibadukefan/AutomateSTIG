@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If CIM monitoring is not implemented, this is not applicable.\n\nFrom the Host Client, select the ESXi host, right-click, and go to \"Permissions\".\n\nVerify the CIM service account is assigned the \"Read-only\" role or a custom role as described in the discussion.\n\nIf there is no dedicated CIM service account, this is a finding.\n\nIf the CIM service account has more permissions than necessary as noted in the discussion, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

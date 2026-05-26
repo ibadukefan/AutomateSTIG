@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If the application owner and authorizing official have determined that encryption of data at rest is not required, this is not a finding. \n \nReview procedures for and evidence of backup of the Master Key in the System Security Plan. \n \nIf the procedures or evidence does not exist, this is a finding. \n \nIf the procedures do not indicate that a backup of the Master Key is stored in a secure location that is not on the SQL Server, this is a finding.\n\nIf procedures do not indicate access restrictions to the Master Key backup, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

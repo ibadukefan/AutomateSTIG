@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If all user accounts are authenticated by the OS or an enterprise-level authentication/access mechanism and not by Oracle, this is not a finding.\n\nFor each profile that can be applied to accounts where authentication is under Oracle's control, determine the password verification function that is in use:\n\nSELECT * FROM SYS.DBA_PROFILES \nWHERE RESOURCE_NAME = 'PASSWORD_VERIFY_FUNCTION'\nORDER BY PROFILE;\n\nNote: Profiles can inherit settings from another profile so some password functions could be set to DEFAULT. If so, review the DEFAULT profile function name. \n\nIf the function name is null for any profile, this is a finding.\n\nReview the password verification functions specified for the PASSWORD_VERIFY_FUNCTION settings for each profile. Determine whether the following rules are enforced by the code in those functions. \na. Minimum of 15 characters, including at least one of each of the following character sets:\n- Uppercase\n- Lowercase\n- Numeric\n- Special characters (e.g., ~ ! @ # $ % ^ & * ( ) _ + = - ' [ ] / ? > <)\nb. Minimum number of characters changed from previous password: 50 percent of the minimum password length; that is, eight.\n\nIf any of the above password requirements are not included in the function, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

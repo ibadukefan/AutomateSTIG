@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the web server documentation and deployed configuration to determine whether hosted application functionality is separated from web server management functions.\n\nIf the functions are not separated, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

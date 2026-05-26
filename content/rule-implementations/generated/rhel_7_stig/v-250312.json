@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Verify the operating system confines SELinux users to roles that conform to least privilege.\n\nCheck the SELinux User list to SELinux Roles mapping by using the following command:\n\n     $ sudo semanage user -l\n\n                                     Labeling  MLS/               MLS/\n     SELinux User      Prefix       MCS Level    MCS Range          SELinux Roles\n\n     guest_u                user          s0                     s0                             guest_r\n     root                        user          s0                     s0-s0:c0.c1023    staff_r sysadm_r system_r unconfined_r\n     staff_u                  user          s0                     s0-s0:c0.c1023    staff_r sysadm_r system_r unconfined_r\n     sysadm_u            user          s0                     s0-s0:c0.c1023    sysadm_r\n     system_u             user          s0                     s0-s0:c0.c1023    system_r unconfined_r\n     unconfined_u    user          s0                     s0-s0:c0.c1023    system_r unconfined_r\n     user_u                   user          s0                     s0                            user_r\n     xguest_u              user          s0                     s0                            xguest_r\n\nIf the output differs from the above example, ask the system administrator (SA) to demonstrate how the SELinux User mappings are exercising least privilege. If deviations from the example are not documented with the information system security officer (ISSO) and do not demonstrate least privilege, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "linux_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

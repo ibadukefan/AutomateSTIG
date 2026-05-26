@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Work with the SIEM administrator to determine current security integrations. \n\nIf the SIEM is not integrated with security, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

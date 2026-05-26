@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the switch configuration to determine if the switch allows only incoming communications from authorized sources to be routed to authorized destinations. The hypothetical example below allows inbound NTP from server x.1.12.9 only to host x.12.1.21.\n\nip access-list EXTERNAL_ACL\n 10 permit tcp any any established \n 20 permit tcp x.11.1.1/32 eq bgp x.11.1.2/32 \n 30 permit tcp x.11.1.1/32 x.11.1.2/32 eq bgp \n 40 permit icmp x.11.1.1/32 x.11.1.2/32 echo \n 50 permit icmp x.11.1.1/32 x.11.1.2/32 echo-reply \n 60 permit tcp any x.11.2.3/32 eq www \n 70 permit udp x.12.1.9/32 x.12.1.21/32 eq ntp \n\u2026\n \u2026\n \u2026\n90 deny ip any any log\n\nIf the switch does not restrict incoming communications to allow only authorized sources and destinations, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

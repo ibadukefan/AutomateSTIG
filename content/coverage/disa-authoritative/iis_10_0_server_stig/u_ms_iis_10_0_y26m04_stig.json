@@ -82,16 +82,17 @@
       "vuln_id": "V-218792"
     },
     {
-      "check_id": "",
+      "check_id": "V-218793",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-218793r960963_rule",
       "severity": "medium",
       "title": "The IIS 10.0 web server must only contain functions necessary for operation.",
-      "tracking_issue": "TODO-V-218793",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/iis_10-0_server_stig/v-218793.json",
         "content/disa-corpus/artifacts/5cb7f837811e6bf524d5713d808fc8e90ef4948da4fb7f04feaea1b9d211226e/U_MS_IIS_10-0_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-218793"
@@ -225,16 +226,17 @@
       "vuln_id": "V-218802"
     },
     {
-      "check_id": "",
+      "check_id": "V-218803",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-218803r1138074_rule",
       "severity": "medium",
       "title": "The IIS 10.0 web server must separate the hosted applications from hosted web server management functionality.",
-      "tracking_issue": "TODO-V-218803",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/iis_10-0_server_stig/v-218803.json",
         "content/disa-corpus/artifacts/5cb7f837811e6bf524d5713d808fc8e90ef4948da4fb7f04feaea1b9d211226e/U_MS_IIS_10-0_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-218803"
@@ -416,16 +418,17 @@
       "vuln_id": "V-218816"
     },
     {
-      "check_id": "",
+      "check_id": "V-218817",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-218817r961470_rule",
       "severity": "medium",
       "title": "The IIS 10.0 web server must not be running on a system providing any other role.",
-      "tracking_issue": "TODO-V-218817",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/iis_10-0_server_stig/v-218817.json",
         "content/disa-corpus/artifacts/5cb7f837811e6bf524d5713d808fc8e90ef4948da4fb7f04feaea1b9d211226e/U_MS_IIS_10-0_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-218817"

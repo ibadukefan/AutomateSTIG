@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Verify firewall exceptions to inbound connections on domain workstations include only authorized remote management hosts.\n\nIf allowed inbound exceptions are not limited to authorized remote management hosts, this is a finding.\n\nReview inbound firewall exceptions.\nComputer Configuration >> Windows Settings >> Security Settings >> Windows Defender Firewall with Advanced Security >> Windows Defender Firewall with Advanced Security >> Inbound Rules (this link will be in the right pane)\n\nFor any inbound rules that allow connections view the Scope for Remote IP address. This may be defined as an IP address, subnet, or range. The rule must apply to all firewall profiles.\n\nIf a third-party firewall is used, ensure comparable settings are in place.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "windows_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

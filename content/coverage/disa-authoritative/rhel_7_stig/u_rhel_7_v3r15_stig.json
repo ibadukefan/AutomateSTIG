@@ -786,16 +786,17 @@
       "vuln_id": "V-204443"
     },
     {
-      "check_id": "",
+      "check_id": "V-204444",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-204444r958726_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must prevent nonprivileged users from executing privileged functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures.",
-      "tracking_issue": "TODO-V-204444",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_7_stig/v-204444.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204444"
@@ -3489,16 +3490,17 @@
       "vuln_id": "V-214800"
     },
     {
-      "check_id": "",
+      "check_id": "V-214801",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-214801r991589_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must use a virus scan program.",
-      "tracking_issue": "TODO-V-214801",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_7_stig/v-214801.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-214801"
@@ -3664,16 +3666,17 @@
       "vuln_id": "V-244558"
     },
     {
-      "check_id": "",
+      "check_id": "V-250312",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-250312r958726_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must confine SELinux users to roles that conform to least privilege.",
-      "tracking_issue": "TODO-V-250312",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_7_stig/v-250312.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-250312"

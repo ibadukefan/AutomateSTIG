@@ -610,16 +610,17 @@
       "vuln_id": "V-256412"
     },
     {
-      "check_id": "",
+      "check_id": "V-256413",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-256413r958908_rule",
       "severity": "medium",
       "title": "The ESXi host must protect the confidentiality and integrity of transmitted information by isolating IP-based storage traffic.",
-      "tracking_issue": "TODO-V-256413",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/vmw_vsphere_7-0_esxi_stig/v-256413.json",
         "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
       ],
       "vuln_id": "V-256413"
@@ -817,31 +818,33 @@
       "vuln_id": "V-256425"
     },
     {
-      "check_id": "",
+      "check_id": "V-256426",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-256426r959010_rule",
       "severity": "medium",
       "title": "All port groups on standard switches must not be configured to virtual local area network (VLAN) values reserved by upstream physical switches.",
-      "tracking_issue": "TODO-V-256426",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/vmw_vsphere_7-0_esxi_stig/v-256426.json",
         "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
       ],
       "vuln_id": "V-256426"
     },
     {
-      "check_id": "",
+      "check_id": "V-256427",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-256427r959010_rule",
       "severity": "medium",
       "title": "The ESXi host must not provide root/administrator-level access to Common Information Model (CIM)-based hardware monitoring tools or other third-party applications.",
-      "tracking_issue": "TODO-V-256427",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/vmw_vsphere_7-0_esxi_stig/v-256427.json",
         "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
       ],
       "vuln_id": "V-256427"

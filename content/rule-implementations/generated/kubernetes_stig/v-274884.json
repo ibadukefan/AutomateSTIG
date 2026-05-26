@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the Kubernetes accounts and their corresponding roles. \n\nIf any accounts have read (list, watch, get) access to Secrets without a documented organizational requirement, this is a finding. \n\nRun the below command to list the workload resources for applications deployed to Kubernetes:\nkubectl get all -A -o yaml \n\nIf Secrets are attached to applications without a documented requirement, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

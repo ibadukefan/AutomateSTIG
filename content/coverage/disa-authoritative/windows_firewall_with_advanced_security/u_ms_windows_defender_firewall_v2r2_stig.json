@@ -322,16 +322,17 @@
       "vuln_id": "V-242008"
     },
     {
-      "check_id": "",
+      "check_id": "V-242009",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-242009r922967_rule",
       "severity": "medium",
       "title": "Inbound exceptions to the firewall on domain workstations must only allow authorized remote management hosts.",
-      "tracking_issue": "TODO-V-242009",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_firewall_with_advanced_security/v-242009.json",
         "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
       ],
       "vuln_id": "V-242009"

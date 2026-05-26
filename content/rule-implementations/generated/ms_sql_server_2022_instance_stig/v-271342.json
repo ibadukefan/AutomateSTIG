@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the server documentation to obtain a listing of accounts used for executing external processes. Execute the following to obtain a listing of accounts currently configured for use by external processes. \n \nSELECT C.name AS credential_name, C.credential_identity \nFROM sys.credentials C \nGO \n \nSELECT P.name AS proxy_name, C.name AS credential_name, C.credential_identity \nFROM sys.credentials C  \nJOIN msdb.dbo.sysproxies P ON C.credential_id = P.credential_id \nWHERE P.enabled = 1 \nGO \n \nIf any Credentials or SQL Agent Proxy accounts are returned that are not documented and authorized, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

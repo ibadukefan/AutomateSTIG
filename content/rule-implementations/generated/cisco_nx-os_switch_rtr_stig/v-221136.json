@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Verify that the RP switch is configured to filter PIM register messages. The example below will deny any multicast streams for groups 239.5.0.0/16 and allow from only sources x.1.2.6 and x.1.2.7. \n\nip pim register-policy PIM_REGISTER_FILTER\n\u2026\n\u2026\n\u2026\nroute-map PIM_REGISTER_FILTER deny 10\n match ip multicast group 239.5.0.0/16 \nroute-map PIM_REGISTER_FILTER permit 20\n match ip multicast source x.1.2.6/32 \nroute-map PIM_REGISTER_FILTER permit 30\n match ip multicast source x.1.2.7/32 \nroute-map PIM_REGISTER_FILTER permit 40\n match ip multicast group-range 232.0.0.0 to 233.255.255.255 \nroute-map PIM_REGISTER_FILTER deny 50\n match ip multicast source 0.0.0.0/0\n\nIf the RP switch peering with PIM-SM switches is not configured with a policy to block registration messages for any undesirable multicast groups and sources, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

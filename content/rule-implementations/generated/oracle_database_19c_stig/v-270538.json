@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the disk/directory specification where database data, transaction log and audit files are stored.\n\nIf DBMS data, transaction log or audit data files are stored in the same directory, this is a finding.\n\nIf multiple applications are accessing the database and the database data files are stored in the same directory, this is a finding.\n\nIf multiple applications are accessing the database and database data is separated into separate physical directories according to application, this check is not a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

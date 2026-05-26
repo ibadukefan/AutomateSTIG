@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review database management system (DBMS) code, settings, field definitions, constraints, and triggers to determine whether or not data being input into the database is validated.\n\nIf code exists that allows invalid data to be acted upon or input into the database, this is a finding.\n\nIf field definitions do not exist in the database, this is a finding.\n\nIf fields do not contain enabled constraints where required, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

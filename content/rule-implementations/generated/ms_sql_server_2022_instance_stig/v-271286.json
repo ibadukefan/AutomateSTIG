@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "From the system documentation, obtain the list of accounts authorized to install/update SQL Server. Run the following PowerShell command to list all users who have installed/modified SQL Server 2022 software and compare the list against those persons who are qualified and authorized to use the software. \n \nsl \"C:\\Program files\\Microsoft SQL Server\\160\\Setup Bootstrap\\Log\" \nGet-ChildItem -Recurse | Select-String -Pattern \"LogonUser = \" \n \nIf any accounts are shown that are not authorized in the system documentation, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

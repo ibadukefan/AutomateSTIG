@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review system documentation to identify accounts authorized to own database objects. Review accounts in the database management systems (DBMSs) that own objects.\n\nIf any database objects are found to be owned by users not authorized to own database objects, this is a finding.\n\n- - - - -\nQuery the object DBA_OBJECTS to show the users who own objects in the database. The query below will return all of the users who own objects.\n\nsqlplus connect as sysdba\n\nSQL>select owner, object_type, count(*) from dba_objects\ngroup by owner, object_type\norder by owner, object_type;\n\nIf these owners are not authorized owners, select all of the objects these owners have generated and decide who they should belong to. To make a list of all of the objects, the unauthorized owner has to perform the following query.\n\nSQL>select * from dba_objects where owner =&unauthorized_owner;",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

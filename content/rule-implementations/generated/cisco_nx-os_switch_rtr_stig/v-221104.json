@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the switch configuration to verify that it will reject routes belonging to the local AS.\n\nStep 1: Verify a prefix list has been configured containing prefixes belonging to the local AS. In the example below x.13.1.0/24 is the global address space allocated to the local AS.\n\nip prefix-list PREFIX_FILTER seq 5 deny 0.0.0.0/8 le 32\n\u2026\n\u2026\n\u2026\nip prefix-list PREFIX_FILTER seq 74 deny x.13.1.0/24 le 32\nip prefix-list PREFIX_FILTER seq 75 permit 0.0.0.0/0 ge 8\n\nStep 2: Verify that the prefix list has been applied to all external BGP peers as shown in the example below:\n\nrouter bgp xx\n router-id 10.1.1.1\n neighbor x.1.12.2 remote-as xx\n password 3 7b07d1b3023056a9\n address-family ipv4 unicast\n prefix-list PREFIX_FILTER in\n neighbor x.2.44.4 remote-as xx\n password 3 f07a10cb41db8bb6f8f0a340049a9b02\n address-family ipv4 unicast\n prefix-list PREFIX_FILTER in\n\nIf the switch is not configured to reject inbound route advertisements belonging to the local AS, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

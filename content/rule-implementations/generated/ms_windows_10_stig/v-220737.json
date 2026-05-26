@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Determine whether administrative accounts are prevented from using applications that access the Internet, such as web browsers, or with potential Internet sources, such as email, except as necessary for local service administration.\n\nThe organization must have a policy that prohibits administrative accounts from using applications that access the Internet, such as web browsers, or with potential Internet sources, such as email, except as necessary for local service administration. The policy should define specific exceptions for local service administration. These exceptions may include HTTP(S)-based tools that are used for the administration of the local system, services, or attached devices.\n\nTechnical measures such as the removal of applications or application whitelisting must be used where feasible to prevent the use of applications that access the Internet. \n\nIf accounts with administrative privileges are not prevented from using applications that access the Internet or with potential Internet sources, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review Server documentation to determine the authorized owner and users or groups with modify rights for this SQL instance's binary files. Additionally check the owner and users or groups with modify rights for shared software library paths on disk. \n \nIf any unauthorized users are granted modify rights or the owner is incorrect, this is a finding. \n\nTo determine the location for these instance-specific binaries:\n\n1. Launch SQL Server Management Studio (SSMS). \n2. Connect to the instance to be reviewed. \n3. Right-click server name in \"Object Explorer\".\n4. Click \"Facets\".\n5. Select the \"Server\" facet. \n6. Record the value for the \"RootDirectory\" facet property. \n7. Navigate to the folder above and review the \"Binn\" subdirectory.\n\nTIP: Use the Get-FileHash cmdlet shipped with PowerShell 5.0 to get the SHA-2 hash of one or more files.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

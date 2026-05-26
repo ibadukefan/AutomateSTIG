@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review programs installed on the OS.\n\nOpen Control Panel.\n\nOpen Programs and Features.\n\nThe following programs may be installed without any additional documentation:\n\nAdministration Pack for IIS\nIIS Search Engine Optimization Toolkit\nMicrosoft .NET Framework version 3.5 SP1 or greater\nMicrosoft Web Platform Installer version 3.x or greater\nVirtual Machine Additions\n\nReview the installed programs, if any programs are installed other than those listed above, this is a finding.\n\nNote: If additional software is needed and has supporting documentation signed by the ISSO, this is not a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

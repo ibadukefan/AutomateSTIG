@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review system documentation to determine whether the system handles classified information. If the system does not handle classified information, the severity of this check is downgraded to CAT II. \n \nIf the application owner and authorizing official (AO) have determined that encryption of data at rest is required, verify the data on secondary devices is encrypted. \n \nIf full-disk encryption is being used, this is not a finding. \n \nIf data encryption is required, verify the data is encrypted before being put on the secondary device by executing the following:\n \nSELECT\n    db.name AS DatabaseName,\n    db.is_encrypted AS IsEncrypted,\n    CASE\n        WHEN dm.encryption_state = 0 THEN 'No database encryption key present, no encryption'\n        WHEN dm.encryption_state = 1 THEN 'Unencrypted'\n        WHEN dm.encryption_state = 2 THEN 'Encryption in progress'\n        WHEN dm.encryption_state = 3 THEN 'Encrypted'\n        WHEN dm.encryption_state = 4 THEN 'Key change in progress'\n        WHEN dm.encryption_state = 5 THEN 'Decryption in progress'\n        WHEN dm.encryption_state = 6 THEN 'Protection change in progress'\n    END AS EncryptionState,\n    dm.encryption_state AS EncryptionState,\n    dm.key_algorithm AS KeyAlgorithm,\n    dm.key_length AS KeyLength\nFROM\n    sys.databases db\nLEFT JOIN sys.dm_database_encryption_keys dm ON db.database_id = dm.database_id\nWHERE db.database_id > 4\nORDER BY [DatabaseName] ;  \n \nFor each user database where encryption is required, verify encryption is in effect. If it is not, this is a finding. \n \nVerify there are physical security measures, operating system access control lists, and organizational controls appropriate to the sensitivity level of the data in the database(s); if not, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If the organization has a policy, consistently enforced, forbidding the creation of emergency or temporary accounts, this is not a finding.\n\nIf all user accounts are authenticated by the OS or an enterprise-level authentication/access mechanism, and not by Oracle, this is not a finding.\n\nCheck database management system (DBMS) settings, OS settings, and/or enterprise-level authentication/access mechanisms settings to determine if the site uses a mechanism whereby temporary are terminated after a 72-hour time period. If not, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

@@ -674,16 +674,17 @@
       "vuln_id": "V-222970"
     },
     {
-      "check_id": "",
+      "check_id": "V-222971",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-222971r1136930_rule",
       "severity": "medium",
       "title": "Tomcat servers must mutually authenticate proxy or load balancer connections.",
-      "tracking_issue": "TODO-V-222971",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/tomcat_application_server_9_stig/v-222971.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222971"
@@ -1009,16 +1010,17 @@
       "vuln_id": "V-222994"
     },
     {
-      "check_id": "",
+      "check_id": "V-222995",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-222995r961620_rule",
       "severity": "medium",
       "title": "The application server, when categorized as a high availability system within RMF, must be in a high-availability (HA) cluster.",
-      "tracking_issue": "TODO-V-222995",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/tomcat_application_server_9_stig/v-222995.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222995"

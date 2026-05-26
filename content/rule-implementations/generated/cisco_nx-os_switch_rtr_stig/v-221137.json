@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Verify that the RP switch is configured to filter PIM join messages for any undesirable multicast groups. In the example below, groups from 239.8.0.0/16 are not allowed.\n\nroute-map PIM_JOIN_FILTER deny 10\n match ip multicast group 239.0.0.0/8 \nroute-map PIM_JOIN_FILTER permit 20\n match ip multicast group 224.0.0.0/4 \n\u2026\n\u2026\n\u2026\ninterface Ethernet2/1\n no switchport\n ip address 10.1.12.1/24\n ip pim sparse-mode\n ip pim jp-policy PIM_JOIN_FILTER in\n\nIf the RP is not configured to filter join messages received from the DR for any undesirable multicast groups, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

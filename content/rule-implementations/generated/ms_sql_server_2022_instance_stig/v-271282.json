@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If the database is set up to write audit logs using APPLICATION or SECURITY event logs rather than writing to a file, this is Not Applicable.\n\nObtain the SQL Server Audit file location(s) by running the following SQL script:  \n\nSELECT log_file_path AS \"Audit Path\"  \nFROM sys.server_file_audits  \n\nFor each audit, the path column will give the location of the file. \n\nVerify that all audit files have the correct permissions by doing the following for each audit file: Navigate to audit folder location(s) using a command prompt or Windows Explorer. \n\nRight-click the file/folder and click \"Properties\". On the \"Security\" tab, verify the following permissions are applied:  \n\nAdministrator (read)  \nUsers (none)  \nAudit Administrator (Full Control)  \nAuditors group (Read)  \nSQL Server Service SID OR Service Account (Full Control)  \nSQL Server SQL Agent Service SID OR Service Account, if SQL Server Agent is in use. (Read, Execute, Write) \n\nIf any less restrictive permissions are present (and not specifically justified and approved), this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

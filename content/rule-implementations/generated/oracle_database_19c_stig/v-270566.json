@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review DBMS configuration to determine whether appropriate access controls exist to protect the DBMS's private key. If strong access controls do not exist to enforce authorized access to the private key, this is a finding.\n\nThe database supports authentication by using digital certificates over TLS in addition to the native encryption and data integrity capabilities of these protocols.\n\nAn Oracle Wallet is a container that is used to store authentication and signing credentials, including private keys, certificates, and trusted certificates needed by TLS. In an Oracle environment, every entity that communicates over TLS must have a wallet containing an X.509 version 3 certificate, private key, and list of trusted certificates, with the exception of Diffie-Hellman.\n\nVerify the $ORACLE_HOME/network/admin/sqlnet.ora contains entries similar to the following to confirm TLS is installed: \n\nWALLET_LOCATION = (SOURCE=\n(METHOD = FILE) \n(METHOD_DATA = \nDIRECTORY=/wallet)\n\nSSL_CIPHER_SUITES=(SSL_cipher_suiteExample) \nSSL_VERSION = 1.1 or 1.2\nSSL_CLIENT_AUTHENTICATION=TRUE\n\nIf the sqlnet.ora file does not contain such entries, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

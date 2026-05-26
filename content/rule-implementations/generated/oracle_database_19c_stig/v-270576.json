@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Check DBMS settings to determine whether objects or code implementing security functionality are located in a separate security domain, such as a separate database or schema created specifically for security functionality.\n\nIf security-related database objects or code are not kept separate, this is a finding.\n\nThe Oracle elements of security functionality, such as the roles, permissions, and profiles, along with password complexity requirements, are stored in separate schemas in the database. Review any site-specific applications security modules built into the database and determine what schema they are located in and take appropriate action. The Oracle objects will be in the Oracle Data Dictionary.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

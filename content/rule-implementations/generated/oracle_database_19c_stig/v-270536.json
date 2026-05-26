@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If the DBMS or DBMS host is not shared by production and development activities, this check is not a finding.\n\nReview OS DBA group membership.\n\nIf any developer accounts, as identified in the system documentation, have been assigned DBA privileges, this is a finding.\n\nNote: Though shared production/nonproduction DBMS installations was allowed under previous database STIG guidance, doing so may place it in violation of OS, Application, Network, or Enclave STIG guidance. Ensure that any shared production/nonproduction DBMS installation meets STIG guidance requirements at all levels or mitigates any conflicts in STIG guidance with the authorizing official (AO).",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

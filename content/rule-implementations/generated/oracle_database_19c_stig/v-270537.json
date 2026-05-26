@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review documented and implemented procedures for monitoring the use of the DBMS software installation account in the system documentation.\n\nIf use of this account is not monitored or procedures for monitoring its use do not exist or are incomplete, this is a finding.\n\nNote: On Windows systems, the Oracle DBMS software is installed using an account with administrator privileges. Ownership should be reassigned to a dedicated OS account used to operate the DBMS software. If monitoring does not include all accounts with administrator privileges on the DBMS host, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

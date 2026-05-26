@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review system documentation to identify the required discretionary access control (DAC).\n\nReview the security configuration of the database and PostgreSQL. If applicable, review the security configuration of the application(s) using the database.\n\nIf the discretionary access control defined in the documentation is not implemented in the security configuration, this is a finding.\n\nIf any database objects are found to be owned by users not authorized to own database objects, this is a finding.\n\nTo check the ownership of objects in the database, as the database administrator, run the following:\n\n$ sudo su - postgres\n$ psql -c \"\\dn *.*\"\n$ psql -c \"\\dt *.*\"\n$ psql -c \"\\ds *.*\"\n$ psql -c \"\\dv *.*\"\n$ psql -c \"\\df+ *.*\"\n\nIf any role is given privileges to objects it should not have, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

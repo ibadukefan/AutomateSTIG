@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "PostgreSQL's Copy command can interact with the underlying OS. Only superuser has access to this command.\n\nFirst, as the database administrator (shown here as \"postgres\"), run the following SQL to list all roles and their privileges:\n\n$ sudo su - postgres\n$ psql -x -c \"\\du\"\n\nIf any role has \"superuser\" that should not, this is a finding.\n\nIt is possible for an extension to contain code that could access external executables via SQL. To list all installed extensions, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -x -c \"SELECT * FROM pg_available_extensions WHERE installed_version IS NOT NULL\"\n\nIf any extensions are installed that are not approved, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

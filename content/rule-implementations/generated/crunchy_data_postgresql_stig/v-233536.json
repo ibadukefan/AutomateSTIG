@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If the AO approved system documentation states that system availability takes precedence, this requirement is not applicable (NA).\n\nIf an externally managed and monitored partition or logical volume that can be grown dynamically is being used for logging, this is not a finding. \n\nIf PostgreSQL is auditing to a directory that is not being actively checked for availability of disk space, and if a tool, utility, script, or other mechanism is not being used to ensure sufficient disk space is available for the creation of new audit logs, this is a finding.\n\nIf a tool, utility, script, or other mechanism is being used to rotate audit logs, and oldest logs are not being removed to ensure sufficient space for newest logs, or oldest logs are not being replaced by newest logs, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

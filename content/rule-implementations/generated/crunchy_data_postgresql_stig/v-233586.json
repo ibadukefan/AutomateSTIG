@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If the application owner and Authorizing Official have determined that encryption of data at rest is NOT required, this is not a finding.\n\nOne possible way to encrypt data within PostgreSQL is to use the pgcrypto extension.\n\nTo check if pgcrypto is installed on PostgreSQL, as a database administrator (shown here as \"postgres\"), run the following command:\n\n$ sudo su - postgres\n$ psql -c \"SELECT * FROM pg_available_extensions where name='pgcrypto'\"\n\nIf data in the database requires encryption and pgcrypto is not available, this is a finding.\n\nIf disk or filesystem requires encryption, ask the system owner, database administrator (DBA), and system administrator (SA) to demonstrate the use of disk-level encryption. If this is required and is not found, this is a finding.\n\nIf controls do not exist or are not enabled, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

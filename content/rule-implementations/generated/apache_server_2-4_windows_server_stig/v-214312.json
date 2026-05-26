@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Interview the System Administrator to review the configuration of the Apache web server architecture and determine if inbound web traffic is passed through a proxy.\n\nIf the Apache web server is receiving inbound web traffic through a proxy, the audit logs must be reviewed to determine if correct source information is being passed through by the proxy server.\n\nView Apache log files as configured in \"httpd.conf\" files.\n\nWhen the log file is displayed, review source IP information in log entries and verify the entries do not reflect the IP address of the proxy server.\n\nIf the log entries in the log file(s) reflect the IP address of the proxy server as the source, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

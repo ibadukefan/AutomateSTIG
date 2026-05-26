@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review DBMS source code (stored procedures, functions, triggers) and application source code to identify cases of dynamic code execution.\n\nIf dynamic code execution is employed without protective measures against code injection, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

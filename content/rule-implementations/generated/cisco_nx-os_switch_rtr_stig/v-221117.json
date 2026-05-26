@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Step 1: Review the design plan for deploying MPLS/L3VPN. \n\nStep 2: Review all CE-facing interfaces and verify that the proper VRF is defined via the ip vrf forwarding command. In the example below, customer 1 is bound to interface Ethernet2/1, while customer 2 is bound to Ethernet2/2.\n\ninterface Ethernet2/1\n no switchport\n vrf member CUST1\n ip address x.2.22.3/24\n\ninterface Ethernet2/2\n no switchport\n vrf member CUST2\n ip address x.2.8.4/24\n\nIf any VRFs are not bound to the appropriate physical or logical interface, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

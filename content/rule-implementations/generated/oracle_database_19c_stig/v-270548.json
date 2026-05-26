@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Identify whether any hosts contain both development and production databases. If no hosts contain both production and development databases, this is Not Applicable.\n\nFor any host containing both a development and a production database, determine if developers have been granted elevated privileges on the production database or on the OS. If they have, ask for documentation that shows these accounts have formal approval and risk acceptance. If this documentation does not exist, this is a finding.\n\nIf developer accounts exist with the right to create and maintain tables (or other database objects) in production tablespaces, this is a finding.\n\nTo check the number of instances on the host machine where applicable, check the /etc/oratab. The /etc/oratab file is updated by the Oracle Installer when the database is installed when the root.sh file is executed. Each line in the represents an ORACLE_SID:ORACLE_HOME:Y or N. The ORACLE_SID and ORACLE_HOME are self-explanatory. The Y or N signals the DBSTART program to automatically start or not start that specific instance when the machine is restarted. Check with the system owner and application development team to find what each entry represents. If a system is deemed to be a production system, review the system for development users.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

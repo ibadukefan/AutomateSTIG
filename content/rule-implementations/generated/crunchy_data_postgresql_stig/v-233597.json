@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "To list all the permissions of individual roles, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"\\du\n\nIf any role has SUPERUSER that should not, this is a finding.\n\nNext, list all the permissions of databases and schemas by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"\\l\"\n$ psql -c \"\\dn+\"\n\nIf any database or schema has update (\"W\") or create (\"C\") privileges and should not, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

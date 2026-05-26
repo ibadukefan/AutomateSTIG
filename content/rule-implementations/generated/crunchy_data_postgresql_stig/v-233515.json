@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA.\n\nIf all accounts are authenticated by the organization-level authentication/access mechanism, such as LDAP or Kerberos and not by PostgreSQL, this is not a finding.\n\nAs the database administrator (shown here as \"postgres\"), review pg_hba.conf authentication file settings:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/pg_hba.conf\n\nAll records must use an auth-method of gss, sspi, or ldap. For details on the specifics of these authentication methods see: http://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html.\n\nIf there are any records with a different auth-method than gss, sspi, or ldap, review the system documentation for justification and approval of these records.\n\nIf there are any records with a different auth-method than gss, sspi, or ldap, that are not documented and approved, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

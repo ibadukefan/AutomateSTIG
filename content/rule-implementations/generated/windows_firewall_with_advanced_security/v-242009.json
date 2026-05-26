@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "This requirement is NA for servers and non domain workstations.\n\nVerify firewall exceptions for inbound connections on domain workstations only allow authorized management systems and remote management hosts.\n\nReview inbound firewall exception rules in Microsoft Defender Firewall with Advanced Security. Firewall rules can be complex and should be reviewed with the firewall administrator.\n\nOne method for restricting inbound connections is to only allow exceptions for a specific scope of remote IP addresses.\n\nIf allowed inbound exceptions are not limited to authorized management systems and remote management hosts, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

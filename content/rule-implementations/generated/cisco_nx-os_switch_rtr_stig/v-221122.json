@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Step 1: Review the implementation plan and the VPN IDs assigned to customer VLANs for the VPLS deployment.\n\nStep 2: Review the PE switch configuration to verify that customer attachment circuits are associated to the appropriate VFI. In the example below, the attached circuit at interface GigabitEthernet3 is associated to VPN ID 110.\n\nbridge-domain 100\n member vfi CUST1_VPLS\n member Ethernet2/2 service instance 1\n\nl2vpn vfi context CUST1_VPLS\n vpn id 100\nmember Pseudowire12\nmember Pseudowire13\n\u2026\n\u2026\n\u2026\ninterface Ethernet2/2\n service instance 1 ethernet\n encapsulation dot1q 100\n\u2026\n\u2026\n\u2026\ninterface Pseudowire12 \n encapsulation mpls\n neighbor 10.2.2.2 100\n\ninterface Pseudowire13 \n encapsulation mpls\n neighbor 10.3.3.3 100\n\nIf the attachment circuits have not been bound to the VFI configured with the assigned VPN ID for each VLAN, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

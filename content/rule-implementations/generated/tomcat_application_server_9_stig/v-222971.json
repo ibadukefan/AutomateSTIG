@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review system security plan and/or system architecture documentation and interview the system admin. Identify any proxy servers or load balancers that provide services for the Tomcat server. If there are no load balancers or proxies in use, this is not a finding.\n\nIf there is a documented risk acceptance for not mutually authenticating proxy or load balancer connections due to operational issues, or RMF system categorization this is not a finding.\n\nUsing the aforementioned documentation, identify each Tomcat IP address that is served by a load balancer or proxy.\n\nFrom the Tomcat server as a privileged user, review the $CATALINA_BASE/conf/server.xml file. Review each <SSLHostConfig> element for the address setting and the certificationVerification.\n\nsudo grep -i -B1 -A5 connector $CATALINA_BASE/conf/server.xml\n\nIf a connector has a configured IP address that is proxied or load balanced and the clientAuth setting is not \"true\", this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

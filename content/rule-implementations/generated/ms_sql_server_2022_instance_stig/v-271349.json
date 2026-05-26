@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Obtain a list of users who have privileged access to the server via the local administrators group. \n \n1. Launch lusrmgr.msc.\n2. Select \"Groups\".\n3. Double-click \"Administrators\".\n \nAlternatively, execute the following command in PowerShell: \n\nnet localgroup administrators \n \nCheck the server documentation to verify the users returned are authorized. \n \nIf the users are not documented and authorized, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "windows_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

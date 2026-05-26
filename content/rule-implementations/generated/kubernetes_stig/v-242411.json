@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Change to the /etc/kubernetes/manifests/ directory on the Kubernetes Control Plane. Run the command:\ngrep kube-scheduler.manifest -I -insecure-port\n                grep kube-scheduler.manifest -I -secure-port\n-edit manifest file:\nVIM <Manifest Name>\nReview  livenessProbe:\nHttpGet:\nPort:\nReview ports:\n- containerPort:\n       hostPort:\n- containerPort:\n       hostPort:\n\nRun Command: \nkubectl describe services --all-namespaces \nSearch labels for any scheduler namespaces.\nPort:\n\nAny manifest and namespace PPS configuration not in compliance with PPSM CAL is a finding.\n\nReview the information systems documentation and interview the team, gain an understanding of the Scheduler architecture, and determine applicable PPS. Any PPS in the system documentation not in compliance with the CAL PPSM is a finding. Any PPSs not set in the system documentation is a finding.\n\nReview findings against the most recent PPSM CAL:\nhttps://cyber.mil/ppsm/cal/\n\nVerify Scheduler network boundary with the PPS associated with the CAL Assurance Categories. Any PPS not in compliance with the CAL Assurance Category requirements is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If IP-based storage is not used, this is not applicable.\n\nFrom the vSphere Client, select the ESXi host and go to Configure >> Networking >> VMkernel adapters.\n\nSelect each IP-based storage VMkernel adapter and view the enabled services.\n\nIf any services are enabled on an NFS or iSCSI IP-based storage VMkernel adapter, this is a finding.\n\nIf any services are enabled on a vSAN VMkernel adapter other than vSAN, this is a finding.\n\nFrom the vSphere Client, select the ESXi host and go to Configure >> Networking >> VMkernel adapters.\n\nReview the VLANs associated with any IP-based storage VMkernels and verify they are dedicated for that purpose and are logically separated from other functions.\n\nIf any IP-based storage networks are not isolated from other traffic types, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

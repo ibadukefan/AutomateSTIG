@@ -66,16 +66,17 @@
       "vuln_id": "V-233514"
     },
     {
-      "check_id": "",
+      "check_id": "V-233515",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233515r960768_rule",
       "severity": "high",
       "title": "PostgreSQL must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.",
-      "tracking_issue": "TODO-V-233515",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233515.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233515"
@@ -241,46 +242,49 @@
       "vuln_id": "V-233525"
     },
     {
-      "check_id": "",
+      "check_id": "V-233526",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233526r961158_rule",
       "severity": "medium",
       "title": "PostgreSQL must check the validity of all data inputs except those specifically identified by the organization.",
-      "tracking_issue": "TODO-V-233526",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233526.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233526"
     },
     {
-      "check_id": "",
+      "check_id": "V-233527",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233527r961158_rule",
       "severity": "medium",
       "title": "PostgreSQL and associated applications must reserve the use of dynamic code execution for situations that require it.",
-      "tracking_issue": "TODO-V-233527",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233527.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233527"
     },
     {
-      "check_id": "",
+      "check_id": "V-233528",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233528r961158_rule",
       "severity": "medium",
       "title": "PostgreSQL and associated applications, when making use of dynamic code execution, must scan input data for invalid values that may indicate a code injection attack.",
-      "tracking_issue": "TODO-V-233528",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233528.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233528"
@@ -302,16 +306,17 @@
       "vuln_id": "V-233529"
     },
     {
-      "check_id": "",
+      "check_id": "V-233530",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233530r961317_rule",
       "severity": "medium",
       "title": "PostgreSQL must enforce discretionary access control policies, as defined by the data owner, over defined subjects and objects.",
-      "tracking_issue": "TODO-V-233530",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233530.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233530"
@@ -381,46 +386,49 @@
       "vuln_id": "V-233534"
     },
     {
-      "check_id": "",
+      "check_id": "V-233535",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233535r961401_rule",
       "severity": "medium",
       "title": "PostgreSQL must provide an immediate alert to appropriate support staff of all audit log failures.",
-      "tracking_issue": "TODO-V-233535",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233535.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233535"
     },
     {
-      "check_id": "",
+      "check_id": "V-233536",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233536r960915_rule",
       "severity": "low",
       "title": "PostgreSQL must be configurable to overwrite audit log records, oldest first (First-In-First-Out [FIFO]), in the event of unavailability of space for more audit log records.",
-      "tracking_issue": "TODO-V-233536",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233536.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233536"
     },
     {
-      "check_id": "",
+      "check_id": "V-233537",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233537r960915_rule",
       "severity": "medium",
       "title": "PostgreSQL must by default shut down upon audit failure, to include the unavailability of space for more audit log records; or must be configurable to shut down upon audit failure.",
-      "tracking_issue": "TODO-V-233537",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233537.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233537"
@@ -474,16 +482,17 @@
       "vuln_id": "V-233540"
     },
     {
-      "check_id": "",
+      "check_id": "V-233541",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233541r960960_rule",
       "severity": "medium",
       "title": "Database software, including PostgreSQL configuration files, must be stored in dedicated directories separate from the host OS and other applications.",
-      "tracking_issue": "TODO-V-233541",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233541.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233541"
@@ -537,16 +546,17 @@
       "vuln_id": "V-233544"
     },
     {
-      "check_id": "",
+      "check_id": "V-233546",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233546r961131_rule",
       "severity": "medium",
       "title": "PostgreSQL must isolate security functions from non-security functions.",
-      "tracking_issue": "TODO-V-233546",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233546.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233546"
@@ -1080,16 +1090,17 @@
       "vuln_id": "V-233579"
     },
     {
-      "check_id": "",
+      "check_id": "V-233580",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233580r960879_rule",
       "severity": "medium",
       "title": "PostgreSQL must be configured to provide audit record generation for DoD-defined auditable events within all DBMS/database components.",
-      "tracking_issue": "TODO-V-233580",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233580.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233580"
@@ -1175,16 +1186,17 @@
       "vuln_id": "V-233585"
     },
     {
-      "check_id": "",
+      "check_id": "V-233586",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233586r961128_rule",
       "severity": "high",
       "title": "PostgreSQL must protect the confidentiality and integrity of all information at rest.",
-      "tracking_issue": "TODO-V-233586",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233586.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233586"
@@ -1286,31 +1298,33 @@
       "vuln_id": "V-233592"
     },
     {
-      "check_id": "",
+      "check_id": "V-233593",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233593r960963_rule",
       "severity": "medium",
       "title": "Access to external executables must be disabled or restricted.",
-      "tracking_issue": "TODO-V-233593",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233593.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233593"
     },
     {
-      "check_id": "",
+      "check_id": "V-233594",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233594r960963_rule",
       "severity": "medium",
       "title": "Unused database components that are integrated in PostgreSQL and cannot be uninstalled must be disabled.",
-      "tracking_issue": "TODO-V-233594",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233594.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233594"
@@ -1348,16 +1362,17 @@
       "vuln_id": "V-233596"
     },
     {
-      "check_id": "",
+      "check_id": "V-233597",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233597r961461_rule",
       "severity": "medium",
       "title": "PostgreSQL must enforce access restrictions associated with changes to the configuration of PostgreSQL or database(s).",
-      "tracking_issue": "TODO-V-233597",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233597.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233597"
@@ -1379,16 +1394,17 @@
       "vuln_id": "V-233598"
     },
     {
-      "check_id": "",
+      "check_id": "V-233599",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233599r961398_rule",
       "severity": "medium",
       "title": "The system must provide a warning to appropriate support staff when allocated audit record storage volume reaches 75 percent of maximum audit record storage capacity.",
-      "tracking_issue": "TODO-V-233599",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233599.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233599"
@@ -1618,31 +1634,33 @@
       "vuln_id": "V-233613"
     },
     {
-      "check_id": "",
+      "check_id": "V-233614",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233614r961353_rule",
       "severity": "high",
       "title": "PostgreSQL must prevent non-privileged users from executing privileged functions, to include disabling, circumventing, or altering implemented security safeguards/countermeasures.",
-      "tracking_issue": "TODO-V-233614",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233614.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233614"
     },
     {
-      "check_id": "",
+      "check_id": "V-233615",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-233615r961044_rule",
       "severity": "medium",
       "title": "PostgreSQL must map the PKI-authenticated identity to an associated user account.",
-      "tracking_issue": "TODO-V-233615",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/crunchy_data_postgresql_stig/v-233615.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233615"

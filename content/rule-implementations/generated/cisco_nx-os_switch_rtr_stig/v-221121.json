@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Verify that the correct and unique VCID has been configured for the appropriate attachment circuit. In the example below Ethernet2/1 is the CE-facing interface that is configured for VPWS with the VCID of 55.\n\nStep 1: Review the L2VPN virtual circuits and determine the member attachment circuit and pseudowire.\n\nl2vpn xconnect context VC55\n member Ethernet2/1\n member Pseudowire55\n\nStep 2: Determine the VCID as configured for neighbor and verify the same VCID is defined on the remote PE device.\n\nport-profile type pseudowire MPLS_PROFILE\n encapsulation mpls\n\ninterface Pseudowire55\n neighbor 10.10.22.1 55\n inherit port-profile MPLS_PROFILE\n\nNote: VPWS is also known as Ethernet over MPLS (EoMPLS) and Ethernet Virtual Circuit (EVC).\n\nIf the correct VC ID has not been configured on both switches, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

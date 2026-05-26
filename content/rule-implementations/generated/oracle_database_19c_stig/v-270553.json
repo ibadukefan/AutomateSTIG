@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Run this query to produce a list of components and features installed with the database:\n\nSELECT comp_id, comp_name, version, status from dba_registry\nWHERE comp_id not in ('CATJAVA','CATALOG','CATPROC','SDO','DV','XDB')\nAND status <> 'OPTION OFF';\n\nReview the list. If unused components are installed and are not documented and authorized, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

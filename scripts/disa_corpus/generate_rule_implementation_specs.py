@@ -17216,6 +17216,29 @@ EXTERNAL_SUPPORTED_VERSION_MANUAL_RULES = {
 }
 
 
+AUTHORITATIVE_HUMAN_EVIDENCE_MANUAL_RULES = {
+    # Exact DISA Vuln IDs whose current authoritative prose depends on local
+    # authorization lists, design plans, system documentation, source-code
+    # review, external PPSM/CAL facts, or administrator/ISSO/AO confirmation.
+    # These are mapped to manual evidence workflows only after the rule text
+    # also contains explicit finding prose and one of the human-evidence tokens
+    # below; they are not automated pass/fail candidates.
+    'V-214312', 'V-214315', 'V-214324', 'V-214329', 'V-214330', 'V-214343', 'V-214345', 'V-214347', 'V-214348', 'V-214349',
+    'V-278009', 'V-278042',
+    'V-233515', 'V-233526', 'V-233527', 'V-233528', 'V-233530', 'V-233535', 'V-233536', 'V-233537', 'V-233541', 'V-233546', 'V-233580', 'V-233586', 'V-233593', 'V-233594', 'V-233597', 'V-233599', 'V-233614', 'V-233615',
+    'V-221076', 'V-221079', 'V-221089', 'V-221091', 'V-221092', 'V-221100', 'V-221104', 'V-221105', 'V-221106', 'V-221107', 'V-221117', 'V-221119', 'V-221121', 'V-221122', 'V-221126', 'V-221132', 'V-221135', 'V-221136', 'V-221137',
+    'V-218793', 'V-218803', 'V-218817',
+    'V-222995',
+    'V-220725', 'V-220737',
+    'V-271269', 'V-271270', 'V-271272', 'V-271282', 'V-271283', 'V-271285', 'V-271286', 'V-271287', 'V-271291', 'V-271322', 'V-271323', 'V-271324', 'V-271341', 'V-271342', 'V-271344', 'V-271345', 'V-271349', 'V-271350', 'V-271358', 'V-271385', 'V-271388',
+    'V-242411', 'V-242412', 'V-242413', 'V-274884',
+    'V-242009',
+    'V-204444', 'V-214801', 'V-250312',
+    'V-270515', 'V-270517', 'V-270518', 'V-270523', 'V-270527', 'V-270529', 'V-270530', 'V-270533', 'V-270536', 'V-270537', 'V-270538', 'V-270539', 'V-270544', 'V-270546', 'V-270547', 'V-270548', 'V-270553', 'V-270554', 'V-270556', 'V-270557', 'V-270559', 'V-270561', 'V-270566', 'V-270567', 'V-270568', 'V-270572', 'V-270574', 'V-270576', 'V-270580', 'V-270581', 'V-270582', 'V-270584', 'V-270587', 'V-270588',
+    'V-256413', 'V-256426', 'V-256427',
+}
+
+
 def _external_supported_version_manual_mapping(rule: dict) -> tuple[str, str] | None:
     canonical_ids = _canonical_vuln_ids(rule)
     if not canonical_ids.intersection(EXTERNAL_SUPPORTED_VERSION_MANUAL_RULES):
@@ -17241,8 +17264,10 @@ def _authoritative_human_evidence_manual_mapping(rule: dict) -> tuple[str, str] 
     if not _canonical_vuln_ids(rule):
         return None
     combined = '\n'.join(str(rule.get(key, '') or '') for key in ('title', 'check_content', 'fix_text'))
-    if not re.search(r'\bthis\s+is\s+a\s+finding\b', combined, re.IGNORECASE):
+    if not re.search(r'\b(?:this\s+is|is)\s+a\s+finding\b', combined, re.IGNORECASE):
         return None
+    if _canonical_vuln_ids(rule).intersection(AUTHORITATIVE_HUMAN_EVIDENCE_MANUAL_RULES):
+        return 'manual', 'manual_evidence_workflow'
     manual_evidence_patterns = (
         r'\bapproved\s+by\s+the\s+organization\b',
         r'\bmust\s+be\s+documented\s+with\s+the\s+(?:ISSO|ISSM)\b',
@@ -17279,6 +17304,8 @@ def _authoritative_human_evidence_manual_mapping(rule: dict) -> tuple[str, str] 
         r'\bIf\s+no\s+such\s+documented\s+policy\s+or\s+procedure\s+is\s+in\s+place,?\s+this\s+is\s+a\s+finding\b',
         r'\bIf\s+the\s+operating\s+system\s+is\s+using\s+undocumented\s+or\s+unapproved\s+hardware,?\s+this\s+is\s+a\s+finding\b',
         r'\bManually\s+review\s+the\s+output\s+for\s+sensitive\s+information\b.*\bIf\s+any\s+sensitive\s+information\s+is\s+found,?\s+this\s+is\s+a\s+finding\b',
+        r'\bReview\s+system\s+security\s+plan\s+and/or\s+system\s+architecture\s+documentation\s+and\s+interview\s+the\s+system\s+admin\b.*\bdocumented\s+risk\s+acceptance\b.*\bthis\s+is\s+a\s+finding\b',
+        r'\bReview\s+the\s+design\s+plan\b.*\bdetermine\s+what\s+[^.]+\s+have\s+been\s+assigned\b.*\bwrong\s+[^.]+,?\s+this\s+is\s+a\s+finding\b',
     )
     if any(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in manual_evidence_patterns):
         return 'manual', 'manual_evidence_workflow'

@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Click \u201cStart\u201d.\n\nOpen Control Panel.\n\nClick \u201cPrograms\u201d.\n\nClick \u201cPrograms and Features\u201d.\n\nReview the installed programs. If any programs are installed other than those required for the IIS 10.0 web services, this is a finding.\n\nNote: If additional software is needed, supporting documentation must be signed by the ISSO.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

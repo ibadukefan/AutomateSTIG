@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "The Common Name (cn) attribute of the certificate will be compared to the requested database user name and, if they match, the login will be allowed. \n\nTo check the cn of the certificate, using openssl, do the following:\n\n$ openssl x509 -noout -subject -in client_cert\n\nIf the cn does not match the users listed in PostgreSQL and no user mapping is used, this is a finding.\n\nUser name mapping can be used to allow cn to be different from the database user name. If User Name Maps are used, run the following as the database administrator (shown here as \"postgres\"), to get a list of maps used for authentication:\n\n$ sudo su - postgres\n$ grep \"map\" ${PGDATA?}/pg_hba.conf\n\nWith the names of the maps used, check those maps against the user name mappings in pg_ident.conf:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/pg_ident.conf\n\nIf user accounts are not being mapped to authenticated identities, this is a finding.\n\nIf the cn and the username mapping do not match, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

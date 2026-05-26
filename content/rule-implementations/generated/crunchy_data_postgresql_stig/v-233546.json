@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Check PostgreSQL settings to determine whether objects or code implementing security functionality are located in a separate security domain, such as a separate database or schema created specifically for security functionality.\n\nBy default, all objects in pg_catalog and information_schema are owned by the database administrator. \n\nTo check the access controls for those schemas, as the database administrator (shown here as \"postgres\"), run the following commands to review the access privileges granted on the data dictionary and security tables, views, sequences, functions and trigger procedures:\n\n$ sudo su - postgres\n$ psql -x -c \"\\dp pg_catalog.*\"\n$ psql -x -c \"\\dp information_schema.*\"\n\nRepeat the \\dp statements for any additional schemas that contain locally defined security objects.\n\nRepeat using \\df+*.* to review ownership of PostgreSQL functions:\n\n$ sudo su - postgres\n$ psql -x -c \"\\df+ pg_catalog.*\"\n$ psql -x -c \"\\df+ information_schema.*\"\n\nRefer to the PostgreSQL online documentation for GRANT for help in interpreting the Access Privileges column in the output from \\du. Note that an entry starting with an equals sign indicates privileges granted to Public (all users). By default, most of the tables and views in the pg_catalog and information_schema schemas can be read by Public.\n\nIf any user besides the database administrator(s) is listed in access privileges and not documented, this is a finding.\n\nIf security-related database objects or code are not kept separate, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

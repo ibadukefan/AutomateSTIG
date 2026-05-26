@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review permissions that control access to the DBMS software libraries. The software library location may be determined from vendor documentation or service/process executable paths.\n\nTypically, only the DBMS software installation/maintenance account or system administrator (SA) account requires access to the software library for operational support such as backups. Any other accounts should be scrutinized and the reason for access documented. Accounts should have the least amount of privilege required to accomplish the job.\n\nBelow is one example for how to review accounts with access to software libraries for a Linux-based system:\ncat /etc/group |grep -i dba\n--Example output:\ndba:x:102: \n\n--take above number and input in below grep command\ncat /etc/passwd |grep 102\n\nIf any accounts are returned that are not required and authorized to have access to the software library location do have access, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

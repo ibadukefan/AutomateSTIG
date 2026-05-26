@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Step 1: Review the switch configuration to verify that an ingress ACL is applied to all external or CE-facing interfaces. \n\ninterface Ethernet1/2\n ip address x.1.12.2/30\n ip access-group BLOCK_TO_CORE in\n\nStep 2: Verify that the ingress ACL discards and logs packets destined to the IP core address space. \n\nip access-list BLOCK_TO_CORE\n deny ip any 10.1.x.0 0.0.255.255 log\n permit ip any any\n\nNote: Internet Control Message Protocol (ICMP) echo requests and traceroutes will be allowed to the edge from external adjacent neighbors.\n\nIf the PE switch is not configured to block any traffic with a destination address assigned to the IP core infrastructure, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

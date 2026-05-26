@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Note: The following instructions use the PGLOG environment variables. See supplementary content APPENDIX-I for instructions on configuring PGVER.\n\nCheck PostgreSQL audit logs to determine whether organization-defined auditable events are being audited by the system.\n\nFor example, if the organization defines 'CREATE TABLE' as an auditable event, issuing the following command should return a result:\n\n$ sudo su - postgres\n$ psql -c \"CREATE TABLE example (id int)\"\n$ grep 'AUDIT:.*,CREATE TABLE.*example' ${PGLOG?}/<latest_log>\n$ psql -c 'DROP TABLE example;'\n\nIf organization-defined auditable events are not being audited, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

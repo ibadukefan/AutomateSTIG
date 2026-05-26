@@ -19824,6 +19824,75 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
         self.assertNotIn('candidate_check', spec)
 
+    def test_marks_architecture_documentation_risk_acceptance_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Tomcat_Application_Server_9_STIG', 'version': 'U_Tomcat.zip'}, {
+            'vuln_id': 'V-222971',
+            'rule_id': 'SV-222971r1136930_rule',
+            'title': 'Tomcat servers must mutually authenticate proxy or load balancer connections.',
+            'severity': 'medium',
+            'check_content': 'Review system security plan and/or system architecture documentation and interview the system admin. If there is a documented risk acceptance for not mutually authenticating proxy or load balancer connections due to operational issues, or RMF system categorization this is not a finding. If a connector has a configured IP address that is proxied or load balanced and the clientAuth setting is not true, this is a finding.',
+            'fix_text': 'Modify each SSLHostConfig element where the IP address is behind a proxy or load balancer.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_design_plan_authorized_network_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Cisco_NX-OS_Switch_RTR_STIG', 'version': 'U_Cisco.zip'}, {
+            'vuln_id': 'V-221118',
+            'rule_id': 'SV-221118r879620_rule',
+            'title': 'The Cisco PE switch must be configured to have each Virtual Routing and Forwarding instance with the appropriate Route Target.',
+            'severity': 'medium',
+            'check_content': 'Review the design plan for MPLS/L3VPN to determine what RTs have been assigned for each VRF. Review the switch configuration and verify that the correct RT is configured for each VRF. If there are VRFs configured with the wrong RT, this is a finding.',
+            'fix_text': 'Configure the correct route target for each VRF as documented in the design plan.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_source_code_and_authorized_owner_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Oracle_Database_19c_STIG', 'version': 'U_Oracle.zip'}, {
+            'vuln_id': 'V-270581',
+            'rule_id': 'SV-270581r1106650_rule',
+            'title': 'Oracle Database must reserve dynamic code execution for situations that require it.',
+            'severity': 'medium',
+            'check_content': 'Review DBMS source code and application source code to identify cases of dynamic code execution. If dynamic code execution is employed in circumstances where the objective could practically be satisfied by static execution with strongly typed parameters, this is a finding.',
+            'fix_text': 'Modify DBMS code and application source code to use static execution where practical.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_exact_human_evidence_allowlist_does_not_map_unknown_vuln_id(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Oracle_Database_19c_STIG', 'version': 'U_Oracle.zip'}, {
+            'vuln_id': 'V-999999',
+            'rule_id': 'SV-999999_rule',
+            'title': 'Oracle Database must reserve dynamic code execution for situations that require it.',
+            'severity': 'medium',
+            'check_content': 'Review DBMS source code and application source code to identify cases of dynamic code execution. If dynamic code execution is employed in circumstances where the objective could practically be satisfied by static execution with strongly typed parameters, this is a finding.',
+            'fix_text': 'Modify DBMS code and application source code to use static execution where practical.',
+        })
+
+        self.assertEqual(spec['classification'], 'automated')
+        self.assertNotEqual(spec['collector_type'], 'manual_evidence_workflow')
+
+    def test_marks_kubernetes_ppsm_cal_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Kubernetes_STIG', 'version': 'U_Kubernetes.zip'}, {
+            'vuln_id': 'V-242411',
+            'rule_id': 'SV-242411r879610_rule',
+            'title': 'The Kubernetes Scheduler must enforce ports, protocols, and services that adhere to the PPSM CAL.',
+            'severity': 'medium',
+            'check_content': 'Review the information systems documentation and interview the team, gain an understanding of the Scheduler architecture, and determine applicable PPS. Any PPS in the system documentation not in compliance with the CAL PPSM is a finding.',
+            'fix_text': 'Configure Scheduler ports, protocols, and services to comply with the PPSM CAL.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
     def test_marks_windows_ou_additional_permissions_isso_review_as_manual_evidence(self):
         spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2022_STIG', 'version': 'U_WS2022.zip'}, {
             'vuln_id': 'V-254395',

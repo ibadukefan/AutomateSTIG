@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the server documentation to determine if auditing of the telemetry data is required. If auditing of telemetry data is not required, this is not a finding. \n \nIf auditing of telemetry data is required, determine the telemetry service username by executing the following query: \nSELECT name \nFROM sys.server_principals \nWHERE name LIKE '%SQLTELEMETRY%' \n \nReview the values of the following registry key: \nNote: InstanceId refers to the type and instance of the feature (e.g., MSSQL16.SqlInstance, MSAS16.SSASInstance, MSRS16.SSRSInstance). \n \nHKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SQL Server\\[InstanceId]\\CPE\\UserRequestedLocalAuditDirectory \n \nIf the registry key does not exist or the value is blank, this is a finding. \n \nNavigate the path defined in the \"UserRequestedLocalAuditDirectory\" registry key in file explorer. \n \nRight-click on the folder and choose \"Properties\". Open the \"Security\" tab.\n \nVerify the SQLTELEMETRY account has the following permissions: \n- List folder contents \n- Read \n- Write \n \nIf the permissions are not set properly on the folder, this is a finding. \n \nOpen services.msc and find the telemetry service. \n- For Database Engine, use SQL Server CEIP service (<INSTANCENAME>). \n- For Analysis Services, use SQL Server Analysis Services CEIP (<INSTANCENAME>). \n \nRight-click on the service and choose \"Properties\". Verify the \"Startup type\" is \"Automatic.\"  \n \nIf the service is not configured to automatically start, this is a finding. \n \nReview the processes and procedures for reviewing the telemetry data. If there is evidence that the telemetry data is periodically reviewed in accordance with the processes and procedures, this is not a finding. \n \nIf no processes and procedures exist for reviewing telemetry data, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

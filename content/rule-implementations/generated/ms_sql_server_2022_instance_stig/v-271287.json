@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Determine the directory in which SQL Server has been installed:\n\nUsing SQL Server Management Studio's Object Explorer, right-click [SQL Server Instance], select \"Facets\", then record the value of RootDirectory.\n\nDetermine the Operating System directory:\n1. Click \"Start\".\n2. Type \"Run\".\n3. Press \"Enter\".\n4. Type \"%windir%\".\n5. Click \"Ok\".\n6. Record the value in the address bar.\n\nVerify the SQL Server RootDirectory is not in the Operating System directory.\n\nCompare the SQL RootDirectory and the Operating System directory. If the SQL RootDirectory is in the same directory as the Operating System, this is a finding.\n\nVerify the SQL Server RootDirectory is not in another application's directory.\n\nNavigate to the SQL RootDirectory using Windows Explorer.\n\nExamine each directory for evidence another application is stored in it.\n\nIf evidence exists the SQL RootDirectory is in another application's directory, this is a finding.\n\nIf the SQL RootDirectory is not in the Operating System directory or another application's directory, this is not a finding.\n\nExamples:\n1. The Operating System directory is \"C:\\Windows\". The SQL RootDirectory is \"D:\\Program Files\\MSSQLSERVER\\MSSQL\". The MSSQLSERVER directory is not living in the Operating System directory or the directory of another application. This is not a finding.\n\n2. The Operating System directory is \"C:\\Windows\". The SQL RootDirectory is \"C:\\Windows\\MSSQLSERVER\\MSSQL\". This is a finding.\n\n3. The Operating System directory is \"C:\\Windows\". The SQL RootDirectory is \"D:\\Program Files\\Microsoft Office\\MSSQLSERVER\\MSSQL\". The MSSQLSERVER directory is in the Microsoft Office directory, which indicates Microsoft Office is installed here. This is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the IIS 10.0 web server configuration with the System Administrator.\n\nDetermine if the IIS 10.0 web server hosts any applications.\n\nIf the IIS 10.0 web server does not host any applications, this is Not Applicable.\n\nIf the IIS 10.0 web server is hosting Exchange, this is Not Applicable.\n\nIf the IIS 10.0 web server hosts applications, review the application's management functionality and authentication methods with the System Administrator to determine if the management of the application is accomplished with the same functions and authentication methods as the web server management.\n\nIf the IIS 10.0 web server management and the application's management functionality is not separated, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Step 1: Verify that a prefix list has been configured containing prefixes belonging to customers as well as the local AS as shown in the example below:\n\nip prefix-list CE_PREFIX_ADVERTISEMENTS seq 5 permit x.13.1.0/24 le 32\nip prefix-list CE_PREFIX_ADVERTISEMENTS seq 10 permit x.13.2.0/24 le 32\nip prefix-list CE_PREFIX_ADVERTISEMENTS seq 15 permit x.13.3.0/24 le 32\nip prefix-list CE_PREFIX_ADVERTISEMENTS seq 20 permit x.13.4.0/24 le 32\n\u2026\n\u2026\n\u2026\nip prefix-list CE_PREFIX_ADVERTISEMENTS seq 80 deny 0.0.0.0/0 ge 8\n\nStep 2: Verify that the prefix lists has been applied to all CE peers as shown in the example below:\n\nrouter bgp xx\n router-id 10.1.1.1\n neighbor x.55.14.2 remote-as 64514\n password 3 7b07d1b3023056a9\n address-family ipv4 unicast\n prefix-list CE_PREFIX_ADVERTISEMENTS out\n neighbor x.55.14.4 remote-as 64516\n password 3 f07a10cb41db8bb6f8f0a340049a9b02\n address-family ipv4 unicast\n prefix-list CE_PREFIX_ADVERTISEMENTS out\n\nIf the switch is not configured to reject outbound route advertisements that do not belong to any customers or the local AS, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

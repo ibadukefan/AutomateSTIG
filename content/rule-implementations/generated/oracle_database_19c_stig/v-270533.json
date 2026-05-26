@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Run the SQL query:\n\nselect grantee, granted_role from dba_role_privs\nwhere default_role='YES'\nand granted_role in\n(select grantee from dba_sys_privs where upper(privilege) like '%USER%') \nand grantee not in\n(<list of nonapplicable accounts>)\nand grantee not in (select distinct owner from dba_tables)\nand grantee not in\n(select distinct username from dba_users where upper(account_status) like\n'%LOCKED%');\n\nWith respect to the list of special accounts that are excluded from this requirement, it is expected that the database administrator (DBA) will maintain the list to suit local circumstances, adding special accounts as necessary and removing any that are not supposed to be in use in the Oracle deployment that is under review.\n\nReview the list of accounts reported for this check and ensures that they are authorized application administration roles.\n\nIf any are not authorized application administration roles, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

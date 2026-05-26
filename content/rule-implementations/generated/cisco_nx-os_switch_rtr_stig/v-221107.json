@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Step 1: Verify that a prefix list has been configured containing prefixes belonging to the IP core.\n\nip prefix-list FILTER_CORE_PREFIXES seq 5 deny x.1.1.0/24 le 32\nip prefix-list FILTER _CORE_PREFIXES seq 10 deny x.1.2.0/24 le 32\nip prefix-list FILTER _CORE_PREFIXES seq 15 permit 0.0.0.0/0 ge 8\n\nStep 2: Verify that the prefix lists has been applied to all external BGP peers as shown in the example below:\n\nrouter bgp xx\n router-id 10.1.1.1\n neighbor x.1.12.2 remote-as xx\n password 3 7b07d1b3023056a9\n address-family ipv4 unicast\n FILTER _CORE_PREFIXES out\n neighbor x.2.44.4 remote-as xx\n password 3 f07a10cb41db8bb6f8f0a340049a9b02\n address-family ipv4 unicast\n prefix-list FILTER _CORE_PREFIXES out\n\nIf the switch is not configured to reject outbound route advertisements for prefixes belonging to the IP core, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

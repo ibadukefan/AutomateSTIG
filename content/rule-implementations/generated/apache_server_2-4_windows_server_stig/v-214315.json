@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Query the System Administrator (SA) to determine who has update access to the web server log files. \n\nThe role of auditor and the role of SA should be distinctly separate. An individual functioning as an auditor should not also serve as an SA due to a conflict of interest.\n\nOnly management-authorized individuals with a privileged ID or group ID associated with an auditor role will have access permission to log files that are greater than read on web servers he or she has been authorized to audit.\n\nOnly management-authorized individuals with a privileged ID or group ID associated with either an SA or Web Administrator role may have read authority to log files for the web servers he or she has been authorized to administer.\n\nIf an account with roles other than auditor has greater than read authority to the log files, this is a finding.\n\nObtain the log location by reviewing the <'INSTALL PATH'>\\conf\\httpd.conf file.\n\nClick the \"Browse\" button and navigate to the directory where the log files are stored.\n\nRight-click the log file name to review and click \"Properties\".\n\nClick the \"Security\" tab.\n\nIf an account associated with roles other than auditors, SAs, or Web Administrators has any access to log files, this is a finding.\n\nIf an account with roles other than auditor has greater than read authority to the log files, this is a finding.\n\nThis check does not apply to service account IDs used by automated services necessary to process, manage, and store log files.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

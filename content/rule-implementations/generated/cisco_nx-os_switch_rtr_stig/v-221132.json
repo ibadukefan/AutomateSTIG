@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Step 1: Review the network's multicast topology diagram.\n\nStep 2: Review the switch configuration to verify that only the PIM interfaces as shown in the multicast topology diagram are enabled for PIM as shown in the example below:\n\ninterface Ethernet2/1\n no switchport\n ip address 10.1.12.1/24\n ip pim sparse-mode\n\nIf an interface is not required to support multicast routing and it is enabled, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

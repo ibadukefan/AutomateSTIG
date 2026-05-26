@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "To list all installed packages, as the system administrator, run the following:\n\n# RHEL/CENT 8 Systems\n$ sudo dnf list installed | grep postgres\n\n# RHEL/CENT 7 Systems\n$ sudo yum list installed | grep postgres\n\n# Debian Systems\n$ dpkg --get-selections | grep postgres\n\nIf any packages are installed that are not required, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

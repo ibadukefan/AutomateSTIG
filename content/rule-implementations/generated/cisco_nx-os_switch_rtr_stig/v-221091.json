@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Review the switch configuration to verify uRPF or an egress ACL has been configured on all internal interfaces to restrict the switch from accepting outbound IP packets that contain an illegitimate address in the source address field.\n\nuRPF example\n\ninterface Ethernet2/4\n description downstream link to LAN\n no switchport\n ip address 10.1.12.1/24\n ip verify unicast source reachable-via rx\n\nEgress ACL example\n\nip access-list EGRESS_FILTER\n 10 permit udp 10.1.15.0/24 any eq domain \n 20 permit tcp 10.1.15.0/24 any eq ftp \n 30 permit tcp 10.1.15.0/24 any eq ftp-data \n 40 permit tcp 10.1.15.0/24 any eq www \n 50 permit icmp 10.1.15.0/24 any \n 60 permit icmp 10.1.15.0/24 any echo \n 70 deny ip any any\n\u2026\n\u2026\n\u2026\ninterface Ethernet2/4\n description downstream link to LAN\n no switchport\n ip access-group EGRESS_FILTER in\n ip address 10.1.12.1/24\n\nIf uRPF or an egress ACL to restrict the switch from accepting outbound IP packets that contain an illegitimate address in the source address field has not been configured on all internal interfaces in an enclave, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "network_config_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

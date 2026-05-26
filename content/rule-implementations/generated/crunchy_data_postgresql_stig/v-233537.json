@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "If the application owner has determined that the need for system availability outweighs the need for a complete audit trail, this is not applicable (NA). \n\nOtherwise, review the procedures, manual and/or automated, for monitoring the space used by audit trail(s) and for off-loading audit records to a centralized log management system.\n\nIf the procedures do not exist, this is a finding.\n\nIf the procedures exist, request evidence that they are followed. If the evidence indicates that the procedures are not followed, this is a finding.\n\nIf the procedures exist, inquire if the system has ever run out of audit trail space in the last two years or since the last system upgrade, whichever is more recent. If it has run out of space in this period, and the procedures have not been updated to compensate, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",
