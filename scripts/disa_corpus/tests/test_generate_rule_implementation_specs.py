@@ -87,6 +87,46 @@ If the SQL service account or SQL service SID has been granted "Perform volume m
 
         self.assertIsNone(candidate)
 
+    def test_infers_sql_server_ceip_error_reporting_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271389',
+            'title': 'SQL Server must configure Customer Feedback and Error Reporting.',
+            'check_content': '''Review the values for CustomerFeedback and EnableErrorReporting.
+Option 1: Launch "Registry Editor"
+Navigate to: HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\[InstanceId]\\CPE
+Review the following values: CustomerFeedback, EnableErrorReporting
+Navigate to HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\160
+Review the following values: CustomerFeedback, EnableErrorReporting
+Option 2: Run the PowerShell commands:
+Get-ItemProperty -Path "HKLM:\\Software\\Microsoft\\Microsoft SQL Server\\<SqlInstanceId>\\CPE"
+Get-ItemProperty -Path "HKLM:\\Software\\Microsoft\\Microsoft SQL Server\\160"
+Review the following values: CustomerFeedback, EnableErrorReporting
+If this is a classified system, and any of the above values are not "0", this is a finding.''',
+            'fix_text': '''To disable participation in the CEIP program, change the value of the following registry keys to "0".
+HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\[InstanceId]\\CPE\\CustomerFeedback
+HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\[InstanceId]\\CPE\\EnableErrorReporting
+HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\160\\CustomerFeedback
+HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\160\\EnableErrorReporting''',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271389')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertIn('CustomerFeedback', candidate['check']['command'])
+        self.assertIn('EnableErrorReporting', candidate['check']['command'])
+        self.assertIn('Microsoft SQL Server\\160', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_sql_server_ceip_error_reporting_disabled_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'SQL Server must configure Customer Feedback and Error Reporting.',
+            'check_content': 'CustomerFeedback EnableErrorReporting HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\160',
+            'fix_text': 'Set CustomerFeedback and EnableErrorReporting to 0.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_rhel7_access_control_firewalld_or_tcpwrappers_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204628',

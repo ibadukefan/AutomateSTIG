@@ -314,6 +314,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$paths=@('HKLM:\\Software\\Microsoft\\Microsoft SQL Server\\160'); $roots=Get-ChildItem -Path 'HKLM:\\Software\\Microsoft\\Microsoft SQL Server' -ErrorAction SilentlyContinue | Where-Object { Test-Path (Join-Path $_.PSPath 'CPE') }; foreach ($root in $roots) { $paths += (Join-Path $root.PSPath 'CPE') }; $bad=@(); foreach ($p in ($paths | Select-Object -Unique)) { $item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; foreach ($name in @('CustomerFeedback','EnableErrorReporting')) { if ($null -eq $item -or $null -eq $item.$name -or [int]$item.$name -ne 0) { $bad += \"$p\\$name\" } } } if ($bad.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must configure Customer Feedback and Error Reporting.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-271389"
+    },
+    {
+      "check": {
         "command": "sqlcmd -h -1 -W -Q \"SET NOCOUNT ON; SELECT CASE SERVERPROPERTY('IsIntegratedSecurityOnly') WHEN 1 THEN 'Windows Authentication' WHEN 0 THEN 'SQL Server Authentication' END;\"",
         "type": "command_output"
       },

@@ -13619,6 +13619,48 @@ def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> d
 
 
 
+def _sql_server_ceip_error_reporting_disabled_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    if rule.get('vuln_id', '') != 'V-271389':
+        return None
+    expected_title = 'sql server must configure customer feedback and error reporting.'
+    if rule.get('title', '').strip().lower() != expected_title:
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{content}\n{fix_text}"
+    required_patterns = (
+        r'CustomerFeedback',
+        r'EnableErrorReporting',
+        r'HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft\s+SQL\s+Server\\\[InstanceId\]\\CPE',
+        r'HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft\s+SQL\s+Server\\160',
+        r'any\s+of\s+the\s+above\s+values\s+are\s+not\s+["“]0["”],\s+this\s+is\s+a\s+finding',
+        r'change\s+the\s+value\s+of\s+the\s+following\s+registry\s+keys\s+to\s+["“]0["”]',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$paths=@(\'HKLM:\\Software\\Microsoft\\Microsoft SQL Server\\160\'); '
+        '$roots=Get-ChildItem -Path \'HKLM:\\Software\\Microsoft\\Microsoft SQL Server\' -ErrorAction SilentlyContinue | '
+        'Where-Object { Test-Path (Join-Path $_.PSPath \'CPE\') }; '
+        'foreach ($root in $roots) { $paths += (Join-Path $root.PSPath \'CPE\') }; '
+        '$bad=@(); foreach ($p in ($paths | Select-Object -Unique)) { '
+        '$item=Get-ItemProperty -Path $p -ErrorAction SilentlyContinue; '
+        'foreach ($name in @(\'CustomerFeedback\',\'EnableErrorReporting\')) { '
+        'if ($null -eq $item -or $null -eq $item.$name -or [int]$item.$name -ne 0) { $bad += \"$p\\$name\" } } } '
+        'if ($bad.Count -eq 0) { \'Compliant\' }"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_audit_file_capacity_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -16859,6 +16901,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_sample_databases_candidate = _sql_server_sample_databases_absent_candidate(rule, stig_id)
     if sql_server_sample_databases_candidate:
         return sql_server_sample_databases_candidate
+
+    sql_server_ceip_error_reporting_candidate = _sql_server_ceip_error_reporting_disabled_candidate(rule, stig_id)
+    if sql_server_ceip_error_reporting_candidate:
+        return sql_server_ceip_error_reporting_candidate
 
     sql_server_audit_file_capacity_candidate = _sql_server_audit_file_capacity_candidate(rule, stig_id)
     if sql_server_audit_file_capacity_candidate:
