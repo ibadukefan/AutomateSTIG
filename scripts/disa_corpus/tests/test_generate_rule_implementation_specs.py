@@ -19777,5 +19777,47 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
         self.assertNotIn('candidate_check', spec)
 
+    def test_marks_manually_managed_application_account_policy_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2025_STIG', 'version': 'U_WS2025.zip'}, {
+            'vuln_id': 'V-277989',
+            'rule_id': 'SV-277989r1181947_rule',
+            'title': 'Windows Server 2025 manually managed application account passwords must be at least 15 characters in length.',
+            'severity': 'medium',
+            'check_content': 'Determine if manually managed application/service accounts exist. If none exist, this is not applicable. Verify the organization has a policy to ensure passwords for manually managed application/service accounts are at least 15 characters in length. If such a policy does not exist or has not been implemented, this is a finding.',
+            'fix_text': 'Establish a policy that requires application/service account passwords that are manually managed to be at least 15 characters in length. Ensure the policy is enforced.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_default_web_server_account_password_review_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'IIS_10-0_Server_STIG', 'version': 'U_IIS_10.zip'}, {
+            'vuln_id': 'V-218823',
+            'rule_id': 'SV-218823r879511_rule',
+            'title': 'All accounts installed with the IIS 10.0 web server software and tools must have passwords assigned and default passwords changed.',
+            'severity': 'high',
+            'check_content': 'Review the local users listed. If any local accounts are present and used by IIS 10.0, verify with System Administrator that default passwords have been changed. If passwords have not been changed from the default, this is a finding.',
+            'fix_text': 'Change passwords for any local accounts present that are used by IIS 10.0, then verify with System Administrator default passwords have been changed.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_host_based_idps_documented_exception_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2025_STIG', 'version': 'U_WS2025.zip'}, {
+            'vuln_id': 'V-277996',
+            'rule_id': 'SV-277996r1090332_rule',
+            'title': 'Windows Server 2025 must have a host-based intrusion detection and prevention service (IDPS) installed.',
+            'severity': 'medium',
+            'check_content': 'Determine whether there is a host based intrusion detection and prevention service on each server. This requirement is not applicable on a system that has the role as the IDPS. However, this exception must be documented with the information system security officer (ISSO). If a host-based IDPS is not installed on the system, this is a finding.',
+            'fix_text': 'Install a host-based IDPS on each server.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
 if __name__ == '__main__':
     unittest.main()

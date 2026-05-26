@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Determine if manually managed application/service accounts exist. If none exist, this is not applicable.\n\nVerify the organization has a policy to ensure passwords for manually managed application/service accounts are at least 15 characters in length.\n\nIf such a policy does not exist or has not been implemented, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "windows_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

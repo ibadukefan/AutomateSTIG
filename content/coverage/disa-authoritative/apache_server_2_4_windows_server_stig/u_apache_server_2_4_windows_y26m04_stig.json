@@ -728,16 +728,17 @@
       "vuln_id": "V-214356"
     },
     {
-      "check_id": "",
+      "check_id": "V-214357",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-214357r961863_rule",
       "severity": "high",
       "title": "All accounts installed with the Apache web server software and tools must have passwords assigned and default passwords changed.",
-      "tracking_issue": "TODO-V-214357",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/apache_server_2-4_windows_server_stig/v-214357.json",
         "content/disa-corpus/artifacts/c6871e97d3db853502fe512e1579689c33d5883834edfddc50e7db9035214cb9/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-214357"

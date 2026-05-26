@@ -511,16 +511,17 @@
       "vuln_id": "V-218822"
     },
     {
-      "check_id": "",
+      "check_id": "V-218823",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-218823r961863_rule",
       "severity": "high",
       "title": "All accounts installed with the IIS 10.0 web server software and tools must have passwords assigned and default passwords changed.",
-      "tracking_issue": "TODO-V-218823",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/iis_10-0_server_stig/v-218823.json",
         "content/disa-corpus/artifacts/5cb7f837811e6bf524d5713d808fc8e90ef4948da4fb7f04feaea1b9d211226e/U_MS_IIS_10-0_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-218823"
