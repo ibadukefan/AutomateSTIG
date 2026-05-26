@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Verify all SUSE operating system accounts are assigned to an active system, application, or user account.\n\nObtain the list of authorized system accounts from the Information System Security Officer (ISSO).\n\nCheck the system accounts on the system with the following command:\n\n> more /etc/passwd\nroot:x:0:0:root:/root:/bin/bash\n...\ngames:x:12:100:Games account:/var/games:/bin/bash\n\nAccounts such as \"games\" and \"gopher\" are not authorized accounts as they do not support authorized system functions. \n\nIf the accounts on the system do not match the provided documentation, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

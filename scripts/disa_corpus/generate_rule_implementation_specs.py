@@ -17097,6 +17097,7 @@ EXTERNAL_SUPPORTED_VERSION_MANUAL_RULES = {
     'V-268575',  # macOS 15 security-relevant software updates within external window
     'V-270585',  # Oracle Database 19c quarterly CPU/latest patch level from external Oracle baseline
     'V-271365',  # SQL Server 2022 vendor lifecycle/support status
+    'V-271439',  # Oracle Linux 9 vendor errata/IAVA patch baseline and organizational patch policy
     'V-277982',  # Windows Server 2025 security-relevant software updates within external window
 }
 
@@ -17106,9 +17107,9 @@ def _external_supported_version_manual_mapping(rule: dict) -> tuple[str, str] | 
     if not canonical_ids.intersection(EXTERNAL_SUPPORTED_VERSION_MANUAL_RULES):
         return None
     combined = '\n'.join(str(rule.get(key, '') or '') for key in ('title', 'check_content', 'fix_text'))
-    if not re.search(r'\b(?:supported version|vendor supported|security-related software updates|security-relevant software updates|latest secure version|latest patches|supported release|quarterly CPU|Critical Patch Update|patch levels?|vendor website)\b', combined, re.IGNORECASE):
+    if not re.search(r'\b(?:supported version|vendor supported|security-related software updates|security-relevant software updates|latest secure version|latest patches|supported release|quarterly CPU|Critical Patch Update|patch levels?|vendor website|packaged system security patches|security patches and updates|organizational patching policy|Oracle\. The URL for updates)\b', combined, re.IGNORECASE):
         return None
-    if not re.search(r'\b(?:supported by|vendor|microsoft|google|adobe|security updates|authoritative source|latest security|latest secure|latest patches|supported release|tomcat\.apache\.org|vmware\.com|dba_registry_sqlpatch|CPU Notice|Critical Patch Update)\b', combined, re.IGNORECASE):
+    if not re.search(r'\b(?:supported by|vendor|microsoft|google|adobe|security updates|authoritative source|latest security|latest secure|latest patches|supported release|tomcat\.apache\.org|vmware\.com|dba_registry_sqlpatch|CPU Notice|Critical Patch Update|linux\.oracle\.com/errata|IAVA|organizational patching policy)\b', combined, re.IGNORECASE):
         return None
     return 'manual', 'manual_evidence_workflow'
 
@@ -17153,6 +17154,8 @@ def _authoritative_human_evidence_manual_mapping(rule: dict) -> tuple[str, str] 
         r'\bsystem\s+files\s+are\s+not\s+monitored\s+for\s+unauthorized\s+changes\b.*\bapproved\s+and\s+properly\s+configured\s+solution\b.*\bfile\s+comparison\s+task\s+that\s+is\s+scheduled\s+to\s+run\s+at\s+least\s+weekly\b',
         r'\bdocument\s+any\s+additional\s+permissions\s+above\s+Read\s+with\s+the\s+ISSO\b',
         r'\bAsk\s+the\s+site\s+information\s+system\s+security\s+manager\s+\(ISSM\)\s+for\s+documentation\s+of\s+the\s+ESS\s+software\s+installation\s+and\s+configuration\b',
+        r'\bObtain\s+the\s+list\s+of\s+authorized\s+system\s+accounts\s+from\s+the\s+Information\s+System\s+Security\s+Officer\s+\(ISSO\).*\bprovided\s+documentation\b',
+        r'\bDetermine\s+whether\s+organization\s+policy,\s+at\s+a\s+minimum,\s+prohibits\s+administrative\s+accounts\s+from\s+using\s+applications\s+that\s+access\s+the\s+internet\b',
     )
     if any(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in manual_evidence_patterns):
         return 'manual', 'manual_evidence_workflow'

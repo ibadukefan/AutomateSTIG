@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Verify that OL 9 security patches and updates are installed and up to date. Updates are required to be applied with a frequency determined by organizational policy.\n\nObtain the list of available package security updates from Oracle. The URL for updates is https://linux.oracle.com/errata/. It is important to note that updates provided by Oracle may not be present on the system if the underlying packages are not installed.\n\nCheck that the available package security updates have been installed on the system with the following command:\n\n$ dnf history list | more\n\n    ID | Command line | Date and time | Action(s) | Altered    \n-------------------------------------------------------------------------------    \n   70 | install aide | 2023-03-05 10:58 | Install | 1    \n   69 | update -y | 2023-03-04 14:34 | Update | 18 EE    \n   68 | install vlc | 2023-02-21 17:12 | Install | 21   \n   67 | update -y | 2023-02-21 17:04 | Update | 7 EE \n\nTypical update frequency may be overridden by Information Assurance Vulnerability Alert (IAVA) notifications from CYBERCOM.\n\nIf the system is in noncompliance with the organizational patching policy, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

@@ -1138,16 +1138,17 @@
       "vuln_id": "V-234872"
     },
     {
-      "check_id": "",
+      "check_id": "V-234874",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-234874r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not have unnecessary accounts.",
-      "tracking_issue": "TODO-V-234874",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/sles_15_stig/v-234874.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234874"

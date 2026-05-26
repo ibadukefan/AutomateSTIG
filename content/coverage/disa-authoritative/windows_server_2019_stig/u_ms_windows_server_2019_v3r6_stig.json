@@ -3490,16 +3490,17 @@
       "vuln_id": "V-205844"
     },
     {
-      "check_id": "",
+      "check_id": "V-205845",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205845r991589_rule",
       "severity": "high",
       "title": "Windows Server 2019 administrative accounts must not be used with applications that access the Internet, such as web browsers, or with potential Internet sources, such as email.",
-      "tracking_issue": "TODO-V-205845",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205845.json",
         "content/disa-corpus/artifacts/de998bcf180eef5455fa320637cc7434bb0e732905bbc2a145829ca8bf1d1986/U_MS_Windows_Server_2019_V3R6_STIG.zip"
       ],
       "vuln_id": "V-205845"

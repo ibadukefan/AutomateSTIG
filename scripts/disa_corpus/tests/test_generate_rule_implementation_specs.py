@@ -19721,5 +19721,47 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
         self.assertNotIn('candidate_check', spec)
 
+    def test_marks_oracle_linux_external_errata_patch_policy_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Oracle_Linux_9_STIG', 'version': 'U_Oracle_Linux_9.zip'}, {
+            'vuln_id': 'V-271439',
+            'rule_id': 'SV-271439r1091029_rule',
+            'title': 'OL 9 vendor packaged system security patches and updates must be installed and up to date.',
+            'severity': 'medium',
+            'check_content': 'Obtain the list of available package security updates from Oracle. The URL for updates is https://linux.oracle.com/errata/. Typical update frequency may be overridden by Information Assurance Vulnerability Alert (IAVA) notifications from CYBERCOM. If the system is in noncompliance with the organizational patching policy, this is a finding.',
+            'fix_text': 'Install OL 9 security patches and updates at the organizationally defined frequency.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_authorized_system_account_inventory_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'Oracle_Linux_8_STIG', 'version': 'U_Oracle_Linux_8.zip'}, {
+            'vuln_id': 'V-248713',
+            'rule_id': 'SV-248713r1069562_rule',
+            'title': 'OL 8 must not have unnecessary accounts.',
+            'severity': 'medium',
+            'check_content': 'Obtain the list of authorized system accounts from the Information System Security Officer (ISSO). If the accounts on the system do not match the provided documentation, or accounts that do not support an authorized system function are present, this is a finding.',
+            'fix_text': 'Remove accounts that do not support approved system activities. Document all authorized accounts on the system.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
+    def test_marks_admin_internet_application_policy_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2025_STIG', 'version': 'U_WS2025.zip'}, {
+            'vuln_id': 'V-277987',
+            'rule_id': 'SV-277987r1090332_rule',
+            'title': 'Windows Server 2025 administrative accounts must not be used with applications that access the internet.',
+            'severity': 'high',
+            'check_content': 'Determine whether organization policy, at a minimum, prohibits administrative accounts from using applications that access the internet, such as web browsers, or with potential internet sources, such as email. If it does not, this is a finding.',
+            'fix_text': 'Establish a policy, at minimum, to prohibit administrative accounts from using applications that access the internet. Ensure the policy is enforced.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
 if __name__ == '__main__':
     unittest.main()

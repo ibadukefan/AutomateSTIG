@@ -1041,16 +1041,17 @@
       "vuln_id": "V-204459"
     },
     {
-      "check_id": "",
+      "check_id": "V-204460",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-204460r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must not have unnecessary accounts.",
-      "tracking_issue": "TODO-V-204460",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_7_stig/v-204460.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204460"
