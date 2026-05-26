@@ -19289,5 +19289,37 @@ If PIM neighbor ACLs are not bound to all interfaces that have PIM enabled, this
 
         self.assertIsNone(candidate)
 
+    def test_infers_postgresql_separate_user_management_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233588',
+            'title': 'PostgreSQL must separate user functionality (including user interface services) from database management functionality.',
+            'check_content': '''Check PostgreSQL settings and vendor documentation to verify that administrative functionality is separate from user functionality.
+
+As the database administrator (shown here as "postgres"), list all roles and permissions for the database:
+
+$ sudo su - postgres
+$ psql -c "\\du"
+
+If any non-administrative role has the attribute "Superuser", "Create role", "Create DB" or "Bypass RLS", this is a finding.''',
+            'fix_text': 'Use ALTER ROLE <username> NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS to remove administrative attributes from non-administrative users.',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-233588')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertIn('\\du', candidate['check']['command'])
+        self.assertIn('Superuser', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_postgresql_separate_user_management_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'PostgreSQL must separate user functionality (including user interface services) from database management functionality.',
+            'check_content': 'psql -c "\\du" If any non-administrative role has the attribute "Superuser", "Create role", "Create DB" or "Bypass RLS", this is a finding.',
+            'fix_text': 'ALTER ROLE <role_name> NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+
+        self.assertIsNone(candidate)
+
 if __name__ == '__main__':
     unittest.main()

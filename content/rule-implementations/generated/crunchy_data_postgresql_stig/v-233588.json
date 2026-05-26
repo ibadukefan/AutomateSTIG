@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sudo -u postgres sh -c 'psql -x -c '\"'\"'\\\\du'\"'\"' 2>/dev/null | awk '\"'\"'BEGIN{bad=0; role=\"\"} /^Role name[[:space:]]*\\|/{role=$0; sub(/^[^|]*\\|[[:space:]]*/,\"\",role); sub(/[[:space:]]*$/,\"\",role)} /^Attributes[[:space:]]*\\|/ && role != \"postgres\" && $0 ~ /(Superuser|Create role|Create DB|Bypass RLS)/{bad=1} END{if (bad==0) print \"Compliant\"}'\"'\"''",
+      "type": "command_output"
+    },
+    "description": "PostgreSQL must separate user functionality (including user interface services) from database management functionality.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "linux",
+    "vuln_id": "V-233588"
+  },
   "check_content_excerpt": "Check PostgreSQL settings and vendor documentation to verify that administrative functionality is separate from user functionality.\n\nAs the database administrator (shown here as \"postgres\"), list all roles and permissions for the database:\n\n$ sudo su - postgres\n$ psql -c \"\\du\"\n\nIf any non-administrative role has the attribute \"Superuser\", \"Create role\", \"Create DB\" or \"Bypass RLS\", this is a finding.\n\nIf administrator and general user functionality are not separated either physically or logically, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure PostgreSQL to separate database administration and general user functionality.\n\nDo not grant superuser, create role, create db, or bypass rls role attributes to users that do not require it.\n\nTo remove privileges, see the following example:\n\nALTER ROLE <username> NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS;",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233588r961095_rule",
   "severity": "medium",

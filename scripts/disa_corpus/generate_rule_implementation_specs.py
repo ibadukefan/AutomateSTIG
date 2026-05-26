@@ -10306,6 +10306,34 @@ def _postgresql_audit_explicit_config_candidate(rule: dict, stig_id: str) -> dic
     vuln_id = rule.get('vuln_id', '')
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    if vuln_id == 'V-233588':
+        title = rule.get('title', '') or ''
+        if not re.search(r'separate\s+user\s+functionality.*database\s+management\s+functionality', title, re.IGNORECASE):
+            return None
+        if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in (
+            r'psql\s+-c\s+["“]\\du["”]',
+            r'non-administrative\s+role\s+has\s+the\s+attribute\s+["“]Superuser["”]',
+            r'["“]Create\s+role["”]',
+            r'["“]Create\s+DB["”]',
+            r'["“]Bypass\s+RLS["”]',
+        )):
+            return None
+        if not re.search(r'ALTER\s+ROLE\s+<(?:role_?name|username)>\s+NOSUPERUSER\s+NOCREATEDB\s+NOCREATEROLE\s+NOBYPASSRLS', fix_text, re.IGNORECASE):
+            return None
+        script = (
+            "psql -x -c '\\\\du' 2>/dev/null | "
+            "awk 'BEGIN{bad=0; role=\"\"} "
+            "/^Role name[[:space:]]*\\|/{role=$0; sub(/^[^|]*\\|[[:space:]]*/,\"\",role); sub(/[[:space:]]*$/,\"\",role)} "
+            "/^Attributes[[:space:]]*\\|/ && role != \"postgres\" && $0 ~ /(Superuser|Create role|Create DB|Bypass RLS)/{bad=1} "
+            "END{if (bad==0) print \"Compliant\"}'"
+        )
+        return {
+            'vuln_id': vuln_id,
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'sudo -u postgres sh -c ' + shlex.quote(script)},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': rule.get('title', ''),
+        }
     profiles = {
         'V-233553': {
             'title': r'unsuccessful\s+logons\s+or\s+connection\s+attempts',
