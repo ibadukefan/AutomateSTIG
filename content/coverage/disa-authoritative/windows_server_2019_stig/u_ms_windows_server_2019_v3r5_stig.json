@@ -3522,16 +3522,17 @@
       "vuln_id": "V-205846"
     },
     {
-      "check_id": "",
+      "check_id": "V-205847",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205847r991589_rule",
       "severity": "medium",
       "title": "Windows Server 2019 manually managed application account passwords must be changed at least annually or when a system administrator with knowledge of the password leaves the organization.",
-      "tracking_issue": "TODO-V-205847",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205847.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205847"

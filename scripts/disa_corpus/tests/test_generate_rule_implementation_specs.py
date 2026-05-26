@@ -19791,6 +19791,20 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
         self.assertNotIn('candidate_check', spec)
 
+    def test_marks_manually_managed_application_account_rotation_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'MS_Windows_Server_2025_STIG', 'version': 'U_WS2025.zip'}, {
+            'vuln_id': 'V-277990',
+            'rule_id': 'SV-277990r1181948_rule',
+            'title': 'Windows Server 2025 manually managed application account passwords must be changed at least annually or when a system administrator with knowledge of the password leaves the organization.',
+            'severity': 'medium',
+            'check_content': 'Determine if manually managed application/service accounts exist. If none exist, this is not applicable. If passwords for manually managed application/service accounts are not changed at least annually or when an administrator with knowledge of the password leaves the organization, this is a finding.',
+            'fix_text': 'Change passwords for manually managed application/service accounts at least annually or when an administrator with knowledge of the password leaves the organization.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
     def test_marks_default_web_server_account_password_review_as_manual_evidence(self):
         spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'IIS_10-0_Server_STIG', 'version': 'U_IIS_10.zip'}, {
             'vuln_id': 'V-218823',

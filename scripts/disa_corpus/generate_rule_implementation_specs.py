@@ -17136,6 +17136,7 @@ def _authoritative_human_evidence_manual_mapping(rule: dict) -> tuple[str, str] 
         r'\bverify\s+with\s+(?:the\s+)?system\s+administrator\b',
         r'\bVerify\s+the\s+organization\s+has\s+a\s+policy\s+to\s+ensure\s+passwords\s+for\s+manually\s+managed\s+application/service\s+accounts\s+are\s+at\s+least\s+15\s+characters\s+in\s+length\b.*\bIf\s+such\s+a\s+policy\s+does\s+not\s+exist\s+or\s+has\s+not\s+been\s+implemented,?\s+this\s+is\s+a\s+finding\b',
         r'\bmanually\s+managed\s+application/service\s+accounts\b.*\bpasswords\s+are\s+not\s+changed\s+at\s+least\s+annually\s+or\s+when\s+an\s+administrator\s+with\s+knowledge\s+of\s+the\s+password\s+leaves\s+the\s+organization,?\s+this\s+is\s+a\s+finding\b',
+        r'\bpasswords\s+for\s+manually\s+managed\s+application/service\s+accounts\s+are\s+not\s+changed\s+at\s+least\s+annually\s+or\s+when\s+an\s+administrator\s+with\s+knowledge\s+of\s+the\s+password\s+leaves\s+the\s+organization,?\s+this\s+is\s+a\s+finding\b',
         r'\bexception\s+must\s+be\s+documented\s+with\s+the\s+information\s+system\s+security\s+officer\s+\(ISSO\)',
         r'\bexception\s+needs\s+to\s+be\s+documented\s+with\s+the\s+ISSO\b',
         r'\bauthorized\s+DOD\s+time\s+sources?\b',
