@@ -210,6 +210,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$q='SET NOCOUNT ON; SELECT max_file_size, max_rollover_files, log_file_path FROM sys.server_file_audits;'; $rows=sqlcmd -h -1 -W -s '|' -Q $q 2>$null; $bad=@(); foreach ($row in $rows) { if (-not $row.Trim()) { continue }; $parts=$row -split '\\|'; if ($parts.Count -lt 3) { $bad += $row; continue }; $size=[int64]$parts[0].Trim(); $roll=[int64]$parts[1].Trim(); $path=$parts[2].Trim(); if ($size -eq 0 -or $roll -eq 0 -or $roll -eq 2147483647) { $bad += $row; continue }; $qual=(Split-Path -Qualifier $path); if (-not $qual) { $bad += $row; continue }; $drive=$qual.TrimEnd(':'); $psdrive=Get-PSDrive -Name $drive -ErrorAction SilentlyContinue; if (-not $psdrive) { $bad += $row; continue }; $capacity=[int64]($psdrive.Used + $psdrive.Free); $requiredBytes=$size * $roll * 1024 * 1024; if ($requiredBytes -gt $capacity) { $bad += $row } } if ($bad.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-271343"
+    },
+    {
+      "check": {
         "command": "powershell -NoProfile -Command \"$domain=(sqlcmd -h -1 -W -Q 'SET NOCOUNT ON; SELECT DEFAULT_DOMAIN();' 2>$null | Select-Object -First 1).Trim(); if ($domain) { 'Compliant'; exit }; $source=(w32tm /query /source 2>$null | Select-Object -First 1).Trim(); if ($source -and $source -ne 'Local CMOS Clock') { 'Compliant' }\"",
         "type": "command_output"
       },

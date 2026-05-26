@@ -11,6 +11,44 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_sql_server_audit_file_capacity_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271343',
+            'title': 'SQL Server must allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.',
+            'check_content': '''If the database is setup to write audit logs using APPLICATION or SECURITY event logs rather than writing to a file, this is Not Applicable.
+
+Check the server documentation for the SQL Audit file size configurations. Locate the Audit file path and drive.
+
+SELECT max_file_size, max_rollover_files, log_file_path AS "Audit Path"
+FROM sys.server_file_audits
+
+Calculate the space needed as the maximum file size and number of files from the SQL Audit File properties.
+
+If the calculated product of the "max_file_size" times the "max_rollover_files" exceeds the size of the storage location, this is a finding;
+
+OR if "max_file_size" is set to "0" (Unlimited), this is a finding;
+
+OR if "max_rollover_files" are set to "0" (None) or "2147483647" (Unlimited), this is a finding.''',
+            'fix_text': 'Configure the audit file size and maximum rollover files to fit within the storage location and not use unlimited values.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-271343')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertIn('sys.server_file_audits', candidate['check']['command'])
+        self.assertIn('max_rollover_files', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_sql_server_audit_file_capacity_candidate_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'SQL Server must allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.',
+            'check_content': 'max_file_size max_rollover_files sys.server_file_audits If max_file_size is set to 0 this is a finding.',
+            'fix_text': 'Configure audit file size settings.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_sql_server_instant_file_initialization_disabled_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271327',

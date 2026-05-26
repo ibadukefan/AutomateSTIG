@@ -13532,6 +13532,50 @@ def _sql_server_sample_databases_absent_candidate(rule: dict, stig_id: str) -> d
 
 
 
+def _sql_server_audit_file_capacity_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    if rule.get('vuln_id', '') != 'V-271343':
+        return None
+    expected_title = 'sql server must allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.'
+    if rule.get('title', '').strip().lower() != expected_title:
+        return None
+    content = rule.get('check_content', '') or ''
+    required_patterns = (
+        r'SELECT\s+max_file_size\s*,\s*max_rollover_files\s*,\s*log_file_path\s+AS\s+["“]Audit\s+Path["”]\s+FROM\s+sys\.server_file_audits',
+        r'calculated\s+product\s+of\s+the\s+["“]max_file_size["”]\s+times\s+the\s+["“]max_rollover_files["”]\s+exceeds\s+the\s+size\s+of\s+the\s+storage\s+location',
+        r'["“]max_file_size["”]\s+is\s+set\s+to\s+["“]0["”]\s+\(Unlimited\)',
+        r'["“]max_rollover_files["”]\s+are\s+set\s+to\s+["“]0["”]\s+\(None\)\s+or\s+["“]2147483647["”]\s+\(Unlimited\)',
+    )
+    if not all(re.search(pattern, content, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$q=\'SET NOCOUNT ON; SELECT max_file_size, max_rollover_files, log_file_path FROM sys.server_file_audits;\'; '
+        '$rows=sqlcmd -h -1 -W -s \'|\' -Q $q 2>$null; '
+        '$bad=@(); foreach ($row in $rows) { '
+        'if (-not $row.Trim()) { continue }; '
+        '$parts=$row -split \'\\|\'; if ($parts.Count -lt 3) { $bad += $row; continue }; '
+        '$size=[int64]$parts[0].Trim(); $roll=[int64]$parts[1].Trim(); $path=$parts[2].Trim(); '
+        'if ($size -eq 0 -or $roll -eq 0 -or $roll -eq 2147483647) { $bad += $row; continue }; '
+        '$qual=(Split-Path -Qualifier $path); if (-not $qual) { $bad += $row; continue }; '
+        '$drive=$qual.TrimEnd(\':\'); $psdrive=Get-PSDrive -Name $drive -ErrorAction SilentlyContinue; '
+        'if (-not $psdrive) { $bad += $row; continue }; '
+        '$capacity=[int64]($psdrive.Used + $psdrive.Free); '
+        '$requiredBytes=$size * $roll * 1024 * 1024; '
+        'if ($requiredBytes -gt $capacity) { $bad += $row } } '
+        'if ($bad.Count -eq 0) { \'Compliant\' }"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
+
 def _sql_server_empty_result_set_control_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -16724,6 +16768,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     sql_server_sample_databases_candidate = _sql_server_sample_databases_absent_candidate(rule, stig_id)
     if sql_server_sample_databases_candidate:
         return sql_server_sample_databases_candidate
+
+    sql_server_audit_file_capacity_candidate = _sql_server_audit_file_capacity_candidate(rule, stig_id)
+    if sql_server_audit_file_capacity_candidate:
+        return sql_server_audit_file_capacity_candidate
 
     sql_server_empty_result_set_control_candidate = _sql_server_empty_result_set_control_candidate(rule, stig_id)
     if sql_server_empty_result_set_control_candidate:

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 33,
+  "candidate_checks": 34,
   "cases": [
     {
       "check": {
@@ -416,6 +416,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271328"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"$q='SET NOCOUNT ON; SELECT max_file_size, max_rollover_files, log_file_path FROM sys.server_file_audits;'; $rows=sqlcmd -h -1 -W -s '|' -Q $q 2>$null; $bad=@(); foreach ($row in $rows) { if (-not $row.Trim()) { continue }; $parts=$row -split '\\|'; if ($parts.Count -lt 3) { $bad += $row; continue }; $size=[int64]$parts[0].Trim(); $roll=[int64]$parts[1].Trim(); $path=$parts[2].Trim(); if ($size -eq 0 -or $roll -eq 0 -or $roll -eq 2147483647) { $bad += $row; continue }; $qual=(Split-Path -Qualifier $path); if (-not $qual) { $bad += $row; continue }; $drive=$qual.TrimEnd(':'); $psdrive=Get-PSDrive -Name $drive -ErrorAction SilentlyContinue; if (-not $psdrive) { $bad += $row; continue }; $capacity=[int64]($psdrive.Used + $psdrive.Free); $requiredBytes=$size * $roll * 1024 * 1024; if ($requiredBytes -gt $capacity) { $bad += $row } } if ($bad.Count -eq 0) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "SQL Server must allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$q='SET NOCOUNT ON; SELECT max_file_size, max_rollover_files, log_file_path FROM sys.server_file_audits;'; $rows=sqlcmd -h -1 -W -s '|' -Q $q 2>$null; $bad=@(); foreach ($row in $rows) { if (-not $row.Trim()) { continue }; $parts=$row -split '\\|'; if ($parts.Count -lt 3) { $bad += $row; continue }; $size=[int64]$parts[0].Trim(); $roll=[int64]$parts[1].Trim(); $path=$parts[2].Trim(); if ($size -eq 0 -or $roll -eq 0 -or $roll -eq 2147483647) { $bad += $row; continue }; $qual=(Split-Path -Qualifier $path); if (-not $qual) { $bad += $row; continue }; $drive=$qual.TrimEnd(':'); $psdrive=Get-PSDrive -Name $drive -ErrorAction SilentlyContinue; if (-not $psdrive) { $bad += $row; continue }; $capacity=[int64]($psdrive.Used + $psdrive.Free); $requiredBytes=$size * $roll * 1024 * 1024; if ($requiredBytes -gt $capacity) { $bad += $row } } if ($bad.Count -eq 0) { 'Compliant' }\"": "unexpected-Compliant"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$q='SET NOCOUNT ON; SELECT max_file_size, max_rollover_files, log_file_path FROM sys.server_file_audits;'; $rows=sqlcmd -h -1 -W -s '|' -Q $q 2>$null; $bad=@(); foreach ($row in $rows) { if (-not $row.Trim()) { continue }; $parts=$row -split '\\|'; if ($parts.Count -lt 3) { $bad += $row; continue }; $size=[int64]$parts[0].Trim(); $roll=[int64]$parts[1].Trim(); $path=$parts[2].Trim(); if ($size -eq 0 -or $roll -eq 0 -or $roll -eq 2147483647) { $bad += $row; continue }; $qual=(Split-Path -Qualifier $path); if (-not $qual) { $bad += $row; continue }; $drive=$qual.TrimEnd(':'); $psdrive=Get-PSDrive -Name $drive -ErrorAction SilentlyContinue; if (-not $psdrive) { $bad += $row; continue }; $capacity=[int64]($psdrive.Used + $psdrive.Free); $requiredBytes=$size * $roll * 1024 * 1024; if ($requiredBytes -gt $capacity) { $bad += $row } } if ($bad.Count -eq 0) { 'Compliant' }\"": "Compliant"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271343"
     },
     {
       "check": {
@@ -865,5 +891,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_sql_server_2022_instance_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_SQL_Server_2022_Instance_STIG",
-  "validated_candidates": 33
+  "validated_candidates": 34
 }
