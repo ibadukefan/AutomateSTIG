@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "show running-config | awk 'BEGIN{bad=0; seen=0; in_bgp=0; in_eigrp=0; in_if=0} function close_if(){if(in_if){if(if_ospf && !(if_ospf_auth && if_ospf_key)) bad=1; if(if_isis && !(if_isis_type && if_isis_key)) bad=1; if(if_rip && !(if_rip_mode && if_rip_key)) bad=1; if(if_eigrp && !(eigrp_proc_auth || (if_eigrp_mode && if_eigrp_key))) bad=1} in_if=0} /^[^[:space:]]/ {if ($0 !~ /^router[[:space:]]+bgp/) in_bgp=0; if ($0 !~ /^router[[:space:]]+eigrp/) in_eigrp=0; if ($0 !~ /^interface[[:space:]]+/) close_if()} /^router[[:space:]]+bgp/ {close_if(); in_bgp=1; seen=1; next} in_bgp && /^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+remote-as[[:space:]]+/ {bgp[$2]=1; next} in_bgp && /^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+password[[:space:]]+/ {bgp_auth[$2]=1; next} /^router[[:space:]]+eigrp/ {close_if(); in_eigrp=1; seen=1; next} in_eigrp && /^[[:space:]]*authentication[[:space:]]+mode[[:space:]]+md5/ {eigrp_mode=1; next} in_eigrp && /^[[:space:]]*authentication[[:space:]]+key-chain[[:space:]]+/ {eigrp_key=1; if(eigrp_mode) eigrp_proc_auth=1; next} /^interface[[:space:]]+/ {close_if(); in_if=1; if_ospf=if_ospf_auth=if_ospf_key=if_isis=if_isis_type=if_isis_key=if_rip=if_rip_mode=if_rip_key=if_eigrp=if_eigrp_mode=if_eigrp_key=0; next} in_if && /^[[:space:]]*ip[[:space:]]+router[[:space:]]+ospf[[:space:]]+/ {if_ospf=1; seen=1; next} in_if && /^[[:space:]]*ip[[:space:]]+ospf[[:space:]]+authentication[[:space:]]*$/ {if_ospf_auth=1; next} in_if && /^[[:space:]]*ip[[:space:]]+ospf[[:space:]]+authentication[[:space:]]+key-chain[[:space:]]+/ {if_ospf_key=1; next} in_if && /^[[:space:]]*ip[[:space:]]+router[[:space:]]+isis[[:space:]]+/ {if_isis=1; seen=1; next} in_if && /^[[:space:]]*isis[[:space:]]+authentication-type[[:space:]]+md5/ {if_isis_type=1; next} in_if && /^[[:space:]]*isis[[:space:]]+authentication[[:space:]]+key-chain[[:space:]]+/ {if_isis_key=1; next} in_if && /^[[:space:]]*ip[[:space:]]+router[[:space:]]+eigrp[[:space:]]+/ {if_eigrp=1; seen=1; next} in_if && /^[[:space:]]*ip[[:space:]]+authentication[[:space:]]+mode[[:space:]]+eigrp[[:space:]]+[^[:space:]]+[[:space:]]+md5/ {if_eigrp_mode=1; next} in_if && /^[[:space:]]*ip[[:space:]]+authentication[[:space:]]+key-chain[[:space:]]+eigrp[[:space:]]+/ {if_eigrp_key=1; next} in_if && /^[[:space:]]*ip[[:space:]]+rip[[:space:]]+authentication[[:space:]]+mode[[:space:]]+md5/ {if_rip=1; if_rip_mode=1; seen=1; next} in_if && /^[[:space:]]*ip[[:space:]]+rip[[:space:]]+authentication[[:space:]]+key-chain[[:space:]]+/ {if_rip_key=1; next} END{close_if(); for(n in bgp) if(!(n in bgp_auth)) bad=1; if(seen && !bad) print \"Compliant\"}'",
+      "type": "command_output"
+    },
+    "description": "The Cisco switch must be configured to implement message authentication for all control plane protocols.",
+    "expected": {
+      "type": "equals",
+      "value": "Compliant"
+    },
+    "platform": "network",
+    "vuln_id": "V-221072"
+  },
   "check_content_excerpt": "Review the switch configuration. Verify that neighbor switch authentication is enabled for all routing protocols. The configuration examples below depicts BGP, EIGRP, IS-IS and OSPF authentication.\n\nBGP Example\n\nrouter bgp 1\n router-id 1.1.1.1\n address-family ipv4 unicast\n neighbor 10.1.12.2 remote-as 2\n password 3 3ec66c90c104ad13\n\nEIGRP Example\n\nkey chain EIGRP_KEY\n key 1\n key-string xxxxxxx\n\u2026\n\u2026\n\u2026\ninterface Ethernet2/21\n no switchport\n ip router eigrp 1\n ip authentication mode eigrp 1 md5\n ip authentication key-chain eigrp 1 EIGRP_KEY\n\nor\n\nrouter eigrp 1\n authentication mode md5\n authentication key-chain EIGRP_KEY\n\nNote: Interface authentication overrides process authentication.\n\nIS-IS Example\n\ninterface Ethernet2/20\n no switchport\n isis authentication-type md5 level-1\n isis authentication key-chain xxxxx level-1\n ip router isis 1\n\nOSPF Example\n\ninterface Ethernet2/2\n no switchport\n ip ospf authentication\n ip ospf authentication key-chain OSPF_KEY\n ip router ospf 1 area 0.0.0.0\n\nRIP Example\n\ninterface Ethernet2/8\n no switchport\n ip rip authentication mode md5\n ip rip authentication key-chain RIP_KEY\n\nIf authentication is not enabled on all routing protocols, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Compliant"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure authentication to be enabled for every protocol that affects the routing or forwarding tables.\n\nThe example configuration commands below enable OSPF, EIGRP, IS-IS, and BGP authentication.\n\nBGP Example\n\nSW1(config)# switch bgp nn\nSW1(config-router)# neighbor 10.1.12.2\nSW1(config-router-neighbor)# password xxxxxxxx\nSW1(config-router-neighbor)# end\n\nEIGRP Example\n\nStep 1: Configure the key chain. \n\nSW1(config)# key chain EIGRP_KEY \nSW1(config-keychain)# key 1 \nSW1(config-keychain-key)# key-string xxxxxx\nSW1(config-keychain-key)# exit\nSW1(config-keychain)# exit\n\nStep 2: Apply the key chain to the EIGRP process or each neighbor.\n\nAuthentication for the EIGRP process\n\nSW1(config)# router eigrp 1\nSW1(config-router)# authentication mode md5\nSW1(config-router)# authentication key-chain XXXXXX\nSW1(config-router)# end\n\nor\n\nAuthentication for the EIGRP neighbor\n\nSW1(config)# int e2/21\nSW1(config-if)# ip authentication mode eigrp 1 md5 \nSW1(config-if)# ip authentication key-chain eigrp 1 xxxxx\nSW1(config-if)# end\n\nNote: Interface authentication overrides process authentication.\n\nIS-IS Example\n\nStep 1: Configure the key chain.\n\nSW1(config)# key chain ISIS_KEY \nSW1(config-keychain)# key 1 \nSW1(config-keychain-key)# key-string xxxxxx\nSW1(config-keychain-key)# exit\nSW1(config-keychain)# exit\n\nStep 2: Apply the key chain to each ISIS neighbor.\n\nSW1(config)# int e2/20\nSW1(config-if)# isis authentication-type md5 level-1\nSW1(config-if)# isis authentication key-chain xxxxx level-1 \n\nOSPF Example\n\nStep 1: Configure the key chain. \n\nSW1(config)# key chain OSPF_KEY \nSW1(config-keychain)# key 1 \nSW1(config-keychain-key)# key-string xxxxxx\nSW1(config-keychain-key)# exit\nSW1(config-keychain)# exit\n\nStep 2: Apply the key chain to each OSPF neighbor.\n\nSW1(config)# int e2/2\nSW1(config-if)# ip ospf authentication\nSW1(config-if)# ip ospf authentication key-chain OSPF_KEY\n\nRIP Example\n\nStep 1: Configure the key chain. \n\nSW1(config)# key chain RIP_KEY \nSW1(config-keychain)# key 1 \nSW1(config-keychain-key)# key-string xxxxxx\nSW1(config-keychain-key)# exit\nSW1(config-keychain)# exit\n\nStep 2: Apply the key chain to each RIP neighbor.\n\nSW1(config)# int e2/8\nSW1(config-if)# ip rip authentication mode md5 \nSW1(config-if)# ip rip authentication key-chain RIP_KEY",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-221072r999681_rule",
   "severity": "medium",

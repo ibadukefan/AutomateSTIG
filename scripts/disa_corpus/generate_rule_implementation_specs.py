@@ -3015,6 +3015,65 @@ def _windows_server_2019_supported_servicing_level_candidate(rule: dict, stig_id
     }
 
 
+def _cisco_nxos_control_plane_protocol_authentication_candidate(rule: dict, stig_id: str) -> dict | None:
+    if stig_id != 'Cisco_NX-OS_Switch_RTR_STIG' or rule.get('vuln_id') != 'V-221072':
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = f"{rule.get('title', '')}\n{content}\n{fix_text}"
+    required_patterns = (
+        r'neighbor\s+switch\s+authentication\s+is\s+enabled\s+for\s+all\s+routing\s+protocols',
+        r'If\s+authentication\s+is\s+not\s+enabled\s+on\s+all\s+routing\s+protocols,\s+this\s+is\s+a\s+finding',
+        r'Configure\s+authentication\s+to\s+be\s+enabled\s+for\s+every\s+protocol\s+that\s+affects\s+the\s+routing\s+or\s+forwarding\s+tables',
+        r'neighbor\s+\S+\s+remote-as\s+\S+',
+        r'password\s+(?:\d+\s+)?\S+',
+        r'authentication\s+mode\s+md5',
+        r'authentication\s+key-chain',
+        r'isis\s+authentication-type\s+md5',
+        r'isis\s+authentication\s+key-chain',
+        r'ip\s+ospf\s+authentication',
+        r'ip\s+ospf\s+authentication\s+key-chain',
+        r'ip\s+rip\s+authentication\s+mode\s+md5',
+        r'ip\s+rip\s+authentication\s+key-chain',
+    )
+    if not all(re.search(pattern, combined, re.IGNORECASE | re.DOTALL) for pattern in required_patterns):
+        return None
+    command = (
+        'show running-config | awk \'BEGIN{bad=0; seen=0; in_bgp=0; in_eigrp=0; in_if=0} '
+        'function close_if(){if(in_if){if(if_ospf && !(if_ospf_auth && if_ospf_key)) bad=1; '
+        'if(if_isis && !(if_isis_type && if_isis_key)) bad=1; '
+        'if(if_rip && !(if_rip_mode && if_rip_key)) bad=1; '
+        'if(if_eigrp && !(eigrp_proc_auth || (if_eigrp_mode && if_eigrp_key))) bad=1} in_if=0} '
+        '/^[^[:space:]]/ {if ($0 !~ /^router[[:space:]]+bgp/) in_bgp=0; if ($0 !~ /^router[[:space:]]+eigrp/) in_eigrp=0; if ($0 !~ /^interface[[:space:]]+/) close_if()} '
+        '/^router[[:space:]]+bgp/ {close_if(); in_bgp=1; seen=1; next} '
+        'in_bgp && /^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+remote-as[[:space:]]+/ {bgp[$2]=1; next} '
+        'in_bgp && /^[[:space:]]*neighbor[[:space:]]+[^[:space:]]+[[:space:]]+password[[:space:]]+/ {bgp_auth[$2]=1; next} '
+        '/^router[[:space:]]+eigrp/ {close_if(); in_eigrp=1; seen=1; next} '
+        'in_eigrp && /^[[:space:]]*authentication[[:space:]]+mode[[:space:]]+md5/ {eigrp_mode=1; next} '
+        'in_eigrp && /^[[:space:]]*authentication[[:space:]]+key-chain[[:space:]]+/ {eigrp_key=1; if(eigrp_mode) eigrp_proc_auth=1; next} '
+        '/^interface[[:space:]]+/ {close_if(); in_if=1; if_ospf=if_ospf_auth=if_ospf_key=if_isis=if_isis_type=if_isis_key=if_rip=if_rip_mode=if_rip_key=if_eigrp=if_eigrp_mode=if_eigrp_key=0; next} '
+        'in_if && /^[[:space:]]*ip[[:space:]]+router[[:space:]]+ospf[[:space:]]+/ {if_ospf=1; seen=1; next} '
+        'in_if && /^[[:space:]]*ip[[:space:]]+ospf[[:space:]]+authentication[[:space:]]*$/ {if_ospf_auth=1; next} '
+        'in_if && /^[[:space:]]*ip[[:space:]]+ospf[[:space:]]+authentication[[:space:]]+key-chain[[:space:]]+/ {if_ospf_key=1; next} '
+        'in_if && /^[[:space:]]*ip[[:space:]]+router[[:space:]]+isis[[:space:]]+/ {if_isis=1; seen=1; next} '
+        'in_if && /^[[:space:]]*isis[[:space:]]+authentication-type[[:space:]]+md5/ {if_isis_type=1; next} '
+        'in_if && /^[[:space:]]*isis[[:space:]]+authentication[[:space:]]+key-chain[[:space:]]+/ {if_isis_key=1; next} '
+        'in_if && /^[[:space:]]*ip[[:space:]]+router[[:space:]]+eigrp[[:space:]]+/ {if_eigrp=1; seen=1; next} '
+        'in_if && /^[[:space:]]*ip[[:space:]]+authentication[[:space:]]+mode[[:space:]]+eigrp[[:space:]]+[^[:space:]]+[[:space:]]+md5/ {if_eigrp_mode=1; next} '
+        'in_if && /^[[:space:]]*ip[[:space:]]+authentication[[:space:]]+key-chain[[:space:]]+eigrp[[:space:]]+/ {if_eigrp_key=1; next} '
+        'in_if && /^[[:space:]]*ip[[:space:]]+rip[[:space:]]+authentication[[:space:]]+mode[[:space:]]+md5/ {if_rip=1; if_rip_mode=1; seen=1; next} '
+        'in_if && /^[[:space:]]*ip[[:space:]]+rip[[:space:]]+authentication[[:space:]]+key-chain[[:space:]]+/ {if_rip_key=1; next} '
+        'END{close_if(); for(n in bgp) if(!(n in bgp_auth)) bad=1; if(seen && !bad) print "Compliant"}\''
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'network',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _cisco_nxos_static_config_command_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'cisco' not in stig_id.lower() or 'nx' not in stig_id.lower():
         return None
@@ -16010,6 +16069,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    cisco_control_plane_auth_candidate = _cisco_nxos_control_plane_protocol_authentication_candidate(rule, stig_id)
+    if cisco_control_plane_auth_candidate:
+        return cisco_control_plane_auth_candidate
+
     postgresql_replaced_versions_candidate = _postgresql_replaced_versions_removed_candidate(rule, stig_id)
     if postgresql_replaced_versions_candidate:
         return postgresql_replaced_versions_candidate

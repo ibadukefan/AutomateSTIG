@@ -541,6 +541,54 @@ If the sqlnet.ora file does not contain such entries, this is a finding.''',
 
         self.assertIsNone(candidate)
 
+    def test_infers_cisco_nxos_control_plane_protocol_authentication_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221072',
+            'title': 'The Cisco switch must be configured to implement message authentication for all control plane protocols.',
+            'check_content': (
+                'Review the switch configuration. Verify that neighbor switch authentication is enabled for all routing protocols.\n\n'
+                'BGP Example\nrouter bgp 1\n neighbor 10.1.12.2 remote-as 2\n password 3 3ec66c90c104ad13\n\n'
+                'EIGRP Example\nrouter eigrp 1\n authentication mode md5\n authentication key-chain EIGRP_KEY\n\n'
+                'IS-IS Example\ninterface Ethernet2/20\n isis authentication-type md5 level-1\n isis authentication key-chain xxxxx level-1\n ip router isis 1\n\n'
+                'OSPF Example\ninterface Ethernet2/2\n ip ospf authentication\n ip ospf authentication key-chain OSPF_KEY\n ip router ospf 1 area 0.0.0.0\n\n'
+                'RIP Example\ninterface Ethernet2/8\n ip rip authentication mode md5\n ip rip authentication key-chain RIP_KEY\n\n'
+                'If authentication is not enabled on all routing protocols, this is a finding.'
+            ),
+            'fix_text': (
+                'Configure authentication to be enabled for every protocol that affects the routing or forwarding tables. '
+                'The example configuration commands below enable OSPF, EIGRP, IS-IS, and BGP authentication. '
+                'SW1(config-router-neighbor)# password xxxxxxxx '
+                'SW1(config-router)# authentication mode md5 '
+                'SW1(config-router)# authentication key-chain XXXXXX '
+                'SW1(config-if)# isis authentication-type md5 level-1 '
+                'SW1(config-if)# isis authentication key-chain xxxxx level-1 '
+                'SW1(config-if)# ip ospf authentication '
+                'SW1(config-if)# ip ospf authentication key-chain OSPF_KEY '
+                'SW1(config-if)# ip rip authentication mode md5 '
+                'SW1(config-if)# ip rip authentication key-chain RIP_KEY'
+            ),
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-221072')
+        self.assertEqual(candidate['platform'], 'network')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+        self.assertIn('show running-config', candidate['check']['command'])
+        self.assertIn('remote-as', candidate['check']['command'])
+        self.assertIn('if_ospf_auth', candidate['check']['command'])
+        self.assertIn('if_isis_key', candidate['check']['command'])
+        self.assertIn('if_rip_key', candidate['check']['command'])
+
+    def test_rejects_cisco_nxos_control_plane_protocol_authentication_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'The Cisco switch must be configured to implement message authentication for all control plane protocols.',
+            'check_content': 'Verify that neighbor switch authentication is enabled for all routing protocols. If authentication is not enabled on all routing protocols, this is a finding.',
+            'fix_text': 'Configure authentication to be enabled for every protocol that affects the routing or forwarding tables.',
+        }, 'Cisco_NX-OS_Switch_RTR_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_cisco_nxos_bgp_unique_key_per_as_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221102',
