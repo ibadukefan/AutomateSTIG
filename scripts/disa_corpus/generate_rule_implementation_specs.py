@@ -12872,6 +12872,46 @@ def _oracle_sqlplus_command(select_sql: str) -> str:
     )
 
 
+def _oracle_database_network_encryption_sqlnet_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270579':
+        return None
+    title = rule.get('title', '') or ''
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    required_patterns = (
+        r'prevent(?:ing)?\s+the\s+unauthorized\s+disclosure\s+of\s+information\s+during\s+transmission',
+        r'SQLNET\.ORA\s+located\s+at\s+\$ORACLE_HOME/network/admin/sqlnet\.ora',
+        r'SQLNET\.ENCRYPTION_TYPES_CLIENT\s*=\s*\(AES256\)',
+        r'SQLNET\.ENCRYPTION_TYPES_SERVER\s*=\s*\(AES256\)',
+        r'SQLNET\.CRYPTO_CHECKSUM_CLIENT\s*=\s*requested',
+        r'SQLNET\.CRYPTO_CHECKSUM_SERVER\s*=\s*required',
+    )
+    combined = f"{title}\n{content}"
+    if not all(re.search(pattern, combined, re.IGNORECASE) for pattern in required_patterns):
+        return None
+    if not re.search(r'Configure\s+DBMS\s+and/or\s+operating\s+system\s+to\s+use\s+cryptographic\s+mechanisms', fix_text, re.IGNORECASE):
+        return None
+    command = (
+        "sh -c 'sqlnet_file=${TNS_ADMIN:-${ORACLE_HOME:-}/network/admin}/sqlnet.ora; "
+        "if grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_SERVER[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && "
+        "grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_CLIENT[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && "
+        "grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_TYPES_SERVER[[:space:]]*=.*AES(256|192|128)\" \"$sqlnet_file\" && "
+        "grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_TYPES_CLIENT[[:space:]]*=.*AES(256|192|128)\" \"$sqlnet_file\" && "
+        "grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_SERVER[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && "
+        "grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_CLIENT[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && "
+        "grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_TYPES_SERVER[[:space:]]*=.*SHA(512|384|256)\" \"$sqlnet_file\" && "
+        "grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_TYPES_CLIENT[[:space:]]*=.*SHA(512|384|256)\" \"$sqlnet_file\"; "
+        "then printf Compliant; fi'"
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _oracle_database_fips_140_configuration_candidate(rule: dict, stig_id: str) -> dict | None:
     if not re.search(r'oracle[_\s-]+database', stig_id, re.IGNORECASE) or rule.get('vuln_id') != 'V-270571':
         return None
@@ -16175,6 +16215,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     postgresql_audit_config_candidate = _postgresql_audit_explicit_config_candidate(rule, stig_id)
     if postgresql_audit_config_candidate:
         return postgresql_audit_config_candidate
+
+    oracle_network_encryption_candidate = _oracle_database_network_encryption_sqlnet_candidate(rule, stig_id)
+    if oracle_network_encryption_candidate:
+        return oracle_network_encryption_candidate
 
     oracle_fips_140_candidate = _oracle_database_fips_140_configuration_candidate(rule, stig_id)
     if oracle_fips_140_candidate:

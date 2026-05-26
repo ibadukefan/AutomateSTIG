@@ -11,6 +11,38 @@ spec.loader.exec_module(mod)
 
 
 class GenerateRuleImplementationSpecsTests(unittest.TestCase):
+    def test_infers_oracle_database_network_encryption_sqlnet_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270579',
+            'title': 'Oracle Database must employ cryptographic mechanisms preventing the unauthorized disclosure of information during transmission unless the transmitted data is otherwise protected by alternative physical measures.',
+            'check_content': '''To check that network encryption is enabled and using site-specified encryption procedures, look in SQLNET.ORA located at $ORACLE_HOME/network/admin/sqlnet.ora. If encryption is set, entries like the following will be present:
+SQLNET.CRYPTO_CHECKSUM_TYPES_CLIENT= (SHA384)
+SQLNET.CRYPTO_CHECKSUM_TYPES_SERVER= (SHA384)
+SQLNET.ENCRYPTION_TYPES_CLIENT= (AES256)
+SQLNET.ENCRYPTION_TYPES_SERVER= (AES256)
+SQLNET.CRYPTO_CHECKSUM_CLIENT = requested
+SQLNET.CRYPTO_CHECKSUM_SERVER = required''',
+            'fix_text': 'Configure DBMS and/or operating system to use cryptographic mechanisms to prevent unauthorized disclosure of information during transmission where physical measures are not being used.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['vuln_id'], 'V-270579')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertIn('sqlnet.ora', candidate['check']['command'])
+        self.assertIn('SQLNET\\.ENCRYPTION_SERVER', candidate['check']['command'])
+        self.assertIn('SQLNET\\.CRYPTO_CHECKSUM_SERVER', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Compliant'})
+
+    def test_rejects_oracle_database_network_encryption_without_exact_vuln_id(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'Oracle Database must employ cryptographic mechanisms preventing the unauthorized disclosure of information during transmission.',
+            'check_content': 'SQLNET.ENCRYPTION_TYPES_SERVER SQLNET.CRYPTO_CHECKSUM_SERVER sqlnet.ora',
+            'fix_text': 'Configure cryptographic mechanisms.',
+        }, 'Oracle_Database_19c_STIG')
+
+        self.assertIsNone(candidate)
+
     def test_infers_sql_server_audit_file_capacity_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271343',

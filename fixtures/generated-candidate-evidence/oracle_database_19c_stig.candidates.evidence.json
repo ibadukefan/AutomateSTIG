@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 28,
+  "candidate_checks": 29,
   "cases": [
     {
       "check": {
@@ -679,6 +679,32 @@
     },
     {
       "check": {
+        "command": "sh -c 'sqlnet_file=${TNS_ADMIN:-${ORACLE_HOME:-}/network/admin}/sqlnet.ora; if grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_SERVER[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_TYPES_SERVER[[:space:]]*=.*AES(256|192|128)\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_SERVER[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_TYPES_SERVER[[:space:]]*=.*SHA(512|384|256)\" \"$sqlnet_file\"; then printf Compliant; fi'",
+        "type": "command_output"
+      },
+      "description": "Oracle Database must employ cryptographic mechanisms preventing the unauthorized disclosure of information during transmission unless the transmitted data is otherwise protected by alternative physical measures.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sh -c 'sqlnet_file=${TNS_ADMIN:-${ORACLE_HOME:-}/network/admin}/sqlnet.ora; if grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_SERVER[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_TYPES_SERVER[[:space:]]*=.*AES(256|192|128)\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_SERVER[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_TYPES_SERVER[[:space:]]*=.*SHA(512|384|256)\" \"$sqlnet_file\"; then printf Compliant; fi'": "unexpected-Compliant"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sh -c 'sqlnet_file=${TNS_ADMIN:-${ORACLE_HOME:-}/network/admin}/sqlnet.ora; if grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_SERVER[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_TYPES_SERVER[[:space:]]*=.*AES(256|192|128)\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_SERVER[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_TYPES_SERVER[[:space:]]*=.*SHA(512|384|256)\" \"$sqlnet_file\"; then printf Compliant; fi'": "Compliant"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270579"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN COUNT(*) >= 3 THEN 'Compliant' END FROM sys.v$controlfile;\nEXIT\nSQL",
         "type": "command_output"
       },
@@ -735,5 +761,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_database_19c_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Database_19c_STIG",
-  "validated_candidates": 28
+  "validated_candidates": 29
 }

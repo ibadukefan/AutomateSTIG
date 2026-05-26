@@ -340,6 +340,19 @@
     },
     {
       "check": {
+        "command": "sh -c 'sqlnet_file=${TNS_ADMIN:-${ORACLE_HOME:-}/network/admin}/sqlnet.ora; if grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_SERVER[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.ENCRYPTION_TYPES_SERVER[[:space:]]*=.*AES(256|192|128)\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_SERVER[[:space:]]*=[[:space:]]*(required|requested|accepted)[[:space:]]*$\" \"$sqlnet_file\" && grep -Eiq \"^[[:space:]]*SQLNET\\.CRYPTO_CHECKSUM_TYPES_SERVER[[:space:]]*=.*SHA(512|384|256)\" \"$sqlnet_file\"; then printf Compliant; fi'",
+        "type": "command_output"
+      },
+      "description": "Oracle Database must employ cryptographic mechanisms preventing the unauthorized disclosure of information during transmission unless the transmitted data is otherwise protected by alternative physical measures.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "generic",
+      "vuln_id": "V-270579"
+    },
+    {
+      "check": {
         "command": "sqlplus -s / as sysdba <<'SQL'\nSET HEADING OFF FEEDBACK OFF PAGESIZE 0 VERIFY OFF ECHO OFF\nSELECT CASE WHEN COUNT(*) >= 3 THEN 'Compliant' END FROM sys.v$controlfile;\nEXIT\nSQL",
         "type": "command_output"
       },
