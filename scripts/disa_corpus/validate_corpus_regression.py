@@ -43,10 +43,10 @@ def collect_metrics(repo_root: Path) -> dict[str, int]:
     if not isinstance(artifacts, list):
         raise SystemExit(f'{artifact_manifest}: expected fixtures array')
 
-    automated = classifications['automated'] + classifications['scanner_import'] + classifications['manual_evidence'] + classifications['not_applicable']
-    # Today generated authoritative manifests use 'automated' and 'unsupported'.
-    # The extra non-unsupported classes above make the ratchet forward-compatible
-    # with the documented 100%-coverage definition.
+    automated = classifications['automated'] + classifications['scanner_import'] + classifications['manual'] + classifications['manual_evidence'] + classifications['not_applicable']
+    # Generated authoritative manifests may use 'manual' for exact DISA Vuln ID
+    # specs that still require human/organizational evidence review. Count all
+    # non-unsupported mapped classes toward the documented 100%-coverage ratchet.
     total = sum(classifications.values())
     unsupported = classifications['unsupported']
 

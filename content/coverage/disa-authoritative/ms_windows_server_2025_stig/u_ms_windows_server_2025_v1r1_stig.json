@@ -408,31 +408,33 @@
       "vuln_id": "V-278009"
     },
     {
-      "check_id": "",
+      "check_id": "V-278010",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-278010r1180736_rule",
       "severity": "medium",
       "title": "Windows Server 2025 must implement protection methods such as TLS, encrypted VPNs, or IPsec if the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process.",
-      "tracking_issue": "TODO-V-278010",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2025_stig/v-278010.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278010"
     },
     {
-      "check_id": "",
+      "check_id": "V-278011",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-278011r1182239_rule",
       "severity": "medium",
       "title": "Windows Server 2025 must have the roles and features required by the system documented.",
-      "tracking_issue": "TODO-V-278011",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2025_stig/v-278011.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278011"
@@ -2546,16 +2548,17 @@
       "vuln_id": "V-278144"
     },
     {
-      "check_id": "",
+      "check_id": "V-278145",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-278145r1182096_rule",
       "severity": "medium",
       "title": "Windows Server 2025 must use separate, NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service implementations at a classified confidentiality level when replication data traverses a network cleared to a lower level than the data.",
-      "tracking_issue": "TODO-V-278145",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2025_stig/v-278145.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278145"
@@ -2785,31 +2788,33 @@
       "vuln_id": "V-278159"
     },
     {
-      "check_id": "",
+      "check_id": "V-278160",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-278160r1182126_rule",
       "severity": "high",
       "title": "Windows Server 2025 domain Controller PKI certificates must be issued by the DOD PKI or an approved External Certificate Authority (ECA).",
-      "tracking_issue": "TODO-V-278160",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2025_stig/v-278160.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278160"
     },
     {
-      "check_id": "",
+      "check_id": "V-278161",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-278161r1182128_rule",
       "severity": "high",
       "title": "Windows Server 2025 PKI certificates associated with user accounts must be issued by a DOD PKI or an approved External Certificate Authority (ECA).",
-      "tracking_issue": "TODO-V-278161",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2025_stig/v-278161.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278161"

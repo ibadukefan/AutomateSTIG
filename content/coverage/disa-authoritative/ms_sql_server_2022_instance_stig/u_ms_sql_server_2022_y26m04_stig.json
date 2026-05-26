@@ -2,16 +2,17 @@
   "generated_from": "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip",
   "rules": [
     {
-      "check_id": "",
+      "check_id": "V-271263",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271263r1108405_rule",
       "severity": "medium",
       "title": "SQL Server must limit the number of concurrent sessions to an organization-defined number per user for all accounts and/or account types.",
-      "tracking_issue": "TODO-V-271263",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_sql_server_2022_instance_stig/v-271263.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271263"
@@ -49,16 +50,17 @@
       "vuln_id": "V-271265"
     },
     {
-      "check_id": "",
+      "check_id": "V-271266",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271266r1137654_rule",
       "severity": "high",
       "title": "SQL Server must enforce approved authorizations for logical access to information and system resources in accordance with applicable access control policies.",
-      "tracking_issue": "TODO-V-271266",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_sql_server_2022_instance_stig/v-271266.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271266"
@@ -126,16 +128,17 @@
       "vuln_id": "V-271270"
     },
     {
-      "check_id": "",
+      "check_id": "V-271271",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271271r1108429_rule",
       "severity": "medium",
       "title": "SQL Server must allow only the information system security manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
-      "tracking_issue": "TODO-V-271271",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_sql_server_2022_instance_stig/v-271271.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271271"
@@ -172,16 +175,17 @@
       "vuln_id": "V-271273"
     },
     {
-      "check_id": "",
+      "check_id": "V-271280",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271280r1108456_rule",
       "severity": "medium",
       "title": "SQL Server must include additional, more detailed, organization-defined information in the audit records for audit events identified by type, location, or subject.",
-      "tracking_issue": "TODO-V-271280",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_sql_server_2022_instance_stig/v-271280.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271280"
@@ -217,16 +221,17 @@
       "vuln_id": "V-271283"
     },
     {
-      "check_id": "",
+      "check_id": "V-271284",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271284r1109111_rule",
       "severity": "medium",
       "title": "SQL Server must limit privileges to change software modules, to include stored procedures, functions and triggers, and links to software external to SQL Server.",
-      "tracking_issue": "TODO-V-271284",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_sql_server_2022_instance_stig/v-271284.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271284"
@@ -689,16 +694,17 @@
       "vuln_id": "V-271328"
     },
     {
-      "check_id": "",
+      "check_id": "V-271329",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271329r1137658_rule",
       "severity": "medium",
       "title": "Access to database files must be limited to relevant processes and to authorized, administrative users.",
-      "tracking_issue": "TODO-V-271329",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_sql_server_2022_instance_stig/v-271329.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271329"
@@ -734,16 +740,17 @@
       "vuln_id": "V-271332"
     },
     {
-      "check_id": "",
+      "check_id": "V-271334",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271334r1109125_rule",
       "severity": "medium",
       "title": "SQL Server must reveal detailed error messages only to documented and approved individuals or roles.",
-      "tracking_issue": "TODO-V-271334",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_sql_server_2022_instance_stig/v-271334.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271334"
@@ -918,16 +925,17 @@
       "vuln_id": "V-271359"
     },
     {
-      "check_id": "",
+      "check_id": "V-271362",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-271362r1108702_rule",
       "severity": "medium",
       "title": "When invalid inputs are received, the SQL Server must behave in a predictable and documented manner that reflects organizational and system objectives.",
-      "tracking_issue": "TODO-V-271362",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_sql_server_2022_instance_stig/v-271362.json",
         "content/disa-corpus/artifacts/e46bfae4b5e2ad7a068bef2539f6f98467c9cdfa8a012f01f7868bf4e07a5e64/U_MS_SQL_Server_2022_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-271362"

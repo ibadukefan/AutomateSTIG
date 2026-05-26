@@ -39,6 +39,29 @@ class ValidateCorpusRegressionTests(unittest.TestCase):
             self.assertEqual(metrics['public_disa_artifacts'], 2)
             self.assertEqual(metrics['authoritative_rules'], 2)
 
+    def test_manual_classification_counts_as_mapped_coverage(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = pathlib.Path(td)
+            self._write_artifacts(root, 1)
+            self._write_manifest(root, 'one', [
+                {'classification': 'manual'},
+                {'classification': 'manual_evidence'},
+                {'classification': 'not_applicable'},
+            ])
+            baseline = root / 'baseline.json'
+            baseline.write_text(json.dumps({
+                'min_public_disa_artifacts': 1,
+                'min_authoritative_manifests': 1,
+                'min_authoritative_rules': 3,
+                'min_automated_or_mapped_rules': 3,
+                'max_unsupported_rules': 0,
+            }), encoding='utf-8')
+
+            metrics = mod.validate(root, baseline)
+
+            self.assertEqual(metrics['automated_or_mapped_rules'], 3)
+            self.assertEqual(metrics['unsupported_rules'], 0)
+
     def test_fails_when_corpus_artifact_count_regresses(self):
         with tempfile.TemporaryDirectory() as td:
             root = pathlib.Path(td)

@@ -57,7 +57,25 @@ def load_check_ids(repo):
             ids.setdefault(check_id, {'name': check_pack_ref, 'path': rel, 'fixture_validated': generated_candidate})
     return ids
 
-def manifest_from_inventory(inv, fixture_path, check_ids):
+def load_manual_evidence_specs(repo):
+    specs={}
+    root=repo/'content/rule-implementations/generated'
+    for p in root.rglob('*.json') if root.exists() else []:
+        data=json.loads(p.read_text())
+        vuln=canonical_vuln_id(data.get('vuln_id',''))
+        if not vuln:
+            continue
+        if data.get('classification') != 'manual':
+            continue
+        if data.get('collector_type') != 'manual_evidence_workflow':
+            continue
+        if data.get('implementation_status') != 'planned':
+            continue
+        specs.setdefault(vuln, {'path': _repo_rel(repo,p), 'collector_type': data.get('collector_type','')})
+    return specs
+
+def manifest_from_inventory(inv, fixture_path, check_ids, manual_specs=None):
+    manual_specs=manual_specs or {}
     rules=[]
     for r in inv['rules']:
         raw_vuln=r['vuln_id']; vuln=canonical_vuln_id(raw_vuln); pack=check_ids.get(vuln) or check_ids.get(raw_vuln)
@@ -71,6 +89,14 @@ def manifest_from_inventory(inv, fixture_path, check_ids):
                 reason += f' Matched via canonical DISA Vuln ID {vuln} from source identifier {raw_vuln}.'
             validated=[pack['path'], fixture_path]
             check_pack=pack['name']; check_id=vuln; issue=''
+        elif vuln in manual_specs:
+            spec=manual_specs[vuln]
+            cls='manual'
+            reason='Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.'
+            if vuln != raw_vuln:
+                reason += f' Matched via canonical DISA Vuln ID {vuln} from source identifier {raw_vuln}.'
+            validated=[spec['path'], fixture_path]
+            check_pack=''; check_id=vuln; issue=''
         else:
             cls='unsupported'; reason='Authoritative DISA rule inventory item pending automation classification and implementation.'; validated=[fixture_path]
             check_pack=''; check_id=''; issue=f'TODO-{vuln}'
@@ -81,14 +107,14 @@ def manifest_from_inventory(inv, fixture_path, check_ids):
 def main(argv=None):
     ap=argparse.ArgumentParser(); ap.add_argument('--corpus',required=True); ap.add_argument('--out',required=True); ap.add_argument('--repo-root',default='.')
     args=ap.parse_args(argv); repo=Path(args.repo_root); out=Path(args.out); out.mkdir(parents=True,exist_ok=True)
-    corpus=json.loads(Path(args.corpus).read_text()); check_ids=load_check_ids(repo); count=0
+    corpus=json.loads(Path(args.corpus).read_text()); check_ids=load_check_ids(repo); manual_specs=load_manual_evidence_specs(repo); count=0
     for e in corpus.get('fixtures',[]):
         path=e.get('path')
         if not path or not Path(path).exists() or e.get('kind') not in {'manual_stig_zip','scap_benchmark_zip','disa-xccdf'}: continue
         try: inv=extract(path)
         except Exception as ex: print(f'WARN: failed inventory for {path}: {ex}', file=sys.stderr); continue
         if not inv['rules']: continue
-        m=manifest_from_inventory(inv, path.replace('\\','/'), check_ids)
+        m=manifest_from_inventory(inv, path.replace('\\','/'), check_ids, manual_specs)
         dest=out/norm(m['stig_id'])/(norm(Path(path).stem)+'.json'); dest.parent.mkdir(parents=True,exist_ok=True)
         dest.write_text(json.dumps(m,indent=2,sort_keys=True)+'\n'); count+=1
     print(f'Generated {count} authoritative manifests')

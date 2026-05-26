@@ -2540,16 +2540,17 @@
       "vuln_id": "V-254397"
     },
     {
-      "check_id": "",
+      "check_id": "V-254398",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-254398r987791_rule",
       "severity": "medium",
       "title": "Windows Server 2022 must use separate, NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service implementations at a classified confidentiality level when replication data traverses a network cleared to a lower level than the data.",
-      "tracking_issue": "TODO-V-254398",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2022_stig/v-254398.json",
         "content/disa-corpus/artifacts/8eec09b8bdc9563e642794c94f61f7c28557b3ba75be6e78e71e52e410e04328/U_MS_Windows_Server_2022_V2R4_STIG.zip"
       ],
       "vuln_id": "V-254398"
@@ -2763,31 +2764,33 @@
       "vuln_id": "V-254412"
     },
     {
-      "check_id": "",
+      "check_id": "V-254413",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-254413r958448_rule",
       "severity": "high",
       "title": "Windows Server 2022 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA).",
-      "tracking_issue": "TODO-V-254413",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2022_stig/v-254413.json",
         "content/disa-corpus/artifacts/8eec09b8bdc9563e642794c94f61f7c28557b3ba75be6e78e71e52e410e04328/U_MS_Windows_Server_2022_V2R4_STIG.zip"
       ],
       "vuln_id": "V-254413"
     },
     {
-      "check_id": "",
+      "check_id": "V-254414",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-254414r958448_rule",
       "severity": "high",
       "title": "Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA).",
-      "tracking_issue": "TODO-V-254414",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/ms_windows_server_2022_stig/v-254414.json",
         "content/disa-corpus/artifacts/8eec09b8bdc9563e642794c94f61f7c28557b3ba75be6e78e71e52e410e04328/U_MS_Windows_Server_2022_V2R4_STIG.zip"
       ],
       "vuln_id": "V-254414"

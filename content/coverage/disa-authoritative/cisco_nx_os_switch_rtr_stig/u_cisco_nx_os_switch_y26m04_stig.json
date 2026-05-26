@@ -2,16 +2,17 @@
   "generated_from": "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
   "rules": [
     {
-      "check_id": "",
+      "check_id": "V-221071",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-221071r1195277_rule",
       "severity": "medium",
       "title": "The Cisco switch must be configured to enforce approved authorizations for controlling the flow of information within the network based on organization-defined information flow control policies.",
-      "tracking_issue": "TODO-V-221071",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/cisco_nx-os_switch_rtr_stig/v-221071.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221071"
@@ -238,16 +239,17 @@
       "vuln_id": "V-221087"
     },
     {
-      "check_id": "",
+      "check_id": "V-221088",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-221088r1137907_rule",
       "severity": "medium",
       "title": "The Cisco perimeter switch must be configured to enforce approved authorizations for controlling the flow of information between interconnected networks in accordance with applicable policy.",
-      "tracking_issue": "TODO-V-221088",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/cisco_nx-os_switch_rtr_stig/v-221088.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221088"
@@ -738,16 +740,17 @@
       "vuln_id": "V-221119"
     },
     {
-      "check_id": "",
+      "check_id": "V-221120",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-221120r999729_rule",
       "severity": "medium",
       "title": "The Cisco PE switch providing MPLS Layer 2 Virtual Private Network (L2VPN) services must be configured to authenticate targeted Label Distribution Protocol (LDP) sessions used to exchange virtual circuit (VC) information using a FIPS-approved message authentication code algorithm.",
-      "tracking_issue": "TODO-V-221120",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/cisco_nx-os_switch_rtr_stig/v-221120.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221120"
@@ -878,31 +881,33 @@
       "vuln_id": "V-221128"
     },
     {
-      "check_id": "",
+      "check_id": "V-221129",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-221129r999738_rule",
       "severity": "low",
       "title": "The Cisco PE switch must be configured to enforce a Quality-of-Service (QoS) policy to provide preferred treatment for mission-critical applications.",
-      "tracking_issue": "TODO-V-221129",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/cisco_nx-os_switch_rtr_stig/v-221129.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221129"
     },
     {
-      "check_id": "",
+      "check_id": "V-221130",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-221130r999739_rule",
       "severity": "low",
       "title": "The Cisco P switch must be configured to enforce a Quality-of-Service (QoS) policy to provide preferred treatment for mission-critical applications.",
-      "tracking_issue": "TODO-V-221130",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/cisco_nx-os_switch_rtr_stig/v-221130.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221130"
@@ -1016,31 +1021,33 @@
       "vuln_id": "V-221137"
     },
     {
-      "check_id": "",
+      "check_id": "V-221138",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-221138r999747_rule",
       "severity": "low",
       "title": "The Cisco multicast Designated switch (DR) must be configured to filter the Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Report messages to allow hosts to join only multicast groups that have been approved by the organization.",
-      "tracking_issue": "TODO-V-221138",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/cisco_nx-os_switch_rtr_stig/v-221138.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221138"
     },
     {
-      "check_id": "",
+      "check_id": "V-221139",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-221139r999748_rule",
       "severity": "medium",
       "title": "The Cisco multicast Designated switch (DR) must be configured to filter the Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Report messages to allow hosts to join a multicast group only from sources that have been approved by the organization.",
-      "tracking_issue": "TODO-V-221139",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/cisco_nx-os_switch_rtr_stig/v-221139.json",
         "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
       ],
       "vuln_id": "V-221139"

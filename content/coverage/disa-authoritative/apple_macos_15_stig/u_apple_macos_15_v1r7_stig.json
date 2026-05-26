@@ -1761,16 +1761,17 @@
       "vuln_id": "V-268533"
     },
     {
-      "check_id": "",
+      "check_id": "V-268534",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-268534r1034542_rule",
       "severity": "medium",
       "title": "The macOS system must issue or obtain public key certificates from an approved service provider.",
-      "tracking_issue": "TODO-V-268534",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/apple_macos_15_stig/v-268534.json",
         "content/disa-corpus/artifacts/c3ffd7b41d90f636f8562bc707c7d888abecf1ea927d6e50b36c95555f0ac9da/U_Apple_macOS_15_V1R7_STIG.zip"
       ],
       "vuln_id": "V-268534"

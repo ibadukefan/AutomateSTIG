@@ -370,16 +370,17 @@
       "vuln_id": "V-222951"
     },
     {
-      "check_id": "",
+      "check_id": "V-222952",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-222952r1135497_rule",
       "severity": "medium",
       "title": "Unapproved connectors must be disabled.",
-      "tracking_issue": "TODO-V-222952",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/tomcat_application_server_9_stig/v-222952.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222952"
@@ -1181,46 +1182,49 @@
       "vuln_id": "V-223005"
     },
     {
-      "check_id": "",
+      "check_id": "V-223006",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-223006r961863_rule",
       "severity": "medium",
       "title": "Tomcat users in a management role must be approved by the ISSO.",
-      "tracking_issue": "TODO-V-223006",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/tomcat_application_server_9_stig/v-223006.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-223006"
     },
     {
-      "check_id": "",
+      "check_id": "V-223007",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-223007r961863_rule",
       "severity": "low",
       "title": "Hosted applications must be documented in the system security plan.",
-      "tracking_issue": "TODO-V-223007",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/tomcat_application_server_9_stig/v-223007.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-223007"
     },
     {
-      "check_id": "",
+      "check_id": "V-223008",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-223008r961863_rule",
       "severity": "low",
       "title": "Connectors must be approved by the ISSO.",
-      "tracking_issue": "TODO-V-223008",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/tomcat_application_server_9_stig/v-223008.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-223008"

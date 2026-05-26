@@ -52,6 +52,33 @@ class GenerateAllAuthoritativeManifestsTests(unittest.TestCase):
 
             self.assertNotIn('V-1', ids)
 
+    def test_manual_generated_spec_maps_to_manual_evidence_without_check_pack(self):
+        manual_specs = {
+            'V-999001': {
+                'path': 'content/rule-implementations/generated/example_stig/v-999001.json',
+                'collector_type': 'manual_evidence_workflow',
+            }
+        }
+        inv = {
+            'benchmark_id': 'Example_STIG',
+            'rules': [{
+                'vuln_id': 'V-999001',
+                'rule_id': 'SV-999001r1_rule',
+                'title': 'Example rule requires documented approval.',
+                'severity': 'medium',
+            }],
+        }
+
+        manifest = mod.manifest_from_inventory(inv, 'fixtures/example.zip', {}, manual_specs)
+
+        rule = manifest['rules'][0]
+        self.assertEqual(rule['classification'], 'manual')
+        self.assertEqual(rule['check_pack'], '')
+        self.assertEqual(rule['check_id'], 'V-999001')
+        self.assertEqual(rule['tracking_issue'], '')
+        self.assertIn('Generated manual evidence workflow', rule['reason'])
+        self.assertIn('content/rule-implementations/generated/example_stig/v-999001.json', rule['validated_by'])
+
     def test_scap_xccdf_group_ids_map_to_canonical_vuln_candidates(self):
         check_ids = {
             'V-230239': {

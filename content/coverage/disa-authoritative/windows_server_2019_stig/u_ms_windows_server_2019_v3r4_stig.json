@@ -354,31 +354,33 @@
       "vuln_id": "V-205645"
     },
     {
-      "check_id": "",
+      "check_id": "V-205646",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205646r958448_rule",
       "severity": "high",
       "title": "Windows Server 2019 domain Controller PKI certificates must be issued by the DoD PKI or an approved External Certificate Authority (ECA).",
-      "tracking_issue": "TODO-V-205646",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205646.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205646"
     },
     {
-      "check_id": "",
+      "check_id": "V-205647",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205647r958448_rule",
       "severity": "high",
       "title": "Windows Server 2019 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA).",
-      "tracking_issue": "TODO-V-205647",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205647.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205647"
@@ -848,16 +850,17 @@
       "vuln_id": "V-205676"
     },
     {
-      "check_id": "",
+      "check_id": "V-205677",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205677r958478_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must have the roles and features required by the system documented.",
-      "tracking_issue": "TODO-V-205677",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205677.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205677"
@@ -3064,16 +3067,17 @@
       "vuln_id": "V-205817"
     },
     {
-      "check_id": "",
+      "check_id": "V-205818",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205818r987791_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must use separate, NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service implementations at a classified confidentiality level when replication data traverses a network cleared to a lower level than the data.",
-      "tracking_issue": "TODO-V-205818",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205818.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205818"
@@ -3239,16 +3243,17 @@
       "vuln_id": "V-205828"
     },
     {
-      "check_id": "",
+      "check_id": "V-205829",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-205829r958912_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must implement protection methods such as TLS, encrypted VPNs, or IPsec if the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process.",
-      "tracking_issue": "TODO-V-205829",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/windows_server_2019_stig/v-205829.json",
         "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip"
       ],
       "vuln_id": "V-205829"
