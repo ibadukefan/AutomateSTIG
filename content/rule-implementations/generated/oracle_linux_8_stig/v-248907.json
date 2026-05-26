@@ -1,8 +1,8 @@
 {
   "check_content_excerpt": "Verify the operating system prevents nonprivileged users from executing privileged functions, including disabling, circumventing, or altering implemented security safeguards/countermeasures. \n \nObtain a list of authorized users (other than system administrator and guest accounts) for the system. \n \nCheck the list against the system by using the following command: \n \n     $ sudo semanage login -l | more \n\n     Login Name    SELinux User    MLS/MCS Range    Service\n\n     __default__   user_u                 s0-s0:c0.c1023        *\n     root                   unconfined_u  s0-s0:c0.c1023        *\n     system_u        system_u           s0-s0:c0.c1023        *\n     joe                     staff_u                s0-s0:c0.c1023        *\n \nAll administrators must be mapped to the \"sysadm_u\", \"staff_u\", or an appropriately tailored confined role as defined by the organization. \n \nAll authorized nonadministrative users must be mapped to the \"user_u\" role. \n \nIf they are not mapped in this way, this is a finding.",
-  "classification": "automated",
+  "classification": "manual",
   "collector_commands": [],
-  "collector_type": "platform_collector",
+  "collector_type": "manual_evidence_workflow",
   "evaluator": "planned",
   "evidence_fields": [
     "rule_id",

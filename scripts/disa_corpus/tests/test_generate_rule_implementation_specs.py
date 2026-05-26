@@ -19763,5 +19763,19 @@ If users with accounts in the Backup Operators group do not have separate accoun
         self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
         self.assertNotIn('candidate_check', spec)
 
+    def test_marks_selinux_authorized_user_role_inventory_as_manual_evidence(self):
+        spec = mod.spec_from_rule(Path('manifest.json'), {'stig_id': 'RHEL_8_STIG', 'version': 'U_RHEL_8.zip'}, {
+            'vuln_id': 'V-254520',
+            'rule_id': 'SV-254520r1069331_rule',
+            'title': 'RHEL 8 must prevent nonprivileged users from executing privileged functions, including disabling, circumventing, or altering implemented security safeguards/countermeasures.',
+            'severity': 'medium',
+            'check_content': 'Obtain a list of authorized users (other than system administrator and guest accounts) for the system. Check the list against the system by using sudo semanage login -l. All administrators must be mapped to the sysadm_u, staff_u, or an appropriately tailored confined role as defined by the organization. All authorized nonadministrative users must be mapped to the user_u role. If they are not mapped in this way, this is a finding.',
+            'fix_text': 'Use semanage login to map administrative users to sysadm_u or staff_u and nonadministrative users to user_u.',
+        })
+
+        self.assertEqual(spec['classification'], 'manual')
+        self.assertEqual(spec['collector_type'], 'manual_evidence_workflow')
+        self.assertNotIn('candidate_check', spec)
+
 if __name__ == '__main__':
     unittest.main()

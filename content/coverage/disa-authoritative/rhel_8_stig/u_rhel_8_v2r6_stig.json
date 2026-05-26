@@ -5634,16 +5634,17 @@
       "vuln_id": "V-251718"
     },
     {
-      "check_id": "",
+      "check_id": "V-254520",
       "check_pack": "",
-      "classification": "unsupported",
+      "classification": "manual",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Generated manual evidence workflow from exact DISA Vuln ID implementation spec; requires human/organizational evidence review and is not an automated pass/fail check.",
       "rule_id": "SV-254520r1069331_rule",
       "severity": "medium",
       "title": "RHEL 8 must prevent nonprivileged users from executing privileged functions, including disabling, circumventing, or altering implemented security safeguards/countermeasures.",
-      "tracking_issue": "TODO-V-254520",
+      "tracking_issue": "",
       "validated_by": [
+        "content/rule-implementations/generated/rhel_8_stig/v-254520.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254520"
