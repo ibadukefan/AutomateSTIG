@@ -334,6 +334,13 @@ static RE_SYSCTL: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r#"(?i)sysctl\s+(?:-[aw]\s+)?(?:"|'|`)?([a-z0-9_.]+)(?:"|'|`)?\s*.*?(?:is\s+not\s+|must\s+be\s+|=\s*|value\s+of\s+)(?:"|'|`)?(\d+)"#).unwrap()
 });
 
+static RE_SYSCTL_DISA_CMD: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?m)sysctl\s+([a-z][a-z0-9_.]+)").unwrap());
+
+static RE_SYSTEMCTL_DISA: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"(?i)systemctl\s+is-(?:enabled|active|failed)\s+([a-z0-9_.@-]+)").unwrap()
+});
+
 static RE_FILE_CONTENT: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r#"(?i)(?:in\s+|file\s+)?(?:"|'|`)?(/etc/[\w/._-]+)(?:"|'|`)?\s*.*?(?:line|contains?|set\s+to|configured\s+(?:to|with))\s+(?:"|'|`)?([A-Za-z]\w+\s+\S+)"#).unwrap()
 });
@@ -346,7 +353,76 @@ static RE_PACKAGE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r#"(?i)(?:package|rpm|dpkg)\s+(?:"|'|`)?(\S+?)(?:"|'|`)?\s+(?:is\s+not\s+installed|must\s+be\s+installed|must\s+not\s+be\s+installed)"#).unwrap()
 });
 
+fn try_sysctl_disa(text: &str) -> Option<(Check, ExpectedResult, String)> {
+    let key = RE_SYSCTL_DISA_CMD.captures(text)?.get(1)?.as_str().to_string();
+    let output_re = Regex::new(&format!(r"(?m)^\s*{}\s*=\s*(\S+)", regex::escape(&key))).ok()?;
+    let value = output_re.captures(text)?.get(1)?.as_str();
+    let expected = match value.parse::<i64>() {
+        Ok(value) => ExpectedResult::Equals {
+            value: serde_json::json!(value),
+        },
+        Err(_) => ExpectedResult::Equals {
+            value: serde_json::json!(value),
+        },
+    };
+
+    Some((
+        Check::Sysctl { key: key.clone() },
+        expected,
+        format!("Auto: sysctl check for {}", key),
+    ))
+}
+
+fn try_systemd_disa(text: &str) -> Option<(Check, ExpectedResult, String)> {
+    let lower = text.to_lowercase();
+    if lower.contains("ask the system administrator")
+        || lower.contains("interview")
+        || lower.contains("is documented")
+        || lower.contains("operational requirement")
+    {
+        return None;
+    }
+
+    let service = RE_SYSTEMCTL_DISA.captures(text)?.get(1)?.as_str();
+    let name = service.strip_suffix(".service").unwrap_or(service).to_string();
+    let expected_status = if lower.contains("must be masked")
+        || lower.contains("must be disabled")
+        || lower.contains("must not be active")
+        || (lower.contains("is-active")
+            && (lower.contains("must not be") || lower.contains("must be inactive")))
+    {
+        ServiceStatus::Disabled
+    } else if lower.contains("enabled and active")
+        || lower.contains("is enabled")
+        || lower.contains("is-active")
+        || lower.contains("is-enabled")
+        || lower.contains("must be enabled")
+        || lower.contains("must be active")
+        || lower.contains("must be running")
+    {
+        ServiceStatus::Running
+    } else {
+        return None;
+    };
+
+    Some((
+        Check::Service {
+            name: name.clone(),
+            expected_status,
+        },
+        ExpectedResult::IsTrue,
+        format!("Auto: service '{}' must be {:?}", name, expected_status),
+    ))
+}
+
 fn try_linux_patterns(text: &str) -> Option<(Check, ExpectedResult, String)> {
+    if let Some(r) = try_sysctl_disa(text) {
+        return Some(r);
+    }
+    if let Some(r) = try_systemd_disa(text) {
+        return Some(r);
+    }
+
     let lower = text.to_lowercase();
 
     // Pattern: sysctl value.
@@ -395,24 +471,30 @@ fn try_linux_patterns(text: &str) -> Option<(Check, ExpectedResult, String)> {
 
     // Pattern: Package installed/not installed.
     if let Some(caps) = RE_PACKAGE.captures(text) {
-        let name = caps[1].to_string();
-        let should_be_installed = !lower.contains("must not be installed")
-            && !lower.contains("is not installed")
-            && !lower.contains("should not be installed")
-            && !lower.contains("remove");
+        if !(lower.contains("ask the system administrator")
+            || lower.contains("interview")
+            || lower.contains("is documented")
+            || lower.contains("operational requirement"))
+        {
+            let name = caps[1].to_string();
+            let should_be_installed = !lower.contains("must not be installed")
+                && !lower.contains("is not installed")
+                && !lower.contains("should not be installed")
+                && !lower.contains("remove");
 
-        return Some((
-            Check::Package {
-                name: name.clone(),
-                should_be_installed,
-            },
-            ExpectedResult::IsTrue,
-            format!(
-                "Auto: package '{}' must {} installed",
-                name,
-                if should_be_installed { "be" } else { "not be" }
-            ),
-        ));
+            return Some((
+                Check::Package {
+                    name: name.clone(),
+                    should_be_installed,
+                },
+                ExpectedResult::IsTrue,
+                format!(
+                    "Auto: package '{}' must {} installed",
+                    name,
+                    if should_be_installed { "be" } else { "not be" }
+                ),
+            ));
+        }
     }
 
     // Pattern: Service must be running/enabled.
@@ -680,6 +762,66 @@ Value: 0x00000001 (1)"#;
             ExpectedResult::Equals { value } => assert_eq!(value, serde_json::json!("0")),
             _ => panic!("Expected Equals"),
         }
+    }
+
+    #[test]
+    fn test_sysctl_disa_extracts_key_and_value() {
+        let text = r#"$ sudo sysctl kernel.kexec_load_disabled
+kernel.kexec_load_disabled = 1
+If "kernel.kexec_load_disabled" is not set to "1" or is missing, this is a finding."#;
+
+        let result = try_linux_patterns(text);
+        assert!(result.is_some());
+        let (check, expected, _) = result.unwrap();
+        match check {
+            Check::Sysctl { key } => assert_eq!(key, "kernel.kexec_load_disabled"),
+            _ => panic!("Expected Sysctl check"),
+        }
+        match expected {
+            ExpectedResult::Equals { value } => assert_eq!(value, serde_json::json!(1)),
+            _ => panic!("Expected Equals"),
+        }
+    }
+
+    #[test]
+    fn test_systemd_disa_enabled_active() {
+        let text = r#"Verify the rngd service is enabled and active with the following commands:
+     $ sudo systemctl is-enabled rngd
+     enabled
+     $ sudo systemctl is-active rngd
+     active
+If the rngd service is not enabled and active, this is a finding."#;
+
+        let result = try_linux_patterns(text);
+        assert!(result.is_some());
+        let (check, expected, _) = result.unwrap();
+        match check {
+            Check::Service {
+                name,
+                expected_status,
+            } => {
+                assert_eq!(name, "rngd");
+                assert_eq!(expected_status, ServiceStatus::Running);
+            }
+            _ => panic!("Expected Service check"),
+        }
+        assert!(matches!(expected, ExpectedResult::IsTrue));
+    }
+
+    #[test]
+    fn test_systemd_disa_skips_manual() {
+        let text = r#"Verify the xorg service status with the following command:
+     $ sudo systemctl is-enabled xorg
+Ask the System Administrator if the use of xorg is documented."#;
+
+        assert!(try_systemd_disa(text).is_none());
+    }
+
+    #[test]
+    fn test_sysctl_disa_none_without_output_line() {
+        let text = "Run sysctl foo.bar and review the output.";
+
+        assert!(try_sysctl_disa(text).is_none());
     }
 
     #[test]
