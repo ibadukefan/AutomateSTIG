@@ -10,6 +10,7 @@ use std::time::Duration;
 use async_trait::async_trait;
 use russh::client;
 use russh_keys::key;
+use russh_keys::PublicKeyBase64;
 use serde::{Deserialize, Serialize};
 /// SSH connection configuration.
 #[derive(Clone, Serialize, Deserialize)]
@@ -55,7 +56,7 @@ pub async fn execute_commands(
         ..Default::default()
     });
 
-    let handler = SshHandler::new();
+    let handler = SshHandler::new(&config.host, config.port);
     let mut session = client::connect(russh_config, (config.host.as_str(), config.port), handler)
         .await
         .map_err(|e| {
@@ -175,13 +176,17 @@ pub async fn collect_linux_data(config: &SshConfig) -> Result<HashMap<String, St
 /// SSH client handler (minimal implementation).
 /// SSH client handler with known_hosts checking.
 struct SshHandler {
+    host: String,
+    port: u16,
     /// If true, accept any server key (first-connect mode).
     accept_unknown: bool,
 }
 
 impl SshHandler {
-    fn new() -> Self {
+    fn new(host: &str, port: u16) -> Self {
         Self {
+            host: host.to_string(),
+            port,
             accept_unknown: std::env::var("AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE")
                 .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
                 .unwrap_or(false),
@@ -203,17 +208,31 @@ impl client::Handler for SshHandler {
             "SSH server key: {}",
             &fingerprint[..fingerprint.len().min(80)]
         );
+        let key_id = server_public_key.public_key_base64();
+        let entry = format!("{}:{} {}", self.host, self.port, key_id);
+        let host_prefix = format!("{}:{} ", self.host, self.port);
 
         // Check known_hosts file if it exists.
         let known_hosts_path = dirs_or_home().join(".automatestig").join("known_hosts");
         if known_hosts_path.exists() {
-            if let Ok(content) = std::fs::read_to_string(&known_hosts_path) {
-                let key_str = format!("{:?}", server_public_key);
-                if content.contains(&key_str) {
-                    return Ok(true); // Key is in known_hosts.
+            match std::fs::read_to_string(&known_hosts_path) {
+                Ok(content) => {
+                    for line in content.lines().map(str::trim) {
+                        if line == entry {
+                            return Ok(true); // Key is in known_hosts.
+                        }
+                        if line.starts_with(&host_prefix) {
+                            tracing::error!(
+                                "SSH server key changed for {}:{}; rejecting possible MITM",
+                                self.host,
+                                self.port
+                            );
+                            return Ok(false);
+                        }
+                    }
                 }
-                if !self.accept_unknown {
-                    tracing::warn!("SSH server key not in known_hosts — rejecting");
+                Err(e) => {
+                    tracing::warn!("Failed to read SSH known_hosts: {}", e);
                     return Ok(false);
                 }
             }
@@ -226,14 +245,16 @@ impl client::Handler for SshHandler {
                     .parent()
                     .unwrap_or(std::path::Path::new(".")),
             );
-            let key_str = format!("{:?}\n", server_public_key);
+            let key_str = format!("{}\n", entry);
             let _ = std::fs::OpenOptions::new()
                 .create(true)
                 .append(true)
                 .open(&known_hosts_path)
                 .and_then(|mut f| std::io::Write::write_all(&mut f, key_str.as_bytes()));
             tracing::info!(
-                "SSH server key saved to known_hosts (explicit trust-on-first-use override)"
+                "SSH server key for {}:{} saved to known_hosts (explicit trust-on-first-use override)",
+                self.host,
+                self.port
             );
             Ok(true)
         } else {
@@ -287,5 +308,25 @@ mod tests {
 
         let json = serde_json::to_string_pretty(&config).unwrap();
         assert!(json.contains("key_file"));
+    }
+
+    #[test]
+    fn test_known_hosts_entry_is_host_scoped() {
+        let key_id = "AAAAC3NzaC1lZDI1NTE5AAAAIKnownKey";
+        let host_a = "server01.example.test";
+        let host_b = "server02.example.test";
+        let port = 22;
+
+        let entry_a = format!("{}:{} {}", host_a, port, key_id);
+        let entry_b = format!("{}:{} {}", host_b, port, key_id);
+        let host_prefix_a = format!("{}:{} ", host_a, port);
+        let host_prefix_b = format!("{}:{} ", host_b, port);
+
+        assert_ne!(entry_a, entry_b);
+        assert_ne!(host_prefix_a, host_prefix_b);
+        assert!(entry_a.starts_with(&host_prefix_a));
+        assert!(entry_b.starts_with(&host_prefix_b));
+        assert!(!entry_a.starts_with(&host_prefix_b));
+        assert!(!entry_b.starts_with(&host_prefix_a));
     }
 }

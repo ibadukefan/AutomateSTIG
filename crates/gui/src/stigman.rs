@@ -176,9 +176,19 @@ struct TokenResponse {
 impl StigManagerClient {
     /// Create a new client with the given configuration.
     pub fn new(config: StigManagerConfig) -> Result<Self, String> {
+        let allow_invalid_certs = std::env::var("AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS")
+            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+            .unwrap_or(false);
+        let accept_invalid_certs = !config.verify_tls && allow_invalid_certs;
+        if accept_invalid_certs {
+            tracing::warn!(
+                "STIG-Manager TLS certificate verification disabled via AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS"
+            );
+        }
+
         let http = reqwest::Client::builder()
             .timeout(Duration::from_secs(30))
-            .danger_accept_invalid_certs(!config.verify_tls)
+            .danger_accept_invalid_certs(accept_invalid_certs)
             .user_agent(format!("AutomateSTIG/{}", env!("CARGO_PKG_VERSION")))
             .build()
             .map_err(|e| format!("HTTP client error: {}", e))?;

@@ -2,6 +2,7 @@
 
 use std::fs::OpenOptions;
 use std::io::{Read, Write};
+use std::net::ToSocketAddrs;
 use std::path::Path;
 
 use axum::extract::{Multipart, Query, State};
@@ -166,7 +167,6 @@ struct StatusResponse {
     version: String,
     benchmark_count: usize,
     checklist_count: usize,
-    library_path: String,
 }
 
 async fn get_status(State(state): State<AppState>) -> Json<serde_json::Value> {
@@ -180,7 +180,6 @@ async fn get_status(State(state): State<AppState>) -> Json<serde_json::Value> {
         version: env!("CARGO_PKG_VERSION").to_string(),
         benchmark_count,
         checklist_count,
-        library_path: state.inner.library_path.display().to_string(),
     })
 }
 
@@ -2953,6 +2952,7 @@ async fn test_webhook(Json(req): Json<WebhookTestRequest>) -> Json<serde_json::V
 
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
+        .redirect(reqwest::redirect::Policy::none())
         .build()
         .map_err(|e| format!("HTTP client error: {}", e));
 
@@ -2989,6 +2989,7 @@ pub async fn send_webhook_notification(url: &str, event: &str, data: &serde_json
 
     let client = match reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
+        .redirect(reqwest::redirect::Policy::none())
         .build()
     {
         Ok(c) => c,
@@ -3032,6 +3033,30 @@ fn validate_webhook_url(url: &str) -> Result<(), String> {
                 "Webhook URL resolves to a non-public address; set AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS only for trusted lab deployments"
                     .to_string(),
             );
+        }
+    } else {
+        // DNS can still change between validation and request, but resolving here
+        // plus disabling redirects closes the practical webhook SSRF path.
+        let allow_private = std::env::var("AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS")
+            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+            .unwrap_or(false);
+        if !allow_private {
+            let port = parsed.port_or_known_default().unwrap_or(443);
+            match (host, port).to_socket_addrs() {
+                Ok(addrs) => {
+                    let mut saw_any = false;
+                    for addr in addrs {
+                        saw_any = true;
+                        if !is_public_ip(addr.ip()) {
+                            return Err("Webhook host resolves to a non-public address; set AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS only for trusted lab deployments".to_string());
+                        }
+                    }
+                    if !saw_any {
+                        return Err("Webhook host did not resolve to any address".to_string());
+                    }
+                }
+                Err(e) => return Err(format!("Webhook host resolution failed: {}", e)),
+            }
         }
     }
     Ok(())
@@ -3654,7 +3679,7 @@ mod tests {
     use automatestig_core::inventory::scheduler::ScheduleFrequency;
 
     #[test]
-    fn webhook_validation_rejects_ssrf_targets_by_default() {
+    fn test_validate_webhook_rejects_localhost_and_bad_scheme() {
         for url in [
             "http://example.com/hook",
             "https://localhost/hook",
@@ -3671,8 +3696,7 @@ mod tests {
     }
 
     #[test]
-    fn webhook_validation_allows_https_public_hosts() {
-        assert!(validate_webhook_url("https://example.com/hook").is_ok());
+    fn test_validate_webhook_allows_https_public_ip_literal() {
         assert!(validate_webhook_url("https://8.8.8.8/hook").is_ok());
     }
 

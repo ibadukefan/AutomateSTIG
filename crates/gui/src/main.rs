@@ -112,7 +112,7 @@ async fn main() {
                         .unwrap_or("")
                         .to_string();
 
-                    if header_token != token && query_token != token {
+                    if !ct_token_eq(&header_token, &token) && !ct_token_eq(&query_token, &token) {
                         return Ok(axum::response::IntoResponse::into_response((
                             axum::http::StatusCode::UNAUTHORIZED,
                             "Invalid or missing auth token",
@@ -632,6 +632,13 @@ fn generate_session_token() -> Result<String, String> {
     Ok(bytes.iter().map(|b| format!("{:02x}", b)).collect())
 }
 
+#[allow(deprecated)]
+fn ct_token_eq(candidate: &str, expected: &str) -> bool {
+    candidate.len() == expected.len()
+        && ring::constant_time::verify_slices_are_equal(candidate.as_bytes(), expected.as_bytes())
+            .is_ok()
+}
+
 fn resolve_auth_token(
     explicit_token: Option<String>,
     is_loopback: bool,
@@ -737,5 +744,13 @@ mod tests {
             error,
             "AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters for non-localhost binds"
         );
+    }
+
+    #[test]
+    fn test_ct_token_eq() {
+        assert!(ct_token_eq("abcdef", "abcdef"));
+        assert!(!ct_token_eq("abcdeg", "abcdef"));
+        assert!(!ct_token_eq("abc", "abcdef"));
+        assert!(!ct_token_eq("", "abcdef"));
     }
 }
