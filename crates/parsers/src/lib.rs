@@ -10,6 +10,7 @@ pub mod ckl;
 pub mod cklb;
 pub mod config_dump;
 pub mod error;
+mod util;
 pub mod xccdf;
 
 pub use error::{ParseError, ParseResult};

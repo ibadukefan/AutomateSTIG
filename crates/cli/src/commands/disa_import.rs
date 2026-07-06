@@ -106,10 +106,12 @@ fn import_zip(zip_path: &Path, library: &mut StigLibrary) -> Result<()> {
                             if let Ok(json) =
                                 automatestig_core::converter::check_pack_to_json(&conv.check_pack)
                             {
-                                let _ = std::fs::write(
-                                    packs_dir.join(format!("{}.json", benchmark.id)),
-                                    &json,
-                                );
+                                if let Ok(dest) = automatestig_core::path_safety::safe_join_under(
+                                    &packs_dir,
+                                    &format!("{}.json", benchmark.id),
+                                ) {
+                                    let _ = std::fs::write(dest, &json);
+                                }
                             }
                         }
                         ui::success(&format!(
@@ -158,7 +160,12 @@ fn import_xccdf_file(xml_path: &Path, library: &mut StigLibrary) -> Result<()> {
         let packs_dir = library.root().join("auto_check_packs");
         let _ = std::fs::create_dir_all(&packs_dir);
         if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
-            let _ = std::fs::write(packs_dir.join(format!("{}.json", benchmark.id)), &json);
+            if let Ok(dest) = automatestig_core::path_safety::safe_join_under(
+                &packs_dir,
+                &format!("{}.json", benchmark.id),
+            ) {
+                let _ = std::fs::write(dest, &json);
+            }
         }
     }
 

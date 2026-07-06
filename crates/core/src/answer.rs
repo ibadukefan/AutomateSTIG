@@ -5,11 +5,24 @@
 //! XML answer files from Evaluate-STIG with a modern, version-controllable format.
 
 use serde::{Deserialize, Serialize};
+use std::io;
 use std::path::Path;
 
 use crate::models::finding::FindingStatus;
 use crate::models::stig::Severity;
 use crate::{Error, Result};
+
+const ANSWER_FILE_SIZE_LIMIT_BYTES: u64 = 128 * 1024 * 1024;
+
+fn read_to_string_capped(path: &Path, max_bytes: u64) -> io::Result<String> {
+    if std::fs::metadata(path)?.len() > max_bytes {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "file exceeds 128 MB parse limit",
+        ));
+    }
+    std::fs::read_to_string(path)
+}
 
 /// An answer file — a template of pre-determined finding results.
 ///
@@ -79,13 +92,13 @@ impl AnswerFile {
 
     /// Load an answer file from a JSON file.
     pub fn load_json(path: &Path) -> Result<Self> {
-        let content = std::fs::read_to_string(path)?;
+        let content = read_to_string_capped(path, ANSWER_FILE_SIZE_LIMIT_BYTES)?;
         serde_json::from_str(&content).map_err(|e| Error::AnswerFileError(e.to_string()))
     }
 
     /// Load an answer file from a YAML file.
     pub fn load_yaml(path: &Path) -> Result<Self> {
-        let content = std::fs::read_to_string(path)?;
+        let content = read_to_string_capped(path, ANSWER_FILE_SIZE_LIMIT_BYTES)?;
         serde_yaml::from_str(&content).map_err(|e| Error::AnswerFileError(e.to_string()))
     }
 
@@ -192,6 +205,7 @@ pub fn generate_answer_template(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::Write;
     use tempfile::TempDir;
 
     fn make_answer_file() -> AnswerFile {
@@ -260,6 +274,18 @@ mod tests {
         af.save_yaml(&yaml_path).unwrap();
         let loaded = AnswerFile::load(&yaml_path).unwrap();
         assert_eq!(loaded.entries.len(), 2);
+    }
+
+    #[test]
+    fn test_read_to_string_capped_rejects_oversize() {
+        let mut file = tempfile::NamedTempFile::new().unwrap();
+        file.write_all(b"longer than eight bytes").unwrap();
+
+        assert!(read_to_string_capped(file.path(), 8).is_err());
+        assert_eq!(
+            read_to_string_capped(file.path(), 128).unwrap(),
+            "longer than eight bytes"
+        );
     }
 
     #[test]

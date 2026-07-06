@@ -325,8 +325,12 @@ fn import_zip_bytes(data: &[u8], state: &AppState) -> Result<FetchResult, String
                             if let Ok(json) =
                                 automatestig_core::converter::check_pack_to_json(&conv.check_pack)
                             {
-                                let _ =
-                                    std::fs::write(packs_dir.join(format!("{}.json", id)), &json);
+                                if let Ok(dest) = automatestig_core::path_safety::safe_join_under(
+                                    &packs_dir,
+                                    &format!("{}.json", id),
+                                ) {
+                                    let _ = std::fs::write(dest, &json);
+                                }
                             }
                         }
 

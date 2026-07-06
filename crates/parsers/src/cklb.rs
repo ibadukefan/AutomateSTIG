@@ -13,6 +13,7 @@ use automatestig_core::models::finding::{Finding, FindingSource, FindingStatus};
 use automatestig_core::models::stig::Severity;
 
 use crate::error::{ParseError, ParseResult};
+use crate::util::{read_to_string_capped, PARSE_FILE_SIZE_LIMIT_BYTES};
 
 /// Raw CKLB file structure (for deserialization).
 #[derive(Debug, Serialize, Deserialize)]
@@ -109,7 +110,7 @@ pub struct CklbCheckContentRef {
 
 /// Parse a CKLB file from a path.
 pub fn parse_cklb_file(path: &Path) -> ParseResult<Checklist> {
-    let content = std::fs::read_to_string(path)?;
+    let content = read_to_string_capped(path, PARSE_FILE_SIZE_LIMIT_BYTES)?;
     parse_cklb(&content)
 }
 

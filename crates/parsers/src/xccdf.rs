@@ -12,10 +12,11 @@ use automatestig_core::models::scan::{ScanResult, ScanResultSet, ScanSource, Sca
 use automatestig_core::models::stig::*;
 
 use crate::error::{ParseError, ParseResult};
+use crate::util::{read_to_string_capped, PARSE_FILE_SIZE_LIMIT_BYTES};
 
 /// Parse an XCCDF benchmark file into a StigBenchmark.
 pub fn parse_xccdf_benchmark(path: &Path) -> ParseResult<StigBenchmark> {
-    let content = std::fs::read_to_string(path)?;
+    let content = read_to_string_capped(path, PARSE_FILE_SIZE_LIMIT_BYTES)?;
     parse_xccdf_benchmark_str(&content)
 }
 
@@ -230,7 +231,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
 
 /// Parse XCCDF result file (from SCC or OpenSCAP) into scan results.
 pub fn parse_xccdf_results(path: &Path) -> ParseResult<ScanResultSet> {
-    let content = std::fs::read_to_string(path)?;
+    let content = read_to_string_capped(path, PARSE_FILE_SIZE_LIMIT_BYTES)?;
     parse_xccdf_results_str(&content)
 }
 

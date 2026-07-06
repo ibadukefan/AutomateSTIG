@@ -51,6 +51,7 @@ pub fn verify_pack_with_trust(
 ) -> StigpackResult<VerificationResult> {
     let file = std::fs::File::open(path)?;
     let mut archive = zip::ZipArchive::new(file)?;
+    crate::importer::validate_archive_resource_limits(&mut archive)?;
 
     let mut result = VerificationResult {
         manifest_valid: false,

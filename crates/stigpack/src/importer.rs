@@ -221,7 +221,7 @@ fn validate_pack_member_path(relative: &str) -> StigpackResult<()> {
     Ok(())
 }
 
-fn validate_archive_resource_limits(
+pub(crate) fn validate_archive_resource_limits(
     archive: &mut zip::ZipArchive<std::fs::File>,
 ) -> StigpackResult<()> {
     if archive.len() > MAX_STIGPACK_ENTRIES {

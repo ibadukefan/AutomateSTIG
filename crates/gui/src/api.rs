@@ -131,7 +131,8 @@ pub fn routes() -> Router<AppState> {
 
 /// Sanitize a filename for Content-Disposition headers.
 fn sanitize_filename(s: &str) -> String {
-    s.chars()
+    let sanitized: String = s
+        .chars()
         .map(|c| {
             if c.is_alphanumeric() || c == '_' || c == '-' || c == '.' {
                 c
@@ -139,7 +140,13 @@ fn sanitize_filename(s: &str) -> String {
                 '_'
             }
         })
-        .collect()
+        .collect();
+
+    if sanitized.is_empty() || sanitized == "." || sanitized == ".." {
+        "_".to_string()
+    } else {
+        sanitized
+    }
 }
 
 fn api_ok(data: impl Serialize) -> Json<serde_json::Value> {
@@ -364,7 +371,9 @@ async fn import_disa(
                                                         library.root().join("auto_check_packs");
                                                     let _ = std::fs::create_dir_all(&packs_dir);
                                                     if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
-                                                        let _ = std::fs::write(packs_dir.join(format!("{}.json", benchmark.id)), &json);
+                                                        if let Ok(dest) = automatestig_core::path_safety::safe_join_under(&packs_dir, &format!("{}.json", benchmark.id)) {
+                                                            let _ = std::fs::write(dest, &json);
+                                                        }
                                                     }
                                                     details.push(format!(
                                                         "Imported: {} (auto-generated {} checks)",
@@ -413,10 +422,14 @@ async fn import_disa(
                                 if let Ok(json) = automatestig_core::converter::check_pack_to_json(
                                     &conv.check_pack,
                                 ) {
-                                    let _ = std::fs::write(
-                                        packs_dir.join(format!("{}.json", benchmark.id)),
-                                        &json,
-                                    );
+                                    if let Ok(dest) =
+                                        automatestig_core::path_safety::safe_join_under(
+                                            &packs_dir,
+                                            &format!("{}.json", benchmark.id),
+                                        )
+                                    {
+                                        let _ = std::fs::write(dest, &json);
+                                    }
                                 }
                                 details.push(format!(
                                     "Imported: {} (auto-generated {} checks)",
@@ -2742,7 +2755,7 @@ fn sanitize_report_component(value: &str) -> String {
         })
         .collect();
 
-    if sanitized.is_empty() {
+    if sanitized.is_empty() || sanitized == "." || sanitized == ".." {
         "unknown".to_string()
     } else {
         sanitized
@@ -3698,6 +3711,13 @@ mod tests {
     #[test]
     fn test_validate_webhook_allows_https_public_ip_literal() {
         assert!(validate_webhook_url("https://8.8.8.8/hook").is_ok());
+    }
+
+    #[test]
+    fn test_sanitize_rejects_dot_components() {
+        assert_ne!(sanitize_filename("."), ".");
+        assert_ne!(sanitize_filename(".."), "..");
+        assert_eq!(sanitize_filename("host.ckl"), "host.ckl");
     }
 
     #[test]
