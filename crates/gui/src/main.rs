@@ -130,6 +130,7 @@ async fn main() {
             }
         })
         .layer(RequestBodyLimitLayer::new(100 * 1024 * 1024)) // 100 MB
+        .layer(axum::extract::DefaultBodyLimit::max(100 * 1024 * 1024))
         .layer({
             let mut cors = CorsLayer::new()
                 .allow_methods(tower_http::cors::Any)

@@ -42,6 +42,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
     let mut in_group = false;
     let mut in_rule = false;
     let mut in_ident = false;
+    let mut in_reference = false;
 
     // Current rule being parsed.
     let mut current_rule = new_empty_rule();
@@ -103,6 +104,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                     "ident" => {
                         in_ident = true;
                     }
+                    "reference" => in_reference = true,
                     "platform" if in_benchmark && !in_group => {
                         for attr in e.attributes().flatten() {
                             if attr.key.as_ref() == b"idref" {
@@ -134,6 +136,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                         current_rule = new_empty_rule();
                     }
                     "ident" => in_ident = false,
+                    "reference" => in_reference = false,
                     _ => {}
                 }
                 current_tag.clear();
@@ -142,7 +145,10 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
             Ok(Event::Text(ref e)) => {
                 let text = e.unescape().unwrap_or_default().to_string();
 
-                if in_rule {
+                if in_reference {
+                    // Dublin Core fields (dc:title/dc:publisher/...) live inside <reference>;
+                    // skip them so dc:title does not overwrite the rule's real <title>.
+                } else if in_rule {
                     match current_tag.as_str() {
                         "title" => current_rule.title = text,
                         "description" | "discussion" => {
@@ -484,6 +490,34 @@ mod tests {
         let rule2 = &benchmark.rules[1];
         assert_eq!(rule2.vuln_id, "V-254240");
         assert_eq!(rule2.severity, Severity::Medium);
+    }
+
+    #[test]
+    fn test_rule_title_not_clobbered_by_reference() {
+        let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+<Benchmark xmlns="http://checklists.nist.gov/xccdf/1.2" xmlns:dc="http://purl.org/dc/elements/1.1/" id="Example_STIG">
+  <title>Example Benchmark</title>
+  <reference>
+    <dc:title>DPMS Target Benchmark</dc:title>
+    <dc:publisher>DISA</dc:publisher>
+  </reference>
+  <Group id="V-000001">
+    <Rule id="SV-000001r1_rule" severity="medium">
+      <version>V-000001</version>
+      <title>Real rule title</title>
+      <reference>
+        <dc:title>DPMS Target Something</dc:title>
+        <dc:publisher>DISA</dc:publisher>
+      </reference>
+    </Rule>
+  </Group>
+</Benchmark>"#;
+
+        let benchmark = parse_xccdf_benchmark_str(xml).unwrap();
+
+        assert_eq!(benchmark.title, "Example Benchmark");
+        assert_eq!(benchmark.rules.len(), 1);
+        assert_eq!(benchmark.rules[0].title, "Real rule title");
     }
 
     #[test]

@@ -1020,7 +1020,7 @@ function addAssetDialog() {
           h('label', { className: 'form-label' }, 'Protocol'),
           h('select', { className: 'form-select', id: 'aa-proto' },
             h('option', { value: 'ssh' }, 'SSH'), h('option', { value: 'winrm' }, 'WinRM'),
-            h('option', { value: 'winrm_https' }, 'WinRM HTTPS')))),
+            h('option', { value: 'winrmhttps' }, 'WinRM HTTPS')))),
       h('div', { className: 'form-group' },
         h('label', { className: 'form-label' }, 'Tags (comma-separated)'),
         h('input', { className: 'form-input', id: 'aa-tags', placeholder: 'production, web-tier' })),

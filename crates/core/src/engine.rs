@@ -182,6 +182,19 @@ impl EvaluationEngine {
             return Some(idx);
         }
 
+        // Match on revision-normalized Rule ID. DISA increments the rXXXXXX revision
+        // between releases while the SV-<number> base stays stable, so a scan produced
+        // against an older revision still applies to the current benchmark.
+        if let Some(ref_base) = base_rule_id(rule_ref) {
+            if let Some(idx) = checklist
+                .findings
+                .iter()
+                .position(|f| base_rule_id(&f.rule_id).as_deref() == Some(ref_base.as_str()))
+            {
+                return Some(idx);
+            }
+        }
+
         // Match on Group ID.
         if let Some(idx) = checklist
             .findings
@@ -266,6 +279,20 @@ impl EvaluationEngine {
         }
         current.touch();
         Ok(())
+    }
+}
+
+/// Strip the DISA revision token from a rule ID so scan results still match when the
+/// STIG revision differs from the scan's. `SV-254239r958388_rule` -> `SV-254239`.
+/// Returns `None` when the ID doesn't carry a `r<digits>` revision segment.
+fn base_rule_id(id: &str) -> Option<String> {
+    let without_suffix = id.strip_suffix("_rule").unwrap_or(id);
+    let r_idx = without_suffix.rfind('r')?;
+    let revision = &without_suffix[r_idx + 1..];
+    if !revision.is_empty() && revision.bytes().all(|b| b.is_ascii_digit()) {
+        Some(without_suffix[..r_idx].to_string())
+    } else {
+        None
     }
 }
 
@@ -539,6 +566,50 @@ mod tests {
         assert_eq!(
             checklist.find_by_vuln_id("V-100001").unwrap().status,
             FindingStatus::NotAFinding
+        );
+    }
+
+    #[test]
+    fn test_scan_matches_across_rule_revision() {
+        let engine = EvaluationEngine::with_defaults();
+        let mut benchmark = make_benchmark();
+        benchmark.rules[0].vuln_id = "V-900001".to_string();
+        benchmark.rules[0].rule_id = "SV-900001r999_rule".to_string();
+        benchmark.rules[0].group_id = "V-900001".to_string();
+        benchmark.rules[1].vuln_id = "V-900002".to_string();
+        benchmark.rules[1].rule_id = "SV-900002r5_rule".to_string();
+        benchmark.rules[1].group_id = "V-900002".to_string();
+        let asset = Asset::new("testhost");
+
+        let scan = ScanResultSet {
+            source: ScanSource {
+                scanner: ScannerType::Scc,
+                scanner_version: None,
+                scan_date: None,
+                source_file: None,
+                target: None,
+                profile: None,
+            },
+            results: vec![ScanResult {
+                rule_ref: "SV-900001r111_rule".to_string(),
+                passed: Some(false),
+                raw_result: "fail".to_string(),
+                evidence: None,
+                benchmark_ref: None,
+            }],
+        };
+
+        let checklist = engine
+            .evaluate(&benchmark, &asset, Some(&scan), &[])
+            .unwrap();
+
+        assert_eq!(
+            checklist.find_by_vuln_id("V-900001").unwrap().status,
+            FindingStatus::Open
+        );
+        assert_eq!(
+            checklist.find_by_vuln_id("V-900002").unwrap().status,
+            FindingStatus::NotReviewed
         );
     }
 }
