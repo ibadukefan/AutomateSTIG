@@ -97,7 +97,7 @@ function toast(msg, type = 'info') {
 // ---------------------------------------------------------------------------
 // Confirm Dialog
 // ---------------------------------------------------------------------------
-function confirm(title, message) {
+function confirmDialog(title, message) {
   return new Promise((resolve) => {
     const overlay = h('div', { className: 'modal-overlay' },
       h('div', { className: 'modal' },
@@ -151,8 +151,8 @@ function h(tag, attrs = {}, ...children) {
     else el.setAttribute(k, v);
   }
   for (const child of children.flat()) {
-    if (child == null) continue;
-    el.appendChild(typeof child === 'string' ? document.createTextNode(child) : child);
+    if (child == null || child === true || child === false) continue;
+    el.appendChild(child instanceof Node ? child : document.createTextNode(String(child)));
   }
   return el;
 }
@@ -180,54 +180,6 @@ function setPage(id, ...children) {
   children.forEach(c => page.appendChild(c));
 }
 
-// ---------------------------------------------------------------------------
-// Dashboard
-// ---------------------------------------------------------------------------
-async function loadDashboard() {
-  try {
-    const [status, checklists] = await Promise.all([
-      api('/status'),
-      api('/checklists'),
-    ]);
-
-    document.getElementById('app-version').textContent = `v${status.version}`;
-
-    const totalOpen = checklists.reduce((s, c) => s + c.open, 0);
-    const totalFindings = checklists.reduce((s, c) => s + c.total, 0);
-    const avgCompliance = checklists.length
-      ? checklists.reduce((s, c) => s + c.compliance_pct, 0) / checklists.length : 0;
-
-    setPage('dashboard',
-      h('div', { className: 'page-header' },
-        h('h1', {}, 'Dashboard'),
-        h('p', {}, 'Compliance overview across all evaluated assets'),
-      ),
-      h('div', { className: 'stats-grid' },
-        statCard('STIG Benchmarks', status.benchmark_count, 'accent'),
-        statCard('Checklists', checklists.length, 'accent'),
-        statCard('Open Findings', totalOpen, totalOpen > 0 ? 'red' : 'green'),
-        statCard('Avg Compliance', `${avgCompliance.toFixed(1)}%`, complianceColor(avgCompliance)),
-      ),
-      checklists.length ? h('div', {},
-        h('div', { className: 'btn-group', style: 'margin-bottom: 16px' },
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: exportAllZip }, 'Export All as ZIP'),
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: compareChecklistsDialog }, 'Compare Two'),
-        ),
-        checklistsTable(checklists),
-      ) : emptyState(
-        'No Checklists Yet',
-        'Import a checklist or run an evaluation to get started.',
-        h('div', { className: 'btn-group' },
-          h('button', { className: 'btn btn-primary', onClick: () => nav('evaluate') }, 'Evaluate'),
-          h('button', { className: 'btn btn-secondary', onClick: () => nav('import') }, 'Import'),
-        ),
-      ),
-    );
-  } catch (e) {
-    setPage('dashboard', errorCard(e.message));
-  }
-}
-
 function statCard(label, value, color = '') {
   return h('div', { className: 'stat-card' },
     h('div', { className: 'stat-label' }, label),
@@ -251,60 +203,9 @@ function errorCard(msg) {
 }
 
 function nav(page) {
-  document.querySelector(`[data-page="${page}"]`).click();
-}
-
-// ---------------------------------------------------------------------------
-// Checklists Table (reused on dashboard + checklists page)
-// ---------------------------------------------------------------------------
-function checklistsTable(checklists) {
-  const rows = checklists.map(cl => {
-    const compColor = complianceColor(cl.compliance_pct);
-    return h('tr', { style: 'cursor: pointer', onClick: (e) => { if (e.target.tagName !== 'BUTTON') viewChecklist(cl.id); } },
-      h('td', {},
-        h('div', { style: 'font-weight: 600' }, cl.hostname),
-        h('div', { style: 'font-size: 0.75rem; color: var(--text-muted)' }, cl.stig_id),
-      ),
-      h('td', {}, cl.stig_version),
-      h('td', {},
-        h('span', { className: `stat-value ${compColor}`, style: 'font-size: 1.1rem' },
-          `${cl.compliance_pct.toFixed(1)}%`),
-        h('div', { className: 'progress-bar' },
-          h('div', { className: `progress-fill ${compColor}`, style: `width: ${cl.compliance_pct}%` }),
-        ),
-      ),
-      h('td', { style: cl.open > 0 ? 'color: var(--red); font-weight: 600' : 'color: var(--green)' },
-        String(cl.open)),
-      h('td', { style: 'color: var(--green)' }, String(cl.not_a_finding)),
-      h('td', {},
-        h('div', { className: 'btn-group' },
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(cl.id) }, 'CKL'),
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(cl.id) }, 'CKLB'),
-          h('button', { className: 'btn btn-primary btn-sm', onClick: () => pushToStigManager(cl.id, cl.hostname) }, 'Push'),
-          h('button', { className: 'btn btn-danger btn-sm', onClick: (e) => { e.stopPropagation(); deleteChecklist(cl.id, cl.hostname); } }, '\u00D7'),
-        ),
-      ),
-    );
-  });
-
-  return h('div', { className: 'card' },
-    h('div', { className: 'card-header' },
-      h('h2', {}, 'Checklists'),
-    ),
-    h('table', { className: 'data-table' },
-      h('thead', {},
-        h('tr', {},
-          h('th', {}, 'Asset / STIG'),
-          h('th', {}, 'Version'),
-          h('th', {}, 'Compliance'),
-          h('th', {}, 'Open'),
-          h('th', {}, 'NaF'),
-          h('th', {}, 'Actions'),
-        ),
-      ),
-      h('tbody', {}, ...rows),
-    ),
-  );
+  const el = document.querySelector(`[data-page="${page}"]`);
+  if (el) el.click();
+  else console.warn(`nav: unknown page "${page}"`);
 }
 
 // ---------------------------------------------------------------------------
@@ -320,7 +221,7 @@ async function viewChecklist(id) {
 
     page.appendChild(h('div', { className: 'page-header' },
       h('div', { style: 'display: flex; align-items: center; gap: 12px; margin-bottom: 4px' },
-        h('button', { className: 'btn btn-secondary btn-sm', onClick: () => loadChecklists() }, '\u2190 Back'),
+        h('button', { className: 'btn btn-secondary btn-sm', onClick: () => nav('assessments') }, '\u2190 Back'),
         h('h1', {}, `${cl.hostname}`),
       ),
       h('p', {}, `${cl.stig_title} (${cl.stig_version})`),
@@ -397,6 +298,7 @@ async function viewChecklist(id) {
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(id) }, 'Export CKL'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(id) }, 'Export CKLB'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => viewDriftReport(id) }, 'Drift'),
+          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => pushToStigManager(id, cl.hostname) }, 'Push to STIG-Manager'),
           h('button', { className: 'btn btn-primary btn-sm', onClick: () => reEvaluate(id) }, 'Re-evaluate'),
           h('button', { className: 'btn btn-danger btn-sm', onClick: () => deleteChecklist(id, cl.hostname) }, 'Delete'),
         ),
@@ -441,7 +343,7 @@ async function viewChecklist(id) {
 
     // Show checklists page
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.querySelector('[data-page="checklists"]').classList.add('active');
+    document.querySelector('[data-page="assessments"]').classList.add('active');
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     page.classList.add('active');
   } catch (e) {
@@ -450,153 +352,13 @@ async function viewChecklist(id) {
 }
 
 // ---------------------------------------------------------------------------
-// Checklists Page
+// Evaluate Workspace
 // ---------------------------------------------------------------------------
-async function loadChecklists() {
-  try {
-    const checklists = await api('/checklists');
-    setPage('checklists',
-      h('div', { className: 'page-header' },
-        h('h1', {}, 'Checklists'),
-        h('p', {}, 'All evaluated STIG checklists'),
-      ),
-      checklists.length
-        ? checklistsTable(checklists)
-        : emptyState('No Checklists', 'Evaluate a STIG or import a checklist to get started.'),
-    );
-  } catch (e) {
-    setPage('checklists', errorCard(e.message));
-  }
-}
+async function renderEvaluateWorkspace() {
+  const container = document.getElementById('evaluate-workspace');
+  if (!container) return;
+  container.innerHTML = '';
 
-// ---------------------------------------------------------------------------
-// Library Page
-// ---------------------------------------------------------------------------
-async function loadLibrary() {
-  try {
-    const benchmarks = await api('/library/benchmarks');
-
-    const rows = benchmarks.map(b =>
-      h('tr', {},
-        h('td', {},
-          h('div', { style: 'font-weight: 600' }, b.id),
-          h('div', { style: 'font-size: 0.75rem; color: var(--text-muted)' }, b.title),
-        ),
-        h('td', {}, b.version),
-        h('td', {}, b.platform),
-        h('td', { style: 'font-weight: 600' }, String(b.rule_count)),
-        h('td', {},
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => viewBenchmark(b.id) }, 'View'),
-        ),
-      ),
-    );
-
-    let libSearch = '';
-    function renderLibraryTable() {
-      const filtered = benchmarks.filter(b => {
-        if (!libSearch) return true;
-        const q = libSearch.toLowerCase();
-        return b.id.toLowerCase().includes(q) || b.title.toLowerCase().includes(q) || b.platform.toLowerCase().includes(q);
-      });
-      const tbody = document.getElementById('library-tbody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      filtered.forEach(b => {
-        tbody.appendChild(h('tr', { style: 'cursor: pointer', onClick: () => viewBenchmark(b.id) },
-          h('td', {},
-            h('div', { style: 'font-weight: 600' }, b.id),
-            h('div', { style: 'font-size: 0.75rem; color: var(--text-muted)' }, b.title),
-          ),
-          h('td', {}, b.version),
-          h('td', {}, b.platform),
-          h('td', { style: 'font-weight: 600' }, String(b.rule_count)),
-        ));
-      });
-      const countEl = document.getElementById('library-count');
-      if (countEl) countEl.textContent = `STIG Library (${filtered.length})`;
-    }
-
-    setPage('library',
-      h('div', { className: 'page-header' },
-        h('h1', { id: 'library-count' }, `STIG Library (${benchmarks.length})`),
-        h('p', {}, `${benchmarks.length} benchmark(s) installed`),
-      ),
-      benchmarks.length ? h('div', { className: 'card' },
-        h('div', { className: 'search-bar' },
-          h('input', { className: 'search-input', type: 'text', placeholder: 'Search by ID, title, or platform...',
-            onInput: (e) => { libSearch = e.target.value; renderLibraryTable(); } }),
-        ),
-        h('table', { className: 'data-table' },
-          h('thead', {},
-            h('tr', {},
-              h('th', {}, 'Benchmark'),
-              h('th', {}, 'Version'),
-              h('th', {}, 'Platform'),
-              h('th', {}, 'Rules'),
-            ),
-          ),
-          h('tbody', { id: 'library-tbody' }),
-        ),
-      ) : emptyState(
-        'Library Empty',
-        'Import STIG content from DISA or a .stigpack file.',
-        h('button', { className: 'btn btn-primary', onClick: () => nav('import') }, 'Import Content'),
-      ),
-    );
-    if (benchmarks.length) renderLibraryTable();
-  } catch (e) {
-    setPage('library', errorCard(e.message));
-  }
-}
-
-async function viewBenchmark(id) {
-  try {
-    const b = await api(`/library/benchmarks/${id}`);
-    const page = document.getElementById('page-library');
-    page.innerHTML = '';
-
-    page.appendChild(h('div', { className: 'page-header' },
-      h('div', { style: 'display: flex; align-items: center; gap: 12px; margin-bottom: 4px' },
-        h('button', { className: 'btn btn-secondary btn-sm', onClick: () => loadLibrary() }, '\u2190 Back'),
-        h('h1', {}, b.title),
-        h('button', { className: 'btn btn-primary btn-sm', onClick: () => generateChecks(b.id) }, 'Generate Checks'),
-      ),
-      h('p', {}, `${b.id} \u2014 V${b.version}R${b.release}`),
-    ));
-
-    page.appendChild(h('div', { className: 'stats-grid' },
-      statCard('Total Rules', b.rule_count, 'accent'),
-      statCard('CAT I (High)', b.cat_i, b.cat_i > 0 ? 'red' : ''),
-      statCard('CAT II (Medium)', b.cat_ii, 'yellow'),
-      statCard('CAT III (Low)', b.cat_iii, ''),
-    ));
-
-    const rows = b.rules.map(r =>
-      h('tr', {},
-        h('td', { className: 'mono' }, r.vuln_id),
-        h('td', {}, sevBadge(r.severity)),
-        h('td', {}, r.title),
-      ),
-    );
-
-    page.appendChild(h('div', { className: 'card' },
-      h('div', { className: 'card-header' }, h('h2', {}, `Rules (${b.rule_count})`)),
-      h('table', { className: 'data-table' },
-        h('thead', {}, h('tr', {},
-          h('th', {}, 'Vuln ID'), h('th', {}, 'Severity'), h('th', {}, 'Title'),
-        )),
-        h('tbody', {}, ...rows),
-      ),
-    ));
-  } catch (e) {
-    toast(e.message, 'error');
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Evaluate Page
-// ---------------------------------------------------------------------------
-async function loadEvaluate() {
   try {
     const benchmarks = await api('/library/benchmarks');
 
@@ -604,44 +366,38 @@ async function loadEvaluate() {
       h('option', { value: b.id }, `${b.id} (${b.rule_count} rules)`),
     );
 
-    setPage('evaluate',
-      h('div', { className: 'page-header' },
-        h('h1', {}, 'Evaluate'),
-        h('p', {}, 'Run a STIG evaluation against an asset'),
+    container.appendChild(h('div', { className: 'card', style: 'max-width: 600px' },
+      h('div', { className: 'card-header' }, h('h2', {}, 'Run assessment')),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'STIG Benchmark'),
+        benchmarks.length
+          ? h('select', { className: 'form-select', id: 'eval-stig' },
+              h('option', { value: '' }, 'Select a benchmark...'),
+              ...options,
+            )
+          : h('p', { style: 'color: var(--text-muted)' },
+              'No benchmarks installed. ',
+              h('a', { href: '#', onClick: (e) => { e.preventDefault(); nav('reports'); } }, 'Import STIG content first.'),
+            ),
       ),
-      h('div', { className: 'card', style: 'max-width: 600px' },
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'STIG Benchmark'),
-          benchmarks.length
-            ? h('select', { className: 'form-select', id: 'eval-stig' },
-                h('option', { value: '' }, 'Select a benchmark...'),
-                ...options,
-              )
-            : h('p', { style: 'color: var(--text-muted)' },
-                'No benchmarks installed. ',
-                h('a', { href: '#', onClick: (e) => { e.preventDefault(); nav('import'); } }, 'Import STIG content first.'),
-              ),
-        ),
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'Target Hostname'),
-          h('input', { className: 'form-input', id: 'eval-host', type: 'text', placeholder: 'e.g. webserver01.navy.mil' }),
-        ),
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'Scan Results (optional)'),
-          h('input', { className: 'form-input', id: 'eval-scan', type: 'file', accept: '.xml,.ckl,.cklb,.json' }),
-        ),
-        h('button', { className: 'btn btn-primary', id: 'eval-btn', onClick: runEvaluation },
-          'Run Evaluation',
-        ),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Target Hostname'),
+        h('input', { className: 'form-input', id: 'eval-host', type: 'text', placeholder: 'e.g. webserver01.navy.mil' }),
       ),
-    );
-    // Batch evaluate section (Fix #3).
-    const page = document.getElementById('page-evaluate');
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Scan Results (optional)'),
+        h('input', { className: 'form-input', id: 'eval-scan', type: 'file', accept: '.xml,.ckl,.cklb,.json' }),
+      ),
+      h('button', { className: 'btn btn-primary', id: 'eval-btn', onClick: runEvaluation },
+        'Run Evaluation',
+      ),
+    ));
+
     if (benchmarks.length > 0) {
       const batchOptions = benchmarks.map(b =>
         h('option', { value: b.id }, `${b.id} (${b.rule_count} rules)`),
       );
-      page.appendChild(h('div', { className: 'card', style: 'max-width: 600px; margin-top: 20px' },
+      container.appendChild(h('div', { className: 'card', style: 'max-width: 600px; margin-top: 20px' },
         h('div', { className: 'card-header' }, h('h2', {}, 'Batch Evaluate')),
         h('p', { style: 'color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem' },
           'Evaluate multiple hosts against a single STIG at once.',
@@ -660,12 +416,10 @@ async function loadEvaluate() {
       ));
     }
 
-    // Add remote scan section.
     const remoteScanSection = await loadRemoteScan();
-    if (remoteScanSection) page.appendChild(remoteScanSection);
-
+    if (remoteScanSection) container.appendChild(remoteScanSection);
   } catch (e) {
-    setPage('evaluate', errorCard(e.message));
+    container.appendChild(errorCard(e.message));
   }
 }
 
@@ -705,7 +459,7 @@ async function runEvaluation() {
       });
     }
     toast(`Evaluation complete: ${result.total} rules, ${result.open} open, ${result.compliance_pct?.toFixed(1) || '?'}% compliance`, 'success');
-    nav('checklists');
+    loadAssessments();
   } catch (e) {
     toast(e.message, 'error');
   } finally {
@@ -899,85 +653,6 @@ async function runRemoteScan() {
   }
 }
 
-// Import Page
-// ---------------------------------------------------------------------------
-function loadImport() {
-  setPage('import',
-    h('div', { className: 'page-header' },
-      h('h1', {}, 'Import'),
-      h('p', {}, 'Import STIG content, checklists, or .stigpack files'),
-    ),
-    h('div', { className: 'grid-2' },
-      // DISA Import
-      h('div', { className: 'card' },
-        h('div', { className: 'card-header' }, h('h2', {}, 'DISA STIG Content')),
-        h('p', { style: 'color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem' },
-          'Import XCCDF benchmarks directly from DISA ZIP archives downloaded from cyber.mil.',
-        ),
-        makeDropZone('disa-drop', 'Drop DISA ZIP or XCCDF XML here', '.zip, .xml files', async (file) => {
-          try {
-            const result = await apiUpload('/library/import-disa', file);
-            toast(`Imported ${result.imported} benchmark(s)`, 'success');
-            result.details.forEach(d => toast(d, 'info'));
-          } catch (e) { toast(e.message, 'error'); }
-        }),
-      ),
-      // Checklist Import
-      h('div', { className: 'card' },
-        h('div', { className: 'card-header' }, h('h2', {}, 'Checklist')),
-        h('p', { style: 'color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem' },
-          'Import an existing CKL, CKLB, or JSON checklist file.',
-        ),
-        makeDropZone('ckl-drop', 'Drop CKL / CKLB / JSON here', '.ckl, .cklb, .json files', async (file) => {
-          try {
-            const result = await apiUpload('/checklists/import', file);
-            toast(`Imported checklist: ${result.hostname} (${result.total} rules)`, 'success');
-          } catch (e) { toast(e.message, 'error'); }
-        }),
-      ),
-    ),
-    h('div', { className: 'card', style: 'margin-top: 20px' },
-      h('div', { className: 'card-header' }, h('h2', {}, '.stigpack Content Pack')),
-      h('p', { style: 'color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem' },
-        'Import a signed .stigpack content pack with benchmarks, answer templates, and remediation scripts.',
-      ),
-      makeDropZone('pack-drop', 'Drop .stigpack file here', '.stigpack files', async (file) => {
-        try {
-          const result = await apiUpload('/library/import-stigpack', file);
-          toast(`Imported pack: ${result.imported} benchmark(s)`, 'success');
-          result.details.forEach(d => toast(d, 'info'));
-        } catch (e) { toast(e.message, 'error'); }
-      }),
-    ),
-  );
-}
-
-function makeDropZone(id, text, hint, onFile) {
-  const zone = h('div', { className: 'drop-zone', id },
-    h('div', { className: 'drop-zone-icon' }, '\u{1F4E5}'),
-    h('div', { className: 'drop-zone-text' }, text),
-    h('div', { className: 'drop-zone-hint' }, hint),
-  );
-
-  const input = h('input', { type: 'file', style: 'display:none' });
-  zone.appendChild(input);
-
-  zone.addEventListener('click', () => input.click());
-  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-  zone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    zone.classList.remove('dragover');
-    if (e.dataTransfer.files.length) onFile(e.dataTransfer.files[0]);
-  });
-  input.addEventListener('change', () => {
-    if (input.files.length) onFile(input.files[0]);
-    input.value = '';
-  });
-
-  return zone;
-}
-
 // ---------------------------------------------------------------------------
 // Export Helpers
 // ---------------------------------------------------------------------------
@@ -994,7 +669,13 @@ function exportCklb(id) {
 // ---------------------------------------------------------------------------
 async function loadSettings() {
   let config = {};
-  try { config = await api('/stigman/config'); } catch (_) {}
+  let creds = [];
+  let schedules = [];
+  await Promise.all([
+    api('/stigman/config').then(data => { config = data; }).catch(() => {}),
+    api('/credentials').then(data => { creds = Array.isArray(data) ? data : []; }).catch(() => {}),
+    api('/schedules').then(data => { schedules = Array.isArray(data) ? data : data.schedules || []; }).catch(() => {}),
+  ]);
 
   setPage('settings',
     h('div', { className: 'page-header' },
@@ -1058,6 +739,63 @@ async function loadSettings() {
         'Create and manage answer file templates for pre-populating checklist findings.',
       ),
       h('button', { className: 'btn btn-primary', onClick: openAnswerEditor }, 'Open Answer File Editor'),
+    ),
+    h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
+      h('div', { className: 'card-header' },
+        h('h2', {}, `Credentials (${creds.length})`),
+        h('button', { className: 'btn btn-secondary btn-sm', onClick: addCredentialDialog }, 'Add Credential'),
+      ),
+      creds.length > 0
+        ? h('table', { className: 'data-table' },
+            h('thead', {}, h('tr', {},
+              h('th', {}, 'Label'), h('th', {}, 'Type'), h('th', {}, 'Username'), h('th', {}, ''),
+            )),
+            h('tbody', {}, ...creds.map(c =>
+              h('tr', {},
+                h('td', { style: 'font-weight: 600' }, c.label),
+                h('td', {}, sevBadge(c.credential_type)),
+                h('td', {}, c.username || '\u2014'),
+                h('td', {},
+                  h('button', { className: 'btn btn-danger btn-sm', onClick: () => removeCred(c.id, c.label) }, '\u00D7'),
+                ),
+              ),
+            )),
+          )
+        : h('p', { style: 'color: var(--text-muted); padding: 16px' }, 'No credentials stored.'),
+    ),
+    h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
+      h('div', { className: 'card-header' },
+        h('h2', {}, `Schedules (${schedules.length})`),
+        h('button', { className: 'btn btn-secondary btn-sm', onClick: addScheduleDialog }, 'Add Schedule'),
+      ),
+      schedules.length > 0
+        ? h('table', { className: 'data-table' },
+            h('thead', {}, h('tr', {},
+              h('th', {}, 'Name'), h('th', {}, 'Frequency'), h('th', {}, 'Assets'),
+              h('th', {}, 'Next Run'), h('th', {}, 'Last Status'), h('th', {}, ''),
+            )),
+            h('tbody', {}, ...schedules.map(s =>
+              h('tr', {},
+                h('td', { style: 'font-weight: 600' }, s.name),
+                h('td', {}, s.frequency?.type || 'unknown'),
+                h('td', {}, `${(s.asset_ids?.length || 0) + (s.asset_tags?.length || 0)}`),
+                h('td', { style: 'font-size: 0.8rem' }, s.next_run ? new Date(s.next_run).toLocaleString() : '\u2014'),
+                h('td', {},
+                  s.last_run_status
+                    ? h('span', { style: s.last_run_status.assets_failed > 0 ? 'color: var(--red)' : 'color: var(--green)' },
+                        `${s.last_run_status.assets_scanned} scanned, ${s.last_run_status.avg_compliance.toFixed(0)}%`)
+                    : h('span', { style: 'color: var(--text-muted)' }, 'Never run'),
+                ),
+                h('td', {},
+                  h('div', { className: 'btn-group' },
+                    h('button', { className: 'btn btn-primary btn-sm', onClick: () => runScheduleNow(s.id) }, 'Run Now'),
+                    h('button', { className: 'btn btn-danger btn-sm', onClick: () => removeSchedule(s.id, s.name) }, '\u00D7'),
+                  ),
+                ),
+              ),
+            )),
+          )
+        : h('p', { style: 'color: var(--text-muted); padding: 16px' }, 'No schedules configured.'),
     ),
   );
 }
@@ -1162,70 +900,6 @@ async function doPush(checklistId, hostname, collectionId) {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Get Content Page (DISA auto-download)
-// ---------------------------------------------------------------------------
-async function loadGetContent() {
-  setPage('content',
-    h('div', { className: 'page-header' },
-      h('h1', {}, 'Get STIG Content'),
-      h('p', {}, 'Download the latest STIG benchmarks directly from DISA (public.cyber.mil)'),
-    ),
-    h('div', { className: 'stats-grid' },
-      h('div', { className: 'stat-card', style: 'cursor: pointer', onClick: fetchAllContent },
-        h('div', { className: 'stat-label' }, 'Quick Action'),
-        h('div', { className: 'stat-value accent', style: 'font-size: 1.2rem' }, 'Get All STIGs'),
-        h('div', { className: 'stat-sub' }, 'Download everything from DISA'),
-      ),
-      h('div', { className: 'stat-card', style: 'cursor: pointer', onClick: checkForUpdates },
-        h('div', { className: 'stat-label' }, 'Check'),
-        h('div', { className: 'stat-value', style: 'font-size: 1.2rem' }, 'Check Updates'),
-        h('div', { className: 'stat-sub' }, 'See what\'s available'),
-      ),
-      h('div', { className: 'stat-card', style: 'cursor: pointer', onClick: downloadOfflinePack },
-        h('div', { className: 'stat-label' }, 'Air-Gapped'),
-        h('div', { className: 'stat-value', style: 'font-size: 1.2rem' }, 'Export Pack'),
-        h('div', { className: 'stat-sub' }, 'Generate .stigpack for sandbox transfer'),
-      ),
-    ),
-    h('div', { id: 'content-results' }),
-    h('div', { id: 'content-available', className: 'card', style: 'margin-top: 20px' },
-      h('div', { className: 'card-header' },
-        h('h2', {}, 'Available STIGs'),
-        h('button', { className: 'btn btn-secondary btn-sm', onClick: browseAvailable }, 'Browse DISA'),
-      ),
-      h('div', { id: 'available-list' },
-        h('p', { style: 'color: var(--text-muted); padding: 20px; text-align: center' },
-          'Click "Browse DISA" or "Check Updates" to see available content.'),
-      ),
-    ),
-    h('div', { className: 'card', style: 'margin-top: 20px' },
-      h('div', { className: 'card-header' },
-        h('h2', {}, 'Auto-Update'),
-      ),
-      h('p', { style: 'color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px' },
-        'When enabled, AutomateSTIG checks DISA for new STIG content every 24 hours. ',
-        'Disabled by default (air-gapped mode).',
-      ),
-      h('div', { style: 'display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--bg-base); border-radius: var(--radius-sm)' },
-        h('input', { type: 'checkbox', id: 'auto-update-toggle', onChange: async (e) => {
-          try {
-            await api('/agent/config', {
-              method: 'POST',
-              body: JSON.stringify({ enabled: e.target.checked, scan_interval_minutes: 1440, targets: [], auto_push_stigman: false, alert_on_new_findings: true, notifications: {} }),
-            });
-            // Also set the auto_update_enabled flag the server checks.
-            // This is stored separately since agent config is a different structure.
-            toast(e.target.checked ? 'Auto-update enabled' : 'Auto-update disabled (air-gapped mode)', 'success');
-            updateStatusBar();
-          } catch (err) { toast(err.message, 'error'); }
-        }}),
-        h('label', { for: 'auto-update-toggle', style: 'font-size: 0.9rem; cursor: pointer' }, 'Enable background STIG content updates (requires network access)'),
-      ),
-    ),
-  );
-}
-
 async function fetchAllContent() {
   toast('Fetching all STIG content from DISA... this may take a few minutes.', 'info');
   try {
@@ -1328,130 +1002,6 @@ function downloadOfflinePack() {
   setTimeout(() => toast('Offline .stigpack downloaded. Transfer to air-gapped systems via USB/DVD.', 'success'), 2000);
 }
 
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// Assets Page
-// ---------------------------------------------------------------------------
-async function loadAssets() {
-  try {
-    const [assets, creds, schedConfig] = await Promise.all([
-      api('/assets'),
-      api('/credentials'),
-      api('/schedules'),
-    ]);
-
-    const schedules = schedConfig.schedules || [];
-
-    // Asset table.
-    const rows = assets.map(a => {
-      const compColor = a.last_compliance_pct != null ? complianceColor(a.last_compliance_pct) : '';
-      return h('tr', { style: 'cursor: pointer', onClick: (e) => { if (e.target.tagName !== 'BUTTON') editAsset(a); } },
-        h('td', {},
-          h('div', { style: 'font-weight: 600' }, a.name),
-          h('div', { style: 'font-size: 0.75rem; color: var(--text-muted)' }, a.address),
-        ),
-        h('td', {}, a.platform),
-        h('td', {}, a.protocol),
-        h('td', {},
-          a.assigned_stigs.length > 0
-            ? h('span', { style: 'font-size: 0.8rem' }, `${a.assigned_stigs.length} STIG(s)`)
-            : h('span', { style: 'color: var(--text-muted); font-size: 0.8rem' }, 'None'),
-        ),
-        h('td', {},
-          a.last_compliance_pct != null
-            ? h('span', { className: `stat-value ${compColor}`, style: 'font-size: 1rem' }, `${a.last_compliance_pct.toFixed(1)}%`)
-            : h('span', { style: 'color: var(--text-muted)' }, '\u2014'),
-        ),
-        h('td', {},
-          h('div', { className: 'btn-group' },
-            h('button', { className: 'btn btn-primary btn-sm', onClick: (e) => { e.stopPropagation(); scanAsset(a); } }, 'Scan'),
-            h('button', { className: 'btn btn-danger btn-sm', onClick: (e) => { e.stopPropagation(); removeAsset(a.id, a.name); } }, '\u00D7'),
-          ),
-        ),
-      );
-    });
-
-    setPage('assets',
-      h('div', { className: 'page-header' },
-        h('h1', {}, `Assets (${assets.length})`),
-        h('p', {}, 'Managed hosts, credentials, and evaluation schedules'),
-      ),
-      h('div', { className: 'btn-group', style: 'margin-bottom: 20px' },
-        h('button', { className: 'btn btn-primary', onClick: addAssetDialog }, 'Add Asset'),
-        h('button', { className: 'btn btn-secondary', onClick: addCredentialDialog }, 'Add Credential'),
-        h('button', { className: 'btn btn-secondary', onClick: addScheduleDialog }, 'Add Schedule'),
-        h('button', { className: 'btn btn-secondary', onClick: syncFromStigManager }, 'Sync from STIG-Manager'),
-        h('button', { className: 'btn btn-secondary', onClick: checkStigManagerDiff }, 'Check for SM Updates'),
-      ),
-      assets.length > 0 ? h('div', { className: 'card' },
-        h('div', { className: 'card-header' }, h('h2', {}, 'Asset Inventory')),
-        h('table', { className: 'data-table' },
-          h('thead', {}, h('tr', {},
-            h('th', {}, 'Host'), h('th', {}, 'Platform'), h('th', {}, 'Protocol'),
-            h('th', {}, 'STIGs'), h('th', {}, 'Compliance'), h('th', {}, 'Actions'),
-          )),
-          h('tbody', {}, ...rows),
-        ),
-      ) : emptyState('No Assets', 'Add hosts to manage and schedule evaluations.'),
-      // Credentials section.
-      h('div', { className: 'card', style: 'margin-top: 20px' },
-        h('div', { className: 'card-header' }, h('h2', {}, `Credentials (${creds.length})`)),
-        creds.length > 0
-          ? h('table', { className: 'data-table' },
-              h('thead', {}, h('tr', {},
-                h('th', {}, 'Label'), h('th', {}, 'Type'), h('th', {}, 'Username'), h('th', {}, ''),
-              )),
-              h('tbody', {}, ...creds.map(c =>
-                h('tr', {},
-                  h('td', { style: 'font-weight: 600' }, c.label),
-                  h('td', {}, sevBadge(c.credential_type)),
-                  h('td', {}, c.username || '\u2014'),
-                  h('td', {},
-                    h('button', { className: 'btn btn-danger btn-sm', onClick: () => removeCred(c.id, c.label) }, '\u00D7'),
-                  ),
-                ),
-              )),
-            )
-          : h('p', { style: 'color: var(--text-muted); padding: 16px' }, 'No credentials stored.'),
-      ),
-      // Schedules section.
-      h('div', { className: 'card', style: 'margin-top: 20px' },
-        h('div', { className: 'card-header' }, h('h2', {}, `Schedules (${schedules.length})`)),
-        schedules.length > 0
-          ? h('table', { className: 'data-table' },
-              h('thead', {}, h('tr', {},
-                h('th', {}, 'Name'), h('th', {}, 'Frequency'), h('th', {}, 'Assets'),
-                h('th', {}, 'Next Run'), h('th', {}, 'Last Status'), h('th', {}, ''),
-              )),
-              h('tbody', {}, ...schedules.map(s =>
-                h('tr', {},
-                  h('td', { style: 'font-weight: 600' }, s.name),
-                  h('td', {}, s.frequency?.type || 'unknown'),
-                  h('td', {}, `${(s.asset_ids?.length || 0) + (s.asset_tags?.length || 0)}`),
-                  h('td', { style: 'font-size: 0.8rem' }, s.next_run ? new Date(s.next_run).toLocaleString() : '\u2014'),
-                  h('td', {},
-                    s.last_run_status
-                      ? h('span', { style: s.last_run_status.assets_failed > 0 ? 'color: var(--red)' : 'color: var(--green)' },
-                          `${s.last_run_status.assets_scanned} scanned, ${s.last_run_status.avg_compliance.toFixed(0)}%`)
-                      : h('span', { style: 'color: var(--text-muted)' }, 'Never run'),
-                  ),
-                  h('td', {},
-                    h('div', { className: 'btn-group' },
-                      h('button', { className: 'btn btn-primary btn-sm', onClick: () => runScheduleNow(s.id) }, 'Run Now'),
-                      h('button', { className: 'btn btn-danger btn-sm', onClick: () => removeSchedule(s.id, s.name) }, '\u00D7'),
-                    ),
-                  ),
-                ),
-              )),
-            )
-          : h('p', { style: 'color: var(--text-muted); padding: 16px' }, 'No schedules configured.'),
-      ),
-    );
-  } catch (e) {
-    setPage('assets', errorCard(e.message));
-  }
-}
-
 function addAssetDialog() {
   const overlay = h('div', { className: 'modal-overlay' },
     h('div', { className: 'modal', style: 'max-width: 500px' },
@@ -1487,28 +1037,13 @@ function addAssetDialog() {
             os_info: null, notes: null, last_evaluated: null, last_compliance_pct: null,
             last_checklist_ids: [], created_at: new Date().toISOString(),
           };
-          try { await api('/assets', { method: 'POST', body: JSON.stringify(asset) }); overlay.remove(); toast('Asset added', 'success'); loadAssets(); }
+          try { await api('/assets', { method: 'POST', body: JSON.stringify(asset) }); overlay.remove(); toast('Asset added', 'success'); loadAssetsPage(); }
           catch (e) { toast(e.message, 'error'); }
         }}, 'Add'),
       ),
     ),
   );
   document.body.appendChild(overlay);
-}
-
-function editAsset(a) { toast(`Editing ${a.name} — click Scan to evaluate`, 'info'); }
-
-async function scanAsset(asset) {
-  if (!asset.assigned_stigs.length) { toast('Assign STIGs to this asset first', 'error'); return; }
-  toast(`Scanning ${asset.name}...`, 'info');
-  // Use the first assigned STIG for now.
-  try {
-    const endpoint = asset.protocol === 'ssh' ? '/scan/ssh' : '/scan/winrm';
-    const body = asset.protocol === 'ssh'
-      ? { host: asset.address, stig_id: asset.assigned_stigs[0], username: 'admin', auth: { type: 'password', password: '' }, port: asset.port }
-      : { host: asset.address, stig_id: asset.assigned_stigs[0], username: 'Administrator', password: '', port: asset.port };
-    toast('Enter credentials in the Evaluate > Remote Scan form for now', 'info');
-  } catch (e) { toast(e.message, 'error'); }
 }
 
 async function checkStigManagerDiff() {
@@ -1598,16 +1133,10 @@ async function syncFromStigManager() {
     const result = await api(`/stigman/sync/${selectedId}`, { method: 'POST' });
     toast(`Synced ${result.synced} assets (${result.total_assets} total in inventory)`, 'success');
     result.details.forEach(d => toast(d, 'info'));
-    loadAssets();
+    loadAssetsPage();
   } catch (e) {
     toast(`Sync failed: ${e.message}`, 'error');
   }
-}
-
-async function removeAsset(id, name) {
-  if (!(await confirm('Delete Asset', `Remove "${name}" from the inventory?`))) return;
-  try { await api(`/assets/${id}`, { method: 'DELETE' }); toast('Asset removed', 'success'); loadAssets(); }
-  catch (e) { toast(e.message, 'error'); }
 }
 
 function addCredentialDialog() {
@@ -1637,7 +1166,7 @@ function addCredentialDialog() {
               : { type: 'token', token: document.getElementById('ac-secret')?.value, token_type: 'bearer' },
             description: null, created_at: new Date().toISOString(), last_used: null, expires_at: null,
           };
-          try { await api('/credentials', { method: 'POST', body: JSON.stringify(cred) }); overlay.remove(); toast('Credential saved', 'success'); loadAssets(); }
+          try { await api('/credentials', { method: 'POST', body: JSON.stringify(cred) }); overlay.remove(); toast('Credential saved', 'success'); loadSettings(); }
           catch (e) { toast(e.message, 'error'); }
         }}, 'Save'),
       ),
@@ -1647,8 +1176,8 @@ function addCredentialDialog() {
 }
 
 async function removeCred(id, label) {
-  if (!(await confirm('Delete Credential', `Remove "${label}"?`))) return;
-  try { await api(`/credentials/${id}`, { method: 'DELETE' }); toast('Credential removed', 'success'); loadAssets(); }
+  if (!(await confirmDialog('Delete Credential', `Remove "${label}"?`))) return;
+  try { await api(`/credentials/${id}`, { method: 'DELETE' }); toast('Credential removed', 'success'); loadSettings(); }
   catch (e) { toast(e.message, 'error'); }
 }
 
@@ -1693,7 +1222,7 @@ function addScheduleDialog() {
               generate_report: false, alert_on_drift: true, alert_below_compliance: null, stigman_collection_id: null },
             last_run: null, last_run_status: null, next_run: null, created_at: new Date().toISOString(),
           };
-          try { await api('/schedules', { method: 'POST', body: JSON.stringify(schedule) }); overlay.remove(); toast('Schedule created', 'success'); loadAssets(); }
+          try { await api('/schedules', { method: 'POST', body: JSON.stringify(schedule) }); overlay.remove(); toast('Schedule created', 'success'); loadSettings(); }
           catch (e) { toast(e.message, 'error'); }
         }}, 'Create'),
       ),
@@ -1703,8 +1232,8 @@ function addScheduleDialog() {
 }
 
 async function removeSchedule(id, name) {
-  if (!(await confirm('Delete Schedule', `Remove schedule "${name}"?`))) return;
-  try { await api(`/schedules/${id}`, { method: 'DELETE' }); toast('Schedule removed', 'success'); loadAssets(); }
+  if (!(await confirmDialog('Delete Schedule', `Remove schedule "${name}"?`))) return;
+  try { await api(`/schedules/${id}`, { method: 'DELETE' }); toast('Schedule removed', 'success'); loadSettings(); }
   catch (e) { toast(e.message, 'error'); }
 }
 
@@ -1831,12 +1360,12 @@ function showComparisonResult(result) {
 // Delete Checklist
 // ---------------------------------------------------------------------------
 async function deleteChecklist(id, hostname) {
-  const confirmed = await confirm('Delete Checklist', `Delete the checklist for "${hostname}"? This cannot be undone.`);
+  const confirmed = await confirmDialog('Delete Checklist', `Delete the checklist for "${hostname}"? This cannot be undone.`);
   if (!confirmed) return;
   try {
     await api(`/checklists/${id}`, { method: 'DELETE' });
     toast('Checklist deleted', 'success');
-    loadChecklists();
+    nav('assessments');
   } catch (e) {
     toast(`Delete failed: ${e.message}`, 'error');
   }
@@ -1861,7 +1390,7 @@ async function runBatchEvaluation() {
     });
     const successes = result.results.filter(r => r.success).length;
     toast(`Batch complete: ${successes}/${result.evaluated} succeeded`, 'success');
-    nav('checklists');
+    loadAssessments();
   } catch (e) {
     toast(`Batch failed: ${e.message}`, 'error');
   }
@@ -1971,31 +1500,6 @@ async function updateStatusBar() {
 }
 
 // ---------------------------------------------------------------------------
-// Compliance Sparkline (SVG)
-// ---------------------------------------------------------------------------
-function sparkline(dataPoints, width = 200, height = 40) {
-  if (!dataPoints || dataPoints.length < 2) return h('span', { style: 'color: var(--text-muted); font-size: 0.75rem' }, 'No trend data');
-  const values = dataPoints.map(d => d.compliance_pct);
-  const min = Math.min(...values) - 5;
-  const max = Math.max(...values) + 5;
-  const range = max - min || 1;
-  const points = values.map((v, i) => {
-    const x = (i / (values.length - 1)) * width;
-    const y = height - ((v - min) / range) * height;
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(' ');
-  const color = values[values.length - 1] >= 95 ? 'var(--green)' : values[values.length - 1] >= 80 ? 'var(--yellow)' : 'var(--red)';
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('width', width); svg.setAttribute('height', height);
-  svg.setAttribute('viewBox', `0 0 ${width} ${height}`); svg.style.display = 'block';
-  const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-  polyline.setAttribute('points', points); polyline.setAttribute('fill', 'none');
-  polyline.setAttribute('stroke', color); polyline.setAttribute('stroke-width', '2');
-  svg.appendChild(polyline);
-  return svg;
-}
-
-// ---------------------------------------------------------------------------
 // Answer File Editor
 // ---------------------------------------------------------------------------
 async function openAnswerEditor() {
@@ -2048,10 +1552,17 @@ updateStatusBar();
 // ---------------------------------------------------------------------------
 // Workflow-first UI overlays
 // ---------------------------------------------------------------------------
+async function fetchChecklistsWithFindings() {
+  const summaries = await api('/checklists');
+  return Promise.all(summaries.map(summary =>
+    api(`/checklists/${summary.id}`).catch(() => summary),
+  ));
+}
+
 async function getOverviewData() {
   const [status, checklists, assets, benchmarks] = await Promise.all([
     api('/status'),
-    api('/checklists'),
+    fetchChecklistsWithFindings(),
     api('/assets').catch(() => []),
     api('/library/benchmarks').catch(() => []),
   ]);
@@ -2087,9 +1598,9 @@ function flattenFindings(checklists) {
 
 function severityRank(sev) {
   const value = String(sev || '').toLowerCase();
-  if (value.includes('cat i') || value.includes('high')) return 3;
-  if (value.includes('cat ii') || value.includes('medium')) return 2;
   if (value.includes('cat iii') || value.includes('low')) return 1;
+  if (value.includes('cat ii') || value.includes('medium')) return 2;
+  if (value.includes('cat i') || value.includes('high')) return 3;
   return 0;
 }
 
@@ -2212,6 +1723,32 @@ function actionRow(title, subtitle, onClick) {
   );
 }
 
+function openAssessment(assessment) {
+  if (assessment.items.length === 1) { viewChecklist(assessment.items[0].id); return; }
+  pickChecklistDialog(assessment.items);
+}
+
+function pickChecklistDialog(items) {
+  const overlay = h('div', { className: 'modal-overlay', onClick: (e) => { if (e.target === overlay) overlay.remove(); } },
+    h('div', { className: 'modal' },
+      h('h3', {}, 'Open checklist'),
+      h('div', { className: 'stack-list', style: 'margin-top: 12px' },
+        ...items.map(item => h('button', { className: 'action-row', onClick: () => { overlay.remove(); viewChecklist(item.id); } },
+          h('div', {},
+            h('div', { className: 'list-title' }, item.stig_title || item.stig_id || 'Checklist'),
+            h('div', { className: 'list-subtitle' }, `${(item.compliance_pct || 0).toFixed(1)}% compliant • ${item.open || 0} open`),
+          ),
+          h('span', { className: 'action-arrow' }, '→'),
+        )),
+      ),
+      h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
+      ),
+    ),
+  );
+  document.body.appendChild(overlay);
+}
+
 async function loadAssessments() {
   try {
     const [checklists, assets, benchmarks] = await Promise.all([
@@ -2257,7 +1794,7 @@ async function loadAssessments() {
                 h('th', {}, 'Status'),
               )),
               h('tbody', {}, ...assessments.map(assessment =>
-                h('tr', {},
+                h('tr', { style: 'cursor: pointer', tabindex: '0', onClick: () => openAssessment(assessment), onKeydown: (e) => { if (e.key === 'Enter') openAssessment(assessment); } },
                   h('td', {},
                     h('div', { className: 'list-title' }, assessment.name),
                     h('div', { className: 'list-subtitle' }, `${assessment.items.length} checklist${assessment.items.length === 1 ? '' : 's'}`),
@@ -2281,7 +1818,9 @@ async function loadAssessments() {
           actionRow('3. Import or run results', 'Use reports to bring in checklist files or export new results.', () => nav('reports')),
         ),
       ),
+      h('div', { id: 'evaluate-workspace' }),
     );
+    renderEvaluateWorkspace();
   } catch (e) {
     setPage('assessments', errorCard(e.message));
   }
@@ -2302,6 +1841,7 @@ async function loadStandards() {
       h('td', {}, `${benchmark.version || '—'} / ${benchmark.release || '—'}`),
       h('td', {}, benchmark.rule_count ?? benchmark.rules ?? '—'),
       h('td', {}, formatDate(benchmark.imported_at || benchmark.created_at)),
+      h('td', {}, h('button', { className: 'btn btn-secondary btn-sm', onClick: (e) => { e.stopPropagation(); generateChecks(benchmark.id); } }, 'Generate Checks')),
     ));
 
     setPage('standards',
@@ -2332,6 +1872,7 @@ async function loadStandards() {
                   h('th', {}, 'Version / Release'),
                   h('th', {}, 'Rules'),
                   h('th', {}, 'Imported'),
+                  h('th', {}, ''),
                 )),
                 h('tbody', {}, ...rows),
               )
@@ -2362,7 +1903,7 @@ async function loadStandards() {
 
 async function loadFindings() {
   try {
-    const checklists = await api('/checklists');
+    const checklists = await fetchChecklistsWithFindings();
     const findings = flattenFindings(checklists);
     const openOnly = findings.filter(f => String(f.status).toLowerCase() === 'open');
     const rows = (openOnly.length ? openOnly : findings).sort((a, b) => severityRank(b.severity) - severityRank(a.severity));
@@ -2391,7 +1932,7 @@ async function loadFindings() {
                 h('th', {}, 'Updated'),
               )),
               h('tbody', {}, ...rows.map(row =>
-                h('tr', {},
+                h('tr', { style: 'cursor: pointer', tabindex: '0', onClick: () => viewChecklist(row.checklistId), onKeydown: (e) => { if (e.key === 'Enter') viewChecklist(row.checklistId); } },
                   h('td', {}, row.vulnId),
                   h('td', {},
                     h('div', { className: 'list-title' }, row.title),
@@ -2469,8 +2010,10 @@ async function loadAssetsPage() {
           ),
         ),
         h('div', { className: 'card' },
-          h('div', { className: 'card-header' }, h('h2', {}, 'Administrative surfaces moved')),
-          h('p', { className: 'list-subtitle' }, 'Credentials and schedules still exist, but they should live under Settings / Automation instead of crowding the inventory view.'),
+          h('div', { className: 'card-header' }, h('h2', {}, 'Credentials & automation')),
+          h('div', { className: 'stack-list' },
+            actionRow('Manage credentials & schedules', 'Stored credentials and automated scan schedules live under Settings.', () => nav('settings')),
+          ),
         ),
       ),
     );
@@ -2495,9 +2038,9 @@ async function loadReports() {
       h('div', { className: 'card' },
         h('div', { className: 'card-header' }, h('h2', {}, 'Import content and results')),
         h('div', { className: 'stack-list' },
-          actionRow('Import checklist file', 'Bring in CKL, CKLB, or JSON results for review.', () => nav('reports-import-checklists')),
-          actionRow('Import benchmark pack', 'Load signed .stigpack content for standards and templates.', () => nav('reports-import-pack')),
-          actionRow('Import DISA XCCDF ZIP', 'Add raw benchmark content directly from downloaded DISA archives.', () => nav('reports-import-xccdf')),
+          actionRow('Import checklist file', 'Bring in CKL, CKLB, or JSON results for review.', () => document.getElementById('card-import-checklist')?.scrollIntoView({ behavior: 'smooth', block: 'center' })),
+          actionRow('Import benchmark pack', 'Load signed .stigpack content for standards and templates.', () => document.getElementById('card-import-stigpack')?.scrollIntoView({ behavior: 'smooth', block: 'center' })),
+          actionRow('Import DISA XCCDF ZIP', 'Add raw benchmark content directly from downloaded DISA archives.', () => document.getElementById('card-import-disa')?.scrollIntoView({ behavior: 'smooth', block: 'center' })),
         ),
       ),
       h('div', { className: 'card' },
@@ -2511,19 +2054,19 @@ async function loadReports() {
     ),
     h('div', { className: 'card' },
       h('div', { className: 'card-header' }, h('h2', {}, 'Import workspace')),
-      h('p', { className: 'list-subtitle', style: 'margin-bottom: 16px' }, 'These controls preserve the working import functionality while moving it under a reports/outcomes framing.'),
+      h('p', { className: 'list-subtitle', style: 'margin-bottom: 16px' }, 'Bring checklist results, signed benchmark packs, and DISA XCCDF archives into the workspace.'),
       h('div', { className: 'report-import-grid' },
-        importCard('Import DISA ZIP', 'Import XCCDF benchmarks directly from DISA ZIP archives downloaded from cyber.mil.', handleDisaZipImport),
-        importCard('Import Checklist', 'Import an existing CKL, CKLB, or JSON checklist file.', handleChecklistImport),
-        importCard('Import .stigpack', 'Import a signed .stigpack content pack with benchmarks and templates.', handleStigpackImport),
+        importCard('Import DISA ZIP', 'Import XCCDF benchmarks directly from DISA ZIP archives downloaded from cyber.mil.', handleDisaZipImport, 'card-import-disa'),
+        importCard('Import Checklist', 'Import an existing CKL, CKLB, or JSON checklist file.', handleChecklistImport, 'card-import-checklist'),
+        importCard('Import .stigpack', 'Import a signed .stigpack content pack with benchmarks and templates.', handleStigpackImport, 'card-import-stigpack'),
       ),
     ),
   );
 }
 
-function importCard(title, description, handler) {
+function importCard(title, description, handler, cardId) {
   const inputId = `input-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-  return h('div', { className: 'card compact-card' },
+  return h('div', { className: 'card compact-card', id: cardId },
     h('h3', {}, title),
     h('p', { className: 'list-subtitle', style: 'margin: 8px 0 14px' }, description),
     h('input', { id: inputId, type: 'file', style: 'display:none', onChange: handler }),
@@ -2535,7 +2078,7 @@ async function handleDisaZipImport(e) {
   const file = e.target.files?.[0];
   if (!file) return;
   try {
-    const result = await apiUpload('/import/xccdf-zip', file);
+    const result = await apiUpload('/library/import-disa', file);
     toast(`Imported ${result.imported} benchmark(s)`, 'success');
     nav('standards');
   } catch (err) {
@@ -2547,7 +2090,7 @@ async function handleChecklistImport(e) {
   const file = e.target.files?.[0];
   if (!file) return;
   try {
-    const result = await apiUpload('/import/checklist', file);
+    const result = await apiUpload('/checklists/import', file);
     toast(`Imported checklist: ${result.hostname} (${result.total} rules)`, 'success');
     nav('findings');
   } catch (err) {
@@ -2559,7 +2102,7 @@ async function handleStigpackImport(e) {
   const file = e.target.files?.[0];
   if (!file) return;
   try {
-    const result = await apiUpload('/import/stigpack', file);
+    const result = await apiUpload('/library/import-stigpack', file);
     toast(`Imported pack: ${result.imported} benchmark(s)`, 'success');
     nav('standards');
   } catch (err) {
