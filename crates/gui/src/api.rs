@@ -725,6 +725,8 @@ async fn import_checklist(
 struct EvaluateRequest {
     stig_id: String,
     hostname: String,
+    #[serde(default)]
+    asset_id: Option<String>,
 }
 
 async fn evaluate(
@@ -772,6 +774,15 @@ async fn evaluate(
             let db = state.db();
             let _ = db.save_checklist(&checklist);
             let _ = db.log_evaluation(&checklist, "gui", None);
+            if let Some(ref aid) = req.asset_id {
+                update_asset_after_eval(
+                    &db,
+                    aid,
+                    &req.stig_id,
+                    s.compliance_pct(),
+                    &checklist.id.to_string(),
+                );
+            }
 
             api_ok(info)
         }
@@ -1488,6 +1499,7 @@ async fn evaluate_with_scan(
 ) -> Json<serde_json::Value> {
     let mut stig_id = String::new();
     let mut hostname = String::new();
+    let mut asset_id: Option<String> = None;
     let mut scan_data: Option<Vec<u8>> = None;
     let mut scan_filename = String::new();
 
@@ -1500,6 +1512,9 @@ async fn evaluate_with_scan(
             }
             "hostname" => {
                 hostname = field.text().await.unwrap_or_default();
+            }
+            "asset_id" => {
+                asset_id = Some(field.text().await.unwrap_or_default());
             }
             "scan" => {
                 scan_filename = field.file_name().unwrap_or("scan").to_string();
@@ -1555,6 +1570,15 @@ async fn evaluate_with_scan(
             let db = state.db();
             let _ = db.save_checklist(&checklist);
             let _ = db.log_evaluation(&checklist, "gui-scan-import", None);
+            if let Some(ref aid) = asset_id {
+                update_asset_after_eval(
+                    &db,
+                    aid,
+                    &stig_id,
+                    s.compliance_pct(),
+                    &checklist.id.to_string(),
+                );
+            }
 
             api_ok(serde_json::json!({
                 "id": checklist.id.to_string(),
@@ -1720,6 +1744,28 @@ fn save_assets(
 ) {
     if let Ok(json) = serde_json::to_string(assets) {
         let _ = db.set_config("asset_inventory", &json);
+    }
+}
+
+/// After an evaluation, reflect the result on the linked asset (if any).
+fn update_asset_after_eval(
+    db: &automatestig_storage::Database,
+    asset_id: &str,
+    stig_id: &str,
+    compliance_pct: f64,
+    checklist_id: &str,
+) {
+    let mut assets = load_assets(db);
+    if let Some(asset) = assets.iter_mut().find(|a| a.id == asset_id) {
+        asset.last_evaluated = Some(chrono::Utc::now());
+        asset.last_compliance_pct = Some(compliance_pct);
+        if !asset.assigned_stigs.iter().any(|s| s == stig_id) {
+            asset.assigned_stigs.push(stig_id.to_string());
+        }
+        if !asset.last_checklist_ids.iter().any(|c| c == checklist_id) {
+            asset.last_checklist_ids.push(checklist_id.to_string());
+        }
+        save_assets(db, &assets);
     }
 }
 

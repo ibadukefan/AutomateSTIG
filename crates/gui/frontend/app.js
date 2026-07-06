@@ -360,7 +360,10 @@ async function renderEvaluateWorkspace() {
   container.innerHTML = '';
 
   try {
-    const benchmarks = await api('/library/benchmarks');
+    const [benchmarks, assets] = await Promise.all([
+      api('/library/benchmarks'),
+      api('/assets').catch(() => []),
+    ]);
 
     const options = benchmarks.map(b =>
       h('option', { value: b.id }, `${b.id} (${b.rule_count} rules)`),
@@ -368,6 +371,18 @@ async function renderEvaluateWorkspace() {
 
     container.appendChild(h('div', { className: 'card', style: 'max-width: 600px' },
       h('div', { className: 'card-header' }, h('h2', {}, 'Run assessment')),
+      assets.length > 0 ? h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Asset (optional)'),
+        h('select', { className: 'form-select', id: 'eval-asset',
+          onChange: (e) => {
+            const a = assets.find(x => x.id === e.target.value);
+            const host = document.getElementById('eval-host');
+            if (a && host) host.value = a.name;
+          } },
+          h('option', { value: '' }, 'Manual entry…'),
+          ...assets.map(a => h('option', { value: a.id }, `${a.name} (${a.address})`)),
+        ),
+      ) : null,
       h('div', { className: 'form-group' },
         h('label', { className: 'form-label' }, 'STIG Benchmark'),
         benchmarks.length
@@ -426,6 +441,7 @@ async function renderEvaluateWorkspace() {
 async function runEvaluation() {
   const stigId = document.getElementById('eval-stig')?.value;
   const hostname = document.getElementById('eval-host')?.value;
+  const assetId = document.getElementById('eval-asset')?.value || null;
   const scanInput = document.getElementById('eval-scan');
   const scanFile = scanInput?.files?.[0];
 
@@ -444,6 +460,7 @@ async function runEvaluation() {
       form.append('stig_id', stigId);
       form.append('hostname', hostname);
       form.append('scan', scanFile);
+      if (assetId) form.append('asset_id', assetId);
       const res = await fetch(`${API}/evaluate/with-scan`, {
         method: 'POST',
         body: form,
@@ -455,7 +472,7 @@ async function runEvaluation() {
     } else {
       result = await api('/evaluate', {
         method: 'POST',
-        body: JSON.stringify({ stig_id: stigId, hostname }),
+        body: JSON.stringify({ stig_id: stigId, hostname, asset_id: assetId }),
       });
     }
     toast(`Evaluation complete: ${result.total} rules, ${result.open} open, ${result.compliance_pct?.toFixed(1) || '?'}% compliance`, 'success');

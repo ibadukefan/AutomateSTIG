@@ -148,6 +148,23 @@ fn detect_platform(benchmark: &StigBenchmark) -> CheckPlatform {
 // Windows pattern matchers
 // ---------------------------------------------------------------------------
 
+static RE_REGISTRY_BLOCK_HIVE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"(?im)^\s*Registry\s+Hive:\s*(HKEY_LOCAL_MACHINE|HKEY_CURRENT_USER)").unwrap()
+});
+
+static RE_REGISTRY_BLOCK_PATH: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?im)^\s*Registry\s+Path:\s*([^\r\n]+)").unwrap());
+
+static RE_REGISTRY_BLOCK_VALUE_NAME: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?im)^\s*Value\s+Name:\s*([^\r\n]+)").unwrap());
+
+static RE_REGISTRY_BLOCK_TYPE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?im)^\s*(?:Value\s+)?Type:\s*(REG_\w+)").unwrap());
+
+static RE_REGISTRY_BLOCK_VALUE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"(?im)^\s*Value:\s*(0x[0-9a-fA-F]+)\s*\((\d+)\)([^\r\n]*)").unwrap()
+});
+
 static RE_REGISTRY_SIMPLE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r#"(?i)(?:HKLM|HKEY_LOCAL_MACHINE)\\([\w\\ ]+?)[\s.,].*?(?:value\s+(?:name\s+)?)?(?:"|')?(\w{3,})(?:"|')?\s+(?:REG_\w+\s+)?(?:is\s+not\s+set\s+to|is\s+not\s+|must\s+be\s+|not\s+set\s+to\s+|set\s+to\s+).*?(\d+)"#).unwrap()
 });
@@ -160,7 +177,79 @@ static RE_AUDITPOL: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r#"(?i)(?:audit(?:pol|ing)?|audit\s+policy).*?(?:"|')?([\w /]+?)(?:"|')?\s+.*?(?:Success|Failure)"#).unwrap()
 });
 
+fn try_registry_block(text: &str) -> Option<(Check, ExpectedResult, String)> {
+    let hive = RE_REGISTRY_BLOCK_HIVE.captures(text)?.get(1)?.as_str();
+    let raw_path = RE_REGISTRY_BLOCK_PATH.captures(text)?.get(1)?.as_str();
+    let value_name = RE_REGISTRY_BLOCK_VALUE_NAME
+        .captures(text)?
+        .get(1)?
+        .as_str()
+        .trim()
+        .to_string();
+    let value_type = RE_REGISTRY_BLOCK_TYPE.captures(text)?.get(1)?.as_str();
+
+    if !value_type.eq_ignore_ascii_case("REG_DWORD") || value_name.is_empty() {
+        return None;
+    }
+
+    let value_caps = RE_REGISTRY_BLOCK_VALUE.captures(text)?;
+    let decimal = value_caps.get(2)?.as_str().parse::<i64>().ok()?;
+    let tail = value_caps.get(3)?.as_str().to_lowercase();
+
+    if tail.contains(" or 0x") || tail.contains(", 0x") {
+        return None;
+    }
+
+    let expected = if tail.contains("or greater")
+        || tail.contains("or more")
+        || tail.contains("at least")
+    {
+        ExpectedResult::GreaterOrEqual {
+            value: decimal as f64,
+        }
+    } else if tail.contains("or less") || tail.contains("or lower") || tail.contains("no more than")
+    {
+        ExpectedResult::LessOrEqual {
+            value: decimal as f64,
+        }
+    } else if !tail.trim().is_empty() && tail.chars().any(|c| c.is_ascii_alphabetic()) {
+        return None;
+    } else {
+        ExpectedResult::Equals {
+            value: serde_json::json!(decimal),
+        }
+    };
+
+    let hive_prefix = if hive.eq_ignore_ascii_case("HKEY_LOCAL_MACHINE") {
+        "HKLM"
+    } else if hive.eq_ignore_ascii_case("HKEY_CURRENT_USER") {
+        "HKCU"
+    } else {
+        return None;
+    };
+    let path_trimmed = raw_path.trim();
+    if path_trimmed.is_empty() {
+        return None;
+    }
+    let path_trimmed = path_trimmed.strip_suffix('\\').unwrap_or(path_trimmed);
+    let path = format!("{}\\{}", hive_prefix, path_trimmed.trim_start_matches('\\'));
+
+    Some((
+        Check::Registry {
+            path,
+            value_name: value_name.clone(),
+            value_type: Some("REG_DWORD".to_string()),
+        },
+        expected,
+        format!("Auto: registry check for {}", value_name),
+    ))
+}
+
 fn try_windows_patterns(text: &str) -> Option<(Check, ExpectedResult, String)> {
+    if let Some(result) = try_registry_block(text) {
+        return Some(result);
+    }
+
     // Pattern: Registry value with specific path and expected value.
     if let Some(caps) = RE_REGISTRY_SIMPLE.captures(text) {
         let path = format!("HKLM\\{}", &caps[1]);
@@ -502,6 +591,79 @@ mod tests {
             }
             _ => panic!("Expected Registry check"),
         }
+    }
+
+    #[test]
+    fn test_registry_block_dword_equals() {
+        let text = r#"Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters\
+
+Value Name: SMB1
+
+Type: REG_DWORD
+Value: 0x00000000 (0)"#;
+
+        let result = try_windows_patterns(text);
+        assert!(result.is_some());
+        let (check, expected, _) = result.unwrap();
+        match check {
+            Check::Registry {
+                path,
+                value_name,
+                value_type,
+            } => {
+                assert_eq!(
+                    path,
+                    "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters"
+                );
+                assert_eq!(value_name, "SMB1");
+                assert_eq!(value_type, Some("REG_DWORD".to_string()));
+            }
+            _ => panic!("Expected Registry check"),
+        }
+        match expected {
+            ExpectedResult::Equals { value } => assert_eq!(value, serde_json::json!(0)),
+            _ => panic!("Expected Equals"),
+        }
+    }
+
+    #[test]
+    fn test_registry_block_ge() {
+        let text = r#"Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \SOFTWARE\Policies\Example\
+Value Name: MinimumValue
+Value Type: REG_DWORD
+Value: 0x0000000f (15) (or greater)"#;
+
+        let result = try_registry_block(text);
+        assert!(result.is_some());
+        let (_, expected, _) = result.unwrap();
+        match expected {
+            ExpectedResult::GreaterOrEqual { value } => assert_eq!(value, 15.0),
+            _ => panic!("Expected GreaterOrEqual"),
+        }
+    }
+
+    #[test]
+    fn test_registry_block_skips_alternatives() {
+        let text = r#"Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \SOFTWARE\Policies\Example\
+Value Name: Mode
+Type: REG_DWORD
+Value: 0x00000001 (1) or 0x00000002 (2)"#;
+
+        assert!(try_registry_block(text).is_none());
+    }
+
+    #[test]
+    fn test_registry_block_skips_reg_sz() {
+        let text = r#"Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \SOFTWARE\Policies\Example\
+Value Name: Mode
+Type: REG_SZ
+Value: 0x00000001 (1)"#;
+
+        assert!(try_registry_block(text).is_none());
     }
 
     #[test]
