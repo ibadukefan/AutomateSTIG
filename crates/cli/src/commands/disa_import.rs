@@ -99,7 +99,23 @@ fn import_zip(zip_path: &Path, library: &mut StigLibrary) -> Result<()> {
 
                 match library.add_benchmark(&benchmark) {
                     Ok(()) => {
-                        ui::success(&format!("{} {} — {} rules", id, ver, rules));
+                        let conv = automatestig_core::converter::convert_benchmark(&benchmark);
+                        if conv.automated > 0 {
+                            let packs_dir = library.root().join("auto_check_packs");
+                            let _ = std::fs::create_dir_all(&packs_dir);
+                            if let Ok(json) =
+                                automatestig_core::converter::check_pack_to_json(&conv.check_pack)
+                            {
+                                let _ = std::fs::write(
+                                    packs_dir.join(format!("{}.json", benchmark.id)),
+                                    &json,
+                                );
+                            }
+                        }
+                        ui::success(&format!(
+                            "{} {} — {} rules ({} auto-checks)",
+                            id, ver, rules, conv.automated
+                        ));
                         imported += 1;
                     }
                     Err(e) => {
@@ -137,7 +153,19 @@ fn import_xccdf_file(xml_path: &Path, library: &mut StigLibrary) -> Result<()> {
         .add_benchmark(&benchmark)
         .context(format!("Failed to add benchmark {}", id))?;
 
-    ui::success(&format!("{} {} — {} rules", id, ver, rules));
+    let conv = automatestig_core::converter::convert_benchmark(&benchmark);
+    if conv.automated > 0 {
+        let packs_dir = library.root().join("auto_check_packs");
+        let _ = std::fs::create_dir_all(&packs_dir);
+        if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
+            let _ = std::fs::write(packs_dir.join(format!("{}.json", benchmark.id)), &json);
+        }
+    }
+
+    ui::success(&format!(
+        "{} {} — {} rules ({} auto-checks)",
+        id, ver, rules, conv.automated
+    ));
 
     Ok(())
 }

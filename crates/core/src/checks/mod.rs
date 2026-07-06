@@ -44,8 +44,11 @@ pub struct CheckDefinition {
 pub enum CheckPlatform {
     Windows,
     Linux,
+    #[serde(alias = "cisco_ios")]
     CiscoIos,
+    #[serde(alias = "cisco_nxos")]
     CiscoNxos,
+    #[serde(alias = "cisco_asa")]
     CiscoAsa,
     Generic,
 }
@@ -286,6 +289,26 @@ pub struct CheckPack {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_checkplatform_accepts_cisco_aliases() {
+        assert_eq!(
+            serde_json::from_str::<CheckPlatform>("\"cisco_ios\"").unwrap(),
+            CheckPlatform::CiscoIos
+        );
+        assert_eq!(
+            serde_json::from_str::<CheckPlatform>("\"cisco_nxos\"").unwrap(),
+            CheckPlatform::CiscoNxos
+        );
+        assert_eq!(
+            serde_json::from_str::<CheckPlatform>("\"cisco_asa\"").unwrap(),
+            CheckPlatform::CiscoAsa
+        );
+        assert_eq!(
+            serde_json::from_str::<CheckPlatform>("\"ciscoios\"").unwrap(),
+            CheckPlatform::CiscoIos
+        );
+    }
 
     #[test]
     fn test_check_definition_json_roundtrip() {
