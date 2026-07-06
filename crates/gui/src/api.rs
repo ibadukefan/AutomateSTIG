@@ -111,6 +111,7 @@ pub fn routes() -> Router<AppState> {
         // Export
         .route("/export/ckl/{id}", get(export_ckl))
         .route("/export/cklb/{id}", get(export_cklb))
+        .route("/export/emass/{id}", get(export_emass))
         .route("/export/all-zip", get(export_all_zip))
 }
 
@@ -2854,6 +2855,40 @@ async fn export_cklb(
                 )
                     .into_response(),
             }
+        }
+        Err(e) => (
+            axum::http::StatusCode::NOT_FOUND,
+            format!("Checklist not found: {}", e),
+        )
+            .into_response(),
+    }
+}
+
+async fn export_emass(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+) -> impl IntoResponse {
+    let db = state.db();
+    match db.load_checklist(&id) {
+        Ok(cl) => {
+            let filename = sanitize_filename(&format!(
+                "{}_{}_emass.csv",
+                cl.asset.hostname, cl.stig_info.stig_id
+            ));
+            let body = automatestig_integrations::emass::export_emass_csv(
+                &automatestig_integrations::emass::export_to_emass(&cl),
+            );
+            (
+                [
+                    (axum::http::header::CONTENT_TYPE, "text/csv".to_string()),
+                    (
+                        axum::http::header::CONTENT_DISPOSITION,
+                        format!("attachment; filename=\"{}\"", filename),
+                    ),
+                ],
+                body,
+            )
+                .into_response()
         }
         Err(e) => (
             axum::http::StatusCode::NOT_FOUND,

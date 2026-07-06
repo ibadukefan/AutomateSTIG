@@ -297,6 +297,8 @@ async function viewChecklist(id) {
         h('div', { className: 'btn-group' },
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(id) }, 'Export CKL'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(id) }, 'Export CKLB'),
+          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportEmass(id) }, 'Export eMASS'),
+          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => showTrends(cl.hostname) }, 'Trends'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => viewDriftReport(id) }, 'Drift'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => generateRemediation(id) }, 'Remediation'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => pushToStigManager(id, cl.hostname) }, 'Push to STIG-Manager'),
@@ -682,6 +684,10 @@ function exportCklb(id) {
   window.open(`${API}/export/cklb/${id}?token=${AUTH_TOKEN}`, '_blank');
 }
 
+function exportEmass(id) {
+  window.open(`${API}/export/emass/${id}?token=${AUTH_TOKEN}`, '_blank');
+}
+
 async function generateRemediation(checklistId) {
   const fmt = await pickRemediationFormat();
   if (!fmt) return;
@@ -801,6 +807,19 @@ async function loadSettings() {
       h('button', { className: 'btn btn-primary', onClick: openAnswerEditor }, 'Open Answer File Editor'),
     ),
     h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
+      h('div', { className: 'card-header' }, h('h2', {}, 'Notifications')),
+      h('p', { style: 'color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px' },
+        'Send compliance alerts to a webhook (Slack, Teams, or any HTTPS endpoint). HTTPS only; internal addresses are blocked.'),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Webhook URL'),
+        h('input', { className: 'form-input', id: 'wh-url', type: 'text', placeholder: 'https://hooks.example.com/services/...' }),
+      ),
+      h('div', { className: 'btn-group' },
+        h('button', { className: 'btn btn-primary', onClick: testWebhook }, 'Send test'),
+      ),
+      h('div', { id: 'wh-result', style: 'margin-top: 12px' }),
+    ),
+    h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
       h('div', { className: 'card-header' },
         h('h2', {}, `Credentials (${creds.length})`),
         h('button', { className: 'btn btn-secondary btn-sm', onClick: addCredentialDialog }, 'Add Credential'),
@@ -887,6 +906,21 @@ async function saveStigManagerConfig() {
     loadSettings();
   } catch (e) {
     toast(`Save failed: ${e.message}`, 'error');
+  }
+}
+
+async function testWebhook() {
+  const url = document.getElementById('wh-url')?.value?.trim();
+  const out = document.getElementById('wh-result');
+  if (!url) { toast('Enter a webhook URL', 'error'); return; }
+  if (out) out.textContent = 'Sending…';
+  try {
+    await api('/webhooks/test', { method: 'POST', body: JSON.stringify({ url, message: 'AutomateSTIG test notification' }) });
+    if (out) { out.textContent = '✓ Test notification sent successfully.'; out.style.color = 'var(--green)'; }
+    toast('Webhook test sent', 'success');
+  } catch (e) {
+    if (out) { out.textContent = `✗ ${e.message}`; out.style.color = 'var(--red)'; }
+    toast(e.message, 'error');
   }
 }
 
@@ -1104,6 +1138,74 @@ function addAssetDialog() {
     ),
   );
   document.body.appendChild(overlay);
+}
+
+async function bulkAssignStig(assetIds, benchmarks) {
+  if (!assetIds.length) return;
+  const stigId = await pickBenchmark(benchmarks);
+  if (!stigId) return;
+  try {
+    await api('/assets/bulk-assign-stig', { method: 'POST', body: JSON.stringify({ asset_ids: assetIds, stig_id: stigId }) });
+    toast(`Assigned ${stigId} to ${assetIds.length} asset(s)`, 'success');
+    loadAssetsPage();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function bulkAddTag(assetIds) {
+  if (!assetIds.length) return;
+  const tag = await promptText('Add tag', 'Tag to add to selected assets', 'production');
+  if (!tag) return;
+  try {
+    await api('/assets/bulk-update', { method: 'POST', body: JSON.stringify({ asset_ids: assetIds, add_tag: tag }) });
+    toast(`Tagged ${assetIds.length} asset(s)`, 'success');
+    loadAssetsPage();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function bulkSetEnabled(assetIds, enabled) {
+  if (!assetIds.length) return;
+  try {
+    await api('/assets/bulk-update', { method: 'POST', body: JSON.stringify({ asset_ids: assetIds, enabled }) });
+    toast(`${enabled ? 'Enabled' : 'Disabled'} ${assetIds.length} asset(s)`, 'success');
+    loadAssetsPage();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function pickBenchmark(benchmarks) {
+  return new Promise(resolve => {
+    if (!benchmarks || !benchmarks.length) { toast('No standards installed', 'error'); resolve(null); return; }
+    const overlay = h('div', { className: 'modal-overlay', onClick: (e) => { if (e.target === overlay) { overlay.remove(); resolve(null); } } },
+      h('div', { className: 'modal' },
+        h('h3', {}, 'Assign standard'),
+        h('div', { className: 'stack-list', style: 'margin-top: 12px' },
+          ...benchmarks.map(b => h('button', { className: 'action-row', onClick: () => { overlay.remove(); resolve(b.id); } },
+            h('div', {}, h('div', { className: 'list-title' }, b.title || b.id), h('div', { className: 'list-subtitle' }, b.id)),
+            h('span', { className: 'action-arrow' }, '→'))),
+        ),
+        h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+          h('button', { className: 'btn btn-secondary', onClick: () => { overlay.remove(); resolve(null); } }, 'Cancel')),
+      ),
+    );
+    document.body.appendChild(overlay);
+  });
+}
+
+function promptText(title, label, placeholder) {
+  return new Promise(resolve => {
+    const overlay = h('div', { className: 'modal-overlay', onClick: (e) => { if (e.target === overlay) { overlay.remove(); resolve(null); } } },
+      h('div', { className: 'modal' },
+        h('h3', {}, title),
+        h('div', { className: 'form-group', style: 'margin-top: 12px' },
+          h('label', { className: 'form-label' }, label),
+          h('input', { className: 'form-input', id: 'prompt-text', placeholder: placeholder || '' })),
+        h('div', { className: 'btn-group', style: 'justify-content: flex-end' },
+          h('button', { className: 'btn btn-secondary', onClick: () => { overlay.remove(); resolve(null); } }, 'Cancel'),
+          h('button', { className: 'btn btn-primary', onClick: () => { const v = document.getElementById('prompt-text')?.value?.trim(); overlay.remove(); resolve(v || null); } }, 'OK')),
+      ),
+    );
+    document.body.appendChild(overlay);
+    setTimeout(() => document.getElementById('prompt-text')?.focus(), 50);
+  });
 }
 
 async function checkStigManagerDiff() {
@@ -1454,6 +1556,69 @@ async function runBatchEvaluation() {
   } catch (e) {
     toast(`Batch failed: ${e.message}`, 'error');
   }
+}
+
+// ---------------------------------------------------------------------------
+// Compliance Trends
+// ---------------------------------------------------------------------------
+async function showTrends(hostname) {
+  let data;
+  try {
+    data = await api(`/trends/${encodeURIComponent(hostname)}`);
+  } catch (e) { toast(e.message, 'error'); return; }
+  const points = (data.data_points || data.points || []).filter(p => typeof p.compliance_pct === 'number');
+  const overlay = h('div', { className: 'modal-overlay', onClick: (e) => { if (e.target === overlay) overlay.remove(); } },
+    h('div', { className: 'modal', style: 'max-width: 640px' },
+      h('h3', {}, `Compliance trend — ${hostname}`),
+      points.length < 1
+        ? h('p', { className: 'list-subtitle', style: 'margin-top: 12px' }, 'No evaluation history yet for this host.')
+        : h('div', {},
+            trendChart(points),
+            h('table', { className: 'data-table', style: 'margin-top: 16px' },
+              h('thead', {}, h('tr', {},
+                h('th', {}, 'Date'), h('th', {}, 'Standard'), h('th', {}, 'Compliance'), h('th', {}, 'Open'))),
+              h('tbody', {}, ...points.slice().reverse().map(p =>
+                h('tr', {},
+                  h('td', {}, formatDate(p.date)),
+                  h('td', {}, p.stig_id || '—'),
+                  h('td', {}, h('span', { className: `mini-pill mini-pill-${complianceColor(p.compliance_pct || 0)}` }, `${(p.compliance_pct || 0).toFixed(1)}%`)),
+                  h('td', {}, String(p.open ?? '—')),
+                ),
+              )),
+            ),
+          ),
+      h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Close'),
+      ),
+    ),
+  );
+  document.body.appendChild(overlay);
+}
+
+function trendChart(points) {
+  const width = 600;
+  const height = 160;
+  const padX = 28;
+  const padY = 14;
+  const plotW = width - (padX * 2);
+  const plotH = height - (padY * 2);
+  const coords = points.map((p, i) => {
+    const pct = Math.max(0, Math.min(100, p.compliance_pct));
+    const x = points.length === 1 ? width / 2 : padX + ((plotW / (points.length - 1)) * i);
+    const y = padY + (((100 - pct) / 100) * plotH);
+    return [x.toFixed(1), y.toFixed(1)];
+  });
+  const grid = [0, 50, 100].map(pct => {
+    const y = padY + (((100 - pct) / 100) * plotH);
+    return `<line x1="${padX}" y1="${y.toFixed(1)}" x2="${width - padX}" y2="${y.toFixed(1)}" stroke="#334155" stroke-opacity="0.28" stroke-width="1"/>`;
+  }).join('');
+  const line = points.length > 1
+    ? `<polyline points="${coords.map(([x, y]) => `${x},${y}`).join(' ')}" stroke="#3b82f6" stroke-width="2" fill="none"/>`
+    : '';
+  const dots = coords.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3.5" fill="#3b82f6"/>`).join('');
+  const div = h('div', { className: 'trend-chart' });
+  div.innerHTML = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Compliance trend chart">${grid}${line}${dots}</svg>`;
+  return div;
 }
 
 // ---------------------------------------------------------------------------
@@ -2018,7 +2183,11 @@ async function loadFindings() {
 async function loadAssetsPage() {
   try {
     const assets = await api('/assets');
+    const benchmarks = await api('/library/benchmarks').catch(() => []);
+    const selected = new Set();
     const rows = assets.map(asset => h('tr', {},
+      h('td', {}, h('input', { type: 'checkbox', className: 'asset-check', 'data-id': asset.id,
+        onChange: (e) => { if (e.target.checked) selected.add(asset.id); else selected.delete(asset.id); updateBulkBar(); } })),
       h('td', {},
         h('div', { className: 'list-title' }, asset.name),
         h('div', { className: 'list-subtitle' }, asset.address),
@@ -2033,6 +2202,14 @@ async function loadAssetsPage() {
       h('td', {}, formatDate(asset.last_evaluated)),
     ));
 
+    function updateBulkBar() {
+      const bar = document.getElementById('bulk-bar');
+      const count = document.getElementById('bulk-count');
+      if (!bar) return;
+      bar.style.display = selected.size ? 'block' : 'none';
+      if (count) count.textContent = `${selected.size} selected`;
+    }
+
     setPage('assets',
       h('div', { className: 'page-header page-header-with-actions' },
         h('div', {},
@@ -2044,10 +2221,22 @@ async function loadAssetsPage() {
           h('button', { className: 'btn btn-secondary', onClick: () => nav('settings') }, 'Credentials & Automation'),
         ),
       ),
+      h('div', { id: 'bulk-bar', className: 'card', style: 'display:none; margin-bottom: 16px; align-items:center' },
+        h('div', { className: 'page-header-with-actions' },
+          h('div', {}, h('span', { id: 'bulk-count', className: 'list-title' }, '0 selected')),
+          h('div', { className: 'btn-group' },
+            h('button', { className: 'btn btn-secondary btn-sm', onClick: () => bulkAssignStig([...selected], benchmarks) }, 'Assign STIG'),
+            h('button', { className: 'btn btn-secondary btn-sm', onClick: () => bulkAddTag([...selected]) }, 'Add tag'),
+            h('button', { className: 'btn btn-secondary btn-sm', onClick: () => bulkSetEnabled([...selected], true) }, 'Enable'),
+            h('button', { className: 'btn btn-secondary btn-sm', onClick: () => bulkSetEnabled([...selected], false) }, 'Disable'),
+          ),
+        ),
+      ),
       assets.length
         ? h('div', { className: 'card' },
             h('table', { className: 'data-table' },
               h('thead', {}, h('tr', {},
+                h('th', {}, ''),
                 h('th', {}, 'Asset'),
                 h('th', {}, 'Platform'),
                 h('th', {}, 'Protocol'),
