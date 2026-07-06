@@ -735,13 +735,18 @@ function pickRemediationFormat() {
 // ---------------------------------------------------------------------------
 async function loadSettings() {
   let config = {};
+  let agentConfig = {};
   let creds = [];
   let schedules = [];
   await Promise.all([
     api('/stigman/config').then(data => { config = data; }).catch(() => {}),
+    api('/agent/config').then(data => { agentConfig = data || {}; }).catch(() => {}),
     api('/credentials').then(data => { creds = Array.isArray(data) ? data : []; }).catch(() => {}),
     api('/schedules').then(data => { schedules = Array.isArray(data) ? data : data.schedules || []; }).catch(() => {}),
   ]);
+  const agentTargetsText = Array.isArray(agentConfig.targets)
+    ? agentConfig.targets.map(t => `${t.hostname || t.id || ''}: ${(t.stig_ids || []).join(', ')}`).join('\n')
+    : '';
 
   setPage('settings',
     h('div', { className: 'page-header' },
@@ -818,6 +823,40 @@ async function loadSettings() {
         h('button', { className: 'btn btn-primary', onClick: testWebhook }, 'Send test'),
       ),
       h('div', { id: 'wh-result', style: 'margin-top: 12px' }),
+    ),
+    h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
+      h('div', { className: 'card-header' }, h('h2', {}, 'Agent Mode (continuous compliance)')),
+      h('p', { style: 'color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px' },
+        'Continuously re-scan monitored hosts on an interval and alert on drift. Targets map to registered assets by hostname.'),
+      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
+        h('input', { type: 'checkbox', id: 'agent-enabled', ...(agentConfig.enabled ? { checked: 'checked' } : {}) }),
+        h('label', { for: 'agent-enabled', style: 'font-size: 0.9rem; cursor: pointer' }, 'Enable agent mode'),
+      ),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Scan Interval (minutes)'),
+        h('input', { className: 'form-input', id: 'agent-interval', type: 'number', min: '1',
+          value: agentConfig.scan_interval_minutes || 1440 }),
+      ),
+      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
+        h('input', { type: 'checkbox', id: 'agent-alert', ...(agentConfig.alert_on_new_findings ? { checked: 'checked' } : {}) }),
+        h('label', { for: 'agent-alert', style: 'font-size: 0.9rem; cursor: pointer' }, 'Alert on new findings'),
+      ),
+      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
+        h('input', { type: 'checkbox', id: 'agent-autopush', ...(agentConfig.auto_push_stigman ? { checked: 'checked' } : {}) }),
+        h('label', { for: 'agent-autopush', style: 'font-size: 0.9rem; cursor: pointer' }, 'Auto-push to STIG-Manager'),
+      ),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Agent Webhook URL'),
+        h('input', { className: 'form-input', id: 'agent-webhook', type: 'text',
+          placeholder: 'https://hooks.example.com/services/...', value: agentConfig.notifications?.webhook_url || '' }),
+      ),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Targets'),
+        h('textarea', { className: 'form-input', id: 'agent-targets', rows: '6',
+          style: 'resize: vertical; font-family: monospace; font-size: 0.85rem',
+          placeholder: 'server01: Windows_Server_2022_STIG, IIS_10.0_STIG' }, agentTargetsText),
+      ),
+      h('button', { className: 'btn btn-primary', onClick: saveAgentConfig }, 'Save agent config'),
     ),
     h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
       h('div', { className: 'card-header' },
@@ -907,6 +946,27 @@ async function saveStigManagerConfig() {
   } catch (e) {
     toast(`Save failed: ${e.message}`, 'error');
   }
+}
+
+async function saveAgentConfig() {
+  const targetsText = document.getElementById('agent-targets')?.value || '';
+  const targets = targetsText.split('\n').map(l => l.trim()).filter(Boolean).map(line => {
+    const [host, stigs] = line.split(':');
+    return { id: host.trim(), hostname: host.trim(),
+      stig_ids: (stigs || '').split(',').map(s => s.trim()).filter(Boolean),
+      last_scan: null, last_compliance_pct: null, enabled: true };
+  });
+  const cfg = {
+    enabled: document.getElementById('agent-enabled')?.checked || false,
+    scan_interval_minutes: parseInt(document.getElementById('agent-interval')?.value) || 1440,
+    targets,
+    auto_push_stigman: document.getElementById('agent-autopush')?.checked || false,
+    alert_on_new_findings: document.getElementById('agent-alert')?.checked || false,
+    notifications: { log_file: null, desktop_notifications: false,
+      webhook_url: document.getElementById('agent-webhook')?.value?.trim() || null },
+  };
+  try { await api('/agent/config', { method: 'POST', body: JSON.stringify(cfg) }); toast('Agent config saved', 'success'); }
+  catch (e) { toast(e.message, 'error'); }
 }
 
 async function testWebhook() {

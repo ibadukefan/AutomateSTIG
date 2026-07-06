@@ -25,7 +25,7 @@ use axum::extract::Request;
 use axum::middleware::{self, Next};
 use axum::response::Response;
 use axum::Router;
-use chrono::Utc;
+use chrono::{DateTime, Utc};
 use tower_http::cors::{AllowOrigin, CorsLayer};
 use tower_http::limit::RequestBodyLimitLayer;
 use tracing_subscriber::EnvFilter;
@@ -47,6 +47,7 @@ async fn main() {
     // Clone for background tasks before moving into router.
     let update_bg_state = state.clone();
     let scheduler_bg_state = state.clone();
+    let agent_bg_state = state.clone();
 
     // Bind address: PORT may set the port for hosted platforms, but it does not
     // enable demo mode. Network exposure and demo behavior must be explicit.
@@ -264,6 +265,49 @@ async fn main() {
                             e
                         );
                     }
+                }
+            }
+        }
+    });
+
+    // Start the agent-mode continuous compliance dispatcher.
+    tokio::spawn(async move {
+        let mut interval = tokio::time::interval(Duration::from_secs(60));
+        let mut last_cycle: Option<DateTime<Utc>> = None;
+
+        loop {
+            interval.tick().await;
+
+            let config = {
+                let db = agent_bg_state.db();
+                api::load_agent_config(&db)
+            };
+
+            if !config.enabled {
+                continue;
+            }
+
+            let now = Utc::now();
+            let scan_interval =
+                chrono::Duration::minutes(config.scan_interval_minutes.max(1) as i64);
+            let is_due = last_cycle
+                .map(|last_run| now >= last_run + scan_interval)
+                .unwrap_or(true);
+
+            if !is_due {
+                continue;
+            }
+
+            last_cycle = Some(now);
+            tracing::info!("Running agent cycle");
+
+            let state = agent_bg_state.clone();
+            match tokio::spawn(async move { api::run_agent_cycle(&state).await }).await {
+                Ok(scanned) => {
+                    tracing::info!(targets_scanned = scanned, "Agent cycle completed");
+                }
+                Err(e) => {
+                    tracing::error!("Agent cycle task failed: {}", e);
                 }
             }
         }

@@ -75,6 +75,10 @@ pub struct NotificationConfig {
 
     /// Whether to create desktop notifications.
     pub desktop_notifications: bool,
+
+    /// Webhook URL for agent alerts.
+    #[serde(default)]
+    pub webhook_url: Option<String>,
 }
 
 /// Result of a drift detection comparison.

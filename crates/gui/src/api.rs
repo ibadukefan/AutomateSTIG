@@ -1,6 +1,7 @@
 //! REST API endpoints for the GUI.
 
-use std::io::Read;
+use std::fs::OpenOptions;
+use std::io::{Read, Write};
 use std::path::Path;
 
 use axum::extract::{Multipart, Query, State};
@@ -10,6 +11,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
+use automatestig_core::agent::{AgentConfig, MonitoredTarget, NotificationConfig};
 use automatestig_core::checks::{Check, ExpectedResult};
 use automatestig_core::engine::EvaluationEngine;
 use automatestig_core::inventory::assets::{ManagedAsset, ScanProtocol};
@@ -1794,7 +1796,7 @@ async fn get_agent_config(State(state): State<AppState>) -> Json<serde_json::Val
     api_ok(load_agent_config(&db))
 }
 
-fn load_agent_config(db: &automatestig_storage::Database) -> automatestig_core::agent::AgentConfig {
+pub(crate) fn load_agent_config(db: &automatestig_storage::Database) -> AgentConfig {
     db.get_config("agent_config")
         .ok()
         .flatten()
@@ -1823,20 +1825,312 @@ fn load_agent_webhook_url(db: &automatestig_storage::Database) -> Option<String>
     webhook_url
 }
 
+fn save_agent_config(
+    db: &automatestig_storage::Database,
+    config: &AgentConfig,
+) -> Result<(), String> {
+    let json = serde_json::to_string(config).map_err(|e| e.to_string())?;
+    db.set_config("agent_config", &json)
+        .map_err(|e| e.to_string())
+}
+
 async fn set_agent_config(
     State(state): State<AppState>,
-    Json(config): Json<automatestig_core::agent::AgentConfig>,
+    Json(config): Json<AgentConfig>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
-    match serde_json::to_string(&config) {
-        Ok(json) => {
-            if let Err(e) = db.set_config("agent_config", &json) {
-                return api_error(&format!("Failed to save: {}", e));
-            }
-            api_ok("Agent configuration saved")
-        }
-        Err(e) => api_error(&format!("Serialization error: {}", e)),
+    match save_agent_config(&db, &config) {
+        Ok(()) => api_ok("Agent configuration saved"),
+        Err(e) => api_error(&format!("Failed to save: {}", e)),
     }
+}
+
+pub(crate) async fn run_agent_cycle(state: &AppState) -> usize {
+    let mut config = {
+        let db = state.db();
+        load_agent_config(&db)
+    };
+
+    if !config.enabled {
+        return 0;
+    }
+
+    let assets = {
+        let db = state.db();
+        load_assets(&db)
+    };
+    let auto_push_stigman = config.auto_push_stigman;
+    let alert_on_new_findings = config.alert_on_new_findings;
+    let notifications = config.notifications.clone();
+    let mut scanned_targets = 0;
+
+    for target in &mut config.targets {
+        if !target.enabled {
+            continue;
+        }
+
+        let Some(asset) = resolve_agent_asset(&assets, target).cloned() else {
+            tracing::warn!(
+                "agent: no registered asset for target {}; cannot collect",
+                target.hostname
+            );
+            continue;
+        };
+
+        let stig_ids: Vec<String> = target
+            .stig_ids
+            .iter()
+            .map(|stig_id| stig_id.trim())
+            .filter(|stig_id| !stig_id.is_empty())
+            .map(str::to_string)
+            .collect();
+
+        if stig_ids.is_empty() {
+            tracing::warn!("agent: target {} has no STIGs configured", target.hostname);
+            continue;
+        }
+
+        let host_candidates = agent_host_candidates(target, &asset);
+        let mut attempted = false;
+        let mut last_success_compliance = None;
+
+        for stig_id in &stig_ids {
+            attempted = true;
+            let previous = {
+                let db = state.db();
+                previous_agent_checklist(&db, &host_candidates, stig_id)
+            };
+
+            match scan_and_evaluate_asset(state, &asset, stig_id).await {
+                Ok(checklist) => {
+                    let summary = checklist.summary();
+                    let compliance = summary.compliance_pct();
+                    last_success_compliance = Some(compliance);
+
+                    if alert_on_new_findings {
+                        let alert_event = if let Some(previous) = previous.as_ref() {
+                            if automatestig_core::agent::detect_drift(previous, &checklist)
+                                .has_changes()
+                            {
+                                Some("agent_drift")
+                            } else {
+                                None
+                            }
+                        } else if summary.open > 0 {
+                            Some("agent_findings")
+                        } else {
+                            None
+                        };
+
+                        if let Some(event) = alert_event {
+                            send_agent_alert(
+                                state,
+                                &notifications,
+                                event,
+                                &target.hostname,
+                                stig_id,
+                                compliance,
+                                summary.open,
+                            )
+                            .await;
+                        }
+                    }
+
+                    if auto_push_stigman {
+                        push_agent_checklist_to_stigman(state, &notifications, &checklist).await;
+                    }
+                }
+                Err(e) => {
+                    tracing::warn!(
+                        "agent: scan failed for target {} STIG {}: {}",
+                        target.hostname,
+                        stig_id,
+                        e
+                    );
+                    append_agent_log(
+                        &notifications,
+                        &format!(
+                            "{} agent_error hostname={} stig={} error={}",
+                            Utc::now().to_rfc3339(),
+                            target.hostname,
+                            stig_id,
+                            log_line_value(&e)
+                        ),
+                    );
+                }
+            }
+        }
+
+        if attempted {
+            scanned_targets += 1;
+            target.last_scan = Some(Utc::now());
+            if let Some(compliance) = last_success_compliance {
+                target.last_compliance_pct = Some(compliance);
+            }
+        }
+    }
+
+    {
+        let db = state.db();
+        if let Err(e) = save_agent_config(&db, &config) {
+            tracing::warn!("agent: failed to persist agent config: {}", e);
+        }
+    }
+
+    scanned_targets
+}
+
+fn resolve_agent_asset<'a>(
+    assets: &'a [ManagedAsset],
+    target: &MonitoredTarget,
+) -> Option<&'a ManagedAsset> {
+    assets
+        .iter()
+        .find(|asset| asset.name == target.hostname || asset.address == target.hostname)
+}
+
+fn agent_host_candidates(target: &MonitoredTarget, asset: &ManagedAsset) -> Vec<String> {
+    let mut candidates = Vec::new();
+    for hostname in [&target.hostname, &asset.name, &asset.address] {
+        if !hostname.is_empty() && !candidates.iter().any(|existing| existing == hostname) {
+            candidates.push(hostname.clone());
+        }
+    }
+    candidates
+}
+
+fn previous_agent_checklist(
+    db: &automatestig_storage::Database,
+    hostnames: &[String],
+    stig_id: &str,
+) -> Option<Checklist> {
+    db.list_checklists()
+        .ok()?
+        .iter()
+        .find(|row| {
+            row.stig_id == stig_id
+                && hostnames
+                    .iter()
+                    .any(|hostname| row.asset_hostname == hostname.as_str())
+        })
+        .and_then(|row| db.load_checklist(&row.id).ok())
+}
+
+async fn send_agent_alert(
+    state: &AppState,
+    notifications: &NotificationConfig,
+    event: &str,
+    hostname: &str,
+    stig_id: &str,
+    compliance: f64,
+    open: usize,
+) {
+    let data = serde_json::json!({
+        "hostname": hostname,
+        "stig": stig_id,
+        "compliance": compliance,
+        "open": open,
+    });
+
+    let webhook_url = {
+        let db = state.db();
+        load_agent_webhook_url(&db)
+    };
+
+    if let Some(url) = webhook_url {
+        send_webhook_notification(&url, event, &data).await;
+    }
+
+    append_agent_log(
+        notifications,
+        &format!(
+            "{} {} hostname={} stig={} compliance={:.2} open={}",
+            Utc::now().to_rfc3339(),
+            event,
+            hostname,
+            stig_id,
+            compliance,
+            open
+        ),
+    );
+}
+
+async fn push_agent_checklist_to_stigman(
+    state: &AppState,
+    notifications: &NotificationConfig,
+    checklist: &Checklist,
+) {
+    let config = {
+        let db = state.db();
+        load_stigman_config(&db)
+    };
+    let Some(collection_id) = config.default_collection_id.clone() else {
+        let message = "agent: auto-push requested but no default STIG-Manager collection is set";
+        tracing::warn!("{}", message);
+        append_agent_log(
+            notifications,
+            &format!("{} {}", Utc::now().to_rfc3339(), message),
+        );
+        return;
+    };
+
+    if let Err(e) = push_checklist_to_stigman(config, checklist, &collection_id, None).await {
+        tracing::warn!(
+            "agent: failed to push {} {} to STIG-Manager: {}",
+            checklist.asset.hostname,
+            checklist.stig_info.stig_id,
+            e
+        );
+        append_agent_log(
+            notifications,
+            &format!(
+                "{} agent_stigman_error hostname={} stig={} error={}",
+                Utc::now().to_rfc3339(),
+                checklist.asset.hostname,
+                checklist.stig_info.stig_id,
+                log_line_value(&e)
+            ),
+        );
+    }
+}
+
+fn append_agent_log(notifications: &NotificationConfig, line: &str) {
+    let Some(path) = notifications
+        .log_file
+        .as_deref()
+        .map(str::trim)
+        .filter(|path| !path.is_empty())
+    else {
+        return;
+    };
+
+    let path = Path::new(path);
+    if let Some(parent) = path
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+    {
+        if let Err(e) = std::fs::create_dir_all(parent) {
+            tracing::warn!(
+                "agent: failed to create log directory {}: {}",
+                parent.display(),
+                e
+            );
+            return;
+        }
+    }
+
+    match OpenOptions::new().create(true).append(true).open(path) {
+        Ok(mut file) => {
+            if let Err(e) = writeln!(file, "{}", line) {
+                tracing::warn!("agent: failed to append log {}: {}", path.display(), e);
+            }
+        }
+        Err(e) => tracing::warn!("agent: failed to open log {}: {}", path.display(), e),
+    }
+}
+
+fn log_line_value(value: &str) -> String {
+    value.replace(['\n', '\r'], " ")
 }
 
 async fn get_drift_report(
