@@ -6,12 +6,19 @@ use std::path::Path;
 use axum::extract::{Multipart, Query, State};
 use axum::routing::{get, post};
 use axum::{Json, Router};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
 use automatestig_core::checks::{Check, ExpectedResult};
 use automatestig_core::engine::EvaluationEngine;
+use automatestig_core::inventory::assets::{ManagedAsset, ScanProtocol};
+use automatestig_core::inventory::credentials::CredentialType;
+use automatestig_core::inventory::scheduler::{
+    EvaluationSchedule, ScheduleRunStatus, SchedulerConfig,
+};
 use automatestig_core::models::asset::Asset;
+use automatestig_core::models::checklist::Checklist;
 use automatestig_core::models::finding::FindingStatus;
 use automatestig_core::models::stig::Severity;
 use automatestig_parsers::{ckl, cklb, xccdf};
@@ -1377,56 +1384,69 @@ async fn stigman_push_checklist(
         load_stigman_config(&db)
     };
 
+    match push_checklist_to_stigman(
+        config,
+        &checklist,
+        &req.collection_id,
+        req.asset_id.as_deref(),
+    )
+    .await
+    {
+        Ok(result) => api_ok(result),
+        Err(e) => api_error(&e),
+    }
+}
+
+async fn push_checklist_to_stigman(
+    config: crate::stigman::StigManagerConfig,
+    checklist: &Checklist,
+    collection_id: &str,
+    asset_id: Option<&str>,
+) -> Result<serde_json::Value, String> {
     if !config.is_configured() {
-        return api_error("STIG-Manager is not configured");
+        return Err("STIG-Manager is not configured".to_string());
     }
 
-    let client = match crate::stigman::StigManagerClient::new(config) {
-        Ok(c) => c,
-        Err(e) => return api_error(&e),
-    };
+    let client = crate::stigman::StigManagerClient::new(config)?;
 
     // If no asset_id provided, try to create the asset.
-    let asset_id = match req.asset_id {
-        Some(id) => id,
+    let asset_id = match asset_id {
+        Some(id) => id.to_string(),
         None => {
-            match client
+            client
                 .create_asset(
-                    &req.collection_id,
+                    collection_id,
                     &checklist.asset.hostname,
                     checklist.asset.fqdn.as_deref(),
                     checklist.asset.ip_address.as_deref(),
                 )
                 .await
-            {
-                Ok(asset) => asset.asset_id,
-                Err(e) => return api_error(&format!("Failed to create asset: {}", e)),
-            }
+                .map_err(|e| format!("Failed to create asset: {}", e))?
+                .asset_id
         }
     };
 
     // Convert findings to STIG-Manager reviews.
-    let reviews = crate::stigman::StigManagerClient::checklist_to_reviews(&checklist);
+    let reviews = crate::stigman::StigManagerClient::checklist_to_reviews(checklist);
     let review_count = reviews.len();
 
     // Push to STIG-Manager.
-    match client
+    let result = client
         .push_reviews(
-            &req.collection_id,
+            collection_id,
             &asset_id,
             &checklist.stig_info.stig_id,
             reviews,
         )
         .await
-    {
-        Ok(result) => api_ok(serde_json::json!({
-            "pushed": review_count,
-            "asset_id": asset_id,
-            "collection_id": req.collection_id,
-            "result": result,
-        })),
-        Err(e) => api_error(&format!("Push failed: {}", e)),
-    }
+        .map_err(|e| format!("Push failed: {}", e))?;
+
+    Ok(serde_json::json!({
+        "pushed": review_count,
+        "asset_id": asset_id,
+        "collection_id": collection_id,
+        "result": result,
+    }))
 }
 
 /// Load STIG-Manager config from the database, decrypting the client secret.
@@ -1771,13 +1791,36 @@ async fn update_finding(
 
 async fn get_agent_config(State(state): State<AppState>) -> Json<serde_json::Value> {
     let db = state.db();
-    let config: automatestig_core::agent::AgentConfig = db
-        .get_config("agent_config")
+    api_ok(load_agent_config(&db))
+}
+
+fn load_agent_config(db: &automatestig_storage::Database) -> automatestig_core::agent::AgentConfig {
+    db.get_config("agent_config")
         .ok()
         .flatten()
         .and_then(|json| serde_json::from_str(&json).ok())
-        .unwrap_or_default();
-    api_ok(config)
+        .unwrap_or_default()
+}
+
+fn load_agent_webhook_url(db: &automatestig_storage::Database) -> Option<String> {
+    let raw = db.get_config("agent_config").ok().flatten()?;
+    let value: serde_json::Value = serde_json::from_str(&raw).ok()?;
+    let candidates = [
+        value.pointer("/notifications/webhook_url"),
+        value.pointer("/notifications/webhook"),
+        value.get("webhook_url"),
+        value.get("notification_webhook"),
+    ];
+
+    let webhook_url = candidates
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.as_str())
+        .map(str::trim)
+        .find(|url| !url.is_empty())
+        .map(str::to_string);
+
+    webhook_url
 }
 
 async fn set_agent_config(
@@ -2056,9 +2099,7 @@ async fn delete_credential(
 // Schedules
 // ---------------------------------------------------------------------------
 
-fn load_schedules(
-    db: &automatestig_storage::Database,
-) -> automatestig_core::inventory::scheduler::SchedulerConfig {
+pub(crate) fn load_schedules(db: &automatestig_storage::Database) -> SchedulerConfig {
     db.get_config("scheduler_config")
         .ok()
         .flatten()
@@ -2066,12 +2107,352 @@ fn load_schedules(
         .unwrap_or_default()
 }
 
-fn save_schedules(
-    db: &automatestig_storage::Database,
-    config: &automatestig_core::inventory::scheduler::SchedulerConfig,
-) {
+pub(crate) fn save_schedules(db: &automatestig_storage::Database, config: &SchedulerConfig) {
     if let Ok(json) = serde_json::to_string(config) {
         let _ = db.set_config("scheduler_config", &json);
+    }
+}
+
+pub(crate) fn refresh_scheduler_enabled(config: &mut SchedulerConfig) {
+    config.enabled = config.schedules.iter().any(|schedule| schedule.enabled);
+}
+
+pub(crate) fn schedule_is_due(schedule: &EvaluationSchedule, now: DateTime<Utc>) -> bool {
+    schedule.enabled && schedule.next_run.is_some_and(|next_run| next_run <= now)
+}
+
+fn schedule_target_assets(
+    schedule: &EvaluationSchedule,
+    assets: &[ManagedAsset],
+) -> Vec<ManagedAsset> {
+    assets
+        .iter()
+        .filter(|asset| {
+            schedule.asset_ids.contains(&asset.id)
+                || schedule
+                    .asset_tags
+                    .iter()
+                    .any(|tag| asset.tags.contains(tag))
+        })
+        .cloned()
+        .collect()
+}
+
+async fn scan_and_evaluate_asset(
+    state: &AppState,
+    asset: &ManagedAsset,
+    stig_id: &str,
+) -> Result<Checklist, String> {
+    let credential_id = asset
+        .credential_id
+        .as_deref()
+        .ok_or_else(|| "no credential assigned".to_string())?;
+
+    let credential = {
+        let db = state.db();
+        let vault = load_vault(&db)?;
+        vault
+            .get(credential_id)
+            .cloned()
+            .ok_or_else(|| format!("credential {} not found", credential_id))?
+    };
+
+    let checklist = match asset.protocol {
+        ScanProtocol::Ssh => {
+            let (username, auth) = match credential.credential {
+                CredentialType::Password { username, password } => {
+                    (username, crate::ssh::SshAuth::Password { password })
+                }
+                CredentialType::SshKey { .. } => {
+                    return Err("ssh key auth not yet supported for scheduled scans".to_string());
+                }
+                _ => return Err("ssh scheduled scans require password credentials".to_string()),
+            };
+
+            let ssh_config = crate::ssh::SshConfig {
+                host: asset.address.clone(),
+                port: asset.port.unwrap_or(22),
+                username,
+                auth,
+                timeout_secs: 30,
+            };
+
+            let raw_outputs = crate::ssh::collect_linux_data(&ssh_config)
+                .await
+                .map_err(|e| format!("SSH collection failed: {}", e))?;
+            let hostname = raw_outputs
+                .get("hostname")
+                .map(|h| h.trim().to_string())
+                .filter(|h| !h.is_empty())
+                .unwrap_or_else(|| asset.address.clone());
+            let system_data = automatestig_core::remote::assemble_system_data(
+                automatestig_core::checks::CheckPlatform::Linux,
+                &hostname,
+                &raw_outputs,
+            );
+
+            evaluate_system_data_core(state, stig_id, &hostname, &system_data)?
+        }
+        ScanProtocol::Winrm | ScanProtocol::WinrmHttps => {
+            let (username, password) = match credential.credential {
+                CredentialType::Password { username, password } => (username, password),
+                _ => return Err("winrm scheduled scans require password credentials".to_string()),
+            };
+            let use_https = matches!(asset.protocol, ScanProtocol::WinrmHttps);
+            let winrm_config = crate::winrm::WinrmConfig {
+                host: asset.address.clone(),
+                port: asset.port.unwrap_or(if use_https { 5986 } else { 5985 }),
+                username,
+                password,
+                use_https,
+                verify_tls: true,
+                timeout_secs: 60,
+            };
+
+            let raw_outputs = crate::winrm::collect_windows_data(&winrm_config)
+                .await
+                .map_err(|e| format!("WinRM collection failed: {}", e))?;
+            let hostname = raw_outputs
+                .get("hostname")
+                .map(|h| h.trim().to_string())
+                .filter(|h| !h.is_empty())
+                .unwrap_or_else(|| asset.address.clone());
+            let system_data = automatestig_core::remote::assemble_system_data(
+                automatestig_core::checks::CheckPlatform::Windows,
+                &hostname,
+                &raw_outputs,
+            );
+
+            evaluate_system_data_core(state, stig_id, &hostname, &system_data)?
+        }
+        ScanProtocol::Local => return Err("local protocol not schedulable".to_string()),
+    };
+
+    {
+        let db = state.db();
+        let summary = checklist.summary();
+        update_asset_after_eval(
+            &db,
+            &asset.id,
+            stig_id,
+            summary.compliance_pct(),
+            &checklist.id.to_string(),
+        );
+    }
+
+    Ok(checklist)
+}
+
+pub(crate) async fn execute_schedule(
+    state: &AppState,
+    schedule: &EvaluationSchedule,
+) -> ScheduleRunStatus {
+    let assets = {
+        let db = state.db();
+        load_assets(&db)
+    };
+    let target_assets = schedule_target_assets(schedule, &assets);
+
+    let mut status = ScheduleRunStatus {
+        completed_at: Utc::now(),
+        assets_scanned: 0,
+        assets_failed: 0,
+        total_findings: 0,
+        total_open: 0,
+        avg_compliance: 0.0,
+        errors: Vec::new(),
+    };
+    let mut compliance_sum = 0.0;
+    let mut successful_checklists = Vec::new();
+
+    if target_assets.is_empty() {
+        status
+            .errors
+            .push("no matching assets found for this schedule".to_string());
+    }
+
+    for asset in &target_assets {
+        if asset.assigned_stigs.is_empty() {
+            status.assets_failed += 1;
+            status
+                .errors
+                .push(format!("asset {} has no assigned STIGs", asset.name));
+            continue;
+        }
+
+        for stig_id in &asset.assigned_stigs {
+            match scan_and_evaluate_asset(state, asset, stig_id).await {
+                Ok(checklist) => {
+                    let summary = checklist.summary();
+                    status.assets_scanned += 1;
+                    status.total_findings += summary.total;
+                    status.total_open += summary.open;
+                    compliance_sum += summary.compliance_pct();
+                    successful_checklists.push(checklist);
+                }
+                Err(e) => {
+                    status.assets_failed += 1;
+                    status.errors.push(format!(
+                        "asset {} STIG {} failed: {}",
+                        asset.name, stig_id, e
+                    ));
+                }
+            }
+        }
+    }
+
+    if status.assets_scanned > 0 {
+        status.avg_compliance = compliance_sum / status.assets_scanned as f64;
+    }
+
+    apply_schedule_post_actions(state, schedule, &mut status, &successful_checklists).await;
+    status.completed_at = Utc::now();
+    status
+}
+
+async fn apply_schedule_post_actions(
+    state: &AppState,
+    schedule: &EvaluationSchedule,
+    status: &mut ScheduleRunStatus,
+    checklists: &[Checklist],
+) {
+    if checklists.is_empty() {
+        return;
+    }
+
+    let drift_reports = if schedule.post_actions.alert_on_drift {
+        collect_drift_reports(state, checklists)
+    } else {
+        Vec::new()
+    };
+
+    let cat_i_alert = schedule.post_actions.alert_on_cat_i
+        && checklists
+            .iter()
+            .any(|checklist| checklist.summary().cat_i_open > 0);
+    let compliance_alert = schedule
+        .post_actions
+        .alert_below_compliance
+        .is_some_and(|threshold| status.avg_compliance < threshold);
+    let drift_alert = schedule.post_actions.alert_on_drift
+        && drift_reports.iter().any(|report| report.has_changes());
+
+    if cat_i_alert || compliance_alert || drift_alert {
+        let webhook_url = {
+            let db = state.db();
+            load_agent_webhook_url(&db)
+        };
+
+        if let Some(url) = webhook_url {
+            let data = serde_json::json!({
+                "schedule_id": schedule.id,
+                "schedule_name": schedule.name,
+                "status": status,
+                "alerts": {
+                    "cat_i": cat_i_alert,
+                    "below_compliance": compliance_alert,
+                    "drift": drift_alert,
+                },
+                "drift_reports": drift_reports,
+            });
+            send_webhook_notification(&url, "schedule_evaluation", &data).await;
+        }
+    }
+
+    if schedule.post_actions.generate_report {
+        let reports_dir = state.inner.data_dir.join("reports");
+        if let Err(e) = std::fs::create_dir_all(&reports_dir) {
+            status
+                .errors
+                .push(format!("failed to create reports directory: {}", e));
+        } else {
+            let date = Utc::now().format("%Y%m%d").to_string();
+            for checklist in checklists {
+                match ckl::write_ckl(checklist) {
+                    Ok(xml) => {
+                        let filename = format!(
+                            "{}_{}_{}.ckl",
+                            sanitize_report_component(&checklist.asset.hostname),
+                            sanitize_report_component(&checklist.stig_info.stig_id),
+                            date
+                        );
+                        let path = reports_dir.join(filename);
+                        if let Err(e) = std::fs::write(&path, xml) {
+                            status.errors.push(format!(
+                                "failed to write report {}: {}",
+                                path.display(),
+                                e
+                            ));
+                        }
+                    }
+                    Err(e) => status.errors.push(format!(
+                        "failed to generate CKL for {} {}: {}",
+                        checklist.asset.hostname, checklist.stig_info.stig_id, e
+                    )),
+                }
+            }
+        }
+    }
+
+    if schedule.post_actions.push_to_stigman {
+        if let Some(collection_id) = schedule.post_actions.stigman_collection_id.as_deref() {
+            let config = {
+                let db = state.db();
+                load_stigman_config(&db)
+            };
+
+            for checklist in checklists {
+                if let Err(e) =
+                    push_checklist_to_stigman(config.clone(), checklist, collection_id, None).await
+                {
+                    status.errors.push(format!(
+                        "failed to push {} {} to STIG-Manager: {}",
+                        checklist.asset.hostname, checklist.stig_info.stig_id, e
+                    ));
+                }
+            }
+        }
+    }
+}
+
+fn collect_drift_reports(
+    state: &AppState,
+    checklists: &[Checklist],
+) -> Vec<automatestig_core::agent::DriftReport> {
+    let db = state.db();
+    let rows = db.list_checklists().unwrap_or_default();
+
+    checklists
+        .iter()
+        .filter_map(|current| {
+            rows.iter()
+                .find(|row| {
+                    row.asset_hostname == current.asset.hostname
+                        && row.stig_id == current.stig_info.stig_id
+                        && row.id != current.id.to_string()
+                })
+                .and_then(|row| db.load_checklist(&row.id).ok())
+                .map(|previous| automatestig_core::agent::detect_drift(&previous, current))
+        })
+        .collect()
+}
+
+fn sanitize_report_component(value: &str) -> String {
+    let sanitized: String = value
+        .chars()
+        .map(|ch| {
+            if ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '-') {
+                ch
+            } else {
+                '_'
+            }
+        })
+        .collect();
+
+    if sanitized.is_empty() {
+        "unknown".to_string()
+    } else {
+        sanitized
     }
 }
 
@@ -2082,11 +2463,12 @@ async fn list_schedules(State(state): State<AppState>) -> Json<serde_json::Value
 
 async fn create_schedule(
     State(state): State<AppState>,
-    Json(schedule): Json<automatestig_core::inventory::scheduler::EvaluationSchedule>,
+    Json(schedule): Json<EvaluationSchedule>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
     let mut config = load_schedules(&db);
     config.schedules.push(schedule.clone());
+    refresh_scheduler_enabled(&mut config);
     save_schedules(&db, &config);
     api_ok(schedule)
 }
@@ -2094,12 +2476,13 @@ async fn create_schedule(
 async fn update_schedule(
     State(state): State<AppState>,
     axum::extract::Path(id): axum::extract::Path<String>,
-    Json(updated): Json<automatestig_core::inventory::scheduler::EvaluationSchedule>,
+    Json(updated): Json<EvaluationSchedule>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
     let mut config = load_schedules(&db);
     if let Some(s) = config.schedules.iter_mut().find(|s| s.id == id) {
         *s = updated.clone();
+        refresh_scheduler_enabled(&mut config);
         save_schedules(&db, &config);
         api_ok(updated)
     } else {
@@ -2115,6 +2498,7 @@ async fn delete_schedule(
     let mut config = load_schedules(&db);
     let len = config.schedules.len();
     config.schedules.retain(|s| s.id != id);
+    refresh_scheduler_enabled(&mut config);
     save_schedules(&db, &config);
     api_ok(config.schedules.len() < len)
 }
@@ -2123,38 +2507,30 @@ async fn run_schedule_now(
     State(state): State<AppState>,
     axum::extract::Path(id): axum::extract::Path<String>,
 ) -> Json<serde_json::Value> {
-    let db = state.db();
-    let config = load_schedules(&db);
-    let schedule = match config.schedules.iter().find(|s| s.id == id) {
-        Some(s) => s.clone(),
-        None => return api_error("Schedule not found"),
-    };
-    drop(db);
-
-    let assets = {
+    let schedule = {
         let db = state.db();
-        load_assets(&db)
+        let config = load_schedules(&db);
+        match config.schedules.iter().find(|s| s.id == id) {
+            Some(s) => s.clone(),
+            None => return api_error("Schedule not found"),
+        }
     };
 
-    // Resolve which assets to scan.
-    let target_assets: Vec<_> = assets
-        .iter()
-        .filter(|a| {
-            schedule.asset_ids.contains(&a.id)
-                || schedule.asset_tags.iter().any(|t| a.tags.contains(t))
-        })
-        .collect();
+    let status = execute_schedule(&state, &schedule).await;
 
-    if target_assets.is_empty() {
-        return api_error("No matching assets found for this schedule");
+    {
+        let db = state.db();
+        let mut config = load_schedules(&db);
+        if let Some(schedule) = config.schedules.iter_mut().find(|s| s.id == id) {
+            schedule.mark_executed(status.clone());
+            refresh_scheduler_enabled(&mut config);
+            save_schedules(&db, &config);
+        } else {
+            return api_error("Schedule not found");
+        }
     }
 
-    api_ok(serde_json::json!({
-        "schedule_id": schedule.id,
-        "schedule_name": schedule.name,
-        "assets_matched": target_assets.len(),
-        "message": "Schedule triggered. Evaluations will run in background.",
-    }))
+    api_ok(status)
 }
 
 // ---------------------------------------------------------------------------
@@ -2312,7 +2688,6 @@ async fn test_webhook(Json(req): Json<WebhookTestRequest>) -> Json<serde_json::V
 }
 
 /// Send a webhook notification (used internally by the scheduler).
-#[allow(dead_code)] // Called by scheduler when implemented.
 pub async fn send_webhook_notification(url: &str, event: &str, data: &serde_json::Value) {
     if validate_webhook_url(url).is_err() {
         return;
@@ -2477,23 +2852,18 @@ async fn scan_winrm(
     evaluate_with_system_data(&state, &req.stig_id, &hostname, &system_data)
 }
 
-/// Evaluate collected SystemData against check packs and STIG benchmark.
-fn evaluate_with_system_data(
+fn evaluate_system_data_core(
     state: &AppState,
     stig_id: &str,
     hostname: &str,
     system_data: &automatestig_core::checks::SystemData,
-) -> Json<serde_json::Value> {
+) -> Result<Checklist, String> {
     // Load benchmark.
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
-    };
+    let library = state.library().map_err(|e| e.to_string())?;
 
-    let benchmark = match library.load_benchmark(stig_id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
+    let benchmark = library
+        .load_benchmark(stig_id)
+        .map_err(|e| format!("Benchmark not found: {}", e))?;
 
     // Load check packs from all sources: plugins, hand-written packs, and auto-generated.
     let mut plugin_registry = automatestig_core::plugins::PluginRegistry::new();
@@ -2517,10 +2887,9 @@ fn evaluate_with_system_data(
     // Create checklist from benchmark + check results.
     let asset = Asset::new(hostname);
     let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
-    let mut checklist = match engine.evaluate(&benchmark, &asset, None, &[]) {
-        Ok(cl) => cl,
-        Err(e) => return api_error(&format!("Evaluation failed: {}", e)),
-    };
+    let mut checklist = engine
+        .evaluate(&benchmark, &asset, None, &[])
+        .map_err(|e| format!("Evaluation failed: {}", e))?;
 
     // Apply check results to findings.
     for cr in &check_results {
@@ -2535,11 +2904,38 @@ fn evaluate_with_system_data(
 
     checklist.touch();
 
-    let s = checklist.summary();
     let db = state.db();
-    let _ = db.save_checklist(&checklist);
-    let _ = db.log_evaluation(&checklist, "remote-scan", Some(hostname));
+    db.save_checklist(&checklist)
+        .map_err(|e| format!("Failed to save checklist: {}", e))?;
+    db.log_evaluation(&checklist, "remote-scan", Some(hostname))
+        .map_err(|e| format!("Failed to log evaluation: {}", e))?;
 
+    Ok(checklist)
+}
+
+/// Evaluate collected SystemData against check packs and STIG benchmark.
+fn evaluate_with_system_data(
+    state: &AppState,
+    stig_id: &str,
+    hostname: &str,
+    system_data: &automatestig_core::checks::SystemData,
+) -> Json<serde_json::Value> {
+    let checklist = match evaluate_system_data_core(state, stig_id, hostname, system_data) {
+        Ok(checklist) => checklist,
+        Err(e) => return api_error(&e),
+    };
+
+    let s = checklist.summary();
+    let automated_findings: Vec<_> = checklist
+        .findings
+        .iter()
+        .filter(|finding| {
+            matches!(
+                finding.source,
+                automatestig_core::models::finding::FindingSource::Automated
+            )
+        })
+        .collect();
     api_ok(serde_json::json!({
         "id": checklist.id.to_string(),
         "hostname": hostname,
@@ -2549,8 +2945,11 @@ fn evaluate_with_system_data(
         "not_a_finding": s.not_a_finding,
         "not_reviewed": s.not_reviewed,
         "compliance_pct": s.compliance_pct(),
-        "checks_executed": check_results.len(),
-        "checks_passed": check_results.iter().filter(|r| r.passed).count(),
+        "checks_executed": automated_findings.len(),
+        "checks_passed": automated_findings
+            .iter()
+            .filter(|finding| finding.status != FindingStatus::Open)
+            .count(),
     }))
 }
 
@@ -2958,6 +3357,7 @@ use axum::response::IntoResponse;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use automatestig_core::inventory::scheduler::ScheduleFrequency;
 
     #[test]
     fn webhook_validation_rejects_ssrf_targets_by_default() {
@@ -2980,5 +3380,33 @@ mod tests {
     fn webhook_validation_allows_https_public_hosts() {
         assert!(validate_webhook_url("https://example.com/hook").is_ok());
         assert!(validate_webhook_url("https://8.8.8.8/hook").is_ok());
+    }
+
+    #[test]
+    fn schedule_is_due_for_enabled_past_next_run() {
+        let now = Utc::now();
+        let mut schedule = EvaluationSchedule::new("due", ScheduleFrequency::Daily);
+        schedule.next_run = Some(now - chrono::Duration::minutes(1));
+
+        assert!(schedule_is_due(&schedule, now));
+    }
+
+    #[test]
+    fn schedule_is_not_due_when_disabled() {
+        let now = Utc::now();
+        let mut schedule = EvaluationSchedule::new("disabled", ScheduleFrequency::Daily);
+        schedule.enabled = false;
+        schedule.next_run = Some(now - chrono::Duration::minutes(1));
+
+        assert!(!schedule_is_due(&schedule, now));
+    }
+
+    #[test]
+    fn schedule_is_not_due_for_future_next_run() {
+        let now = Utc::now();
+        let mut schedule = EvaluationSchedule::new("future", ScheduleFrequency::Daily);
+        schedule.next_run = Some(now + chrono::Duration::minutes(1));
+
+        assert!(!schedule_is_due(&schedule, now));
     }
 }
