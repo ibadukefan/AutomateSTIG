@@ -233,7 +233,7 @@ async function viewChecklist(id) {
       statCard('Not a Finding', cl.not_a_finding, 'green'),
       statCard('Not Applicable', cl.not_applicable, ''),
       statCard('Not Reviewed', cl.not_reviewed, cl.not_reviewed > 0 ? 'yellow' : ''),
-      statCard('Compliance', `${cl.compliance_pct.toFixed(1)}%`, compColor),
+      statCard('Compliance', `${(cl.compliance_pct ?? 0).toFixed(1)}%`, compColor),
     ));
 
     // Severity breakdown
@@ -664,7 +664,7 @@ async function runRemoteScan() {
       });
     }
     toast(
-      `Scan complete: ${result.checks_executed} checks, ${result.compliance_pct.toFixed(1)}% compliance`,
+      `Scan complete: ${result.checks_executed} checks, ${(result.compliance_pct ?? 0).toFixed(1)}% compliance`,
       'success',
     );
     viewChecklist(result.id);
@@ -901,7 +901,7 @@ async function loadSettings() {
                 h('td', {},
                   s.last_run_status
                     ? h('span', { style: s.last_run_status.assets_failed > 0 ? 'color: var(--red)' : 'color: var(--green)' },
-                        `${s.last_run_status.assets_scanned} scanned, ${s.last_run_status.avg_compliance.toFixed(0)}%`)
+                        `${s.last_run_status.assets_scanned} scanned, ${(s.last_run_status.avg_compliance ?? 0).toFixed(0)}%`)
                     : h('span', { style: 'color: var(--text-muted)' }, 'Never run'),
                 ),
                 h('td', {},
@@ -1480,7 +1480,7 @@ async function reEvaluate(checklistId) {
   toast('Re-evaluating...', 'info');
   try {
     const result = await api(`/checklists/${checklistId}/re-evaluate`, { method: 'POST' });
-    toast(`Re-evaluation complete: ${result.compliance_pct.toFixed(1)}% compliance`, 'success');
+    toast(`Re-evaluation complete: ${(result.compliance_pct ?? 0).toFixed(1)}% compliance`, 'success');
     viewChecklist(result.id);
   } catch (e) {
     toast(`Re-evaluation failed: ${e.message}`, 'error');
@@ -1547,13 +1547,13 @@ function showComparisonResult(result) {
         h('div', { className: 'stat-card' },
           h('div', { className: 'stat-label' }, `A: ${result.checklist_a.hostname}`),
           h('div', { className: `stat-value ${complianceColor(result.checklist_a.compliance)}` },
-            `${result.checklist_a.compliance.toFixed(1)}%`),
+            `${(result.checklist_a.compliance ?? 0).toFixed(1)}%`),
           h('div', { className: 'stat-sub' }, `${result.checklist_a.open} open`),
         ),
         h('div', { className: 'stat-card' },
           h('div', { className: 'stat-label' }, `B: ${result.checklist_b.hostname}`),
           h('div', { className: `stat-value ${complianceColor(result.checklist_b.compliance)}` },
-            `${result.checklist_b.compliance.toFixed(1)}%`),
+            `${(result.checklist_b.compliance ?? 0).toFixed(1)}%`),
           h('div', { className: 'stat-sub' }, `${result.checklist_b.open} open`),
         ),
       ),

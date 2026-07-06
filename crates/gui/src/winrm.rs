@@ -215,10 +215,12 @@ pub async fn execute_commands(
     commands: &[(&str, &str)],
 ) -> Result<HashMap<String, String>, String> {
     let mut results = HashMap::new();
+    let mut any_success = false;
 
     for (label, command) in commands {
         match execute_powershell(config, command).await {
             Ok(result) => {
+                any_success = true;
                 results.insert(label.to_string(), result.stdout);
             }
             Err(e) => {
@@ -226,6 +228,10 @@ pub async fn execute_commands(
                 results.insert(label.to_string(), String::new());
             }
         }
+    }
+
+    if !any_success {
+        return Err("WinRM collection failed: no command succeeded (host unreachable, or authentication/shell setup failed)".to_string());
     }
 
     Ok(results)
@@ -322,8 +328,11 @@ async fn receive_command_output(
         let receive_envelope = build_receive_envelope(url, timeout_secs, shell_id, command_id);
         let response = post_soap(client, url, user, pass, receive_envelope).await?;
 
-        stdout.push_str(&decode_streams(&response, "stdout"));
-        stderr.push_str(&decode_streams(&response, "stderr"));
+        let decoded_stdout = decode_streams(&response, "stdout");
+        let decoded_stderr = decode_streams(&response, "stderr");
+        let produced_data = !decoded_stdout.is_empty() || !decoded_stderr.is_empty();
+        stdout.push_str(&decoded_stdout);
+        stderr.push_str(&decoded_stderr);
         if let Some(code) = parse_exit_code(&response) {
             exit_code = Some(code);
         }
@@ -331,12 +340,22 @@ async fn receive_command_output(
             done = true;
             break;
         }
+        if !produced_data {
+            tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+        }
+    }
+
+    if !done {
+        return Err(format!(
+            "WinRM command did not complete within {} receive iterations (output may be truncated)",
+            MAX_RECEIVE_ITERATIONS
+        ));
     }
 
     Ok(ReceiveOutput {
         stdout,
         stderr,
-        exit_code: if done { exit_code.unwrap_or(0) } else { -1 },
+        exit_code: exit_code.unwrap_or(0),
     })
 }
 

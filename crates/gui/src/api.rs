@@ -1858,7 +1858,7 @@ async fn set_agent_config(
 }
 
 pub(crate) async fn run_agent_cycle(state: &AppState) -> usize {
-    let mut config = {
+    let config = {
         let db = state.db();
         load_agent_config(&db)
     };
@@ -1875,8 +1875,9 @@ pub(crate) async fn run_agent_cycle(state: &AppState) -> usize {
     let alert_on_new_findings = config.alert_on_new_findings;
     let notifications = config.notifications.clone();
     let mut scanned_targets = 0;
+    let mut target_updates: Vec<(String, chrono::DateTime<chrono::Utc>, Option<f64>)> = Vec::new();
 
-    for target in &mut config.targets {
+    for target in &config.targets {
         if !target.enabled {
             continue;
         }
@@ -1975,16 +1976,24 @@ pub(crate) async fn run_agent_cycle(state: &AppState) -> usize {
 
         if attempted {
             scanned_targets += 1;
-            target.last_scan = Some(Utc::now());
-            if let Some(compliance) = last_success_compliance {
-                target.last_compliance_pct = Some(compliance);
-            }
+            target_updates.push((target.id.clone(), Utc::now(), last_success_compliance));
         }
     }
 
     {
         let db = state.db();
-        if let Err(e) = save_agent_config(&db, &config) {
+        // Re-load current config under the lock and merge only the fields this
+        // background task owns, so a concurrent UI edit made during the scan is not lost.
+        let mut current = load_agent_config(&db);
+        for (id, last_scan, compliance) in target_updates {
+            if let Some(t) = current.targets.iter_mut().find(|t| t.id == id) {
+                t.last_scan = Some(last_scan);
+                if let Some(c) = compliance {
+                    t.last_compliance_pct = Some(c);
+                }
+            }
+        }
+        if let Err(e) = save_agent_config(&db, &current) {
             tracing::warn!("agent: failed to persist agent config: {}", e);
         }
     }
@@ -2158,7 +2167,10 @@ async fn get_drift_report(
     };
 
     // Find the previous checklist for the same asset+STIG.
-    let all = db.list_checklists().unwrap_or_default();
+    let all = db.list_checklists().unwrap_or_else(|e| {
+        tracing::warn!("list_checklists failed: {e}");
+        Vec::new()
+    });
     let previous = all.iter().rfind(|row| {
         row.asset_hostname == current.asset.hostname
             && row.stig_id == current.stig_info.stig_id
@@ -2726,7 +2738,14 @@ fn collect_drift_reports(
     checklists: &[Checklist],
 ) -> Vec<automatestig_core::agent::DriftReport> {
     let db = state.db();
-    let rows = db.list_checklists().unwrap_or_default();
+    let rows = match db.list_checklists() {
+        Ok(rows) => rows,
+        Err(e) => {
+            tracing::error!("drift baseline query failed: {e}");
+            // A failed baseline query is not the same as "no drift"; we cannot compute drift.
+            return Vec::new();
+        }
+    };
 
     checklists
         .iter()
@@ -3482,7 +3501,10 @@ async fn compliance_trends(
     axum::extract::Path(hostname): axum::extract::Path<String>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
-    let all = db.list_checklists().unwrap_or_default();
+    let all = match db.list_checklists() {
+        Ok(all) => all,
+        Err(e) => return api_error(&format!("Failed to load checklists: {e}")),
+    };
 
     // Find all checklists for this hostname, sorted by time.
     let mut points: Vec<serde_json::Value> = Vec::new();
@@ -3631,7 +3653,10 @@ async fn export_emass(
 
 async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
     let db = state.db();
-    let rows = db.list_checklists().unwrap_or_default();
+    let rows = db.list_checklists().unwrap_or_else(|e| {
+        tracing::warn!("list_checklists failed: {e}");
+        Vec::new()
+    });
 
     if rows.is_empty() {
         return (
