@@ -7,6 +7,7 @@ pub mod export;
 pub mod gen_answer;
 pub mod import;
 pub mod library;
+pub mod remediate;
 pub mod report;
 pub mod status;
 pub mod summary;

@@ -298,6 +298,7 @@ async function viewChecklist(id) {
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(id) }, 'Export CKL'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(id) }, 'Export CKLB'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => viewDriftReport(id) }, 'Drift'),
+          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => generateRemediation(id) }, 'Remediation'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => pushToStigManager(id, cl.hostname) }, 'Push to STIG-Manager'),
           h('button', { className: 'btn btn-primary btn-sm', onClick: () => reEvaluate(id) }, 'Re-evaluate'),
           h('button', { className: 'btn btn-danger btn-sm', onClick: () => deleteChecklist(id, cl.hostname) }, 'Delete'),
@@ -679,6 +680,48 @@ function exportCkl(id) {
 
 function exportCklb(id) {
   window.open(`${API}/export/cklb/${id}?token=${AUTH_TOKEN}`, '_blank');
+}
+
+async function generateRemediation(checklistId) {
+  const fmt = await pickRemediationFormat();
+  if (!fmt) return;
+  try {
+    const res = await api(`/remediation/${checklistId}?format=${fmt}`);
+    if (!res.scripts || res.scripts.length === 0) {
+      toast(`No automatable remediation for the ${res.open_findings} open finding(s); ${res.manual_required} need manual review.`, 'info');
+      return;
+    }
+    const ext = fmt === 'powershell' ? 'ps1' : fmt === 'bash' ? 'sh' : 'yml';
+    const blob = new Blob([res.combined_script], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `remediation-${res.hostname}.${ext}`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast(`Generated ${res.automated_remediations} remediation script(s); ${res.manual_required} finding(s) need manual review.`, 'success');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function pickRemediationFormat() {
+  return new Promise(resolve => {
+    const overlay = h('div', { className: 'modal-overlay', onClick: (e) => { if (e.target === overlay) { overlay.remove(); resolve(null); } } },
+      h('div', { className: 'modal' },
+        h('h3', {}, 'Generate remediation'),
+        h('p', { className: 'list-subtitle', style: 'margin: 8px 0 16px' }, 'Choose a script format for the open findings.'),
+        h('div', { className: 'stack-list' },
+          ...[['powershell','PowerShell (.ps1)'],['bash','Bash (.sh)'],['ansible','Ansible (.yml)']].map(([v,label]) =>
+            h('button', { className: 'action-row', onClick: () => { overlay.remove(); resolve(v); } },
+              h('div', {}, h('div', { className: 'list-title' }, label)),
+              h('span', { className: 'action-arrow' }, '→'),
+            )),
+        ),
+        h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+          h('button', { className: 'btn btn-secondary', onClick: () => { overlay.remove(); resolve(null); } }, 'Cancel'),
+        ),
+      ),
+    );
+    document.body.appendChild(overlay);
+  });
 }
 
 // ---------------------------------------------------------------------------

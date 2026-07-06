@@ -12,6 +12,7 @@ mod commands;
 pub mod ui;
 
 use clap::{Parser, Subcommand};
+use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(
@@ -211,6 +212,25 @@ enum Commands {
         action: CoverageAction,
     },
 
+    /// Generate remediation scripts for a checklist's open findings.
+    Remediate {
+        /// Input checklist file (.ckl, .cklb, or .json).
+        #[arg(short, long)]
+        input: PathBuf,
+
+        /// Script format (powershell, bash, ansible).
+        #[arg(short, long)]
+        format: String,
+
+        /// Output script file path.
+        #[arg(short, long)]
+        output: PathBuf,
+
+        /// Include all checks, not just open findings.
+        #[arg(long)]
+        all: bool,
+    },
+
     /// Show application version and library status.
     Status,
 }
@@ -318,6 +338,15 @@ fn main() {
         Commands::Coverage { ref action } => match action {
             CoverageAction::Validate { ref manifest } => commands::coverage::validate(manifest),
         },
+        Commands::Remediate {
+            ref input,
+            ref format,
+            ref output,
+            all,
+        } => {
+            let library_path = commands::library_path(&cli);
+            commands::remediate::run(input, format, output, *all, &library_path)
+        }
         Commands::Status => commands::status::run(&cli),
     };
 

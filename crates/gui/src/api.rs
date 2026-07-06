@@ -3,15 +3,19 @@
 use std::io::Read;
 use std::path::Path;
 
-use axum::extract::{Multipart, State};
+use axum::extract::{Multipart, Query, State};
 use axum::routing::{get, post};
 use axum::{Json, Router};
 use serde::{Deserialize, Serialize};
+use std::collections::HashSet;
 
+use automatestig_core::checks::{Check, ExpectedResult};
 use automatestig_core::engine::EvaluationEngine;
 use automatestig_core::models::asset::Asset;
+use automatestig_core::models::finding::FindingStatus;
 use automatestig_core::models::stig::Severity;
 use automatestig_parsers::{ckl, cklb, xccdf};
+use automatestig_remediation::ScriptFormat;
 
 use crate::state::AppState;
 
@@ -32,6 +36,7 @@ pub fn routes() -> Router<AppState> {
         .route("/checklists/import", post(import_checklist))
         // Evaluate
         .route("/evaluate", post(evaluate))
+        .route("/remediation/{checklist_id}", get(generate_remediation))
         // Auto-generate check packs from imported benchmarks
         .route("/library/generate-checks/{id}", post(generate_checks))
         // DISA content fetching
@@ -191,15 +196,28 @@ async fn list_benchmarks(State(state): State<AppState>) -> Json<serde_json::Valu
             let benchmarks: Vec<BenchmarkInfo> = library
                 .list_benchmarks()
                 .iter()
-                .map(|b| BenchmarkInfo {
-                    id: b.id.clone(),
-                    title: b.title.clone(),
-                    version: b.version.clone(),
-                    platform: b.platform_family.clone(),
-                    rule_count: b.rule_count,
-                    cat_i: 0,
-                    cat_ii: 0,
-                    cat_iii: 0,
+                .map(|b| {
+                    let (cat_i, cat_ii, cat_iii) = library
+                        .load_benchmark(&b.id)
+                        .map(|full| {
+                            (
+                                full.rules_by_severity(Severity::High).len(),
+                                full.rules_by_severity(Severity::Medium).len(),
+                                full.rules_by_severity(Severity::Low).len(),
+                            )
+                        })
+                        .unwrap_or((0, 0, 0));
+
+                    BenchmarkInfo {
+                        id: b.id.clone(),
+                        title: b.title.clone(),
+                        version: b.version.clone(),
+                        platform: b.platform_family.clone(),
+                        rule_count: b.rule_count,
+                        cat_i,
+                        cat_ii,
+                        cat_iii,
+                    }
                 })
                 .collect();
             api_ok(benchmarks)
@@ -635,6 +653,94 @@ async fn get_checklist(
         }
         Err(e) => api_error(&e.to_string()),
     }
+}
+
+#[derive(Deserialize)]
+struct RemediationQuery {
+    format: Option<String>,
+}
+
+async fn generate_remediation(
+    State(state): State<AppState>,
+    axum::extract::Path(checklist_id): axum::extract::Path<String>,
+    Query(query): Query<RemediationQuery>,
+) -> Json<serde_json::Value> {
+    let (format_name, fmt) = match query.format.as_deref().unwrap_or("powershell") {
+        "powershell" => ("powershell", ScriptFormat::PowerShell),
+        "bash" => ("bash", ScriptFormat::Bash),
+        "ansible" => ("ansible", ScriptFormat::Ansible),
+        other => return api_error(&format!("Unsupported remediation format: {}", other)),
+    };
+
+    let db = state.db();
+    let checklist = match db.load_checklist(&checklist_id) {
+        Ok(c) => c,
+        Err(e) => return api_error(&e.to_string()),
+    };
+
+    let mut registry = automatestig_core::plugins::PluginRegistry::new();
+    let plugins_dir = state.inner.data_dir.join("plugins");
+    let _ = registry.load_from_directory(&plugins_dir);
+
+    let content_dir = Path::new("content/check_packs");
+    let _ = registry.load_from_directory(content_dir);
+
+    let auto_dir = state.inner.library_path.join("auto_check_packs");
+    let _ = registry.load_from_directory(&auto_dir);
+
+    let open_finding_ids: HashSet<String> = checklist
+        .findings
+        .iter()
+        .filter(|f| f.status == FindingStatus::Open)
+        .map(|f| f.vuln_id.clone())
+        .collect();
+    let open_count = checklist
+        .findings
+        .iter()
+        .filter(|f| f.status == FindingStatus::Open)
+        .count();
+
+    let items: Vec<(String, String, Check, ExpectedResult)> = registry
+        .checks_for_stig(&checklist.stig_info.stig_id)
+        .into_iter()
+        .filter(|cd| open_finding_ids.contains(&cd.vuln_id))
+        .map(|cd| {
+            (
+                cd.vuln_id.clone(),
+                cd.description.clone().unwrap_or_default(),
+                cd.check.clone(),
+                cd.expected.clone(),
+            )
+        })
+        .collect();
+
+    let hostname = checklist.asset.hostname.clone();
+    let plan = automatestig_remediation::build_remediation_plan(
+        &format!("Remediation for {}", hostname),
+        &hostname,
+        &items,
+        fmt,
+    );
+    let addressed = plan.findings_addressed();
+    let manual = open_count.saturating_sub(addressed);
+    let combined_script = plan
+        .scripts
+        .iter()
+        .map(|script| script.content.as_str())
+        .collect::<Vec<_>>()
+        .join("\n\n");
+
+    api_ok(serde_json::json!({
+        "hostname": hostname,
+        "format": format_name,
+        "open_findings": open_count,
+        "automated_remediations": addressed,
+        "manual_required": manual,
+        "overall_risk": plan.overall_risk,
+        "requires_reboot": plan.requires_reboot,
+        "scripts": plan.scripts,
+        "combined_script": combined_script,
+    }))
 }
 
 async fn delete_checklist(
