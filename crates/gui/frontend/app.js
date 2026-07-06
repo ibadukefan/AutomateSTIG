@@ -1151,9 +1151,8 @@ async function fetchSingleStig(stig) {
 }
 
 function downloadOfflinePack() {
-  toast('Generating offline update pack...', 'info');
+  toast('Generating offline .stigpack — check your downloads folder. Transfer to air-gapped systems via USB/DVD.', 'info');
   window.open(`${API}/offline-pack?token=${AUTH_TOKEN}`, '_blank');
-  setTimeout(() => toast('Offline .stigpack downloaded. Transfer to air-gapped systems via USB/DVD.', 'success'), 2000);
 }
 
 function addAssetDialog() {
