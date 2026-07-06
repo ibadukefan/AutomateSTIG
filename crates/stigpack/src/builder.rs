@@ -125,7 +125,6 @@ impl PackBuilder {
         zip.finish().map_err(StigpackError::Zip)?;
         Ok(())
     }
-
 }
 
 fn compute_sha256(data: &[u8]) -> String {

@@ -144,7 +144,14 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
             }
 
             Ok(Event::Text(ref e)) => {
-                let text = e.decode().map(|d| quick_xml::escape::unescape(&d).map(|u| u.into_owned()).unwrap_or_else(|_| d.into_owned())).unwrap_or_default();
+                let text = e
+                    .decode()
+                    .map(|d| {
+                        quick_xml::escape::unescape(&d)
+                            .map(|u| u.into_owned())
+                            .unwrap_or_else(|_| d.into_owned())
+                    })
+                    .unwrap_or_default();
 
                 if in_reference {
                     // Dublin Core fields (dc:title/dc:publisher/...) live inside <reference>;
@@ -337,7 +344,14 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
             }
 
             Ok(Event::Text(ref e)) => {
-                let text = e.decode().map(|d| quick_xml::escape::unescape(&d).map(|u| u.into_owned()).unwrap_or_else(|_| d.into_owned())).unwrap_or_default();
+                let text = e
+                    .decode()
+                    .map(|d| {
+                        quick_xml::escape::unescape(&d)
+                            .map(|u| u.into_owned())
+                            .unwrap_or_else(|_| d.into_owned())
+                    })
+                    .unwrap_or_default();
 
                 if in_rule_result && current_tag == "result" {
                     current_result = text;

@@ -354,7 +354,11 @@ static RE_PACKAGE: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 fn try_sysctl_disa(text: &str) -> Option<(Check, ExpectedResult, String)> {
-    let key = RE_SYSCTL_DISA_CMD.captures(text)?.get(1)?.as_str().to_string();
+    let key = RE_SYSCTL_DISA_CMD
+        .captures(text)?
+        .get(1)?
+        .as_str()
+        .to_string();
     let output_re = Regex::new(&format!(r"(?m)^\s*{}\s*=\s*(\S+)", regex::escape(&key))).ok()?;
     let value = output_re.captures(text)?.get(1)?.as_str();
     let expected = match value.parse::<i64>() {
@@ -384,7 +388,10 @@ fn try_systemd_disa(text: &str) -> Option<(Check, ExpectedResult, String)> {
     }
 
     let service = RE_SYSTEMCTL_DISA.captures(text)?.get(1)?.as_str();
-    let name = service.strip_suffix(".service").unwrap_or(service).to_string();
+    let name = service
+        .strip_suffix(".service")
+        .unwrap_or(service)
+        .to_string();
     let expected_status = if lower.contains("must be masked")
         || lower.contains("must be disabled")
         || lower.contains("must be inactive")

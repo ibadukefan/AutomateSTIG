@@ -31,7 +31,7 @@ pub enum Error {
     Json(#[from] serde_json::Error),
 
     #[error("YAML error: {0}")]
-    Yaml(#[from] serde_yml::Error),
+    Yaml(#[from] serde_norway::Error),
 
     #[error("{0}")]
     Other(String),

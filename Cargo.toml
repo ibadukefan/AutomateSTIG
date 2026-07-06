@@ -23,7 +23,7 @@ description = "Cross-platform STIG evaluation and compliance automation platform
 # Serialization
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-serde_yml = "0.0.12"
+serde_norway = "0.9.42"
 quick-xml = { version = "0.41", features = ["serialize"] }
 
 # Database
@@ -72,8 +72,8 @@ walkdir = "2"
 tempfile = "3"
 
 # SSH / Remote
-russh = "0.46"
-russh-keys = "0.46"
+russh = "0.62"
+# russh-keys merged into russh::keys
 async-trait = "0.1"
 
 # HTTP client (for STIG-Manager integration)

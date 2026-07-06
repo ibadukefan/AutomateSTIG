@@ -7,10 +7,8 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
 
-use async_trait::async_trait;
 use russh::client;
-use russh_keys::key;
-use russh_keys::PublicKeyBase64;
+use russh::keys::{HashAlg, PrivateKeyWithHashAlg, PublicKey};
 use serde::{Deserialize, Serialize};
 /// SSH connection configuration.
 #[derive(Clone, Serialize, Deserialize)]
@@ -73,16 +71,19 @@ pub async fn execute_commands(
             .await
             .map_err(|e| format!("SSH auth failed: {}", e))?,
         SshAuth::KeyFile { path, passphrase } => {
-            let key_pair = russh_keys::load_secret_key(path, passphrase.as_deref())
+            let key_pair = russh::keys::load_secret_key(path, passphrase.as_deref())
                 .map_err(|e| format!("Failed to load SSH key {}: {}", path, e))?;
             session
-                .authenticate_publickey(&config.username, Arc::new(key_pair))
+                .authenticate_publickey(
+                    &config.username,
+                    PrivateKeyWithHashAlg::new(Arc::new(key_pair), Some(HashAlg::Sha256)),
+                )
                 .await
                 .map_err(|e| format!("SSH key auth failed: {}", e))?
         }
     };
 
-    if !auth_result {
+    if !auth_result.success() {
         return Err(format!(
             "SSH authentication failed for {}@{}",
             config.username, config.host
@@ -194,13 +195,12 @@ impl SshHandler {
     }
 }
 
-#[async_trait]
 impl client::Handler for SshHandler {
     type Error = russh::Error;
 
     async fn check_server_key(
         &mut self,
-        server_public_key: &key::PublicKey,
+        server_public_key: &PublicKey,
     ) -> Result<bool, Self::Error> {
         // Log the server's public key fingerprint for auditing.
         let fingerprint = format!("{:?}", server_public_key);
@@ -208,7 +208,7 @@ impl client::Handler for SshHandler {
             "SSH server key: {}",
             &fingerprint[..fingerprint.len().min(80)]
         );
-        let key_id = server_public_key.public_key_base64();
+        let key_id = server_public_key.fingerprint(HashAlg::Sha256).to_string();
         let entry = format!("{}:{} {}", self.host, self.port, key_id);
         let host_prefix = format!("{}:{} ", self.host, self.port);
 
