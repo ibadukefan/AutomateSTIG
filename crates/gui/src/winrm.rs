@@ -4,10 +4,13 @@
 //! PowerShell commands to collect system data for STIG evaluation.
 //!
 //! Uses the WinRM SOAP protocol over HTTP(S) with Basic or NTLM auth.
+//! The WS-Management shell lifecycle implemented here requires validation
+//! against a real WinRM listener.
 
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 /// WinRM connection configuration.
 /// WinRM connection configuration. Debug intentionally omitted to prevent password logging.
@@ -80,50 +83,129 @@ pub async fn execute_powershell(
         .build()
         .map_err(|e| format!("HTTP client error: {}", e))?;
 
-    // WinRM SOAP envelope for command execution.
-    let soap_body = build_winrm_soap_envelope(command, &url);
+    let create_envelope = build_create_shell_envelope(&url, config.timeout_secs);
+    let create_response = post_soap(
+        &client,
+        &url,
+        &config.username,
+        &config.password,
+        create_envelope,
+    )
+    .await?;
+    let shell_id = parse_shell_id(&create_response).ok_or_else(|| {
+        format!(
+            "WinRM Create response did not include ShellId: {}",
+            response_snippet(&create_response)
+        )
+    })?;
 
-    let response = client
-        .post(&url)
-        .basic_auth(&config.username, Some(&config.password))
-        .header("Content-Type", "application/soap+xml;charset=UTF-8")
-        .body(soap_body)
-        .send()
-        .await
-        .map_err(|e| format!("WinRM request failed: {}", e))?;
+    let encoded = encode_powershell_command(command);
+    let command_envelope = build_command_envelope(&url, config.timeout_secs, &shell_id, &encoded);
+    let command_response = match post_soap(
+        &client,
+        &url,
+        &config.username,
+        &config.password,
+        command_envelope,
+    )
+    .await
+    {
+        Ok(response) => response,
+        Err(error) => {
+            delete_shell_best_effort(
+                &client,
+                &url,
+                &config.username,
+                &config.password,
+                config.timeout_secs,
+                &shell_id,
+            )
+            .await;
+            return Err(error);
+        }
+    };
 
-    if !response.status().is_success() {
-        let status = response.status();
-        let body = response.text().await.unwrap_or_default();
-        return Err(format!(
-            "WinRM returned {}: {}",
-            status,
-            &body[..body.len().min(500)]
-        ));
-    }
+    let command_id = match parse_command_id(&command_response) {
+        Some(command_id) => command_id,
+        None => {
+            delete_shell_best_effort(
+                &client,
+                &url,
+                &config.username,
+                &config.password,
+                config.timeout_secs,
+                &shell_id,
+            )
+            .await;
+            return Err(format!(
+                "WinRM Command response did not include CommandId: {}",
+                response_snippet(&command_response)
+            ));
+        }
+    };
 
-    let body = response
-        .text()
-        .await
-        .map_err(|e| format!("Failed to read WinRM response: {}", e))?;
+    let output = match receive_command_output(
+        &client,
+        &url,
+        &config.username,
+        &config.password,
+        config.timeout_secs,
+        &shell_id,
+        &command_id,
+    )
+    .await
+    {
+        Ok(output) => output,
+        Err(error) => {
+            signal_command_best_effort(
+                &client,
+                &url,
+                &config.username,
+                &config.password,
+                config.timeout_secs,
+                &shell_id,
+                &command_id,
+            )
+            .await;
+            delete_shell_best_effort(
+                &client,
+                &url,
+                &config.username,
+                &config.password,
+                config.timeout_secs,
+                &shell_id,
+            )
+            .await;
+            return Err(error);
+        }
+    };
 
-    // Parse the SOAP response to extract stdout/stderr.
-    let stdout = extract_soap_element(&body, "Stream", "stdout").unwrap_or_default();
-    let stderr = extract_soap_element(&body, "Stream", "stderr").unwrap_or_default();
-    let exit_code = extract_soap_element(&body, "ExitCode", "")
-        .and_then(|s| s.parse::<i32>().ok())
-        .unwrap_or(-1);
-
-    // Decode base64 output.
-    let stdout_decoded = decode_base64_output(&stdout);
-    let stderr_decoded = decode_base64_output(&stderr);
+    signal_command_best_effort(
+        &client,
+        &url,
+        &config.username,
+        &config.password,
+        config.timeout_secs,
+        &shell_id,
+        &command_id,
+    )
+    .await;
+    delete_shell_best_effort(
+        &client,
+        &url,
+        &config.username,
+        &config.password,
+        config.timeout_secs,
+        &shell_id,
+    )
+    .await;
 
     Ok(WinrmCommandResult {
         command: command.to_string(),
-        stdout: stdout_decoded,
-        stderr: stderr_decoded,
-        exit_code,
-        success: exit_code == 0,
+        stdout: output.stdout,
+        stderr: output.stderr,
+        exit_code: output.exit_code,
+        success: output.exit_code == 0,
     })
 }
 
@@ -172,36 +254,262 @@ fn winrm_endpoint(config: &WinrmConfig) -> String {
     format!("{}://{}:{}/wsman", scheme, config.host, config.port)
 }
 
-/// Build a WinRM SOAP envelope for PowerShell command execution.
-fn build_winrm_soap_envelope(command: &str, endpoint: &str) -> String {
-    // Encode the PowerShell command as base64 for the -EncodedCommand parameter.
-    let utf16_command: Vec<u8> = command
-        .encode_utf16()
-        .flat_map(|c| c.to_le_bytes())
-        .collect();
-    let encoded = base64_encode(&utf16_command);
+const ACTION_CREATE: &str = "http://schemas.xmlsoap.org/ws/2004/09/transfer/Create";
+const ACTION_COMMAND: &str = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Command";
+const ACTION_RECEIVE: &str = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Receive";
+const ACTION_SIGNAL: &str = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Signal";
+const ACTION_DELETE: &str = "http://schemas.xmlsoap.org/ws/2004/09/transfer/Delete";
+const RESOURCE_URI: &str = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd";
+const REPLY_TO_ANONYMOUS: &str = "http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous";
+const SIGNAL_TERMINATE: &str =
+    "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/signal/terminate";
+const MAX_RECEIVE_ITERATIONS: usize = 60;
+
+struct ReceiveOutput {
+    stdout: String,
+    stderr: String,
+    exit_code: i32,
+}
+
+async fn post_soap(
+    client: &reqwest::Client,
+    url: &str,
+    user: &str,
+    pass: &str,
+    envelope: String,
+) -> Result<String, String> {
+    let response = client
+        .post(url)
+        .basic_auth(user, Some(pass))
+        .header("Content-Type", "application/soap+xml;charset=UTF-8")
+        .body(envelope)
+        .send()
+        .await
+        .map_err(|e| format!("WinRM request failed: {}", e))?;
+
+    let status = response.status();
+    let body = response
+        .text()
+        .await
+        .map_err(|e| format!("Failed to read WinRM response: {}", e))?;
+
+    if !status.is_success() {
+        return Err(format!(
+            "WinRM returned {}: {}",
+            status,
+            response_snippet(&body)
+        ));
+    }
+
+    Ok(body)
+}
+
+async fn receive_command_output(
+    client: &reqwest::Client,
+    url: &str,
+    user: &str,
+    pass: &str,
+    timeout_secs: u64,
+    shell_id: &str,
+    command_id: &str,
+) -> Result<ReceiveOutput, String> {
+    let mut stdout = String::new();
+    let mut stderr = String::new();
+    let mut exit_code = None;
+    let mut done = false;
+
+    for _ in 0..MAX_RECEIVE_ITERATIONS {
+        let receive_envelope = build_receive_envelope(url, timeout_secs, shell_id, command_id);
+        let response = post_soap(client, url, user, pass, receive_envelope).await?;
+
+        stdout.push_str(&decode_streams(&response, "stdout"));
+        stderr.push_str(&decode_streams(&response, "stderr"));
+        if let Some(code) = parse_exit_code(&response) {
+            exit_code = Some(code);
+        }
+        if parse_command_state_done(&response) {
+            done = true;
+            break;
+        }
+    }
+
+    Ok(ReceiveOutput {
+        stdout,
+        stderr,
+        exit_code: if done { exit_code.unwrap_or(0) } else { -1 },
+    })
+}
+
+async fn signal_command_best_effort(
+    client: &reqwest::Client,
+    url: &str,
+    user: &str,
+    pass: &str,
+    timeout_secs: u64,
+    shell_id: &str,
+    command_id: &str,
+) {
+    let signal_envelope = build_signal_envelope(url, timeout_secs, shell_id, command_id);
+    let _ = post_soap(client, url, user, pass, signal_envelope).await;
+}
+
+async fn delete_shell_best_effort(
+    client: &reqwest::Client,
+    url: &str,
+    user: &str,
+    pass: &str,
+    timeout_secs: u64,
+    shell_id: &str,
+) {
+    let delete_envelope = build_delete_shell_envelope(url, timeout_secs, shell_id);
+    let _ = post_soap(client, url, user, pass, delete_envelope).await;
+}
+
+fn build_create_shell_envelope(endpoint: &str, timeout_secs: u64) -> String {
+    let option_set = r#"<wsman:OptionSet><wsman:Option Name="WINRS_NOPROFILE">FALSE</wsman:Option><wsman:Option Name="WINRS_CODEPAGE">65001</wsman:Option></wsman:OptionSet>"#;
+    let body = r#"<rsp:Shell><rsp:InputStreams>stdin</rsp:InputStreams><rsp:OutputStreams>stdout stderr</rsp:OutputStreams></rsp:Shell>"#;
+    build_soap_envelope(
+        endpoint,
+        timeout_secs,
+        ACTION_CREATE,
+        None,
+        Some(option_set),
+        body,
+    )
+}
+
+fn build_command_envelope(
+    endpoint: &str,
+    timeout_secs: u64,
+    shell_id: &str,
+    encoded: &str,
+) -> String {
+    let option_set = r#"<wsman:OptionSet><wsman:Option Name="WINRS_CONSOLEMODE_STDIN">TRUE</wsman:Option><wsman:Option Name="WINRS_SKIP_CMD_SHELL">FALSE</wsman:Option></wsman:OptionSet>"#;
+    let body = format!(
+        r#"<rsp:CommandLine><rsp:Command>powershell.exe</rsp:Command><rsp:Arguments>-NonInteractive -EncodedCommand {encoded}</rsp:Arguments></rsp:CommandLine>"#,
+        encoded = escape_xml_text(encoded)
+    );
+    build_soap_envelope(
+        endpoint,
+        timeout_secs,
+        ACTION_COMMAND,
+        Some(shell_id),
+        Some(option_set),
+        &body,
+    )
+}
+
+fn build_receive_envelope(
+    endpoint: &str,
+    timeout_secs: u64,
+    shell_id: &str,
+    command_id: &str,
+) -> String {
+    let body = format!(
+        r#"<rsp:Receive><rsp:DesiredStream CommandId="{command_id}">stdout stderr</rsp:DesiredStream></rsp:Receive>"#,
+        command_id = escape_xml_attr(command_id)
+    );
+    build_soap_envelope(
+        endpoint,
+        timeout_secs,
+        ACTION_RECEIVE,
+        Some(shell_id),
+        None,
+        &body,
+    )
+}
+
+fn build_signal_envelope(
+    endpoint: &str,
+    timeout_secs: u64,
+    shell_id: &str,
+    command_id: &str,
+) -> String {
+    let body = format!(
+        r#"<rsp:Signal CommandId="{command_id}"><rsp:Code>{code}</rsp:Code></rsp:Signal>"#,
+        command_id = escape_xml_attr(command_id),
+        code = SIGNAL_TERMINATE
+    );
+    build_soap_envelope(
+        endpoint,
+        timeout_secs,
+        ACTION_SIGNAL,
+        Some(shell_id),
+        None,
+        &body,
+    )
+}
+
+fn build_delete_shell_envelope(endpoint: &str, timeout_secs: u64, shell_id: &str) -> String {
+    build_soap_envelope(
+        endpoint,
+        timeout_secs,
+        ACTION_DELETE,
+        Some(shell_id),
+        None,
+        "",
+    )
+}
+
+fn build_soap_envelope(
+    endpoint: &str,
+    timeout_secs: u64,
+    action: &str,
+    shell_id: Option<&str>,
+    option_set: Option<&str>,
+    body: &str,
+) -> String {
+    let selector_set = shell_id.map(|id| {
+        format!(
+            r#"<wsman:SelectorSet><wsman:Selector Name="ShellId">{}</wsman:Selector></wsman:SelectorSet>"#,
+            escape_xml_text(id)
+        )
+    });
+    let body = if body.is_empty() {
+        "<s:Body />".to_string()
+    } else {
+        format!("<s:Body>{}</s:Body>", body)
+    };
 
     format!(
         r#"<?xml version="1.0" encoding="UTF-8"?>
 <s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope"
             xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
             xmlns:wsman="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
-            xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell">
+            xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
+            xmlns:wsmv="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
   <s:Header>
     <wsa:To>{endpoint}</wsa:To>
-    <wsman:ResourceURI>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</wsman:ResourceURI>
-    <wsa:Action>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Command</wsa:Action>
-    <wsman:OperationTimeout>PT60S</wsman:OperationTimeout>
+    <wsman:ResourceURI s:mustUnderstand="true">{resource_uri}</wsman:ResourceURI>
+    <wsa:ReplyTo><wsa:Address s:mustUnderstand="true">{reply_to}</wsa:Address></wsa:ReplyTo>
+    <wsa:Action s:mustUnderstand="true">{action}</wsa:Action>
+    <wsman:MaxEnvelopeSize s:mustUnderstand="true">153600</wsman:MaxEnvelopeSize>
+    <wsa:MessageID>uuid:{message_id}</wsa:MessageID>
+    <wsman:Locale xml:lang="en-US" s:mustUnderstand="false" />
+    <wsman:OperationTimeout>PT{timeout_secs}S</wsman:OperationTimeout>
+    {selector_set}
+    {option_set}
   </s:Header>
-  <s:Body>
-    <rsp:CommandLine>
-      <rsp:Command>powershell -EncodedCommand {encoded}</rsp:Command>
-    </rsp:CommandLine>
-  </s:Body>
+  {body}
 </s:Envelope>"#,
-        endpoint = endpoint,
-        encoded = encoded,
+        endpoint = escape_xml_text(endpoint),
+        resource_uri = RESOURCE_URI,
+        reply_to = REPLY_TO_ANONYMOUS,
+        action = action,
+        message_id = Uuid::new_v4(),
+        timeout_secs = timeout_secs,
+        selector_set = selector_set.as_deref().unwrap_or(""),
+        option_set = option_set.unwrap_or(""),
+        body = body
     )
+}
+
+fn encode_powershell_command(command: &str) -> String {
+    let utf16_command: Vec<u8> = command
+        .encode_utf16()
+        .flat_map(|c| c.to_le_bytes())
+        .collect();
+    base64_encode(&utf16_command)
 }
 
 /// Simple base64 encoding (for PowerShell encoded commands).
@@ -244,8 +552,7 @@ fn decode_base64_output(input: &str) -> String {
         Err(_) => return trimmed.to_string(), // Not base64, return as-is.
     };
 
-    // Try UTF-16LE first (PowerShell output), then UTF-8.
-    if bytes.len() >= 2 && bytes.len() % 2 == 0 {
+    if looks_like_utf16le(&bytes) {
         let utf16: Vec<u16> = bytes
             .chunks(2)
             .map(|c| u16::from_le_bytes([c[0], c[1]]))
@@ -256,6 +563,25 @@ fn decode_base64_output(input: &str) -> String {
     }
 
     String::from_utf8_lossy(&bytes).to_string()
+}
+
+fn looks_like_utf16le(bytes: &[u8]) -> bool {
+    if bytes.starts_with(&[0xff, 0xfe]) {
+        return true;
+    }
+
+    let pairs = bytes.chunks_exact(2);
+    if !pairs.remainder().is_empty() {
+        return false;
+    }
+
+    let pair_count = pairs.len();
+    if pair_count == 0 {
+        return false;
+    }
+
+    let nul_high_bytes = bytes.chunks_exact(2).filter(|pair| pair[1] == 0).count();
+    nul_high_bytes * 2 >= pair_count
 }
 
 #[allow(clippy::manual_is_multiple_of)]
@@ -320,21 +646,203 @@ fn base64_decode(input: &str) -> Result<Vec<u8>, String> {
     Ok(output)
 }
 
-/// Extract a value from a SOAP XML response (simple text extraction).
-fn extract_soap_element(xml: &str, element: &str, _attr_value: &str) -> Option<String> {
-    let open_tag = format!("<{}", element);
-    let close_tag = format!("</{}>", element);
+struct StartTag<'a> {
+    raw: &'a str,
+    qname: &'a str,
+    content_start: usize,
+    after_tag: usize,
+    self_closing: bool,
+}
 
-    if let Some(start_pos) = xml.find(&open_tag) {
-        let after_tag = &xml[start_pos..];
-        if let Some(gt_pos) = after_tag.find('>') {
-            let content_start = start_pos + gt_pos + 1;
-            if let Some(end_pos) = xml[content_start..].find(&close_tag) {
-                return Some(xml[content_start..content_start + end_pos].to_string());
+fn parse_shell_id(xml: &str) -> Option<String> {
+    extract_first_element_text(xml, "ShellId")
+        .filter(|id| !id.trim().is_empty())
+        .or_else(|| extract_selector(xml, "ShellId"))
+}
+
+fn parse_command_id(xml: &str) -> Option<String> {
+    extract_first_element_text(xml, "CommandId").filter(|id| !id.trim().is_empty())
+}
+
+fn parse_command_state_done(xml: &str) -> bool {
+    find_start_tag(xml, "CommandState", 0)
+        .and_then(|tag| extract_attribute(tag.raw, "State"))
+        .map(|state| state.ends_with("/CommandState/Done"))
+        .unwrap_or(false)
+}
+
+fn parse_exit_code(xml: &str) -> Option<i32> {
+    extract_first_element_text(xml, "ExitCode").and_then(|code| code.trim().parse().ok())
+}
+
+fn decode_streams(xml: &str, stream_name: &str) -> String {
+    extract_stream_bodies(xml, stream_name)
+        .into_iter()
+        .map(|body| decode_base64_output(&body))
+        .collect()
+}
+
+fn extract_stream_bodies(xml: &str, stream_name: &str) -> Vec<String> {
+    let mut bodies = Vec::new();
+    let mut search_start = 0;
+
+    while let Some(tag) = find_start_tag(xml, "Stream", search_start) {
+        let matches_stream = extract_attribute(tag.raw, "Name")
+            .map(|name| name == stream_name)
+            .unwrap_or(false);
+        let Some((content, next_search_start)) = element_content(xml, &tag) else {
+            break;
+        };
+
+        if matches_stream {
+            bodies.push(xml_unescape_text(content.trim()));
+        }
+        search_start = next_search_start;
+    }
+
+    bodies
+}
+
+fn extract_selector(xml: &str, selector_name: &str) -> Option<String> {
+    let mut search_start = 0;
+
+    while let Some(tag) = find_start_tag(xml, "Selector", search_start) {
+        let matches_selector = extract_attribute(tag.raw, "Name")
+            .map(|name| name == selector_name)
+            .unwrap_or(false);
+        let Some((content, next_search_start)) = element_content(xml, &tag) else {
+            break;
+        };
+
+        if matches_selector {
+            let value = xml_unescape_text(content.trim());
+            if !value.is_empty() {
+                return Some(value);
             }
         }
+        search_start = next_search_start;
     }
+
     None
+}
+
+fn extract_first_element_text(xml: &str, element: &str) -> Option<String> {
+    let tag = find_start_tag(xml, element, 0)?;
+    let (content, _) = element_content(xml, &tag)?;
+    Some(xml_unescape_text(content.trim()))
+}
+
+fn find_start_tag<'a>(xml: &'a str, local_name: &str, from: usize) -> Option<StartTag<'a>> {
+    let mut search_start = from;
+
+    while let Some(relative_start) = xml[search_start..].find('<') {
+        let start = search_start + relative_start;
+        let after_lt = &xml[start + 1..];
+        if after_lt.starts_with('/') || after_lt.starts_with('?') || after_lt.starts_with('!') {
+            search_start = start + 1;
+            continue;
+        }
+
+        let gt_pos = after_lt.find('>')?;
+        let tag_content = &after_lt[..gt_pos];
+        let raw = tag_content.trim();
+        let name_end = raw
+            .find(|c: char| c.is_ascii_whitespace() || c == '/')
+            .unwrap_or(raw.len());
+        let qname = &raw[..name_end];
+
+        if qname.rsplit(':').next() == Some(local_name) {
+            let after_tag = start + gt_pos + 2;
+            return Some(StartTag {
+                raw,
+                qname,
+                content_start: after_tag,
+                after_tag,
+                self_closing: raw.ends_with('/'),
+            });
+        }
+
+        search_start = start + 1;
+    }
+
+    None
+}
+
+fn element_content<'a>(xml: &'a str, tag: &StartTag<'_>) -> Option<(&'a str, usize)> {
+    if tag.self_closing {
+        return Some(("", tag.after_tag));
+    }
+
+    let close_tag = format!("</{}>", tag.qname);
+    let end_relative = xml[tag.content_start..].find(&close_tag)?;
+    let end = tag.content_start + end_relative;
+    Some((&xml[tag.content_start..end], end + close_tag.len()))
+}
+
+fn extract_attribute(tag: &str, attr_name: &str) -> Option<String> {
+    for (pos, _) in tag.match_indices(attr_name) {
+        let before_ok = pos == 0
+            || tag
+                .as_bytes()
+                .get(pos - 1)
+                .map(|b| b.is_ascii_whitespace())
+                .unwrap_or(false);
+        let after_pos = pos + attr_name.len();
+        let after_ok = tag
+            .as_bytes()
+            .get(after_pos)
+            .map(|b| b.is_ascii_whitespace() || *b == b'=')
+            .unwrap_or(true);
+        if !before_ok || !after_ok {
+            continue;
+        }
+
+        let Some(rest) = tag[after_pos..].trim_start().strip_prefix('=') else {
+            continue;
+        };
+        let rest = rest.trim_start();
+        let Some(quote) = rest.chars().next() else {
+            continue;
+        };
+        if quote != '"' && quote != '\'' {
+            continue;
+        }
+
+        let value_start = quote.len_utf8();
+        if let Some(value_end) = rest[value_start..].find(quote) {
+            return Some(xml_unescape_text(
+                &rest[value_start..value_start + value_end],
+            ));
+        }
+    }
+
+    None
+}
+
+fn response_snippet(body: &str) -> String {
+    body.chars().take(500).collect()
+}
+
+fn escape_xml_text(value: &str) -> String {
+    value
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+}
+
+fn escape_xml_attr(value: &str) -> String {
+    escape_xml_text(value)
+        .replace('"', "&quot;")
+        .replace('\'', "&apos;")
+}
+
+fn xml_unescape_text(value: &str) -> String {
+    value
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&quot;", "\"")
+        .replace("&apos;", "'")
+        .replace("&amp;", "&")
 }
 
 #[cfg(test)]
@@ -368,7 +876,7 @@ mod tests {
     }
 
     #[test]
-    fn test_soap_envelope_generation() {
+    fn test_create_envelope_has_transfer_create_action_and_shell_body() {
         let config = WinrmConfig {
             host: "10.0.1.50".to_string(),
             port: 5986,
@@ -379,22 +887,100 @@ mod tests {
             timeout_secs: 30,
         };
         let endpoint = winrm_endpoint(&config);
-        let soap = build_winrm_soap_envelope("Get-Service", &endpoint);
-        assert!(soap.contains("EncodedCommand"));
+        let soap = build_create_shell_envelope(&endpoint, 30);
+        assert!(soap.contains(ACTION_CREATE));
+        assert!(soap.contains("<rsp:Shell>"));
+        assert!(soap.contains("<rsp:InputStreams>stdin</rsp:InputStreams>"));
+        assert!(soap.contains("<rsp:OutputStreams>stdout stderr</rsp:OutputStreams>"));
+        assert!(soap.contains(r#"<wsman:Option Name="WINRS_NOPROFILE">FALSE</wsman:Option>"#));
+        assert!(soap.contains(r#"<wsman:Option Name="WINRS_CODEPAGE">65001</wsman:Option>"#));
         assert!(soap.contains("https://10.0.1.50:5986/wsman"));
         assert!(!soap.contains("http://10.0.1.50:5985/wsman"));
     }
 
     #[test]
-    fn test_extract_soap_element() {
-        let xml = r#"<Response><ExitCode>0</ExitCode><Stream>SGVsbG8=</Stream></Response>"#;
-        assert_eq!(
-            extract_soap_element(xml, "ExitCode", ""),
-            Some("0".to_string())
+    fn test_command_envelope_has_shellid_selector_and_encoded_command() {
+        let endpoint = "https://10.0.1.50:5986/wsman";
+        let encoded = encode_powershell_command("Get-Service");
+        let soap = build_command_envelope(endpoint, 45, "shell-123", &encoded);
+
+        assert!(soap.contains(r#"<wsman:Selector Name="ShellId">shell-123</wsman:Selector>"#));
+        assert!(soap.contains("<rsp:Command>powershell.exe</rsp:Command>"));
+        assert!(soap.contains(&format!(
+            "<rsp:Arguments>-NonInteractive -EncodedCommand {encoded}</rsp:Arguments>"
+        )));
+        assert!(soap.contains(ACTION_COMMAND));
+        assert!(soap.contains("<wsman:OperationTimeout>PT45S</wsman:OperationTimeout>"));
+    }
+
+    #[test]
+    fn test_receive_envelope_targets_command_id() {
+        let soap = build_receive_envelope(
+            "https://10.0.1.50:5986/wsman",
+            30,
+            "shell-123",
+            "command-456",
         );
-        assert_eq!(
-            extract_soap_element(xml, "Stream", ""),
-            Some("SGVsbG8=".to_string())
-        );
+
+        assert!(soap.contains(ACTION_RECEIVE));
+        assert!(soap.contains(r#"<wsman:Selector Name="ShellId">shell-123</wsman:Selector>"#));
+        assert!(soap.contains(
+            r#"<rsp:DesiredStream CommandId="command-456">stdout stderr</rsp:DesiredStream>"#
+        ));
+    }
+
+    #[test]
+    fn test_each_envelope_has_unique_message_id() {
+        let first = build_create_shell_envelope("https://10.0.1.50:5986/wsman", 30);
+        let second = build_create_shell_envelope("https://10.0.1.50:5986/wsman", 30);
+        let first_id = extract_first_element_text(&first, "MessageID").unwrap();
+        let second_id = extract_first_element_text(&second, "MessageID").unwrap();
+
+        assert!(first_id.starts_with("uuid:"));
+        assert!(second_id.starts_with("uuid:"));
+        assert_ne!(first_id, second_id);
+    }
+
+    #[test]
+    fn test_extract_all_streams_concatenates_and_base64_decodes() {
+        let xml = r#"
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+            xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell">
+  <s:Body>
+    <rsp:Stream Name="stdout" CommandId="command-456">QUI=</rsp:Stream>
+    <rsp:Stream Name="stderr" CommandId="command-456">RVJS</rsp:Stream>
+    <rsp:Stream Name="stdout" CommandId="command-456" End="true">Q0Q=</rsp:Stream>
+  </s:Body>
+</s:Envelope>"#;
+
+        assert_eq!(decode_streams(xml, "stdout"), "ABCD");
+    }
+
+    #[test]
+    fn test_parse_shell_id() {
+        let direct =
+            r#"<s:Envelope><s:Body><rsp:ShellId>shell-direct</rsp:ShellId></s:Body></s:Envelope>"#;
+        let selector = r#"
+<s:Envelope>
+  <s:Header>
+    <wsman:SelectorSet>
+      <wsman:Selector Name="ShellId">shell-selector</wsman:Selector>
+    </wsman:SelectorSet>
+  </s:Header>
+</s:Envelope>"#;
+
+        assert_eq!(parse_shell_id(direct), Some("shell-direct".to_string()));
+        assert_eq!(parse_shell_id(selector), Some("shell-selector".to_string()));
+    }
+
+    #[test]
+    fn test_parse_command_state_done() {
+        let xml = r#"
+<rsp:CommandState State="http://schemas.microsoft.com/wbem/wsman/1/windows/shell/CommandState/Done">
+  <rsp:ExitCode>0</rsp:ExitCode>
+</rsp:CommandState>"#;
+
+        assert!(parse_command_state_done(xml));
+        assert_eq!(parse_exit_code(xml), Some(0));
     }
 }
