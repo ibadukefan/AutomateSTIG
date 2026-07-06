@@ -99,7 +99,7 @@ impl AnswerFile {
     /// Load an answer file from a YAML file.
     pub fn load_yaml(path: &Path) -> Result<Self> {
         let content = read_to_string_capped(path, ANSWER_FILE_SIZE_LIMIT_BYTES)?;
-        serde_yaml::from_str(&content).map_err(|e| Error::AnswerFileError(e.to_string()))
+        serde_yml::from_str(&content).map_err(|e| Error::AnswerFileError(e.to_string()))
     }
 
     /// Load an answer file, auto-detecting format from extension.
@@ -124,7 +124,7 @@ impl AnswerFile {
     /// Save this answer file as YAML.
     pub fn save_yaml(&self, path: &Path) -> Result<()> {
         let content =
-            serde_yaml::to_string(self).map_err(|e| Error::AnswerFileError(e.to_string()))?;
+            serde_yml::to_string(self).map_err(|e| Error::AnswerFileError(e.to_string()))?;
         std::fs::write(path, content)?;
         Ok(())
     }

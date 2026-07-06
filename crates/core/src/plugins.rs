@@ -139,7 +139,7 @@ impl PluginRegistry {
         let check_pack: CheckPack = match ext {
             "json" => serde_json::from_str(&content)?,
             "yaml" | "yml" => {
-                serde_yaml::from_str(&content).map_err(|e| crate::Error::Other(e.to_string()))?
+                serde_yml::from_str(&content).map_err(|e| crate::Error::Other(e.to_string()))?
             }
             _ => return Err(crate::Error::Other("Unsupported format".to_string())),
         };

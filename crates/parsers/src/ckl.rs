@@ -174,7 +174,7 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
             }
 
             Ok(Event::Text(ref e)) => {
-                let text = e.unescape().unwrap_or_default().to_string();
+                let text = e.decode().map(|d| quick_xml::escape::unescape(&d).map(|u| u.into_owned()).unwrap_or_else(|_| d.into_owned())).unwrap_or_default();
 
                 if in_asset {
                     match current_tag.as_str() {
