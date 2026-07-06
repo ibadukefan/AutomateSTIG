@@ -15,7 +15,6 @@ pub struct AppState {
 pub struct AppStateInner {
     pub db: Mutex<Database>,
     pub library_path: PathBuf,
-    #[allow(dead_code)]
     pub data_dir: PathBuf,
 }
 

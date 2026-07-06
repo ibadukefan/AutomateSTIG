@@ -40,11 +40,6 @@ impl StigBenchmark {
         format!("V{}R{}", self.version, self.release)
     }
 
-    /// Find a rule by its Vuln ID (e.g., "V-254239").
-    pub fn find_rule_by_vuln_id(&self, vuln_id: &str) -> Option<&StigRule> {
-        self.rules.iter().find(|r| r.vuln_id == vuln_id)
-    }
-
     /// Get rules filtered by severity.
     pub fn rules_by_severity(&self, severity: Severity) -> Vec<&StigRule> {
         self.rules

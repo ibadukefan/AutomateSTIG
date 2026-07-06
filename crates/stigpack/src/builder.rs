@@ -66,12 +66,6 @@ impl PackBuilder {
         self
     }
 
-    /// Add a file to the pack from a filesystem path.
-    pub fn add_file_from_path(self, pack_path: &str, fs_path: &Path) -> StigpackResult<Self> {
-        let data = std::fs::read(fs_path)?;
-        Ok(self.add_file_bytes(pack_path, &data))
-    }
-
     /// Add all files from a directory, preserving relative paths.
     pub fn add_directory(mut self, pack_prefix: &str, dir_path: &Path) -> StigpackResult<Self> {
         for entry in WalkDir::new(dir_path)
@@ -132,13 +126,6 @@ impl PackBuilder {
         Ok(())
     }
 
-    /// Build and return the archive as in-memory bytes.
-    pub fn build_to_bytes(self) -> StigpackResult<Vec<u8>> {
-        let dir = tempfile::TempDir::new()?;
-        let path = dir.path().join("pack.stigpack");
-        self.build(&path)?;
-        Ok(std::fs::read(&path)?)
-    }
 }
 
 fn compute_sha256(data: &[u8]) -> String {

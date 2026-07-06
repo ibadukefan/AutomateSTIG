@@ -554,7 +554,7 @@ fn decode_base64_output(input: &str) -> String {
 
     if looks_like_utf16le(&bytes) {
         let utf16: Vec<u16> = bytes
-            .chunks(2)
+            .chunks_exact(2)
             .map(|c| u16::from_le_bytes([c[0], c[1]]))
             .collect();
         if let Ok(s) = String::from_utf16(&utf16) {
@@ -567,7 +567,7 @@ fn decode_base64_output(input: &str) -> String {
 
 fn looks_like_utf16le(bytes: &[u8]) -> bool {
     if bytes.starts_with(&[0xff, 0xfe]) {
-        return true;
+        return bytes.len().is_multiple_of(2);
     }
 
     let pairs = bytes.chunks_exact(2);
@@ -954,6 +954,14 @@ mod tests {
 </s:Envelope>"#;
 
         assert_eq!(decode_streams(xml, "stdout"), "ABCD");
+    }
+
+    #[test]
+    fn test_decode_odd_length_bom_does_not_panic() {
+        let decoded = std::panic::catch_unwind(|| decode_base64_output("//5B"));
+
+        assert!(decoded.is_ok());
+        assert!(decoded.unwrap().ends_with('A'));
     }
 
     #[test]

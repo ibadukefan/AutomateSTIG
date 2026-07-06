@@ -5,52 +5,9 @@
 //! implementations are pluggable — this module defines the collection
 //! protocol and data gathering commands.
 
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 use crate::checks::{CheckPlatform, FilePermData, SystemData};
-
-/// Remote host connection configuration.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RemoteHost {
-    /// Hostname or IP address.
-    pub host: String,
-
-    /// Port (default: 22 for SSH, 5985/5986 for WinRM).
-    pub port: Option<u16>,
-
-    /// Platform type.
-    pub platform: CheckPlatform,
-
-    /// Authentication method.
-    pub auth: RemoteAuth,
-
-    /// Connection timeout in seconds.
-    #[serde(default = "default_timeout")]
-    pub timeout: u64,
-}
-
-fn default_timeout() -> u64 {
-    30
-}
-
-/// Authentication method for remote connections.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
-pub enum RemoteAuth {
-    /// Username + password.
-    Password { username: String, password: String },
-
-    /// SSH key-based authentication.
-    SshKey {
-        username: String,
-        private_key_path: String,
-        passphrase: Option<String>,
-    },
-
-    /// Kerberos/NTLM (for WinRM).
-    Kerberos { username: String, domain: String },
-}
 
 /// Commands to collect system data, organized by platform.
 pub struct CollectionPlan {

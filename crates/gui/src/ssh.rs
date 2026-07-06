@@ -172,16 +172,6 @@ pub async fn collect_linux_data(config: &SshConfig) -> Result<HashMap<String, St
     execute_commands(config, &commands).await
 }
 
-/// Collect running config from a network device.
-pub async fn collect_network_config(config: &SshConfig) -> Result<HashMap<String, String>, String> {
-    let commands: Vec<(&str, &str)> = vec![
-        ("running_config", "show running-config"),
-        ("show_version", "show version"),
-    ];
-
-    execute_commands(config, &commands).await
-}
-
 /// SSH client handler (minimal implementation).
 /// SSH client handler with known_hosts checking.
 struct SshHandler {

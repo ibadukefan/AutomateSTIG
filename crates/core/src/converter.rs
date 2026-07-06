@@ -387,15 +387,19 @@ fn try_systemd_disa(text: &str) -> Option<(Check, ExpectedResult, String)> {
     let name = service.strip_suffix(".service").unwrap_or(service).to_string();
     let expected_status = if lower.contains("must be masked")
         || lower.contains("must be disabled")
+        || lower.contains("must be inactive")
+        || lower.contains("must be stopped")
         || lower.contains("must not be active")
-        || (lower.contains("is-active")
-            && (lower.contains("must not be") || lower.contains("must be inactive")))
+        || lower.contains("must not be running")
+        || lower.contains("must not be enabled")
+        || lower.contains("is active, this is a finding")
+        || lower.contains("is enabled, this is a finding")
+        || lower.contains("is running, this is a finding")
     {
         ServiceStatus::Disabled
     } else if lower.contains("enabled and active")
-        || lower.contains("is enabled")
-        || lower.contains("is-active")
-        || lower.contains("is-enabled")
+        || lower.contains("enabled and running")
+        || lower.contains("active and enabled")
         || lower.contains("must be enabled")
         || lower.contains("must be active")
         || lower.contains("must be running")
@@ -806,6 +810,34 @@ If the rngd service is not enabled and active, this is a finding."#;
             _ => panic!("Expected Service check"),
         }
         assert!(matches!(expected, ExpectedResult::IsTrue));
+    }
+
+    #[test]
+    fn test_systemd_disa_disabled_when_active_is_finding() {
+        let text =
+            "Run `systemctl is-active telnet`. If the telnet service is active, this is a finding.";
+
+        let result = try_systemd_disa(text);
+        assert!(result.is_some());
+        let (check, expected, _) = result.unwrap();
+        match check {
+            Check::Service {
+                name,
+                expected_status,
+            } => {
+                assert_eq!(name, "telnet");
+                assert_eq!(expected_status, ServiceStatus::Disabled);
+            }
+            _ => panic!("Expected Service check"),
+        }
+        assert!(matches!(expected, ExpectedResult::IsTrue));
+    }
+
+    #[test]
+    fn test_systemd_disa_ambiguous_command_only_returns_none() {
+        let text = "Run `systemctl is-active foo` and review the result.";
+
+        assert!(try_systemd_disa(text).is_none());
     }
 
     #[test]

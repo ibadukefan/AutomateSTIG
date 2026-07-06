@@ -188,9 +188,7 @@ dependencies = [
  "chrono",
  "clap",
  "console",
- "serde",
  "serde_json",
- "tracing",
  "tracing-subscriber",
  "zip",
 ]
@@ -199,7 +197,6 @@ dependencies = [
 name = "automatestig-core"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "chrono",
  "regex",
  "serde",
@@ -250,14 +247,11 @@ dependencies = [
 name = "automatestig-integrations"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "automatestig-core",
  "chrono",
  "serde",
  "serde_json",
  "tempfile",
- "thiserror 2.0.18",
- "tracing",
  "uuid",
 ]
 
@@ -265,16 +259,12 @@ dependencies = [
 name = "automatestig-parsers"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "automatestig-core",
- "chrono",
  "quick-xml",
- "regex",
  "serde",
  "serde_json",
  "tempfile",
  "thiserror 2.0.18",
- "tracing",
  "uuid",
 ]
 
@@ -282,20 +272,16 @@ dependencies = [
 name = "automatestig-remediation"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "automatestig-core",
  "serde",
  "serde_json",
  "tempfile",
- "thiserror 2.0.18",
- "tracing",
 ]
 
 [[package]]
 name = "automatestig-stigpack"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "automatestig-core",
  "chrono",
  "ed25519-dalek",
@@ -305,7 +291,6 @@ dependencies = [
  "sha2",
  "tempfile",
  "thiserror 2.0.18",
- "tracing",
  "walkdir",
  "zip",
 ]
@@ -314,15 +299,12 @@ dependencies = [
 name = "automatestig-storage"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "automatestig-core",
  "chrono",
  "rusqlite",
- "serde",
  "serde_json",
  "tempfile",
  "thiserror 2.0.18",
- "tracing",
  "uuid",
 ]
 
