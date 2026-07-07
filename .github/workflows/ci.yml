@@ -40,6 +40,19 @@ jobs:
           cache-bin: false
       - run: cargo test --workspace
 
+  e2e:
+    name: E2E acceptance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-bin: false
+      - run: cargo build --release --bin automatestig --bin automatestig-gui
+      - name: Run E2E acceptance suite
+        run: python3 scripts/e2e-acceptance.py
+
   fmt:
     name: Format
     runs-on: ubuntu-latest
