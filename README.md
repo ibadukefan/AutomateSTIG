@@ -19,16 +19,19 @@ Evaluation is deterministic. There is no AI or ML in the evaluation path. The de
 
 ## Quick Start
 
-Install prebuilt binaries on macOS or Linux:
+Install the prebuilt binaries — one command for your OS:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install.sh | sh
+# macOS
+curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-macos.sh | sh
+
+# Linux
+curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-linux.sh | sh
 ```
 
-Install prebuilt binaries on Windows PowerShell:
-
 ```powershell
-irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install.ps1 | iex
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-windows.ps1 | iex
 ```
 
 See [installation](docs/installation.md) for manual release downloads, checksums, and build-from-source instructions.

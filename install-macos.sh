@@ -1,8 +1,11 @@
 #!/bin/sh
+# AutomateSTIG installer for macOS.
+#   curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-macos.sh | sh
 set -e
 
 REPO="ibadukefan/AutomateSTIG"
 API_URL="https://api.github.com/repos/$REPO/releases/latest"
+TARGET_OS="apple-darwin"
 
 err() {
   printf 'error: %s\n' "$*" >&2
@@ -13,30 +16,13 @@ need_cmd() {
   command -v "$1" >/dev/null 2>&1 || err "required command not found: $1"
 }
 
-OS="$(uname -s 2>/dev/null || true)"
-case "$OS" in
-  Darwin)
-    TARGET_OS="apple-darwin"
-    ;;
-  Linux)
-    TARGET_OS="unknown-linux-gnu"
-    ;;
-  *)
-    err "unsupported operating system: ${OS:-unknown}"
-    ;;
-esac
+[ "$(uname -s 2>/dev/null || true)" = "Darwin" ] || err "this installer is for macOS; on Linux use install-linux.sh"
 
 ARCH="$(uname -m 2>/dev/null || true)"
 case "$ARCH" in
-  x86_64 | amd64)
-    TARGET_ARCH="x86_64"
-    ;;
-  arm64 | aarch64)
-    TARGET_ARCH="aarch64"
-    ;;
-  *)
-    err "unsupported architecture: ${ARCH:-unknown}"
-    ;;
+  x86_64 | amd64) TARGET_ARCH="x86_64" ;;
+  arm64 | aarch64) TARGET_ARCH="aarch64" ;;
+  *) err "unsupported architecture: ${ARCH:-unknown}" ;;
 esac
 
 TARGET="$TARGET_ARCH-$TARGET_OS"
@@ -57,12 +43,9 @@ fi
 ARCHIVE_NAME="automatestig-$TAG-$TARGET.tar.gz"
 CHECKSUM_NAME="automatestig-$TAG-$TARGET.sha256"
 DOWNLOAD_BASE="https://github.com/$REPO/releases/download/$TAG"
-TMP_PARENT="${TMPDIR:-/tmp}"
-TMP_DIR="$(mktemp -d "$TMP_PARENT/automatestig.XXXXXX")" || err "failed to create temporary directory"
+TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/automatestig.XXXXXX")" || err "failed to create temporary directory"
 
-cleanup() {
-  rm -rf "$TMP_DIR"
-}
+cleanup() { rm -rf "$TMP_DIR"; }
 trap cleanup EXIT HUP INT TERM
 
 ARCHIVE_PATH="$TMP_DIR/$ARCHIVE_NAME"
@@ -76,14 +59,12 @@ curl -fL --retry 3 --connect-timeout 15 -o "$CHECKSUM_PATH" "$DOWNLOAD_BASE/$CHE
   err "failed to download $CHECKSUM_NAME"
 
 printf 'Verifying SHA-256 checksum...\n'
-if command -v sha256sum >/dev/null 2>&1; then
-  (cd "$TMP_DIR" && sha256sum -c "$CHECKSUM_NAME") ||
-    err "checksum verification failed for $ARCHIVE_NAME"
-elif command -v shasum >/dev/null 2>&1; then
-  (cd "$TMP_DIR" && shasum -a 256 -c "$CHECKSUM_NAME") ||
-    err "checksum verification failed for $ARCHIVE_NAME"
+if command -v shasum >/dev/null 2>&1; then
+  (cd "$TMP_DIR" && shasum -a 256 -c "$CHECKSUM_NAME") || err "checksum verification failed for $ARCHIVE_NAME"
+elif command -v sha256sum >/dev/null 2>&1; then
+  (cd "$TMP_DIR" && sha256sum -c "$CHECKSUM_NAME") || err "checksum verification failed for $ARCHIVE_NAME"
 else
-  err "required command not found: sha256sum or shasum"
+  err "required command not found: shasum or sha256sum"
 fi
 
 mkdir -p "$EXTRACT_DIR"
@@ -106,20 +87,14 @@ for BIN in automatestig automatestig-gui; do
   [ -f "$SRC" ] || err "$BIN not found in $ARCHIVE_NAME"
   cp "$SRC" "$INSTALL_DIR/$BIN" || err "failed to install $BIN"
   chmod +x "$INSTALL_DIR/$BIN" || err "failed to mark $BIN executable"
+  # The binaries are not notarized; clear the quarantine flag so Gatekeeper allows them.
+  command -v xattr >/dev/null 2>&1 && xattr -d com.apple.quarantine "$INSTALL_DIR/$BIN" 2>/dev/null || true
 done
-
-if [ "$TARGET_OS" = "apple-darwin" ] && command -v xattr >/dev/null 2>&1; then
-  xattr -d com.apple.quarantine "$INSTALL_DIR/automatestig" 2>/dev/null || true
-  xattr -d com.apple.quarantine "$INSTALL_DIR/automatestig-gui" 2>/dev/null || true
-fi
 
 printf 'Installed AutomateSTIG %s to %s\n' "$TAG" "$INSTALL_DIR"
 case ":${PATH:-}:" in
-  *:"$INSTALL_DIR":*)
-    ;;
-  *)
-    printf 'Add %s to your PATH to run AutomateSTIG from a new shell.\n' "$INSTALL_DIR"
-    ;;
+  *:"$INSTALL_DIR":*) ;;
+  *) printf 'Add %s to your PATH to run AutomateSTIG from a new shell.\n' "$INSTALL_DIR" ;;
 esac
 printf 'Launch the GUI with: automatestig-gui\n'
 printf 'CLI help: automatestig --help\n'

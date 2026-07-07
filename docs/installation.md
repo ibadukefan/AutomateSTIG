@@ -7,19 +7,27 @@ AutomateSTIG publishes release archives that contain both binaries:
 - `automatestig`
 - `automatestig-gui`
 
-### One-line installers
+### One-line installers — one per OS
 
-macOS and Linux:
+macOS:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-macos.sh | sh
 ```
 
-Windows PowerShell:
+Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-linux.sh | sh
+```
+
+Windows (PowerShell):
 
 ```powershell
-irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-windows.ps1 | iex
 ```
+
+Each installer picks the right build for your CPU (Intel/x86_64 or Apple Silicon/arm64) automatically.
 
 Set `AUTOMATESTIG_VERSION` to pin a specific release tag, such as `v0.1.0`. On macOS and Linux, set `AUTOMATESTIG_INSTALL_DIR` to choose a different install directory.
 
