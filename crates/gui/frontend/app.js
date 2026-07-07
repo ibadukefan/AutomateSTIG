@@ -180,6 +180,13 @@ function setPage(id, ...children) {
   children.forEach(c => page.appendChild(c));
 }
 
+function loadingState() {
+  return h('div', { className: 'loading-state' },
+    h('div', { className: 'spinner' }),
+    h('div', { className: 'loading-label' }, 'Loading…'),
+  );
+}
+
 function statCard(label, value, color = '') {
   return h('div', { className: 'stat-card' },
     h('div', { className: 'stat-label' }, label),
@@ -734,6 +741,8 @@ function pickRemediationFormat() {
 // Settings Page (STIG-Manager config)
 // ---------------------------------------------------------------------------
 async function loadSettings() {
+  setPage('settings', loadingState());
+
   let config = {};
   let agentConfig = {};
   let creds = [];
@@ -1903,6 +1912,8 @@ function groupedCounts(items, keyFn) {
 }
 
 async function loadOverview() {
+  setPage('overview', loadingState());
+
   try {
     const { status, checklists, assets, benchmarks, findings } = await getOverviewData();
     document.getElementById('app-version').textContent = `v${status.version}`;
@@ -2034,6 +2045,8 @@ function pickChecklistDialog(items) {
 }
 
 async function loadAssessments() {
+  setPage('assessments', loadingState());
+
   try {
     const [checklists, assets, benchmarks] = await Promise.all([
       api('/checklists'),
@@ -2111,6 +2124,8 @@ async function loadAssessments() {
 }
 
 async function loadStandards() {
+  setPage('standards', loadingState());
+
   try {
     const [benchmarks] = await Promise.all([
       api('/library/benchmarks').catch(() => []),
@@ -2186,6 +2201,8 @@ async function loadStandards() {
 }
 
 async function loadFindings() {
+  setPage('findings', loadingState());
+
   try {
     const checklists = await fetchChecklistsWithFindings();
     const findings = flattenFindings(checklists);
@@ -2240,6 +2257,8 @@ async function loadFindings() {
 }
 
 async function loadAssetsPage() {
+  setPage('assets', loadingState());
+
   try {
     const assets = await api('/assets');
     const benchmarks = await api('/library/benchmarks').catch(() => []);
