@@ -12,19 +12,19 @@ AutomateSTIG publishes release archives that contain both binaries:
 macOS:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-macos.sh | sh
+curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/claude/build-automatestig-cJqhi/install-macos.sh | sh
 ```
 
 Linux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-linux.sh | sh
+curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/claude/build-automatestig-cJqhi/install-linux.sh | sh
 ```
 
 Windows (PowerShell):
 
 ```powershell
-irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-windows.ps1 | iex
+irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/claude/build-automatestig-cJqhi/install-windows.ps1 | iex
 ```
 
 Each installer picks the right build for your CPU (Intel/x86_64 or Apple Silicon/arm64) automatically.

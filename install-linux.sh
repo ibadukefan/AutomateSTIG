@@ -1,6 +1,6 @@
 #!/bin/sh
 # AutomateSTIG installer for Linux.
-#   curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-linux.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/claude/build-automatestig-cJqhi/install-linux.sh | sh
 set -e
 
 REPO="ibadukefan/AutomateSTIG"
