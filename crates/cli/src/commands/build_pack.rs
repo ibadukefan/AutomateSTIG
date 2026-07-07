@@ -22,6 +22,7 @@ pub fn run(id: &str, name: &str, version: &str, source: &str, output: &str) -> R
     eprintln!();
 
     let mut builder = PackBuilder::new(id, name, version).author("AutomateSTIG CLI");
+    let mut added_any = false;
 
     let benchmarks_dir = source_path.join("benchmarks");
     if benchmarks_dir.exists() {
@@ -29,6 +30,7 @@ pub fn run(id: &str, name: &str, version: &str, source: &str, output: &str) -> R
             .add_directory("benchmarks", &benchmarks_dir)
             .context("Failed to add benchmarks directory")?;
         ui::success("Added benchmarks/");
+        added_any = true;
     }
 
     let templates_dir = source_path.join("answer_templates");
@@ -37,6 +39,7 @@ pub fn run(id: &str, name: &str, version: &str, source: &str, output: &str) -> R
             .add_directory("answer_templates", &templates_dir)
             .context("Failed to add answer templates directory")?;
         ui::success("Added answer_templates/");
+        added_any = true;
     }
 
     let remediation_dir = source_path.join("remediation");
@@ -45,6 +48,7 @@ pub fn run(id: &str, name: &str, version: &str, source: &str, output: &str) -> R
             .add_directory("remediation", &remediation_dir)
             .context("Failed to add remediation directory")?;
         ui::success("Added remediation/");
+        added_any = true;
     }
 
     let custom_dir = source_path.join("custom_checks");
@@ -53,6 +57,14 @@ pub fn run(id: &str, name: &str, version: &str, source: &str, output: &str) -> R
             .add_directory("custom_checks", &custom_dir)
             .context("Failed to add custom checks directory")?;
         ui::success("Added custom_checks/");
+        added_any = true;
+    }
+
+    if !added_any {
+        anyhow::bail!(
+            "Source directory contains no pack content (expected at least one of benchmarks/, answer_templates/, remediation/, custom_checks/): {}",
+            source
+        );
     }
 
     builder.build(output_path)?;
