@@ -19,7 +19,21 @@ Evaluation is deterministic. There is no AI or ML in the evaluation path. The de
 
 ## Quick Start
 
-Prerequisite: Rust stable toolchain.
+Install prebuilt binaries on macOS or Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install.sh | sh
+```
+
+Install prebuilt binaries on Windows PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install.ps1 | iex
+```
+
+See [installation](docs/installation.md) for manual release downloads, checksums, and build-from-source instructions.
+
+Build from source requires the Rust stable toolchain.
 
 ```bash
 cargo build --release --workspace
