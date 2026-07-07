@@ -243,10 +243,23 @@ mod tests {
     fn test_stig_manager_golden_payload() {
         let json = export_to_stig_manager_json(&[golden_checklist()], "Golden Collection").unwrap();
         let actual: serde_json::Value = serde_json::from_str(&json).unwrap();
-        let expected: serde_json::Value = serde_json::from_str(include_str!(
+        let mut expected: serde_json::Value = serde_json::from_str(include_str!(
             "../../../fixtures/exports/stig_manager_golden.json"
         ))
         .unwrap();
+
+        // resultEngine.version follows CARGO_PKG_VERSION, so the fixture value
+        // goes stale on every version bump; normalize it before comparing.
+        for asset in expected["assets"].as_array_mut().unwrap() {
+            for stig in asset["stigs"].as_array_mut().unwrap() {
+                for review in stig["reviews"].as_array_mut().unwrap() {
+                    if let Some(engine) = review.get_mut("resultEngine") {
+                        engine["version"] =
+                            serde_json::Value::String(env!("CARGO_PKG_VERSION").to_string());
+                    }
+                }
+            }
+        }
 
         assert_eq!(actual, expected);
     }

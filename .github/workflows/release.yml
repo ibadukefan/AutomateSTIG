@@ -90,7 +90,8 @@ jobs:
           if (-not (Test-Path $makensis)) {
             $makensis = "C:\Program Files\NSIS\makensis.exe"
           }
-          & $makensis "/DVERSION=${env:TAG}" "packaging/windows/installer.nsi"
+          $nsi = (Resolve-Path "packaging/windows/installer.nsi").Path
+          & $makensis "/DVERSION=${env:TAG}" $nsi
           $setup = "AutomateSTIG-${env:TAG}-windows-x64-setup.exe"
           if (-not (Test-Path $setup)) {
             Copy-Item "packaging/windows/$setup" $setup -Force
