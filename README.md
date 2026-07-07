@@ -23,15 +23,15 @@ Install the prebuilt binaries — one command for your OS:
 
 ```bash
 # macOS
-curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/claude/build-automatestig-cJqhi/install-macos.sh | sh
+curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-macos.sh | sh
 
 # Linux
-curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/claude/build-automatestig-cJqhi/install-linux.sh | sh
+curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-linux.sh | sh
 ```
 
 ```powershell
 # Windows (PowerShell)
-irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/claude/build-automatestig-cJqhi/install-windows.ps1 | iex
+irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-windows.ps1 | iex
 ```
 
 See [installation](docs/installation.md) for manual release downloads, checksums, and build-from-source instructions.

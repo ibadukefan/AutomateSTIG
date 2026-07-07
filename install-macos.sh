@@ -1,6 +1,6 @@
 #!/bin/sh
 # AutomateSTIG installer for macOS.
-#   curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/claude/build-automatestig-cJqhi/install-macos.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-macos.sh | sh
 set -e
 
 REPO="ibadukefan/AutomateSTIG"
