@@ -19,7 +19,17 @@ Evaluation is deterministic. There is no AI or ML in the evaluation path. The de
 
 ## Quick Start
 
-Install the prebuilt binaries — one command for your OS:
+### Desktop app (double-click installers)
+
+Launching the desktop app starts the local AutomateSTIG GUI and opens it in your browser at a localhost address. The CLI (`automatestig`) is included in every archive and installed on `PATH` by the command-line installers.
+
+- macOS: download `AutomateSTIG-<tag>-macos-<arch>.dmg` (`arm64` for Apple Silicon, `x86_64` for Intel), open it, drag **AutomateSTIG** to Applications, then launch it. On first launch, right-click **AutomateSTIG** and choose Open because the app is not notarized.
+- Windows: download `AutomateSTIG-<tag>-windows-x64-setup.exe`, run it, click through the wizard, then launch from the Start Menu or Desktop shortcut. On first run, SmartScreen may require More info, then Run anyway because the installer is not signed.
+- Linux: download `AutomateSTIG-<tag>-linux-x86_64.AppImage`, run `chmod +x AutomateSTIG-<tag>-linux-x86_64.AppImage`, then double-click it or run it from a terminal.
+
+### Command-line installers
+
+Install the prebuilt binaries with one command for your OS:
 
 ```bash
 # macOS

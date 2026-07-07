@@ -7,6 +7,37 @@ AutomateSTIG publishes release archives that contain both binaries:
 - `automatestig`
 - `automatestig-gui`
 
+### Desktop app (double-click installers)
+
+Launching the desktop app starts the local AutomateSTIG GUI and opens it in your browser at a localhost address. The CLI (`automatestig`) is included in every archive and installed on `PATH` by the command-line installers.
+
+macOS:
+
+1. Download `AutomateSTIG-<tag>-macos-<arch>.dmg` from the [latest GitHub Release](https://github.com/ibadukefan/AutomateSTIG/releases/latest). Use `arm64` for Apple Silicon and `x86_64` for Intel Macs.
+2. Open the `.dmg` and drag **AutomateSTIG** to Applications.
+3. Launch **AutomateSTIG**. On first launch, right-click **AutomateSTIG** and choose Open because the app is not notarized.
+
+Windows:
+
+1. Download `AutomateSTIG-<tag>-windows-x64-setup.exe` from the [latest GitHub Release](https://github.com/ibadukefan/AutomateSTIG/releases/latest).
+2. Run the setup file and click through the wizard.
+3. Launch **AutomateSTIG** from the Start Menu or Desktop shortcut. On first run, Windows may show SmartScreen; choose More info, then Run anyway because the installer is not signed.
+
+Linux:
+
+1. Download `AutomateSTIG-<tag>-linux-x86_64.AppImage` from the [latest GitHub Release](https://github.com/ibadukefan/AutomateSTIG/releases/latest).
+2. Make it executable:
+
+   ```bash
+   chmod +x AutomateSTIG-<tag>-linux-x86_64.AppImage
+   ```
+
+3. Double-click it, or run it from a terminal:
+
+   ```bash
+   ./AutomateSTIG-<tag>-linux-x86_64.AppImage
+   ```
+
 ### One-line installers — one per OS
 
 macOS:

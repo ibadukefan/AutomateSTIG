@@ -59,3 +59,49 @@ jobs:
           zip: windows
           ref: ${{ github.event.inputs.tag && format('refs/tags/{0}', github.event.inputs.tag) || github.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set release tag
+        shell: bash
+        run: echo "TAG=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_ENV"
+      - name: Build and upload macOS DMG
+        if: contains(matrix.target, 'apple-darwin')
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x packaging/macos/build-app.sh packaging/macos/build-dmg.sh
+          ARCH=x86_64
+          if [[ "${{ matrix.target }}" == *aarch64* ]]; then
+            ARCH=arm64
+          fi
+          packaging/macos/build-app.sh "target/${{ matrix.target }}/release/automatestig-gui" "$TAG" .
+          packaging/macos/build-dmg.sh AutomateSTIG.app "$TAG" "$ARCH" .
+          gh release upload "$TAG" "AutomateSTIG-$TAG-macos-$ARCH.dmg" --clobber
+      - name: Build and upload Windows setup
+        if: matrix.target == 'x86_64-pc-windows-msvc'
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          choco install nsis -y --no-progress
+          Copy-Item "target/x86_64-pc-windows-msvc/release/automatestig.exe" "packaging/windows/automatestig.exe" -Force
+          Copy-Item "target/x86_64-pc-windows-msvc/release/automatestig-gui.exe" "packaging/windows/automatestig-gui.exe" -Force
+          Copy-Item "packaging/icon/AutomateSTIG.ico" "packaging/windows/AutomateSTIG.ico" -Force
+          $makensis = Join-Path "${env:ProgramFiles(x86)}" "NSIS\makensis.exe"
+          if (-not (Test-Path $makensis)) {
+            $makensis = "C:\Program Files\NSIS\makensis.exe"
+          }
+          & $makensis "/DVERSION=${env:TAG}" "packaging/windows/installer.nsi"
+          $setup = "AutomateSTIG-${env:TAG}-windows-x64-setup.exe"
+          if (-not (Test-Path $setup)) {
+            Copy-Item "packaging/windows/$setup" $setup -Force
+          }
+          gh release upload "${env:TAG}" $setup --clobber
+      - name: Build and upload Linux AppImage
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x packaging/linux/build-appimage.sh
+          packaging/linux/build-appimage.sh "target/${{ matrix.target }}/release" "$TAG" x86_64 .
+          gh release upload "$TAG" "AutomateSTIG-$TAG-linux-x86_64.AppImage" --clobber
