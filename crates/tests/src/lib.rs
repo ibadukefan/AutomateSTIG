@@ -1130,10 +1130,7 @@ end"#;
 
     #[test]
     fn test_example_coverage_manifests_are_internally_consistent() {
-        for manifest_json in [
-            include_str!("../../../content/coverage/windows_server_2022.example.json"),
-            include_str!("../../../content/coverage/rhel8.example.json"),
-        ] {
+        for manifest_json in [include_str!("../../../content/coverage/rhel8.example.json")] {
             let manifest: serde_json::Value = serde_json::from_str(manifest_json).unwrap();
             assert_eq!(manifest["status"], "experimental");
             let total_rules = manifest["total_rules"].as_u64().unwrap();

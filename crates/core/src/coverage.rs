@@ -387,17 +387,16 @@ mod tests {
 
     #[test]
     fn validates_example_manifest_counts_and_evidence() {
-        let manifest = parse_coverage_manifest(include_str!(
-            "../../../content/coverage/windows_server_2022.example.json"
-        ))
-        .unwrap();
+        let manifest =
+            parse_coverage_manifest(include_str!("../../../content/coverage/rhel8.example.json"))
+                .unwrap();
 
         let report = validate_coverage_manifest(&manifest);
 
         assert!(report.is_valid(), "unexpected issues: {:?}", report.issues);
         assert_eq!(report.total_rules, 2);
-        assert_eq!(report.automated, 1);
-        assert_eq!(report.scanner_import, 1);
+        assert_eq!(report.automated, 0);
+        assert_eq!(report.scanner_import, 2);
     }
 
     #[test]
