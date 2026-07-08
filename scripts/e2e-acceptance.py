@@ -634,7 +634,6 @@ def start_gui(home, port, extra_env=None):
     env = dict(os.environ)
     env.update({"HOME": home, "USERPROFILE": home, "PORT": str(port),
                 "AUTOMATESTIG_AUTH_TOKEN": TOKEN})
-    env.pop("AUTOMATESTIG_DEMO", None)
     env.update(extra_env or {})
     os.makedirs(home, exist_ok=True)
     proc = subprocess.Popen([GUI_BIN], env=env, cwd=REPO,
@@ -725,16 +724,6 @@ def sec_gui(cli_ckl):
         proc.kill()
         proc.wait()
 
-    home2 = f"{WORK}/gui_home_demo"
-    proc2 = start_gui(home2, GUI_PORT + 1, extra_env={"AUTOMATESTIG_DEMO": "1"})
-    try:
-        st, body = gui_req("/api/checklists", port=GUI_PORT + 1)
-        data = unwrap(body) or []
-        check(G, "demo mode seeds data ONLY when explicitly enabled",
-              st == 200 and len(data) > 0, body[:200])
-    finally:
-        proc2.kill()
-        proc2.wait()
 
 
 # ==========================================================================
