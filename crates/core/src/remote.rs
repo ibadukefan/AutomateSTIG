@@ -50,6 +50,7 @@ pub fn generate_collection_plan(platform: CheckPlatform) -> CollectionPlan {
             network_collection_plan()
         }
         CheckPlatform::Ontap => ontap_collection_plan(),
+        CheckPlatform::Bsd => bsd_collection_plan(),
         CheckPlatform::Generic => CollectionPlan {
             commands: Vec::new(),
         },
@@ -256,6 +257,35 @@ fn privileged_ontap_command(command: &str) -> CollectionCommand {
     }
 }
 
+fn bsd_collection_plan() -> CollectionPlan {
+    let commands = [
+        "freebsd-version -k",
+        "cat /etc/ssh/sshd_config",
+        "cat /etc/motd.template /etc/motd",
+        "cat /etc/login.conf",
+        "cat /etc/pam.d/passwd",
+        "cat /etc/security/audit_control",
+        "service auditd onestatus",
+        "cat /etc/ntp.conf",
+        "cat /var/db/zoneinfo",
+        "sysctl kern.elf64.aslr.enable",
+        "cat /etc/rc.conf",
+    ];
+
+    CollectionPlan {
+        commands: commands.into_iter().map(bsd_command).collect(),
+    }
+}
+
+fn bsd_command(command: &str) -> CollectionCommand {
+    CollectionCommand {
+        description: format!("BSD command: {}", command),
+        command: command.to_string(),
+        parser: OutputParser::Raw,
+        data_key: command.to_string(),
+    }
+}
+
 /// Assemble a SystemData struct from raw collected outputs.
 pub fn assemble_system_data(
     platform: CheckPlatform,
@@ -340,7 +370,7 @@ pub fn assemble_system_data(
             data.network_config = raw_outputs.get("running_config").cloned();
         }
 
-        CheckPlatform::Ontap => {
+        CheckPlatform::Ontap | CheckPlatform::Bsd => {
             data.command_outputs = raw_outputs.clone();
         }
 
@@ -392,6 +422,24 @@ mod tests {
         assert!(plan.commands.iter().any(|c| {
             c.data_key == "security session limit show -interface cli"
                 && c.command == "security session limit show -interface cli"
+        }));
+    }
+
+    #[test]
+    fn test_collection_plan_bsd_uses_plain_keys() {
+        let plan = generate_collection_plan(CheckPlatform::Bsd);
+        let command = "freebsd-version -k";
+        let collected = plan
+            .commands
+            .iter()
+            .find(|c| c.data_key == command)
+            .expect("BSD command is present");
+
+        assert_eq!(collected.data_key, command);
+        assert_eq!(collected.command, command);
+        assert!(plan.commands.iter().any(|c| {
+            c.data_key == "sysctl kern.elf64.aslr.enable"
+                && c.command == "sysctl kern.elf64.aslr.enable"
         }));
     }
 

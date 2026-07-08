@@ -44,6 +44,11 @@ ONTAP_FINDINGS = f"{FIX}/ontap/ontap_evidence_findings.txt"
 ONTAP_COMPLIANT = f"{FIX}/ontap/ontap_evidence_compliant.txt"
 ONTAP_OPEN = {"V-246923", "V-246932", "V-246936", "V-246950", "V-246951", "V-246958", "V-246959"}
 ONTAP_MANUAL = {"V-246927", "V-246930", "V-246933", "V-246939", "V-246945", "V-246946", "V-246949"}
+GPOS_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_GPOS_V3R3_SRG.zip"
+BSD_FINDINGS = f"{FIX}/bsd/bsd_evidence_findings.txt"
+BSD_COMPLIANT = f"{FIX}/bsd/bsd_evidence_compliant.txt"
+BSD_OPEN = {"V-203632", "V-203665", "V-203669", "V-203683", "V-203737", "V-203754", "V-203767", "V-203784"}
+BSD_AUTOMATED = 30
 
 DB = f"{WORK}/data.db"
 LIB = f"{WORK}/library"
@@ -507,6 +512,47 @@ def sec_ontap():
     check(S, "evidence-evaluated findings carry provenance text", not prov, str(prov[:3]))
 
 
+def sec_bsd():
+    """FreeBSD: GPOS SRG import + evidence-transcript evaluation via check pack."""
+    S = "bsd-evidence"
+    p = run_cli("disa-import", "--input", GPOS_ZIP)
+    check(S, "disa-import GPOS SRG V3R3 succeeds", p.returncode == 0, p.combined[:300])
+
+    def statuses(dest):
+        tree = ET.parse(dest)
+        out = {}
+        for v in tree.iter("VULN"):
+            attrs = {sd.findtext("VULN_ATTRIBUTE"): sd.findtext("ATTRIBUTE_DATA") or ""
+                     for sd in v.findall("STIG_DATA")}
+            vnum = next((x for x in attrs.values() if x.startswith("V-2")), attrs.get("Vuln_Num"))
+            out[vnum] = norm_status(v.findtext("STATUS") or "")
+        return out
+
+    dest = f"{OUT}/bsd_findings.ckl"
+    p = run_cli("evaluate", "--stig", "General_Purpose_Operating_System", "--evidence", BSD_FINDINGS,
+                "--host", "bsd-findings-01", "--output", dest, "--format", "ckl")
+    check(S, "evaluate --evidence (findings) succeeds", p.returncode == 0 and os.path.exists(dest),
+          p.combined[:300])
+    got = statuses(dest)
+    opens = {v for v, s in got.items() if s == "open"}
+    nafs = sum(1 for s in got.values() if s == "notafinding")
+    check(S, "findings evidence: exactly the 8 designed rules are Open", opens == BSD_OPEN,
+          f"extra={sorted(opens - BSD_OPEN)[:5]} missing={sorted(BSD_OPEN - opens)[:5]}")
+    check(S, f"findings evidence: {BSD_AUTOMATED - 8} NotAFinding, rest Not_Reviewed",
+          nafs == BSD_AUTOMATED - 8 and len(got) == 203,
+          f"naf={nafs} total={len(got)}")
+
+    dest = f"{OUT}/bsd_compliant.ckl"
+    p = run_cli("evaluate", "--stig", "General_Purpose_Operating_System", "--evidence", BSD_COMPLIANT,
+                "--host", "bsd-compliant-01", "--output", dest, "--format", "ckl")
+    check(S, "evaluate --evidence (compliant) succeeds", p.returncode == 0, p.combined[:300])
+    got = statuses(dest)
+    counts = status_counts({v: {"status": s} for v, s in got.items()})
+    check(S, f"compliant evidence: {BSD_AUTOMATED} NotAFinding / 0 Open / rest Not_Reviewed",
+          counts.get("notafinding") == BSD_AUTOMATED and not counts.get("open")
+          and counts.get("notreviewed") == 203 - BSD_AUTOMATED, str(counts))
+
+
 def sec_stigpack():
     S = "stigpack"
     src_dir = f"{WORK}/pack_src"
@@ -712,6 +758,7 @@ def main():
     sec_gen_answer(outs)
     sec_evaluate_rhel(rhel_id)
     sec_ontap()
+    sec_bsd()
     sec_stigpack()
     sec_coverage()
     sec_gui(ckl)

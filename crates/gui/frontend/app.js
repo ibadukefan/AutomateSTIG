@@ -587,6 +587,7 @@ async function loadRemoteScan() {
             h('select', { className: 'form-select', id: 'scan-platform' },
               h('option', { value: 'linux' }, 'Linux'),
               h('option', { value: 'ontap' }, 'NetApp ONTAP'),
+              h('option', { value: 'bsd' }, 'FreeBSD'),
             ),
           ),
           h('div', { className: 'form-group' },

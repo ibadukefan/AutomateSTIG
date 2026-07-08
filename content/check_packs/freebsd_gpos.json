@@ -1,0 +1,217 @@
+{
+  "stig_id": "General_Purpose_Operating_System",
+  "platform": "bsd",
+  "version": "V3R3",
+  "checks": [
+    {
+      "vuln_id": "V-278977",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "freebsd-version -k" },
+      "expected": { "type": "matches", "pattern": "(?m)\\b(13\\.[4-9]|14\\.\\d+|15\\.\\d+)" },
+      "description": "FreeBSD release must be a vendor-supported version (13.4+, 14.x, 15.x)"
+    },
+    {
+      "vuln_id": "V-203595",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/ssh/sshd_config" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*Banner\\s+/\\S+" },
+      "description": "sshd must present a banner file before remote authentication"
+    },
+    {
+      "vuln_id": "V-203665",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/motd.template /etc/motd" },
+      "expected": { "type": "matches", "pattern": "You are accessing a U\\.S\\. Government \\(USG\\) Information System" },
+      "description": "The Standard Mandatory DoD Notice and Consent Banner must be displayed"
+    },
+    {
+      "vuln_id": "V-203597",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/ssh/sshd_config" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*MaxSessions\\s+([1-9]|10)\\b" },
+      "description": "Concurrent sessions must be limited to 10 or fewer (sshd MaxSessions)"
+    },
+    {
+      "vuln_id": "V-203683",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/ssh/sshd_config" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*ClientAliveInterval\\s+([1-9]|[1-9]\\d|[1-5]\\d\\d|600)\\b" },
+      "description": "Idle sessions must terminate automatically (ClientAliveInterval 1-600 seconds)"
+    },
+    {
+      "vuln_id": "V-203594",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/rc.conf" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*blacklistd_enable=\"?YES\"?" },
+      "description": "Failed logon attempts must be limited (blacklistd enabled)"
+    },
+    {
+      "vuln_id": "V-203625",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/pam.d/passwd" },
+      "expected": { "type": "matches", "pattern": "(?m)^[^#\\n]*pam_passwdqc\\.so\\s+[^\\n]*min=disabled,disabled,disabled,disabled,\\d+" },
+      "description": "Password complexity (uppercase) enforced via pam_passwdqc all-classes policy"
+    },
+    {
+      "vuln_id": "V-203626",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/pam.d/passwd" },
+      "expected": { "type": "matches", "pattern": "(?m)^[^#\\n]*pam_passwdqc\\.so\\s+[^\\n]*min=disabled,disabled,disabled,disabled,\\d+" },
+      "description": "Password complexity (lowercase) enforced via pam_passwdqc all-classes policy"
+    },
+    {
+      "vuln_id": "V-203627",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/pam.d/passwd" },
+      "expected": { "type": "matches", "pattern": "(?m)^[^#\\n]*pam_passwdqc\\.so\\s+[^\\n]*min=disabled,disabled,disabled,disabled,\\d+" },
+      "description": "Password complexity (numeric) enforced via pam_passwdqc all-classes policy"
+    },
+    {
+      "vuln_id": "V-203676",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/pam.d/passwd" },
+      "expected": { "type": "matches", "pattern": "(?m)^[^#\\n]*pam_passwdqc\\.so\\s+[^\\n]*min=disabled,disabled,disabled,disabled,\\d+" },
+      "description": "Password complexity (special character) enforced via pam_passwdqc all-classes policy"
+    },
+    {
+      "vuln_id": "V-203634",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/pam.d/passwd" },
+      "expected": { "type": "matches", "pattern": "min=disabled,disabled,disabled,disabled,(1[5-9]|[2-9]\\d)" },
+      "description": "Minimum password length must be 15 characters (passwdqc min tuple)"
+    },
+    {
+      "vuln_id": "V-203632",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/login.conf" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*:passwordtime=([1-9]|[1-5][0-9]|60)d\\b" },
+      "description": "Maximum password lifetime must be 60 days or less (login.conf passwordtime)"
+    },
+    {
+      "vuln_id": "V-203630",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/rc.conf" },
+      "expected": { "type": "not_contains", "substring": "telnetd_enable=\"YES\"" },
+      "description": "Plaintext credential services (telnetd) must not be enabled"
+    },
+    {
+      "vuln_id": "V-203669",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/ssh/sshd_config" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*Ciphers\\s+aes(128|192|256)-(ctr|gcm@openssh\\.com)(,aes(128|192|256)-(ctr|gcm@openssh\\.com))*\\s*$" },
+      "description": "Remote sessions must use approved AES ciphers only (sshd Ciphers allowlist)"
+    },
+    {
+      "vuln_id": "V-203736",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/ssh/sshd_config" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*MACs\\s+hmac-sha2-(256|512)(-etm@openssh\\.com)?(,hmac-sha2-(256|512)(-etm@openssh\\.com)?)*\\s*$" },
+      "description": "Nonlocal maintenance integrity: sshd MACs restricted to HMAC-SHA2"
+    },
+    {
+      "vuln_id": "V-203737",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/ssh/sshd_config" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*Ciphers\\s+aes(128|192|256)-(ctr|gcm@openssh\\.com)(,aes(128|192|256)-(ctr|gcm@openssh\\.com))*\\s*$" },
+      "description": "Nonlocal maintenance confidentiality: sshd Ciphers restricted to AES"
+    },
+    {
+      "vuln_id": "V-203645",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/ssh/sshd_config" },
+      "expected": { "type": "not_contains", "substring": "Protocol 1" },
+      "description": "Replay-resistant authentication for privileged access (SSHv2 only)"
+    },
+    {
+      "vuln_id": "V-203646",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/ssh/sshd_config" },
+      "expected": { "type": "not_contains", "substring": "Protocol 1" },
+      "description": "Replay-resistant authentication for non-privileged access (SSHv2 only)"
+    },
+    {
+      "vuln_id": "V-203767",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/security/audit_control" },
+      "expected": { "type": "matches", "pattern": "(?m)^flags:[^\\n]*\\blo\\b" },
+      "description": "Logon/logout events must be audited (audit_control flags include lo)"
+    },
+    {
+      "vuln_id": "V-203621",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/security/audit_control" },
+      "expected": { "type": "matches", "pattern": "(?m)^flags:[^\\n]*\\baa\\b" },
+      "description": "Privilege access attempts must be audited (audit_control flags include aa)"
+    },
+    {
+      "vuln_id": "V-203774",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/security/audit_control" },
+      "expected": { "type": "matches", "pattern": "(?m)^flags:[^\\n]*\\bad\\b" },
+      "description": "Account administration events must be audited (audit_control flags include ad)"
+    },
+    {
+      "vuln_id": "V-203772",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/security/audit_control" },
+      "expected": { "type": "matches", "pattern": "(?m)^flags:[^\\n]*\\bf[rwm]\\b" },
+      "description": "Object access events must be audited (audit_control flags include fr/fw/fm)"
+    },
+    {
+      "vuln_id": "V-203700",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/security/audit_control" },
+      "expected": { "type": "matches", "pattern": "(?m)^expire-after:\\s*([7-9]|[1-9]\\d+)d" },
+      "description": "Audit records must be retained at least one week (expire-after >= 7d)"
+    },
+    {
+      "vuln_id": "V-203615",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "service auditd onestatus" },
+      "expected": { "type": "matches", "pattern": "(?i)is running" },
+      "description": "auditd must be running so audit records use internal system clocks"
+    },
+    {
+      "vuln_id": "V-203777",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/rc.conf" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*auditdistd_enable=\"?YES\"?" },
+      "description": "Audit records must be off-loaded to a remote system (auditdistd enabled)"
+    },
+    {
+      "vuln_id": "V-203711",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/rc.conf" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*(ntpd|openntpd|chronyd)_enable=\"?YES\"?" },
+      "description": "Clocks must be compared with an authoritative source (NTP daemon enabled)"
+    },
+    {
+      "vuln_id": "V-203712",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/ntp.conf" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*(server|pool)\\s+\\S+" },
+      "description": "An authoritative NTP time source must be configured"
+    },
+    {
+      "vuln_id": "V-203714",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /var/db/zoneinfo" },
+      "expected": { "type": "matches", "pattern": "(?i)UTC|GMT|Etc/" },
+      "description": "System time zone must map to UTC/GMT for audit timestamps"
+    },
+    {
+      "vuln_id": "V-203754",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "sysctl kern.elf64.aslr.enable" },
+      "expected": { "type": "matches", "pattern": "kern\\.elf64\\.aslr\\.enable:\\s*1\\b" },
+      "description": "Address space layout randomization must be enabled"
+    },
+    {
+      "vuln_id": "V-203784",
+      "platform": "bsd",
+      "check": { "type": "command", "command": "cat /etc/rc.conf" },
+      "expected": { "type": "matches", "pattern": "(?m)^\\s*(pf|ipfw|ipfilter)_enable=\"?YES\"?" },
+      "description": "A host firewall (pf/ipfw/ipfilter) must be enabled"
+    }
+  ]
+}

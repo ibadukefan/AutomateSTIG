@@ -1,0 +1,56 @@
+### automatestig:hostname bsd-compliant-01
+### automatestig:command freebsd-version -k
+14.2-RELEASE-p3
+### automatestig:command cat /etc/ssh/sshd_config
+Port 22
+Protocol 2
+Banner /etc/issue
+MaxSessions 4
+ClientAliveInterval 600
+ClientAliveCountMax 1
+Ciphers aes256-gcm@openssh.com,aes128-ctr
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256
+PermitRootLogin no
+UseBlacklist yes
+### automatestig:command cat /etc/motd.template /etc/motd
+You are accessing a U.S. Government (USG) Information System (IS) that is
+provided for USG-authorized use only.
+### automatestig:command cat /etc/login.conf
+default:\
+	:passwd_format=sha512:\
+	:passwordtime=60d:\
+	:copyright=/etc/COPYRIGHT:\
+	:welcome=/var/run/motd:\
+	:umask=022:
+### automatestig:command cat /etc/pam.d/passwd
+# passwd(1) policy
+password	requisite	pam_passwdqc.so	min=disabled,disabled,disabled,disabled,15 similar=deny enforce=users
+password	required	pam_unix.so	no_warn try_first_pass nullok
+### automatestig:command cat /etc/security/audit_control
+dir:/var/audit
+dist:on
+flags:lo,aa,ad,fm,fw
+minfree:20
+naflags:lo,aa
+policy:cnt,argv
+filesz:2M
+expire-after:14d
+### automatestig:command service auditd onestatus
+auditd is running as pid 812.
+### automatestig:command cat /etc/ntp.conf
+server 10.10.1.10 iburst
+server 10.10.1.11 iburst
+restrict default limited kod nomodify notrap noquery
+### automatestig:command cat /var/db/zoneinfo
+Etc/UTC
+### automatestig:command sysctl kern.elf64.aslr.enable
+kern.elf64.aslr.enable: 1
+### automatestig:command cat /etc/rc.conf
+hostname="bsd-compliant-01"
+sshd_enable="YES"
+auditd_enable="YES"
+auditdistd_enable="YES"
+ntpd_enable="YES"
+pf_enable="YES"
+blacklistd_enable="YES"
+clear_tmp_enable="YES"

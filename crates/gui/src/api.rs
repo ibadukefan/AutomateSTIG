@@ -2028,33 +2028,35 @@ async fn scan_ssh(
         timeout_secs: 30,
     };
 
-    let requested_ontap = req
-        .platform
-        .as_deref()
-        .map(|platform| platform.eq_ignore_ascii_case("ontap"))
-        .unwrap_or(false);
+    let requested_collection_platform = req.platform.as_deref().and_then(|platform| match platform
+        .to_ascii_lowercase()
+        .as_str()
+    {
+        "ontap" => Some(automatestig_core::checks::CheckPlatform::Ontap),
+        "bsd" => Some(automatestig_core::checks::CheckPlatform::Bsd),
+        _ => None,
+    });
 
-    let (check_platform, raw_outputs) = if requested_ontap {
-        let plan = automatestig_core::remote::generate_collection_plan(
-            automatestig_core::checks::CheckPlatform::Ontap,
-        );
-        let commands: Vec<(&str, &str)> = plan
-            .commands
-            .iter()
-            .map(|command| (command.data_key.as_str(), command.command.as_str()))
-            .collect();
-        let raw_outputs = match crate::ssh::execute_commands(&ssh_config, &commands).await {
-            Ok(data) => data,
-            Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
+    let (check_platform, raw_outputs) =
+        if let Some(collection_platform) = requested_collection_platform {
+            let plan = automatestig_core::remote::generate_collection_plan(collection_platform);
+            let commands: Vec<(&str, &str)> = plan
+                .commands
+                .iter()
+                .map(|command| (command.data_key.as_str(), command.command.as_str()))
+                .collect();
+            let raw_outputs = match crate::ssh::execute_commands(&ssh_config, &commands).await {
+                Ok(data) => data,
+                Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
+            };
+            (collection_platform, raw_outputs)
+        } else {
+            let raw_outputs = match crate::ssh::collect_linux_data(&ssh_config).await {
+                Ok(data) => data,
+                Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
+            };
+            (automatestig_core::checks::CheckPlatform::Linux, raw_outputs)
         };
-        (automatestig_core::checks::CheckPlatform::Ontap, raw_outputs)
-    } else {
-        let raw_outputs = match crate::ssh::collect_linux_data(&ssh_config).await {
-            Ok(data) => data,
-            Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
-        };
-        (automatestig_core::checks::CheckPlatform::Linux, raw_outputs)
-    };
 
     let hostname = raw_outputs
         .get("hostname")

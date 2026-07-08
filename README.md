@@ -12,6 +12,7 @@ AutomateSTIG focuses on collecting evidence from devices that scripted scanners 
 - Import DISA XCCDF XML or ZIP benchmark content.
 - Evaluate benchmarks from scan results, network device configuration evidence, Linux/UNIX SSH collection, answer files, and installed check packs.
 - Evaluate NetApp ONTAP filers from read-only CLI evidence transcripts (DISA ONTAP DSC 9.x STIG).
+- Evaluate FreeBSD hosts against the DISA GPOS SRG from read-only evidence transcripts.
 - Generate and persist deterministic auto check packs from structured DISA check content where possible.
 - Manage assets, assessments, findings, credentials, and STIG-Manager settings in the local GUI.
 - Deliver results through STIG-Manager API push, STIG-Manager JSON export, and CKL/CKLB file import.

@@ -113,6 +113,16 @@
       "authorization": "Public unclassified DISA Cyber Exchange download; redistribution subject to DISA public terms.",
       "classification": "authorized_public",
       "notes": "Official public DISA manual STIG ZIP downloaded from dl.dod.cyber.mil; drives the netapp_ontap9 check pack and ONTAP evidence E2E scenario."
+    },
+    {
+      "id": "disa_public_gpos_srg_v3r3",
+      "kind": "disa-xccdf",
+      "path": "fixtures/authorized/disa-public-2026-07/U_GPOS_V3R3_SRG.zip",
+      "sha256": "97026655bce18d91e12c9c0a9fd54288989f0b483d3b92ec615e2dc0544e6f24",
+      "source": "DISA Cyber Exchange Public download: General Purpose Operating System SRG Ver 3 Rel 3",
+      "authorization": "Public unclassified DISA Cyber Exchange download; redistribution subject to DISA public terms.",
+      "classification": "authorized_public",
+      "notes": "Official public DISA SRG ZIP from dl.dod.cyber.mil; baseline for the freebsd_gpos check pack (no vendor BSD STIG exists) and the BSD evidence E2E scenario."
     }
   ]
 }

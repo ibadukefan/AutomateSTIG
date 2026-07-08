@@ -51,6 +51,7 @@ pub enum CheckPlatform {
     #[serde(alias = "cisco_asa")]
     CiscoAsa,
     Ontap,
+    Bsd,
     Generic,
 }
 
@@ -312,6 +313,14 @@ mod tests {
         assert_eq!(
             serde_json::from_str::<CheckPlatform>("\"ontap\"").unwrap(),
             CheckPlatform::Ontap
+        );
+        assert_eq!(
+            serde_json::from_str::<CheckPlatform>("\"bsd\"").unwrap(),
+            CheckPlatform::Bsd
+        );
+        assert_eq!(
+            serde_json::to_string(&CheckPlatform::Bsd).unwrap(),
+            "\"bsd\""
         );
     }
 

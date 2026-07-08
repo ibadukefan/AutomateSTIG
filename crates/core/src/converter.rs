@@ -98,7 +98,7 @@ fn convert_rule(rule: &StigRule, platform: CheckPlatform) -> Option<CheckDefinit
         CheckPlatform::CiscoIos | CheckPlatform::CiscoNxos | CheckPlatform::CiscoAsa => {
             try_network_patterns(text)
         }
-        CheckPlatform::Ontap => try_generic_patterns(text),
+        CheckPlatform::Ontap | CheckPlatform::Bsd => try_generic_patterns(text),
         CheckPlatform::Generic => try_generic_patterns(text),
     };
 

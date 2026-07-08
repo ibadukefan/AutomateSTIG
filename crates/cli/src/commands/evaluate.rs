@@ -295,6 +295,7 @@ fn check_platform_name(platform: CheckPlatform) -> &'static str {
         CheckPlatform::CiscoNxos => "cisco_nxos",
         CheckPlatform::CiscoAsa => "cisco_asa",
         CheckPlatform::Ontap => "ontap",
+        CheckPlatform::Bsd => "bsd",
         CheckPlatform::Generic => "generic",
     }
 }
