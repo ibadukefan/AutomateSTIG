@@ -5,7 +5,6 @@ members = [
     "crates/parsers",
     "crates/storage",
     "crates/stigpack",
-    "crates/remediation",
     "crates/integrations",
     "crates/cli",
     "crates/gui",
@@ -87,7 +86,6 @@ automatestig-core = { path = "crates/core" }
 automatestig-parsers = { path = "crates/parsers" }
 automatestig-storage = { path = "crates/storage" }
 automatestig-stigpack = { path = "crates/stigpack" }
-automatestig-remediation = { path = "crates/remediation" }
 automatestig-integrations = { path = "crates/integrations" }
 
 [profile.release]

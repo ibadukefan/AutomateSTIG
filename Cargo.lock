@@ -206,7 +206,6 @@ dependencies = [
  "automatestig-core",
  "automatestig-integrations",
  "automatestig-parsers",
- "automatestig-remediation",
  "automatestig-stigpack",
  "automatestig-storage",
  "chrono",
@@ -242,7 +241,6 @@ dependencies = [
  "automatestig-core",
  "automatestig-integrations",
  "automatestig-parsers",
- "automatestig-remediation",
  "automatestig-stigpack",
  "automatestig-storage",
  "axum",
@@ -292,16 +290,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "automatestig-remediation"
-version = "0.1.1"
-dependencies = [
- "automatestig-core",
- "serde",
- "serde_json",
- "tempfile",
-]
-
-[[package]]
 name = "automatestig-stigpack"
 version = "0.1.1"
 dependencies = [
@@ -338,7 +326,6 @@ dependencies = [
  "automatestig-core",
  "automatestig-integrations",
  "automatestig-parsers",
- "automatestig-remediation",
  "automatestig-stigpack",
  "automatestig-storage",
  "chrono",

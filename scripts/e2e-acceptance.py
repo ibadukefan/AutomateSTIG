@@ -466,52 +466,6 @@ def sec_gen_answer(outs):
                   f"{n_full} vs {len(src)}")
 
 
-def sec_remediate_positive(rhel_id):
-    """Force check-pack-covered RHEL rules to fail; remediation scripts must appear."""
-    S = "remediate"
-    pack = json.load(open(f"{REPO}/content/check_packs/rhel8.json"))
-    pack_vulns = {c["vuln_id"] for c in pack["checks"]}
-    rules = benchmark_rules_from_zip(RHEL8_ZIP)
-    hit = [(rid, "fail") for gid, rid in rules if gid in pack_vulns]
-    check(S, "check pack overlaps benchmark rules", len(hit) > 5, f"overlap={len(hit)}")
-    scan_path = f"{WORK}/synthetic_rhel.xml"
-    make_scan_xml(scan_path, hit)
-    dest = f"{OUT}/rhel_forced.ckl"
-    p = run_cli("evaluate", "--stig", rhel_id, "--scan", scan_path,
-                "--host", "remhost01", "--output", dest, "--format", "ckl")
-    check(S, "forced-fail evaluation succeeds", p.returncode == 0, p.combined[:300])
-
-    forced = parse_ckl(dest)
-    open_stig_ids = {v for v, e in forced.items() if norm_status(e["status"]) == "open"}
-    open_count = len(open_stig_ids)
-    check(S, "forced scan opened exactly the covered rules", open_count == len(hit),
-          f"{open_count} vs {len(hit)}")
-    for fmt in ("bash", "powershell", "ansible"):
-        out = f"{OUT}/rem_{fmt}.txt"
-        p = run_cli("remediate", "--input", dest, "--format", fmt, "--output", out)
-        gen = re.search(r"Scripts generated:\s*(\d+)", p.combined)
-        man = re.search(r"Manual review required:\s*(\d+)", p.combined)
-        n_gen = int(gen.group(1)) if gen else -1
-        n_man = int(man.group(1)) if man else -1
-        check(S, f"remediate {fmt} runs and reports counts", p.returncode == 0 and gen and man,
-              p.combined[:300])
-        check(S, f"remediate {fmt}: generated+manual == open findings ({open_count})",
-              n_gen + n_man == open_count, f"{n_gen}+{n_man} != {open_count}")
-        check(S, f"remediate {fmt} generates scripts for covered findings", n_gen > 0, p.combined[:200])
-        if n_gen > 0 and os.path.exists(out):
-            body = open(out).read()
-            refs = set(re.findall(r"RHEL-08-\d+", body))
-            check(S, f"remediate {fmt} script references only forced-open findings",
-                  refs and refs <= open_stig_ids, f"{len(refs)} refs, stray={sorted(refs - open_stig_ids)[:3]}")
-
-    # Also: remediation on a checklist with no coverage must say so, not fabricate.
-    p = run_cli("remediate", "--input", f"{OUT}/ws2022.ckl", "--format", "bash",
-                "--output", f"{OUT}/rem_none.sh")
-    check(S, "uncovered findings honestly reported as manual",
-          p.returncode == 0 and re.search(r"Manual review required:\s*[1-9]", p.combined),
-          p.combined[:300])
-
-
 def sec_evaluate_rhel(rhel_id):
     S = "evaluate-rhel8"
     outs = {}
@@ -745,7 +699,6 @@ def main():
     sec_convert(outs)
     sec_gen_answer(outs)
     sec_evaluate_rhel(rhel_id)
-    sec_remediate_positive(rhel_id)
     sec_stigpack()
     sec_coverage()
     sec_gui(ckl)
