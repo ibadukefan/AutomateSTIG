@@ -1,12 +1,11 @@
 //! Credential vault — encrypted storage for authentication secrets.
 //!
 //! Supports multiple credential types:
-//! - Username + password (SSH, WinRM)
+//! - Username + password
 //! - SSH private key (with optional passphrase)
 //! - SSH certificate
 //! - Kerberos (domain + username for ticket-based auth)
 //! - Token-based (API keys, bearer tokens)
-//! - Certificate-based (client TLS certs for WinRM/HTTPS)
 //!
 //! All secrets are encrypted at rest using AES-256-GCM before
 //! storage in the SQLite database.
@@ -84,14 +83,6 @@ pub enum CredentialType {
         token: String,
         /// Token type hint (e.g., "bearer", "api-key").
         token_type: Option<String>,
-    },
-
-    /// Client TLS certificate (for WinRM over HTTPS, mutual TLS).
-    ClientCertificate {
-        /// Certificate in PEM format.
-        certificate: String,
-        /// Private key in PEM format, encrypted at rest.
-        private_key: String,
     },
 }
 
@@ -175,7 +166,6 @@ impl StoredCredential {
             CredentialType::SshCertificate { username, .. } => Some(username),
             CredentialType::Kerberos { username, .. } => Some(username),
             CredentialType::Token { .. } => None,
-            CredentialType::ClientCertificate { .. } => None,
         }
     }
 
@@ -227,7 +217,6 @@ impl CredentialVault {
                     CredentialType::SshCertificate { .. } => "ssh_certificate".to_string(),
                     CredentialType::Kerberos { .. } => "kerberos".to_string(),
                     CredentialType::Token { .. } => "token".to_string(),
-                    CredentialType::ClientCertificate { .. } => "client_certificate".to_string(),
                 },
                 username: c.username().map(|s| s.to_string()),
                 is_expired: c.is_expired(),

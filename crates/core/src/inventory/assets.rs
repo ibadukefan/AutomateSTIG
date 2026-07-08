@@ -63,8 +63,6 @@ pub struct ManagedAsset {
 #[serde(rename_all = "lowercase")]
 pub enum ScanProtocol {
     Ssh,
-    Winrm,
-    WinrmHttps,
     Local,
 }
 
@@ -95,8 +93,6 @@ impl ManagedAsset {
     pub fn effective_port(&self) -> u16 {
         self.port.unwrap_or(match self.protocol {
             ScanProtocol::Ssh => 22,
-            ScanProtocol::Winrm => 5985,
-            ScanProtocol::WinrmHttps => 5986,
             ScanProtocol::Local => 0,
         })
     }
@@ -130,14 +126,14 @@ mod tests {
     #[test]
     fn test_effective_port() {
         let mut asset = ManagedAsset::new(
-            "win01",
+            "local01",
             "10.0.1.60",
-            CheckPlatform::Windows,
-            ScanProtocol::Winrm,
+            CheckPlatform::Linux,
+            ScanProtocol::Local,
         );
-        assert_eq!(asset.effective_port(), 5985);
-        asset.port = Some(5986);
-        assert_eq!(asset.effective_port(), 5986);
+        assert_eq!(asset.effective_port(), 0);
+        asset.port = Some(2222);
+        assert_eq!(asset.effective_port(), 2222);
     }
 
     #[test]

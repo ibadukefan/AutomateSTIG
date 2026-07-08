@@ -972,36 +972,6 @@ end"#;
     }
 
     // ---------------------------------------------------------------------------
-    // Drift detection E2E
-    // ---------------------------------------------------------------------------
-
-    #[test]
-    fn test_drift_detection_e2e() {
-        use automatestig_core::agent::detect_drift;
-
-        let benchmark = make_benchmark("Drift_Test", 10);
-        let asset = Asset::new("drifthost");
-        let engine = EvaluationEngine::with_defaults();
-
-        // First evaluation: 80% pass.
-        let scan1 = make_scan_results(&benchmark, 0.8);
-        let cl1 = engine
-            .evaluate(&benchmark, &asset, Some(&scan1), &[])
-            .unwrap();
-
-        // Second evaluation: 90% pass (improvement).
-        let scan2 = make_scan_results(&benchmark, 0.9);
-        let cl2 = engine
-            .evaluate(&benchmark, &asset, Some(&scan2), &[])
-            .unwrap();
-
-        let drift = detect_drift(&cl1, &cl2);
-        assert!(!drift.is_regression()); // Compliance improved.
-        assert!(drift.compliance_delta > 0.0);
-        assert!(!drift.newly_resolved.is_empty()); // Some findings were fixed.
-    }
-
-    // ---------------------------------------------------------------------------
     // Inventory and credentials E2E
     // ---------------------------------------------------------------------------
 
@@ -1059,47 +1029,6 @@ end"#;
         // Remove and verify.
         assert!(vault.remove(&id1));
         assert_eq!(vault.credentials.len(), 3);
-    }
-
-    // ---------------------------------------------------------------------------
-    // Scheduler E2E
-    // ---------------------------------------------------------------------------
-
-    #[test]
-    fn test_scheduler_lifecycle() {
-        use automatestig_core::inventory::scheduler::*;
-
-        let mut schedule = EvaluationSchedule::new(
-            "Weekly Windows Scan",
-            ScheduleFrequency::Weekly {
-                days: vec!["monday".to_string(), "thursday".to_string()],
-            },
-        );
-        schedule.asset_tags = vec!["windows".to_string()];
-        schedule.post_actions.push_to_stigman = true;
-        schedule.post_actions.alert_on_cat_i = true;
-
-        assert!(schedule.enabled);
-        assert!(schedule.next_run.is_some());
-
-        // Simulate execution.
-        schedule.mark_executed(ScheduleRunStatus {
-            completed_at: chrono::Utc::now(),
-            assets_scanned: 10,
-            assets_failed: 1,
-            total_findings: 2870,
-            total_open: 45,
-            avg_compliance: 96.2,
-            errors: vec!["server07: connection timeout".to_string()],
-        });
-
-        assert!(schedule.enabled); // Weekly should stay enabled.
-        assert!(schedule.next_run.is_some()); // Should have next run calculated.
-        assert!(schedule.last_run.is_some());
-
-        let status = schedule.last_run_status.as_ref().unwrap();
-        assert_eq!(status.assets_scanned, 10);
-        assert_eq!(status.assets_failed, 1);
     }
 
     // ---------------------------------------------------------------------------

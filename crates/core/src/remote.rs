@@ -1,9 +1,8 @@
 //! Remote data collection framework.
 //!
 //! Defines the interface for collecting system data from remote hosts
-//! via SSH (Linux/network) or WinRM (Windows). The actual transport
-//! implementations are pluggable — this module defines the collection
-//! protocol and data gathering commands.
+//! via pluggable transport implementations. This module defines the
+//! collection protocol and data gathering commands.
 
 use std::collections::HashMap;
 

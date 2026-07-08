@@ -9,17 +9,13 @@ pub mod secrets;
 pub mod ssh;
 mod state;
 pub mod stigman;
-pub mod winrm;
 
 use std::net::SocketAddr;
-use std::time::Duration;
 
-use automatestig_core::inventory::scheduler::ScheduleFrequency;
 use axum::extract::Request;
 use axum::middleware::{self, Next};
 use axum::response::Response;
 use axum::Router;
-use chrono::{DateTime, Utc};
 use tower_http::cors::{AllowOrigin, CorsLayer};
 use tower_http::limit::RequestBodyLimitLayer;
 use tracing_subscriber::EnvFilter;
@@ -40,8 +36,6 @@ async fn main() {
 
     // Clone for background tasks before moving into router.
     let update_bg_state = state.clone();
-    let scheduler_bg_state = state.clone();
-    let agent_bg_state = state.clone();
 
     // Bind address: PORT may set the port for hosted platforms.
     // Network exposure must be explicit via AUTOMATESTIG_BIND.
@@ -140,7 +134,7 @@ async fn main() {
     eprintln!();
 
     // Start background STIG update checker (every 24 hours) only if
-    // the user has opted in via agent config. Air-gapped by default.
+    // the user has opted in. Air-gapped by default.
     tokio::spawn(async move {
         // Check if background updates are enabled in config.
         let enabled = update_bg_state
@@ -158,141 +152,6 @@ async fn main() {
             tracing::info!(
                 "Background update checker disabled (air-gapped mode). Enable in Settings."
             );
-        }
-    });
-
-    // Start the evaluation scheduler dispatcher.
-    tokio::spawn(async move {
-        let mut interval = tokio::time::interval(Duration::from_secs(60));
-
-        loop {
-            interval.tick().await;
-
-            let due_schedules = {
-                let db = scheduler_bg_state.db();
-                let mut config = api::load_schedules(&db);
-                let scheduler_enabled = config.schedules.iter().any(|schedule| schedule.enabled);
-                let mut changed = false;
-
-                if config.enabled != scheduler_enabled {
-                    config.enabled = scheduler_enabled;
-                    changed = true;
-                }
-
-                if !config.enabled {
-                    if changed {
-                        api::save_schedules(&db, &config);
-                    }
-                    Vec::new()
-                } else {
-                    let now = Utc::now();
-
-                    for schedule in &mut config.schedules {
-                        if schedule.enabled
-                            && schedule.next_run.is_none()
-                            && !matches!(schedule.frequency, ScheduleFrequency::Once)
-                        {
-                            schedule.next_run = Some(schedule.calculate_next_run(now));
-                            changed = true;
-                        }
-                    }
-
-                    if changed {
-                        api::save_schedules(&db, &config);
-                    }
-
-                    config
-                        .schedules
-                        .iter()
-                        .filter(|schedule| api::schedule_is_due(schedule, now))
-                        .cloned()
-                        .collect()
-                }
-            };
-
-            for schedule in due_schedules {
-                tracing::info!(
-                    schedule_id = %schedule.id,
-                    schedule_name = %schedule.name,
-                    "Running scheduled evaluation"
-                );
-
-                let state = scheduler_bg_state.clone();
-                let schedule_id = schedule.id.clone();
-                let schedule_name = schedule.name.clone();
-
-                match tokio::spawn(async move { api::execute_schedule(&state, &schedule).await })
-                    .await
-                {
-                    Ok(status) => {
-                        let db = scheduler_bg_state.db();
-                        let mut config = api::load_schedules(&db);
-                        if let Some(stored) =
-                            config.schedules.iter_mut().find(|s| s.id == schedule_id)
-                        {
-                            stored.mark_executed(status);
-                            api::refresh_scheduler_enabled(&mut config);
-                            api::save_schedules(&db, &config);
-                        } else {
-                            tracing::warn!(
-                                schedule_id = %schedule_id,
-                                "Scheduled evaluation completed but schedule no longer exists"
-                            );
-                        }
-                    }
-                    Err(e) => {
-                        tracing::error!(
-                            schedule_id = %schedule_id,
-                            schedule_name = %schedule_name,
-                            "Scheduled evaluation task failed: {}",
-                            e
-                        );
-                    }
-                }
-            }
-        }
-    });
-
-    // Start the agent-mode continuous compliance dispatcher.
-    tokio::spawn(async move {
-        let mut interval = tokio::time::interval(Duration::from_secs(60));
-        let mut last_cycle: Option<DateTime<Utc>> = None;
-
-        loop {
-            interval.tick().await;
-
-            let config = {
-                let db = agent_bg_state.db();
-                api::load_agent_config(&db)
-            };
-
-            if !config.enabled {
-                continue;
-            }
-
-            let now = Utc::now();
-            let scan_interval =
-                chrono::Duration::minutes(config.scan_interval_minutes.max(1) as i64);
-            let is_due = last_cycle
-                .map(|last_run| now >= last_run + scan_interval)
-                .unwrap_or(true);
-
-            if !is_due {
-                continue;
-            }
-
-            last_cycle = Some(now);
-            tracing::info!("Running agent cycle");
-
-            let state = agent_bg_state.clone();
-            match tokio::spawn(async move { api::run_agent_cycle(&state).await }).await {
-                Ok(scanned) => {
-                    tracing::info!(targets_scanned = scanned, "Agent cycle completed");
-                }
-                Err(e) => {
-                    tracing::error!("Agent cycle task failed: {}", e);
-                }
-            }
         }
     });
 

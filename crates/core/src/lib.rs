@@ -8,10 +8,8 @@
 //! - Remote data collection framework
 //! - Answer file system
 //! - STIG library management
-//! - Agent mode with drift detection
 //! - Plugin system for extensibility
 
-pub mod agent;
 pub mod answer;
 pub mod checks;
 pub mod converter;
