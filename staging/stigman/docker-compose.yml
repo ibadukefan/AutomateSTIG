@@ -1,0 +1,36 @@
+# STIG Manager staging rig for AutomateSTIG integration acceptance.
+# Demo-grade credentials throughout — never expose beyond localhost/CI.
+services:
+  auth:
+    image: nuwcdivnpt/stig-manager-auth
+    platform: linux/amd64
+    ports:
+      - "8080:8080"
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpw
+      MYSQL_DATABASE: stigman
+      MYSQL_USER: stigman
+      MYSQL_PASSWORD: stigman
+    command: --innodb-buffer-pool-size=256M
+
+  api:
+    image: nuwcdivnpt/stig-manager:latest
+    platform: linux/amd64
+    environment:
+      STIGMAN_OIDC_PROVIDER: http://auth:8080/realms/stigman
+      STIGMAN_CLASSIFICATION: U
+      STIGMAN_DB_HOST: db
+      STIGMAN_DB_USER: stigman
+      STIGMAN_DB_PASSWORD: stigman
+      STIGMAN_DB_SCHEMA: stigman
+      # Service-account tokens from Keycloak always carry `azp`; the default
+      # (`clientId`) is not guaranteed on client-credentials tokens.
+      STIGMAN_JWT_SERVICENAME_CLAIM: azp
+    ports:
+      - "54000:54000"
+    depends_on:
+      - db
+      - auth

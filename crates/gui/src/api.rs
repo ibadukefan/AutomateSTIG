@@ -1433,6 +1433,7 @@ async fn push_checklist_to_stigman(
                     &checklist.asset.hostname,
                     checklist.asset.fqdn.as_deref(),
                     checklist.asset.ip_address.as_deref(),
+                    &checklist.stig_info.stig_id,
                 )
                 .await
                 .map_err(|e| format!("Failed to create asset: {}", e))?
@@ -1446,12 +1447,7 @@ async fn push_checklist_to_stigman(
 
     // Push to STIG-Manager.
     let result = client
-        .push_reviews(
-            collection_id,
-            &asset_id,
-            &checklist.stig_info.stig_id,
-            reviews,
-        )
+        .push_reviews(collection_id, &asset_id, reviews)
         .await
         .map_err(|e| format!("Push failed: {}", e))?;
 

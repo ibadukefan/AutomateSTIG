@@ -55,7 +55,7 @@ def check_http_json(name: str, url_env: str, token_env: str, require: bool) -> b
     req.add_header('Accept', 'application/json')
     try:
         with urllib.request.urlopen(req, timeout=20) as resp:
-            body = resp.read(1024).decode('utf-8', 'ignore')
+            body = resp.read().decode('utf-8', 'ignore')
             if resp.status >= 400:
                 fail(f'{name} returned HTTP {resp.status}')
             # Do not print response bodies: endpoints can include environment details.

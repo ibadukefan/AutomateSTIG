@@ -155,14 +155,6 @@ pub struct SmAssetReviews {
     pub reviews: Vec<SmReview>,
 }
 
-/// Result of a push operation.
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PushResult {
-    pub inserted: usize,
-    pub updated: usize,
-    pub unchanged: usize,
-}
-
 // --- Token response ---
 
 #[derive(Deserialize)]
@@ -344,22 +336,26 @@ impl StigManagerClient {
         name: &str,
         fqdn: Option<&str>,
         ip: Option<&str>,
+        benchmark_id: &str,
     ) -> Result<SmAsset, String> {
         let token = self.get_token().await?;
 
+        // AssetCreateOrReplace requires name, collectionId, description, ip,
+        // noncomputing, metadata, and stigs.
         let body = serde_json::json!({
             "name": name,
             "collectionId": collection_id,
+            "description": "",
             "fqdn": fqdn,
-            "ip": ip,
+            "ip": ip.unwrap_or(""),
+            "noncomputing": false,
+            "metadata": {},
+            "stigs": [benchmark_id],
         });
 
         let resp = self
             .http
-            .post(format!(
-                "{}/collections/{}/assets",
-                self.config.api_url, collection_id
-            ))
+            .post(format!("{}/assets", self.config.api_url))
             .bearer_auth(&token)
             .json(&body)
             .send()
@@ -380,23 +376,18 @@ impl StigManagerClient {
         &self,
         collection_id: &str,
         asset_id: &str,
-        benchmark_id: &str,
         reviews: Vec<SmReview>,
-    ) -> Result<PushResult, String> {
+    ) -> Result<serde_json::Value, String> {
         let token = self.get_token().await?;
-
-        let body = serde_json::json!({
-            "reviews": reviews,
-        });
 
         let resp = self
             .http
-            .put(format!(
-                "{}/collections/{}/assets/{}/stigs/{}/reviews",
-                self.config.api_url, collection_id, asset_id, benchmark_id
+            .post(format!(
+                "{}/collections/{}/reviews/{}",
+                self.config.api_url, collection_id, asset_id
             ))
             .bearer_auth(&token)
-            .json(&body)
+            .json(&reviews)
             .send()
             .await
             .map_err(|e| format!("Request failed: {}", e))?;

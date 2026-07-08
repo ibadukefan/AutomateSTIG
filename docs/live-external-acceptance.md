@@ -23,3 +23,7 @@ The script redacts by design: it reports only success/failure and does not print
 ## Current status
 
 No live STIG Viewer, STIG Manager, or eMASS endpoint/credential configuration is present in normal CI, so the default CI gate verifies offline contract compatibility and reports live checks as skipped. Full production replacement claims still require an acceptance run with `--require-live` against authorized staging instances.
+
+## Containerized staging rig
+
+`staging/stigman/` provides a docker-compose rig (real STIG Manager, demo Keycloak, MySQL) plus `run-staging-acceptance.py`, which proves the full AutomateSTIG -> STIG Manager round-trip: OAuth2 client-credentials auth, DISA benchmark import, checklist push, review-for-review verification, and a CKL export from STIG Manager that must match what was pushed. CI runs it weekly and on demand via `.github/workflows/stigman-staging.yml`; see `staging/stigman/README.md` for local usage.

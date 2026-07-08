@@ -1,0 +1,31 @@
+name: STIG Manager Staging Acceptance
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  staging-acceptance:
+    name: AutomateSTIG -> STIG Manager round-trip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-bin: false
+      - run: cargo build --release --bin automatestig-gui
+      - name: Start STIG Manager rig
+        run: docker compose -f staging/stigman/docker-compose.yml up -d
+      - name: Run staging acceptance
+        run: python3 staging/stigman/run-staging-acceptance.py
+      - name: Rig logs on failure
+        if: failure()
+        run: docker compose -f staging/stigman/docker-compose.yml logs --tail 100
+      - name: Tear down rig
+        if: always()
+        run: docker compose -f staging/stigman/docker-compose.yml down -v
