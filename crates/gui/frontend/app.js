@@ -128,14 +128,19 @@ document.querySelectorAll('.nav-item').forEach(item => {
   });
 });
 
+api('/status')
+  .then((status) => {
+    const el = document.getElementById('app-version');
+    if (el && status && status.version) el.textContent = `v${status.version}`;
+  })
+  .catch(() => {});
+
 function loadPage(page) {
   switch (page) {
-    case 'overview': loadOverview(); break;
     case 'assessments': loadAssessments(); break;
     case 'assets': loadAssetsPage(); break;
     case 'standards': loadStandards(); break;
     case 'findings': loadFindings(); break;
-    case 'reports': loadReports(); break;
     case 'settings': loadSettings(); break;
   }
 }
@@ -304,10 +309,6 @@ async function viewChecklist(id) {
         h('div', { className: 'btn-group' },
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(id) }, 'Export CKL'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(id) }, 'Export CKLB'),
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportEmass(id) }, 'Export eMASS'),
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => showTrends(cl.hostname) }, 'Trends'),
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => viewDriftReport(id) }, 'Drift'),
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => generateRemediation(id) }, 'Remediation'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => pushToStigManager(id, cl.hostname) }, 'Push to STIG-Manager'),
           h('button', { className: 'btn btn-primary btn-sm', onClick: () => reEvaluate(id) }, 'Re-evaluate'),
           h('button', { className: 'btn btn-danger btn-sm', onClick: () => deleteChecklist(id, cl.hostname) }, 'Delete'),
@@ -402,7 +403,7 @@ async function renderEvaluateWorkspace() {
             )
           : h('p', { style: 'color: var(--text-muted)' },
               'No benchmarks installed. ',
-              h('a', { href: '#', onClick: (e) => { e.preventDefault(); nav('reports'); } }, 'Import STIG content first.'),
+              h('a', { href: '#', onClick: (e) => { e.preventDefault(); nav('standards'); } }, 'Install STIG content first.'),
             ),
       ),
       h('div', { className: 'form-group' },
@@ -533,32 +534,13 @@ async function editFinding(checklistId, finding) {
           style: 'resize: vertical; min-height: 60px',
         }, finding.comments || ''),
       ),
-      h('div', { className: 'grid-2' },
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'POA&M Milestone'),
-          h('input', { className: 'form-input', id: 'edit-poam', type: 'text',
-            placeholder: 'e.g., Patch scheduled for next maintenance window',
-            value: (finding.comments || '').match(/\[POA&M: (.+?)\]/)?.[1] || '' }),
-        ),
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'POA&M Target Date'),
-          h('input', { className: 'form-input', id: 'edit-poam-date', type: 'date' }),
-        ),
-      ),
       h('div', { className: 'btn-group', style: 'justify-content: flex-end' },
         h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
         h('button', { className: 'btn btn-primary', onClick: async () => {
           const status = document.getElementById('edit-status')?.value;
           const details = document.getElementById('edit-details')?.value;
           const comments = document.getElementById('edit-comments')?.value;
-          const poam = document.getElementById('edit-poam')?.value;
-          const poamDate = document.getElementById('edit-poam-date')?.value;
 
-          // Save POA&M if provided.
-          if (poam) {
-            try { await api(`/checklists/${checklistId}/findings/${finding.vuln_id}/poam`, {
-              method: 'PATCH', body: JSON.stringify({ poam_milestone: poam, poam_date: poamDate || null }) }); } catch (_) {}
-          }
           try {
             await api(`/checklists/${checklistId}/findings/${finding.vuln_id}`, {
               method: 'PATCH',
@@ -578,7 +560,7 @@ async function editFinding(checklistId, finding) {
 }
 
 // ---------------------------------------------------------------------------
-// Remote Scan (SSH/WinRM)
+// Remote Scan (SSH)
 // ---------------------------------------------------------------------------
 async function loadRemoteScan() {
   try {
@@ -590,7 +572,7 @@ async function loadRemoteScan() {
     return h('div', { className: 'card', style: 'margin-top: 20px' },
       h('div', { className: 'card-header' }, h('h2', {}, 'Remote Scan')),
       h('p', { style: 'color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem' },
-        'Connect to a remote host via SSH (Linux/network) or WinRM (Windows) to collect data and evaluate.',
+        'Connect to a remote host via SSH to collect data and evaluate.',
       ),
       h('div', { className: 'grid-2' },
         h('div', {},
@@ -598,7 +580,6 @@ async function loadRemoteScan() {
             h('label', { className: 'form-label' }, 'Protocol'),
             h('select', { className: 'form-select', id: 'scan-protocol' },
               h('option', { value: 'ssh' }, 'SSH (Linux / Network)'),
-              h('option', { value: 'winrm' }, 'WinRM (Windows)'),
             ),
           ),
           h('div', { className: 'form-group' },
@@ -624,7 +605,7 @@ async function loadRemoteScan() {
           ),
           h('div', { className: 'form-group' },
             h('label', { className: 'form-label' }, 'Port (optional)'),
-            h('input', { className: 'form-input', id: 'scan-port', type: 'number', placeholder: '22 / 5985' }),
+            h('input', { className: 'form-input', id: 'scan-port', type: 'number', placeholder: '22' }),
           ),
           h('button', { className: 'btn btn-primary', style: 'margin-top: 24px', onClick: runRemoteScan }, 'Scan & Evaluate'),
         ),
@@ -651,25 +632,14 @@ async function runRemoteScan() {
   toast(`Scanning ${host} via ${protocol.toUpperCase()}...`, 'info');
 
   try {
-    let result;
-    if (protocol === 'ssh') {
-      result = await api('/scan/ssh', {
-        method: 'POST',
-        body: JSON.stringify({
-          host, username: user, stig_id: stigId,
-          port: port ? parseInt(port) : null,
-          auth: { type: 'password', password: pass },
-        }),
-      });
-    } else {
-      result = await api('/scan/winrm', {
-        method: 'POST',
-        body: JSON.stringify({
-          host, username: user, password: pass, stig_id: stigId,
-          port: port ? parseInt(port) : null,
-        }),
-      });
-    }
+    const result = await api('/scan/ssh', {
+      method: 'POST',
+      body: JSON.stringify({
+        host, username: user, stig_id: stigId,
+        port: port ? parseInt(port) : null,
+        auth: { type: 'password', password: pass },
+      }),
+    });
     toast(
       `Scan complete: ${result.checks_executed} checks, ${(result.compliance_pct ?? 0).toFixed(1)}% compliance`,
       'success',
@@ -691,52 +661,6 @@ function exportCklb(id) {
   window.open(`${API}/export/cklb/${id}?token=${AUTH_TOKEN}`, '_blank');
 }
 
-function exportEmass(id) {
-  window.open(`${API}/export/emass/${id}?token=${AUTH_TOKEN}`, '_blank');
-}
-
-async function generateRemediation(checklistId) {
-  const fmt = await pickRemediationFormat();
-  if (!fmt) return;
-  try {
-    const res = await api(`/remediation/${checklistId}?format=${fmt}`);
-    if (!res.scripts || res.scripts.length === 0) {
-      toast(`No automatable remediation for the ${res.open_findings} open finding(s); ${res.manual_required} need manual review.`, 'info');
-      return;
-    }
-    const ext = fmt === 'powershell' ? 'ps1' : fmt === 'bash' ? 'sh' : 'yml';
-    const blob = new Blob([res.combined_script], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = `remediation-${res.hostname}.${ext}`;
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
-    toast(`Generated ${res.automated_remediations} remediation script(s); ${res.manual_required} finding(s) need manual review.`, 'success');
-  } catch (e) { toast(e.message, 'error'); }
-}
-
-function pickRemediationFormat() {
-  return new Promise(resolve => {
-    const overlay = h('div', { className: 'modal-overlay', onClick: (e) => { if (e.target === overlay) { overlay.remove(); resolve(null); } } },
-      h('div', { className: 'modal' },
-        h('h3', {}, 'Generate remediation'),
-        h('p', { className: 'list-subtitle', style: 'margin: 8px 0 16px' }, 'Choose a script format for the open findings.'),
-        h('div', { className: 'stack-list' },
-          ...[['powershell','PowerShell (.ps1)'],['bash','Bash (.sh)'],['ansible','Ansible (.yml)']].map(([v,label]) =>
-            h('button', { className: 'action-row', onClick: () => { overlay.remove(); resolve(v); } },
-              h('div', {}, h('div', { className: 'list-title' }, label)),
-              h('span', { className: 'action-arrow' }, '→'),
-            )),
-        ),
-        h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
-          h('button', { className: 'btn btn-secondary', onClick: () => { overlay.remove(); resolve(null); } }, 'Cancel'),
-        ),
-      ),
-    );
-    document.body.appendChild(overlay);
-  });
-}
-
 // ---------------------------------------------------------------------------
 // Settings Page (STIG-Manager config)
 // ---------------------------------------------------------------------------
@@ -744,18 +668,11 @@ async function loadSettings() {
   setPage('settings', loadingState());
 
   let config = {};
-  let agentConfig = {};
   let creds = [];
-  let schedules = [];
   await Promise.all([
     api('/stigman/config').then(data => { config = data; }).catch(() => {}),
-    api('/agent/config').then(data => { agentConfig = data || {}; }).catch(() => {}),
     api('/credentials').then(data => { creds = Array.isArray(data) ? data : []; }).catch(() => {}),
-    api('/schedules').then(data => { schedules = Array.isArray(data) ? data : data.schedules || []; }).catch(() => {}),
   ]);
-  const agentTargetsText = Array.isArray(agentConfig.targets)
-    ? agentConfig.targets.map(t => `${t.hostname || t.id || ''}: ${(t.stig_ids || []).join(', ')}`).join('\n')
-    : '';
 
   setPage('settings',
     h('div', { className: 'page-header' },
@@ -821,53 +738,6 @@ async function loadSettings() {
       h('button', { className: 'btn btn-primary', onClick: openAnswerEditor }, 'Open Answer File Editor'),
     ),
     h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
-      h('div', { className: 'card-header' }, h('h2', {}, 'Notifications')),
-      h('p', { style: 'color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px' },
-        'Send compliance alerts to a webhook (Slack, Teams, or any HTTPS endpoint). HTTPS only; internal addresses are blocked.'),
-      h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Webhook URL'),
-        h('input', { className: 'form-input', id: 'wh-url', type: 'text', placeholder: 'https://hooks.example.com/services/...' }),
-      ),
-      h('div', { className: 'btn-group' },
-        h('button', { className: 'btn btn-primary', onClick: testWebhook }, 'Send test'),
-      ),
-      h('div', { id: 'wh-result', style: 'margin-top: 12px' }),
-    ),
-    h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
-      h('div', { className: 'card-header' }, h('h2', {}, 'Agent Mode (continuous compliance)')),
-      h('p', { style: 'color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px' },
-        'Continuously re-scan monitored hosts on an interval and alert on drift. Targets map to registered assets by hostname.'),
-      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
-        h('input', { type: 'checkbox', id: 'agent-enabled', ...(agentConfig.enabled ? { checked: 'checked' } : {}) }),
-        h('label', { for: 'agent-enabled', style: 'font-size: 0.9rem; cursor: pointer' }, 'Enable agent mode'),
-      ),
-      h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Scan Interval (minutes)'),
-        h('input', { className: 'form-input', id: 'agent-interval', type: 'number', min: '1',
-          value: agentConfig.scan_interval_minutes || 1440 }),
-      ),
-      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
-        h('input', { type: 'checkbox', id: 'agent-alert', ...(agentConfig.alert_on_new_findings ? { checked: 'checked' } : {}) }),
-        h('label', { for: 'agent-alert', style: 'font-size: 0.9rem; cursor: pointer' }, 'Alert on new findings'),
-      ),
-      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
-        h('input', { type: 'checkbox', id: 'agent-autopush', ...(agentConfig.auto_push_stigman ? { checked: 'checked' } : {}) }),
-        h('label', { for: 'agent-autopush', style: 'font-size: 0.9rem; cursor: pointer' }, 'Auto-push to STIG-Manager'),
-      ),
-      h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Agent Webhook URL'),
-        h('input', { className: 'form-input', id: 'agent-webhook', type: 'text',
-          placeholder: 'https://hooks.example.com/services/...', value: agentConfig.notifications?.webhook_url || '' }),
-      ),
-      h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Targets'),
-        h('textarea', { className: 'form-input', id: 'agent-targets', rows: '6',
-          style: 'resize: vertical; font-family: monospace; font-size: 0.85rem',
-          placeholder: 'server01: Windows_Server_2022_STIG, IIS_10.0_STIG' }, agentTargetsText),
-      ),
-      h('button', { className: 'btn btn-primary', onClick: saveAgentConfig }, 'Save agent config'),
-    ),
-    h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
       h('div', { className: 'card-header' },
         h('h2', {}, `Credentials (${creds.length})`),
         h('button', { className: 'btn btn-secondary btn-sm', onClick: addCredentialDialog }, 'Add Credential'),
@@ -889,40 +759,6 @@ async function loadSettings() {
             )),
           )
         : h('p', { style: 'color: var(--text-muted); padding: 16px' }, 'No credentials stored.'),
-    ),
-    h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
-      h('div', { className: 'card-header' },
-        h('h2', {}, `Schedules (${schedules.length})`),
-        h('button', { className: 'btn btn-secondary btn-sm', onClick: addScheduleDialog }, 'Add Schedule'),
-      ),
-      schedules.length > 0
-        ? h('table', { className: 'data-table' },
-            h('thead', {}, h('tr', {},
-              h('th', {}, 'Name'), h('th', {}, 'Frequency'), h('th', {}, 'Assets'),
-              h('th', {}, 'Next Run'), h('th', {}, 'Last Status'), h('th', {}, ''),
-            )),
-            h('tbody', {}, ...schedules.map(s =>
-              h('tr', {},
-                h('td', { style: 'font-weight: 600' }, s.name),
-                h('td', {}, s.frequency?.type || 'unknown'),
-                h('td', {}, `${(s.asset_ids?.length || 0) + (s.asset_tags?.length || 0)}`),
-                h('td', { style: 'font-size: 0.8rem' }, s.next_run ? new Date(s.next_run).toLocaleString() : '\u2014'),
-                h('td', {},
-                  s.last_run_status
-                    ? h('span', { style: s.last_run_status.assets_failed > 0 ? 'color: var(--red)' : 'color: var(--green)' },
-                        `${s.last_run_status.assets_scanned} scanned, ${(s.last_run_status.avg_compliance ?? 0).toFixed(0)}%`)
-                    : h('span', { style: 'color: var(--text-muted)' }, 'Never run'),
-                ),
-                h('td', {},
-                  h('div', { className: 'btn-group' },
-                    h('button', { className: 'btn btn-primary btn-sm', onClick: () => runScheduleNow(s.id) }, 'Run Now'),
-                    h('button', { className: 'btn btn-danger btn-sm', onClick: () => removeSchedule(s.id, s.name) }, '\u00D7'),
-                  ),
-                ),
-              ),
-            )),
-          )
-        : h('p', { style: 'color: var(--text-muted); padding: 16px' }, 'No schedules configured.'),
     ),
   );
 }
@@ -954,42 +790,6 @@ async function saveStigManagerConfig() {
     loadSettings();
   } catch (e) {
     toast(`Save failed: ${e.message}`, 'error');
-  }
-}
-
-async function saveAgentConfig() {
-  const targetsText = document.getElementById('agent-targets')?.value || '';
-  const targets = targetsText.split('\n').map(l => l.trim()).filter(Boolean).map(line => {
-    const [host, stigs] = line.split(':');
-    return { id: host.trim(), hostname: host.trim(),
-      stig_ids: (stigs || '').split(',').map(s => s.trim()).filter(Boolean),
-      last_scan: null, last_compliance_pct: null, enabled: true };
-  });
-  const cfg = {
-    enabled: document.getElementById('agent-enabled')?.checked || false,
-    scan_interval_minutes: parseInt(document.getElementById('agent-interval')?.value) || 1440,
-    targets,
-    auto_push_stigman: document.getElementById('agent-autopush')?.checked || false,
-    alert_on_new_findings: document.getElementById('agent-alert')?.checked || false,
-    notifications: { log_file: null, desktop_notifications: false,
-      webhook_url: document.getElementById('agent-webhook')?.value?.trim() || null },
-  };
-  try { await api('/agent/config', { method: 'POST', body: JSON.stringify(cfg) }); toast('Agent config saved', 'success'); }
-  catch (e) { toast(e.message, 'error'); }
-}
-
-async function testWebhook() {
-  const url = document.getElementById('wh-url')?.value?.trim();
-  const out = document.getElementById('wh-result');
-  if (!url) { toast('Enter a webhook URL', 'error'); return; }
-  if (out) out.textContent = 'Sending…';
-  try {
-    await api('/webhooks/test', { method: 'POST', body: JSON.stringify({ url, message: 'AutomateSTIG test notification' }) });
-    if (out) { out.textContent = '✓ Test notification sent successfully.'; out.style.color = 'var(--green)'; }
-    toast('Webhook test sent', 'success');
-  } catch (e) {
-    if (out) { out.textContent = `✗ ${e.message}`; out.style.color = 'var(--red)'; }
-    toast(e.message, 'error');
   }
 }
 
@@ -1181,8 +981,7 @@ function addAssetDialog() {
         h('div', { className: 'form-group' },
           h('label', { className: 'form-label' }, 'Protocol'),
           h('select', { className: 'form-select', id: 'aa-proto' },
-            h('option', { value: 'ssh' }, 'SSH'), h('option', { value: 'winrm' }, 'WinRM'),
-            h('option', { value: 'winrmhttps' }, 'WinRM HTTPS')))),
+            h('option', { value: 'ssh' }, 'SSH')))),
       h('div', { className: 'form-group' },
         h('label', { className: 'form-label' }, 'Tags (comma-separated)'),
         h('input', { className: 'form-input', id: 'aa-tags', placeholder: 'production, web-tier' })),
@@ -1411,69 +1210,6 @@ async function removeCred(id, label) {
   catch (e) { toast(e.message, 'error'); }
 }
 
-function addScheduleDialog() {
-  const overlay = h('div', { className: 'modal-overlay' },
-    h('div', { className: 'modal', style: 'max-width: 500px' },
-      h('h3', {}, 'Add Schedule'),
-      h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Name'), h('input', { className: 'form-input', id: 'as-name', placeholder: 'Weekly Windows scan' })),
-      h('div', { className: 'grid-2' },
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'Frequency'),
-          h('select', { className: 'form-select', id: 'as-freq' },
-            h('option', { value: 'daily' }, 'Daily'), h('option', { value: 'weekly' }, 'Weekly'),
-            h('option', { value: 'monthly' }, 'Monthly'), h('option', { value: 'once' }, 'One-time'))),
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'Run at (UTC hour)'),
-          h('input', { className: 'form-input', id: 'as-hour', type: 'number', value: '2', min: '0', max: '23' }))),
-      h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Asset tags (comma-separated)'),
-        h('input', { className: 'form-input', id: 'as-tags', placeholder: 'production, windows' })),
-      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
-        h('input', { type: 'checkbox', id: 'as-stigman' }),
-        h('label', { for: 'as-stigman' }, 'Auto-push to STIG-Manager')),
-      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
-        h('input', { type: 'checkbox', id: 'as-alert', checked: true }),
-        h('label', { for: 'as-alert' }, 'Alert on new CAT I findings')),
-      h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
-        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
-        h('button', { className: 'btn btn-primary', onClick: async () => {
-          const freq = document.getElementById('as-freq')?.value;
-          const frequency = freq === 'daily' ? { type: 'daily' }
-            : freq === 'weekly' ? { type: 'weekly', days: ['monday'] }
-            : freq === 'monthly' ? { type: 'monthly', day_of_month: 1 }
-            : { type: 'once' };
-          const schedule = {
-            id: crypto.randomUUID(), name: document.getElementById('as-name')?.value, description: null,
-            asset_ids: [], asset_tags: (document.getElementById('as-tags')?.value || '').split(',').map(t => t.trim()).filter(t => t),
-            enabled: true, frequency, run_at_hour: parseInt(document.getElementById('as-hour')?.value) || 2, run_at_minute: 0,
-            max_parallel: 5, stagger_seconds: 10, retry_count: 2, retry_delay_seconds: 30,
-            post_actions: { push_to_stigman: document.getElementById('as-stigman')?.checked, alert_on_cat_i: document.getElementById('as-alert')?.checked,
-              generate_report: false, alert_on_drift: true, alert_below_compliance: null, stigman_collection_id: null },
-            last_run: null, last_run_status: null, next_run: null, created_at: new Date().toISOString(),
-          };
-          try { await api('/schedules', { method: 'POST', body: JSON.stringify(schedule) }); overlay.remove(); toast('Schedule created', 'success'); loadSettings(); }
-          catch (e) { toast(e.message, 'error'); }
-        }}, 'Create'),
-      ),
-    ),
-  );
-  document.body.appendChild(overlay);
-}
-
-async function removeSchedule(id, name) {
-  if (!(await confirmDialog('Delete Schedule', `Remove schedule "${name}"?`))) return;
-  try { await api(`/schedules/${id}`, { method: 'DELETE' }); toast('Schedule removed', 'success'); loadSettings(); }
-  catch (e) { toast(e.message, 'error'); }
-}
-
-async function runScheduleNow(id) {
-  try {
-    const result = await api(`/schedules/${id}/run`, { method: 'POST' });
-    toast(`Triggered: ${result.assets_matched} assets matched`, 'success');
-  } catch (e) { toast(e.message, 'error'); }
-}
-
 // ---------------------------------------------------------------------------
 // Export All ZIP
 // ---------------------------------------------------------------------------
@@ -1494,96 +1230,6 @@ async function reEvaluate(checklistId) {
   } catch (e) {
     toast(`Re-evaluation failed: ${e.message}`, 'error');
   }
-}
-
-// ---------------------------------------------------------------------------
-// Compare Checklists
-// ---------------------------------------------------------------------------
-async function compareChecklistsDialog() {
-  try {
-    const checklists = await api('/checklists');
-    if (checklists.length < 2) { toast('Need at least 2 checklists to compare', 'error'); return; }
-
-    const options = checklists.map(c => h('option', { value: c.id }, `${c.hostname} — ${c.stig_id} (${c.stig_version})`));
-
-    const overlay = h('div', { className: 'modal-overlay' },
-      h('div', { className: 'modal', style: 'max-width: 500px' },
-        h('h3', {}, 'Compare Checklists'),
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'Checklist A'),
-          h('select', { className: 'form-select', id: 'cmp-a' }, ...options),
-        ),
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'Checklist B'),
-          h('select', { className: 'form-select', id: 'cmp-b' }, ...options.map(o => o.cloneNode(true))),
-        ),
-        h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
-          h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
-          h('button', { className: 'btn btn-primary', onClick: async () => {
-            const a = document.getElementById('cmp-a')?.value;
-            const b = document.getElementById('cmp-b')?.value;
-            if (a === b) { toast('Select two different checklists', 'error'); return; }
-            overlay.remove();
-            try {
-              const result = await api('/checklists/compare', {
-                method: 'POST', body: JSON.stringify({ checklist_a: a, checklist_b: b }),
-              });
-              showComparisonResult(result);
-            } catch (e) { toast(e.message, 'error'); }
-          }}, 'Compare'),
-        ),
-      ),
-    );
-    document.body.appendChild(overlay);
-  } catch (e) { toast(e.message, 'error'); }
-}
-
-function showComparisonResult(result) {
-  const diffRows = result.differences.map(d =>
-    h('tr', {},
-      h('td', { className: 'mono' }, d.vuln_id),
-      h('td', {}, sevBadge(d.severity)),
-      h('td', {}, statusBadge(d.status_a)),
-      h('td', {}, statusBadge(d.status_b)),
-      h('td', { style: 'max-width: 300px' }, d.title),
-    ),
-  );
-
-  const overlay = h('div', { className: 'modal-overlay' },
-    h('div', { className: 'modal', style: 'max-width: 800px; max-height: 80vh; overflow-y: auto' },
-      h('h3', {}, 'Checklist Comparison'),
-      h('div', { className: 'grid-2', style: 'margin-bottom: 16px' },
-        h('div', { className: 'stat-card' },
-          h('div', { className: 'stat-label' }, `A: ${result.checklist_a.hostname}`),
-          h('div', { className: `stat-value ${complianceColor(result.checklist_a.compliance)}` },
-            `${(result.checklist_a.compliance ?? 0).toFixed(1)}%`),
-          h('div', { className: 'stat-sub' }, `${result.checklist_a.open} open`),
-        ),
-        h('div', { className: 'stat-card' },
-          h('div', { className: 'stat-label' }, `B: ${result.checklist_b.hostname}`),
-          h('div', { className: `stat-value ${complianceColor(result.checklist_b.compliance)}` },
-            `${(result.checklist_b.compliance ?? 0).toFixed(1)}%`),
-          h('div', { className: 'stat-sub' }, `${result.checklist_b.open} open`),
-        ),
-      ),
-      result.total_differences > 0
-        ? h('div', {},
-            h('h4', { style: 'margin-bottom: 8px' }, `${result.total_differences} Differences`),
-            h('table', { className: 'data-table' },
-              h('thead', {}, h('tr', {},
-                h('th', {}, 'Vuln ID'), h('th', {}, 'Sev'),
-                h('th', {}, 'Status A'), h('th', {}, 'Status B'), h('th', {}, 'Title'),
-              )),
-              h('tbody', {}, ...diffRows),
-            ),
-          )
-        : h('p', { style: 'color: var(--green); font-weight: 600; padding: 20px; text-align: center' }, 'No differences found — checklists are identical.'),
-      h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
-        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Close'),
-      ),
-    ),
-  );
-  document.body.appendChild(overlay);
 }
 
 // ---------------------------------------------------------------------------
@@ -1623,107 +1269,6 @@ async function runBatchEvaluation() {
     loadAssessments();
   } catch (e) {
     toast(`Batch failed: ${e.message}`, 'error');
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Compliance Trends
-// ---------------------------------------------------------------------------
-async function showTrends(hostname) {
-  let data;
-  try {
-    data = await api(`/trends/${encodeURIComponent(hostname)}`);
-  } catch (e) { toast(e.message, 'error'); return; }
-  const points = (data.data_points || data.points || []).filter(p => typeof p.compliance_pct === 'number');
-  const overlay = h('div', { className: 'modal-overlay', onClick: (e) => { if (e.target === overlay) overlay.remove(); } },
-    h('div', { className: 'modal', style: 'max-width: 640px' },
-      h('h3', {}, `Compliance trend — ${hostname}`),
-      points.length < 1
-        ? h('p', { className: 'list-subtitle', style: 'margin-top: 12px' }, 'No evaluation history yet for this host.')
-        : h('div', {},
-            trendChart(points),
-            h('table', { className: 'data-table', style: 'margin-top: 16px' },
-              h('thead', {}, h('tr', {},
-                h('th', {}, 'Date'), h('th', {}, 'Standard'), h('th', {}, 'Compliance'), h('th', {}, 'Open'))),
-              h('tbody', {}, ...points.slice().reverse().map(p =>
-                h('tr', {},
-                  h('td', {}, formatDate(p.date)),
-                  h('td', {}, p.stig_id || '—'),
-                  h('td', {}, h('span', { className: `mini-pill mini-pill-${complianceColor(p.compliance_pct || 0)}` }, `${(p.compliance_pct || 0).toFixed(1)}%`)),
-                  h('td', {}, String(p.open ?? '—')),
-                ),
-              )),
-            ),
-          ),
-      h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
-        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Close'),
-      ),
-    ),
-  );
-  document.body.appendChild(overlay);
-}
-
-function trendChart(points) {
-  const width = 600;
-  const height = 160;
-  const padX = 28;
-  const padY = 14;
-  const plotW = width - (padX * 2);
-  const plotH = height - (padY * 2);
-  const coords = points.map((p, i) => {
-    const pct = Math.max(0, Math.min(100, p.compliance_pct));
-    const x = points.length === 1 ? width / 2 : padX + ((plotW / (points.length - 1)) * i);
-    const y = padY + (((100 - pct) / 100) * plotH);
-    return [x.toFixed(1), y.toFixed(1)];
-  });
-  const grid = [0, 50, 100].map(pct => {
-    const y = padY + (((100 - pct) / 100) * plotH);
-    return `<line x1="${padX}" y1="${y.toFixed(1)}" x2="${width - padX}" y2="${y.toFixed(1)}" stroke="#334155" stroke-opacity="0.28" stroke-width="1"/>`;
-  }).join('');
-  const line = points.length > 1
-    ? `<polyline points="${coords.map(([x, y]) => `${x},${y}`).join(' ')}" stroke="#3b82f6" stroke-width="2" fill="none"/>`
-    : '';
-  const dots = coords.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3.5" fill="#3b82f6"/>`).join('');
-  const div = h('div', { className: 'trend-chart' });
-  div.innerHTML = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Compliance trend chart">${grid}${line}${dots}</svg>`;
-  return div;
-}
-
-// ---------------------------------------------------------------------------
-// Drift Report (Fix #5)
-// ---------------------------------------------------------------------------
-async function viewDriftReport(checklistId) {
-  try {
-    const drift = await api(`/agent/drift/${checklistId}`);
-    const overlay = h('div', { className: 'modal-overlay' },
-      h('div', { className: 'modal', style: 'max-width: 600px' },
-        h('h3', {}, 'Drift Report'),
-        drift.has_changes === false && !drift.new_open
-          ? h('p', {}, drift.message || 'No previous checklist found for comparison.')
-          : h('div', {},
-              h('div', { className: 'stats-grid', style: 'margin-bottom: 16px' },
-                statCard('Compliance Delta', `${drift.compliance_delta >= 0 ? '+' : ''}${drift.compliance_delta?.toFixed(1)}%`,
-                  drift.compliance_delta >= 0 ? 'green' : 'red'),
-                statCard('New Open', drift.new_open?.length || 0, drift.new_open?.length > 0 ? 'red' : 'green'),
-                statCard('Newly Resolved', drift.newly_resolved?.length || 0, 'green'),
-              ),
-              ...(drift.new_open?.length > 0 ? [
-                h('h4', { style: 'margin-bottom: 8px; color: var(--red)' }, 'New Open Findings'),
-                ...drift.new_open.map(f => h('div', { style: 'padding: 4px 0; font-size: 0.85rem' }, `${f.vuln_id}: ${f.title}`)),
-              ] : []),
-              ...(drift.newly_resolved?.length > 0 ? [
-                h('h4', { style: 'margin: 12px 0 8px; color: var(--green)' }, 'Newly Resolved'),
-                ...drift.newly_resolved.map(f => h('div', { style: 'padding: 4px 0; font-size: 0.85rem' }, `${f.vuln_id}: ${f.title}`)),
-              ] : []),
-            ),
-        h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
-          h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Close'),
-        ),
-      ),
-    );
-    document.body.appendChild(overlay);
-  } catch (e) {
-    toast(`Drift report failed: ${e.message}`, 'error');
   }
 }
 
@@ -1839,7 +1384,7 @@ async function openAnswerEditor() {
 // ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
-loadOverview();
+loadAssessments();
 updateStatusBar();
 
 // ---------------------------------------------------------------------------
@@ -1850,18 +1395,6 @@ async function fetchChecklistsWithFindings() {
   return Promise.all(summaries.map(summary =>
     api(`/checklists/${summary.id}`).catch(() => summary),
   ));
-}
-
-async function getOverviewData() {
-  const [status, checklists, assets, benchmarks] = await Promise.all([
-    api('/status'),
-    fetchChecklistsWithFindings(),
-    api('/assets').catch(() => []),
-    api('/library/benchmarks').catch(() => []),
-  ]);
-
-  const findings = flattenFindings(checklists);
-  return { status, checklists, assets, benchmarks, findings };
 }
 
 function flattenFindings(checklists) {
@@ -1900,112 +1433,6 @@ function severityRank(sev) {
 function severityTone(sev) {
   const rank = severityRank(sev);
   return rank === 3 ? 'red' : rank === 2 ? 'yellow' : rank === 1 ? 'green' : 'accent';
-}
-
-function groupedCounts(items, keyFn) {
-  const counts = new Map();
-  for (const item of items) {
-    const key = keyFn(item);
-    counts.set(key, (counts.get(key) || 0) + 1);
-  }
-  return [...counts.entries()].sort((a, b) => b[1] - a[1]);
-}
-
-async function loadOverview() {
-  setPage('overview', loadingState());
-
-  try {
-    const { status, checklists, assets, benchmarks, findings } = await getOverviewData();
-    document.getElementById('app-version').textContent = `v${status.version}`;
-
-    const openFindings = findings.filter(f => String(f.status).toLowerCase() === 'open');
-    const catOne = openFindings.filter(f => severityRank(f.severity) === 3);
-    const avgCompliance = checklists.length
-      ? checklists.reduce((sum, checklist) => sum + (checklist.compliance_pct || 0), 0) / checklists.length
-      : 0;
-
-    const topAssets = groupedCounts(openFindings, f => f.hostname).slice(0, 5);
-    const topStandards = groupedCounts(openFindings, f => f.benchmark).slice(0, 5);
-    const recentActivity = [...checklists]
-      .sort((a, b) => new Date(b.modified_at || b.created_at || 0) - new Date(a.modified_at || a.created_at || 0))
-      .slice(0, 6);
-
-    setPage('overview',
-      h('div', { className: 'page-header page-header-with-actions' },
-        h('div', {},
-          h('h1', {}, 'Overview'),
-          h('p', {}, 'Current compliance posture across assets, standards, and review activity'),
-        ),
-        h('div', { className: 'btn-group' },
-          h('button', { className: 'btn btn-primary', onClick: () => nav('assessments') }, 'New Assessment'),
-          h('button', { className: 'btn btn-secondary', onClick: () => nav('reports') }, 'Import Results'),
-        ),
-      ),
-      h('div', { className: 'stats-grid' },
-        statCard('Assets in scope', assets.length, 'accent'),
-        statCard('Active assessments', Math.max(checklists.length, groupedCounts(checklists, c => c.hostname).length), 'accent'),
-        statCard('Open findings', openFindings.length, openFindings.length ? 'red' : 'green'),
-        statCard('CAT I / High', catOne.length, catOne.length ? 'red' : 'green'),
-        statCard('Installed standards', benchmarks.length, 'accent'),
-        statCard('Average compliance', `${avgCompliance.toFixed(1)}%`, complianceColor(avgCompliance)),
-      ),
-      h('div', { className: 'overview-grid' },
-        h('div', { className: 'card' },
-          h('div', { className: 'card-header' }, h('h2', {}, 'Needs attention')),
-          topAssets.length
-            ? h('div', { className: 'stack-list' }, ...topAssets.map(([asset, count]) =>
-                h('div', { className: 'list-row' },
-                  h('div', {},
-                    h('div', { className: 'list-title' }, asset),
-                    h('div', { className: 'list-subtitle' }, `${count} open finding${count === 1 ? '' : 's'}`),
-                  ),
-                  h('span', { className: 'mini-pill mini-pill-red' }, `${count} open`),
-                ),
-              ))
-            : emptyState('No urgent assets', 'Run an assessment or import results to see priority assets.'),
-        ),
-        h('div', { className: 'card' },
-          h('div', { className: 'card-header' }, h('h2', {}, 'Recent activity')),
-          recentActivity.length
-            ? h('div', { className: 'stack-list' }, ...recentActivity.map(item =>
-                h('div', { className: 'list-row' },
-                  h('div', {},
-                    h('div', { className: 'list-title' }, item.hostname || item.asset?.hostname || 'Checklist run'),
-                    h('div', { className: 'list-subtitle' }, item.stig_title || item.stig_id || 'Assessment result'),
-                  ),
-                  h('span', { className: `mini-pill mini-pill-${complianceColor(item.compliance_pct || 0)}` }, `${(item.compliance_pct || 0).toFixed(1)}%`),
-                ),
-              ))
-            : emptyState('No recent activity', 'Generated checklists and imports will appear here.'),
-        ),
-      ),
-      h('div', { className: 'overview-grid' },
-        h('div', { className: 'card' },
-          h('div', { className: 'card-header' }, h('h2', {}, 'Compliance by standard')),
-          topStandards.length
-            ? h('div', { className: 'stack-list' }, ...topStandards.map(([name, count]) =>
-                h('div', { className: 'list-row' },
-                  h('div', {},
-                    h('div', { className: 'list-title' }, name),
-                    h('div', { className: 'list-subtitle' }, `${count} open finding${count === 1 ? '' : 's'}`),
-                  ),
-                ),
-              ))
-            : emptyState('No standards in review', 'Import benchmark content to start tracking standard-level posture.'),
-        ),
-        h('div', { className: 'card' },
-          h('div', { className: 'card-header' }, h('h2', {}, 'Next best actions')),
-          h('div', { className: 'stack-list' },
-            actionRow('Create an assessment', 'Group assets and standards into a repeatable run.', () => nav('assessments')),
-            actionRow('Review findings', 'Triage open controls across imported and generated checklists.', () => nav('findings')),
-            actionRow('Manage standards', 'Import or refresh benchmark content from DISA or .stigpack.', () => nav('standards')),
-          ),
-        ),
-      ),
-    );
-  } catch (e) {
-    setPage('overview', errorCard(e.message));
-  }
 }
 
 function actionRow(title, subtitle, onClick) {
@@ -2076,7 +1503,7 @@ async function loadAssessments() {
         ),
         h('div', { className: 'btn-group' },
           h('button', { className: 'btn btn-primary', onClick: () => nav('assets') }, 'New Assessment'),
-          h('button', { className: 'btn btn-secondary', onClick: () => nav('reports') }, 'Import Existing Results'),
+          h('button', { className: 'btn btn-secondary', onClick: importChecklistFile }, 'Import Existing Results'),
         ),
       ),
       assessments.length
@@ -2106,13 +1533,13 @@ async function loadAssessments() {
             ),
           )
         : emptyState('No assessments yet', 'Assessments group assets, standards, findings, and exports into one workflow.',
-            h('button', { className: 'btn btn-primary', onClick: () => nav('reports') }, 'Import Results')),
+            h('button', { className: 'btn btn-primary', onClick: importChecklistFile }, 'Import Results')),
       h('div', { className: 'card' },
         h('div', { className: 'card-header' }, h('h2', {}, 'Recommended flow')),
         h('div', { className: 'stack-list' },
           actionRow('1. Add or review assets', 'Make sure scope and tags reflect the environment you want to assess.', () => nav('assets')),
           actionRow('2. Install standards', 'Load current benchmark content before you run or import assessments.', () => nav('standards')),
-          actionRow('3. Import or run results', 'Use reports to bring in checklist files or export new results.', () => nav('reports')),
+          actionRow('3. Import or run results', 'Import checklist files or run evaluations from this page.', () => document.getElementById('evaluate-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' })),
         ),
       ),
       h('div', { id: 'evaluate-workspace' }),
@@ -2150,8 +1577,8 @@ async function loadStandards() {
           h('p', {}, 'Installed benchmark content, imports, updates, and DISA content operations'),
         ),
         h('div', { className: 'btn-group' },
-          h('button', { className: 'btn btn-primary', onClick: () => nav('reports') }, 'Import Benchmark Pack'),
-          h('button', { className: 'btn btn-secondary', onClick: () => nav('reports') }, 'Import XCCDF ZIP'),
+          h('button', { className: 'btn btn-primary', onClick: importStigpackFile }, 'Import Benchmark Pack'),
+          h('button', { className: 'btn btn-secondary', onClick: importDisaZipFile }, 'Import XCCDF ZIP'),
         ),
       ),
       h('div', { className: 'stats-grid' },
@@ -2216,7 +1643,6 @@ async function loadFindings() {
           h('p', {}, 'Review and triage checklist results across all imported and generated assessments'),
         ),
         h('div', { className: 'btn-group' },
-          h('button', { className: 'btn btn-primary', onClick: compareChecklistsDialog }, 'Compare Results'),
           h('button', { className: 'btn btn-secondary', onClick: exportAllZip }, 'Export All ZIP'),
         ),
       ),
@@ -2249,7 +1675,7 @@ async function loadFindings() {
             ),
           )
         : emptyState('No findings yet', 'Run an assessment or import existing results to review compliance status.',
-            h('button', { className: 'btn btn-primary', onClick: () => nav('reports') }, 'Import Results')),
+            h('button', { className: 'btn btn-primary', onClick: importChecklistFile }, 'Import Results')),
     );
   } catch (e) {
     setPage('findings', errorCard(e.message));
@@ -2296,7 +1722,7 @@ async function loadAssetsPage() {
         ),
         h('div', { className: 'btn-group' },
           h('button', { className: 'btn btn-primary', onClick: addAssetDialog }, 'Add Asset'),
-          h('button', { className: 'btn btn-secondary', onClick: () => nav('settings') }, 'Credentials & Automation'),
+          h('button', { className: 'btn btn-secondary', onClick: () => nav('settings') }, 'Credentials'),
         ),
       ),
       h('div', { id: 'bulk-bar', className: 'card', style: 'display:none; margin-bottom: 16px; align-items:center' },
@@ -2337,9 +1763,9 @@ async function loadAssetsPage() {
           ),
         ),
         h('div', { className: 'card' },
-          h('div', { className: 'card-header' }, h('h2', {}, 'Credentials & automation')),
+          h('div', { className: 'card-header' }, h('h2', {}, 'Credentials')),
           h('div', { className: 'stack-list' },
-            actionRow('Manage credentials & schedules', 'Stored credentials and automated scan schedules live under Settings.', () => nav('settings')),
+            actionRow('Manage credentials', 'Stored credentials live under Settings.', () => nav('settings')),
           ),
         ),
       ),
@@ -2349,56 +1775,26 @@ async function loadAssetsPage() {
   }
 }
 
-async function loadReports() {
-  setPage('reports',
-    h('div', { className: 'page-header page-header-with-actions' },
-      h('div', {},
-        h('h1', {}, 'Reports'),
-        h('p', {}, 'Import, export, and transfer checklist and benchmark content as outcomes instead of separate tools'),
-      ),
-      h('div', { className: 'btn-group' },
-        h('button', { className: 'btn btn-primary', onClick: exportAllZip }, 'Export All ZIP'),
-        h('button', { className: 'btn btn-secondary', onClick: () => nav('findings') }, 'Review Findings'),
-      ),
-    ),
-    h('div', { className: 'overview-grid' },
-      h('div', { className: 'card' },
-        h('div', { className: 'card-header' }, h('h2', {}, 'Import content and results')),
-        h('div', { className: 'stack-list' },
-          actionRow('Import checklist file', 'Bring in CKL, CKLB, or JSON results for review.', () => document.getElementById('card-import-checklist')?.scrollIntoView({ behavior: 'smooth', block: 'center' })),
-          actionRow('Import benchmark pack', 'Load signed .stigpack content for standards and templates.', () => document.getElementById('card-import-stigpack')?.scrollIntoView({ behavior: 'smooth', block: 'center' })),
-          actionRow('Import DISA XCCDF ZIP', 'Add raw benchmark content directly from downloaded DISA archives.', () => document.getElementById('card-import-disa')?.scrollIntoView({ behavior: 'smooth', block: 'center' })),
-        ),
-      ),
-      h('div', { className: 'card' },
-        h('div', { className: 'card-header' }, h('h2', {}, 'Export and transfer')),
-        h('div', { className: 'stack-list' },
-          actionRow('Export all checklists', 'Download all current checklists as a ZIP bundle.', exportAllZip),
-          actionRow('Generate offline pack', 'Create a .stigpack for transfer into an air-gapped environment.', downloadOfflinePack),
-          actionRow('Push to STIG-Manager', 'Open checklist detail pages to push accepted results upstream.', () => nav('findings')),
-        ),
-      ),
-    ),
-    h('div', { className: 'card' },
-      h('div', { className: 'card-header' }, h('h2', {}, 'Import workspace')),
-      h('p', { className: 'list-subtitle', style: 'margin-bottom: 16px' }, 'Bring checklist results, signed benchmark packs, and DISA XCCDF archives into the workspace.'),
-      h('div', { className: 'report-import-grid' },
-        importCard('Import DISA ZIP', 'Import XCCDF benchmarks directly from DISA ZIP archives downloaded from cyber.mil.', handleDisaZipImport, 'card-import-disa'),
-        importCard('Import Checklist', 'Import an existing CKL, CKLB, or JSON checklist file.', handleChecklistImport, 'card-import-checklist'),
-        importCard('Import .stigpack', 'Import a signed .stigpack content pack with benchmarks and templates.', handleStigpackImport, 'card-import-stigpack'),
-      ),
-    ),
-  );
+function chooseImportFile(accept, handler) {
+  const input = h('input', { type: 'file', accept, style: 'display:none' });
+  input.addEventListener('change', async (e) => {
+    try { await handler(e); }
+    finally { input.remove(); }
+  });
+  document.body.appendChild(input);
+  input.click();
 }
 
-function importCard(title, description, handler, cardId) {
-  const inputId = `input-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-  return h('div', { className: 'card compact-card', id: cardId },
-    h('h3', {}, title),
-    h('p', { className: 'list-subtitle', style: 'margin: 8px 0 14px' }, description),
-    h('input', { id: inputId, type: 'file', style: 'display:none', onChange: handler }),
-    h('button', { className: 'btn btn-primary', onClick: () => document.getElementById(inputId)?.click() }, 'Choose file'),
-  );
+function importDisaZipFile() {
+  chooseImportFile('.zip', handleDisaZipImport);
+}
+
+function importChecklistFile() {
+  chooseImportFile('.ckl,.cklb,.json', handleChecklistImport);
+}
+
+function importStigpackFile() {
+  chooseImportFile('.stigpack', handleStigpackImport);
 }
 
 async function handleDisaZipImport(e) {
