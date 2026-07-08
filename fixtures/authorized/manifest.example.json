@@ -103,6 +103,16 @@
       "authorization": "Public unclassified DISA Cyber Exchange download; redistribution subject to DISA public terms.",
       "classification": "authorized_public",
       "notes": "Official public DISA SCAP 1.3 benchmark ZIP downloaded from dl.dod.cyber.mil."
+    },
+    {
+      "id": "disa_public_netapp_ontap_dsc_9x_v2r2_stig",
+      "kind": "disa-xccdf",
+      "path": "fixtures/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R2_STIG.zip",
+      "sha256": "99894917665efa70e508fa51a87043f4d42fc5061638cd2e1672a25cbac250ad",
+      "source": "DISA Cyber Exchange Public download: NetApp ONTAP DSC 9.x STIG Ver 2 Rel 2",
+      "authorization": "Public unclassified DISA Cyber Exchange download; redistribution subject to DISA public terms.",
+      "classification": "authorized_public",
+      "notes": "Official public DISA manual STIG ZIP downloaded from dl.dod.cyber.mil; drives the netapp_ontap9 check pack and ONTAP evidence E2E scenario."
     }
   ]
 }

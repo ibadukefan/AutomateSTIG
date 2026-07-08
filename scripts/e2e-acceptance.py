@@ -39,6 +39,11 @@ RHEL8_ZIP = f"{FIX}/authorized/disa-public-2026-04/U_RHEL_8_V2R7_STIG.zip"
 SCC_XML = f"{FIX}/scc-results/windows_server_2022_scc_results.xml"
 OSCAP_XML = f"{FIX}/openscap-results/rhel8_openscap_results.xml"
 SAN_CKL = f"{FIX}/ckl/windows_server_2022_sanitized.ckl"
+ONTAP_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R2_STIG.zip"
+ONTAP_FINDINGS = f"{FIX}/ontap/ontap_evidence_findings.txt"
+ONTAP_COMPLIANT = f"{FIX}/ontap/ontap_evidence_compliant.txt"
+ONTAP_OPEN = {"V-246923", "V-246932", "V-246936", "V-246950", "V-246951", "V-246958", "V-246959"}
+ONTAP_MANUAL = {"V-246927", "V-246930", "V-246933", "V-246939", "V-246945", "V-246946", "V-246949"}
 
 DB = f"{WORK}/data.db"
 LIB = f"{WORK}/library"
@@ -454,6 +459,54 @@ def sec_evaluate_rhel(rhel_id):
     return outs
 
 
+def sec_ontap():
+    """NetApp ONTAP: DISA import + evidence-transcript evaluation via check pack."""
+    S = "ontap-evidence"
+    p = run_cli("disa-import", "--input", ONTAP_ZIP)
+    check(S, "disa-import NetApp ONTAP V2R2 succeeds", p.returncode == 0, p.combined[:300])
+
+    def eval_and_map(evidence, host, dest):
+        p = run_cli("evaluate", "--stig", "NetApp_ONTAP_DSC_9-x_STIG", "--evidence", evidence,
+                    "--host", host, "--output", dest, "--format", "ckl")
+        check(S, f"evaluate --evidence {os.path.basename(evidence)} succeeds",
+              p.returncode == 0 and os.path.exists(dest), p.combined[:300])
+        got = {}
+        for vid, e in parse_ckl(dest).items():
+            attrs_v = vid if vid.startswith("V-2469") else None
+            # CKL Vuln_Num carries the STIG ID; recover the V-number from details/rule attrs
+            got[vid] = e
+        return parse_ckl(dest)
+
+    ckl = eval_and_map(ONTAP_FINDINGS, "ontap-findings-01", f"{OUT}/ontap_findings.ckl")
+    tree = ET.parse(f"{OUT}/ontap_findings.ckl")
+    by_v = {}
+    for v in tree.iter("VULN"):
+        attrs = {sd.findtext("VULN_ATTRIBUTE"): sd.findtext("ATTRIBUTE_DATA") or ""
+                 for sd in v.findall("STIG_DATA")}
+        vnum = next((x for x in attrs.values() if x.startswith("V-2469")), attrs.get("Vuln_Num"))
+        by_v[vnum] = norm_status(v.findtext("STATUS") or "")
+    bad = []
+    for vnum, st in by_v.items():
+        want = ("open" if vnum in ONTAP_OPEN
+                else "notreviewed" if vnum in ONTAP_MANUAL else "notafinding")
+        if st != want:
+            bad.append((vnum, st, want))
+    check(S, "findings evidence: all 29 ONTAP statuses match the designed oracle",
+          len(by_v) == 29 and not bad, f"n={len(by_v)} bad={bad[:5]}")
+
+    tree = None
+    eval_and_map(ONTAP_COMPLIANT, "ontap-compliant-01", f"{OUT}/ontap_compliant.ckl")
+    comp = parse_ckl(f"{OUT}/ontap_compliant.ckl")
+    counts = status_counts(comp)
+    check(S, "compliant evidence: 22 NotAFinding / 7 Not_Reviewed / 0 Open",
+          counts.get("notafinding") == 22 and counts.get("notreviewed") == 7
+          and not counts.get("open"), str(counts))
+
+    prov = [v for v, e in comp.items() if norm_status(e["status"]) == "notafinding"
+            and not (e["comments"] or e["details"])]
+    check(S, "evidence-evaluated findings carry provenance text", not prov, str(prov[:3]))
+
+
 def sec_stigpack():
     S = "stigpack"
     src_dir = f"{WORK}/pack_src"
@@ -658,6 +711,7 @@ def main():
     sec_convert(outs)
     sec_gen_answer(outs)
     sec_evaluate_rhel(rhel_id)
+    sec_ontap()
     sec_stigpack()
     sec_coverage()
     sec_gui(ckl)

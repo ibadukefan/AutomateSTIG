@@ -1,0 +1,100 @@
+### automatestig:hostname ontap-findings-01
+### automatestig:command security session limit show -interface cli
+Vserver   Interface Category      Max-Active-Limit
+--------- --------- ------------- ----------------
+cluster1  cli       default       1
+### automatestig:command system timeout show
+Session Timeout (Minutes): 30
+### automatestig:command cluster log-forwarding show
+                                                 Verify Syslog
+Destination Host                    Port   Protocol        Server Facility
+----------------------------------- ------ --------------- ------ --------
+10.10.5.14                          514    udp-unencrypted false  user
+1 entries were displayed.
+### automatestig:command security login show -role admin -authentication-method password
+Vserver: cluster1
+                                                                 Second
+User/Group                 Authentication                 Acct   Authentication
+Name           Application Method        Role Name        Locked Method
+-------------- ----------- ------------- ---------------- ------ --------------
+admin          console     password      admin            no     none
+1 entry was displayed.
+### automatestig:command security login role config show -role admin -instance
+                    Vserver: cluster1
+                  Role Name: admin
+     Minimum Password Length: 8
+Maximum Number of Failed Attempts: 3
+           Lockout Duration: 1 day
+### automatestig:command security login banner show
+Vserver: cluster1
+Message
+-----------------------------------------------------------------------------
+Welcome to cluster1. Authorized personnel only.
+### automatestig:command vserver audit show -fields audit-guarantee
+vserver  audit-guarantee
+-------- ---------------
+svm1     true
+svm2     true
+2 entries were displayed.
+### automatestig:command cluster time-service ntp server show
+                             Is
+Server                       Authentication Enabled
+---------------------------- ----------------------
+10.10.1.10                   false
+1 entry was displayed.
+### automatestig:command cluster date show
+Node      Date                  Time zone
+--------- --------------------- -----------------
+cluster1-01 7/8/2026 21:04:11   UTC
+### automatestig:command security login show -authentication-method domain
+Vserver: cluster1
+User/Group                 Authentication                 Acct
+Name           Application Method        Role Name        Locked
+-------------- ----------- ------------- ---------------- ------
+DOMAIN\storage-admins ssh  domain        admin            no
+2 entries were displayed.
+### automatestig:command security login show -role admin -authentication-method domain
+Vserver: cluster1
+User/Group                 Authentication                 Acct
+Name           Application Method        Role Name        Locked
+-------------- ----------- ------------- ---------------- ------
+DOMAIN\storage-admins ssh  domain        admin            no
+1 entry was displayed.
+### automatestig:command options -option-name snmp*
+cluster1
+    snmp.enable                  off
+    snmp.san.enable              off
+2 entries were displayed.
+### automatestig:command security snmpusers -authmethod usm
+There are no entries matching your query.
+### automatestig:command security login role config show -role admin -fields passwd-minlength
+vserver  role  passwd-minlength
+-------- ----- ----------------
+cluster1 admin 8
+### automatestig:command security login role config show -role admin -fields passwd-min-uppercase-chars
+vserver  role  passwd-min-uppercase-chars
+-------- ----- --------------------------
+cluster1 admin 1
+### automatestig:command security login role config show -role admin -fields passwd-min-lowercase-chars
+vserver  role  passwd-min-lowercase-chars
+-------- ----- --------------------------
+cluster1 admin 1
+### automatestig:command security login role config show -role admin -fields passwd-alphanum
+vserver  role  passwd-alphanum
+-------- ----- ---------------
+cluster1 admin enabled
+### automatestig:command security login role config show -role admin -fields passwd-min-special-chars
+vserver  role  passwd-min-special-chars
+-------- ----- ------------------------
+cluster1 admin 1
+### automatestig:command system configuration backup show
+Node       Backup Name                               Time               Size
+---------- ----------------------------------------- ------------------ -----
+cluster1-01 cluster1.8hour.2026-07-08.10_15_00.7z    07/08 10:15:00     158.3MB
+cluster1-01 cluster1.daily.2026-07-08.00_10_00.7z    07/08 00:10:00     158.1MB
+2 entries were displayed.
+### automatestig:command security config show
+                                          Cluster                    Cluster
+Interface    FIPS Mode  Supported Protocols        Supported Ciphers Security
+------------ ---------- -------------------------- ----------------- --------
+SSL          false      TLSv1.2                    ALL:!LOW          false

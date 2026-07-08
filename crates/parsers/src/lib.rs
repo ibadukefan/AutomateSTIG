@@ -10,6 +10,7 @@ pub mod ckl;
 pub mod cklb;
 pub mod config_dump;
 pub mod error;
+pub mod evidence;
 mod util;
 pub mod xccdf;
 

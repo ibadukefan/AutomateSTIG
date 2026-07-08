@@ -5,12 +5,13 @@ AutomateSTIG is a cross-platform, offline-capable STIG evidence collection and e
 - `automatestig` - command-line interface
 - `automatestig-gui` - local web GUI
 
-AutomateSTIG focuses on collecting evidence from devices that scripted scanners cannot reach, including network devices through configuration files and Linux/UNIX systems through SSH, with NetApp ONTAP collection planned. Evaluation is deterministic. There is no AI or ML in the evaluation path. The default workflow makes no network calls; DISA fetching, STIG-Manager integration, and remote SSH collection are opt-in connected features.
+AutomateSTIG focuses on collecting evidence from devices that scripted scanners cannot reach, including network devices through configuration files, Linux/UNIX systems through SSH, and NetApp ONTAP filers through CLI evidence transcripts and GUI SSH scan. Evaluation is deterministic. There is no AI or ML in the evaluation path. The default workflow makes no network calls; DISA fetching, STIG-Manager integration, and remote SSH collection are opt-in connected features.
 
 ## Features
 
 - Import DISA XCCDF XML or ZIP benchmark content.
 - Evaluate benchmarks from scan results, network device configuration evidence, Linux/UNIX SSH collection, answer files, and installed check packs.
+- Evaluate NetApp ONTAP filers from read-only CLI evidence transcripts (DISA ONTAP DSC 9.x STIG).
 - Generate and persist deterministic auto check packs from structured DISA check content where possible.
 - Manage assets, assessments, findings, credentials, and STIG-Manager settings in the local GUI.
 - Deliver results through STIG-Manager API push, STIG-Manager JSON export, and CKL/CKLB file import.

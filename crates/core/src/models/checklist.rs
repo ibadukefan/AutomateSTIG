@@ -55,14 +55,22 @@ impl Checklist {
         }
     }
 
-    /// Get a finding by Vuln ID.
+    /// Get a finding by Vuln ID, Group ID, or legacy ID.
     pub fn find_by_vuln_id(&self, vuln_id: &str) -> Option<&Finding> {
-        self.findings.iter().find(|f| f.vuln_id == vuln_id)
+        self.findings.iter().find(|f| {
+            f.vuln_id == vuln_id
+                || f.group_id == vuln_id
+                || f.legacy_ids.iter().any(|legacy_id| legacy_id == vuln_id)
+        })
     }
 
-    /// Get a mutable finding by Vuln ID.
+    /// Get a mutable finding by Vuln ID, Group ID, or legacy ID.
     pub fn find_by_vuln_id_mut(&mut self, vuln_id: &str) -> Option<&mut Finding> {
-        self.findings.iter_mut().find(|f| f.vuln_id == vuln_id)
+        self.findings.iter_mut().find(|f| {
+            f.vuln_id == vuln_id
+                || f.group_id == vuln_id
+                || f.legacy_ids.iter().any(|legacy_id| legacy_id == vuln_id)
+        })
     }
 
     /// Get summary statistics.
@@ -165,6 +173,19 @@ mod tests {
         assert_eq!(cl.asset.hostname, "server01");
         assert_eq!(cl.stig_info.version, "1");
         assert!(cl.findings.is_empty());
+    }
+
+    #[test]
+    fn test_find_by_vuln_id_matches_vuln_group_or_legacy_id() {
+        let mut cl = Checklist::new(Asset::new("server01"), make_stig_info());
+        let mut finding = Finding::new_not_reviewed("V-1", "SV-1", "G-1", "Rule 1", Severity::High);
+        finding.legacy_ids = vec!["LEGACY-1".to_string()];
+        cl.findings.push(finding);
+
+        assert!(cl.find_by_vuln_id("V-1").is_some());
+        assert!(cl.find_by_vuln_id("G-1").is_some());
+        assert!(cl.find_by_vuln_id("LEGACY-1").is_some());
+        assert!(cl.find_by_vuln_id("UNKNOWN").is_none());
     }
 
     #[test]

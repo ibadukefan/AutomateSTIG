@@ -49,6 +49,7 @@ pub fn generate_collection_plan(platform: CheckPlatform) -> CollectionPlan {
         CheckPlatform::CiscoIos | CheckPlatform::CiscoNxos | CheckPlatform::CiscoAsa => {
             network_collection_plan()
         }
+        CheckPlatform::Ontap => ontap_collection_plan(),
         CheckPlatform::Generic => CollectionPlan {
             commands: Vec::new(),
         },
@@ -202,6 +203,59 @@ fn network_collection_plan() -> CollectionPlan {
     }
 }
 
+fn ontap_collection_plan() -> CollectionPlan {
+    let plain_commands = [
+        "security session limit show -interface cli",
+        "system timeout show",
+        "cluster log-forwarding show",
+        "security login show -role admin -authentication-method password",
+        "security login role config show -role admin -instance",
+        "security login banner show",
+        "vserver audit show -fields audit-guarantee",
+        "cluster time-service ntp server show",
+        "cluster date show",
+        "security login show -authentication-method domain",
+        "security login show -role admin -authentication-method domain",
+        "options -option-name snmp*",
+        "security snmpusers -authmethod usm",
+        "security login role config show -role admin -fields passwd-minlength",
+        "security login role config show -role admin -fields passwd-min-uppercase-chars",
+        "security login role config show -role admin -fields passwd-min-lowercase-chars",
+        "security login role config show -role admin -fields passwd-alphanum",
+        "security login role config show -role admin -fields passwd-min-special-chars",
+    ];
+
+    let privileged_commands = ["system configuration backup show", "security config show"];
+
+    let mut commands: Vec<CollectionCommand> =
+        plain_commands.into_iter().map(ontap_command).collect();
+    commands.extend(
+        privileged_commands
+            .into_iter()
+            .map(privileged_ontap_command),
+    );
+
+    CollectionPlan { commands }
+}
+
+fn ontap_command(command: &str) -> CollectionCommand {
+    CollectionCommand {
+        description: format!("ONTAP command: {}", command),
+        command: command.to_string(),
+        parser: OutputParser::Raw,
+        data_key: command.to_string(),
+    }
+}
+
+fn privileged_ontap_command(command: &str) -> CollectionCommand {
+    CollectionCommand {
+        description: format!("ONTAP privileged command: {}", command),
+        command: format!("set -privilege advanced -confirmations off; {}", command),
+        parser: OutputParser::Raw,
+        data_key: command.to_string(),
+    }
+}
+
 /// Assemble a SystemData struct from raw collected outputs.
 pub fn assemble_system_data(
     platform: CheckPlatform,
@@ -286,6 +340,10 @@ pub fn assemble_system_data(
             data.network_config = raw_outputs.get("running_config").cloned();
         }
 
+        CheckPlatform::Ontap => {
+            data.command_outputs = raw_outputs.clone();
+        }
+
         CheckPlatform::Generic => {}
     }
 
@@ -314,6 +372,27 @@ mod tests {
             .commands
             .iter()
             .any(|c| c.description.contains("security policy")));
+    }
+
+    #[test]
+    fn test_collection_plan_ontap_uses_plain_keys() {
+        let plan = generate_collection_plan(CheckPlatform::Ontap);
+        let plain = "system configuration backup show";
+        let command = plan
+            .commands
+            .iter()
+            .find(|c| c.data_key == plain)
+            .expect("privileged command is present");
+
+        assert_eq!(command.data_key, plain);
+        assert_eq!(
+            command.command,
+            "set -privilege advanced -confirmations off; system configuration backup show"
+        );
+        assert!(plan.commands.iter().any(|c| {
+            c.data_key == "security session limit show -interface cli"
+                && c.command == "security session limit show -interface cli"
+        }));
     }
 
     #[test]

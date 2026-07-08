@@ -16,6 +16,7 @@ Start here:
 - [Evaluation Workflow](evaluation-workflow.md)
 - [Answer Files](answer-files.md)
 - [DISA Import](disa-import.md)
+- [NetApp ONTAP Collection](ontap-collection.md)
 - [Content Updates](content-updates.md)
 - [STIG Pack Files](stigpack.md)
 - [Integrations](integrations.md)

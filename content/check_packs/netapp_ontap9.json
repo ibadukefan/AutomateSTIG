@@ -1,0 +1,293 @@
+{
+  "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
+  "platform": "ontap",
+  "version": "V2R2",
+  "checks": [
+    {
+      "vuln_id": "V-246922",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security session limit show -interface cli"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?m)^\\S+\\s+cli\\s+\\S+\\s+1\\s*$"
+      },
+      "description": "Concurrent CLI sessions must be limited to 1 (max-active-limit column)"
+    },
+    {
+      "vuln_id": "V-246923",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "system timeout show"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?i)timeout[^0-9]*(1[0-5]|[1-9])\\b"
+      },
+      "description": "CLI session timeout must be 15 minutes or less"
+    },
+    {
+      "vuln_id": "V-246925",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "cluster log-forwarding show"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?i)\\b(tcp|udp)[a-z-]*\\b"
+      },
+      "description": "A remote syslog destination must be defined so account actions are audited centrally"
+    },
+    {
+      "vuln_id": "V-246926",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login show -role admin -authentication-method password"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "1 entr(y was|ies were) displayed"
+      },
+      "description": "Exactly one local password account (the account of last resort) may exist"
+    },
+    {
+      "vuln_id": "V-246931",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login role config show -role admin -instance"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?i)Maximum Number of Failed Attempts:\\s*3\\b"
+      },
+      "description": "Maximum consecutive failed logon attempts must be 3"
+    },
+    {
+      "vuln_id": "V-246932",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login banner show"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "You are accessing a U\\.S\\. Government \\(USG\\) Information System"
+      },
+      "description": "Standard Mandatory DoD Notice and Consent Banner must be configured"
+    },
+    {
+      "vuln_id": "V-246935",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "vserver audit show -fields audit-guarantee"
+      },
+      "expected": {
+        "type": "not_contains",
+        "substring": "false"
+      },
+      "description": "Audit guarantee must be enabled (audit-guarantee not false) on all vservers"
+    },
+    {
+      "vuln_id": "V-246936",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "cluster time-service ntp server show"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "([2-9]|[1-9]\\d+) entries were displayed"
+      },
+      "description": "At least two NTP servers must be configured (redundant authoritative time sources)"
+    },
+    {
+      "vuln_id": "V-246938",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "cluster date show"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?i)\\b(UTC|GMT|Etc/UTC)\\b"
+      },
+      "description": "Cluster time zone must map to UTC/GMT for audit record timestamps"
+    },
+    {
+      "vuln_id": "V-246940",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login show -authentication-method domain"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "[1-9]\\d* entr(y was|ies were) displayed"
+      },
+      "description": "An external authentication server (domain) must provide administrator authentication"
+    },
+    {
+      "vuln_id": "V-246944",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "system configuration backup show"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?i)\\.7z"
+      },
+      "description": "System configuration backups must exist (advanced privilege: system configuration backup show)"
+    },
+    {
+      "vuln_id": "V-246947",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login show -role admin -authentication-method domain"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "[1-9]\\d* entr(y was|ies were) displayed"
+      },
+      "description": "Administrators must authenticate via the authentication server (domain) before privilege assignment"
+    },
+    {
+      "vuln_id": "V-246948",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login show -role admin -authentication-method password"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "1 entr(y was|ies were) displayed"
+      },
+      "description": "Only the account of last resort may use non-replay-resistant (password) authentication"
+    },
+    {
+      "vuln_id": "V-246950",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "cluster time-service ntp server show"
+      },
+      "expected": {
+        "type": "not_contains",
+        "substring": "false"
+      },
+      "description": "All NTP servers must have Is Authentication Enabled: true (cryptographic NTP authentication)"
+    },
+    {
+      "vuln_id": "V-246951",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login role config show -role admin -fields passwd-minlength"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?m)\\b(1[5-9]|[2-9]\\d)\\b"
+      },
+      "description": "Minimum password length must be 15 or greater"
+    },
+    {
+      "vuln_id": "V-246952",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login role config show -role admin -fields passwd-min-uppercase-chars"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?m)admin\\s+[1-9]"
+      },
+      "description": "At least one uppercase character must be required in passwords"
+    },
+    {
+      "vuln_id": "V-246953",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login role config show -role admin -fields passwd-min-lowercase-chars"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?m)admin\\s+[1-9]"
+      },
+      "description": "At least one lowercase character must be required in passwords"
+    },
+    {
+      "vuln_id": "V-246954",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login role config show -role admin -fields passwd-alphanum"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?i)enabled|true"
+      },
+      "description": "Alphanumeric requirement (at least one letter and one number) must be enabled"
+    },
+    {
+      "vuln_id": "V-246955",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security login role config show -role admin -fields passwd-min-special-chars"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?m)admin\\s+[1-9]"
+      },
+      "description": "At least one special character must be required in passwords"
+    },
+    {
+      "vuln_id": "V-246958",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "security config show"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?i)FIPS[ -]?Mode:?\\s*(is\\s*)?true|(?m)^\\S+\\s+true\\b"
+      },
+      "description": "Cluster FIPS 140-2 mode must be true (advanced privilege: security config show)"
+    },
+    {
+      "vuln_id": "V-246959",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "system timeout show"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?i)timeout[^0-9]*(10|[1-9])\\b"
+      },
+      "description": "Management sessions must terminate after 10 minutes of inactivity or less"
+    },
+    {
+      "vuln_id": "V-246964",
+      "platform": "ontap",
+      "check": {
+        "type": "command",
+        "command": "cluster log-forwarding show"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "(?m)\\b\\d{1,3}(\\.\\d{1,3}){3}\\b|(?i)\\b\\S+\\.\\S+\\s+\\d{1,5}\\s+(tcp|udp)"
+      },
+      "description": "Audit log data must be forwarded to at least one central log server"
+    }
+  ]
+}

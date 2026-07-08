@@ -1,7 +1,7 @@
 //! AutomateSTIG CLI — STIG evaluation and compliance automation.
 //!
 //! Usage:
-//!   automatestig evaluate --stig <STIG_ID> --scan <SCAN_FILE> [--answer <ANSWER_FILE>] [--output <OUTPUT>]
+//!   automatestig evaluate --stig <STIG_ID> [--scan <SCAN_FILE>] [--evidence <EVIDENCE_FILE>] [--answer <ANSWER_FILE>] [--output <OUTPUT>]
 //!   automatestig import --pack <STIGPACK_FILE>
 //!   automatestig library list
 //!   automatestig convert --input <FILE> --format <ckl|cklb|json>
@@ -51,6 +51,10 @@ enum Commands {
         /// Path to scan result file (XCCDF, CKL, or config dump).
         #[arg(short = 'S', long)]
         scan: Option<String>,
+
+        /// Evidence transcript file collected from the target device (### automatestig:command format).
+        #[arg(long)]
+        evidence: Option<String>,
 
         /// Path(s) to answer file(s) (JSON/YAML).
         #[arg(short, long)]
@@ -242,6 +246,7 @@ fn main() {
         Commands::Evaluate {
             ref stig,
             ref scan,
+            ref evidence,
             ref answer,
             ref host,
             ref output,
@@ -251,6 +256,7 @@ fn main() {
             commands::evaluate::EvaluateArgs {
                 stig_id: stig.clone(),
                 scan: scan.clone(),
+                evidence: evidence.clone(),
                 answer_paths: answer.clone(),
                 host: host.clone(),
                 output: output.clone(),

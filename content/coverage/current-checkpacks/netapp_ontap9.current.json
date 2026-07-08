@@ -1,0 +1,297 @@
+{
+  "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
+  "version": "V2R2",
+  "source": "AutomateSTIG current check pack: content/check_packs/netapp_ontap9.json",
+  "status": "experimental",
+  "generated_at": "2026-07-08T21:30:17Z",
+  "generated_from": "content/check_packs/netapp_ontap9.json",
+  "total_rules": 22,
+  "rules": [
+    {
+      "vuln_id": "V-246922",
+      "rule_id": "V-246922_automatestig_check",
+      "classification": "automated",
+      "reason": "Concurrent CLI sessions must be limited to 1 (max-active-limit column)",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246922",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246923",
+      "rule_id": "V-246923_automatestig_check",
+      "classification": "automated",
+      "reason": "CLI session timeout must be 15 minutes or less",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246923",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246925",
+      "rule_id": "V-246925_automatestig_check",
+      "classification": "automated",
+      "reason": "A remote syslog destination must be defined so account actions are audited centrally",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246925",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246926",
+      "rule_id": "V-246926_automatestig_check",
+      "classification": "automated",
+      "reason": "Exactly one local password account (the account of last resort) may exist",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246926",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246931",
+      "rule_id": "V-246931_automatestig_check",
+      "classification": "automated",
+      "reason": "Maximum consecutive failed logon attempts must be 3",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246931",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246932",
+      "rule_id": "V-246932_automatestig_check",
+      "classification": "automated",
+      "reason": "Standard Mandatory DoD Notice and Consent Banner must be configured",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246932",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246935",
+      "rule_id": "V-246935_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit guarantee must be enabled (audit-guarantee not false) on all vservers",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246935",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246936",
+      "rule_id": "V-246936_automatestig_check",
+      "classification": "automated",
+      "reason": "At least two NTP servers must be configured (redundant authoritative time sources)",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246936",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246938",
+      "rule_id": "V-246938_automatestig_check",
+      "classification": "automated",
+      "reason": "Cluster time zone must map to UTC/GMT for audit record timestamps",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246938",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246940",
+      "rule_id": "V-246940_automatestig_check",
+      "classification": "automated",
+      "reason": "An external authentication server (domain) must provide administrator authentication",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246940",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246944",
+      "rule_id": "V-246944_automatestig_check",
+      "classification": "automated",
+      "reason": "System configuration backups must exist (advanced privilege: system configuration backup show)",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246944",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246947",
+      "rule_id": "V-246947_automatestig_check",
+      "classification": "automated",
+      "reason": "Administrators must authenticate via the authentication server (domain) before privilege assignment",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246947",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246948",
+      "rule_id": "V-246948_automatestig_check",
+      "classification": "automated",
+      "reason": "Only the account of last resort may use non-replay-resistant (password) authentication",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246948",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246950",
+      "rule_id": "V-246950_automatestig_check",
+      "classification": "automated",
+      "reason": "All NTP servers must have Is Authentication Enabled: true (cryptographic NTP authentication)",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246950",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246951",
+      "rule_id": "V-246951_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password length must be 15 or greater",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246951",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246952",
+      "rule_id": "V-246952_automatestig_check",
+      "classification": "automated",
+      "reason": "At least one uppercase character must be required in passwords",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246952",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246953",
+      "rule_id": "V-246953_automatestig_check",
+      "classification": "automated",
+      "reason": "At least one lowercase character must be required in passwords",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246953",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246954",
+      "rule_id": "V-246954_automatestig_check",
+      "classification": "automated",
+      "reason": "Alphanumeric requirement (at least one letter and one number) must be enabled",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246954",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246955",
+      "rule_id": "V-246955_automatestig_check",
+      "classification": "automated",
+      "reason": "At least one special character must be required in passwords",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246955",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246958",
+      "rule_id": "V-246958_automatestig_check",
+      "classification": "automated",
+      "reason": "Cluster FIPS 140-2 mode must be true (advanced privilege: security config show)",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246958",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246959",
+      "rule_id": "V-246959_automatestig_check",
+      "classification": "automated",
+      "reason": "Management sessions must terminate after 10 minutes of inactivity or less",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246959",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-246964",
+      "rule_id": "V-246964_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit log data must be forwarded to at least one central log server",
+      "check_pack": "netapp_ontap9",
+      "check_id": "V-246964",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/netapp_ontap9.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

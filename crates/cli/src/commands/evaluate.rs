@@ -2,11 +2,16 @@ use std::path::Path;
 
 use anyhow::{Context, Result};
 use automatestig_core::answer::AnswerFile;
+use automatestig_core::checks::{CheckPack, CheckPlatform, CheckResult, SystemData};
 use automatestig_core::engine::EvaluationEngine;
 use automatestig_core::library::StigLibrary;
 use automatestig_core::models::asset::Asset;
+use automatestig_core::models::finding::{FindingSource, FindingStatus};
+use automatestig_core::models::{Checklist, StigBenchmark};
+use automatestig_core::plugins::PluginRegistry;
 use automatestig_parsers::ckl;
 use automatestig_parsers::cklb;
+use automatestig_parsers::evidence::{parse_evidence_transcript, EvidenceTranscript};
 use automatestig_parsers::xccdf;
 use automatestig_storage::Database;
 
@@ -16,6 +21,7 @@ use crate::ui;
 pub struct EvaluateArgs {
     pub stig_id: String,
     pub scan: Option<String>,
+    pub evidence: Option<String>,
     pub answer_paths: Vec<String>,
     pub host: Option<String>,
     pub output: Option<String>,
@@ -27,6 +33,7 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
     let EvaluateArgs {
         stig_id,
         scan,
+        evidence,
         answer_paths,
         host,
         output,
@@ -69,6 +76,15 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
         None
     };
 
+    let evidence_transcript = if let Some(ref evidence_path) = evidence {
+        ui::detail("Evidence source", evidence_path);
+        let raw = std::fs::read_to_string(evidence_path)
+            .context(format!("Failed to read evidence file: {}", evidence_path))?;
+        Some(parse_evidence_transcript(&raw))
+    } else {
+        None
+    };
+
     // Load answer files.
     let answer_files: Vec<AnswerFile> = answer_paths
         .iter()
@@ -80,7 +96,13 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
 
     // Determine asset info.
     let hostname = host
+        .clone()
         .or_else(|| scan_results.as_ref().and_then(|s| s.source.target.clone()))
+        .or_else(|| {
+            evidence_transcript
+                .as_ref()
+                .and_then(|transcript| transcript.hostname.clone())
+        })
         .unwrap_or_else(|| "Unknown".to_string());
 
     let asset = Asset::new(&hostname);
@@ -88,8 +110,16 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
 
     // Run evaluation.
     let engine = EvaluationEngine::with_defaults();
-    let mut checklist =
-        engine.evaluate(&benchmark, &asset, scan_results.as_ref(), &answer_files)?;
+    let mut checklist = if let Some(ref transcript) = evidence_transcript {
+        let mut checklist = engine.evaluate(&benchmark, &asset, scan_results.as_ref(), &[])?;
+        let system_data = build_evidence_system_data(transcript, host.as_deref(), &hostname);
+        let check_results = execute_evidence_checks(&library, &benchmark, &system_data);
+        apply_check_results_to_checklist(&mut checklist, &check_results);
+        apply_answer_files_to_checklist(&mut checklist, &answer_files);
+        checklist
+    } else {
+        engine.evaluate(&benchmark, &asset, scan_results.as_ref(), &answer_files)?
+    };
 
     // Merge with previous if requested.
     if let Some(ref merge_path) = merge {
@@ -144,15 +174,129 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
     // Save to database.
     let db = Database::open(&db_path(cli))?;
     db.save_checklist(&checklist)?;
-    db.log_evaluation(
-        &checklist,
-        "cli-evaluate",
-        Some(&format!("scan={:?}", scan)),
-    )?;
+    let log_detail = if evidence.is_some() {
+        format!("scan={:?}, evidence={:?}", scan, evidence)
+    } else {
+        format!("scan={:?}", scan)
+    };
+    db.log_evaluation(&checklist, "cli-evaluate", Some(&log_detail))?;
 
     ui::success("Evaluation complete");
 
     Ok(())
+}
+
+fn build_evidence_system_data(
+    transcript: &EvidenceTranscript,
+    host_arg: Option<&str>,
+    default_hostname: &str,
+) -> SystemData {
+    SystemData {
+        command_outputs: transcript.outputs.clone(),
+        hostname: host_arg
+            .map(str::to_string)
+            .or_else(|| transcript.hostname.clone())
+            .unwrap_or_else(|| default_hostname.to_string()),
+        ..Default::default()
+    }
+}
+
+fn execute_evidence_checks(
+    library: &StigLibrary,
+    benchmark: &StigBenchmark,
+    system_data: &SystemData,
+) -> Vec<CheckResult> {
+    load_matching_check_packs(library, &benchmark.id)
+        .into_iter()
+        .flat_map(|pack| {
+            let mut pack_data = system_data.clone();
+            pack_data.platform = check_platform_name(pack.platform).to_string();
+            automatestig_core::checks::executor::execute_check_pack(&pack, &pack_data)
+        })
+        .collect()
+}
+
+fn load_matching_check_packs(library: &StigLibrary, stig_id: &str) -> Vec<CheckPack> {
+    let mut plugin_registry = PluginRegistry::new();
+    let content_dir = Path::new("content/check_packs");
+    let _ = plugin_registry.load_from_directory(content_dir);
+
+    let custom_dir = library.root().join("custom_checks");
+    let _ = plugin_registry.load_from_directory(&custom_dir);
+
+    let auto_dir = library.root().join("auto_check_packs");
+    let _ = plugin_registry.load_from_directory(&auto_dir);
+
+    plugin_registry
+        .list()
+        .iter()
+        .flat_map(|plugin| plugin.check_packs.iter())
+        .filter(|pack| pack.stig_id == stig_id)
+        .cloned()
+        .collect()
+}
+
+fn apply_check_results_to_checklist(checklist: &mut Checklist, check_results: &[CheckResult]) {
+    for cr in check_results {
+        if let Some(finding) = checklist.find_by_vuln_id_mut(&cr.vuln_id) {
+            finding.status = cr.to_finding_status();
+            finding.source = FindingSource::Automated;
+            finding.finding_details = cr.evidence.clone();
+            finding.evaluated_at = chrono::Utc::now();
+            finding.evaluated_by = format!("AutomateSTIG {}", env!("CARGO_PKG_VERSION"));
+        }
+    }
+
+    checklist.touch();
+}
+
+fn apply_answer_files_to_checklist(checklist: &mut Checklist, answer_files: &[AnswerFile]) {
+    for answer_file in answer_files {
+        if let Some(ref answer_stig_id) = answer_file.stig_id {
+            if answer_stig_id != &checklist.stig_info.stig_id {
+                continue;
+            }
+        }
+
+        for entry in &answer_file.entries {
+            if let Some(finding) = checklist.find_by_vuln_id_mut(&entry.vuln_id) {
+                let should_apply = entry.force_override
+                    || finding.status == FindingStatus::NotReviewed
+                    || finding.source == FindingSource::Manual;
+
+                if should_apply {
+                    finding.status = entry.status;
+                    finding.source = FindingSource::AnswerFile;
+
+                    if let Some(ref details) = entry.finding_details {
+                        finding.finding_details = details.clone();
+                    }
+                    if let Some(ref comments) = entry.comments {
+                        finding.comments = comments.clone();
+                    }
+                    if let Some(ref severity_override) = entry.severity_override {
+                        finding.severity_override = Some(*severity_override);
+                        finding.severity_override_justification =
+                            entry.severity_override_justification.clone();
+                    }
+                }
+            }
+        }
+    }
+
+    checklist.touch();
+}
+
+fn check_platform_name(platform: CheckPlatform) -> &'static str {
+    match platform {
+        CheckPlatform::Windows => "windows",
+        CheckPlatform::Linux => "linux",
+        CheckPlatform::CiscoIos => "cisco_ios",
+        CheckPlatform::CiscoNxos => "cisco_nxos",
+        CheckPlatform::CiscoAsa => "cisco_asa",
+        CheckPlatform::Ontap => "ontap",
+        CheckPlatform::Generic => "generic",
+    }
 }
 
 fn load_checklist_from_file(path: &Path) -> Result<automatestig_core::models::Checklist> {

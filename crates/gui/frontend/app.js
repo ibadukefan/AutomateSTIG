@@ -583,6 +583,13 @@ async function loadRemoteScan() {
             ),
           ),
           h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'Platform'),
+            h('select', { className: 'form-select', id: 'scan-platform' },
+              h('option', { value: 'linux' }, 'Linux'),
+              h('option', { value: 'ontap' }, 'NetApp ONTAP'),
+            ),
+          ),
+          h('div', { className: 'form-group' },
             h('label', { className: 'form-label' }, 'Host'),
             h('input', { className: 'form-input', id: 'scan-host', type: 'text', placeholder: '10.0.1.50' }),
           ),
@@ -618,6 +625,7 @@ async function loadRemoteScan() {
 
 async function runRemoteScan() {
   const protocol = document.getElementById('scan-protocol')?.value;
+  const platform = document.getElementById('scan-platform')?.value || 'linux';
   const host = document.getElementById('scan-host')?.value;
   const user = document.getElementById('scan-user')?.value;
   const pass = document.getElementById('scan-pass')?.value;
@@ -635,7 +643,7 @@ async function runRemoteScan() {
     const result = await api('/scan/ssh', {
       method: 'POST',
       body: JSON.stringify({
-        host, username: user, stig_id: stigId,
+        host, username: user, stig_id: stigId, platform,
         port: port ? parseInt(port) : null,
         auth: { type: 'password', password: pass },
       }),

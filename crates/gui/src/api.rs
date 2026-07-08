@@ -2012,6 +2012,8 @@ struct SshScanRequest {
     username: String,
     auth: crate::ssh::SshAuth,
     stig_id: String,
+    #[serde(default)]
+    platform: Option<String>,
 }
 
 async fn scan_ssh(
@@ -2026,10 +2028,32 @@ async fn scan_ssh(
         timeout_secs: 30,
     };
 
-    // Collect data via SSH.
-    let raw_outputs = match crate::ssh::collect_linux_data(&ssh_config).await {
-        Ok(data) => data,
-        Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
+    let requested_ontap = req
+        .platform
+        .as_deref()
+        .map(|platform| platform.eq_ignore_ascii_case("ontap"))
+        .unwrap_or(false);
+
+    let (check_platform, raw_outputs) = if requested_ontap {
+        let plan = automatestig_core::remote::generate_collection_plan(
+            automatestig_core::checks::CheckPlatform::Ontap,
+        );
+        let commands: Vec<(&str, &str)> = plan
+            .commands
+            .iter()
+            .map(|command| (command.data_key.as_str(), command.command.as_str()))
+            .collect();
+        let raw_outputs = match crate::ssh::execute_commands(&ssh_config, &commands).await {
+            Ok(data) => data,
+            Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
+        };
+        (automatestig_core::checks::CheckPlatform::Ontap, raw_outputs)
+    } else {
+        let raw_outputs = match crate::ssh::collect_linux_data(&ssh_config).await {
+            Ok(data) => data,
+            Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
+        };
+        (automatestig_core::checks::CheckPlatform::Linux, raw_outputs)
     };
 
     let hostname = raw_outputs
@@ -2038,11 +2062,8 @@ async fn scan_ssh(
         .unwrap_or_else(|| req.host.clone());
 
     // Assemble into SystemData.
-    let system_data = automatestig_core::remote::assemble_system_data(
-        automatestig_core::checks::CheckPlatform::Linux,
-        &hostname,
-        &raw_outputs,
-    );
+    let system_data =
+        automatestig_core::remote::assemble_system_data(check_platform, &hostname, &raw_outputs);
 
     // Load check pack and evaluate.
     evaluate_with_system_data(&state, &req.stig_id, &hostname, &system_data)
