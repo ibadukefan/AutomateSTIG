@@ -50,7 +50,7 @@ Each entry may include:
       "vuln_id": "V-254240",
       "status": "Open",
       "finding_details": "Control is not implemented.",
-      "comments": "Tracked for remediation.",
+      "comments": "Tracked for follow-up.",
       "severity_override": "medium",
       "severity_override_justification": "Approved site-specific risk adjustment.",
       "force_override": true
@@ -75,7 +75,7 @@ entries:
   - vuln_id: V-254240
     status: Open
     finding_details: Control is not implemented.
-    comments: Tracked for remediation.
+    comments: Tracked for follow-up.
     severity_override: medium
     severity_override_justification: Approved site-specific risk adjustment.
     force_override: true

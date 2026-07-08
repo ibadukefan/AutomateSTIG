@@ -50,9 +50,7 @@ Loopback desktop mode auto-generates a random per-session token and injects it i
 | DELETE | `/checklists/{id}` | Delete a checklist. |
 | POST | `/checklists/import` | Multipart import of a checklist. |
 | PATCH | `/checklists/{id}/findings/{vuln_id}` | Update finding status/details/comments. |
-| PATCH | `/checklists/{id}/findings/{vuln_id}/poam` | Update finding POA&M fields. |
 | POST | `/checklists/{id}/re-evaluate` | Re-evaluate a checklist. |
-| POST | `/checklists/compare` | Compare checklists. |
 
 ## Evaluate
 
@@ -90,20 +88,11 @@ Loopback desktop mode auto-generates a random per-session token and injects it i
 | GET | `/stigman/diff/{cid}` | Diff collection assets. |
 | POST | `/stigman/push/{checklist_id}` | Push checklist reviews. |
 
-## Agent
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/agent/config` | Get agent config. |
-| POST | `/agent/config` | Save agent config. |
-| GET | `/agent/drift/{id}` | Get drift report. |
-
 ## Remote Scan
 
 | Method | Path | Purpose |
 | --- | --- | --- |
 | POST | `/scan/ssh` | Run SSH collection. |
-| POST | `/scan/winrm` | Run WinRM collection. |
 
 ## Assets
 
@@ -125,16 +114,6 @@ Loopback desktop mode auto-generates a random per-session token and injects it i
 | POST | `/credentials` | Create credential. |
 | DELETE | `/credentials/{id}` | Delete credential. |
 
-## Schedules
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/schedules` | List schedules. |
-| POST | `/schedules` | Create schedule. |
-| PUT | `/schedules/{id}` | Update schedule. |
-| DELETE | `/schedules/{id}` | Delete schedule. |
-| POST | `/schedules/{id}/run` | Run schedule immediately with real evaluations. |
-
 ## Answer Files
 
 | Method | Path | Purpose |
@@ -142,24 +121,10 @@ Loopback desktop mode auto-generates a random per-session token and injects it i
 | GET | `/answer-files` | List answer files. |
 | POST | `/answer-files` | Save answer file. |
 
-## Trends
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/trends/{hostname}` | Get compliance trend data. |
-
-## Webhooks
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| POST | `/webhooks/test` | Test a webhook. HTTPS-only and SSRF-guarded. |
-
 ## Export
 
 | Method | Path | Purpose |
 | --- | --- | --- |
 | GET | `/export/ckl/{id}` | Export CKL. |
 | GET | `/export/cklb/{id}` | Export CKLB. |
-| GET | `/export/emass/{id}` | Export eMASS CSV. |
 | GET | `/export/all-zip` | Export all checklists as ZIP. |
-| GET | `/remediation/{checklist_id}?format=` | Generate remediation script. |

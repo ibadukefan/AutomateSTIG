@@ -161,13 +161,3 @@ Use the built binary directly after a release build:
 ```bash
 ./target/release/automatestig status
 ```
-
-## Container
-
-A `Dockerfile` and `railway.toml` exist for hosted deployment.
-
-```bash
-docker build -t automatestig .
-```
-
-For non-loopback hosted binds, `/api/*` requires an explicit `AUTOMATESTIG_AUTH_TOKEN` of at least 16 characters. `/api/status` is the only unauthenticated API route.

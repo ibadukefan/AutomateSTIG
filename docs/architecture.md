@@ -1,17 +1,16 @@
 # Architecture
 
-AutomateSTIG is a Rust workspace with 9 crates and two binaries.
+AutomateSTIG is a Rust workspace with 8 crates and two binaries.
 
 ## Crate Map
 
 | Crate | Purpose |
 | --- | --- |
-| `core` | Data models, deterministic evaluation engine, checks, answer files, agent and scheduling models. |
+| `core` | Data models, deterministic evaluation engine, checks, and answer files. |
 | `parsers` | CKL, CKLB, XCCDF, scan, and config parsing. |
 | `storage` | SQLite persistence. |
 | `stigpack` | `.stigpack` build, verify, import, manifest, hashes, and Ed25519 signing support. |
-| `remediation` | Deterministic remediation script generation. |
-| `integrations` | STIG-Manager and eMASS integration code. |
+| `integrations` | STIG-Manager export and push integration code. |
 | `cli` | `automatestig` command-line binary. |
 | `gui` | `automatestig-gui` local web GUI and HTTP API. |
 | `tests` | Workspace integration tests. |
@@ -57,5 +56,4 @@ No network calls are made by default. These features are connected and opt-in:
 
 - DISA fetch and update checks.
 - STIG-Manager calls.
-- Remote SSH/WinRM scans.
-- Webhooks.
+- Remote SSH collection.

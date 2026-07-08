@@ -2,11 +2,11 @@
 
 This directory contains task-oriented user and developer documentation for AutomateSTIG, plus governance and validation material already maintained in the repository.
 
-AutomateSTIG is for teams that need deterministic, offline-capable STIG evaluation, checklist triage, content transfer, remediation generation, and optional connected integrations such as DISA fetch, STIG-Manager, SSH/WinRM collection, and webhooks.
+AutomateSTIG is for teams that need deterministic, offline-capable STIG evaluation for network devices and Linux/UNIX systems: collecting evidence where scripted scanners cannot reach, handling checklists and content transfer, and delivering results to STIG Manager through API push or CKL/CKLB file import.
 
 Start here:
 
-- [Installation](installation.md) - prerequisites, build, GUI, CLI, data directory, and container notes.
+- [Installation](installation.md) - prerequisites, build, GUI, CLI, and data directory.
 - [Quickstart](quickstart.md) - a short GUI path and equivalent CLI path.
 
 ## User Guides
@@ -19,8 +19,6 @@ Start here:
 - [Content Updates](content-updates.md)
 - [STIG Pack Files](stigpack.md)
 - [Integrations](integrations.md)
-- [Remediation](remediation.md)
-- [Agent And Scheduling](agent-and-scheduling.md)
 - [Troubleshooting](troubleshooting.md)
 
 ## Developer And Operator Reference

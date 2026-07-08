@@ -44,4 +44,4 @@ The repository pins a snapshot of the DISA public catalog and content corpus und
 4. `generate_all_authoritative_manifests.py`, then `scripts/validate-all-coverage.py` and `scripts/validate-rule-implementations.py` — regenerate authoritative coverage manifests and prove every rule in the new inventory still has an implementation spec.
 5. Update `regression-baseline.json` / `download-index.json` and commit; CI validates all manifests and runs the corpus regression tests.
 
-The **DISA Content Watch** workflow (`.github/workflows/disa-watch.yml`) runs steps 1–2 against the live site on a monthly schedule (and on demand via workflow dispatch) and opens a `disa-drift` issue when DISA has published content the corpus does not know about yet.
+The **DISA Content Watch** workflow (`.github/workflows/disa-watch.yml`) runs steps 1-2 against the live site on a monthly cadence (and on demand via workflow dispatch) and opens a `disa-drift` issue when DISA has published content the corpus does not know about yet.

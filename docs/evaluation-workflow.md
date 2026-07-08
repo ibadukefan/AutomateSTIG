@@ -8,7 +8,7 @@ AutomateSTIG evaluation is deterministic. The same benchmark, scan inputs, answe
 2. Check packs define structured checks for rules that can be evaluated automatically.
 3. Scan results and answer files provide evidence and reviewer decisions.
 4. The engine initializes findings, applies available automated and imported evidence, applies answer files, and optionally merges prior checklist entries.
-5. Results are exported as CKL, CKLB, JSON, STIG-Manager payloads, eMASS CSV, reports, or remediation plans.
+5. Results are exported as CKL, CKLB, JSON, or STIG-Manager payloads.
 
 ## Benchmarks
 
@@ -31,7 +31,8 @@ Evaluation can use:
 - Scan results with `evaluate --scan <FILE>` or the GUI Run assessment form.
 - Answer files with `evaluate --answer <FILE>`.
 - Previous checklist merge input with `evaluate --merge <FILE>`.
-- Remote SSH/WinRM collection through the GUI or API.
+- Network device configuration files.
+- Remote SSH collection for Linux/UNIX systems through the GUI or API.
 
 ## Statuses
 
@@ -54,9 +55,9 @@ automatestig evaluate --stig <STIG_ID> --scan results.xml --answer answers.yaml 
 
 ## Remote Collection
 
-Remote SSH and WinRM scanning are connected features. They collect live host data and feed evaluation.
+Remote SSH collection is a connected feature for Linux/UNIX systems. It collects live host data and feeds evaluation.
 
-Validating the success path requires reachable hosts, credentials, network access, and working collectors. WinRM's WS-Man lifecycle is implemented, but it needs validation against a live Windows listener.
+Validating the success path requires reachable hosts, credentials, network access, and working SSH collectors.
 
 ## Export
 
@@ -64,6 +65,5 @@ Use the GUI checklist detail actions or CLI commands:
 
 ```bash
 automatestig convert --input server01.ckl --output server01.cklb --format cklb
-automatestig export --input server01.ckl --output emass.csv --format emass-csv
-automatestig report --input server01.ckl --output report.html --title "Compliance Report"
+automatestig export --input server01.ckl --output stigman.json --format stig-manager --collection "Production"
 ```

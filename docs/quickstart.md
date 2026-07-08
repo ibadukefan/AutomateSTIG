@@ -12,7 +12,7 @@ This path assumes you already have a DISA STIG XCCDF XML or ZIP file and, for au
 
 2. Import a DISA STIG.
 
-   Open `Standards` or `Reports`, then import a DISA XCCDF XML or ZIP. DISA fetch is also available from `Standards` as an opt-in connected operation.
+   Open `Standards`, then import a DISA XCCDF XML or ZIP. DISA fetch is also available from `Standards` as an opt-in connected operation.
 
 3. Add an asset.
 
@@ -24,11 +24,11 @@ This path assumes you already have a DISA STIG XCCDF XML or ZIP file and, for au
 
 5. Triage findings.
 
-   Open the assessment row or a finding row to enter checklist detail. Use search and status filters, then edit finding status, details, comments, and POA&M fields.
+   Open the assessment row or a finding row to enter checklist detail. Use search and status filters, then edit finding status, details, and comments.
 
-6. Export CKL.
+6. Export or push results.
 
-   In checklist detail, choose `Export CKL`.
+   In checklist detail, choose `Export CKL`, `Export CKLB`, or `Push to STIG-Manager`.
 
 ## CLI Path
 
@@ -65,5 +65,5 @@ Convert or export when needed:
 
 ```bash
 cargo run --release --bin automatestig -- convert --input server01.ckl --output server01.cklb --format cklb
-cargo run --release --bin automatestig -- export --input server01.ckl --output emass.csv --format emass-csv
+cargo run --release --bin automatestig -- export --input server01.ckl --output stigman.json --format stig-manager --collection "Production"
 ```

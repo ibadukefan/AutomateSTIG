@@ -124,11 +124,10 @@ Export a checklist to an external format.
 | --- | --- |
 | `-i`, `--input <FILE>` | Required input checklist. |
 | `-o`, `--output <FILE>` | Required output file. |
-| `-f`, `--format <stig-manager|emass-csv>` | Required output format. |
+| `-f`, `--format <stig-manager>` | Required output format. |
 | `--collection <NAME>` | STIG-Manager collection name. |
 
 ```bash
-automatestig export --input server01.ckl --output emass.csv --format emass-csv
 automatestig export --input server01.ckl --output stigman.json --format stig-manager --collection "Production"
 ```
 
@@ -160,20 +159,6 @@ Import DISA STIG content directly from XCCDF XML files or ZIP archives. This als
 automatestig disa-import --input U_STIG.zip
 ```
 
-## `report`
-
-Generate an HTML compliance report from one or more checklists.
-
-| Option | Purpose |
-| --- | --- |
-| `-i`, `--input <FILE>` | Required input checklist. Repeatable. |
-| `-o`, `--output <HTML>` | Required output HTML file. |
-| `--title <STR>` | Report title. |
-
-```bash
-automatestig report --input server01.ckl --input server02.ckl --output compliance.html --title "Weekly Compliance"
-```
-
 ## `coverage validate`
 
 Validate a coverage manifest JSON file.
@@ -184,22 +169,6 @@ Validate a coverage manifest JSON file.
 
 ```bash
 automatestig coverage validate --manifest content/coverage/windows_server_2022.disa-v2r8.json
-```
-
-## `remediate`
-
-Generate fix scripts for checklist findings from installed check packs. By default, scripts are generated for open findings. `--all` covers all checks.
-
-| Option | Purpose |
-| --- | --- |
-| `-i`, `--input <checklist>` | Required checklist. |
-| `-f`, `--format <powershell|bash|ansible>` | Required script format. |
-| `-o`, `--output <FILE>` | Required output script file. |
-| `--all` | Include all checks. |
-
-```bash
-automatestig remediate --input server01.ckl --format powershell --output remediate.ps1
-automatestig remediate --input server01.ckl --format ansible --output remediate.yml --all
 ```
 
 ## `status`

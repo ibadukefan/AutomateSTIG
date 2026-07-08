@@ -39,20 +39,6 @@ automatestig library show <STIG_ID>
 
 Then rerun evaluation with the installed benchmark ID.
 
-## Webhook Rejected
-
-Common causes:
-
-- URL is not HTTPS.
-- URL includes embedded credentials.
-- URL resolves to localhost or a private IP.
-
-Fix the URL or, for an explicit trusted lab deployment, allow private webhook targets:
-
-```bash
-AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS=1 cargo run --release --bin automatestig-gui
-```
-
 ## Non-Loopback Server Refuses To Start
 
 Cause: non-loopback binds require `AUTOMATESTIG_AUTH_TOKEN` with at least 16 characters.
@@ -78,26 +64,6 @@ Fix:
 AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE=1 cargo run --release --bin automatestig-gui
 ```
 
-## WinRM Plaintext Basic Auth Rejected
-
-Cause: plaintext WinRM Basic auth is blocked by default.
-
-Fix: use HTTPS. For explicit lab-only override:
-
-```bash
-AUTOMATESTIG_ALLOW_INSECURE_WINRM=1 cargo run --release --bin automatestig-gui
-```
-
-## WinRM TLS Verification Disabled Rejected
-
-Cause: disabling TLS verification is blocked by default.
-
-Fix: use a valid certificate chain. For explicit lab-only override:
-
-```bash
-AUTOMATESTIG_ALLOW_INVALID_WINRM_CERTS=1 cargo run --release --bin automatestig-gui
-```
-
 ## Remote Scan Does Not Produce Expected Results
 
-Remote SSH/WinRM scans require live reachable hosts, valid credentials, network access, and working collectors. WinRM's WS-Man lifecycle is implemented, but success-path validation requires a live Windows listener.
+Remote SSH scans require live reachable hosts, valid credentials, network access, and working collectors.

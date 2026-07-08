@@ -9,8 +9,7 @@ Rust workspace with these crates:
 - `crates/parsers` — CKL, CKLB, XCCDF, config dump parsers
 - `crates/storage` — SQLite persistence layer
 - `crates/stigpack` — .stigpack format (build, verify, import)
-- `crates/remediation` — Remediation script generation
-- `crates/integrations` — STIG-Manager, eMASS export
+- `crates/integrations` — STIG-Manager export/push
 - `crates/cli` — CLI binary (`automatestig`)
 
 ## Build & Test
