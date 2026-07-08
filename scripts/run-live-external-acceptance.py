@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run live external acceptance checks for STIG Viewer, STIG Manager, and eMASS.
+"""Run live external acceptance checks for STIG Viewer and STIG Manager.
 
 This script intentionally requires explicit endpoint/tool configuration. It does
 not fake live acceptance in CI. Use `--require-live` in a controlled environment
@@ -8,7 +8,6 @@ with test/staging systems and non-production credentials.
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import os
 import shutil
@@ -68,15 +67,6 @@ def check_http_json(name: str, url_env: str, token_env: str, require: bool) -> b
         return False
 
 
-def check_emass_fixture(repo: Path) -> None:
-    path = repo / 'fixtures/exports/emass_golden.csv'
-    with path.open(newline='', encoding='utf-8') as f:
-        rows = list(csv.DictReader(f))
-    if not rows:
-        fail('eMASS golden CSV is empty')
-    ok('eMASS golden CSV remains parseable before live submission')
-
-
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--repo-root', default='.')
@@ -86,11 +76,9 @@ def main() -> None:
     live = 0
     live += check_stig_viewer(repo, args.require_live)
     live += check_http_json('STIG Manager', 'STIG_MANAGER_URL', 'STIG_MANAGER_TOKEN', args.require_live)
-    check_emass_fixture(repo)
-    live += check_http_json('eMASS', 'EMASS_URL', 'EMASS_API_KEY', args.require_live)
-    if args.require_live and live < 3:
+    if args.require_live and live < 2:
         fail('not all live external acceptance checks ran')
-    print(f'Live external acceptance checks completed: {live}/3 live integrations exercised')
+    print(f'Live external acceptance checks completed: {live}/2 live integrations exercised')
 
 
 if __name__ == '__main__':

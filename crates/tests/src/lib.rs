@@ -7,8 +7,7 @@
 //! - Stigpack build → verify → import pipeline
 //! - Format conversion (CKL ↔ CKLB ↔ JSON)
 //! - SQLite storage CRUD
-//! - STIG-Manager and eMASS export
-//! - HTML report generation
+//! - STIG-Manager export
 //!
 //! All tests use temporary directories and are safe to run in parallel.
 //! They cover Windows, macOS, and Linux (no platform-specific features used).
@@ -24,7 +23,6 @@ mod integration {
     use automatestig_core::models::finding::{FindingSource, FindingStatus};
     use automatestig_core::models::scan::{ScanResult, ScanResultSet, ScanSource, ScannerType};
     use automatestig_core::models::stig::*;
-    use automatestig_integrations::emass;
     use automatestig_integrations::stig_manager;
     use automatestig_parsers::{ckl, cklb, xccdf};
     use automatestig_stigpack::builder::PackBuilder;
@@ -574,28 +572,6 @@ mod integration {
                 let re = review.result_engine.as_ref().unwrap();
                 assert_eq!(re.product, "AutomateSTIG");
             }
-        }
-    }
-
-    // ---------------------------------------------------------------------------
-    // Integrations: eMASS export
-    // ---------------------------------------------------------------------------
-
-    #[test]
-    fn test_emass_export() {
-        let checklist = make_checklist_with_findings();
-
-        let results = emass::export_to_emass(&checklist);
-        // Should only export findings with actual results (not Not_Reviewed).
-        assert!(!results.is_empty());
-
-        let csv = emass::export_emass_csv(&results);
-        assert!(csv.contains("CCI,Assessment Procedure"));
-        assert!(csv.contains("Pass") || csv.contains("Fail"));
-
-        // Verify all results have CCI references.
-        for r in &results {
-            assert!(r.cci.starts_with("CCI-"));
         }
     }
 

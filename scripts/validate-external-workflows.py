@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 """Validate external workflow acceptance fixtures without external credentials.
 
-This is an offline contract harness for artifacts exchanged with STIG Viewer,
-STIG Manager, and eMASS. It deliberately does not assert that a remote service
-accepted the payload unless an operator supplies an endpoint/token in a private
-run. CI uses the offline mode to prevent payload/schema drift.
+This is an offline contract harness for CKL, CKLB, STIG Manager JSON, and DISA
+XCCDF artifacts. CI uses the offline mode to prevent payload/schema drift.
 """
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import sys
 import zipfile
@@ -64,18 +61,6 @@ def validate_stig_manager(path: Path) -> None:
         fail(f"{path} STIG Manager review missing keys: {sorted(missing)}")
 
 
-def validate_emass(path: Path) -> None:
-    with path.open(newline="") as fh:
-        rows = list(csv.DictReader(fh))
-    if not rows:
-        fail(f"{path} contains no eMASS rows")
-    normalized = {column.lower().strip(): column for column in rows[0]}
-    required = {"cci", "result", "result comment", "stig reference", "severity", "system name", "assessment date"}
-    missing = required - set(normalized)
-    if missing:
-        fail(f"{path} eMASS CSV missing columns: {sorted(missing)}")
-
-
 def validate_disa_zip(path: Path) -> None:
     with zipfile.ZipFile(path) as zf:
         xml_members = [n for n in zf.namelist() if n.lower().endswith(".xml")]
@@ -95,7 +80,6 @@ def main() -> None:
         (validate_ckl, root / "fixtures/ckl/windows_server_2022_sanitized.ckl"),
         (validate_cklb, root / "fixtures/cklb/windows_server_2022_sanitized.cklb"),
         (validate_stig_manager, root / "fixtures/exports/stig_manager_golden.json"),
-        (validate_emass, root / "fixtures/exports/emass_golden.csv"),
         (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-04/U_MS_Windows_Server_2022_V2R8_STIG.zip"),
         (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-04/U_RHEL_8_V2R7_STIG.zip"),
     ]

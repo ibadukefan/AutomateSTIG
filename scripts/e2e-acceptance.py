@@ -9,12 +9,10 @@ fixtures (never against the app's own claims). Exits non-zero on any failure.
 
 Verified app conventions (confirmed against golden fixtures / STIG standards):
 - CLI human output goes to stderr (p.combined merges both streams).
-- eMASS CSV Result vocabulary: Pass/Fail (matches fixtures/exports/emass_golden.csv).
 - STIG-Manager export includes ALL findings; Not_Reviewed -> "notchecked".
 - Compliance % = (NaF + NA) / evaluated, app-wide (core finding.rs compliance_pct).
 - Unsigned .stigpack import is blocked unless AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1.
 """
-import csv
 import json
 import os
 import re
@@ -318,21 +316,6 @@ def sec_synthetic_full(ws_id):
     check(S, "summary reports the true status counts", p.returncode == 0 and not missing,
           f"expected {counts}, got numbers {sorted(nums)}")
 
-    # report accuracy on a rich checklist
-    rep = f"{OUT}/synth_report.html"
-    p = run_cli("report", "--input", dest, "--output", rep, "--title", "Synth Report")
-    html = open(rep).read() if os.path.exists(rep) else ""
-    check(S, "report generates for synthetic checklist", p.returncode == 0 and html, p.combined[:200])
-    nums = {int(n) for n in re.findall(r"\b(\d{1,5})\b", html)}
-    missing = {k: v for k, v in counts.items() if v and v not in nums}
-    check(S, "report shows true status counts", not missing, f"missing {missing}")
-    naf, op = counts.get("notafinding", 0), counts.get("open", 0)
-    na = counts.get("notapplicable", 0)
-    pct = 100.0 * (naf + na) / (naf + na + op)  # app convention: finding.rs compliance_pct
-    pcts = [float(x) for x in re.findall(r"(\d{1,3}(?:\.\d)?)%", html)]
-    check(S, f"report compliance % == (NaF+NA)/evaluated = {pct:.1f}", any(abs(x - pct) < 0.15 for x in pcts),
-          f"pcts in html: {sorted(set(pcts))[:12]}")
-
     # stig-manager export accuracy on a rich checklist
     sm = f"{OUT}/synth_stigman.json"
     run_cli("export", "--input", dest, "--output", sm, "--format", "stig-manager",
@@ -352,28 +335,6 @@ def sec_synthetic_full(ws_id):
     check(S, "every stig-manager result maps correctly", not bad, f"{len(bad)} e.g. {bad[:5]}")
     print(f"  stig-manager result distribution: {Counter(r['result'] for r in reviews)}")
 
-    # eMASS export accuracy on a rich checklist
-    em = f"{OUT}/synth_emass.csv"
-    run_cli("export", "--input", dest, "--output", em, "--format", "emass-csv")
-    rows = list(csv.DictReader(open(em)))
-    open_v = {v for v, e in ckl.items() if norm_status(e["status"]) == "open"}
-    naf_v = {v for v, e in ckl.items() if norm_status(e["status"]) == "notafinding"}
-    vuln_of_row = lambda r: next((t for t in (r.get("STIG Reference", "") + " " + r.get("Assessment Procedure", "")).split()
-                                  if t in ckl), None)
-    bad = []
-    seen_vulns = set()
-    for r in rows:
-        v = vuln_of_row(r)
-        seen_vulns.add(v)
-        res = r.get("Result", "").strip()
-        if v in open_v and res != "Fail":
-            bad.append((v, res, "want Fail"))
-        elif v in naf_v and res != "Pass":
-            bad.append((v, res, "want Pass"))
-    check(S, "every eMASS row Result matches the finding status", not bad, f"{bad[:5]}")
-    missing_open = open_v - seen_vulns
-    check(S, "eMASS export includes every Open finding", not missing_open,
-          f"{len(missing_open)} missing e.g. {sorted(missing_open)[:5]}")
     return dest, ckl
 
 
@@ -670,8 +631,6 @@ def sec_gui(cli_ckl):
             check(G, "GUI evaluation matches CLI evaluation per vuln",
                   len(gui_ckl) == len(cli_ckl) and not diff,
                   f"counts {len(gui_ckl)}/{len(cli_ckl)} diffs={diff[:5]}")
-            st, em = gui_req(f"/api/export/emass/{cid}")
-            check(G, "GET /api/export/emass works", st == 200 and "," in em, str(st))
             st, cb = gui_req(f"/api/export/cklb/{cid}")
             check(G, "GET /api/export/cklb works", st == 200 and cb.lstrip().startswith("{"), str(st))
     finally:

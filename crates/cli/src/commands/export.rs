@@ -1,7 +1,6 @@
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use automatestig_integrations::emass;
 use automatestig_integrations::stig_manager;
 use automatestig_parsers::{ckl, cklb};
 
@@ -39,17 +38,6 @@ pub fn run(input: &str, output: &str, format: &str, collection: Option<&str>) ->
             eprintln!();
             ui::success("Exported to STIG-Manager format");
             ui::output_file("Output", output, "STIG-Manager JSON");
-        }
-        "emass-csv" | "emass" => {
-            let results = emass::export_to_emass(&checklist);
-            let csv = emass::export_emass_csv(&results);
-            std::fs::write(output, &csv)?;
-            eprintln!();
-            ui::success(&format!(
-                "Exported {} test results to eMASS CSV",
-                results.len()
-            ));
-            ui::output_file("Output", output, "eMASS CSV");
         }
         _ => anyhow::bail!("Unsupported export format: {}", format),
     }

@@ -149,7 +149,7 @@ enum Commands {
         #[arg(short, long)]
         output: String,
 
-        /// Export format (stig-manager, emass-csv).
+        /// Export format (stig-manager).
         #[arg(short, long)]
         format: String,
 
@@ -188,21 +188,6 @@ enum Commands {
         /// Path to DISA STIG ZIP archive or XCCDF XML file.
         #[arg(short, long)]
         input: String,
-    },
-
-    /// Generate an HTML compliance report from one or more checklists.
-    Report {
-        /// Input checklist file(s) (.ckl, .cklb, .json).
-        #[arg(short, long, required = true)]
-        input: Vec<String>,
-
-        /// Output HTML file path.
-        #[arg(short, long)]
-        output: String,
-
-        /// Report title.
-        #[arg(long)]
-        title: Option<String>,
     },
 
     /// Validate rule-by-rule coverage manifests.
@@ -310,11 +295,6 @@ fn main() {
             ref output,
         } => commands::build_pack::run(id, name, version, source, output),
         Commands::DisaImport { ref input } => commands::disa_import::run(input, &cli),
-        Commands::Report {
-            ref input,
-            ref output,
-            ref title,
-        } => commands::report::run(input, output, title.as_deref()),
         Commands::Coverage { ref action } => match action {
             CoverageAction::Validate { ref manifest } => commands::coverage::validate(manifest),
         },
