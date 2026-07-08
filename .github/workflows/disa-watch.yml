@@ -1,0 +1,54 @@
+name: DISA Content Watch
+
+on:
+  schedule:
+    - cron: "0 6 3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-disa-releases:
+    name: Check for new DISA STIG releases
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Index live DISA downloads page
+        run: python3 scripts/disa_corpus/index_disa_downloads.py --output /tmp/current-index.json
+      - name: Compare against checked-in baseline
+        id: drift
+        run: |
+          set +e
+          python3 scripts/disa_corpus/compare_corpus_freshness.py \
+            --baseline content/disa-corpus/download-index.json \
+            --current /tmp/current-index.json > /tmp/drift.json
+          rc=$?
+          set -e
+          cat /tmp/drift.json
+          echo "drift=$([ $rc -ne 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - name: Open issue on drift
+        if: steps.drift.outputs.drift == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create disa-drift --description "DISA published content not yet in the corpus" --color D93F0B --force
+          existing=$(gh issue list --label disa-drift --state open --json number --jq 'length')
+          if [ "$existing" != "0" ]; then
+            echo "An open disa-drift issue already exists; skipping."
+            exit 0
+          fi
+          {
+            echo "The monthly DISA content watch found differences between the live DISA downloads catalog and the checked-in corpus baseline (content/disa-corpus/download-index.json)."
+            echo
+            echo '```json'
+            cat /tmp/drift.json
+            echo '```'
+            echo
+            echo "To refresh the corpus, follow the maintainer pipeline in docs/content-updates.md."
+          } > /tmp/issue-body.md
+          gh issue create \
+            --title "New DISA STIG releases detected ($(date -u +%Y-%m))" \
+            --label disa-drift \
+            --body-file /tmp/issue-body.md
