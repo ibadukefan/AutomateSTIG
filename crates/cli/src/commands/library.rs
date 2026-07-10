@@ -40,7 +40,7 @@ pub fn list(cli: &crate::Cli) -> Result<()> {
             "  {:<40} {:<10} {:<15} {:>6}",
             style(&b.id).cyan(),
             style(&b.version).dim(),
-            &b.platform_family,
+            b.platform_family,
             b.rule_count,
         );
     }
