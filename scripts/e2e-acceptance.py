@@ -213,13 +213,13 @@ def status_counts(ckl):
 def sec_cli_basics():
     S = "cli-basics"
     p = run_cli("--version")
-    check(S, "--version reports 0.1.1", "0.1.1" in p.stdout, p.stdout.strip())
+    check(S, "--version reports 0.2.0", "0.2.0" in p.stdout, p.stdout.strip())
     p = run_cli("library", "init")
     check(S, "library init succeeds", p.returncode == 0, p.combined[:200])
     p = run_cli("library", "list")
     check(S, "empty library lists cleanly", p.returncode == 0, p.combined[:200])
     p = run_cli("status")
-    check(S, "status runs and shows version", p.returncode == 0 and "0.1.1" in p.combined,
+    check(S, "status runs and shows version", p.returncode == 0 and "0.2.0" in p.combined,
           p.combined[:200])
 
 
@@ -747,7 +747,7 @@ def sec_gui(cli_ckl):
     try:
         st, body = gui_req("/api/status")
         check(G, "GET /api/status returns 200", st == 200, f"{st} {body[:200]}")
-        check(G, "status reports version 0.1.1", "0.1.1" in body, body[:200])
+        check(G, "status reports version 0.2.0", "0.2.0" in body, body[:200])
 
         st, _ = urllib_no_token("/api/checklists")
         check(G, "API rejects requests without auth token", st in (401, 403), str(st))

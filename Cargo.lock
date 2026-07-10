@@ -200,7 +200,7 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "automatestig"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "automatestig-core",
@@ -218,7 +218,7 @@ dependencies = [
 
 [[package]]
 name = "automatestig-core"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "regex",
@@ -235,7 +235,7 @@ dependencies = [
 
 [[package]]
 name = "automatestig-gui"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -267,7 +267,7 @@ dependencies = [
 
 [[package]]
 name = "automatestig-integrations"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "automatestig-core",
  "chrono",
@@ -279,7 +279,7 @@ dependencies = [
 
 [[package]]
 name = "automatestig-parsers"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "automatestig-core",
  "quick-xml",
@@ -292,7 +292,7 @@ dependencies = [
 
 [[package]]
 name = "automatestig-stigpack"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "automatestig-core",
  "chrono",
@@ -309,7 +309,7 @@ dependencies = [
 
 [[package]]
 name = "automatestig-storage"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "automatestig-core",
  "chrono",
@@ -322,7 +322,7 @@ dependencies = [
 
 [[package]]
 name = "automatestig-tests"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "automatestig-core",
  "automatestig-integrations",
