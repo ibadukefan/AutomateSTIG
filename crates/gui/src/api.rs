@@ -1,5 +1,6 @@
 //! REST API endpoints for the GUI.
 
+use std::collections::HashSet;
 use std::io::Read;
 use std::path::Path;
 
@@ -1302,22 +1303,36 @@ async fn push_checklist_to_stigman(
 
     let client = crate::stigman::StigManagerClient::new(config)?;
 
-    // If no asset_id provided, try to create the asset.
+    // If no asset_id provided, try to find the asset by hostname before creating it.
     let asset_id = match asset_id {
         Some(id) => id.to_string(),
-        None => {
-            client
-                .create_asset(
-                    collection_id,
-                    &checklist.asset.hostname,
-                    checklist.asset.fqdn.as_deref(),
-                    checklist.asset.ip_address.as_deref(),
-                    &checklist.stig_info.stig_id,
-                )
-                .await
-                .map_err(|e| format!("Failed to create asset: {}", e))?
-                .asset_id
-        }
+        None => match client
+            .list_assets(collection_id)
+            .await
+            .ok()
+            .and_then(|assets| {
+                assets
+                    .into_iter()
+                    .find(|asset| asset.name.eq_ignore_ascii_case(&checklist.asset.hostname))
+            }) {
+            Some(asset) => {
+                // Reviews still require the STIG to be assigned to a found asset.
+                asset.asset_id
+            }
+            None => {
+                client
+                    .create_asset(
+                        collection_id,
+                        &checklist.asset.hostname,
+                        checklist.asset.fqdn.as_deref(),
+                        checklist.asset.ip_address.as_deref(),
+                        &checklist.stig_info.stig_id,
+                    )
+                    .await
+                    .map_err(|e| format!("Failed to create asset: {}", e))?
+                    .asset_id
+            }
+        },
     };
 
     // Convert findings to STIG-Manager reviews.
@@ -2095,13 +2110,17 @@ fn evaluate_system_data_core(
     // Load auto-generated check packs from the converter.
     let auto_dir = state.inner.library_path.join("auto_check_packs");
     let _ = plugin_registry.load_from_directory(&auto_dir);
+    let _ = plugin_registry.load_embedded();
 
     // Execute checks.
-    let check_results: Vec<automatestig_core::checks::CheckResult> = plugin_registry
+    let mut check_results: Vec<automatestig_core::checks::CheckResult> = plugin_registry
         .checks_for_stig(stig_id)
         .iter()
         .map(|check_def| automatestig_core::checks::executor::execute_check(check_def, system_data))
         .collect();
+    let mut seen_vuln_ids: HashSet<String> = HashSet::new();
+    // Curated packs load before auto-generated ones; first result per vuln wins.
+    check_results.retain(|cr| seen_vuln_ids.insert(cr.vuln_id.clone()));
 
     // Create checklist from benchmark + check results.
     let asset = Asset::new(hostname);

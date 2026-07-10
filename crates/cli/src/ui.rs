@@ -6,37 +6,37 @@ use console::{style, Style, Term};
 
 /// Application banner shown on startup.
 pub fn print_banner() {
-    let term = Term::stderr();
+    let term = Term::stdout();
     let width = term.size().1 as usize;
     let width = width.min(80);
 
-    eprintln!();
-    eprintln!(
+    println!();
+    println!(
         "  {} {}",
         style("AutomateSTIG").bold().cyan(),
         style(format!("v{}", env!("CARGO_PKG_VERSION"))).dim(),
     );
-    eprintln!(
+    println!(
         "  {}",
         style("STIG Evaluation & Compliance Automation").dim(),
     );
-    eprintln!("  {}", style("─".repeat(width.saturating_sub(4))).dim());
-    eprintln!();
+    println!("  {}", style("─".repeat(width.saturating_sub(4))).dim());
+    println!();
 }
 
 /// Print a section header.
 pub fn section(title: &str) {
-    eprintln!("  {} {}", style("▸").cyan().bold(), style(title).bold());
+    println!("  {} {}", style("▸").cyan().bold(), style(title).bold());
 }
 
 /// Print an info line.
 pub fn info(label: &str, value: &str) {
-    eprintln!("    {:<20} {}", style(label).dim(), value,);
+    println!("    {:<20} {}", style(label).dim(), value,);
 }
 
 /// Print a success message.
 pub fn success(msg: &str) {
-    eprintln!("  {} {}", style("✓").green().bold(), msg);
+    println!("  {} {}", style("✓").green().bold(), msg);
 }
 
 /// Print a warning message.
@@ -51,7 +51,7 @@ pub fn error(msg: &str) {
 
 /// Print a key-value detail line.
 pub fn detail(key: &str, value: &str) {
-    eprintln!("    {} {}", style(format!("{}:", key)).dim(), value);
+    println!("    {} {}", style(format!("{}:", key)).dim(), value);
 }
 
 /// Print a finding summary table.
@@ -87,18 +87,18 @@ pub fn print_summary_table(
         Style::new().red().bold()
     };
 
-    eprintln!();
-    eprintln!(
+    println!();
+    println!(
         "  {}",
         style("┌──────────────────────────────────────────────────┐").dim()
     );
-    eprintln!(
+    println!(
         "  {}  Total Rules:        {:<6}                      {}",
         style("│").dim(),
         style(total).bold(),
         style("│").dim(),
     );
-    eprintln!(
+    println!(
         "  {}  Open:               {:<6} {} {} {}   {}",
         style("│").dim(),
         open_style.apply_to(open),
@@ -115,19 +115,19 @@ pub fn print_summary_table(
         },
         style("│").dim(),
     );
-    eprintln!(
+    println!(
         "  {}  Not a Finding:      {:<6}                      {}",
         style("│").dim(),
         style(naf).green(),
         style("│").dim(),
     );
-    eprintln!(
+    println!(
         "  {}  Not Applicable:     {:<6}                      {}",
         style("│").dim(),
         style(na).dim(),
         style("│").dim(),
     );
-    eprintln!(
+    println!(
         "  {}  Not Reviewed:       {:<6}                      {}",
         style("│").dim(),
         if nr > 0 {
@@ -137,26 +137,26 @@ pub fn print_summary_table(
         },
         style("│").dim(),
     );
-    eprintln!(
+    println!(
         "  {}",
         style("│──────────────────────────────────────────────────│").dim()
     );
-    eprintln!(
+    println!(
         "  {}  Compliance:         {:<6}                      {}",
         style("│").dim(),
         compliance_style.apply_to(format!("{:.1}%", compliance_pct)),
         style("│").dim(),
     );
-    eprintln!(
+    println!(
         "  {}",
         style("└──────────────────────────────────────────────────┘").dim()
     );
-    eprintln!();
+    println!();
 }
 
 /// Print a findings table header.
 pub fn print_findings_header() {
-    eprintln!(
+    println!(
         "  {:<12} {:<8} {:<17} {}",
         style("Vuln ID").bold().underlined(),
         style("Sev").bold().underlined(),
@@ -187,7 +187,7 @@ pub fn print_finding_row(vuln_id: &str, severity: &str, status: &str, title: &st
 
     let title_truncated: String = title.chars().take(44).collect();
 
-    eprintln!(
+    println!(
         "  {:<12} {} {} {}",
         style(vuln_id).cyan(),
         sev_styled,
@@ -198,7 +198,7 @@ pub fn print_finding_row(vuln_id: &str, severity: &str, status: &str, title: &st
 
 /// Print a file output notice.
 pub fn output_file(label: &str, path: &str, format: &str) {
-    eprintln!(
+    println!(
         "  {} {} {} {}",
         style("→").cyan().bold(),
         label,
@@ -209,7 +209,7 @@ pub fn output_file(label: &str, path: &str, format: &str) {
 
 /// Print a horizontal rule.
 pub fn hr() {
-    let term = Term::stderr();
+    let term = Term::stdout();
     let width = (term.size().1 as usize).min(80);
-    eprintln!("  {}", style("─".repeat(width.saturating_sub(4))).dim());
+    println!("  {}", style("─".repeat(width.saturating_sub(4))).dim());
 }

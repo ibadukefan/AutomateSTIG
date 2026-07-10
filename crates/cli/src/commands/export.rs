@@ -35,14 +35,14 @@ pub fn run(input: &str, output: &str, format: &str, collection: Option<&str>) ->
             ui::detail("Collection", coll);
             let json = stig_manager::export_to_stig_manager_json(&[checklist], coll)?;
             std::fs::write(output, &json)?;
-            eprintln!();
+            println!();
             ui::success("Exported to STIG-Manager format");
             ui::output_file("Output", output, "STIG-Manager JSON");
         }
         _ => anyhow::bail!("Unsupported export format: {}", format),
     }
 
-    eprintln!();
+    println!();
 
     Ok(())
 }

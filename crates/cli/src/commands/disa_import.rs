@@ -32,7 +32,7 @@ pub fn run(input: &str, cli: &crate::Cli) -> Result<()> {
         StigLibrary::open_or_init(&lib_path).context("Failed to open STIG library")?;
 
     ui::detail("Library", &lib_path.display().to_string());
-    eprintln!();
+    println!();
 
     let ext = in_path.extension().and_then(|e| e.to_str()).unwrap_or("");
 
@@ -45,7 +45,7 @@ pub fn run(input: &str, cli: &crate::Cli) -> Result<()> {
         ),
     }
 
-    eprintln!();
+    println!();
     Ok(())
 }
 

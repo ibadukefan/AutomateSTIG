@@ -1,5 +1,7 @@
 # AutomateSTIG Replacement Validation Report
 
+> **Scope note (2026-07-09):** This document predates the product pivot and is retained as a historical record. AutomateSTIG no longer pursues Evaluate-STIG replacement or every-DISA-STIG coverage. The product scope is now: evidence collection and deterministic evaluation for device classes that scripted scanners cannot reach — network devices (config-file evaluation), Linux/UNIX over SSH, NetApp ONTAP and FreeBSD via evidence transcripts — with results delivered to STIG Manager. Current content posture: 35 authoritative coverage manifests over 9,977 tracked rules (9,858 automated or scanner-mapped, 119 unsupported after the pivot content trim). Statements below about broader replacement goals, 100% automation, or platform breadth beyond the pivot scope are superseded.
+
 Status: **not full production replacement-ready yet**, but now grounded against official public DISA benchmark inventories for the first flagship targets.
 
 This report is the gate for claiming that AutomateSTIG is a better full replacement for Evaluate-STIG. Claims must be tied to fixtures, coverage manifests, workflow acceptance harnesses, and release/security controls.

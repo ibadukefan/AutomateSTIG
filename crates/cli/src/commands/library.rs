@@ -17,17 +17,17 @@ pub fn list(cli: &crate::Cli) -> Result<()> {
 
     if benchmarks.is_empty() {
         ui::section("STIG Library (empty)");
-        eprintln!();
+        println!();
         ui::warn("No benchmarks installed. Import a .stigpack to add benchmarks:");
-        eprintln!("    automatestig import --pack <FILE.stigpack>");
-        eprintln!();
+        println!("    automatestig import --pack <FILE.stigpack>");
+        println!();
         return Ok(());
     }
 
     ui::section(&format!("STIG Library ({} benchmarks)", benchmarks.len()));
-    eprintln!();
+    println!();
 
-    eprintln!(
+    println!(
         "  {:<40} {:<10} {:<15} {:>6}",
         style("ID").bold().underlined(),
         style("Version").bold().underlined(),
@@ -36,7 +36,7 @@ pub fn list(cli: &crate::Cli) -> Result<()> {
     );
 
     for b in &benchmarks {
-        eprintln!(
+        println!(
             "  {:<40} {:<10} {:<15} {:>6}",
             style(&b.id).cyan(),
             style(&b.version).dim(),
@@ -45,7 +45,7 @@ pub fn list(cli: &crate::Cli) -> Result<()> {
         );
     }
 
-    eprintln!();
+    println!();
 
     Ok(())
 }
@@ -73,18 +73,18 @@ pub fn show(id: &str, cli: &crate::Cli) -> Result<()> {
     let cat_ii = benchmark.rules_by_severity(Severity::Medium);
     let cat_iii = benchmark.rules_by_severity(Severity::Low);
 
-    eprintln!();
-    eprintln!(
+    println!();
+    println!(
         "    {} CAT I (High)    {}",
         style("■").red(),
         style(cat_i.len()).bold(),
     );
-    eprintln!(
+    println!(
         "    {} CAT II (Medium) {}",
         style("■").yellow(),
         style(cat_ii.len()).bold(),
     );
-    eprintln!(
+    println!(
         "    {} CAT III (Low)   {}",
         style("■").dim(),
         style(cat_iii.len()).bold(),
@@ -92,11 +92,11 @@ pub fn show(id: &str, cli: &crate::Cli) -> Result<()> {
 
     if !benchmark.description.is_empty() {
         let desc: String = benchmark.description.chars().take(200).collect();
-        eprintln!();
+        println!();
         ui::detail("Description", &desc);
     }
 
-    eprintln!();
+    println!();
 
     Ok(())
 }
@@ -111,7 +111,7 @@ pub fn init(cli: &crate::Cli) -> Result<()> {
             "STIG Library already exists at: {}",
             lib_path.display()
         ));
-        eprintln!();
+        println!();
         return Ok(());
     }
 
@@ -120,10 +120,10 @@ pub fn init(cli: &crate::Cli) -> Result<()> {
         "STIG Library initialized at: {}",
         lib_path.display()
     ));
-    eprintln!();
+    println!();
     ui::detail("Next step", "Import a .stigpack to add benchmarks:");
-    eprintln!("    automatestig import --pack <FILE.stigpack>");
-    eprintln!();
+    println!("    automatestig import --pack <FILE.stigpack>");
+    println!();
 
     Ok(())
 }

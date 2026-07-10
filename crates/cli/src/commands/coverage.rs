@@ -16,7 +16,7 @@ pub fn validate(manifest_path: &str) -> Result<()> {
     ui::print_banner();
     ui::section("Validate Coverage Manifest");
     ui::detail("File", manifest_path);
-    eprintln!();
+    println!();
 
     let content = std::fs::read_to_string(path)
         .with_context(|| format!("Failed to read coverage manifest: {}", manifest_path))?;
@@ -36,12 +36,12 @@ pub fn validate(manifest_path: &str) -> Result<()> {
     ui::info("Unsupported", &report.unsupported.to_string());
 
     if report.is_valid() {
-        eprintln!();
+        println!();
         ui::success("Coverage manifest is internally consistent");
         return Ok(());
     }
 
-    eprintln!();
+    println!();
     for issue in &report.issues {
         ui::error(&format!("{}: {}", issue.field, issue.message));
     }

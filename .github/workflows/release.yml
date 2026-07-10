@@ -106,3 +106,15 @@ jobs:
           chmod +x packaging/linux/build-appimage.sh
           packaging/linux/build-appimage.sh "target/${{ matrix.target }}/release" "$TAG" x86_64 .
           gh release upload "$TAG" "AutomateSTIG-$TAG-linux-x86_64.AppImage" --clobber
+      - name: Generate and upload SBOM
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cargo metadata --locked --format-version 1 > cargo-metadata.json
+          python3 scripts/generate-cyclonedx-sbom.py \
+            --metadata cargo-metadata.json \
+            --output "automatestig-$TAG-sbom.cdx.json" \
+            --target x86_64-unknown-linux-gnu
+          gh release upload "$TAG" "automatestig-$TAG-sbom.cdx.json" --clobber

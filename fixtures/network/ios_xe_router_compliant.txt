@@ -1,0 +1,66 @@
+! Synthetic IOS-XE running-config: compliant against cisco_ios_xe_router_ndm pack
+version 17.9
+hostname rtr-compliant-01
+!
+service timestamps log datetime msec localtime
+service password-encryption
+!
+logging userinfo
+logging buffered 4096000 informational
+logging trap critical
+logging host 10.10.5.14
+logging host 10.10.5.15
+!
+aaa new-model
+aaa authentication login LOGIN_AUTHENTICATION group radius local
+aaa common-criteria policy PASSWORD_POLICY
+ min-length 15
+ upper-case 1
+ lower-case 1
+ numeric-count 1
+ special-case 1
+ char-changes 8
+!
+username fallback-admin privilege 15 common-criteria-policy PASSWORD_POLICY password 7 XXXXXXXXXXXX
+!
+login block-for 900 attempts 3 within 120
+login on-failure log
+login on-success log
+!
+archive
+ log config
+  logging enable
+!
+ip access-list extended MANAGEMENT_NET
+ permit ip 10.10.0.0 0.0.255.255 any
+ deny   ip any any log-input
+!
+snmp-server group V3GROUP v3 priv read V3READ write V3WRITE
+snmp-server host 10.10.5.20 version 3 auth V3USER
+!
+ntp authentication-key 1 hmac-sha2-256 XXXXXX
+ntp authenticate
+ntp trusted-key 1
+ntp server 10.10.1.10 key 1
+ntp server 10.10.1.11 key 1
+!
+ip ssh version 2
+ip ssh server algorithm encryption aes256-ctr aes192-ctr aes128-ctr
+ip ssh server algorithm mac hmac-sha2-512 hmac-sha2-256
+!
+crypto pki trustpoint DOD_CA
+ enrollment url http://ca.example.mil
+!
+banner login ^C
+You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
+^C
+!
+line con 0
+ exec-timeout 5 0
+line vty 0 4
+ session-limit 2
+ access-class MANAGEMENT_NET in
+ exec-timeout 5 0
+ transport input ssh
+!
+end

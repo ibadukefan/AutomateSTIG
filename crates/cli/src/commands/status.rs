@@ -18,9 +18,9 @@ pub fn run(cli: &crate::Cli) -> Result<()> {
             ui::detail("Location", &lib_path.display().to_string());
             ui::detail("Benchmarks", &benchmarks.len().to_string());
             if !benchmarks.is_empty() {
-                eprintln!();
+                println!();
                 for b in &benchmarks {
-                    eprintln!(
+                    println!(
                         "    {} {} {} {}",
                         style("•").dim(),
                         style(&b.id).cyan(),
@@ -35,7 +35,7 @@ pub fn run(cli: &crate::Cli) -> Result<()> {
         }
     }
 
-    eprintln!();
+    println!();
 
     // Database status.
     ui::section("Database");
@@ -51,7 +51,7 @@ pub fn run(cli: &crate::Cli) -> Result<()> {
         }
     }
 
-    eprintln!();
+    println!();
     ui::section("Configuration");
     ui::detail(
         "Data directory",
@@ -59,7 +59,7 @@ pub fn run(cli: &crate::Cli) -> Result<()> {
     );
     ui::detail("Mode", "Air-gapped (offline only)");
     ui::detail("Determinism", "100% — zero AI/ML");
-    eprintln!();
+    println!();
 
     Ok(())
 }

@@ -1,0 +1,666 @@
+{
+  "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+  "platform": "cisco_ios",
+  "version": "V3R7",
+  "checks": [
+    {
+      "vuln_id": "V-215807",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "session-limit",
+        "context": "line vty",
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Concurrent management sessions limited (session-limit under line vty)"
+    },
+    {
+      "vuln_id": "V-215808",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "logging enable",
+        "context": "archive",
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Account creation audited via archive config change logging"
+    },
+    {
+      "vuln_id": "V-215809",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "logging enable",
+        "context": "archive",
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Account modification audited via archive config change logging"
+    },
+    {
+      "vuln_id": "V-215810",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "logging enable",
+        "context": "archive",
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Account disabling audited via archive config change logging"
+    },
+    {
+      "vuln_id": "V-215811",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "logging enable",
+        "context": "archive",
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Account removal audited via archive config change logging"
+    },
+    {
+      "vuln_id": "V-215812",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "access-class",
+        "context": "line vty",
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Management access restricted by inbound ACL on vty lines (ACL content still requires review)"
+    },
+    {
+      "vuln_id": "V-215813",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "attempts 3 within",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Three consecutive invalid logon attempts enforced (login block-for ... attempts 3 within ...)"
+    },
+    {
+      "vuln_id": "V-215814",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "You are accessing a U.S. Government (USG) Information System",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Standard Mandatory DoD Notice and Consent Banner configured (banner login)"
+    },
+    {
+      "vuln_id": "V-215815",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "config_line",
+            "pattern": "logging userinfo",
+            "context": null,
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "logging enable",
+            "context": "archive",
+            "should_exist": true
+          }
+        ]
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "All administrator activity audited (logging userinfo + archive config logging)"
+    },
+    {
+      "vuln_id": "V-215817",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "service timestamps log datetime",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Audit records carry date and time (service timestamps log datetime)"
+    },
+    {
+      "vuln_id": "V-215819",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "logging enable",
+        "context": "archive",
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Full-text logging of configuration changes (archive log config)"
+    },
+    {
+      "vuln_id": "V-215822",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "file privilege",
+        "context": null,
+        "should_exist": false
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "File system privilege must remain at default 15 (no 'file privilege' override present)"
+    },
+    {
+      "vuln_id": "V-215823",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "config_line",
+            "pattern": "ip bootp server",
+            "context": null,
+            "should_exist": false
+          },
+          {
+            "type": "config_line",
+            "pattern": "ip identd",
+            "context": null,
+            "should_exist": false
+          },
+          {
+            "type": "config_line",
+            "pattern": "ip finger",
+            "context": null,
+            "should_exist": false
+          },
+          {
+            "type": "config_line",
+            "pattern": "service tcp-small-servers",
+            "context": null,
+            "should_exist": false
+          },
+          {
+            "type": "config_line",
+            "pattern": "service udp-small-servers",
+            "context": null,
+            "should_exist": false
+          },
+          {
+            "type": "config_line",
+            "pattern": "service finger",
+            "context": null,
+            "should_exist": false
+          },
+          {
+            "type": "config_line",
+            "pattern": "ip rcmd rcp-enable",
+            "context": null,
+            "should_exist": false
+          },
+          {
+            "type": "config_line",
+            "pattern": "ip rcmd rsh-enable",
+            "context": null,
+            "should_exist": false
+          },
+          {
+            "type": "config_line",
+            "pattern": "boot network",
+            "context": null,
+            "should_exist": false
+          },
+          {
+            "type": "config_line",
+            "pattern": "ip boot server",
+            "context": null,
+            "should_exist": false
+          }
+        ]
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Unnecessary/nonsecure services disabled (bootp, identd, finger, small-servers, rcmd, boot network)"
+    },
+    {
+      "vuln_id": "V-215826",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "min-length 15",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Common-criteria policy minimum password length 15 (canonical 'min-length 15'; longer minima need an answer file)"
+    },
+    {
+      "vuln_id": "V-215827",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "upper-case 1",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Password policy requires an uppercase character (upper-case 1)"
+    },
+    {
+      "vuln_id": "V-215828",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "lower-case 1",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Password policy requires a lowercase character (lower-case 1)"
+    },
+    {
+      "vuln_id": "V-215829",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "numeric-count 1",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Password policy requires a numeric character (numeric-count 1)"
+    },
+    {
+      "vuln_id": "V-215830",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "special-case 1",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Password policy requires a special character (special-case 1)"
+    },
+    {
+      "vuln_id": "V-215831",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "char-changes 8",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Password changes must alter at least 8 character positions (char-changes 8)"
+    },
+    {
+      "vuln_id": "V-215832",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "service password-encryption",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Passwords stored only as cryptographic representations (service password-encryption)"
+    },
+    {
+      "vuln_id": "V-215833",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "any",
+        "checks": [
+          {
+            "type": "config_line",
+            "pattern": "exec-timeout 1 ",
+            "context": "line vty",
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "exec-timeout 2 ",
+            "context": "line vty",
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "exec-timeout 3 ",
+            "context": "line vty",
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "exec-timeout 4 ",
+            "context": "line vty",
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "exec-timeout 5 0",
+            "context": "line vty",
+            "should_exist": true
+          }
+        ]
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Management sessions terminate at 5 minutes idle or less (vty exec-timeout)"
+    },
+    {
+      "vuln_id": "V-215834",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "logging enable",
+        "context": "archive",
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Account enabling audited via archive config change logging"
+    },
+    {
+      "vuln_id": "V-215836",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "logging buffered",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Audit record storage capacity allocated (logging buffered)"
+    },
+    {
+      "vuln_id": "V-215837",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "logging trap",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Alerts generated for audit failure events (logging trap)"
+    },
+    {
+      "vuln_id": "V-215841",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "any",
+        "checks": [
+          {
+            "type": "config_line",
+            "pattern": " v3 auth",
+            "context": null,
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": " v3 priv",
+            "context": null,
+            "should_exist": true
+          }
+        ]
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "SNMP messages authenticated with SNMPv3 auth or priv (authPriv implies authentication)"
+    },
+    {
+      "vuln_id": "V-215842",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": " v3 priv",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "SNMP messages encrypted with SNMPv3 priv (FIPS 140-2 algorithm)"
+    },
+    {
+      "vuln_id": "V-215843",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "config_line",
+            "pattern": "ntp authenticate",
+            "context": null,
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "ntp authentication-key",
+            "context": null,
+            "should_exist": true
+          }
+        ]
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "NTP sources authenticated cryptographically (ntp authenticate + authentication-key)"
+    },
+    {
+      "vuln_id": "V-215844",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "algorithm mac hmac-sha2",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Remote maintenance integrity via FIPS-validated HMAC (ip ssh server algorithm mac hmac-sha2-*)"
+    },
+    {
+      "vuln_id": "V-215845",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "any",
+        "checks": [
+          {
+            "type": "config_line",
+            "pattern": "algorithm encryption aes256-ctr",
+            "context": null,
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "algorithm encryption aes256-gcm",
+            "context": null,
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "algorithm encryption aes192-ctr",
+            "context": null,
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "algorithm encryption aes128-ctr",
+            "context": null,
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "algorithm encryption aes128-gcm",
+            "context": null,
+            "should_exist": true
+          }
+        ]
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Remote maintenance confidentiality via FIPS 140-2 AES (verify no legacy ciphers also listed)"
+    },
+    {
+      "vuln_id": "V-215848",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "logging enable",
+        "context": "archive",
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Privilege deletion logged via archive config change logging"
+    },
+    {
+      "vuln_id": "V-215849",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "config_line",
+            "pattern": "login on-failure log",
+            "context": null,
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "login on-success log",
+            "context": null,
+            "should_exist": true
+          }
+        ]
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Successful and unsuccessful logon attempts audited (login on-failure/on-success log)"
+    },
+    {
+      "vuln_id": "V-215850",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "logging enable",
+        "context": "archive",
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "Privileged activities logged via archive config change logging"
+    },
+    {
+      "vuln_id": "V-215854",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "all",
+        "checks": [
+          {
+            "type": "config_line",
+            "pattern": "aaa authentication login",
+            "context": null,
+            "should_exist": true
+          },
+          {
+            "type": "any",
+            "checks": [
+              {
+                "type": "config_line",
+                "pattern": "group radius",
+                "context": null,
+                "should_exist": true
+              },
+              {
+                "type": "config_line",
+                "pattern": "group tacacs",
+                "context": null,
+                "should_exist": true
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "AAA authentication via external servers (radius/tacacs group; server redundancy still requires review)"
+    },
+    {
+      "vuln_id": "V-215856",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "config_line",
+        "pattern": "crypto pki trustpoint",
+        "context": null,
+        "should_exist": true
+      },
+      "expected": {
+        "type": "is_true"
+      },
+      "description": "PKI certificates from a CA trust point (DOD-approved CA still requires review)"
+    }
+  ]
+}

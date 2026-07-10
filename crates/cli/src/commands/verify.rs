@@ -15,7 +15,7 @@ pub fn run(pack_path: &str) -> Result<()> {
     ui::print_banner();
     ui::section("Verify Content Pack");
     ui::detail("File", pack_path);
-    eprintln!();
+    println!();
 
     let result = verifier::verify_pack(path).context("Failed to verify pack")?;
 
@@ -42,33 +42,33 @@ pub fn run(pack_path: &str) -> Result<()> {
 
     // File details.
     if !result.file_results.is_empty() {
-        eprintln!();
+        println!();
         ui::section(&format!("Files ({})", result.file_results.len()));
         for f in &result.file_results {
             if f.hash_match {
-                eprintln!("    {} {}", style("✓").green(), style(&f.path).dim(),);
+                println!("    {} {}", style("✓").green(), style(&f.path).dim(),);
             } else {
-                eprintln!("    {} {}", style("✗").red().bold(), style(&f.path).red(),);
+                println!("    {} {}", style("✗").red().bold(), style(&f.path).red(),);
             }
         }
     }
 
     if !result.issues.is_empty() {
-        eprintln!();
+        println!();
         for issue in &result.issues {
             ui::warn(issue);
         }
     }
 
-    eprintln!();
+    println!();
 
     if result.manifest_valid && result.integrity_valid {
         ui::success("Pack verification passed");
-        eprintln!();
+        println!();
         Ok(())
     } else {
         ui::error("Pack verification FAILED");
-        eprintln!();
+        println!();
         anyhow::bail!("Pack verification failed");
     }
 }

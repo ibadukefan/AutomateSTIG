@@ -43,19 +43,19 @@ pub fn run(input: &str, output: &str, include_unreviewed: bool) -> Result<()> {
         _ => anyhow::bail!("Unsupported output format: .{}", out_ext),
     }
 
-    eprintln!();
+    println!();
     ui::success(&format!("{} entries generated", answer_file.entries.len()));
     ui::output_file("Output", output, out_ext);
 
     let issues = answer_file.validate();
     if !issues.is_empty() {
-        eprintln!();
+        println!();
         for issue in &issues {
             ui::warn(issue);
         }
     }
 
-    eprintln!();
+    println!();
 
     Ok(())
 }

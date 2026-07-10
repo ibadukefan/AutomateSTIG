@@ -123,6 +123,16 @@
       "authorization": "Public unclassified DISA Cyber Exchange download; redistribution subject to DISA public terms.",
       "classification": "authorized_public",
       "notes": "Official public DISA SRG ZIP from dl.dod.cyber.mil; baseline for the freebsd_gpos check pack (no vendor BSD STIG exists) and the BSD evidence E2E scenario."
+    },
+    {
+      "id": "disa_public_cisco_ios_xe_router_y26m04_stig",
+      "kind": "disa-xccdf",
+      "path": "fixtures/authorized/disa-public-2026-07/U_Cisco_IOS-XE_Router_Y26M04_STIG.zip",
+      "sha256": "01900ad03d8972698160db7c1fdfc71b64a3c7188ee53c4f1047fc827986f36d",
+      "source": "DISA Cyber Exchange Public download: Cisco IOS XE Router STIG bundle Y26M04 (NDM V3R7 + RTR V3R5)",
+      "authorization": "Public unclassified DISA Cyber Exchange download; redistribution subject to DISA public terms.",
+      "classification": "authorized_public",
+      "notes": "Official public DISA STIG bundle from dl.dod.cyber.mil; NDM benchmark drives the cisco_ios_xe_router_ndm check pack and the network-device E2E scenario."
     }
   ]
 }

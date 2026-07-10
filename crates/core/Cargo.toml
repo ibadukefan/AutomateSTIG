@@ -15,6 +15,7 @@ thiserror = { workspace = true }
 tracing = { workspace = true }
 regex = { workspace = true }
 sha2 = { workspace = true }
+rust-embed = { workspace = true, features = ["include-exclude"] }
 
 [dev-dependencies]
 tempfile = { workspace = true }

@@ -56,6 +56,10 @@ enum Commands {
         #[arg(long)]
         evidence: Option<String>,
 
+        /// Device running-config file (e.g. show running-config output) evaluated via config_line check packs.
+        #[arg(long)]
+        config: Option<String>,
+
         /// Path(s) to answer file(s) (JSON/YAML).
         #[arg(short, long)]
         answer: Vec<String>,
@@ -247,6 +251,7 @@ fn main() {
             ref stig,
             ref scan,
             ref evidence,
+            ref config,
             ref answer,
             ref host,
             ref output,
@@ -257,6 +262,7 @@ fn main() {
                 stig_id: stig.clone(),
                 scan: scan.clone(),
                 evidence: evidence.clone(),
+                config: config.clone(),
                 answer_paths: answer.clone(),
                 host: host.clone(),
                 output: output.clone(),

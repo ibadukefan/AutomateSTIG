@@ -19,7 +19,7 @@ pub fn run(id: &str, name: &str, version: &str, source: &str, output: &str) -> R
     ui::detail("Name", name);
     ui::detail("Version", version);
     ui::detail("Source", source);
-    eprintln!();
+    println!();
 
     let mut builder = PackBuilder::new(id, name, version).author("AutomateSTIG CLI");
     let mut added_any = false;
@@ -70,13 +70,13 @@ pub fn run(id: &str, name: &str, version: &str, source: &str, output: &str) -> R
     builder.build(output_path)?;
 
     let metadata = std::fs::metadata(output_path)?;
-    eprintln!();
+    println!();
     ui::success(&format!(
         "Pack built ({:.1} KB)",
         metadata.len() as f64 / 1024.0
     ));
     ui::output_file("Output", output, "stigpack");
-    eprintln!();
+    println!();
 
     Ok(())
 }

@@ -22,7 +22,7 @@ pub fn run(pack_path: &str, cli: &crate::Cli) -> Result<()> {
         StigLibrary::open_or_init(&lib_path).context("Failed to open STIG library")?;
 
     ui::detail("Library", &lib_path.display().to_string());
-    eprintln!();
+    println!();
 
     let allow_unsigned = std::env::var("AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK")
         .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
@@ -68,13 +68,13 @@ pub fn run(pack_path: &str, cli: &crate::Cli) -> Result<()> {
     );
 
     if !result.warnings.is_empty() {
-        eprintln!();
+        println!();
         for w in &result.warnings {
             ui::warn(w);
         }
     }
 
-    eprintln!();
+    println!();
 
     Ok(())
 }

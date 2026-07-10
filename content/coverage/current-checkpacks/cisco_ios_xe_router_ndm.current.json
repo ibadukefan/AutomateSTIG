@@ -1,0 +1,453 @@
+{
+  "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+  "version": "V3R7",
+  "source": "AutomateSTIG current check pack: content/check_packs/cisco_ios_xe_router_ndm.json",
+  "status": "experimental",
+  "generated_at": "2026-07-10T00:23:44Z",
+  "generated_from": "content/check_packs/cisco_ios_xe_router_ndm.json",
+  "total_rules": 34,
+  "rules": [
+    {
+      "vuln_id": "V-215807",
+      "rule_id": "V-215807_automatestig_check",
+      "classification": "automated",
+      "reason": "Concurrent management sessions limited (session-limit under line vty)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215807",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215808",
+      "rule_id": "V-215808_automatestig_check",
+      "classification": "automated",
+      "reason": "Account creation audited via archive config change logging",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215808",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215809",
+      "rule_id": "V-215809_automatestig_check",
+      "classification": "automated",
+      "reason": "Account modification audited via archive config change logging",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215809",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215810",
+      "rule_id": "V-215810_automatestig_check",
+      "classification": "automated",
+      "reason": "Account disabling audited via archive config change logging",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215810",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215811",
+      "rule_id": "V-215811_automatestig_check",
+      "classification": "automated",
+      "reason": "Account removal audited via archive config change logging",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215811",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215812",
+      "rule_id": "V-215812_automatestig_check",
+      "classification": "automated",
+      "reason": "Management access restricted by inbound ACL on vty lines (ACL content still requires review)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215812",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215813",
+      "rule_id": "V-215813_automatestig_check",
+      "classification": "automated",
+      "reason": "Three consecutive invalid logon attempts enforced (login block-for ... attempts 3 within ...)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215813",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215814",
+      "rule_id": "V-215814_automatestig_check",
+      "classification": "automated",
+      "reason": "Standard Mandatory DoD Notice and Consent Banner configured (banner login)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215814",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215815",
+      "rule_id": "V-215815_automatestig_check",
+      "classification": "automated",
+      "reason": "All administrator activity audited (logging userinfo + archive config logging)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215815",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215817",
+      "rule_id": "V-215817_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit records carry date and time (service timestamps log datetime)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215817",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215819",
+      "rule_id": "V-215819_automatestig_check",
+      "classification": "automated",
+      "reason": "Full-text logging of configuration changes (archive log config)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215819",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215822",
+      "rule_id": "V-215822_automatestig_check",
+      "classification": "automated",
+      "reason": "File system privilege must remain at default 15 (no 'file privilege' override present)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215822",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215823",
+      "rule_id": "V-215823_automatestig_check",
+      "classification": "automated",
+      "reason": "Unnecessary/nonsecure services disabled (bootp, identd, finger, small-servers, rcmd, boot network)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215823",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215826",
+      "rule_id": "V-215826_automatestig_check",
+      "classification": "automated",
+      "reason": "Common-criteria policy minimum password length 15 (canonical 'min-length 15'; longer minima need an answer file)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215826",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215827",
+      "rule_id": "V-215827_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy requires an uppercase character (upper-case 1)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215827",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215828",
+      "rule_id": "V-215828_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy requires a lowercase character (lower-case 1)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215828",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215829",
+      "rule_id": "V-215829_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy requires a numeric character (numeric-count 1)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215829",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215830",
+      "rule_id": "V-215830_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy requires a special character (special-case 1)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215830",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215831",
+      "rule_id": "V-215831_automatestig_check",
+      "classification": "automated",
+      "reason": "Password changes must alter at least 8 character positions (char-changes 8)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215831",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215832",
+      "rule_id": "V-215832_automatestig_check",
+      "classification": "automated",
+      "reason": "Passwords stored only as cryptographic representations (service password-encryption)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215832",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215833",
+      "rule_id": "V-215833_automatestig_check",
+      "classification": "automated",
+      "reason": "Management sessions terminate at 5 minutes idle or less (vty exec-timeout)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215833",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215834",
+      "rule_id": "V-215834_automatestig_check",
+      "classification": "automated",
+      "reason": "Account enabling audited via archive config change logging",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215834",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215836",
+      "rule_id": "V-215836_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit record storage capacity allocated (logging buffered)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215836",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215837",
+      "rule_id": "V-215837_automatestig_check",
+      "classification": "automated",
+      "reason": "Alerts generated for audit failure events (logging trap)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215837",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215841",
+      "rule_id": "V-215841_automatestig_check",
+      "classification": "automated",
+      "reason": "SNMP messages authenticated with SNMPv3 auth or priv (authPriv implies authentication)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215841",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215842",
+      "rule_id": "V-215842_automatestig_check",
+      "classification": "automated",
+      "reason": "SNMP messages encrypted with SNMPv3 priv (FIPS 140-2 algorithm)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215842",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215843",
+      "rule_id": "V-215843_automatestig_check",
+      "classification": "automated",
+      "reason": "NTP sources authenticated cryptographically (ntp authenticate + authentication-key)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215843",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215844",
+      "rule_id": "V-215844_automatestig_check",
+      "classification": "automated",
+      "reason": "Remote maintenance integrity via FIPS-validated HMAC (ip ssh server algorithm mac hmac-sha2-*)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215844",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215845",
+      "rule_id": "V-215845_automatestig_check",
+      "classification": "automated",
+      "reason": "Remote maintenance confidentiality via FIPS 140-2 AES (verify no legacy ciphers also listed)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215845",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215848",
+      "rule_id": "V-215848_automatestig_check",
+      "classification": "automated",
+      "reason": "Privilege deletion logged via archive config change logging",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215848",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215849",
+      "rule_id": "V-215849_automatestig_check",
+      "classification": "automated",
+      "reason": "Successful and unsuccessful logon attempts audited (login on-failure/on-success log)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215849",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215850",
+      "rule_id": "V-215850_automatestig_check",
+      "classification": "automated",
+      "reason": "Privileged activities logged via archive config change logging",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215850",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215854",
+      "rule_id": "V-215854_automatestig_check",
+      "classification": "automated",
+      "reason": "AAA authentication via external servers (radius/tacacs group; server redundancy still requires review)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215854",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215856",
+      "rule_id": "V-215856_automatestig_check",
+      "classification": "automated",
+      "reason": "PKI certificates from a CA trust point (DOD-approved CA still requires review)",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215856",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

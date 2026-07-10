@@ -5698,17 +5698,16 @@
       "vuln_id": "V-257258"
     },
     {
-      "check_id": "V-268322",
-      "check_pack": "arista_eos",
-      "classification": "automated",
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
       "evidence_required": true,
-      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
       "rule_id": "SV-268322r1017568_rule",
       "severity": "high",
       "title": "RHEL 8 must not allow blank or null passwords in the system-auth file.",
-      "tracking_issue": "",
+      "tracking_issue": "TODO-V-268322",
       "validated_by": [
-        "content/check_packs/arista_eos.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-268322"

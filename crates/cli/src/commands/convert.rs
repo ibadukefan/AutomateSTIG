@@ -45,10 +45,10 @@ pub fn run(input: &str, output: &str, format: Option<&str>) -> Result<()> {
         _ => anyhow::bail!("Unsupported output format: {}", out_format),
     }
 
-    eprintln!();
+    println!();
     ui::success(&format!("Converted {} findings", checklist.findings.len()));
     ui::output_file("Output", output, out_format);
-    eprintln!();
+    println!();
 
     Ok(())
 }

@@ -15,6 +15,12 @@ use std::path::Path;
 
 use crate::checks::{CheckDefinition, CheckPack, CheckPlatform};
 
+#[derive(rust_embed::Embed)]
+#[folder = "../../content/check_packs"]
+#[include = "*.json"]
+#[exclude = "generated-candidates/*"]
+struct EmbeddedCheckPacks;
+
 /// A plugin manifest.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PluginManifest {
@@ -131,6 +137,38 @@ impl PluginRegistry {
         Ok(count)
     }
 
+    /// Register the check packs compiled into the binary. Filesystem-loaded
+    /// packs take precedence: an embedded pack is skipped when a plugin with
+    /// the same manifest id (stig_id) is already registered. Returns how many
+    /// embedded packs were registered.
+    pub fn load_embedded(&mut self) -> usize {
+        let mut count = 0;
+
+        for path in EmbeddedCheckPacks::iter() {
+            let Some(content) = EmbeddedCheckPacks::get(path.as_ref()) else {
+                tracing::warn!("Embedded check pack {} was not found", path);
+                continue;
+            };
+
+            let check_pack = match serde_json::from_slice::<CheckPack>(content.data.as_ref()) {
+                Ok(check_pack) => check_pack,
+                Err(e) => {
+                    tracing::warn!("Failed to parse embedded check pack {}: {}", path, e);
+                    continue;
+                }
+            };
+
+            if self.has_plugin_manifest_id(&check_pack.stig_id) {
+                continue;
+            }
+
+            self.register_check_pack(check_pack, format!("embedded:{path}"));
+            count += 1;
+        }
+
+        count
+    }
+
     /// Load a single plugin file (a CheckPack JSON/YAML).
     fn load_plugin(&mut self, path: &Path) -> crate::Result<()> {
         let content = std::fs::read_to_string(path)?;
@@ -144,6 +182,12 @@ impl PluginRegistry {
             _ => return Err(crate::Error::Other("Unsupported format".to_string())),
         };
 
+        self.register_check_pack(check_pack, path.display().to_string());
+
+        Ok(())
+    }
+
+    fn register_check_pack(&mut self, check_pack: CheckPack, source_path: String) {
         let manifest = PluginManifest {
             id: check_pack.stig_id.clone(),
             name: format!("Check pack: {}", check_pack.stig_id),
@@ -163,10 +207,12 @@ impl PluginRegistry {
         self.plugins.push(Plugin {
             manifest,
             check_packs: vec![check_pack],
-            source_path: path.display().to_string(),
+            source_path,
         });
+    }
 
-        Ok(())
+    fn has_plugin_manifest_id(&self, id: &str) -> bool {
+        self.plugins.iter().any(|plugin| plugin.manifest.id == id)
     }
 
     /// Load a plugin from a directory with manifest.json.
@@ -230,7 +276,103 @@ impl PluginRegistry {
 mod tests {
     use super::*;
     use crate::checks::*;
+    use std::path::Path;
     use tempfile::TempDir;
+
+    const NETAPP_STIG_ID: &str = "NetApp_ONTAP_DSC_9-x_STIG";
+
+    fn top_level_check_pack_json_count() -> usize {
+        let check_packs_dir =
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("../../content/check_packs");
+
+        std::fs::read_dir(check_packs_dir)
+            .unwrap()
+            .map(Result::unwrap)
+            .filter(|entry| {
+                let path = entry.path();
+                path.is_file() && path.extension().and_then(|ext| ext.to_str()) == Some("json")
+            })
+            .count()
+    }
+
+    fn pre_registered_plugin(id: &str) -> Plugin {
+        Plugin {
+            manifest: PluginManifest {
+                id: id.to_string(),
+                name: "Pre-registered check pack".to_string(),
+                description: "Loaded from filesystem first".to_string(),
+                version: "1.0.0".to_string(),
+                author: String::new(),
+                min_app_version: None,
+                plugin_type: PluginType::CheckPack,
+                platform: Some(CheckPlatform::Ontap),
+                stig_ids: vec![id.to_string()],
+            },
+            check_packs: vec![CheckPack {
+                stig_id: id.to_string(),
+                platform: CheckPlatform::Ontap,
+                version: "1.0.0".to_string(),
+                checks: Vec::new(),
+            }],
+            source_path: "filesystem".to_string(),
+        }
+    }
+
+    #[test]
+    fn test_embedded_check_pack_count_matches_top_level_json_files() {
+        assert_eq!(
+            EmbeddedCheckPacks::iter().count(),
+            top_level_check_pack_json_count()
+        );
+    }
+
+    #[test]
+    fn test_load_embedded_includes_netapp_check_pack() {
+        let mut registry = PluginRegistry::new();
+        let count = registry.load_embedded();
+
+        assert!(count > 0);
+        assert!(registry
+            .list()
+            .iter()
+            .any(|plugin| plugin.manifest.id == NETAPP_STIG_ID));
+    }
+
+    #[test]
+    fn test_load_embedded_twice_registers_zero_second_time() {
+        let mut registry = PluginRegistry::new();
+
+        assert!(registry.load_embedded() > 0);
+        assert_eq!(registry.load_embedded(), 0);
+    }
+
+    #[test]
+    fn test_load_embedded_skips_pre_registered_plugin_with_same_stig_id() {
+        let mut baseline_registry = PluginRegistry::new();
+        let baseline_count = baseline_registry.load_embedded();
+        assert!(baseline_registry
+            .list()
+            .iter()
+            .any(|plugin| plugin.manifest.id == NETAPP_STIG_ID));
+
+        let mut registry = PluginRegistry::new();
+        registry.plugins.push(pre_registered_plugin(NETAPP_STIG_ID));
+
+        let count = registry.load_embedded();
+
+        assert_eq!(count + 1, baseline_count);
+        assert_eq!(
+            registry
+                .list()
+                .iter()
+                .filter(|plugin| plugin.manifest.id == NETAPP_STIG_ID)
+                .count(),
+            1
+        );
+        assert!(!registry.list().iter().any(|plugin| {
+            plugin.manifest.id == NETAPP_STIG_ID && plugin.source_path.starts_with("embedded:")
+        }));
+    }
 
     #[test]
     fn test_plugin_registry_load() {

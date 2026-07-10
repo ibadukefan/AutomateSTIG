@@ -49,6 +49,12 @@ BSD_FINDINGS = f"{FIX}/bsd/bsd_evidence_findings.txt"
 BSD_COMPLIANT = f"{FIX}/bsd/bsd_evidence_compliant.txt"
 BSD_OPEN = {"V-203632", "V-203665", "V-203669", "V-203683", "V-203737", "V-203754", "V-203767", "V-203784"}
 BSD_AUTOMATED = 30
+CISCO_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_Cisco_IOS-XE_Router_Y26M04_STIG.zip"
+IOS_COMPLIANT = f"{FIX}/network/ios_xe_router_compliant.txt"
+IOS_FINDINGS = f"{FIX}/network/ios_xe_router_findings.txt"
+IOS_OPEN = {"V-215814", "V-215823", "V-215826", "V-215832", "V-215833", "V-215842", "V-215849"}
+IOS_AUTOMATED = 34
+IOS_TOTAL = 42
 
 DB = f"{WORK}/data.db"
 LIB = f"{WORK}/library"
@@ -553,6 +559,70 @@ def sec_bsd():
           and counts.get("notreviewed") == 203 - BSD_AUTOMATED, str(counts))
 
 
+def sec_network():
+    """Cisco IOS-XE: real NDM STIG + running-config evaluation via config_line pack."""
+    S = "network-config"
+    p = run_cli("disa-import", "--input", CISCO_ZIP)
+    check(S, "disa-import Cisco IOS-XE Y26M04 bundle succeeds", p.returncode == 0, p.combined[:300])
+
+    # Pin the oracle to the curated pack: drop converter-generated auto packs
+    # for this benchmark (their contents vary with converter heuristics).
+    auto_dir = f"{LIB}/auto_check_packs"
+    if os.path.isdir(auto_dir):
+        for f in os.listdir(auto_dir):
+            if "cisco" in f.lower():
+                os.remove(os.path.join(auto_dir, f))
+
+    def statuses(dest):
+        tree = ET.parse(dest)
+        out = {}
+        for v in tree.iter("VULN"):
+            attrs = {sd.findtext("VULN_ATTRIBUTE"): sd.findtext("ATTRIBUTE_DATA") or ""
+                     for sd in v.findall("STIG_DATA")}
+            vnum = next((x for x in attrs.values() if x.startswith("V-2")), attrs.get("Vuln_Num"))
+            out[vnum] = norm_status(v.findtext("STATUS") or "")
+        return out
+
+    dest = f"{OUT}/ios_findings.ckl"
+    p = run_cli("evaluate", "--stig", "Cisco_IOS-XE_Router_NDM_STIG", "--config", IOS_FINDINGS,
+                "--host", "rtr-findings-01", "--output", dest, "--format", "ckl")
+    check(S, "evaluate --config (findings) succeeds", p.returncode == 0 and os.path.exists(dest),
+          p.combined[:300])
+    got = statuses(dest)
+    opens = {v for v, s in got.items() if s == "open"}
+    nafs = sum(1 for s in got.values() if s == "notafinding")
+    check(S, "findings config: exactly the 7 designed rules are Open", opens == IOS_OPEN,
+          f"extra={sorted(opens - IOS_OPEN)[:6]} missing={sorted(IOS_OPEN - opens)[:6]}")
+    check(S, f"findings config: {IOS_AUTOMATED - 7} NotAFinding of {IOS_TOTAL} rules",
+          nafs == IOS_AUTOMATED - 7 and len(got) == IOS_TOTAL, f"naf={nafs} total={len(got)}")
+
+    dest = f"{OUT}/ios_compliant.ckl"
+    p = run_cli("evaluate", "--stig", "Cisco_IOS-XE_Router_NDM_STIG", "--config", IOS_COMPLIANT,
+                "--host", "rtr-compliant-01", "--output", dest, "--format", "ckl")
+    check(S, "evaluate --config (compliant) succeeds", p.returncode == 0, p.combined[:300])
+    got = statuses(dest)
+    counts = status_counts({v: {"status": s} for v, s in got.items()})
+    check(S, f"compliant config: {IOS_AUTOMATED} NotAFinding / 0 Open / {IOS_TOTAL - IOS_AUTOMATED} Not_Reviewed",
+          counts.get("notafinding") == IOS_AUTOMATED and not counts.get("open")
+          and counts.get("notreviewed") == IOS_TOTAL - IOS_AUTOMATED, str(counts))
+
+
+def sec_embedded_content():
+    """Installed-binary simulation: evaluation must work from a bare directory
+    with no content/ checkout (packs are embedded in the binary)."""
+    S = "embedded-content"
+    bare = f"{WORK}/bare_dir"
+    os.makedirs(bare, exist_ok=True)
+    dest = f"{OUT}/embedded_ontap.ckl"
+    p = run_cli("evaluate", "--stig", "NetApp_ONTAP_DSC_9-x_STIG", "--evidence", ONTAP_COMPLIANT,
+                "--host", "bare-dir-host", "--output", dest, "--format", "ckl", cwd=bare)
+    check(S, "evaluate --evidence works from a bare directory", p.returncode == 0, p.combined[:300])
+    comp = parse_ckl(dest)
+    counts = status_counts(comp)
+    check(S, "embedded packs applied (22 NotAFinding, no content/ checkout present)",
+          counts.get("notafinding") == 22 and not counts.get("open"), str(counts))
+
+
 def sec_stigpack():
     S = "stigpack"
     src_dir = f"{WORK}/pack_src"
@@ -759,6 +829,8 @@ def main():
     sec_evaluate_rhel(rhel_id)
     sec_ontap()
     sec_bsd()
+    sec_network()
+    sec_embedded_content()
     sec_stigpack()
     sec_coverage()
     sec_gui(ckl)

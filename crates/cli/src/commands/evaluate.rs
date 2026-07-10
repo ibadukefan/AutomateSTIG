@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::path::Path;
 
 use anyhow::{Context, Result};
@@ -22,6 +23,7 @@ pub struct EvaluateArgs {
     pub stig_id: String,
     pub scan: Option<String>,
     pub evidence: Option<String>,
+    pub config: Option<String>,
     pub answer_paths: Vec<String>,
     pub host: Option<String>,
     pub output: Option<String>,
@@ -34,6 +36,7 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
         stig_id,
         scan,
         evidence,
+        config,
         answer_paths,
         host,
         output,
@@ -85,6 +88,17 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
         None
     };
 
+    // Device running-config (evaluated via config_line checks).
+    let config_text = if let Some(ref config_path) = config {
+        ui::detail("Config source", config_path);
+        Some(
+            std::fs::read_to_string(config_path)
+                .context(format!("Failed to read config file: {}", config_path))?,
+        )
+    } else {
+        None
+    };
+
     // Load answer files.
     let answer_files: Vec<AnswerFile> = answer_paths
         .iter()
@@ -110,9 +124,14 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
 
     // Run evaluation.
     let engine = EvaluationEngine::with_defaults();
-    let mut checklist = if let Some(ref transcript) = evidence_transcript {
+    let mut checklist = if evidence_transcript.is_some() || config_text.is_some() {
         let mut checklist = engine.evaluate(&benchmark, &asset, scan_results.as_ref(), &[])?;
-        let system_data = build_evidence_system_data(transcript, host.as_deref(), &hostname);
+        let system_data = build_evidence_system_data(
+            evidence_transcript.as_ref(),
+            config_text,
+            host.as_deref(),
+            &hostname,
+        );
         let check_results = execute_evidence_checks(&library, &benchmark, &system_data);
         apply_check_results_to_checklist(&mut checklist, &check_results);
         apply_answer_files_to_checklist(&mut checklist, &answer_files);
@@ -187,15 +206,17 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
 }
 
 fn build_evidence_system_data(
-    transcript: &EvidenceTranscript,
+    transcript: Option<&EvidenceTranscript>,
+    network_config: Option<String>,
     host_arg: Option<&str>,
     default_hostname: &str,
 ) -> SystemData {
     SystemData {
-        command_outputs: transcript.outputs.clone(),
+        command_outputs: transcript.map(|t| t.outputs.clone()).unwrap_or_default(),
+        network_config,
         hostname: host_arg
             .map(str::to_string)
-            .or_else(|| transcript.hostname.clone())
+            .or_else(|| transcript.and_then(|t| t.hostname.clone()))
             .unwrap_or_else(|| default_hostname.to_string()),
         ..Default::default()
     }
@@ -206,14 +227,19 @@ fn execute_evidence_checks(
     benchmark: &StigBenchmark,
     system_data: &SystemData,
 ) -> Vec<CheckResult> {
-    load_matching_check_packs(library, &benchmark.id)
+    let mut check_results: Vec<CheckResult> = load_matching_check_packs(library, &benchmark.id)
         .into_iter()
         .flat_map(|pack| {
             let mut pack_data = system_data.clone();
             pack_data.platform = check_platform_name(pack.platform).to_string();
             automatestig_core::checks::executor::execute_check_pack(&pack, &pack_data)
         })
-        .collect()
+        .collect();
+
+    let mut seen_vuln_ids: HashSet<String> = HashSet::new();
+    // Curated packs load before auto-generated ones; first result per vuln wins.
+    check_results.retain(|cr| seen_vuln_ids.insert(cr.vuln_id.clone()));
+    check_results
 }
 
 fn load_matching_check_packs(library: &StigLibrary, stig_id: &str) -> Vec<CheckPack> {
@@ -226,6 +252,7 @@ fn load_matching_check_packs(library: &StigLibrary, stig_id: &str) -> Vec<CheckP
 
     let auto_dir = library.root().join("auto_check_packs");
     let _ = plugin_registry.load_from_directory(&auto_dir);
+    let _ = plugin_registry.load_embedded();
 
     plugin_registry
         .list()

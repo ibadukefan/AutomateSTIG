@@ -296,7 +296,7 @@ impl StigManagerClient {
         let resp = self
             .http
             .get(format!(
-                "{}/collections/{}/assets",
+                "{}/assets?collectionId={}",
                 self.config.api_url, collection_id
             ))
             .bearer_auth(&token)

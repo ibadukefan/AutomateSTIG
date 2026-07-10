@@ -82,7 +82,7 @@ pub fn run(input: &str, open_only: bool, severity: Option<&str>) -> Result<()> {
                 &f.rule_title,
             );
         }
-        eprintln!();
+        println!();
     }
 
     Ok(())

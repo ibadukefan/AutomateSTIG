@@ -292,6 +292,13 @@ def main():
                           data={"collection_id": str(collection_id)})
         check("checklist pushed to STIG Manager", st == 200 and '"success":true' in body.replace(" ", ""), body[:400])
 
+        # Idempotency: the routine re-push of the same host must reuse the
+        # existing asset, not fail on a duplicate.
+        st, body = as_req(f"/api/stigman/push/{cid}", method="POST",
+                          data={"collection_id": str(collection_id)})
+        check("re-pushing the same checklist succeeds (idempotent asset handling)",
+              st == 200 and '"success":true' in body.replace(" ", ""), body[:400])
+
         # Source of truth for comparison: the checklist as AutomateSTIG stores it.
         st, body = as_req(f"/api/checklists/{cid}")
         cl = unwrap(body) or {}
