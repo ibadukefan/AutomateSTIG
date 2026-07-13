@@ -221,18 +221,9 @@ fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
                 .ok_or_else(|| "No network config data available".to_string())?;
 
             let found = if let Some(ctx) = context {
-                // Search within a specific context block.
-                let mut in_context = false;
-                config.lines().any(|line| {
-                    if line.trim() == ctx || line.starts_with(ctx) {
-                        in_context = true;
-                    } else if !line.starts_with(' ') && !line.starts_with('\t') {
-                        in_context = false;
-                    }
-                    in_context && line.contains(pattern)
-                })
+                network::config_line_in_context(config, ctx, pattern)
             } else {
-                config.lines().any(|line| line.contains(pattern))
+                network::config_line_exists(config, pattern)
             };
 
             let matches = found == *should_exist;

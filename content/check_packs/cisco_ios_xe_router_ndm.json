@@ -361,25 +361,25 @@
         "checks": [
           {
             "type": "config_line",
-            "pattern": "exec-timeout 1 ",
+            "pattern": "exec-timeout 1",
             "context": "line vty",
             "should_exist": true
           },
           {
             "type": "config_line",
-            "pattern": "exec-timeout 2 ",
+            "pattern": "exec-timeout 2",
             "context": "line vty",
             "should_exist": true
           },
           {
             "type": "config_line",
-            "pattern": "exec-timeout 3 ",
+            "pattern": "exec-timeout 3",
             "context": "line vty",
             "should_exist": true
           },
           {
             "type": "config_line",
-            "pattern": "exec-timeout 4 ",
+            "pattern": "exec-timeout 4",
             "context": "line vty",
             "should_exist": true
           },
@@ -446,13 +446,13 @@
         "checks": [
           {
             "type": "config_line",
-            "pattern": " v3 auth",
+            "pattern": "v3 auth",
             "context": null,
             "should_exist": true
           },
           {
             "type": "config_line",
-            "pattern": " v3 priv",
+            "pattern": "v3 priv",
             "context": null,
             "should_exist": true
           }
@@ -468,7 +468,7 @@
       "platform": "cisco_ios",
       "check": {
         "type": "config_line",
-        "pattern": " v3 priv",
+        "pattern": "v3 priv",
         "context": null,
         "should_exist": true
       },
@@ -506,10 +506,21 @@
       "vuln_id": "V-215844",
       "platform": "cisco_ios",
       "check": {
-        "type": "config_line",
-        "pattern": "algorithm mac hmac-sha2",
-        "context": null,
-        "should_exist": true
+        "type": "any",
+        "checks": [
+          {
+            "type": "config_line",
+            "pattern": "hmac-sha2-256",
+            "context": null,
+            "should_exist": true
+          },
+          {
+            "type": "config_line",
+            "pattern": "hmac-sha2-512",
+            "context": null,
+            "should_exist": true
+          }
+        ]
       },
       "expected": {
         "type": "is_true"

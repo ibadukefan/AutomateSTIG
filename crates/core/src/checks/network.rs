@@ -67,9 +67,47 @@ pub fn extract_ios_settings(config: &str) -> HashMap<String, String> {
     settings
 }
 
+fn contains_token(haystack: &str, needle: &str) -> bool {
+    if needle.is_empty() {
+        return false;
+    }
+
+    haystack.match_indices(needle).any(|(start, matched)| {
+        let left_bounded = start == 0
+            || haystack[..start]
+                .chars()
+                .next_back()
+                .is_some_and(char::is_whitespace);
+        let end = start + matched.len();
+        let right_bounded = end == haystack.len()
+            || haystack[end..]
+                .chars()
+                .next()
+                .is_some_and(char::is_whitespace);
+
+        left_bounded && right_bounded
+    })
+}
+
+fn line_enables(line: &str, pattern: &str) -> bool {
+    let trimmed = line.trim();
+
+    if trimmed.is_empty() || trimmed.starts_with('!') {
+        return false;
+    }
+
+    let negated = trimmed.strip_prefix("no ").is_some_and(|remainder| {
+        remainder.strip_prefix(pattern).is_some_and(|suffix| {
+            suffix.is_empty() || suffix.chars().next().is_some_and(char::is_whitespace)
+        })
+    });
+
+    !negated && contains_token(trimmed, pattern)
+}
+
 /// Check if a specific configuration line exists in the running config.
 pub fn config_line_exists(config: &str, pattern: &str) -> bool {
-    config.lines().any(|line| line.trim().contains(pattern))
+    config.lines().any(|line| line_enables(line, pattern))
 }
 
 /// Check if a line exists within a specific interface/context block.
@@ -91,7 +129,7 @@ pub fn config_line_in_context(config: &str, context: &str, pattern: &str) -> boo
                 && trimmed != "!"
             {
                 in_context = false;
-            } else if trimmed.contains(pattern) {
+            } else if line_enables(line, pattern) {
                 return true;
             }
         }
@@ -152,6 +190,38 @@ Authorized users only.
     }
 
     #[test]
+    fn config_line_exists_finds_bare_enabled_line() {
+        assert!(config_line_exists(
+            "service password-encryption",
+            "service password-encryption"
+        ));
+    }
+
+    #[test]
+    fn config_line_exists_rejects_negated_line() {
+        assert!(!config_line_exists(
+            "no service password-encryption",
+            "service password-encryption"
+        ));
+    }
+
+    #[test]
+    fn config_line_exists_requires_token_boundaries() {
+        assert!(!config_line_exists(
+            "ip http secure-server",
+            "ip http server"
+        ));
+    }
+
+    #[test]
+    fn config_line_exists_ignores_comment_lines() {
+        assert!(!config_line_exists(
+            "! service finger enabled for testing",
+            "service finger"
+        ));
+    }
+
+    #[test]
     fn test_config_line_in_context() {
         assert!(config_line_in_context(
             SAMPLE_CONFIG,
@@ -162,6 +232,23 @@ Authorized users only.
             SAMPLE_CONFIG,
             "interface GigabitEthernet0/1",
             "no shutdown"
+        ));
+    }
+
+    #[test]
+    fn config_line_in_context_scopes_matches_to_the_block() {
+        let config_with_vty_setting = "line vty 0 4\n session-limit 2\nline console 0";
+        assert!(config_line_in_context(
+            config_with_vty_setting,
+            "line vty",
+            "session-limit"
+        ));
+
+        let config_with_setting_outside_vty = "session-limit 2\nline vty 0 4\n exec-timeout 10";
+        assert!(!config_line_in_context(
+            config_with_setting_outside_vty,
+            "line vty",
+            "session-limit"
         ));
     }
 }
