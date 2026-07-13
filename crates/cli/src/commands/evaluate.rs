@@ -245,22 +245,24 @@ fn execute_evidence_checks(
 fn load_matching_check_packs(library: &StigLibrary, stig_id: &str) -> Vec<CheckPack> {
     let mut plugin_registry = PluginRegistry::new();
     let content_dir = Path::new("content/check_packs");
-    let _ = plugin_registry.load_from_directory(content_dir);
+    let _ = plugin_registry.load_from_directory_with_priority(content_dir, 10);
 
     let custom_dir = library.root().join("custom_checks");
-    let _ = plugin_registry.load_from_directory(&custom_dir);
+    let _ = plugin_registry.load_from_directory_with_priority(&custom_dir, 20);
 
     let auto_dir = library.root().join("auto_check_packs");
-    let _ = plugin_registry.load_from_directory(&auto_dir);
+    let _ = plugin_registry.load_from_directory_with_priority(&auto_dir, 900);
     let _ = plugin_registry.load_embedded();
 
-    plugin_registry
+    let mut packs: Vec<CheckPack> = plugin_registry
         .list()
         .iter()
         .flat_map(|plugin| plugin.check_packs.iter())
         .filter(|pack| pack.stig_id == stig_id)
         .cloned()
-        .collect()
+        .collect();
+    packs.sort_by_key(|pack| pack.priority);
+    packs
 }
 
 fn apply_check_results_to_checklist(checklist: &mut Checklist, check_results: &[CheckResult]) {

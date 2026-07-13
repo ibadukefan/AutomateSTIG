@@ -76,6 +76,7 @@ pub fn convert_benchmark(benchmark: &StigBenchmark) -> ConversionResult {
             stig_id: benchmark.id.clone(),
             platform,
             version: format!("auto-{}", chrono::Utc::now().format("%Y%m%d")),
+            priority: 100,
             checks,
         },
         automated,

@@ -634,6 +634,7 @@ mod tests {
             stig_id: "RHEL_9_STIG".to_string(),
             platform: CheckPlatform::Linux,
             version: "1.0.0".to_string(),
+            priority: 100,
             checks: vec![
                 CheckDefinition {
                     vuln_id: "V-1".to_string(),

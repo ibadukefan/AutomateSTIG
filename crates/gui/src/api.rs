@@ -2102,14 +2102,14 @@ fn evaluate_system_data_core(
     // Load check packs from all sources: plugins, hand-written packs, and auto-generated.
     let mut plugin_registry = automatestig_core::plugins::PluginRegistry::new();
     let plugins_dir = state.inner.data_dir.join("plugins");
-    let _ = plugin_registry.load_from_directory(&plugins_dir);
+    let _ = plugin_registry.load_from_directory_with_priority(&plugins_dir, 5);
 
     let content_dir = std::path::Path::new("content/check_packs");
-    let _ = plugin_registry.load_from_directory(content_dir);
+    let _ = plugin_registry.load_from_directory_with_priority(content_dir, 10);
 
     // Load auto-generated check packs from the converter.
     let auto_dir = state.inner.library_path.join("auto_check_packs");
-    let _ = plugin_registry.load_from_directory(&auto_dir);
+    let _ = plugin_registry.load_from_directory_with_priority(&auto_dir, 900);
     let _ = plugin_registry.load_embedded();
 
     // Execute checks.

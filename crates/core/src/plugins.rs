@@ -101,6 +101,15 @@ impl PluginRegistry {
 
     /// Load all plugins from a directory.
     pub fn load_from_directory(&mut self, dir: &Path) -> crate::Result<usize> {
+        self.load_from_directory_with_priority(dir, 100)
+    }
+
+    /// Load all plugins from a directory, applying a default priority to its check packs.
+    pub fn load_from_directory_with_priority(
+        &mut self,
+        dir: &Path,
+        base_priority: i32,
+    ) -> crate::Result<usize> {
         if !dir.exists() {
             return Ok(0);
         }
@@ -113,8 +122,12 @@ impl PluginRegistry {
             if path.is_file() {
                 let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
                 if ext == "json" || ext == "yaml" || ext == "yml" {
+                    let plugin_start = self.plugins.len();
                     match self.load_plugin(&path) {
-                        Ok(()) => count += 1,
+                        Ok(()) => {
+                            self.apply_default_priority(plugin_start, base_priority);
+                            count += 1;
+                        }
                         Err(e) => {
                             tracing::warn!("Failed to load plugin {}: {}", path.display(), e);
                         }
@@ -124,8 +137,12 @@ impl PluginRegistry {
                 // Look for manifest.json in subdirectory.
                 let manifest_path = path.join("manifest.json");
                 if manifest_path.exists() {
+                    let plugin_start = self.plugins.len();
                     match self.load_plugin_dir(&path) {
-                        Ok(()) => count += 1,
+                        Ok(()) => {
+                            self.apply_default_priority(plugin_start, base_priority);
+                            count += 1;
+                        }
                         Err(e) => {
                             tracing::warn!("Failed to load plugin {}: {}", path.display(), e);
                         }
@@ -135,6 +152,17 @@ impl PluginRegistry {
         }
 
         Ok(count)
+    }
+
+    fn apply_default_priority(&mut self, plugin_start: usize, base_priority: i32) {
+        for pack in self.plugins[plugin_start..]
+            .iter_mut()
+            .flat_map(|plugin| plugin.check_packs.iter_mut())
+        {
+            if pack.priority == 100 {
+                pack.priority = base_priority;
+            }
+        }
     }
 
     /// Register the check packs compiled into the binary. Filesystem-loaded
@@ -150,7 +178,7 @@ impl PluginRegistry {
                 continue;
             };
 
-            let check_pack = match serde_json::from_slice::<CheckPack>(content.data.as_ref()) {
+            let mut check_pack = match serde_json::from_slice::<CheckPack>(content.data.as_ref()) {
                 Ok(check_pack) => check_pack,
                 Err(e) => {
                     tracing::warn!("Failed to parse embedded check pack {}: {}", path, e);
@@ -160,6 +188,10 @@ impl PluginRegistry {
 
             if self.has_plugin_manifest_id(&check_pack.stig_id) {
                 continue;
+            }
+
+            if check_pack.priority == 100 {
+                check_pack.priority = 50;
             }
 
             self.register_check_pack(check_pack, format!("embedded:{path}"));
@@ -254,12 +286,15 @@ impl PluginRegistry {
 
     /// Get all check definitions for a specific STIG.
     pub fn checks_for_stig(&self, stig_id: &str) -> Vec<&CheckDefinition> {
-        self.plugins
+        let mut checks: Vec<(i32, &CheckDefinition)> = self
+            .plugins
             .iter()
             .flat_map(|p| p.check_packs.iter())
             .filter(|pack| pack.stig_id == stig_id)
-            .flat_map(|pack| pack.checks.iter())
-            .collect()
+            .flat_map(|pack| pack.checks.iter().map(|check| (pack.priority, check)))
+            .collect();
+        checks.sort_by_key(|(priority, _)| *priority);
+        checks.into_iter().map(|(_, check)| check).collect()
     }
 
     /// Total number of check definitions across all plugins.
@@ -312,6 +347,7 @@ mod tests {
                 stig_id: id.to_string(),
                 platform: CheckPlatform::Ontap,
                 version: "1.0.0".to_string(),
+                priority: 100,
                 checks: Vec::new(),
             }],
             source_path: "filesystem".to_string(),
@@ -383,6 +419,7 @@ mod tests {
             stig_id: "Test_STIG".to_string(),
             platform: CheckPlatform::Linux,
             version: "1.0.0".to_string(),
+            priority: 100,
             checks: vec![CheckDefinition {
                 vuln_id: "V-1".to_string(),
                 platform: CheckPlatform::Linux,
@@ -404,6 +441,46 @@ mod tests {
         assert_eq!(count, 1);
         assert_eq!(registry.total_checks(), 1);
         assert_eq!(registry.checks_for_stig("Test_STIG").len(), 1);
+    }
+
+    #[test]
+    fn test_checks_for_stig_orders_by_priority_regardless_of_registration_order() {
+        fn pack(priority: i32, description: &str) -> CheckPack {
+            CheckPack {
+                stig_id: "Test_STIG".to_string(),
+                platform: CheckPlatform::Linux,
+                version: "1.0.0".to_string(),
+                priority,
+                checks: vec![CheckDefinition {
+                    vuln_id: "V-1".to_string(),
+                    platform: CheckPlatform::Linux,
+                    check: Check::Sysctl {
+                        key: "net.ipv4.ip_forward".to_string(),
+                    },
+                    expected: ExpectedResult::Equals {
+                        value: serde_json::json!("0"),
+                    },
+                    description: Some(description.to_string()),
+                }],
+            }
+        }
+
+        for reverse_registration_order in [false, true] {
+            let mut registry = PluginRegistry::new();
+            let packs = if reverse_registration_order {
+                [pack(10, "higher precedence"), pack(100, "lower precedence")]
+            } else {
+                [pack(100, "lower precedence"), pack(10, "higher precedence")]
+            };
+
+            for (index, check_pack) in packs.into_iter().enumerate() {
+                registry.register_check_pack(check_pack, format!("test:{index}"));
+            }
+
+            let checks = registry.checks_for_stig("Test_STIG");
+            assert_eq!(checks[0].vuln_id, "V-1");
+            assert_eq!(checks[0].description.as_deref(), Some("higher precedence"));
+        }
     }
 
     #[test]

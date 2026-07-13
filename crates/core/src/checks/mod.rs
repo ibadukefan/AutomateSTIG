@@ -287,8 +287,16 @@ pub struct CheckPack {
     /// Version of the check pack.
     pub version: String,
 
+    /// Precedence among check packs. Lower values take precedence.
+    #[serde(default = "default_pack_priority")]
+    pub priority: i32,
+
     /// Individual check definitions.
     pub checks: Vec<CheckDefinition>,
+}
+
+fn default_pack_priority() -> i32 {
+    100
 }
 
 #[cfg(test)]
@@ -380,6 +388,7 @@ mod tests {
             stig_id: "Windows_Server_2022_STIG".to_string(),
             platform: CheckPlatform::Windows,
             version: "1.0.0".to_string(),
+            priority: 100,
             checks: vec![CheckDefinition {
                 vuln_id: "V-254239".to_string(),
                 platform: CheckPlatform::Windows,
