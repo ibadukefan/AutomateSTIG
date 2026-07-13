@@ -72,3 +72,7 @@ Results merge with answer files as usual. Completed results can be pushed to STI
 The `netapp_ontap9` check pack matches canonical ONTAP 9 CLI output. The pack is marked experimental, and unusual formatting from custom CLI sessions or truncated columns should be verified against the manual STIG before relying on automated results.
 
 Manual-review rules always appear as `Not_Reviewed`.
+
+## Chain of Custody
+
+Every checklist evaluated from an evidence transcript or config file records the SHA-256 of the exact input bytes in each finding's comments (`Automated evaluation provenance: ... SHA-256: <hex>`). A reviewer can independently confirm the checklist came from a specific artifact with `sha256sum evidence.txt` (or `shasum -a 256`). If the evidence is altered by a single byte, the digest no longer matches — this is the audit anchor binding results to collected evidence.

@@ -46,3 +46,7 @@ Review each CKL against what you know to be true about the device:
 ## Recording site conventions
 
 Where your site meets a requirement through a different-but-compliant mechanism (e.g., a stricter password minimum than the canonical pattern expects), record it with an [answer file](answer-files.md) rather than editing the check pack — answer files are versioned, auditable, and survive content updates.
+
+## Chain of Custody
+
+Every checklist evaluated from an evidence transcript or config file records the SHA-256 of the exact input bytes in each finding's comments (`Automated evaluation provenance: ... SHA-256: <hex>`). A reviewer can independently confirm the checklist came from a specific artifact with `sha256sum evidence.txt` (or `shasum -a 256`). If the evidence is altered by a single byte, the digest no longer matches — this is the audit anchor binding results to collected evidence.

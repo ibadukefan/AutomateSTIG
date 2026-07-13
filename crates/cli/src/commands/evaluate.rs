@@ -15,6 +15,7 @@ use automatestig_parsers::cklb;
 use automatestig_parsers::evidence::{parse_evidence_transcript, EvidenceTranscript};
 use automatestig_parsers::xccdf;
 use automatestig_storage::Database;
+use sha2::{Digest, Sha256};
 
 use super::{db_path, library_path};
 use crate::ui;
@@ -29,6 +30,10 @@ pub struct EvaluateArgs {
     pub output: Option<String>,
     pub format: Option<String>,
     pub merge: Option<String>,
+}
+
+fn sha256_hex(bytes: &[u8]) -> String {
+    format!("{:x}", Sha256::digest(bytes))
 }
 
 pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
@@ -79,9 +84,18 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
         None
     };
 
+    let mut provenance_sources = Vec::new();
+
     let evidence_transcript = if let Some(ref evidence_path) = evidence {
         ui::detail("Evidence source", evidence_path);
-        let raw = std::fs::read_to_string(evidence_path)
+        let raw = std::fs::read(evidence_path)
+            .context(format!("Failed to read evidence file: {}", evidence_path))?;
+        provenance_sources.push(format!(
+            "Evidence: {} (SHA-256: {})",
+            evidence_path,
+            sha256_hex(&raw)
+        ));
+        let raw = String::from_utf8(raw)
             .context(format!("Failed to read evidence file: {}", evidence_path))?;
         Some(parse_evidence_transcript(&raw))
     } else {
@@ -91,12 +105,28 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
     // Device running-config (evaluated via config_line checks).
     let config_text = if let Some(ref config_path) = config {
         ui::detail("Config source", config_path);
+        let raw = std::fs::read(config_path)
+            .context(format!("Failed to read config file: {}", config_path))?;
+        provenance_sources.push(format!(
+            "Config: {} (SHA-256: {})",
+            config_path,
+            sha256_hex(&raw)
+        ));
         Some(
-            std::fs::read_to_string(config_path)
+            String::from_utf8(raw)
                 .context(format!("Failed to read config file: {}", config_path))?,
         )
     } else {
         None
+    };
+
+    let provenance = if provenance_sources.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "Automated evaluation provenance:\n{}",
+            provenance_sources.join("\n")
+        )
     };
 
     // Load answer files.
@@ -133,7 +163,7 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
             &hostname,
         );
         let check_results = execute_evidence_checks(&library, &benchmark, &system_data);
-        apply_check_results_to_checklist(&mut checklist, &check_results);
+        apply_check_results_to_checklist(&mut checklist, &check_results, &provenance);
         apply_answer_files_to_checklist(&mut checklist, &answer_files);
         checklist
     } else {
@@ -265,12 +295,19 @@ fn load_matching_check_packs(library: &StigLibrary, stig_id: &str) -> Vec<CheckP
     packs
 }
 
-fn apply_check_results_to_checklist(checklist: &mut Checklist, check_results: &[CheckResult]) {
+fn apply_check_results_to_checklist(
+    checklist: &mut Checklist,
+    check_results: &[CheckResult],
+    provenance: &str,
+) {
     for cr in check_results {
         if let Some(finding) = checklist.find_by_vuln_id_mut(&cr.vuln_id) {
             finding.status = cr.to_finding_status();
             finding.source = FindingSource::Automated;
             finding.finding_details = cr.evidence.clone();
+            if !provenance.is_empty() {
+                finding.comments = provenance.to_string();
+            }
             finding.evaluated_at = chrono::Utc::now();
             finding.evaluated_by = format!("AutomateSTIG {}", env!("CARGO_PKG_VERSION"));
         }
@@ -339,5 +376,18 @@ fn load_checklist_from_file(path: &Path) -> Result<automatestig_core::models::Ch
             Ok(serde_json::from_str(&content)?)
         }
         _ => anyhow::bail!("Unsupported checklist format: {}", ext),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::sha256_hex;
+
+    #[test]
+    fn sha256_hex_hashes_abc() {
+        assert_eq!(
+            sha256_hex(b"abc"),
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        );
     }
 }

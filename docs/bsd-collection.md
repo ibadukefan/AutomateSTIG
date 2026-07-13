@@ -57,3 +57,7 @@ The automated checks match specific FreeBSD hardening conventions:
 - An OpenSSH `Ciphers`/`MACs` allowlist (AES-CTR/GCM, HMAC-SHA2).
 
 Sites that meet a requirement through a different-but-compliant mechanism should record those rules via [answer files](answer-files.md) rather than editing the check pack. The pack is marked experimental; verify results against the manual SRG on first use.
+
+## Chain of Custody
+
+Every checklist evaluated from an evidence transcript or config file records the SHA-256 of the exact input bytes in each finding's comments (`Automated evaluation provenance: ... SHA-256: <hex>`). A reviewer can independently confirm the checklist came from a specific artifact with `sha256sum evidence.txt` (or `shasum -a 256`). If the evidence is altered by a single byte, the digest no longer matches — this is the audit anchor binding results to collected evidence.
