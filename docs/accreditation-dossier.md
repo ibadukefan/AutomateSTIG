@@ -33,4 +33,5 @@ Evidence transcripts, checklists, and the SQLite database stay on the host under
 
 - **Code signing:** installers are not yet signed/notarized (requires organizational Apple Developer and Windows signing certificates). First-launch OS warnings and their workarounds are documented in [Installation](installation.md). Signing will be wired into the release workflow when certificates are available.
 - **Experimental check packs:** ONTAP/FreeBSD/Cisco packs are calibrated against canonical output until validated per [Field Calibration](field-calibration.md).
+- **Network coverage scope:** the Cisco IOS-XE Router **NDM** benchmark is automated; the separate **RTR** benchmark (routing-plane rules) is not yet covered and its rules remain Not_Reviewed. Other vendors (Juniper, Arista, Palo Alto, F5) are on the roadmap.
 - Rules the packs cannot honestly automate remain `Not_Reviewed` — the tool never fabricates a compliance result.

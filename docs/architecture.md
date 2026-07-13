@@ -57,3 +57,12 @@ No network calls are made by default. These features are connected and opt-in:
 - DISA fetch and update checks.
 - STIG-Manager calls.
 - Remote SSH collection.
+
+## Known technical debt
+
+`crates/gui/src/api.rs` has grown large as the HTTP surface accreted. A split
+into per-domain modules (library, evaluation, export, stigman, assets,
+credentials) is planned. It is deferred deliberately: it is a pure
+refactor with broad blast radius and no behavioral change, so it is
+sequenced after the security and correctness work rather than interleaved
+with it, to keep each change independently reviewable.

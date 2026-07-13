@@ -90,3 +90,20 @@ AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1
 | `AUTOMATESTIG_ALLOW_INSECURE_WINRM` | Set to `1` to allow plaintext WinRM Basic auth. |
 | `AUTOMATESTIG_ALLOW_INVALID_WINRM_CERTS` | Set to `1` to allow WinRM with TLS verification disabled. |
 | `AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS` | Allow webhook URLs resolving to localhost or private IP addresses. |
+
+## SSH host-key verification (trust-on-first-use)
+
+Remote SSH collection verifies the target's host key against a pin file at
+`~/.automatestig/known_hosts`. On first contact the key is recorded; on any
+later connection a changed key is rejected as a possible man-in-the-middle
+(logged at error level). This is trust-on-first-use: the first connection is
+unauthenticated, so for high-assurance environments pre-populate
+`~/.automatestig/known_hosts` with the expected `host:port fingerprint`
+entries out of band before the first scan.
+
+## Concurrency model
+
+The local GUI serializes all database access through a single mutex and is
+designed for a single operator on one machine. It is not a multi-tenant
+server; do not expose it to shared or multi-user access. For team workflows,
+push results to STIG Manager, which is the multi-user system of record.

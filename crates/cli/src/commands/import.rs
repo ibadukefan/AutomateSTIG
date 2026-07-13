@@ -28,6 +28,11 @@ pub fn run(pack_path: &str, cli: &crate::Cli) -> Result<()> {
         .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
         .unwrap_or(false);
     let result = if allow_unsigned {
+        ui::warn(
+            "SIGNATURE VERIFICATION BYPASSED (AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1). \
+             This content pack is UNTRUSTED and unverified — lab/testing use only. \
+             Do not use unsigned content for production compliance evaluations.",
+        );
         importer::import_pack(path, &mut library).context("Failed to import pack")?
     } else {
         let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
