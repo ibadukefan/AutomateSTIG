@@ -945,7 +945,7 @@ async fn generate_offline_pack(State(state): State<AppState>) -> impl IntoRespon
 /// Get current STIG-Manager configuration.
 async fn stigman_get_config(State(state): State<AppState>) -> Json<serde_json::Value> {
     let db = state.db();
-    let config = load_stigman_config(&db);
+    let config = load_stigman_config(&db, &state.inner.data_dir);
     api_ok(serde_json::json!({
         "configured": config.is_configured(),
         "api_url": config.api_url,
@@ -966,22 +966,11 @@ async fn stigman_set_config(
 
     // Encrypt the client secret before storing.
     if !body.client_secret.is_empty() {
-        let key_material = db
-            .get_config("_encryption_salt")
-            .ok()
-            .flatten()
-            .unwrap_or_else(|| {
-                // Generate a random salt on first use.
-                let salt = format!(
-                    "{:x}",
-                    std::time::SystemTime::now()
-                        .duration_since(std::time::UNIX_EPOCH)
-                        .unwrap_or_default()
-                        .as_nanos()
-                );
-                let _ = db.set_config("_encryption_salt", &salt);
-                salt
-            });
+        let key_material = match crate::secrets::load_or_create_key_material(&state.inner.data_dir)
+        {
+            Ok(k) => k,
+            Err(e) => return api_error(&format!("Key material error: {}", e)),
+        };
 
         match crate::secrets::encrypt_secret(&body.client_secret, &key_material) {
             Ok(encrypted) => {
@@ -1006,7 +995,7 @@ async fn stigman_set_config(
 async fn stigman_test_connection(State(state): State<AppState>) -> Json<serde_json::Value> {
     let config = {
         let db = state.db();
-        load_stigman_config(&db)
+        load_stigman_config(&db, &state.inner.data_dir)
     };
     if !config.is_configured() {
         return api_error("STIG-Manager is not configured");
@@ -1027,7 +1016,7 @@ async fn stigman_test_connection(State(state): State<AppState>) -> Json<serde_js
 async fn stigman_list_collections(State(state): State<AppState>) -> Json<serde_json::Value> {
     let config = {
         let db = state.db();
-        load_stigman_config(&db)
+        load_stigman_config(&db, &state.inner.data_dir)
     };
     if !config.is_configured() {
         return api_error("STIG-Manager is not configured");
@@ -1051,7 +1040,7 @@ async fn stigman_list_assets(
 ) -> Json<serde_json::Value> {
     let config = {
         let db = state.db();
-        load_stigman_config(&db)
+        load_stigman_config(&db, &state.inner.data_dir)
     };
     if !config.is_configured() {
         return api_error("STIG-Manager is not configured");
@@ -1075,7 +1064,7 @@ async fn stigman_sync_assets(
 ) -> Json<serde_json::Value> {
     let config = {
         let db = state.db();
-        load_stigman_config(&db)
+        load_stigman_config(&db, &state.inner.data_dir)
     };
     if !config.is_configured() {
         return api_error("STIG-Manager is not configured");
@@ -1168,7 +1157,7 @@ async fn stigman_diff_assets(
 ) -> Json<serde_json::Value> {
     let config = {
         let db = state.db();
-        load_stigman_config(&db)
+        load_stigman_config(&db, &state.inner.data_dir)
     };
     if !config.is_configured() {
         return api_error("STIG-Manager is not configured");
@@ -1275,7 +1264,7 @@ async fn stigman_push_checklist(
 
     let config = {
         let db = state.db();
-        load_stigman_config(&db)
+        load_stigman_config(&db, &state.inner.data_dir)
     };
 
     match push_checklist_to_stigman(
@@ -1354,7 +1343,10 @@ async fn push_checklist_to_stigman(
 }
 
 /// Load STIG-Manager config from the database, decrypting the client secret.
-fn load_stigman_config(db: &automatestig_storage::Database) -> crate::stigman::StigManagerConfig {
+fn load_stigman_config(
+    db: &automatestig_storage::Database,
+    data_dir: &std::path::Path,
+) -> crate::stigman::StigManagerConfig {
     let mut config: crate::stigman::StigManagerConfig = db
         .get_config("stigman_config")
         .ok()
@@ -1365,13 +1357,10 @@ fn load_stigman_config(db: &automatestig_storage::Database) -> crate::stigman::S
     // Decrypt client secret if it's encrypted.
     if config.client_secret.starts_with("enc:") {
         let encrypted = &config.client_secret[4..];
-        let key_material = db
-            .get_config("_encryption_salt")
-            .ok()
-            .flatten()
-            .unwrap_or_default();
+        let decrypted = crate::secrets::load_or_create_key_material(data_dir)
+            .and_then(|key_material| crate::secrets::decrypt_secret(encrypted, &key_material));
 
-        match crate::secrets::decrypt_secret(encrypted, &key_material) {
+        match decrypted {
             Ok(decrypted) => config.client_secret = decrypted,
             Err(_) => {
                 tracing::warn!("Failed to decrypt STIG-Manager client secret");
@@ -1796,20 +1785,10 @@ async fn delete_asset_inv(
 
 fn save_vault(
     db: &automatestig_storage::Database,
+    data_dir: &std::path::Path,
     vault: &automatestig_core::inventory::credentials::CredentialVault,
 ) -> Result<(), String> {
-    let key_material = db
-        .get_config("_encryption_salt")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_else(|| {
-            let rng = ring::rand::SystemRandom::new();
-            let mut bytes = [0u8; 32];
-            ring::rand::SecureRandom::fill(&rng, &mut bytes)
-                .expect("Failed to generate encryption salt");
-            let salt: String = bytes.iter().map(|b| format!("{:02x}", b)).collect();
-            let _ = db.set_config("_encryption_salt", &salt);
-            salt
-        });
+    let key_material = crate::secrets::load_or_create_key_material(data_dir)?;
 
     let json = serde_json::to_string(vault).map_err(|e| e.to_string())?;
     let encrypted = crate::secrets::encrypt_secret(&json, &key_material)?;
@@ -1822,6 +1801,7 @@ fn save_vault(
 
 fn load_vault(
     db: &automatestig_storage::Database,
+    data_dir: &std::path::Path,
 ) -> Result<automatestig_core::inventory::credentials::CredentialVault, String> {
     let raw = db
         .get_config("credential_vault")
@@ -1834,17 +1814,14 @@ fn load_vault(
     let encrypted = raw.strip_prefix("enc:").ok_or_else(|| {
         "Credential vault is plaintext/legacy and must be migrated before use".to_string()
     })?;
-    let key_material = db
-        .get_config("_encryption_salt")
-        .map_err(|e| e.to_string())?
-        .ok_or_else(|| "Credential vault encryption salt is missing".to_string())?;
+    let key_material = crate::secrets::load_or_create_key_material(data_dir)?;
     let json = crate::secrets::decrypt_secret(encrypted, &key_material)?;
     serde_json::from_str(&json).map_err(|e| e.to_string())
 }
 
 async fn list_credentials(State(state): State<AppState>) -> Json<serde_json::Value> {
     let db = state.db();
-    let vault = match load_vault(&db) {
+    let vault = match load_vault(&db, &state.inner.data_dir) {
         Ok(vault) => vault,
         Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
     };
@@ -1856,7 +1833,7 @@ async fn create_credential(
     Json(cred): Json<automatestig_core::inventory::credentials::StoredCredential>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
-    let mut vault = match load_vault(&db) {
+    let mut vault = match load_vault(&db, &state.inner.data_dir) {
         Ok(vault) => vault,
         Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
     };
@@ -1885,7 +1862,7 @@ async fn create_credential(
         last_used: cred.last_used,
     };
     vault.add(cred);
-    if let Err(e) = save_vault(&db, &vault) {
+    if let Err(e) = save_vault(&db, &state.inner.data_dir, &vault) {
         return api_error(&format!("Failed to save credential vault: {}", e));
     }
     api_ok(summary)
@@ -1896,12 +1873,12 @@ async fn delete_credential(
     axum::extract::Path(id): axum::extract::Path<String>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
-    let mut vault = match load_vault(&db) {
+    let mut vault = match load_vault(&db, &state.inner.data_dir) {
         Ok(vault) => vault,
         Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
     };
     let removed = vault.remove(&id);
-    if let Err(e) = save_vault(&db, &vault) {
+    if let Err(e) = save_vault(&db, &state.inner.data_dir, &vault) {
         return api_error(&format!("Failed to save credential vault: {}", e));
     }
     api_ok(removed)

@@ -8,13 +8,45 @@
 //! from the database file. The encryption key is derived from:
 //! - A fixed application salt
 //! - The hostname of the machine
-//! - A random component stored in the database itself
+//! - A 32-byte CSPRNG random component stored outside the database in a 0600
+//!   file at `<data_dir>/secret.key`
 
 use ring::aead::{Aad, LessSafeKey, Nonce, UnboundKey, AES_256_GCM};
 use ring::rand::{SecureRandom, SystemRandom};
 use sha2::{Digest, Sha256};
 
 const APP_SALT: &[u8] = b"AutomateSTIG-secret-encryption-v1";
+
+/// Load the shared random key material, creating it on first use.
+pub fn load_or_create_key_material(data_dir: &std::path::Path) -> Result<String, String> {
+    let key_path = data_dir.join("secret.key");
+    if key_path.exists() {
+        return std::fs::read_to_string(&key_path)
+            .map(|key| key.trim().to_string())
+            .map_err(|e| format!("Failed to read {}: {}", key_path.display(), e));
+    }
+
+    let rng = SystemRandom::new();
+    let mut bytes = [0u8; 32];
+    rng.fill(&mut bytes)
+        .map_err(|_| "Random number generation failed".to_string())?;
+    let key_material = hex::encode(&bytes);
+
+    std::fs::create_dir_all(data_dir)
+        .map_err(|e| format!("Failed to create {}: {}", data_dir.display(), e))?;
+    std::fs::write(&key_path, &key_material)
+        .map_err(|e| format!("Failed to write {}: {}", key_path.display(), e))?;
+
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+
+        std::fs::set_permissions(&key_path, std::fs::Permissions::from_mode(0o600))
+            .map_err(|e| format!("Failed to set permissions on {}: {}", key_path.display(), e))?;
+    }
+
+    Ok(key_material)
+}
 
 /// Encrypt a secret string for storage.
 /// Returns a hex-encoded string of: nonce (12 bytes) + ciphertext + tag.
@@ -158,5 +190,28 @@ mod tests {
         let encoded = hex::encode(data);
         let decoded = hex::decode(&encoded).unwrap();
         assert_eq!(decoded, data);
+    }
+
+    #[test]
+    fn test_load_or_create_key_material() {
+        let temp_dir = tempfile::tempdir().unwrap();
+
+        let first = load_or_create_key_material(temp_dir.path()).unwrap();
+        assert_eq!(first.len(), 64);
+        assert!(first.chars().all(|character| character.is_ascii_hexdigit()));
+
+        let key_path = temp_dir.path().join("secret.key");
+        assert_eq!(std::fs::read_to_string(&key_path).unwrap(), first);
+
+        let second = load_or_create_key_material(temp_dir.path()).unwrap();
+        assert_eq!(second, first);
+
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+
+            let mode = std::fs::metadata(key_path).unwrap().permissions().mode() & 0o777;
+            assert_eq!(mode, 0o600);
+        }
     }
 }

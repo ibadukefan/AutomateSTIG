@@ -19,11 +19,13 @@ The STIG-Manager client secret and credential vault are encrypted at rest with A
 
 The key is derived from:
 
-- A DB-stored random salt.
-- Host-specific material.
-- An application salt.
+- A 32-byte CSPRNG value stored in `<data_dir>/secret.key` (mode `0600` on Unix).
+- The hostname.
+- A compiled application salt.
 
-This is obfuscation-grade protection. It helps prevent casual plaintext disclosure from the database, but it is not protection against database exfiltration.
+The key material is outside the database, but possession of both `data.db` and `secret.key` on the host is equivalent to possession of the secret. OS keychain integration is a documented future hardening step.
+
+Secrets encrypted under the previous database-backed key scheme require re-entry after upgrade.
 
 ## Remote Transport Hardening
 
