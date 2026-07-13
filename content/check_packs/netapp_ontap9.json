@@ -102,10 +102,11 @@
         "command": "cluster time-service ntp server show"
       },
       "expected": {
-        "type": "matches",
-        "pattern": "([2-9]|[1-9]\\d+) entries were displayed"
+        "type": "match_count_at_least",
+        "pattern": "(?m)^\\s*\\d{1,3}(\\.\\d{1,3}){3}",
+        "min": 2
       },
-      "description": "At least two NTP servers must be configured (redundant authoritative time sources)"
+      "description": "At least two NTP servers configured (redundant authoritative time sources; counts server rows)"
     },
     {
       "vuln_id": "V-246938",

@@ -154,6 +154,9 @@ pub enum ExpectedResult {
     /// Value must match this regex.
     Matches { pattern: String },
 
+    /// The regex `pattern` must match at least `min` times in the actual value.
+    MatchCountAtLeast { pattern: String, min: usize },
+
     /// Value must be >= this number.
     GreaterOrEqual { value: f64 },
 

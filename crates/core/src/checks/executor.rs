@@ -273,6 +273,10 @@ fn evaluate_expected(actual: &str, expected: &ExpectedResult) -> bool {
             .map(|re| re.is_match(actual))
             .unwrap_or(false),
 
+        ExpectedResult::MatchCountAtLeast { pattern, min } => Regex::new(pattern)
+            .map(|re| re.find_iter(actual).count() >= *min)
+            .unwrap_or(false),
+
         ExpectedResult::GreaterOrEqual { value } => actual
             .trim()
             .parse::<f64>()
@@ -300,6 +304,48 @@ fn evaluate_expected(actual: &str, expected: &ExpectedResult) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    const IPV4_LINE_PATTERN: &str = r"(?m)^\d{1,3}(\.\d{1,3}){3}";
+
+    #[test]
+    fn match_count_at_least_matches_two_ipv4_lines() {
+        let expected = ExpectedResult::MatchCountAtLeast {
+            pattern: IPV4_LINE_PATTERN.to_string(),
+            min: 2,
+        };
+
+        assert!(evaluate_expected("192.0.2.1\n198.51.100.2\n", &expected));
+    }
+
+    #[test]
+    fn match_count_at_least_rejects_one_ipv4_line() {
+        let expected = ExpectedResult::MatchCountAtLeast {
+            pattern: IPV4_LINE_PATTERN.to_string(),
+            min: 2,
+        };
+
+        assert!(!evaluate_expected("192.0.2.1\n", &expected));
+    }
+
+    #[test]
+    fn match_count_at_least_zero_always_matches() {
+        let expected = ExpectedResult::MatchCountAtLeast {
+            pattern: IPV4_LINE_PATTERN.to_string(),
+            min: 0,
+        };
+
+        assert!(evaluate_expected("", &expected));
+    }
+
+    #[test]
+    fn match_count_at_least_invalid_regex_returns_false() {
+        let expected = ExpectedResult::MatchCountAtLeast {
+            pattern: "[".to_string(),
+            min: 0,
+        };
+
+        assert!(!evaluate_expected("192.0.2.1\n", &expected));
+    }
 
     fn make_windows_data() -> SystemData {
         let mut data = SystemData {
