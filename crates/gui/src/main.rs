@@ -78,21 +78,15 @@ async fn main() {
 
                 // Only check auth on /api routes, not frontend static files.
                 if req.uri().path().starts_with("/api") {
-                    // Check header first, then query param (for download links).
+                    // The auth token is accepted only through the request header.
                     let header_token = req
                         .headers()
                         .get("X-Auth-Token")
                         .and_then(|v| v.to_str().ok())
                         .unwrap_or("")
                         .to_string();
-                    let query_token = req
-                        .uri()
-                        .query()
-                        .and_then(|q| q.split('&').find_map(|p| p.strip_prefix("token=")))
-                        .unwrap_or("")
-                        .to_string();
 
-                    if !ct_token_eq(&header_token, &token) && !ct_token_eq(&query_token, &token) {
+                    if !ct_token_eq(&header_token, &token) {
                         return Ok(axum::response::IntoResponse::into_response((
                             axum::http::StatusCode::UNAUTHORIZED,
                             "Invalid or missing auth token",

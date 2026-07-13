@@ -83,6 +83,22 @@ async function apiUpload(path, file) {
   return data.data;
 }
 
+async function downloadAuthed(path, fallbackName) {
+  try {
+    const res = await fetch(`${API}${path}`, { headers: { 'X-Auth-Token': AUTH_TOKEN } });
+    if (!res.ok) { toast(`Download failed (${res.status})`, 'error'); return; }
+    const blob = await res.blob();
+    let name = fallbackName;
+    const cd = res.headers.get('Content-Disposition');
+    const m = cd && cd.match(/filename="?([^";]+)"?/);
+    if (m) name = m[1];
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click();
+    a.remove(); URL.revokeObjectURL(url);
+  } catch (e) { toast(`Download failed: ${e.message}`, 'error'); }
+}
+
 // ---------------------------------------------------------------------------
 // Toast Notifications
 // ---------------------------------------------------------------------------
@@ -663,11 +679,11 @@ async function runRemoteScan() {
 // Export Helpers
 // ---------------------------------------------------------------------------
 function exportCkl(id) {
-  window.open(`${API}/export/ckl/${id}?token=${AUTH_TOKEN}`, '_blank');
+  downloadAuthed(`/export/ckl/${id}`, `${id}.ckl`);
 }
 
 function exportCklb(id) {
-  window.open(`${API}/export/cklb/${id}?token=${AUTH_TOKEN}`, '_blank');
+  downloadAuthed(`/export/cklb/${id}`, `${id}.cklb`);
 }
 
 // ---------------------------------------------------------------------------
@@ -970,7 +986,7 @@ async function fetchSingleStig(stig) {
 
 function downloadOfflinePack() {
   toast('Generating offline .stigpack — check your downloads folder. Transfer to air-gapped systems via USB/DVD.', 'info');
-  window.open(`${API}/offline-pack?token=${AUTH_TOKEN}`, '_blank');
+  downloadAuthed('/offline-pack', 'automatestig-offline.stigpack');
 }
 
 function addAssetDialog() {
@@ -1223,7 +1239,7 @@ async function removeCred(id, label) {
 // Export All ZIP
 // ---------------------------------------------------------------------------
 function exportAllZip() {
-  window.open(`${API}/export/all-zip?token=${AUTH_TOKEN}`, '_blank');
+  downloadAuthed('/export/all-zip', 'automatestig-checklists.zip');
   toast('Exporting all checklists as ZIP...', 'info');
 }
 
