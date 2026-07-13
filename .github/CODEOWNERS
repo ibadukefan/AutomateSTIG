@@ -1,0 +1,6 @@
+# Check packs are security-critical logic: a pattern edit can silently flip a
+# fleet's compliance results. Content and evaluation changes require review by
+# a code owner before merge.
+/content/check_packs/            @ibadukefan
+/crates/core/src/checks/         @ibadukefan
+/scripts/validate-check-packs.py @ibadukefan

@@ -96,6 +96,7 @@ jobs:
         with:
           cache-bin: false
       - run: python3 -m py_compile scripts/disa_corpus/*.py scripts/validate-rule-implementations.py
+      - run: python3 scripts/validate-check-packs.py
       - run: python3 -m unittest discover -s scripts/disa_corpus/tests -v
       - run: python3 scripts/disa_corpus/index_disa_downloads.py --seed-only --output /tmp/disa-download-index.json
       - run: python3 scripts/validate-all-coverage.py --repo-root .
