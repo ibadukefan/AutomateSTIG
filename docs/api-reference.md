@@ -18,10 +18,11 @@ On failure, `success` is false and `error` contains the error message.
 
 Auth is enforced on every `/api/*` route except `/api/status`.
 
-Use either:
+Use:
 
 - `X-Auth-Token` header.
-- `?token=` query string for downloads.
+
+Download endpoints also require the header; query-string tokens are intentionally not accepted.
 
 Loopback desktop mode auto-generates a random per-session token and injects it into the served frontend, so the local browser is authenticated automatically. Non-loopback binds require `AUTOMATESTIG_AUTH_TOKEN` with at least 16 characters or the server refuses to start.
 

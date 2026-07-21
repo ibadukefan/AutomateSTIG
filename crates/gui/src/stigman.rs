@@ -54,6 +54,90 @@ impl StigManagerConfig {
             && !self.client_id.is_empty()
             && !self.client_secret.is_empty()
     }
+
+    pub fn validate_urls(&self) -> Result<(), String> {
+        if self.api_url.trim().is_empty() && self.token_url.trim().is_empty() {
+            return Ok(());
+        }
+        if self.api_url.trim().is_empty() || self.token_url.trim().is_empty() {
+            return Err(
+                "STIG Manager api_url and token_url must both be set or both be blank".to_string(),
+            );
+        }
+        validate_stigman_url("api_url", &self.api_url)?;
+        validate_stigman_url("token_url", &self.token_url)?;
+        Ok(())
+    }
+}
+
+/// Whether an environment variable is enabled with a truthy value.
+fn env_flag(name: &str) -> bool {
+    std::env::var(name)
+        .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+        .unwrap_or(false)
+}
+
+fn is_private_or_local_ip(ip: std::net::IpAddr) -> bool {
+    match ip {
+        std::net::IpAddr::V4(v4) => {
+            v4.is_private()
+                || v4.is_loopback()
+                || v4.is_link_local()
+                || v4.is_broadcast()
+                || v4.is_documentation()
+                || v4.is_unspecified()
+                || v4.octets()[0] == 0
+                || v4.octets()[0] >= 224
+        }
+        std::net::IpAddr::V6(v6) => {
+            v6.is_loopback()
+                || v6.is_unspecified()
+                || v6.is_unique_local()
+                || v6.is_unicast_link_local()
+                || v6.segments()[0] & 0xff00 == 0xff00
+        }
+    }
+}
+
+fn hostname_is_local_or_metadata(host: &str) -> bool {
+    let h = host.trim_end_matches('.').to_ascii_lowercase();
+    h == "localhost"
+        || h.ends_with(".localhost")
+        || h == "metadata.google.internal"
+        || h.ends_with(".metadata.google.internal")
+}
+
+/// Validate an outbound STIG Manager/OIDC URL before secrets are sent to it.
+///
+/// Production defaults are intentionally conservative: HTTPS only, no embedded
+/// credentials, and no localhost/private/link-local literal destinations unless
+/// AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS is explicitly set for an isolated lab.
+pub(crate) fn validate_stigman_url(label: &str, raw: &str) -> Result<(), String> {
+    let url = reqwest::Url::parse(raw).map_err(|e| format!("Invalid {label}: {e}"))?;
+    if url.scheme() != "https" {
+        return Err(format!("{label} must use https://"));
+    }
+    if !url.username().is_empty() || url.password().is_some() {
+        return Err(format!("{label} must not include embedded credentials"));
+    }
+    let host = url
+        .host_str()
+        .ok_or_else(|| format!("{label} must include a host"))?;
+    let host_for_ip = host
+        .strip_prefix('[')
+        .and_then(|h| h.strip_suffix(']'))
+        .unwrap_or(host);
+    if hostname_is_local_or_metadata(host_for_ip) {
+        return Err(format!("{label} host is not allowed: {host_for_ip}"));
+    }
+    if let Ok(ip) = host_for_ip.parse::<std::net::IpAddr>() {
+        if is_private_or_local_ip(ip) && !env_flag("AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS") {
+            return Err(format!(
+                "{label} resolves to a private/local literal address; set AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS=1 only in an isolated lab"
+            ));
+        }
+    }
+    Ok(())
 }
 
 /// OAuth2 token with expiry tracking.
@@ -168,9 +252,9 @@ struct TokenResponse {
 impl StigManagerClient {
     /// Create a new client with the given configuration.
     pub fn new(config: StigManagerConfig) -> Result<Self, String> {
-        let allow_invalid_certs = std::env::var("AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS")
-            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
-            .unwrap_or(false);
+        config.validate_urls()?;
+
+        let allow_invalid_certs = env_flag("AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS");
         let accept_invalid_certs = !config.verify_tls && allow_invalid_certs;
         if accept_invalid_certs {
             tracing::warn!(
@@ -462,6 +546,35 @@ mod tests {
             verify_tls: true,
         };
         assert!(configured.is_configured());
+    }
+
+    #[test]
+    fn validate_stigman_urls_reject_unsafe_destinations() {
+        for raw in [
+            "http://stigman.example.mil/api",
+            "https://user:pass@stigman.example.mil/api",
+            "https://localhost/api",
+            "https://127.0.0.1/api",
+            "https://10.0.0.5/api",
+            "https://169.254.169.254/latest/meta-data",
+            "https://[::1]/api",
+            "not-a-url",
+        ] {
+            assert!(
+                validate_stigman_url("api_url", raw).is_err(),
+                "{raw} should be rejected"
+            );
+        }
+    }
+
+    #[test]
+    fn validate_stigman_urls_accept_public_https_hosts() {
+        validate_stigman_url("api_url", "https://stigman.example.mil/api").unwrap();
+        validate_stigman_url(
+            "token_url",
+            "https://keycloak.example.mil/realms/stigman/protocol/openid-connect/token",
+        )
+        .unwrap();
     }
 
     #[test]

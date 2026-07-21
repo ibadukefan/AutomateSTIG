@@ -4,6 +4,7 @@
 //! executes collection commands, and returns the raw output for parsing.
 
 use std::collections::HashMap;
+use std::net::IpAddr;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -43,12 +44,139 @@ pub struct CommandResult {
     pub success: bool,
 }
 
+fn env_flag(name: &str) -> bool {
+    std::env::var(name)
+        .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+        .unwrap_or(false)
+}
+
+fn is_private_or_local_ip(ip: IpAddr) -> bool {
+    match ip {
+        IpAddr::V4(v4) => {
+            v4.is_private()
+                || v4.is_loopback()
+                || v4.is_link_local()
+                || v4.is_broadcast()
+                || v4.is_documentation()
+                || v4.is_unspecified()
+                || v4.octets()[0] == 0
+                || v4.octets()[0] >= 224
+        }
+        IpAddr::V6(v6) => {
+            v6.is_loopback()
+                || v6.is_unspecified()
+                || v6.is_unique_local()
+                || v6.is_unicast_link_local()
+                || v6.segments()[0] & 0xff00 == 0xff00
+        }
+    }
+}
+
+fn ip_in_cidr(ip: IpAddr, cidr: &str) -> bool {
+    let Some((base, prefix)) = cidr.split_once('/') else {
+        return false;
+    };
+    let Ok(base_ip) = base.parse::<IpAddr>() else {
+        return false;
+    };
+    let Ok(prefix) = prefix.parse::<u32>() else {
+        return false;
+    };
+    match (ip, base_ip) {
+        (IpAddr::V4(ip), IpAddr::V4(base)) if prefix <= 32 => {
+            let mask = if prefix == 0 {
+                0
+            } else {
+                u32::MAX << (32 - prefix)
+            };
+            (u32::from(ip) & mask) == (u32::from(base) & mask)
+        }
+        (IpAddr::V6(ip), IpAddr::V6(base)) if prefix <= 128 => {
+            let mask = if prefix == 0 {
+                0
+            } else {
+                u128::MAX << (128 - prefix)
+            };
+            (u128::from(ip) & mask) == (u128::from(base) & mask)
+        }
+        _ => false,
+    }
+}
+
+fn allowlist_entries() -> Vec<String> {
+    std::env::var("AUTOMATESTIG_SSH_TARGET_ALLOWLIST")
+        .unwrap_or_default()
+        .split(',')
+        .map(str::trim)
+        .filter(|entry| !entry.is_empty())
+        .map(ToOwned::to_owned)
+        .collect()
+}
+
+fn host_matches_allowlist(host: &str, entries: &[String]) -> bool {
+    let host_lc = host.trim_end_matches('.').to_ascii_lowercase();
+    let parsed_ip = host_lc.parse::<IpAddr>().ok();
+    entries.iter().any(|entry| {
+        let entry_lc = entry.trim_end_matches('.').to_ascii_lowercase();
+        if let Some(ip) = parsed_ip {
+            if ip_in_cidr(ip, &entry_lc) {
+                return true;
+            }
+        }
+        host_lc == entry_lc
+    })
+}
+
+/// Validate a remote SSH scan destination before opening an outbound connection.
+///
+/// If AUTOMATESTIG_SSH_TARGET_ALLOWLIST is set, every scan host must match an
+/// exact hostname/IP entry or an IP CIDR entry. Private, loopback, link-local,
+/// multicast, documentation, and cloud metadata literal IPs are blocked by
+/// default unless they are explicitly allowlisted or the lab override
+/// AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN=1 is set.
+pub(crate) fn validate_scan_target(host: &str) -> Result<(), String> {
+    let host = host.trim();
+    if host.is_empty() {
+        return Err("SSH scan host must not be empty".to_string());
+    }
+    if host.contains('/') || host.contains('\\') || host.contains('\0') {
+        return Err("SSH scan host contains unsafe characters".to_string());
+    }
+
+    let allowlist = allowlist_entries();
+    let allowlisted = !allowlist.is_empty() && host_matches_allowlist(host, &allowlist);
+    if !allowlist.is_empty() && !allowlisted {
+        return Err("SSH scan host is not in AUTOMATESTIG_SSH_TARGET_ALLOWLIST".to_string());
+    }
+
+    let host_lc = host.trim_end_matches('.').to_ascii_lowercase();
+    if matches!(host_lc.as_str(), "localhost" | "metadata.google.internal")
+        || host_lc.ends_with(".localhost")
+        || host_lc.ends_with(".metadata.google.internal")
+    {
+        return Err("SSH scan host is local/metadata and is not allowed".to_string());
+    }
+
+    if let Ok(ip) = host_lc.parse::<IpAddr>() {
+        if is_private_or_local_ip(ip)
+            && !allowlisted
+            && !env_flag("AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN")
+        {
+            return Err("SSH scan to private/local/link-local literal IP requires explicit allowlist or AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN=1".to_string());
+        }
+    }
+
+    Ok(())
+}
+
 /// Execute a list of commands on a remote host via SSH.
 /// Returns a map of command -> output.
 pub async fn execute_commands(
     config: &SshConfig,
     commands: &[(&str, &str)], // (label, command)
 ) -> Result<HashMap<String, String>, String> {
+    validate_scan_target(&config.host)?;
+
     let russh_config = Arc::new(client::Config {
         inactivity_timeout: Some(Duration::from_secs(config.timeout_secs)),
         ..Default::default()
@@ -274,6 +402,45 @@ fn dirs_or_home() -> std::path::PathBuf {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn validate_scan_target_rejects_private_and_local_literals() {
+        for host in [
+            "127.0.0.1",
+            "10.0.0.5",
+            "172.16.1.10",
+            "192.168.1.10",
+            "169.254.169.254",
+            "::1",
+            "fc00::1",
+            "localhost",
+            "metadata.google.internal",
+        ] {
+            assert!(
+                validate_scan_target(host).is_err(),
+                "{host} should be rejected by default"
+            );
+        }
+    }
+
+    #[test]
+    fn validate_scan_target_accepts_public_hosts() {
+        validate_scan_target("server01.example.mil").unwrap();
+        validate_scan_target("203.0.113.10").unwrap_err(); // documentation range is intentionally blocked
+        validate_scan_target("8.8.8.8").unwrap();
+    }
+
+    #[test]
+    fn allowlist_matches_exact_hosts_and_cidrs() {
+        let entries = vec![
+            "server01.example.mil".to_string(),
+            "10.5.0.0/16".to_string(),
+        ];
+        assert!(host_matches_allowlist("server01.example.mil", &entries));
+        assert!(host_matches_allowlist("10.5.2.3", &entries));
+        assert!(!host_matches_allowlist("server02.example.mil", &entries));
+        assert!(!host_matches_allowlist("10.6.2.3", &entries));
+    }
 
     #[test]
     fn test_ssh_config_serialization() {

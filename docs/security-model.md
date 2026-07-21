@@ -4,10 +4,11 @@
 
 The GUI defaults to localhost-only bind. API auth is enforced on all `/api/*` routes except `/api/status`.
 
-Accepted auth methods:
+Accepted auth method:
 
 - `X-Auth-Token` header.
-- `?token=` query parameter for downloads.
+
+Download endpoints also require `X-Auth-Token`; query-string tokens are not accepted so credentials are not exposed through URL logs, browser history, or referrers.
 
 In loopback desktop mode, the server auto-generates a random per-session token and injects it into the served frontend, so the local browser is authenticated automatically.
 
@@ -28,6 +29,18 @@ The key material is outside the database, but possession of both `data.db` and `
 Secrets encrypted under the previous database-backed key scheme require re-entry after upgrade.
 
 ## Remote Transport Hardening
+
+STIG Manager integration accepts HTTPS URLs only and rejects embedded credentials, localhost, cloud metadata hostnames, and private/local/link-local literal IP addresses by default. Private STIG Manager lab endpoints require:
+
+```bash
+AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS=1
+```
+
+Remote SSH collection validates scan targets before opening outbound connections. Set `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` to a comma-separated list of exact hostnames/IPs or CIDRs to restrict scan destinations. Private/local/link-local literal IP scans are blocked by default unless they match the allowlist or this explicit lab override is set:
+
+```bash
+AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN=1
+```
 
 SSH rejects unknown host keys unless trust-on-first-use is explicitly enabled:
 
@@ -89,6 +102,9 @@ AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1
 | `AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE` | Set to `1` to accept unknown SSH host keys. |
 | `AUTOMATESTIG_ALLOW_INSECURE_WINRM` | Set to `1` to allow plaintext WinRM Basic auth. |
 | `AUTOMATESTIG_ALLOW_INVALID_WINRM_CERTS` | Set to `1` to allow WinRM with TLS verification disabled. |
+| `AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS` | Set to `1` to allow STIG Manager URLs with private/local literal IP hosts for isolated labs. |
+| `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` | Comma-separated exact host/IP/CIDR allowlist for SSH scan targets. |
+| `AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN` | Set to `1` to allow private/local/link-local literal IP SSH scan targets outside the allowlist for isolated labs. |
 | `AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS` | Allow webhook URLs resolving to localhost or private IP addresses. |
 
 ## SSH host-key verification (trust-on-first-use)
