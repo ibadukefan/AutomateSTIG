@@ -30,13 +30,19 @@ Secrets encrypted under the previous database-backed key scheme require re-entry
 
 ## Remote Transport Hardening
 
-STIG Manager integration accepts HTTPS URLs only and rejects embedded credentials, localhost, cloud metadata hostnames, and private/local/link-local literal IP addresses by default. Private STIG Manager lab endpoints require:
+STIG Manager integration accepts HTTPS URLs only and rejects embedded credentials, localhost, cloud metadata hostnames, and private/local/link-local literal IP addresses by default. Before any OAuth token or API request, hostnames are resolved and private/local/link-local DNS results are rejected unless explicitly allowlisted. Prefer a narrow comma-separated host/IP/CIDR allowlist:
+
+```bash
+AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST=stigman.example.mil,keycloak.example.mil,10.20.0.0/16
+```
+
+The legacy broad private-destination override remains for isolated labs only:
 
 ```bash
 AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS=1
 ```
 
-Remote SSH collection validates scan targets before opening outbound connections. Set `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` to a comma-separated list of exact hostnames/IPs or CIDRs to restrict scan destinations. Private/local/link-local literal IP scans are blocked by default unless they match the allowlist or this explicit lab override is set:
+Remote SSH collection validates scan targets before opening outbound connections and revalidates DNS results after resolution. Set `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` to a comma-separated list of exact hostnames/IPs or CIDRs to restrict scan destinations. Private/local/link-local literal IP scans and private DNS results are blocked by default unless they match the allowlist or this explicit lab override is set:
 
 ```bash
 AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN=1
@@ -102,7 +108,9 @@ AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1
 | `AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE` | Set to `1` to accept unknown SSH host keys. |
 | `AUTOMATESTIG_ALLOW_INSECURE_WINRM` | Set to `1` to allow plaintext WinRM Basic auth. |
 | `AUTOMATESTIG_ALLOW_INVALID_WINRM_CERTS` | Set to `1` to allow WinRM with TLS verification disabled. |
-| `AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS` | Set to `1` to allow STIG Manager URLs with private/local literal IP hosts for isolated labs. |
+| `AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST` | Comma-separated exact host/IP/CIDR allowlist for STIG Manager API and token endpoints. |
+| `AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS` | Set to `1` to allow private/local/link-local DNS results for STIG Manager endpoints in isolated labs. |
+| `AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS` | Legacy broad override for private/local literal IP STIG Manager URLs and resolved destinations; prefer `AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST`. |
 | `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` | Comma-separated exact host/IP/CIDR allowlist for SSH scan targets. |
 | `AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN` | Set to `1` to allow private/local/link-local literal IP SSH scan targets outside the allowlist for isolated labs. |
 | `AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS` | Allow webhook URLs resolving to localhost or private IP addresses. |

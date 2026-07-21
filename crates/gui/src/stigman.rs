@@ -10,6 +10,7 @@
 //! - Pull existing reviews for comparison/merge
 
 use serde::{Deserialize, Serialize};
+use std::net::IpAddr;
 use std::time::{Duration, Instant};
 
 /// STIG-Manager connection configuration.
@@ -72,39 +73,16 @@ impl StigManagerConfig {
 
 /// Whether an environment variable is enabled with a truthy value.
 fn env_flag(name: &str) -> bool {
-    std::env::var(name)
-        .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
-        .unwrap_or(false)
+    crate::outbound::env_flag(name)
 }
 
-fn is_private_or_local_ip(ip: std::net::IpAddr) -> bool {
-    match ip {
-        std::net::IpAddr::V4(v4) => {
-            v4.is_private()
-                || v4.is_loopback()
-                || v4.is_link_local()
-                || v4.is_broadcast()
-                || v4.is_documentation()
-                || v4.is_unspecified()
-                || v4.octets()[0] == 0
-                || v4.octets()[0] >= 224
-        }
-        std::net::IpAddr::V6(v6) => {
-            v6.is_loopback()
-                || v6.is_unspecified()
-                || v6.is_unique_local()
-                || v6.is_unicast_link_local()
-                || v6.segments()[0] & 0xff00 == 0xff00
-        }
-    }
+fn stigman_allowlist_entries() -> Vec<String> {
+    crate::outbound::allowlist_entries("AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST")
 }
 
-fn hostname_is_local_or_metadata(host: &str) -> bool {
-    let h = host.trim_end_matches('.').to_ascii_lowercase();
-    h == "localhost"
-        || h.ends_with(".localhost")
-        || h == "metadata.google.internal"
-        || h.ends_with(".metadata.google.internal")
+fn allowlist_matches_stigman_destination(host: &str, ip: Option<IpAddr>) -> bool {
+    let entries = stigman_allowlist_entries();
+    !entries.is_empty() && crate::outbound::host_or_ip_matches_allowlist(host, ip, &entries)
 }
 
 /// Validate an outbound STIG Manager/OIDC URL before secrets are sent to it.
@@ -127,17 +105,38 @@ pub(crate) fn validate_stigman_url(label: &str, raw: &str) -> Result<(), String>
         .strip_prefix('[')
         .and_then(|h| h.strip_suffix(']'))
         .unwrap_or(host);
-    if hostname_is_local_or_metadata(host_for_ip) {
+    if crate::outbound::hostname_is_local_or_metadata(host_for_ip) {
         return Err(format!("{label} host is not allowed: {host_for_ip}"));
     }
     if let Ok(ip) = host_for_ip.parse::<std::net::IpAddr>() {
-        if is_private_or_local_ip(ip) && !env_flag("AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS") {
+        if crate::outbound::is_private_or_local_ip(ip)
+            && !allowlist_matches_stigman_destination(host_for_ip, Some(ip))
+            && !env_flag("AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS")
+        {
             return Err(format!(
                 "{label} resolves to a private/local literal address; set AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS=1 only in an isolated lab"
             ));
         }
     }
     Ok(())
+}
+
+async fn validate_stigman_url_for_connection(label: &str, raw: &str) -> Result<(), String> {
+    validate_stigman_url(label, raw)?;
+    let url = reqwest::Url::parse(raw).map_err(|e| format!("Invalid {label}: {e}"))?;
+    let host = url
+        .host_str()
+        .ok_or_else(|| format!("{label} must include a host"))?;
+    let port = url.port_or_known_default().unwrap_or(443);
+    crate::outbound::validate_resolved_destination(
+        label,
+        host,
+        port,
+        "AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST",
+        "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS",
+        Some("AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS"),
+    )
+    .await
 }
 
 /// OAuth2 token with expiry tracking.
@@ -288,6 +287,8 @@ impl StigManagerClient {
             }
         }
 
+        validate_stigman_url_for_connection("token_url", &self.config.token_url).await?;
+
         let params = [
             ("grant_type", "client_credentials"),
             ("client_id", &self.config.client_id),
@@ -339,6 +340,7 @@ impl StigManagerClient {
     /// Test the connection — authenticate and fetch user info.
     pub async fn test_connection(&self) -> Result<String, String> {
         self.authenticate().await?;
+        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         let resp = self
@@ -360,6 +362,7 @@ impl StigManagerClient {
 
     /// List all collections the user has access to.
     pub async fn list_collections(&self) -> Result<Vec<SmCollection>, String> {
+        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         let resp = self
@@ -375,6 +378,7 @@ impl StigManagerClient {
 
     /// List assets in a collection.
     pub async fn list_assets(&self, collection_id: &str) -> Result<Vec<SmAsset>, String> {
+        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         let resp = self
@@ -397,6 +401,7 @@ impl StigManagerClient {
         collection_id: &str,
         asset_id: &str,
     ) -> Result<Vec<SmStig>, String> {
+        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         let resp = self
@@ -422,6 +427,7 @@ impl StigManagerClient {
         ip: Option<&str>,
         benchmark_id: &str,
     ) -> Result<SmAsset, String> {
+        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         // AssetCreateOrReplace requires name, collectionId, description, ip,
@@ -462,6 +468,7 @@ impl StigManagerClient {
         asset_id: &str,
         reviews: Vec<SmReview>,
     ) -> Result<serde_json::Value, String> {
+        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         let resp = self
@@ -565,6 +572,15 @@ mod tests {
                 "{raw} should be rejected"
             );
         }
+    }
+
+    #[test]
+    fn validate_stigman_allows_private_literal_when_exact_allowlisted() {
+        assert!(crate::outbound::host_or_ip_matches_allowlist(
+            "10.10.1.5",
+            Some("10.10.1.5".parse().unwrap()),
+            &["10.10.1.5".to_string()]
+        ));
     }
 
     #[test]

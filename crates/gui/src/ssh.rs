@@ -4,7 +4,6 @@
 //! executes collection commands, and returns the raw output for parsing.
 
 use std::collections::HashMap;
-use std::net::IpAddr;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -44,87 +43,12 @@ pub struct CommandResult {
     pub success: bool,
 }
 
-fn env_flag(name: &str) -> bool {
-    std::env::var(name)
-        .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
-        .unwrap_or(false)
-}
-
-fn is_private_or_local_ip(ip: IpAddr) -> bool {
-    match ip {
-        IpAddr::V4(v4) => {
-            v4.is_private()
-                || v4.is_loopback()
-                || v4.is_link_local()
-                || v4.is_broadcast()
-                || v4.is_documentation()
-                || v4.is_unspecified()
-                || v4.octets()[0] == 0
-                || v4.octets()[0] >= 224
-        }
-        IpAddr::V6(v6) => {
-            v6.is_loopback()
-                || v6.is_unspecified()
-                || v6.is_unique_local()
-                || v6.is_unicast_link_local()
-                || v6.segments()[0] & 0xff00 == 0xff00
-        }
-    }
-}
-
-fn ip_in_cidr(ip: IpAddr, cidr: &str) -> bool {
-    let Some((base, prefix)) = cidr.split_once('/') else {
-        return false;
-    };
-    let Ok(base_ip) = base.parse::<IpAddr>() else {
-        return false;
-    };
-    let Ok(prefix) = prefix.parse::<u32>() else {
-        return false;
-    };
-    match (ip, base_ip) {
-        (IpAddr::V4(ip), IpAddr::V4(base)) if prefix <= 32 => {
-            let mask = if prefix == 0 {
-                0
-            } else {
-                u32::MAX << (32 - prefix)
-            };
-            (u32::from(ip) & mask) == (u32::from(base) & mask)
-        }
-        (IpAddr::V6(ip), IpAddr::V6(base)) if prefix <= 128 => {
-            let mask = if prefix == 0 {
-                0
-            } else {
-                u128::MAX << (128 - prefix)
-            };
-            (u128::from(ip) & mask) == (u128::from(base) & mask)
-        }
-        _ => false,
-    }
-}
-
-fn allowlist_entries() -> Vec<String> {
-    std::env::var("AUTOMATESTIG_SSH_TARGET_ALLOWLIST")
-        .unwrap_or_default()
-        .split(',')
-        .map(str::trim)
-        .filter(|entry| !entry.is_empty())
-        .map(ToOwned::to_owned)
-        .collect()
+fn ssh_allowlist_entries() -> Vec<String> {
+    crate::outbound::allowlist_entries("AUTOMATESTIG_SSH_TARGET_ALLOWLIST")
 }
 
 fn host_matches_allowlist(host: &str, entries: &[String]) -> bool {
-    let host_lc = host.trim_end_matches('.').to_ascii_lowercase();
-    let parsed_ip = host_lc.parse::<IpAddr>().ok();
-    entries.iter().any(|entry| {
-        let entry_lc = entry.trim_end_matches('.').to_ascii_lowercase();
-        if let Some(ip) = parsed_ip {
-            if ip_in_cidr(ip, &entry_lc) {
-                return true;
-            }
-        }
-        host_lc == entry_lc
-    })
+    crate::outbound::host_or_ip_matches_allowlist(host, None, entries)
 }
 
 /// Validate a remote SSH scan destination before opening an outbound connection.
@@ -143,7 +67,7 @@ pub(crate) fn validate_scan_target(host: &str) -> Result<(), String> {
         return Err("SSH scan host contains unsafe characters".to_string());
     }
 
-    let allowlist = allowlist_entries();
+    let allowlist = ssh_allowlist_entries();
     let allowlisted = !allowlist.is_empty() && host_matches_allowlist(host, &allowlist);
     if !allowlist.is_empty() && !allowlisted {
         return Err("SSH scan host is not in AUTOMATESTIG_SSH_TARGET_ALLOWLIST".to_string());
@@ -157,10 +81,10 @@ pub(crate) fn validate_scan_target(host: &str) -> Result<(), String> {
         return Err("SSH scan host is local/metadata and is not allowed".to_string());
     }
 
-    if let Ok(ip) = host_lc.parse::<IpAddr>() {
-        if is_private_or_local_ip(ip)
+    if let Ok(ip) = host_lc.parse::<std::net::IpAddr>() {
+        if crate::outbound::is_private_or_local_ip(ip)
             && !allowlisted
-            && !env_flag("AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN")
+            && !crate::outbound::env_flag("AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN")
         {
             return Err("SSH scan to private/local/link-local literal IP requires explicit allowlist or AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN=1".to_string());
         }
@@ -176,6 +100,15 @@ pub async fn execute_commands(
     commands: &[(&str, &str)], // (label, command)
 ) -> Result<HashMap<String, String>, String> {
     validate_scan_target(&config.host)?;
+    crate::outbound::validate_resolved_destination(
+        "SSH scan target",
+        &config.host,
+        config.port,
+        "AUTOMATESTIG_SSH_TARGET_ALLOWLIST",
+        "AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN",
+        None,
+    )
+    .await?;
 
     let russh_config = Arc::new(client::Config {
         inactivity_timeout: Some(Duration::from_secs(config.timeout_secs)),

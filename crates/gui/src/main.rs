@@ -5,6 +5,7 @@
 
 mod api;
 pub mod disa;
+mod outbound;
 pub mod secrets;
 pub mod ssh;
 mod state;
