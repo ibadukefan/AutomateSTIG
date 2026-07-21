@@ -167,6 +167,15 @@ const ALLOWED_URL_PREFIXES: &[&str] = &[
     "https://cyber.mil/",
 ];
 
+/// Maximum compressed upload/download size accepted for DISA XCCDF ZIPs.
+pub(crate) const MAX_XCCDF_ZIP_BYTES: usize = 100 * 1024 * 1024;
+/// Maximum ZIP members inspected for DISA XCCDF import.
+pub(crate) const MAX_XCCDF_ZIP_ENTRIES: usize = 512;
+/// Maximum total declared uncompressed bytes across ZIP members.
+pub(crate) const MAX_XCCDF_ZIP_UNCOMPRESSED_BYTES: u64 = 512 * 1024 * 1024;
+/// Maximum uncompressed bytes read from any single XCCDF XML member.
+pub(crate) const MAX_XCCDF_XML_BYTES: u64 = 50 * 1024 * 1024;
+
 /// Validate a URL is on the DISA allowlist. Prevents SSRF attacks.
 fn validate_disa_url(url: &str) -> Result<(), String> {
     if ALLOWED_URL_PREFIXES
@@ -180,6 +189,52 @@ fn validate_disa_url(url: &str) -> Result<(), String> {
             url.chars().take(100).collect::<String>()
         ))
     }
+}
+
+/// Validate a DISA/XCCDF ZIP before parsing XML from it.
+pub(crate) fn validate_xccdf_zip_limits<R: std::io::Read + std::io::Seek>(
+    archive: &mut zip::ZipArchive<R>,
+) -> Result<(), String> {
+    if archive.len() > MAX_XCCDF_ZIP_ENTRIES {
+        return Err(format!(
+            "ZIP has too many entries: {} > {}",
+            archive.len(),
+            MAX_XCCDF_ZIP_ENTRIES
+        ));
+    }
+
+    let mut total_uncompressed = 0u64;
+    for i in 0..archive.len() {
+        let file = archive
+            .by_index(i)
+            .map_err(|e| format!("Failed to inspect ZIP entry {}: {}", i, e))?;
+        let name = file.name().to_string();
+        if name.contains('\\') || name.contains('\0') || file.enclosed_name().is_none() {
+            return Err(format!("ZIP entry has unsafe path: {}", name));
+        }
+        total_uncompressed = total_uncompressed
+            .checked_add(file.size())
+            .ok_or_else(|| "ZIP declared size overflow".to_string())?;
+        if total_uncompressed > MAX_XCCDF_ZIP_UNCOMPRESSED_BYTES {
+            return Err(format!(
+                "ZIP expands beyond limit: {} > {} bytes",
+                total_uncompressed, MAX_XCCDF_ZIP_UNCOMPRESSED_BYTES
+            ));
+        }
+        let lower = name.to_lowercase();
+        if (lower.ends_with("-xccdf.xml") || lower.ends_with("_xccdf.xml"))
+            && file.size() > MAX_XCCDF_XML_BYTES
+        {
+            return Err(format!(
+                "XCCDF XML member is too large: {} has {} bytes, limit {}",
+                name,
+                file.size(),
+                MAX_XCCDF_XML_BYTES
+            ));
+        }
+    }
+
+    Ok(())
 }
 
 /// Download a STIG ZIP from DISA and import it into the library.
@@ -210,6 +265,13 @@ pub async fn download_and_import(url: &str, state: &AppState) -> Result<FetchRes
         .bytes()
         .await
         .map_err(|e| format!("Failed to read download: {}", e))?;
+    if bytes.len() > MAX_XCCDF_ZIP_BYTES {
+        return Err(format!(
+            "Downloaded ZIP is too large: {} > {} bytes",
+            bytes.len(),
+            MAX_XCCDF_ZIP_BYTES
+        ));
+    }
 
     // Process the ZIP.
     import_zip_bytes(&bytes, state)
@@ -259,6 +321,7 @@ pub async fn fetch_all_content(state: &AppState) -> Result<FetchResult, String> 
 fn import_zip_bytes(data: &[u8], state: &AppState) -> Result<FetchResult, String> {
     let cursor = std::io::Cursor::new(data);
     let mut archive = zip::ZipArchive::new(cursor).map_err(|e| format!("Invalid ZIP: {}", e))?;
+    validate_xccdf_zip_limits(&mut archive)?;
 
     let mut result = FetchResult {
         new_benchmarks: 0,
@@ -432,6 +495,38 @@ pub struct UpdateCheckResult {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn validates_xccdf_zip_limits_reject_path_traversal() {
+        let mut bytes = std::io::Cursor::new(Vec::new());
+        {
+            let mut writer = zip::ZipWriter::new(&mut bytes);
+            let options = zip::write::SimpleFileOptions::default();
+            writer.start_file("../evil-xccdf.xml", options).unwrap();
+            std::io::Write::write_all(&mut writer, b"<Benchmark/>").unwrap();
+            writer.finish().unwrap();
+        }
+
+        let cursor = std::io::Cursor::new(bytes.into_inner());
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        assert!(validate_xccdf_zip_limits(&mut archive).is_err());
+    }
+
+    #[test]
+    fn validates_xccdf_zip_limits_accept_safe_xccdf_member() {
+        let mut bytes = std::io::Cursor::new(Vec::new());
+        {
+            let mut writer = zip::ZipWriter::new(&mut bytes);
+            let options = zip::write::SimpleFileOptions::default();
+            writer.start_file("safe/sample-xccdf.xml", options).unwrap();
+            std::io::Write::write_all(&mut writer, b"<Benchmark/>").unwrap();
+            writer.finish().unwrap();
+        }
+
+        let cursor = std::io::Cursor::new(bytes.into_inner());
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        validate_xccdf_zip_limits(&mut archive).unwrap();
+    }
 
     #[test]
     fn parses_disa_download_links_without_html_parser_dependency() {

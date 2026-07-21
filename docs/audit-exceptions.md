@@ -20,4 +20,12 @@ Warnings that do not make `cargo audit` fail are still tracked during release re
 - Removed the GUI dependency on `scraper`, which removed the transitive unmaintained `fxhash` warning from the audit graph.
 - Updated the lockfile to `rand 0.8.6`, clearing the prior `rand 0.8.5` RustSec warning.
 
-As of the current lockfile, `cargo audit --ignore RUSTSEC-2023-0071` completes without additional warnings.
+## Current warning backlog
+
+`cargo audit --ignore RUSTSEC-2023-0071` may still report warning-only dependency hygiene items. These do not currently fail CI, but they must be reviewed before release:
+
+- `proc-macro-error2` unmaintained via `include-flate`/`rust-embed`.
+- `anyhow` unsound advisory `RUSTSEC-2026-0190`; monitor for upstream fixed release and upgrade promptly.
+- `spin 0.9.8` yanked via the current Axum/multipart dependency graph.
+
+These warnings are tracked separately from failing vulnerability advisories because the current supported AutomateSTIG modes do not expose a practical exploit path for them.

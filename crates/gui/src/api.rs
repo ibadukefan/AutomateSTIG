@@ -305,10 +305,20 @@ async fn import_disa(
         };
 
         if filename.ends_with(".zip") {
+            if data.len() > crate::disa::MAX_XCCDF_ZIP_BYTES {
+                return api_error(&format!(
+                    "ZIP file too large: {} > {} bytes",
+                    data.len(),
+                    crate::disa::MAX_XCCDF_ZIP_BYTES
+                ));
+            }
             // Parse ZIP for XCCDF files.
             let cursor = std::io::Cursor::new(&data);
             match zip::ZipArchive::new(cursor) {
                 Ok(mut archive) => {
+                    if let Err(e) = crate::disa::validate_xccdf_zip_limits(&mut archive) {
+                        return api_error(&format!("Unsafe ZIP file: {}", e));
+                    }
                     for i in 0..archive.len() {
                         let mut file = match archive.by_index(i) {
                             Ok(f) => f,
@@ -963,6 +973,10 @@ async fn stigman_set_config(
     Json(mut body): Json<crate::stigman::StigManagerConfig>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
+
+    if let Err(e) = body.validate_urls() {
+        return api_error(&e);
+    }
 
     // Encrypt the client secret before storing.
     if !body.client_secret.is_empty() {
@@ -2012,6 +2026,10 @@ async fn scan_ssh(
     State(state): State<AppState>,
     Json(req): Json<SshScanRequest>,
 ) -> Json<serde_json::Value> {
+    if let Err(e) = crate::ssh::validate_scan_target(&req.host) {
+        return api_error(&e);
+    }
+
     let ssh_config = crate::ssh::SshConfig {
         host: req.host.clone(),
         port: req.port.unwrap_or(22),
