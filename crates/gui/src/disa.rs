@@ -10,6 +10,7 @@
 use std::io::Read;
 use std::time::Duration;
 
+use reqwest::Url;
 use serde::Serialize;
 
 use automatestig_parsers::xccdf;
@@ -160,12 +161,8 @@ fn strip_html(input: &str) -> String {
         .replace("&#39;", "'")
 }
 
-/// Allowed URL prefixes for DISA content downloads.
-const ALLOWED_URL_PREFIXES: &[&str] = &[
-    "https://public.cyber.mil/",
-    "https://dl.dod.cyber.mil/",
-    "https://cyber.mil/",
-];
+/// Exact hostnames allowed for DISA content downloads.
+const ALLOWED_DISA_HOSTS: &[&str] = &["public.cyber.mil", "dl.dod.cyber.mil", "cyber.mil"];
 
 /// Maximum compressed upload/download size accepted for DISA XCCDF ZIPs.
 pub(crate) const MAX_XCCDF_ZIP_BYTES: usize = 100 * 1024 * 1024;
@@ -177,29 +174,82 @@ pub(crate) const MAX_XCCDF_ZIP_UNCOMPRESSED_BYTES: u64 = 512 * 1024 * 1024;
 pub(crate) const MAX_XCCDF_XML_BYTES: u64 = 50 * 1024 * 1024;
 
 /// Validate a URL is on the DISA allowlist. Prevents SSRF attacks.
-fn validate_disa_url(url: &str) -> Result<(), String> {
-    if ALLOWED_URL_PREFIXES
-        .iter()
-        .any(|prefix| url.starts_with(prefix))
-    {
-        Ok(())
-    } else {
-        Err(format!(
-            "URL not on allowlist. Only DISA domains (public.cyber.mil, dl.dod.cyber.mil) are permitted. Got: {}",
-            url.chars().take(100).collect::<String>()
-        ))
+fn validate_disa_url(url: &str) -> Result<Url, String> {
+    let parsed = Url::parse(url).map_err(|e| format!("Invalid DISA URL: {e}"))?;
+    if parsed.scheme() != "https" {
+        return Err("DISA URL must use https://".to_string());
     }
+    if !parsed.username().is_empty() || parsed.password().is_some() {
+        return Err("DISA URL must not include embedded credentials".to_string());
+    }
+    let host = parsed
+        .host_str()
+        .ok_or_else(|| "DISA URL must include a host".to_string())?
+        .trim_end_matches('.')
+        .to_ascii_lowercase();
+    if !ALLOWED_DISA_HOSTS.iter().any(|allowed| *allowed == host) {
+        return Err(format!(
+            "URL not on allowlist. Only DISA hosts ({}) are permitted. Got: {}",
+            ALLOWED_DISA_HOSTS.join(", "),
+            url.chars().take(100).collect::<String>()
+        ));
+    }
+    Ok(parsed)
+}
+
+fn append_download_chunk(buf: &mut Vec<u8>, chunk: &[u8], limit: usize) -> Result<(), String> {
+    let next_len = buf
+        .len()
+        .checked_add(chunk.len())
+        .ok_or_else(|| "Downloaded ZIP size overflow".to_string())?;
+    if next_len > limit {
+        return Err(format!(
+            "Downloaded ZIP is too large: {} > {} bytes",
+            next_len, limit
+        ));
+    }
+    buf.extend_from_slice(chunk);
+    Ok(())
+}
+
+async fn read_response_capped(
+    mut response: reqwest::Response,
+    limit: usize,
+) -> Result<Vec<u8>, String> {
+    let mut bytes = Vec::new();
+    while let Some(chunk) = response
+        .chunk()
+        .await
+        .map_err(|e| format!("Failed to read download: {}", e))?
+    {
+        append_download_chunk(&mut bytes, &chunk, limit)?;
+    }
+    Ok(bytes)
 }
 
 /// Validate a DISA/XCCDF ZIP before parsing XML from it.
 pub(crate) fn validate_xccdf_zip_limits<R: std::io::Read + std::io::Seek>(
     archive: &mut zip::ZipArchive<R>,
 ) -> Result<(), String> {
-    if archive.len() > MAX_XCCDF_ZIP_ENTRIES {
+    validate_xccdf_zip_limits_with_caps(
+        archive,
+        MAX_XCCDF_ZIP_ENTRIES,
+        MAX_XCCDF_ZIP_UNCOMPRESSED_BYTES,
+        MAX_XCCDF_XML_BYTES,
+    )
+}
+
+fn validate_xccdf_zip_limits_with_caps<R: std::io::Read + std::io::Seek>(
+    archive: &mut zip::ZipArchive<R>,
+    max_entries: usize,
+    max_uncompressed_bytes: u64,
+    max_xccdf_xml_bytes: u64,
+) -> Result<(), String> {
+    if archive.len() > max_entries {
         return Err(format!(
             "ZIP has too many entries: {} > {}",
             archive.len(),
-            MAX_XCCDF_ZIP_ENTRIES
+            max_entries
         ));
     }
 
@@ -215,21 +265,21 @@ pub(crate) fn validate_xccdf_zip_limits<R: std::io::Read + std::io::Seek>(
         total_uncompressed = total_uncompressed
             .checked_add(file.size())
             .ok_or_else(|| "ZIP declared size overflow".to_string())?;
-        if total_uncompressed > MAX_XCCDF_ZIP_UNCOMPRESSED_BYTES {
+        if total_uncompressed > max_uncompressed_bytes {
             return Err(format!(
                 "ZIP expands beyond limit: {} > {} bytes",
-                total_uncompressed, MAX_XCCDF_ZIP_UNCOMPRESSED_BYTES
+                total_uncompressed, max_uncompressed_bytes
             ));
         }
         let lower = name.to_lowercase();
         if (lower.ends_with("-xccdf.xml") || lower.ends_with("_xccdf.xml"))
-            && file.size() > MAX_XCCDF_XML_BYTES
+            && file.size() > max_xccdf_xml_bytes
         {
             return Err(format!(
                 "XCCDF XML member is too large: {} has {} bytes, limit {}",
                 name,
                 file.size(),
-                MAX_XCCDF_XML_BYTES
+                max_xccdf_xml_bytes
             ));
         }
     }
@@ -239,17 +289,24 @@ pub(crate) fn validate_xccdf_zip_limits<R: std::io::Read + std::io::Seek>(
 
 /// Download a STIG ZIP from DISA and import it into the library.
 pub async fn download_and_import(url: &str, state: &AppState) -> Result<FetchResult, String> {
-    validate_disa_url(url)?;
+    let parsed_url = validate_disa_url(url)?;
 
     let client = reqwest::Client::builder()
         .timeout(Duration::from_secs(120))
+        .redirect(reqwest::redirect::Policy::custom(|attempt| {
+            if validate_disa_url(attempt.url().as_str()).is_ok() {
+                attempt.follow()
+            } else {
+                attempt.stop()
+            }
+        }))
         .user_agent("AutomateSTIG/0.1")
         .build()
         .map_err(|e| format!("HTTP client error: {}", e))?;
 
     // Download the ZIP.
     let response = client
-        .get(url)
+        .get(parsed_url)
         .send()
         .await
         .map_err(|e| format!("Download failed: {}", e))?;
@@ -261,17 +318,7 @@ pub async fn download_and_import(url: &str, state: &AppState) -> Result<FetchRes
         ));
     }
 
-    let bytes = response
-        .bytes()
-        .await
-        .map_err(|e| format!("Failed to read download: {}", e))?;
-    if bytes.len() > MAX_XCCDF_ZIP_BYTES {
-        return Err(format!(
-            "Downloaded ZIP is too large: {} > {} bytes",
-            bytes.len(),
-            MAX_XCCDF_ZIP_BYTES
-        ));
-    }
+    let bytes = read_response_capped(response, MAX_XCCDF_ZIP_BYTES).await?;
 
     // Process the ZIP.
     import_zip_bytes(&bytes, state)
@@ -496,6 +543,20 @@ pub struct UpdateCheckResult {
 mod tests {
     use super::*;
 
+    fn zip_with_files(files: &[(&str, &[u8])]) -> Vec<u8> {
+        let mut bytes = std::io::Cursor::new(Vec::new());
+        {
+            let mut writer = zip::ZipWriter::new(&mut bytes);
+            let options = zip::write::SimpleFileOptions::default();
+            for (name, content) in files {
+                writer.start_file(*name, options).unwrap();
+                std::io::Write::write_all(&mut writer, content).unwrap();
+            }
+            writer.finish().unwrap();
+        }
+        bytes.into_inner()
+    }
+
     #[test]
     fn validates_xccdf_zip_limits_reject_path_traversal() {
         let mut bytes = std::io::Cursor::new(Vec::new());
@@ -526,6 +587,70 @@ mod tests {
         let cursor = std::io::Cursor::new(bytes.into_inner());
         let mut archive = zip::ZipArchive::new(cursor).unwrap();
         validate_xccdf_zip_limits(&mut archive).unwrap();
+    }
+
+    #[test]
+    fn rejects_non_disa_urls_and_embedded_credentials() {
+        for url in [
+            "http://public.cyber.mil/stigs/downloads/file.zip",
+            "https://user:pass@public.cyber.mil/stigs/downloads/file.zip",
+            "https://public.cyber.mil.evil.example/file.zip",
+            "https://127.0.0.1/file.zip",
+        ] {
+            assert!(validate_disa_url(url).is_err(), "{url} should be rejected");
+        }
+        validate_disa_url("https://public.cyber.mil/stigs/downloads/file.zip").unwrap();
+        validate_disa_url("https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/file.zip")
+            .unwrap();
+    }
+
+    #[test]
+    fn capped_download_accumulator_rejects_over_limit_before_buffering_more() {
+        let mut buf = Vec::new();
+        append_download_chunk(&mut buf, b"12345", 8).unwrap();
+        assert!(append_download_chunk(&mut buf, b"6789", 8).is_err());
+        assert_eq!(buf, b"12345");
+    }
+
+    #[test]
+    fn validates_xccdf_zip_limits_reject_too_many_entries() {
+        let zip = zip_with_files(&[("one.txt", b"1"), ("two.txt", b"2")]);
+        let cursor = std::io::Cursor::new(zip);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        assert!(validate_xccdf_zip_limits_with_caps(&mut archive, 1, 100, 100).is_err());
+    }
+
+    #[test]
+    fn validates_xccdf_zip_limits_reject_total_uncompressed_over_cap() {
+        let zip = zip_with_files(&[("one.txt", b"12345"), ("two.txt", b"67890")]);
+        let cursor = std::io::Cursor::new(zip);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        assert!(validate_xccdf_zip_limits_with_caps(&mut archive, 10, 9, 100).is_err());
+    }
+
+    #[test]
+    fn validates_xccdf_zip_limits_reject_oversized_xccdf_member() {
+        let zip = zip_with_files(&[("sample-xccdf.xml", b"0123456789")]);
+        let cursor = std::io::Cursor::new(zip);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        assert!(validate_xccdf_zip_limits_with_caps(&mut archive, 10, 100, 5).is_err());
+    }
+
+    #[test]
+    fn validates_xccdf_zip_limits_reject_windows_absolute_and_null_paths() {
+        for name in [
+            "C:\\temp\\evil-xccdf.xml",
+            "/tmp/evil-xccdf.xml",
+            "evil\0-xccdf.xml",
+        ] {
+            let zip = zip_with_files(&[(name, b"<Benchmark/>")]);
+            let cursor = std::io::Cursor::new(zip);
+            let mut archive = zip::ZipArchive::new(cursor).unwrap();
+            assert!(
+                validate_xccdf_zip_limits(&mut archive).is_err(),
+                "{name} should be rejected"
+            );
+        }
     }
 
     #[test]

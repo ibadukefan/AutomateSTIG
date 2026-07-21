@@ -47,7 +47,7 @@ curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/instal
 irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-windows.ps1 | iex
 ```
 
-See [installation](docs/installation.md) for manual release downloads, checksums, and build-from-source instructions.
+See [installation](docs/installation.md) for manual release downloads, checksums, and build-from-source instructions. See [security model](docs/security-model.md) and [connected-mode threat model](docs/connected-mode-threat-model.md) before enabling DISA fetch, STIG Manager, SSH scan, or webhook integrations.
 
 Build from source requires the Rust stable toolchain.
 
