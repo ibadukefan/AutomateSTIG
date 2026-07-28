@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["**"]
+    branches: ["main"]
     tags: ["v*"]
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
@@ -140,9 +140,8 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@efcb852328a9f50117170cc43094fb6f09eaf1ae
-      - uses: taiki-e/install-action@82fc405565b9cf90abfe700ba43b4751ce2fe422
-        with:
-          tool: cargo-fuzz
+      - name: Install cargo-fuzz for the runner host
+        run: cargo install cargo-fuzz --locked --version 0.13.2
       - name: Run bounded archive fuzz corpus and mutations
         run: >-
           cargo fuzz run safe_zip_archive fuzz/corpus/safe_zip_archive --

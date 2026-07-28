@@ -544,6 +544,19 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             allowed = run(command, root)
             self.assertEqual(allowed.returncode, 0, allowed.stderr)
 
+    def test_fuzz_job_builds_pinned_cargo_fuzz_for_runner_host(self):
+        workflow = (REPO / ".github/workflows/ci.yml").read_text()
+        self.assertIn('branches: ["main"]', workflow)
+        self.assertNotIn('branches: ["**"]', workflow)
+        job = workflow.split("  archive-fuzz-smoke:", 1)[1].split(
+            "  coverage-validation:", 1
+        )[0]
+        self.assertRegex(
+            job,
+            r"cargo install cargo-fuzz --locked --version \d+\.\d+\.\d+",
+        )
+        self.assertNotIn("tool: cargo-fuzz", job)
+
     def test_release_evidence_allows_only_evidence_after_approval(self):
         cases = (
             (False, False, False, False),
