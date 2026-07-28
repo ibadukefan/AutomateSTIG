@@ -19,8 +19,8 @@ requirement. The current boundary is:
 
 - ONTAP: 22 reviewed, 16 automated, 6 manual.
 - FreeBSD/GPOS: 30 reviewed, 3 automated, 27 manual.
-- Cisco IOS-XE Router NDM: 34 reviewed, 18 automated, 16 manual.
-- Total: 86 reviewed candidate rules, 37 automated and 49 manual.
+- Cisco IOS-XE Router NDM: 34 reviewed, 21 automated, 13 manual.
+- Total: 86 reviewed candidate rules, 40 automated and 46 manual.
 
 Regenerate all three inventories after a reviewed pack change:
 

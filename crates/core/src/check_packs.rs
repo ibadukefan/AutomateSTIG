@@ -1,6 +1,8 @@
 //! Check-pack loading with deterministic source precedence.
 
 use serde::de::DeserializeOwned;
+use serde::Serialize;
+use sha2::{Digest, Sha256};
 use std::collections::HashSet;
 #[cfg(test)]
 use std::path::Path;
@@ -12,6 +14,80 @@ use crate::library::StigLibrary;
 #[folder = "../../content/check_packs"]
 #[include = "*.json"]
 struct EmbeddedCheckPacks;
+
+fn append_canonical_json(value: &serde_json::Value, output: &mut String) -> serde_json::Result<()> {
+    match value {
+        serde_json::Value::Null => output.push_str("null"),
+        serde_json::Value::Bool(value) => {
+            output.push_str(if *value { "true" } else { "false" });
+        }
+        serde_json::Value::Number(value) => output.push_str(&value.to_string()),
+        serde_json::Value::String(value) => {
+            output.push_str(&serde_json::to_string(value)?);
+        }
+        serde_json::Value::Array(values) => {
+            output.push('[');
+            for (index, value) in values.iter().enumerate() {
+                if index > 0 {
+                    output.push(',');
+                }
+                append_canonical_json(value, output)?;
+            }
+            output.push(']');
+        }
+        serde_json::Value::Object(values) => {
+            output.push('{');
+            let mut keys: Vec<_> = values.keys().collect();
+            keys.sort_unstable();
+            for (index, key) in keys.into_iter().enumerate() {
+                if index > 0 {
+                    output.push(',');
+                }
+                output.push_str(&serde_json::to_string(key)?);
+                output.push(':');
+                append_canonical_json(&values[key], output)?;
+            }
+            output.push('}');
+        }
+    }
+    Ok(())
+}
+
+/// Stable semantic digest used in checklist provenance and live decision
+/// oracles. Object keys are sorted recursively, arrays retain source order,
+/// serde defaults remain explicit, and strings remain UTF-8.
+pub fn canonical_json_sha256<T: Serialize>(value: &T) -> crate::Result<String> {
+    let value = serde_json::to_value(value)?;
+    let mut canonical = String::new();
+    append_canonical_json(&value, &mut canonical)?;
+    Ok(format!("{:x}", Sha256::digest(canonical.as_bytes())))
+}
+
+#[derive(Serialize)]
+struct EvaluationPlanBinding<'a> {
+    stig_id: &'a str,
+    stig_release: &'a str,
+    benchmark_sha256: &'a str,
+    check_pack_sha256: &'a str,
+    organization_policy_sha256: Option<&'a str>,
+}
+
+/// Bind every effective input which can change an automated determination.
+pub fn evaluation_plan_sha256(
+    stig_id: &str,
+    stig_release: &str,
+    benchmark_sha256: &str,
+    check_pack_sha256: &str,
+    organization_policy_sha256: Option<&str>,
+) -> crate::Result<String> {
+    canonical_json_sha256(&EvaluationPlanBinding {
+        stig_id,
+        stig_release,
+        benchmark_sha256,
+        check_pack_sha256,
+        organization_policy_sha256,
+    })
+}
 
 #[derive(Debug, Default)]
 pub struct CheckPackRegistry {
@@ -222,6 +298,14 @@ pub fn validate_pack(pack: &CheckPack) -> crate::Result<()> {
                 pack.stig_id, definition.vuln_id
             )));
         }
+        validate_typed_check_identity(&definition.vuln_id, &definition.check, true).map_err(
+            |error| {
+                crate::Error::Other(format!(
+                    "check pack {} rule {} has an invalid typed-check identity: {error}",
+                    pack.stig_id, definition.vuln_id
+                ))
+            },
+        )?;
         validate_check_capabilities(pack.platform, &definition.check).map_err(|error| {
             crate::Error::Other(format!(
                 "check pack {} rule {} is not read-only: {error}",
@@ -234,6 +318,43 @@ pub fn validate_pack(pack: &CheckPack) -> crate::Result<()> {
                 pack.stig_id, definition.vuln_id
             ))
         })?;
+    }
+    Ok(())
+}
+
+fn validate_typed_check_identity(
+    vuln_id: &str,
+    check: &Check,
+    top_level: bool,
+) -> Result<(), String> {
+    let expected_vuln_id = match check {
+        Check::CiscoVtySessionLimit => Some("V-215807"),
+        Check::CiscoLoggingBufferCapacity => Some("V-215836"),
+        Check::CiscoLoggingTrapSeverity => Some("V-215837"),
+        Check::All { checks } | Check::Any { checks } => {
+            for nested in checks {
+                validate_typed_check_identity(vuln_id, nested, false)?;
+            }
+            None
+        }
+        _ => None,
+    };
+    if let Some(expected_vuln_id) = expected_vuln_id {
+        if !top_level {
+            return Err("typed Cisco checks must be top-level definitions".to_string());
+        }
+        if vuln_id != expected_vuln_id {
+            return Err(format!(
+                "{} is reserved for {}",
+                match check {
+                    Check::CiscoVtySessionLimit => "cisco_vty_session_limit",
+                    Check::CiscoLoggingBufferCapacity => "cisco_logging_buffer_capacity",
+                    Check::CiscoLoggingTrapSeverity => "cisco_logging_trap_severity",
+                    _ => unreachable!("typed check matched above"),
+                },
+                expected_vuln_id
+            ));
+        }
     }
     Ok(())
 }
@@ -317,6 +438,18 @@ fn validate_check_capabilities(platform: CheckPlatform, check: &Check) -> Result
         Check::ConfigLine { .. } => {
             Err("configuration-line checks are supported only for Cisco IOS-XE".to_string())
         }
+        Check::CiscoVtySessionLimit
+        | Check::CiscoLoggingBufferCapacity
+        | Check::CiscoLoggingTrapSeverity
+            if platform == CheckPlatform::CiscoIos =>
+        {
+            Ok(())
+        }
+        Check::CiscoVtySessionLimit
+        | Check::CiscoLoggingBufferCapacity
+        | Check::CiscoLoggingTrapSeverity => {
+            Err("typed Cisco checks are supported only for Cisco IOS-XE".to_string())
+        }
         Check::All { checks } | Check::Any { checks } => {
             if checks.is_empty() {
                 return Err("compound checks must not be empty".to_string());
@@ -399,6 +532,29 @@ mod tests {
         let mut registry = CheckPackRegistry::new();
         assert!(registry.load_embedded().unwrap() > 0);
         assert_eq!(registry.load_embedded().unwrap(), 0);
+    }
+
+    #[test]
+    fn canonical_json_digest_sorts_every_object_and_preserves_utf8() {
+        let left = serde_json::json!({
+            "z": {"b": 2, "a": 1},
+            "a": ["é", true],
+        });
+        let right = serde_json::json!({
+            "a": ["é", true],
+            "z": {"a": 1, "b": 2},
+        });
+        assert_eq!(
+            canonical_json_sha256(&left).unwrap(),
+            canonical_json_sha256(&right).unwrap()
+        );
+        assert_eq!(
+            canonical_json_sha256(&left).unwrap(),
+            format!(
+                "{:x}",
+                Sha256::digest(r#"{"a":["é",true],"z":{"a":1,"b":2}}"#.as_bytes())
+            )
+        );
     }
 
     #[test]
@@ -711,6 +867,36 @@ mod tests {
             }],
         };
         assert!(validate_pack(&cisco).is_err());
+    }
+
+    #[test]
+    fn typed_cisco_checks_are_top_level_and_vulnerability_bound() {
+        let definition = CheckDefinition {
+            vuln_id: "V-215807".to_string(),
+            platform: CheckPlatform::CiscoIos,
+            check: Check::CiscoVtySessionLimit,
+            expected: ExpectedResult::Matches {
+                pattern: "^compliant:".to_string(),
+            },
+            description: None,
+        };
+        let mut pack = CheckPack {
+            stig_id: "Cisco_IOS-XE_Router_NDM_STIG".to_string(),
+            platform: CheckPlatform::CiscoIos,
+            version: "V3R7".to_string(),
+            priority: 100,
+            checks: vec![definition],
+        };
+        assert!(validate_pack(&pack).is_ok());
+
+        pack.checks[0].vuln_id = "V-215836".to_string();
+        assert!(validate_pack(&pack).is_err());
+
+        pack.checks[0].vuln_id = "V-215807".to_string();
+        pack.checks[0].check = Check::All {
+            checks: vec![Check::CiscoVtySessionLimit],
+        };
+        assert!(validate_pack(&pack).is_err());
     }
 
     #[test]

@@ -10,10 +10,11 @@
 
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
-use std::net::IpAddr;
+use std::net::{IpAddr, SocketAddr};
 use std::time::{Duration, Instant};
 
 const MAX_STIGMAN_RESPONSE_BYTES: usize = 10 * 1024 * 1024;
+const STIGMAN_CONNECT_TIMEOUT: Duration = Duration::from_secs(30);
 
 /// STIG-Manager connection configuration.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -127,6 +128,11 @@ pub(crate) fn validate_stigman_url(label: &str, raw: &str) -> Result<(), String>
         return Err(format!("{label} host is not allowed: {host_for_ip}"));
     }
     if let Ok(ip) = host_for_ip.parse::<std::net::IpAddr>() {
+        if crate::outbound::is_invalid_ip(ip) {
+            return Err(format!(
+                "{label} uses an invalid, reserved, multicast, or documentation literal address"
+            ));
+        }
         if crate::outbound::is_private_or_local_ip(ip)
             && !allowlist_matches_stigman_destination(host_for_ip, Some(ip))
             && !env_flag("AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS")
@@ -139,22 +145,102 @@ pub(crate) fn validate_stigman_url(label: &str, raw: &str) -> Result<(), String>
     Ok(())
 }
 
-async fn validate_stigman_url_for_connection(label: &str, raw: &str) -> Result<(), String> {
-    validate_stigman_url(label, raw)?;
-    let url = reqwest::Url::parse(raw).map_err(|e| format!("Invalid {label}: {e}"))?;
-    let host = url
-        .host_str()
-        .ok_or_else(|| format!("{label} must include a host"))?;
-    let port = url.port_or_known_default().unwrap_or(443);
-    crate::outbound::validate_resolved_destination(
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ResolvedStigmanEndpoint {
+    host: String,
+    addresses: Vec<SocketAddr>,
+}
+
+async fn resolve_stigman_endpoint(
+    label: &str,
+    raw: &str,
+) -> Result<ResolvedStigmanEndpoint, String> {
+    let allowlist = stigman_allowlist_entries();
+    let allow_private = env_flag("AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS")
+        || env_flag("AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS");
+    resolve_stigman_endpoint_with(
         label,
-        host,
-        port,
-        "AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST",
-        "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS",
-        Some("AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS"),
+        raw,
+        &allowlist,
+        allow_private,
+        |host, port| async move {
+            tokio::net::lookup_host((host.as_str(), port))
+                .await
+                .map(|addresses| addresses.collect())
+        },
     )
     .await
+}
+
+async fn resolve_stigman_endpoint_with<F, Fut>(
+    label: &str,
+    raw: &str,
+    allowlist: &[String],
+    allow_private: bool,
+    resolver: F,
+) -> Result<ResolvedStigmanEndpoint, String>
+where
+    F: FnOnce(String, u16) -> Fut,
+    Fut: std::future::Future<Output = std::io::Result<Vec<SocketAddr>>>,
+{
+    validate_stigman_url(label, raw)?;
+    let url = reqwest::Url::parse(raw).map_err(|e| format!("Invalid {label}: {e}"))?;
+    let raw_host = url
+        .host_str()
+        .ok_or_else(|| format!("{label} must include a host"))?;
+    let host = raw_host
+        .strip_prefix('[')
+        .and_then(|value| value.strip_suffix(']'))
+        .unwrap_or(raw_host)
+        .to_string();
+    let port = url.port_or_known_default().unwrap_or(443);
+    let lookup = tokio::time::timeout(STIGMAN_CONNECT_TIMEOUT, resolver(host.clone(), port))
+        .await
+        .map_err(|_| {
+            format!(
+                "{label} host {host} resolution timed out after {} seconds",
+                STIGMAN_CONNECT_TIMEOUT.as_secs()
+            )
+        })?
+        .map_err(|error| format!("Failed to resolve {label} host {host}: {error}"))?;
+    authorize_stigman_addresses_with_policy(label, &host, port, lookup, allowlist, allow_private)
+}
+
+fn authorize_stigman_addresses_with_policy(
+    label: &str,
+    host: &str,
+    port: u16,
+    addresses: Vec<SocketAddr>,
+    allowlist: &[String],
+    allow_private: bool,
+) -> Result<ResolvedStigmanEndpoint, String> {
+    let mut unique = Vec::with_capacity(addresses.len());
+    for address in addresses {
+        if address.port() != port {
+            return Err(format!(
+                "{label} resolver returned unexpected port {} for {host}:{port}",
+                address.port()
+            ));
+        }
+        if !unique.contains(&address) {
+            unique.push(address);
+        }
+    }
+    if unique.is_empty() {
+        return Err(format!("{label} host {host} resolved to no addresses"));
+    }
+    let ips = unique.iter().map(SocketAddr::ip).collect::<Vec<_>>();
+    crate::outbound::validate_resolved_ips_with_policy(
+        label,
+        host,
+        &ips,
+        allowlist,
+        allow_private,
+    )?;
+    Ok(ResolvedStigmanEndpoint {
+        host: host.to_string(),
+        addresses: unique,
+    })
 }
 
 /// OAuth2 token with expiry tracking.
@@ -166,7 +252,8 @@ struct TokenCache {
 /// STIG-Manager API client.
 pub struct StigManagerClient {
     config: StigManagerConfig,
-    http: reqwest::Client,
+    api_http: reqwest::Client,
+    token_http: reqwest::Client,
     token: tokio::sync::Mutex<Option<TokenCache>>,
 }
 
@@ -276,9 +363,26 @@ async fn parse_response<T: DeserializeOwned>(
         .map_err(|error| format!("Failed to parse {operation} response: {error}"))
 }
 
+fn build_stigman_http_client(
+    endpoint: &ResolvedStigmanEndpoint,
+    accept_invalid_certs: bool,
+) -> Result<reqwest::Client, String> {
+    reqwest::Client::builder()
+        .timeout(STIGMAN_CONNECT_TIMEOUT)
+        .redirect(reqwest::redirect::Policy::none())
+        // A process-level proxy would bypass the pinned socket destination.
+        .no_proxy()
+        .danger_accept_invalid_certs(accept_invalid_certs)
+        .user_agent(format!("AutomateSTIG/{}", env!("CARGO_PKG_VERSION")))
+        .resolve_to_addrs(&endpoint.host, &endpoint.addresses)
+        .build()
+        .map_err(|error| format!("HTTP client error: {error}"))
+}
+
 impl StigManagerClient {
-    /// Create a new client with the given configuration.
-    pub fn new(config: StigManagerConfig) -> Result<Self, String> {
+    /// Resolve and authorize both configured endpoints once, then create
+    /// clients whose DNS maps are pinned to those numeric addresses.
+    pub async fn new(config: StigManagerConfig) -> Result<Self, String> {
         config.validate_endpoints()?;
         let allow_invalid_certs = env_flag("AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS");
         let accept_invalid_certs = !config.verify_tls && allow_invalid_certs;
@@ -288,17 +392,15 @@ impl StigManagerClient {
             );
         }
 
-        let http = reqwest::Client::builder()
-            .timeout(Duration::from_secs(30))
-            .redirect(reqwest::redirect::Policy::none())
-            .danger_accept_invalid_certs(accept_invalid_certs)
-            .user_agent(format!("AutomateSTIG/{}", env!("CARGO_PKG_VERSION")))
-            .build()
-            .map_err(|e| format!("HTTP client error: {}", e))?;
+        let api_endpoint = resolve_stigman_endpoint("STIG Manager API", &config.api_url).await?;
+        let token_endpoint = resolve_stigman_endpoint("OAuth token", &config.token_url).await?;
+        let api_http = build_stigman_http_client(&api_endpoint, accept_invalid_certs)?;
+        let token_http = build_stigman_http_client(&token_endpoint, accept_invalid_certs)?;
 
         Ok(Self {
             config,
-            http,
+            api_http,
+            token_http,
             token: tokio::sync::Mutex::new(None),
         })
     }
@@ -315,8 +417,6 @@ impl StigManagerClient {
             }
         }
 
-        validate_stigman_url_for_connection("token_url", &self.config.token_url).await?;
-
         let params = [
             ("grant_type", "client_credentials"),
             ("client_id", &self.config.client_id),
@@ -324,7 +424,7 @@ impl StigManagerClient {
         ];
 
         let resp = self
-            .http
+            .token_http
             .post(&self.config.token_url)
             .form(&params)
             .send()
@@ -359,11 +459,10 @@ impl StigManagerClient {
     /// Test the connection — authenticate and fetch user info.
     pub async fn test_connection(&self) -> Result<String, String> {
         self.authenticate().await?;
-        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         let resp = self
-            .http
+            .api_http
             .get(format!("{}/user", self.config.api_url))
             .bearer_auth(&token)
             .send()
@@ -377,11 +476,10 @@ impl StigManagerClient {
 
     /// List all collections the user has access to.
     pub async fn list_collections(&self) -> Result<Vec<SmCollection>, String> {
-        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         let resp = self
-            .http
+            .api_http
             .get(format!("{}/collections", self.config.api_url))
             .bearer_auth(&token)
             .send()
@@ -393,11 +491,10 @@ impl StigManagerClient {
 
     /// List assets in a collection.
     pub async fn list_assets(&self, collection_id: &str) -> Result<Vec<SmAsset>, String> {
-        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         let resp = self
-            .http
+            .api_http
             .get(format!(
                 "{}/assets?collectionId={}",
                 self.config.api_url, collection_id
@@ -416,11 +513,10 @@ impl StigManagerClient {
         collection_id: &str,
         asset_id: &str,
     ) -> Result<Vec<SmStig>, String> {
-        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         let resp = self
-            .http
+            .api_http
             .get(format!(
                 "{}/collections/{}/assets/{}/stigs",
                 self.config.api_url, collection_id, asset_id
@@ -442,7 +538,6 @@ impl StigManagerClient {
         ip: Option<&str>,
         benchmark_id: &str,
     ) -> Result<SmAsset, String> {
-        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         // AssetCreateOrReplace requires name, collectionId, description, ip,
@@ -459,7 +554,7 @@ impl StigManagerClient {
         });
 
         let resp = self
-            .http
+            .api_http
             .post(format!("{}/assets", self.config.api_url))
             .bearer_auth(&token)
             .json(&body)
@@ -477,11 +572,10 @@ impl StigManagerClient {
         asset_id: &str,
         reviews: Vec<SmReview>,
     ) -> Result<serde_json::Value, String> {
-        validate_stigman_url_for_connection("api_url", &self.config.api_url).await?;
         let token = self.get_token().await?;
 
         let resp = self
-            .http
+            .api_http
             .post(format!(
                 "{}/collections/{}/reviews/{}",
                 self.config.api_url, collection_id, asset_id
@@ -627,6 +721,12 @@ mod tests {
             "https://10.0.0.5/api",
             "https://169.254.169.254/latest/meta-data",
             "https://[::1]/api",
+            "https://0.0.0.0/api",
+            "https://192.0.2.1/api",
+            "https://224.0.0.1/api",
+            "https://[::]/api",
+            "https://[2001:db8::1]/api",
+            "https://[ff02::1]/api",
             "not-a-url",
         ] {
             assert!(
@@ -651,6 +751,143 @@ mod tests {
         validate_stigman_url(
             "token_url",
             "https://keycloak.example.mil/realms/stigman/protocol/openid-connect/token",
+        )
+        .unwrap();
+    }
+
+    #[test]
+    fn authorized_endpoint_pins_addresses_under_the_original_hostname() {
+        let addresses = vec![
+            "8.8.8.8:443".parse().unwrap(),
+            "8.8.4.4:443".parse().unwrap(),
+            "8.8.8.8:443".parse().unwrap(),
+        ];
+        let endpoint = authorize_stigman_addresses_with_policy(
+            "api_url",
+            "stigman.example.mil",
+            443,
+            addresses,
+            &["stigman.example.mil".to_string()],
+            false,
+        )
+        .unwrap();
+        assert_eq!(endpoint.host, "stigman.example.mil");
+        assert_eq!(
+            endpoint.addresses,
+            vec![
+                "8.8.8.8:443".parse().unwrap(),
+                "8.8.4.4:443".parse().unwrap()
+            ]
+        );
+    }
+
+    #[tokio::test]
+    async fn endpoint_resolution_runs_once_and_retains_url_host_for_tls() {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        use std::sync::Arc;
+
+        let calls = Arc::new(AtomicUsize::new(0));
+        let resolver_calls = Arc::clone(&calls);
+        let endpoint = resolve_stigman_endpoint_with(
+            "token_url",
+            "https://keycloak.example.mil:8443/oauth/token",
+            &["keycloak.example.mil".to_string()],
+            false,
+            move |host, port| async move {
+                assert_eq!(host, "keycloak.example.mil");
+                assert_eq!(port, 8443);
+                resolver_calls.fetch_add(1, Ordering::SeqCst);
+                Ok(vec!["8.8.8.8:8443".parse().unwrap()])
+            },
+        )
+        .await
+        .unwrap();
+
+        assert_eq!(calls.load(Ordering::SeqCst), 1);
+        assert_eq!(endpoint.host, "keycloak.example.mil");
+        assert_eq!(endpoint.addresses, vec!["8.8.8.8:8443".parse().unwrap()]);
+    }
+
+    #[tokio::test]
+    async fn pinned_client_preserves_host_header_and_does_not_follow_redirects() {
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+
+        let listener = tokio::net::TcpListener::bind(("127.0.0.1", 0))
+            .await
+            .unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            let mut request = vec![0_u8; 4096];
+            let size = stream.read(&mut request).await.unwrap();
+            stream
+                .write_all(
+                    b"HTTP/1.1 302 Found\r\nLocation: http://127.0.0.1:9/must-not-follow\r\nContent-Length: 0\r\nConnection: close\r\n\r\n",
+                )
+                .await
+                .unwrap();
+            String::from_utf8_lossy(&request[..size]).into_owned()
+        });
+
+        let endpoint = ResolvedStigmanEndpoint {
+            host: "pinned.example.test".to_string(),
+            addresses: vec![address],
+        };
+        let client = build_stigman_http_client(&endpoint, false).unwrap();
+        let response = client
+            .get(format!(
+                "http://pinned.example.test:{}/start",
+                address.port()
+            ))
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), reqwest::StatusCode::FOUND);
+
+        let request = server.await.unwrap().to_ascii_lowercase();
+        assert!(
+            request.contains(&format!(
+                "\r\nhost: pinned.example.test:{}\r\n",
+                address.port()
+            )),
+            "unexpected request: {request}"
+        );
+    }
+
+    #[test]
+    fn authorized_endpoint_rejects_unlisted_public_and_private_rebinding() {
+        let unlisted = authorize_stigman_addresses_with_policy(
+            "api_url",
+            "unlisted.example.mil",
+            443,
+            vec!["8.8.8.8:443".parse().unwrap()],
+            &["stigman.example.mil".to_string()],
+            false,
+        )
+        .unwrap_err();
+        assert!(unlisted.contains("unlisted"));
+
+        let private_rebind = authorize_stigman_addresses_with_policy(
+            "api_url",
+            "stigman.example.mil",
+            443,
+            vec!["10.10.1.5:443".parse().unwrap()],
+            &["stigman.example.mil".to_string()],
+            false,
+        )
+        .unwrap_err();
+        assert!(private_rebind.contains("private/local/link-local"));
+
+        authorize_stigman_addresses_with_policy(
+            "api_url",
+            "stigman.example.mil",
+            443,
+            vec!["10.10.1.5:443".parse().unwrap()],
+            &[
+                "stigman.example.mil".to_string(),
+                "10.10.0.0/16".to_string(),
+            ],
+            false,
         )
         .unwrap();
     }

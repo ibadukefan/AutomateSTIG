@@ -4,6 +4,18 @@
   "version": "V3R7",
   "checks": [
     {
+      "vuln_id": "V-215807",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_vty_session_limit"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "Every VTY and enabled HTTP(S) management path is limited to the signed organization-policy maximum"
+    },
+    {
       "vuln_id": "V-215808",
       "platform": "cisco_ios",
       "check": {
@@ -223,6 +235,30 @@
         "type": "is_true"
       },
       "description": "Account enabling audited via archive config change logging"
+    },
+    {
+      "vuln_id": "V-215836",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_logging_buffer_capacity"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "Numeric logging buffer capacity meets the signed organization-policy minimum"
+    },
+    {
+      "vuln_id": "V-215837",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_logging_trap_severity"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "Effective logging trap severity includes critical audit failure events"
     },
     {
       "vuln_id": "V-215848",

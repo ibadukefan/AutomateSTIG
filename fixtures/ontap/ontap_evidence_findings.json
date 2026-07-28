@@ -12,7 +12,7 @@
       "data_key": "security session limit show -interface cli",
       "command": "security session limit show -interface cli",
       "status": "success",
-      "stdout": "Vserver   Interface Category      Max-Active-Limit\n--------- --------- ------------- ----------------\ncluster1  cli       default       1\n1 entry was displayed.",
+      "stdout": "Vserver   Interface Category      Max-Active-Limit\n--------- --------- ------------- ----------------\ncluster1  cli       default       2\n1 entry was displayed.",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0
@@ -30,7 +30,7 @@
       "data_key": "cluster log-forwarding show",
       "command": "cluster log-forwarding show",
       "status": "success",
-      "stdout": "                                                 Verify Syslog\nDestination Host                    Port   Protocol        Server Facility\n----------------------------------- ------ --------------- ------ --------\n10.10.5.14                          514    udp-unencrypted false  user\n1 entries were displayed.",
+      "stdout": "                                                 Verify Syslog\nDestination Host                    Port   Protocol        Server Facility\n----------------------------------- ------ --------------- ------ --------\n0 entries were displayed.",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0
@@ -39,7 +39,7 @@
       "data_key": "security login show -role admin -authentication-method password",
       "command": "security login show -role admin -authentication-method password",
       "status": "success",
-      "stdout": "Vserver: cluster1\n                                                                 Second\nUser/Group                 Authentication                 Acct   Authentication\nName           Application Method        Role Name        Locked Method\n-------------- ----------- ------------- ---------------- ------ --------------\nadmin          console     password      admin            no     none\n1 entry was displayed.",
+      "stdout": "Vserver: cluster1\n                                                                 Second\nUser/Group                 Authentication                 Acct   Authentication\nName           Application Method        Role Name        Locked Method\n-------------- ----------- ------------- ---------------- ------ --------------\nadmin          console     password      admin            no     none\nbreakglass     ssh         password      admin            no     none\n2 entries were displayed.",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0
@@ -48,7 +48,7 @@
       "data_key": "vserver audit show -fields audit-guarantee",
       "command": "vserver audit show -fields audit-guarantee",
       "status": "success",
-      "stdout": "vserver  audit-guarantee\n-------- ---------------\nsvm1     true\nsvm2     true\n2 entries were displayed.",
+      "stdout": "vserver  audit-guarantee\n-------- ---------------\nsvm1     true\nsvm2     false\n2 entries were displayed.",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0
@@ -66,7 +66,7 @@
       "data_key": "security login show -authentication-method domain",
       "command": "security login show -authentication-method domain",
       "status": "success",
-      "stdout": "Vserver: cluster1\nUser/Group                 Authentication                 Acct\nName           Application Method        Role Name        Locked\n-------------- ----------- ------------- ---------------- ------\nDOMAIN\\storage-admins ssh  domain        admin            no\n2 entries were displayed.",
+      "stdout": "Vserver: cluster1\nUser/Group                 Authentication                 Acct\nName           Application Method        Role Name        Locked\n-------------- ----------- ------------- ---------------- ------\n0 entries were displayed.",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0
@@ -75,7 +75,7 @@
       "data_key": "security login show -role admin -authentication-method domain",
       "command": "security login show -role admin -authentication-method domain",
       "status": "success",
-      "stdout": "Vserver: cluster1\nUser/Group                 Authentication                 Acct\nName           Application Method        Role Name        Locked\n-------------- ----------- ------------- ---------------- ------\nDOMAIN\\storage-admins ssh  domain        admin            no\n1 entry was displayed.",
+      "stdout": "Vserver: cluster1\nUser/Group                 Authentication                 Acct\nName           Application Method        Role Name        Locked\n-------------- ----------- ------------- ---------------- ------\n0 entries were displayed.",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0
@@ -93,7 +93,7 @@
       "data_key": "security login role config show -role admin -fields passwd-min-uppercase-chars",
       "command": "security login role config show -role admin -fields passwd-min-uppercase-chars",
       "status": "success",
-      "stdout": "vserver  role  passwd-min-uppercase-chars\n-------- ----- --------------------------\ncluster1 admin 1\n1 entry was displayed.",
+      "stdout": "vserver  role  passwd-min-uppercase-chars\n-------- ----- --------------------------\ncluster1 admin 0\n1 entry was displayed.",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0
@@ -102,7 +102,7 @@
       "data_key": "security login role config show -role admin -fields passwd-min-lowercase-chars",
       "command": "security login role config show -role admin -fields passwd-min-lowercase-chars",
       "status": "success",
-      "stdout": "vserver  role  passwd-min-lowercase-chars\n-------- ----- --------------------------\ncluster1 admin 1\n1 entry was displayed.",
+      "stdout": "vserver  role  passwd-min-lowercase-chars\n-------- ----- --------------------------\ncluster1 admin 0\n1 entry was displayed.",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0
@@ -111,7 +111,7 @@
       "data_key": "security login role config show -role admin -fields passwd-alphanum",
       "command": "security login role config show -role admin -fields passwd-alphanum",
       "status": "success",
-      "stdout": "vserver  role  passwd-alphanum\n-------- ----- ---------------\ncluster1 admin enabled\n1 entry was displayed.",
+      "stdout": "vserver  role  passwd-alphanum\n-------- ----- ---------------\ncluster1 admin disabled\n1 entry was displayed.",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0
@@ -120,7 +120,7 @@
       "data_key": "security login role config show -role admin -fields passwd-min-special-chars",
       "command": "security login role config show -role admin -fields passwd-min-special-chars",
       "status": "success",
-      "stdout": "vserver  role  passwd-min-special-chars\n-------- ----- ------------------------\ncluster1 admin 1\n1 entry was displayed.",
+      "stdout": "vserver  role  passwd-min-special-chars\n-------- ----- ------------------------\ncluster1 admin 0\n1 entry was displayed.",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0

@@ -73,7 +73,9 @@ walkdir = "2"
 tempfile = "3"
 
 # SSH / Remote
-russh = "0.62.4"
+# Deliberately omit russh's `rsa` default feature. RUSTSEC-2023-0071 has no
+# patched `rsa` release, and AutomateSTIG supports Ed25519/ECDSA SSH keys.
+russh = { version = "0.62.4", default-features = false, features = ["aws-lc-rs"] }
 # russh-keys merged into russh::keys
 
 # HTTP client (for STIG-Manager integration)

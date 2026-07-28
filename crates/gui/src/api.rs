@@ -13,7 +13,9 @@ use sha2::{Digest, Sha256};
 
 use automatestig_core::library::{BenchmarkImport, GeneratedCheckPackIntent};
 use automatestig_core::models::asset::Asset;
-use automatestig_core::models::checklist::{Checklist, EvaluationOrigin, EvaluationProvenance};
+use automatestig_core::models::checklist::{
+    Checklist, EvaluationOrigin, EvaluationProvenance, OrganizationPolicyProvenance,
+};
 use automatestig_core::models::finding::{FindingSource, FindingStatus};
 use automatestig_core::models::stig::Severity;
 use automatestig_parsers::{ckl, cklb, disa};
@@ -103,6 +105,74 @@ fn trusted_content_keys_dir() -> std::path::PathBuf {
                 .join(".automatestig")
                 .join("trusted_keys")
         })
+}
+
+fn organization_policy_keys_dir(state: &AppState) -> std::path::PathBuf {
+    std::env::var("AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR")
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|_| state.inner.data_dir.join("organization_policy_keys"))
+}
+
+fn verify_organization_policy(
+    state: &AppState,
+    raw: &[u8],
+    signature: &[u8],
+    stig_id: &str,
+    stig_release: &str,
+    hostname: &str,
+) -> Result<automatestig_core::organization_policy::VerifiedOrganizationPolicy, String> {
+    verify_organization_policy_with_trust_dir(
+        &organization_policy_keys_dir(state),
+        raw,
+        signature,
+        stig_id,
+        stig_release,
+        hostname,
+    )
+}
+
+fn verify_organization_policy_with_trust_dir(
+    trust_dir: &Path,
+    raw: &[u8],
+    signature: &[u8],
+    stig_id: &str,
+    stig_release: &str,
+    hostname: &str,
+) -> Result<automatestig_core::organization_policy::VerifiedOrganizationPolicy, String> {
+    const MAX_POLICY_BYTES: usize = 64 * 1024;
+    if raw.is_empty() || raw.len() > MAX_POLICY_BYTES {
+        return Err(format!(
+            "organization policy must be 1..={MAX_POLICY_BYTES} bytes"
+        ));
+    }
+    if signature.len() != 64 {
+        return Err("organization policy signature must contain exactly 64 bytes".to_string());
+    }
+    let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
+    let loaded = trust_store
+        .load_from_directory(trust_dir)
+        .map_err(|error| {
+            format!(
+                "Failed to load organization-policy trust anchors from {}: {error}",
+                trust_dir.display()
+            )
+        })?;
+    if loaded == 0 {
+        return Err(format!(
+            "no organization-policy trust anchors are installed in {}",
+            trust_dir.display()
+        ));
+    }
+    let trusted_public_keys = trust_store.public_keys();
+    automatestig_core::organization_policy::VerifiedOrganizationPolicy::verify_and_parse(
+        raw,
+        signature,
+        &trusted_public_keys,
+        stig_id,
+        stig_release,
+        hostname,
+        chrono::Utc::now(),
+    )
 }
 
 fn load_external_offline_signing_key(state: &AppState) -> Result<([u8; 32], [u8; 32]), String> {
@@ -933,6 +1003,10 @@ async fn import_checklist(
             collected_at: None,
             plan_sha256: None,
             server_key_fingerprint: None,
+            benchmark_sha256: None,
+            check_pack_sha256: None,
+            evaluation_plan_sha256: None,
+            organization_policy: None,
             unsafe_legacy_evidence: false,
         });
 
@@ -1319,7 +1393,7 @@ async fn stigman_test_connection(State(state): State<AppState>) -> Json<serde_js
         return api_error("STIG-Manager is not configured");
     }
 
-    let client = match crate::stigman::StigManagerClient::new(config) {
+    let client = match crate::stigman::StigManagerClient::new(config).await {
         Ok(c) => c,
         Err(e) => return api_error(&e),
     };
@@ -1343,7 +1417,7 @@ async fn stigman_list_collections(State(state): State<AppState>) -> Json<serde_j
         return api_error("STIG-Manager is not configured");
     }
 
-    let client = match crate::stigman::StigManagerClient::new(config) {
+    let client = match crate::stigman::StigManagerClient::new(config).await {
         Ok(c) => c,
         Err(e) => return api_error(&e),
     };
@@ -1370,7 +1444,7 @@ async fn stigman_list_assets(
         return api_error("STIG-Manager is not configured");
     }
 
-    let client = match crate::stigman::StigManagerClient::new(config) {
+    let client = match crate::stigman::StigManagerClient::new(config).await {
         Ok(c) => c,
         Err(e) => return api_error(&e),
     };
@@ -1434,7 +1508,7 @@ async fn stigman_sync_assets(
         return api_error("STIG-Manager is not configured");
     }
 
-    let client = match crate::stigman::StigManagerClient::new(config) {
+    let client = match crate::stigman::StigManagerClient::new(config).await {
         Ok(c) => c,
         Err(e) => return api_error(&e),
     };
@@ -1542,7 +1616,7 @@ async fn stigman_diff_assets(
         return api_error("STIG-Manager is not configured");
     }
 
-    let client = match crate::stigman::StigManagerClient::new(config) {
+    let client = match crate::stigman::StigManagerClient::new(config).await {
         Ok(c) => c,
         Err(e) => return api_error(&e),
     };
@@ -1682,7 +1756,7 @@ async fn push_checklist_to_stigman(
         ));
     }
 
-    let client = crate::stigman::StigManagerClient::new(config)?;
+    let client = crate::stigman::StigManagerClient::new(config).await?;
 
     // If no asset_id provided, try to find the asset by hostname before creating it.
     let asset_id = match asset_id {
@@ -1809,6 +1883,9 @@ async fn evaluate_with_evidence(
     let mut platform = String::new();
     let mut input_type = String::new();
     let mut evidence_data: Option<Vec<u8>> = None;
+    let mut organization_policy_data: Option<Vec<u8>> = None;
+    let mut organization_policy_signature: Option<Vec<u8>> = None;
+    let mut seen_fields = HashSet::new();
 
     // Parse multipart fields without treating malformed or truncated uploads as
     // missing evidence.
@@ -1822,6 +1899,12 @@ async fn evaluate_with_evidence(
             }
         };
         let name = field.name().unwrap_or("").to_string();
+        if !name.is_empty() && !seen_fields.insert(name.clone()) {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                format!("Duplicate multipart field: {name}"),
+            );
+        }
         match name.as_str() {
             "stig_id" => {
                 stig_id = match field.text().await {
@@ -1892,6 +1975,42 @@ async fn evaluate_with_evidence(
                         return api_response_error(
                             status,
                             format!("Failed to read evidence: {message}"),
+                        );
+                    }
+                };
+            }
+            "organization_policy" => {
+                organization_policy_data = match field.bytes().await {
+                    Ok(value) if value.is_empty() || value.len() > 64 * 1024 => {
+                        return api_response_error(
+                            StatusCode::PAYLOAD_TOO_LARGE,
+                            "organization policy must be 1..=65536 bytes",
+                        )
+                    }
+                    Ok(value) => Some(value.to_vec()),
+                    Err(error) => {
+                        let (status, message) = multipart_error(error);
+                        return api_response_error(
+                            status,
+                            format!("Failed to read organization policy: {message}"),
+                        );
+                    }
+                };
+            }
+            "organization_policy_signature" => {
+                organization_policy_signature = match field.bytes().await {
+                    Ok(value) if value.len() > 64 => {
+                        return api_response_error(
+                            StatusCode::PAYLOAD_TOO_LARGE,
+                            "organization policy signature must contain exactly 64 bytes",
+                        )
+                    }
+                    Ok(value) => Some(value.to_vec()),
+                    Err(error) => {
+                        let (status, message) = multipart_error(error);
+                        return api_response_error(
+                            status,
+                            format!("Failed to read organization policy signature: {message}"),
                         );
                     }
                 };
@@ -1986,10 +2105,53 @@ async fn evaluate_with_evidence(
                 "selected platform does not match the installed check pack",
             );
         }
+        let benchmark = match load_evaluation_benchmark(&state, &stig_id) {
+            Ok(benchmark) => benchmark,
+            Err(error) => return device_evaluation_error_response(error),
+        };
+        let (policy_bytes, signature_bytes) = match (
+            organization_policy_data.as_deref(),
+            organization_policy_signature.as_deref(),
+        ) {
+            (Some(policy), Some(signature)) => (policy, signature),
+            (None, None)
+                if checks
+                    .iter()
+                    .any(|definition| definition.check.requires_organization_policy()) =>
+            {
+                return api_response_error(
+                    StatusCode::UNPROCESSABLE_ENTITY,
+                    "this Cisco check pack requires an organization policy and detached signature",
+                )
+            }
+            (None, None) => (&[][..], &[][..]),
+            _ => {
+                return api_response_error(
+                    StatusCode::BAD_REQUEST,
+                    "organization policy and detached signature must be supplied together",
+                )
+            }
+        };
+        let organization_policy = if policy_bytes.is_empty() {
+            None
+        } else {
+            match verify_organization_policy(
+                &state,
+                policy_bytes,
+                signature_bytes,
+                &benchmark.id,
+                &benchmark.version_string(),
+                &claimed_hostname,
+            ) {
+                Ok(policy) => Some(policy),
+                Err(error) => return api_response_error(StatusCode::UNPROCESSABLE_ENTITY, error),
+            }
+        };
         (
             automatestig_core::checks::SystemData {
                 collection_complete: true,
                 network_config: Some(text),
+                organization_policy,
                 ..Default::default()
             },
             EvaluationProvenance {
@@ -2002,10 +2164,20 @@ async fn evaluate_with_evidence(
                 collected_at: None,
                 plan_sha256: None,
                 server_key_fingerprint: None,
+                benchmark_sha256: None,
+                check_pack_sha256: None,
+                evaluation_plan_sha256: None,
+                organization_policy: None,
                 unsafe_legacy_evidence: false,
             },
         )
     } else if input_type == "transcript" {
+        if organization_policy_data.is_some() || organization_policy_signature.is_some() {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                "organization policy inputs are valid only for Cisco configuration evaluation",
+            );
+        }
         if check_platform == automatestig_core::checks::CheckPlatform::CiscoIos {
             return api_response_error(
                 StatusCode::BAD_REQUEST,
@@ -2086,6 +2258,10 @@ async fn evaluate_with_evidence(
                 collected_at: transcript.collected_at.clone(),
                 plan_sha256: transcript.plan_sha256.clone(),
                 server_key_fingerprint: transcript.server_key_fingerprint.clone(),
+                benchmark_sha256: None,
+                check_pack_sha256: None,
+                evaluation_plan_sha256: None,
+                organization_policy: None,
                 unsafe_legacy_evidence: transcript.legacy,
             },
         )
@@ -2611,6 +2787,22 @@ struct SshScanRequest {
     platform: Option<String>,
 }
 
+fn live_ssh_evidence_transcript(
+    hostname: &str,
+    platform: automatestig_core::checks::CheckPlatform,
+    plan_sha256: String,
+    report: automatestig_collector::CollectionReport,
+) -> automatestig_parsers::evidence::EvidenceTranscript {
+    let mut transcript = automatestig_parsers::evidence::EvidenceTranscript::new_v2(
+        hostname,
+        platform,
+        plan_sha256,
+        report.commands,
+    );
+    transcript.server_key_fingerprint = report.server_key_fingerprint;
+    transcript
+}
+
 async fn scan_ssh(
     State(state): State<AppState>,
     request: Result<Json<SshScanRequest>, axum::extract::rejection::JsonRejection>,
@@ -2691,24 +2883,26 @@ async fn scan_ssh(
             )
         }
     };
-    if let Err(error) =
-        crate::ssh::validate_scan_target_for_connection(&ssh_config.host, ssh_config.port).await
-    {
+    if let Err(error) = crate::ssh::validate_scan_target(&ssh_config.host) {
         return api_response_error(StatusCode::BAD_REQUEST, error);
     }
     let report = automatestig_collector::collect_plan(&ssh_config, &plan).await;
-    let hostname = report
-        .commands
-        .iter()
-        .find(|record| {
-            record.data_key == "hostname"
-                && record.status == automatestig_core::remote::CommandStatus::Success
-        })
-        .map(|record| record.stdout.trim().to_owned())
-        .filter(|hostname| !hostname.is_empty())
-        .unwrap_or_else(|| ssh_config.host.clone());
+    // The asset identity is the exact endpoint name/address whose host key the
+    // collector verified. Supported plans do not observe an OS/device
+    // hostname, so never relabel that endpoint with an uncorroborated value.
+    let hostname = ssh_config.host.clone();
+    let transcript = live_ssh_evidence_transcript(&hostname, check_platform, plan.digest(), report);
+    let evidence_sha256 = match automatestig_core::check_packs::canonical_json_sha256(&transcript) {
+        Ok(digest) => digest,
+        Err(error) => {
+            return api_response_error(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to bind live SSH evidence provenance: {error}"),
+            )
+        }
+    };
     let system_data =
-        automatestig_core::remote::assemble_evidence_system_data(&plan, &report.commands);
+        automatestig_core::remote::assemble_evidence_system_data(&plan, &transcript.commands);
     let collection_complete = system_data.collection_complete;
     let collection_errors = system_data.collection_errors.clone();
     let mut provenance_errors: Vec<String> = collection_errors
@@ -2720,12 +2914,16 @@ async fn scan_ssh(
         origin: EvaluationOrigin::LiveSsh,
         collection_complete,
         collection_errors: provenance_errors,
-        evidence_sha256: None,
+        evidence_sha256: Some(evidence_sha256),
         claimed_hostname: Some(hostname.clone()),
-        collector_version: Some(env!("CARGO_PKG_VERSION").to_string()),
-        collected_at: Some(chrono::Utc::now().to_rfc3339()),
-        plan_sha256: Some(plan.digest()),
-        server_key_fingerprint: report.server_key_fingerprint.clone(),
+        collector_version: transcript.collector_version.clone(),
+        collected_at: transcript.collected_at.clone(),
+        plan_sha256: transcript.plan_sha256.clone(),
+        server_key_fingerprint: transcript.server_key_fingerprint.clone(),
+        benchmark_sha256: None,
+        check_pack_sha256: None,
+        evaluation_plan_sha256: None,
+        organization_policy: None,
         unsafe_legacy_evidence: false,
     };
 
@@ -2751,7 +2949,8 @@ async fn scan_ssh(
         );
         data.insert(
             "server_key_fingerprint".to_owned(),
-            serde_json::to_value(&report.server_key_fingerprint).unwrap_or(serde_json::Value::Null),
+            serde_json::to_value(&transcript.server_key_fingerprint)
+                .unwrap_or(serde_json::Value::Null),
         );
     }
     let evaluation_complete = body
@@ -2788,7 +2987,41 @@ fn evaluate_system_data_core(
     // Load benchmark.
     let benchmark = load_evaluation_benchmark(state, stig_id)?;
 
-    let check_definitions = load_check_definitions(state, stig_id)?;
+    let loaded_check_packs = load_check_pack_set(state, stig_id)?;
+    let check_definitions = &loaded_check_packs.definitions;
+    let benchmark_sha256 = automatestig_core::check_packs::canonical_json_sha256(&benchmark)
+        .map_err(|error| {
+            DeviceEvaluationError::Internal(format!("Failed to bind benchmark provenance: {error}"))
+        })?;
+    let organization_policy =
+        system_data
+            .organization_policy
+            .as_ref()
+            .map(|policy| OrganizationPolicyProvenance {
+                policy_id: policy.document().policy_id.clone(),
+                policy_version: policy.document().policy_version.clone(),
+                policy_sha256: policy.sha256().to_string(),
+                signer_fingerprint: policy.signer_fingerprint().to_string(),
+                signature_verified: true,
+            });
+    let evaluation_plan_sha256 = automatestig_core::check_packs::evaluation_plan_sha256(
+        &benchmark.id,
+        &benchmark.version_string(),
+        &benchmark_sha256,
+        &loaded_check_packs.sha256,
+        organization_policy
+            .as_ref()
+            .map(|policy| policy.policy_sha256.as_str()),
+    )
+    .map_err(|error| {
+        DeviceEvaluationError::Internal(format!(
+            "Failed to bind evaluation-plan provenance: {error}"
+        ))
+    })?;
+    provenance.benchmark_sha256 = Some(benchmark_sha256);
+    provenance.check_pack_sha256 = Some(loaded_check_packs.sha256);
+    provenance.evaluation_plan_sha256 = Some(evaluation_plan_sha256);
+    provenance.organization_policy = organization_policy;
 
     // Execute checks.
     let mut check_results: Vec<automatestig_core::checks::CheckResult> = check_definitions
@@ -2920,6 +3153,18 @@ fn load_check_definitions(
     state: &AppState,
     stig_id: &str,
 ) -> Result<Vec<automatestig_core::checks::CheckDefinition>, DeviceEvaluationError> {
+    Ok(load_check_pack_set(state, stig_id)?.definitions)
+}
+
+struct LoadedCheckPackSet {
+    definitions: Vec<automatestig_core::checks::CheckDefinition>,
+    sha256: String,
+}
+
+fn load_check_pack_set(
+    state: &AppState,
+    stig_id: &str,
+) -> Result<LoadedCheckPackSet, DeviceEvaluationError> {
     let benchmark = load_evaluation_benchmark(state, stig_id)?;
     let release = benchmark.version_string();
     // Curated packs are compiled into the binary. Never trust an implicit
@@ -2964,19 +3209,33 @@ fn load_check_definitions(
                 "Failed to load reviewed generated check packs: {error}"
             ))
         })?;
-    let mut seen_vuln_ids = HashSet::new();
-    let checks: Vec<automatestig_core::checks::CheckDefinition> = check_pack_registry
-        .checks_for_stig_release(stig_id, &release)
+    let packs: Vec<automatestig_core::checks::CheckPack> = check_pack_registry
+        .check_packs_for_stig_release(stig_id, &release)
         .into_iter()
-        .filter(|check| seen_vuln_ids.insert(check.vuln_id.clone()))
         .cloned()
         .collect();
-    if checks.is_empty() {
+    if packs.is_empty() {
         return Err(DeviceEvaluationError::MissingCheckPack(format!(
             "{stig_id} {release}"
         )));
     }
-    Ok(checks)
+    let sha256 =
+        automatestig_core::check_packs::canonical_json_sha256(&packs).map_err(|error| {
+            DeviceEvaluationError::Internal(format!(
+                "Failed to bind effective check-pack provenance: {error}"
+            ))
+        })?;
+    let mut seen_vuln_ids = HashSet::new();
+    let definitions = packs
+        .iter()
+        .flat_map(|pack| pack.checks.iter())
+        .filter(|check| seen_vuln_ids.insert(check.vuln_id.clone()))
+        .cloned()
+        .collect();
+    Ok(LoadedCheckPackSet {
+        definitions,
+        sha256,
+    })
 }
 
 /// Evaluate collected SystemData against check packs and STIG benchmark.
@@ -3417,6 +3676,67 @@ mod tests {
     }
 
     #[test]
+    fn gui_policy_verification_is_signature_release_and_asset_bound() {
+        let temporary = tempfile::tempdir().unwrap();
+        let offline = temporary.path().join("offline");
+        let trust = temporary.path().join("trust");
+        std::fs::create_dir(&offline).unwrap();
+        std::fs::create_dir(&trust).unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(&offline, std::fs::Permissions::from_mode(0o700)).unwrap();
+            std::fs::set_permissions(&trust, std::fs::Permissions::from_mode(0o700)).unwrap();
+        }
+        let private = offline.join("policy.key");
+        let public = offline.join("policy.pub");
+        let (private_key, _) =
+            automatestig_stigpack::signing::create_signing_key_pair(&private, &public).unwrap();
+        std::fs::copy(&public, trust.join("approver.pub")).unwrap();
+
+        let now = chrono::Utc::now();
+        let policy = serde_json::to_vec(&serde_json::json!({
+            "schema": "automatestig-organization-policy/v1",
+            "policy_id": "gui-test",
+            "policy_version": "1",
+            "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+            "stig_release": "V3R7",
+            "asset_hostname": "router-01",
+            "effective_from": (now - chrono::Duration::days(1)).to_rfc3339(),
+            "expires_at": (now + chrono::Duration::days(1)).to_rfc3339(),
+            "rules": {
+                "V-215807": {"max_concurrent_management_sessions": 2},
+                "V-215836": {"minimum_logging_buffer_bytes": 4096000}
+            }
+        }))
+        .unwrap();
+        let signature =
+            automatestig_stigpack::signing::sign_manifest(&policy, &private_key).unwrap();
+        let verified = verify_organization_policy_with_trust_dir(
+            &trust,
+            &policy,
+            &signature,
+            "Cisco_IOS-XE_Router_NDM_STIG",
+            "V3R7",
+            "ROUTER-01",
+        )
+        .unwrap();
+        assert_eq!(verified.document().policy_id, "gui-test");
+
+        let mut mutated = policy;
+        mutated.push(b' ');
+        assert!(verify_organization_policy_with_trust_dir(
+            &trust,
+            &mutated,
+            &signature,
+            "Cisco_IOS-XE_Router_NDM_STIG",
+            "V3R7",
+            "router-01",
+        )
+        .is_err());
+    }
+
+    #[test]
     fn imported_all_pass_checklist_scores_are_withheld() {
         let mut checklist = forged_automated_checklist();
         checklist.findings[0].source = FindingSource::Imported;
@@ -3432,6 +3752,10 @@ mod tests {
             collected_at: None,
             plan_sha256: None,
             server_key_fingerprint: None,
+            benchmark_sha256: None,
+            check_pack_sha256: None,
+            evaluation_plan_sha256: None,
+            organization_policy: None,
             unsafe_legacy_evidence: false,
         });
 
@@ -3634,6 +3958,63 @@ mod tests {
         assert_eq!(response.status(), StatusCode::BAD_REQUEST);
     }
 
+    #[test]
+    fn live_ssh_evidence_digest_binds_the_complete_canonical_transcript() {
+        use automatestig_core::checks::CheckPlatform;
+        use automatestig_core::remote::CommandEvidence;
+
+        let report = automatestig_collector::CollectionReport {
+            commands: vec![CommandEvidence::success(
+                "system-data",
+                "show system",
+                "configured".to_string(),
+                String::new(),
+                0,
+                12,
+            )],
+            server_key_fingerprint: Some(format!("SHA256:{}", "A".repeat(43))),
+        };
+        let transcript =
+            live_ssh_evidence_transcript("device-01", CheckPlatform::Ontap, "a".repeat(64), report);
+        assert_eq!(transcript.hostname.as_deref(), Some("device-01"));
+        assert_eq!(transcript.platform, Some(CheckPlatform::Ontap));
+        assert_eq!(transcript.plan_sha256, Some("a".repeat(64)));
+        assert_eq!(
+            transcript.server_key_fingerprint,
+            Some(format!("SHA256:{}", "A".repeat(43)))
+        );
+        assert!(transcript.collected_at.is_some());
+
+        let digest = automatestig_core::check_packs::canonical_json_sha256(&transcript).unwrap();
+        assert_eq!(digest.len(), 64);
+        assert!(digest
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte)));
+        assert_eq!(
+            digest,
+            automatestig_core::check_packs::canonical_json_sha256(&transcript).unwrap()
+        );
+
+        for mutation in 0..7 {
+            let mut changed = transcript.clone();
+            match mutation {
+                0 => changed.hostname = Some("device-02".to_string()),
+                1 => changed.platform = Some(CheckPlatform::Bsd),
+                2 => changed.plan_sha256 = Some("b".repeat(64)),
+                3 => changed.server_key_fingerprint = Some(format!("SHA256:{}", "B".repeat(43))),
+                4 => changed.collected_at = Some("2026-01-01T00:00:00Z".to_string()),
+                5 => changed.collector_version = Some("different-collector".to_string()),
+                6 => changed.commands[0].stdout = "different observation".to_string(),
+                _ => unreachable!(),
+            }
+            assert_ne!(
+                digest,
+                automatestig_core::check_packs::canonical_json_sha256(&changed).unwrap(),
+                "mutation {mutation} was not bound"
+            );
+        }
+    }
+
     fn forged_automated_checklist() -> Checklist {
         use automatestig_core::models::checklist::ChecklistStigInfo;
         use automatestig_core::models::finding::Finding;
@@ -3718,6 +4099,10 @@ mod tests {
             collected_at: Some("2026-01-01T00:00:00Z".to_string()),
             plan_sha256: Some("11".repeat(32)),
             server_key_fingerprint: None,
+            benchmark_sha256: None,
+            check_pack_sha256: None,
+            evaluation_plan_sha256: None,
+            organization_policy: None,
             unsafe_legacy_evidence: false,
         });
         let boundary = "automatestig-incomplete-checklist";

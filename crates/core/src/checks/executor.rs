@@ -92,6 +92,49 @@ fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
                 checks.iter().map(|check| run_check(check, data)).collect();
             Ok(results?.iter().any(|value| value == "true").to_string())
         }
+        Check::CiscoVtySessionLimit => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            let policy = data
+                .organization_policy
+                .as_ref()
+                .ok_or_else(|| "V-215807 requires a verified organization policy".to_string())?;
+            Ok(network::vty_session_limit_observation(
+                config,
+                policy
+                    .document()
+                    .rules
+                    .concurrent_management_sessions
+                    .max_concurrent_management_sessions,
+            ))
+        }
+        Check::CiscoLoggingBufferCapacity => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            let policy = data
+                .organization_policy
+                .as_ref()
+                .ok_or_else(|| "V-215836 requires a verified organization policy".to_string())?;
+            Ok(network::logging_buffer_observation(
+                config,
+                policy
+                    .document()
+                    .rules
+                    .logging_buffer_capacity
+                    .minimum_logging_buffer_bytes,
+            ))
+        }
+        Check::CiscoLoggingTrapSeverity => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::logging_trap_observation(config))
+        }
     }
 }
 

@@ -21,6 +21,8 @@ pub mod library;
 pub mod library_content;
 pub mod library_transaction;
 pub mod models;
+pub mod network_policy;
+pub mod organization_policy;
 pub mod path_safety;
 pub mod remote;
 

@@ -29,9 +29,7 @@ pub fn run(input: &str, output: &str, format: &str, collection: Option<&str>) ->
     ui::detail("Source", input);
     ui::detail("Format", format);
 
-    if let Some(reason) = checklist.external_export_block_reason() {
-        anyhow::bail!("Checklist cannot be exported: {reason}");
-    }
+    super::ensure_external_export_allowed(&checklist)?;
 
     match format {
         "stig-manager" => {

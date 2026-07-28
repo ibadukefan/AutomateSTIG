@@ -11,11 +11,13 @@ use std::path::{Path, PathBuf};
 use automatestig_core::checks::executor::execute_check;
 use automatestig_core::checks::{Check, CheckDefinition, CheckPack, ExpectedResult, SystemData};
 use automatestig_core::models::finding::FindingStatus;
+use ed25519_dalek::{Signer, SigningKey};
 use regex::Regex;
+use sha2::{Digest, Sha256};
 
 const EXPECTED_SHIPPED_PACKS: usize = 3;
-const EXPECTED_TOP_LEVEL_DEFINITIONS: usize = 37;
-const EXPECTED_RECURSIVE_CHECK_NODES: usize = 41;
+const EXPECTED_TOP_LEVEL_DEFINITIONS: usize = 40;
+const EXPECTED_RECURSIVE_CHECK_NODES: usize = 44;
 const EXPECTED_COMPOUND_NODES: usize = 2;
 
 const CONTRACT_EXCLUSIONS: &[&str] = &[
@@ -343,8 +345,71 @@ fn populate_boolean(check: &Check, desired: bool, data: &mut SystemData) -> Resu
                 populate_boolean(child, desired && index == 0, data)?;
             }
         }
+        Check::CiscoVtySessionLimit => {
+            data.organization_policy = Some(synthetic_organization_policy()?);
+            data.network_config = Some(
+                if desired {
+                    "line vty 0 4\n session-limit 2\nend\n"
+                } else {
+                    "line vty 0 4\n session-limit 3\nend\n"
+                }
+                .to_string(),
+            );
+        }
+        Check::CiscoLoggingBufferCapacity => {
+            data.organization_policy = Some(synthetic_organization_policy()?);
+            data.network_config = Some(
+                if desired {
+                    "logging buffered 4096000 informational\nend\n"
+                } else {
+                    "logging buffered 4096 informational\nend\n"
+                }
+                .to_string(),
+            );
+        }
+        Check::CiscoLoggingTrapSeverity => {
+            data.network_config = Some(
+                if desired {
+                    "logging trap critical\nend\n"
+                } else {
+                    "logging trap alerts\nend\n"
+                }
+                .to_string(),
+            );
+        }
     }
     Ok(())
+}
+
+fn synthetic_organization_policy(
+) -> Result<automatestig_core::organization_policy::VerifiedOrganizationPolicy, String> {
+    let now = chrono::Utc::now();
+    let document = serde_json::json!({
+        "schema": "automatestig-organization-policy/v1",
+        "policy_id": "synthetic-matrix",
+        "policy_version": "1",
+        "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+        "stig_release": "V3R7",
+        "asset_hostname": "synthetic-router",
+        "effective_from": (now - chrono::Duration::days(1)).to_rfc3339(),
+        "expires_at": (now + chrono::Duration::days(1)).to_rfc3339(),
+        "rules": {
+            "V-215807": {"max_concurrent_management_sessions": 2},
+            "V-215836": {"minimum_logging_buffer_bytes": 4096000}
+        }
+    });
+    let raw = serde_json::to_vec(&document).map_err(|error| error.to_string())?;
+    let signing_key = SigningKey::from_bytes(&[7; 32]);
+    let signature = signing_key.sign(&Sha256::digest(&raw)).to_bytes();
+    automatestig_core::organization_policy::VerifiedOrganizationPolicy::verify_and_parse(
+        &raw,
+        &signature,
+        &[signing_key.verifying_key().to_bytes()],
+        "Cisco_IOS-XE_Router_NDM_STIG",
+        "V3R7",
+        "synthetic-router",
+        now,
+    )
 }
 
 fn expected_actual(expected: &ExpectedResult, should_pass: bool) -> Result<String, String> {

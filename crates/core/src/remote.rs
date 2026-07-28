@@ -7,6 +7,21 @@ use sha2::{Digest, Sha256};
 
 use crate::checks::{Check, CheckDefinition, CheckPlatform, SystemData};
 
+/// Return whether a fingerprint uses OpenSSH's canonical unpadded SHA-256
+/// display format.
+pub fn is_openssh_sha256_fingerprint(fingerprint: &str) -> bool {
+    fingerprint.strip_prefix("SHA256:").is_some_and(|digest| {
+        digest.len() == 43
+            && digest
+                .as_bytes()
+                .last()
+                .is_some_and(|byte| b"AEIMQUYcgkosw048".contains(byte))
+            && digest
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'+' | b'/'))
+    })
+}
+
 /// Commands to collect system data, organized by platform.
 #[derive(Debug, Clone)]
 pub struct CollectionPlan {
@@ -256,7 +271,10 @@ fn add_check_commands(
     commands: &mut Vec<CollectionCommand>,
 ) -> Result<(), String> {
     let item = match check {
-        Check::ConfigLine { .. } => {
+        Check::ConfigLine { .. }
+        | Check::CiscoVtySessionLimit
+        | Check::CiscoLoggingBufferCapacity
+        | Check::CiscoLoggingTrapSeverity => {
             return Err("Cisco IOS-XE checks consume an operator-supplied running config".into());
         }
         Check::Command { command: value, .. } => {
@@ -778,6 +796,32 @@ fn normalize_system_data(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn openssh_sha256_fingerprint_requires_exact_unpadded_base64_grammar() {
+        for final_character in "AEIMQUYcgkosw048".chars() {
+            assert!(is_openssh_sha256_fingerprint(&format!(
+                "SHA256:{}{final_character}",
+                "A".repeat(42)
+            )));
+        }
+
+        for invalid in [
+            "SHA256:not-a-real-fingerprint".to_string(),
+            format!("SHA256:{}", "A".repeat(42)),
+            format!("SHA256:{}", "A".repeat(44)),
+            format!("SHA256:{}B", "A".repeat(42)),
+            format!("SHA256:{}=", "A".repeat(42)),
+            format!("SHA256:{}-", "A".repeat(42)),
+            format!("sha256:{}", "A".repeat(43)),
+            format!("SHA256:{} ", "A".repeat(42)),
+        ] {
+            assert!(
+                !is_openssh_sha256_fingerprint(&invalid),
+                "accepted malformed fingerprint {invalid:?}"
+            );
+        }
+    }
 
     #[test]
     fn cisco_running_config_requires_complete_unpaginated_output() {

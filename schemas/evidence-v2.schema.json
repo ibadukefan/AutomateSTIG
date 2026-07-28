@@ -17,7 +17,12 @@
     "plan_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
     "server_key_fingerprint": {
       "oneOf": [
-        { "type": "string", "pattern": "^SHA256:.+" },
+        {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 50,
+          "pattern": "^SHA256:[A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]$"
+        },
         { "type": "null" }
       ]
     },

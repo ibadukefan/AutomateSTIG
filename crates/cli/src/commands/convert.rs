@@ -35,6 +35,7 @@ pub fn run(input: &str, output: &str, format: Option<&str>) -> Result<()> {
     };
 
     // Write output.
+    super::ensure_external_export_allowed(&checklist)?;
     match out_format {
         "ckl" => ckl::write_ckl_file(&checklist, out_path)?,
         "cklb" => cklb::write_cklb_file(&checklist, out_path)?,

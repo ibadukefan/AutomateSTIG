@@ -24,7 +24,29 @@ pub struct CollectArgs {
     pub trust_on_first_use: bool,
 }
 
+fn bind_connection_identity(host: &str, claimed_hostname: Option<&str>) -> Result<String> {
+    let host = host.trim().trim_end_matches('.');
+    if host.is_empty() {
+        anyhow::bail!("--host must identify the SSH connection endpoint");
+    }
+    if let Some(claimed_hostname) = claimed_hostname {
+        let claimed_hostname = claimed_hostname.trim().trim_end_matches('.');
+        if !claimed_hostname.eq_ignore_ascii_case(host) {
+            anyhow::bail!(
+                "--hostname cannot relabel the SSH endpoint: expected '{}', got '{}'",
+                host,
+                claimed_hostname
+            );
+        }
+    }
+    Ok(host.to_string())
+}
+
 pub fn run(args: CollectArgs, cli: &crate::Cli) -> Result<()> {
+    // The asset identity is the exact endpoint name/address whose host key is
+    // verified by the collector. Do not present an unobserved OS/device
+    // hostname as though collection established it.
+    let evidence_identity = bind_connection_identity(&args.host, args.hostname.as_deref())?;
     let library = StigLibrary::open(&library_path(cli))
         .context("Failed to open STIG library. Run 'automatestig library init' first.")?;
     let benchmark = library
@@ -83,9 +105,8 @@ pub fn run(args: CollectArgs, cli: &crate::Cli) -> Result<()> {
     };
     let runtime = tokio::runtime::Runtime::new().context("failed to start collection runtime")?;
     let report = runtime.block_on(collect_plan(&config, &plan));
-    let hostname = args.hostname.unwrap_or(args.host);
     let mut evidence =
-        EvidenceTranscript::new_v2(hostname, platform, plan.digest(), report.commands);
+        EvidenceTranscript::new_v2(evidence_identity, platform, plan.digest(), report.commands);
     evidence.server_key_fingerprint = report.server_key_fingerprint;
     let bytes = serde_json::to_vec_pretty(&evidence)?;
     write_atomic_or_stdout(&args.output, &bytes)?;
@@ -227,6 +248,16 @@ fn validate_existing_output(path: &Path) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn collection_identity_cannot_relabel_the_verified_endpoint() {
+        assert_eq!(
+            bind_connection_identity("Device.Example.", Some("device.example")).unwrap(),
+            "Device.Example"
+        );
+        assert!(bind_connection_identity("10.0.0.8", Some("production-router")).is_err());
+        assert!(bind_connection_identity(" ", None).is_err());
+    }
 
     #[cfg(unix)]
     #[test]

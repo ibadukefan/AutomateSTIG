@@ -8,7 +8,8 @@ use std::collections::{HashMap, HashSet};
 
 use automatestig_core::checks::{CheckPlatform, SystemData};
 use automatestig_core::remote::{
-    assemble_evidence_system_data, CollectionPlan, CommandEvidence, CommandStatus,
+    assemble_evidence_system_data, is_openssh_sha256_fingerprint, CollectionPlan, CommandEvidence,
+    CommandStatus,
 };
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -248,19 +249,11 @@ fn parse_v2(raw: &str) -> Result<EvidenceTranscript, EvidenceError> {
     if document
         .server_key_fingerprint
         .as_deref()
-        .is_some_and(|fingerprint| fingerprint.trim().is_empty())
+        .is_some_and(|fingerprint| !is_openssh_sha256_fingerprint(fingerprint))
     {
         return Err(EvidenceError::InvalidDocument(
-            "evidence v2 server_key_fingerprint must not be empty when present".into(),
-        ));
-    }
-    if document
-        .server_key_fingerprint
-        .as_deref()
-        .is_some_and(|fingerprint| !fingerprint.starts_with("SHA256:") || fingerprint.len() <= 8)
-    {
-        return Err(EvidenceError::InvalidDocument(
-            "evidence v2 server_key_fingerprint must be an SSH SHA256 fingerprint".into(),
+            "evidence v2 server_key_fingerprint must match SHA256:<43 unpadded base64 characters>"
+                .into(),
         ));
     }
     if document.commands.is_empty() {
@@ -419,6 +412,72 @@ fn flush_legacy(
 mod tests {
     use super::*;
     use automatestig_core::remote::{CollectionCommand, OutputPolicy};
+
+    fn v2_with_fingerprint(fingerprint: serde_json::Value) -> String {
+        serde_json::json!({
+            "schema": EVIDENCE_V2_SCHEMA,
+            "hostname": "filer",
+            "platform": "ontap",
+            "collector_version": "test",
+            "collected_at": "2026-01-01T00:00:00Z",
+            "plan_sha256": "0".repeat(64),
+            "server_key_fingerprint": fingerprint,
+            "complete": true,
+            "commands": [{
+                "data_key": "show state",
+                "command": "show state",
+                "status": "success",
+                "stdout": "ok",
+                "stderr": "",
+                "exit_code": 0,
+                "duration_ms": 1,
+                "error": null
+            }]
+        })
+        .to_string()
+    }
+
+    #[test]
+    fn v2_fingerprint_uses_exact_openssh_sha256_grammar_and_allows_null() {
+        let without_fingerprint = parse_evidence(
+            &v2_with_fingerprint(serde_json::Value::Null),
+            LegacyEvidencePolicy::Reject,
+        )
+        .unwrap();
+        assert!(without_fingerprint.server_key_fingerprint.is_none());
+
+        let valid = format!("SHA256:{}", "A".repeat(43));
+        let with_fingerprint = parse_evidence(
+            &v2_with_fingerprint(serde_json::Value::String(valid.clone())),
+            LegacyEvidencePolicy::Reject,
+        )
+        .unwrap();
+        assert_eq!(
+            with_fingerprint.server_key_fingerprint.as_deref(),
+            Some(valid.as_str())
+        );
+
+        for invalid in [
+            "SHA256:not-a-real-fingerprint".to_string(),
+            format!("SHA256:{}", "A".repeat(42)),
+            format!("SHA256:{}", "A".repeat(44)),
+            format!("SHA256:{}B", "A".repeat(42)),
+            format!("SHA256:{}=", "A".repeat(42)),
+            format!("SHA256:{}-", "A".repeat(42)),
+            format!("sha256:{}", "A".repeat(43)),
+            format!("SHA256:{} ", "A".repeat(42)),
+        ] {
+            let error = parse_evidence(
+                &v2_with_fingerprint(serde_json::Value::String(invalid.clone())),
+                LegacyEvidencePolicy::Reject,
+            )
+            .expect_err("malformed fingerprint must be rejected");
+            assert!(
+                matches!(error, EvidenceError::InvalidDocument(ref message) if message.contains("server_key_fingerprint")),
+                "unexpected error for {invalid:?}: {error}"
+            );
+        }
+    }
 
     #[test]
     fn strict_mode_rejects_legacy_and_explicit_mode_indexes_success_only() {

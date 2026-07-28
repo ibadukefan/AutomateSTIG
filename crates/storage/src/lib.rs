@@ -767,6 +767,10 @@ mod tests {
             collected_at: Some("2026-01-01T00:00:00Z".to_string()),
             plan_sha256: Some("digest".to_string()),
             server_key_fingerprint: None,
+            benchmark_sha256: None,
+            check_pack_sha256: None,
+            evaluation_plan_sha256: None,
+            organization_policy: None,
             unsafe_legacy_evidence: false,
         });
 

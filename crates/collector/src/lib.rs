@@ -2,12 +2,13 @@
 
 use std::fs::{File, OpenOptions};
 use std::io::{Read, Seek, SeekFrom, Write};
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
+use std::net::{IpAddr, SocketAddr};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
+use automatestig_core::network_policy::{classify_ip, normalize_mapped_ip, IpScope};
 use automatestig_core::remote::{
     validate_command_output, CollectionCommand, CollectionPlan, CommandEvidence, CommandStatus,
 };
@@ -76,20 +77,165 @@ enum TargetTrustClass {
     LinkLocal,
 }
 
-async fn resolve_scan_target(
-    host: &str,
-    port: u16,
-    timeout: Duration,
-) -> Result<SocketAddr, String> {
+/// Outbound policy applied by the shared collector before any SSH socket is
+/// opened. The CLI and GUI both use [`collect_plan`], so neither surface can
+/// bypass destination authorization.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SshTargetPolicy {
+    allowlist: Vec<String>,
+    allow_private: bool,
+    allow_link_local: bool,
+}
+
+impl SshTargetPolicy {
+    /// Load the process-wide SSH destination policy.
+    pub fn from_environment() -> Self {
+        Self {
+            allowlist: parse_allowlist_environment("AUTOMATESTIG_SSH_TARGET_ALLOWLIST"),
+            allow_private: environment_switch_enabled("AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN"),
+            // Retain the narrower legacy switch, but apply it in the same
+            // resolve/authorize/connect operation as every other policy rule.
+            allow_link_local: environment_switch_enabled("AUTOMATESTIG_SSH_ALLOW_LINK_LOCAL"),
+        }
+    }
+
+    /// Construct an explicit policy. Intended for callers that obtain policy
+    /// from a trusted configuration source and for transport tests.
+    pub fn explicit(
+        allowlist: impl IntoIterator<Item = impl Into<String>>,
+        allow_private: bool,
+        allow_link_local: bool,
+    ) -> Self {
+        Self {
+            allowlist: allowlist.into_iter().map(Into::into).collect(),
+            allow_private,
+            allow_link_local,
+        }
+    }
+
+    /// Validate target syntax before collection work starts. Destination
+    /// authorization occurs once, against the complete pinned DNS answer set.
+    pub fn validate_host(&self, host: &str) -> Result<(), String> {
+        validate_ssh_target_syntax(host)
+    }
+}
+
+fn parse_allowlist_environment(name: &str) -> Vec<String> {
+    std::env::var(name)
+        .unwrap_or_default()
+        .split(',')
+        .map(str::trim)
+        .filter(|entry| !entry.is_empty())
+        .map(ToOwned::to_owned)
+        .collect()
+}
+
+pub fn validate_ssh_target_syntax(host: &str) -> Result<(), String> {
+    let host = host.trim();
     if host.is_empty() || host.chars().any(char::is_whitespace) {
         return Err("SSH target host must not be empty or contain whitespace".to_string());
     }
+    if host.contains('/') || host.contains('\\') || host.contains('\0') {
+        return Err("SSH target host contains unsafe characters".to_string());
+    }
+    let normalized = host.trim_end_matches('.').to_ascii_lowercase();
+    if normalized == "localhost"
+        || normalized.ends_with(".localhost")
+        || normalized == "metadata.google.internal"
+        || normalized.ends_with(".metadata.google.internal")
+    {
+        return Err("SSH target host is local/metadata and is not allowed".to_string());
+    }
+    Ok(())
+}
+
+fn normalize_ip(address: IpAddr) -> IpAddr {
+    normalize_mapped_ip(address)
+}
+
+fn ip_in_cidr(ip: IpAddr, cidr: &str) -> bool {
+    let Some((base, prefix)) = cidr.split_once('/') else {
+        return false;
+    };
+    let Ok(base) = base.parse::<IpAddr>() else {
+        return false;
+    };
+    let Ok(prefix) = prefix.parse::<u32>() else {
+        return false;
+    };
+    match (normalize_ip(ip), normalize_ip(base)) {
+        (IpAddr::V4(ip), IpAddr::V4(base)) if prefix <= 32 => {
+            let mask = if prefix == 0 {
+                0
+            } else {
+                u32::MAX << (32 - prefix)
+            };
+            (u32::from(ip) & mask) == (u32::from(base) & mask)
+        }
+        (IpAddr::V6(ip), IpAddr::V6(base)) if prefix <= 128 => {
+            let mask = if prefix == 0 {
+                0
+            } else {
+                u128::MAX << (128 - prefix)
+            };
+            (u128::from(ip) & mask) == (u128::from(base) & mask)
+        }
+        _ => false,
+    }
+}
+
+fn allowlist_matches_host(host: &str, entries: &[String]) -> bool {
+    let host = host.trim_end_matches('.').to_ascii_lowercase();
+    entries.iter().any(|entry| {
+        !entry.contains('/')
+            && entry.parse::<IpAddr>().is_err()
+            && host == entry.trim_end_matches('.').to_ascii_lowercase()
+    })
+}
+
+fn allowlist_matches_ip(ip: IpAddr, entries: &[String]) -> bool {
+    let ip = normalize_ip(ip);
+    entries.iter().any(|entry| {
+        let entry = entry.trim();
+        entry
+            .parse::<IpAddr>()
+            .is_ok_and(|candidate| normalize_ip(candidate) == ip)
+            || ip_in_cidr(ip, entry)
+    })
+}
+
+async fn resolve_scan_targets(
+    host: &str,
+    port: u16,
+    timeout: Duration,
+    policy: &SshTargetPolicy,
+) -> Result<Vec<SocketAddr>, String> {
+    resolve_scan_targets_with(host, port, timeout, policy, |host, port| async move {
+        tokio::net::lookup_host((host.as_str(), port))
+            .await
+            .map(|addresses| addresses.collect())
+    })
+    .await
+}
+
+async fn resolve_scan_targets_with<F, Fut>(
+    host: &str,
+    port: u16,
+    timeout: Duration,
+    policy: &SshTargetPolicy,
+    resolver: F,
+) -> Result<Vec<SocketAddr>, String>
+where
+    F: FnOnce(String, u16) -> Fut,
+    Fut: std::future::Future<Output = std::io::Result<Vec<SocketAddr>>>,
+{
+    policy.validate_host(host)?;
     if port == 0 {
         return Err("SSH target port must not be zero".to_string());
     }
-    let lookup = tokio::time::timeout(timeout, tokio::net::lookup_host((host, port))).await;
+    let lookup = tokio::time::timeout(timeout, resolver(host.to_string(), port)).await;
     let addresses = match lookup {
-        Ok(Ok(addresses)) => addresses.collect::<Vec<_>>(),
+        Ok(Ok(addresses)) => addresses,
         Ok(Err(error)) => {
             return Err(format!(
                 "failed to resolve SSH target {host}:{port}: {error}"
@@ -102,96 +248,115 @@ async fn resolve_scan_target(
             ));
         }
     };
-    select_resolved_target(
-        host,
-        port,
-        addresses,
-        environment_switch_enabled("AUTOMATESTIG_SSH_ALLOW_LINK_LOCAL"),
-    )
+    authorize_resolved_targets(host, port, addresses, policy)
 }
 
-fn select_resolved_target(
+fn authorize_resolved_targets(
     host: &str,
     port: u16,
     addresses: Vec<SocketAddr>,
-    allow_link_local: bool,
-) -> Result<SocketAddr, String> {
+    policy: &SshTargetPolicy,
+) -> Result<Vec<SocketAddr>, String> {
     let mut unique = Vec::with_capacity(addresses.len());
     for address in addresses {
-        if !unique.contains(&address) {
-            unique.push(address);
+        let normalized = SocketAddr::new(normalize_ip(address.ip()), address.port());
+        if normalized.port() != port {
+            return Err(format!(
+                "SSH resolver returned unexpected port {} for {host}:{port}",
+                normalized.port()
+            ));
+        }
+        if !unique.contains(&normalized) {
+            unique.push(normalized);
         }
     }
     let Some(&selected) = unique.first() else {
         return Err(format!("SSH target {host}:{port} resolved to no addresses"));
     };
 
-    let first_class = classify_target_address(selected.ip(), allow_link_local)?;
+    let host_allowlisted = allowlist_matches_host(host, &policy.allowlist);
+    let first_class = classify_target_address(selected.ip())?;
+    authorize_target_address(host, selected.ip(), first_class, host_allowlisted, policy)?;
     for address in unique.iter().skip(1) {
-        let class = classify_target_address(address.ip(), allow_link_local)?;
+        let class = classify_target_address(address.ip())?;
         if class != first_class {
             return Err(format!(
                 "SSH target {host}:{port} resolves across trust classes ({first_class:?} and {class:?}); refusing a rebinding-prone target"
             ));
         }
+        authorize_target_address(host, address.ip(), class, host_allowlisted, policy)?;
     }
-    Ok(selected)
+    Ok(unique)
 }
 
-fn classify_target_address(
+fn authorize_target_address(
+    host: &str,
     address: IpAddr,
-    allow_link_local: bool,
-) -> Result<TargetTrustClass, String> {
-    let address = match address {
-        IpAddr::V6(address) => address
-            .to_ipv4_mapped()
-            .map(IpAddr::V4)
-            .unwrap_or(IpAddr::V6(address)),
-        address => address,
-    };
-    if address.is_unspecified() {
-        return Err(format!("SSH target address {address} is unspecified"));
+    class: TargetTrustClass,
+    host_allowlisted: bool,
+    policy: &SshTargetPolicy,
+) -> Result<(), String> {
+    let ip_allowlisted = allowlist_matches_ip(address, &policy.allowlist);
+    if !policy.allowlist.is_empty() && !host_allowlisted && !ip_allowlisted {
+        return Err(format!(
+            "SSH target {host} resolves to unlisted address {address}; update AUTOMATESTIG_SSH_TARGET_ALLOWLIST"
+        ));
     }
-    if address.is_multicast() {
-        return Err(format!("SSH target address {address} is multicast"));
+    match class {
+        TargetTrustClass::Public => Ok(()),
+        TargetTrustClass::Private | TargetTrustClass::Loopback
+            if ip_allowlisted || policy.allow_private =>
+        {
+            Ok(())
+        }
+        TargetTrustClass::LinkLocal
+            if ip_allowlisted || policy.allow_private || policy.allow_link_local =>
+        {
+            Ok(())
+        }
+        TargetTrustClass::Private | TargetTrustClass::Loopback => Err(format!(
+            "SSH target {host} resolves to private/local address {address}; add an exact IP/CIDR allowlist entry or set AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN=1 only for an isolated lab"
+        )),
+        TargetTrustClass::LinkLocal => Err(format!(
+            "SSH target {host} resolves to link-local address {address}; add an exact IP/CIDR allowlist entry or set AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN=1 only for an isolated lab"
+        )),
     }
-    if address == IpAddr::V4(Ipv4Addr::BROADCAST) {
-        return Err(format!("SSH target address {address} is broadcast"));
-    }
-    let link_local = match address {
-        IpAddr::V4(address) => address.is_link_local(),
-        IpAddr::V6(address) => address.is_unicast_link_local(),
-    };
-    if link_local {
-        return if allow_link_local {
-            Ok(TargetTrustClass::LinkLocal)
-        } else {
-            Err(format!(
-                "SSH target address {address} is link-local; set AUTOMATESTIG_SSH_ALLOW_LINK_LOCAL=1 only for an explicitly scoped device"
-            ))
-        };
-    }
-    if address.is_loopback() {
-        return Ok(TargetTrustClass::Loopback);
-    }
-    let private = match address {
-        IpAddr::V4(address) => address.is_private(),
-        IpAddr::V6(address) => address.is_unique_local(),
-    };
-    if private {
-        Ok(TargetTrustClass::Private)
-    } else {
-        Ok(TargetTrustClass::Public)
+}
+
+fn classify_target_address(address: IpAddr) -> Result<TargetTrustClass, String> {
+    let address = normalize_ip(address);
+    match classify_ip(address) {
+        IpScope::Global => Ok(TargetTrustClass::Public),
+        IpScope::PrivateOrSpecial => Ok(TargetTrustClass::Private),
+        IpScope::LinkLocal => Ok(TargetTrustClass::LinkLocal),
+        IpScope::Loopback => Ok(TargetTrustClass::Loopback),
+        IpScope::Invalid => Err(format!(
+            "SSH target address {address} is invalid, reserved, multicast, or documentation space"
+        )),
     }
 }
 
 /// Collect every command in a plan. Individual failures do not erase partial
 /// evidence or prevent later commands from being attempted.
 pub async fn collect_plan(config: &SshConfig, plan: &CollectionPlan) -> CollectionReport {
+    let policy = SshTargetPolicy::from_environment();
+    collect_plan_with_policy(config, plan, &policy).await
+}
+
+/// Collect using an explicit trusted destination policy. DNS is resolved once,
+/// every answer is authorized, and only those pinned numeric addresses are
+/// supplied to the SSH socket. The original hostname remains in `SshHandler`
+/// for known-hosts lookup and enrollment.
+pub async fn collect_plan_with_policy(
+    config: &SshConfig,
+    plan: &CollectionPlan,
+    policy: &SshTargetPolicy,
+) -> CollectionReport {
     let fingerprint = Arc::new(Mutex::new(None));
     let phase_timeout = Duration::from_secs(config.timeout_secs.max(1));
-    let target = match resolve_scan_target(&config.host, config.port, phase_timeout).await {
-        Ok(target) => target,
+    let targets = match resolve_scan_targets(&config.host, config.port, phase_timeout, policy).await
+    {
+        Ok(targets) => targets,
         Err(error) => return transport_failure_report(plan, &fingerprint, error),
     };
     let russh_config = Arc::new(client::Config {
@@ -202,7 +367,7 @@ pub async fn collect_plan(config: &SshConfig, plan: &CollectionPlan) -> Collecti
         SshHandler::new_with_fingerprint(&config.host, config.port, Arc::clone(&fingerprint));
     let connect = tokio::time::timeout(
         phase_timeout,
-        client::connect(russh_config, target, handler),
+        client::connect(russh_config, targets.as_slice(), handler),
     )
     .await;
     let mut session = match connect {
@@ -212,8 +377,8 @@ pub async fn collect_plan(config: &SshConfig, plan: &CollectionPlan) -> Collecti
                 plan,
                 &fingerprint,
                 format!(
-                    "SSH connection failed to {}:{} via {target}: {error}",
-                    config.host, config.port,
+                    "SSH connection failed to {}:{} via authorized addresses {targets:?}: {error}",
+                    config.host, config.port
                 ),
             );
         }
@@ -482,12 +647,19 @@ fn load_private_key_secure_with_roots(
     }
     let encoded = std::str::from_utf8(&bytes)
         .map_err(|error| format!("SSH private key {} is not UTF-8: {error}", path.display()))?;
-    russh::keys::decode_secret_key(encoded, passphrase).map_err(|error| {
+    let key = russh::keys::decode_secret_key(encoded, passphrase).map_err(|error| {
         format!(
             "failed to decode SSH private key {}: {error}",
             path.display()
         )
-    })
+    })?;
+    if key.algorithm().is_rsa() {
+        return Err(format!(
+            "RSA SSH private keys are not supported for {} because the RSA signing implementation is disabled; use an Ed25519 or ECDSA private key",
+            path.display()
+        ));
+    }
+    Ok(key)
 }
 
 fn validate_private_key_metadata(path: &Path, metadata: &std::fs::Metadata) -> Result<(), String> {
@@ -1342,8 +1514,43 @@ mod tests {
         }
     }
 
+    fn loopback_test_policy() -> SshTargetPolicy {
+        SshTargetPolicy::explicit(["127.0.0.1"], false, false)
+    }
+
     fn write_test_private_key(path: &Path) {
         let key = PrivateKey::random(&mut rand::rng(), Algorithm::Ed25519).unwrap();
+        let encoded = key.to_openssh(LineEnding::LF).unwrap();
+        std::fs::write(path, encoded.as_bytes()).unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600)).unwrap();
+        }
+    }
+
+    fn write_test_rsa_private_key(path: &Path) {
+        use russh::keys::ssh_key::{
+            private::{RsaKeypair, RsaPrivateKey},
+            public::RsaPublicKey,
+            Mpint,
+        };
+
+        // Structural components are sufficient here: the loader must reject
+        // RSA immediately after decoding and before any signing operation.
+        let public = RsaPublicKey::new(
+            Mpint::from_positive_bytes(&[3]),
+            Mpint::from_positive_bytes(&[0x01, 0x01]),
+        )
+        .unwrap();
+        let private = RsaPrivateKey::new(
+            Mpint::from_positive_bytes(&[7]),
+            Mpint::from_positive_bytes(&[1]),
+            Mpint::from_positive_bytes(&[11]),
+            Mpint::from_positive_bytes(&[13]),
+        )
+        .unwrap();
+        let key = PrivateKey::from(RsaKeypair::new(public, private).unwrap());
         let encoded = key.to_openssh(LineEnding::LF).unwrap();
         std::fs::write(path, encoded.as_bytes()).unwrap();
         #[cfg(unix)]
@@ -1421,6 +1628,17 @@ mod tests {
     }
 
     #[test]
+    fn private_key_loader_rejects_rsa_with_actionable_error() {
+        let temp = TempDir::new().unwrap();
+        let key = temp.path().join("id_rsa");
+        write_test_rsa_private_key(&key);
+
+        let error = load_test_private_key(&key, &[temp.path().to_path_buf()]).unwrap_err();
+        assert!(error.contains("RSA SSH private keys are not supported"));
+        assert!(error.contains("Ed25519 or ECDSA"));
+    }
+
+    #[test]
     fn configured_key_roots_include_defaults_and_platform_separated_opt_ins() {
         let temp = TempDir::new().unwrap();
         let first = temp.path().join("first");
@@ -1456,6 +1674,7 @@ mod tests {
     #[test]
     fn scan_target_rejects_unsafe_and_mixed_resolution_results() {
         let address = |value: &str| value.parse::<IpAddr>().unwrap();
+        let default_policy = SshTargetPolicy::explicit(std::iter::empty::<&str>(), false, false);
         for unsafe_address in [
             "0.0.0.0",
             "::",
@@ -1465,59 +1684,162 @@ mod tests {
             "169.254.10.20",
             "fe80::1",
         ] {
-            assert!(select_resolved_target(
+            assert!(authorize_resolved_targets(
                 "device.example.test",
                 22,
                 vec![SocketAddr::new(address(unsafe_address), 22)],
-                false,
+                &default_policy,
             )
             .is_err());
         }
 
-        let mixed = select_resolved_target(
+        let private_policy = SshTargetPolicy::explicit(std::iter::empty::<&str>(), true, true);
+        for invalid_address in ["100:0:0:1::1", "4000::1", "8000::1"] {
+            assert!(
+                authorize_resolved_targets(
+                    "device.example.test",
+                    22,
+                    vec![SocketAddr::new(address(invalid_address), 22)],
+                    &SshTargetPolicy::explicit([invalid_address], true, true),
+                )
+                .is_err(),
+                "{invalid_address} must remain invalid under every SSH destination policy"
+            );
+        }
+
+        let mixed = authorize_resolved_targets(
             "device.example.test",
             22,
             vec![
                 SocketAddr::new(address("192.168.1.10"), 22),
-                SocketAddr::new(address("203.0.113.10"), 22),
+                SocketAddr::new(address("8.8.8.8"), 22),
             ],
-            false,
+            &private_policy,
         )
         .unwrap_err();
         assert!(mixed.contains("resolves across trust classes"));
 
         assert_eq!(
-            select_resolved_target(
+            authorize_resolved_targets(
                 "device.example.test",
                 22,
                 vec![SocketAddr::new(address("169.254.10.20"), 22)],
-                true,
+                &private_policy,
             )
             .unwrap()
-            .ip(),
-            address("169.254.10.20")
+            .as_slice(),
+            &[SocketAddr::new(address("169.254.10.20"), 22)]
         );
     }
 
     #[test]
-    fn scan_target_accepts_lan_and_dual_stack_within_one_trust_class() {
+    fn scan_target_authorizes_every_pinned_address_and_enforces_allowlist() {
         let lan = vec![
             "192.168.1.10:22".parse().unwrap(),
             "[fd00::10]:22".parse().unwrap(),
         ];
         assert_eq!(
-            select_resolved_target("device.lan", 22, lan.clone(), false).unwrap(),
-            lan[0]
+            authorize_resolved_targets(
+                "device.lan",
+                22,
+                lan.clone(),
+                &SshTargetPolicy::explicit(["192.168.0.0/16", "fd00::/8"], false, false),
+            )
+            .unwrap(),
+            lan
         );
 
         let public = vec![
-            "203.0.113.10:22".parse().unwrap(),
-            "[2001:db8::10]:22".parse().unwrap(),
+            "8.8.8.8:22".parse().unwrap(),
+            "[2001:4860:4860::8888]:22".parse().unwrap(),
         ];
         assert_eq!(
-            select_resolved_target("device.example.test", 22, public.clone(), false).unwrap(),
-            public[0]
+            authorize_resolved_targets(
+                "device.example.test",
+                22,
+                public.clone(),
+                &SshTargetPolicy::explicit(["device.example.test"], false, false),
+            )
+            .unwrap(),
+            public
         );
+
+        let unlisted = authorize_resolved_targets(
+            "unlisted.example.test",
+            22,
+            vec!["8.8.4.4:22".parse().unwrap()],
+            &SshTargetPolicy::explicit(["allowed.example.test"], false, false),
+        )
+        .unwrap_err();
+        assert_eq!(
+            unlisted,
+            "SSH target unlisted.example.test resolves to unlisted address 8.8.4.4; update AUTOMATESTIG_SSH_TARGET_ALLOWLIST"
+        );
+
+        let rebound_private = authorize_resolved_targets(
+            "allowed.example.test",
+            22,
+            vec!["10.0.0.8:22".parse().unwrap()],
+            &SshTargetPolicy::explicit(["allowed.example.test"], false, false),
+        )
+        .unwrap_err();
+        assert!(rebound_private.contains("private/local"));
+
+        for address in [
+            "100.64.0.1:22",
+            "198.18.0.1:22",
+            "[64:ff9b:1::1]:22",
+            "[100::1]:22",
+            "[2001::1]:22",
+            "[2002::1]:22",
+            "[fec0::1]:22",
+        ] {
+            let error = authorize_resolved_targets(
+                "allowed.example.test",
+                22,
+                vec![address.parse().unwrap()],
+                &SshTargetPolicy::explicit(["allowed.example.test"], false, false),
+            )
+            .unwrap_err();
+            assert!(
+                error.contains("private/local"),
+                "{address} must require explicit special-use authorization: {error}"
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn scan_target_resolver_is_invoked_once_and_returns_only_pinned_addresses() {
+        use std::sync::atomic::AtomicUsize;
+
+        let calls = Arc::new(AtomicUsize::new(0));
+        let calls_for_resolver = Arc::clone(&calls);
+        let targets = resolve_scan_targets_with(
+            "device.example.test",
+            22,
+            Duration::from_secs(1),
+            &SshTargetPolicy::explicit(["device.example.test"], false, false),
+            move |host, port| async move {
+                assert_eq!(host, "device.example.test");
+                assert_eq!(port, 22);
+                calls_for_resolver.fetch_add(1, Ordering::SeqCst);
+                Ok(vec![
+                    "8.8.8.8:22".parse().unwrap(),
+                    "8.8.4.4:22".parse().unwrap(),
+                ])
+            },
+        )
+        .await
+        .unwrap();
+
+        assert_eq!(calls.load(Ordering::SeqCst), 1);
+        assert_eq!(
+            targets,
+            vec!["8.8.8.8:22".parse().unwrap(), "8.8.4.4:22".parse().unwrap()]
+        );
+        let handler = SshHandler::new("device.example.test", 22);
+        assert_eq!(handler.host, "device.example.test");
+        assert_eq!(handler.port, 22);
     }
 
     #[cfg(unix)]
@@ -1705,7 +2027,12 @@ mod tests {
         });
 
         let started = Instant::now();
-        let report = collect_plan(&password_config(port), &probe_plan()).await;
+        let report = collect_plan_with_policy(
+            &password_config(port),
+            &probe_plan(),
+            &loopback_test_policy(),
+        )
+        .await;
         server.abort();
         assert!(started.elapsed() < Duration::from_secs(4));
         assert_eq!(report.commands[0].status, CommandStatus::TransportError);
@@ -1764,7 +2091,12 @@ mod tests {
         );
 
         let started = Instant::now();
-        let report = collect_plan(&password_config(port), &probe_plan()).await;
+        let report = collect_plan_with_policy(
+            &password_config(port),
+            &probe_plan(),
+            &loopback_test_policy(),
+        )
+        .await;
         server.abort();
 
         assert!(started.elapsed() < Duration::from_secs(4));

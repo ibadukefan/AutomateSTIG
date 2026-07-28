@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use std::io::Read;
+use std::io::{Read, Write};
 use std::path::Path;
 
 use anyhow::{Context, Result};
@@ -9,7 +9,9 @@ use automatestig_core::checks::{CheckPack, CheckPlatform, CheckResult, SystemDat
 use automatestig_core::engine::EvaluationEngine;
 use automatestig_core::library::StigLibrary;
 use automatestig_core::models::asset::Asset;
-use automatestig_core::models::checklist::{EvaluationOrigin, EvaluationProvenance};
+use automatestig_core::models::checklist::{
+    EvaluationOrigin, EvaluationProvenance, OrganizationPolicyProvenance,
+};
 use automatestig_core::models::finding::{FindingSource, FindingStatus};
 use automatestig_core::models::Checklist;
 use automatestig_core::remote::cisco_config_hostname;
@@ -21,17 +23,82 @@ use automatestig_parsers::evidence::{
 use automatestig_storage::Database;
 use sha2::{Digest, Sha256};
 
-use super::{db_path, library_path, trusted_keys_dir};
+use super::{db_path, library_path, organization_policy_keys_dir, trusted_keys_dir};
 use crate::ui;
 
 const MAX_EVIDENCE_BYTES: u64 = 256 * 1024 * 1024;
 const MAX_RUNNING_CONFIG_BYTES: u64 = 100 * 1024 * 1024;
+
+/// Create a detached signature on an isolated signing host.
+///
+/// The private key is loaded only from the explicit path and the output is
+/// create-new so a signing ceremony cannot silently replace prior evidence.
+pub fn sign_organization_policy(
+    policy_path: &str,
+    signing_key_path: &str,
+    output_path: &str,
+) -> Result<()> {
+    let policy =
+        read_regular_file_bounded(Path::new(policy_path), 64 * 1024, "organization policy")?;
+    // Refuse malformed or structurally incomplete JSON before asking an
+    // offline custodian to sign it. Asset/release/time binding is checked
+    // again by the online verifier because those values are contextual.
+    automatestig_core::organization_policy::OrganizationPolicyDocument::validate_for_signing(
+        &policy,
+        chrono::Utc::now(),
+    )
+    .map_err(anyhow::Error::msg)
+    .context("Organization policy is not valid and currently effective")?;
+
+    let private_path = Path::new(signing_key_path);
+    let public_path = private_path.with_extension("pub");
+    let (private_key, public_key) =
+        automatestig_stigpack::signing::load_signing_key_pair(private_path, &public_path)
+            .context("Failed to load external organization-policy signing key pair")?;
+    let signature = automatestig_stigpack::signing::sign_manifest(&policy, &private_key)
+        .context("Failed to sign organization policy")?;
+
+    let output = Path::new(output_path);
+    if output == Path::new(policy_path) || output == private_path || output == public_path {
+        anyhow::bail!("signature output must differ from the policy and signing-key paths");
+    }
+    let mut options = std::fs::OpenOptions::new();
+    options.write(true).create_new(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o644).custom_flags(libc::O_NOFOLLOW);
+    }
+    let mut file = options
+        .open(output)
+        .with_context(|| format!("Failed to create signature output: {}", output.display()))?;
+    file.write_all(&signature)
+        .context("Failed to write organization-policy signature")?;
+    file.sync_all()
+        .context("Failed to persist organization-policy signature")?;
+
+    ui::print_banner();
+    ui::section("Sign Organization Policy");
+    ui::detail(
+        "Signing key",
+        &automatestig_stigpack::signing::public_key_fingerprint(&public_key),
+    );
+    ui::detail("Policy SHA-256", &sha256_hex(&policy));
+    ui::output_file(
+        "Signature",
+        &output.display().to_string(),
+        "detached Ed25519 signature",
+    );
+    Ok(())
+}
 
 pub struct EvaluateArgs {
     pub stig_id: String,
     pub evidence: Option<String>,
     pub allow_legacy_evidence: bool,
     pub config: Option<String>,
+    pub organization_policy: Option<String>,
+    pub organization_policy_signature: Option<String>,
     pub answer_paths: Vec<String>,
     pub host: Option<String>,
     pub output: Option<String>,
@@ -146,12 +213,68 @@ fn read_regular_file_bounded(path: &Path, max_bytes: u64, label: &str) -> Result
     Ok(bytes)
 }
 
+fn load_organization_policy(
+    policy_path: Option<&str>,
+    signature_path: Option<&str>,
+    stig_id: &str,
+    stig_release: &str,
+    hostname: &str,
+) -> Result<Option<automatestig_core::organization_policy::VerifiedOrganizationPolicy>> {
+    let (policy_path, signature_path) = match (policy_path, signature_path) {
+        (None, None) => return Ok(None),
+        (Some(policy), Some(signature)) => (policy, signature),
+        _ => anyhow::bail!(
+            "--organization-policy and --organization-policy-signature must be supplied together"
+        ),
+    };
+    let raw = read_regular_file_bounded(Path::new(policy_path), 64 * 1024, "organization policy")?;
+    let signature = read_regular_file_bounded(
+        Path::new(signature_path),
+        64,
+        "organization policy signature",
+    )?;
+    if signature.len() != 64 {
+        anyhow::bail!("organization policy signature must contain exactly 64 bytes");
+    }
+    let trust_dir = organization_policy_keys_dir();
+    let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
+    let loaded = trust_store
+        .load_from_directory(&trust_dir)
+        .with_context(|| {
+            format!(
+                "Failed to load organization-policy trust anchors from {}",
+                trust_dir.display()
+            )
+        })?;
+    if loaded == 0 {
+        anyhow::bail!(
+            "no organization-policy trust anchors are installed in {}",
+            trust_dir.display()
+        );
+    }
+    let trusted_public_keys = trust_store.public_keys();
+    let policy =
+        automatestig_core::organization_policy::VerifiedOrganizationPolicy::verify_and_parse(
+            &raw,
+            &signature,
+            &trusted_public_keys,
+            stig_id,
+            stig_release,
+            hostname,
+            chrono::Utc::now(),
+        )
+        .map_err(anyhow::Error::msg)?;
+    Ok(Some(policy))
+}
+
 pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
     let EvaluateArgs {
         stig_id,
         evidence,
         allow_legacy_evidence,
         config,
+        organization_policy,
+        organization_policy_signature,
         answer_paths,
         host,
         output,
@@ -268,11 +391,56 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
     let asset = Asset::new(&hostname);
     ui::detail("Target", &hostname);
 
+    if organization_policy.is_some() && !matches!(&evaluation_input, EvaluationInput::Config(_)) {
+        anyhow::bail!("organization policy is valid only with --config");
+    }
+    let benchmark_sha256 = automatestig_core::check_packs::canonical_json_sha256(&benchmark)?;
+    let check_pack_sha256 = automatestig_core::check_packs::canonical_json_sha256(&check_packs)?;
+    let verified_policy = load_organization_policy(
+        organization_policy.as_deref(),
+        organization_policy_signature.as_deref(),
+        &benchmark.id,
+        &benchmark.version_string(),
+        &hostname,
+    )?;
+    if verified_policy.is_none()
+        && check_packs
+            .iter()
+            .flat_map(|pack| &pack.checks)
+            .any(|definition| definition.check.requires_organization_policy())
+    {
+        anyhow::bail!(
+            "this check pack requires --organization-policy and \
+             --organization-policy-signature; no checklist was written"
+        );
+    }
+    let organization_policy_provenance =
+        verified_policy
+            .as_ref()
+            .map(|policy| OrganizationPolicyProvenance {
+                policy_id: policy.document().policy_id.clone(),
+                policy_version: policy.document().policy_version.clone(),
+                policy_sha256: policy.sha256().to_string(),
+                signer_fingerprint: policy.signer_fingerprint().to_string(),
+                signature_verified: true,
+            });
+    let evaluation_plan_sha256 = automatestig_core::check_packs::evaluation_plan_sha256(
+        &benchmark.id,
+        &benchmark.version_string(),
+        &benchmark_sha256,
+        &check_pack_sha256,
+        verified_policy.as_ref().map(|policy| policy.sha256()),
+    )?;
+
     // Run evaluation.
     let engine = EvaluationEngine::with_defaults();
     let mut checklist = engine.evaluate(&benchmark, &asset, &[])?;
-    let system_data =
-        build_evidence_system_data(evidence_transcript.as_ref(), config_text, &check_packs)?;
+    let system_data = build_evidence_system_data(
+        evidence_transcript.as_ref(),
+        config_text,
+        &check_packs,
+        verified_policy,
+    )?;
     let check_results = execute_evidence_checks(&check_packs, &system_data);
     apply_check_results_to_checklist(
         &mut checklist,
@@ -313,6 +481,10 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
             collected_at: transcript.collected_at.clone(),
             plan_sha256: transcript.plan_sha256.clone(),
             server_key_fingerprint: transcript.server_key_fingerprint.clone(),
+            benchmark_sha256: Some(benchmark_sha256.clone()),
+            check_pack_sha256: Some(check_pack_sha256.clone()),
+            evaluation_plan_sha256: Some(evaluation_plan_sha256.clone()),
+            organization_policy: organization_policy_provenance.clone(),
             unsafe_legacy_evidence,
         }
     } else {
@@ -326,6 +498,10 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
             collected_at: None,
             plan_sha256: None,
             server_key_fingerprint: None,
+            benchmark_sha256: Some(benchmark_sha256),
+            check_pack_sha256: Some(check_pack_sha256),
+            evaluation_plan_sha256: Some(evaluation_plan_sha256),
+            organization_policy: organization_policy_provenance,
             unsafe_legacy_evidence: false,
         }
     });
@@ -378,11 +554,14 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
         summary.cat_i_open,
         summary.cat_ii_open,
         summary.cat_iii_open,
-        summary.assessed_pass_pct(),
-        summary.benchmark_coverage_pct(),
+        ui::SummaryScoreDisplay::Available {
+            assessed_pass_pct: summary.assessed_pass_pct(),
+            benchmark_coverage_pct: summary.benchmark_coverage_pct(),
+        },
     );
 
     // Write output.
+    super::ensure_external_export_allowed(&checklist)?;
     let output_path = match output {
         Some(output) => output,
         None => default_output_path(&hostname, &stig_id)?,
@@ -432,6 +611,7 @@ fn build_evidence_system_data(
     transcript: Option<&EvidenceTranscript>,
     network_config: Option<String>,
     check_packs: &[CheckPack],
+    organization_policy: Option<automatestig_core::organization_policy::VerifiedOrganizationPolicy>,
 ) -> Result<SystemData> {
     let platform = check_packs
         .first()
@@ -446,6 +626,7 @@ fn build_evidence_system_data(
         return Ok(SystemData {
             collection_complete: true,
             network_config: Some(network_config),
+            organization_policy,
             ..Default::default()
         });
     }
@@ -470,7 +651,10 @@ fn execute_evidence_checks(
 ) -> Vec<CheckResult> {
     let mut check_results: Vec<CheckResult> = check_packs
         .iter()
-        .flat_map(|pack| automatestig_core::checks::executor::execute_check_pack(pack, system_data))
+        .flat_map(|pack| pack.checks.iter())
+        .map(|definition| {
+            automatestig_core::checks::executor::execute_check(definition, system_data)
+        })
         .collect();
 
     let mut seen_vuln_ids: HashSet<String> = HashSet::new();

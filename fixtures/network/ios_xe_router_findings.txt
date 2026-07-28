@@ -1,26 +1,20 @@
-! Synthetic IOS-XE running-config with 2 designed findings among executable checks.
-! Designed-open rule IDs: V-215832 V-215849
+! Synthetic IOS-XE running-config in which every shipped automated rule is a finding.
 version 17.9
 hostname rtr-findings-01
 !
-service timestamps log datetime msec localtime
 service finger
 !
 logging userinfo
-logging buffered 4096000 informational
-logging trap critical
+logging buffered 4096 informational
+logging trap alerts
 logging host 10.10.5.14
 logging host 10.10.5.15
+file privilege 1
 !
 aaa new-model
 aaa authentication login LOGIN_AUTHENTICATION group radius local
 aaa common-criteria policy PASSWORD_POLICY
  min-length 8
- upper-case 1
- lower-case 1
- numeric-count 1
- special-case 1
- char-changes 8
 !
 username fallback-admin privilege 15 common-criteria-policy PASSWORD_POLICY password 7 XXXXXXXXXXXX
 !
@@ -29,7 +23,7 @@ login on-failure log
 !
 archive
  log config
-  logging enable
+  no logging enable
 !
 ip access-list extended MANAGEMENT_NET
  permit ip 10.10.0.0 0.0.255.255 any
@@ -54,7 +48,7 @@ crypto pki trustpoint DOD_CA
 line con 0
  exec-timeout 5 0
 line vty 0 4
- session-limit 2
+ session-limit 3
  access-class MANAGEMENT_NET in
  exec-timeout 30 0
  transport input ssh

@@ -519,12 +519,17 @@ async function renderEvaluateWorkspace() {
               const target = targetForBenchmark(event.target.value);
               const platform = document.getElementById('eval-platform');
               const input = document.getElementById('eval-evidence');
+              const policyGroup = document.getElementById('eval-policy-group');
+              const signatureGroup = document.getElementById('eval-policy-signature-group');
               if (target && platform) platform.value = target.platform;
               if (target && input) {
                 input.accept = target.inputType === 'config'
                   ? '.txt,.conf,.cfg,.log,text/plain'
                   : '.json,application/json';
               }
+              const needsPolicy = target?.inputType === 'config';
+              if (policyGroup) policyGroup.style.display = needsPolicy ? '' : 'none';
+              if (signatureGroup) signatureGroup.style.display = needsPolicy ? '' : 'none';
             } },
               h('option', { value: '' }, 'Select a benchmark...'),
               ...options,
@@ -554,6 +559,32 @@ async function renderEvaluateWorkspace() {
           accept: '.json,application/json',
         }),
       ),
+      h('div', {
+        className: 'form-group',
+        id: 'eval-policy-group',
+        style: 'display:none',
+      },
+        h('label', { className: 'form-label' }, 'Signed Organization Policy (Cisco required)'),
+        h('input', {
+          className: 'form-input',
+          id: 'eval-policy',
+          type: 'file',
+          accept: '.json,application/json',
+        }),
+      ),
+      h('div', {
+        className: 'form-group',
+        id: 'eval-policy-signature-group',
+        style: 'display:none',
+      },
+        h('label', { className: 'form-label' }, 'Detached Policy Signature (Cisco required)'),
+        h('input', {
+          className: 'form-input',
+          id: 'eval-policy-signature',
+          type: 'file',
+          accept: '.sig,application/octet-stream',
+        }),
+      ),
       h('button', { className: 'btn btn-primary', id: 'eval-btn', onClick: runEvaluation },
         'Run Evaluation',
       ),
@@ -573,6 +604,8 @@ async function runEvaluation() {
   const assetId = assetSelect?.value || null;
   const assetPlatform = assetSelect?.selectedOptions?.[0]?.getAttribute('data-platform') || null;
   const evidenceFile = document.getElementById('eval-evidence')?.files?.[0];
+  const policyFile = document.getElementById('eval-policy')?.files?.[0];
+  const policySignatureFile = document.getElementById('eval-policy-signature')?.files?.[0];
   const target = targetForBenchmark(stigId);
   const platform = target?.platform;
   const inputType = target?.inputType;
@@ -585,6 +618,10 @@ async function runEvaluation() {
   }
   if (!hostname) { toast('Enter a target hostname', 'error'); return; }
   if (!evidenceFile) { toast('Choose a device evidence file', 'error'); return; }
+  if (inputType === 'config' && (!policyFile || !policySignatureFile)) {
+    toast('Cisco evaluation requires a signed organization policy and detached signature', 'error');
+    return;
+  }
 
   const btn = document.getElementById('eval-btn');
   btn.textContent = 'Evaluating...';
@@ -597,6 +634,10 @@ async function runEvaluation() {
     form.append('platform', platform);
     form.append('input_type', inputType);
     form.append('evidence', evidenceFile);
+    if (inputType === 'config' && policyFile && policySignatureFile) {
+      form.append('organization_policy', policyFile);
+      form.append('organization_policy_signature', policySignatureFile);
+    }
     if (assetId) form.append('asset_id', assetId);
     const res = await fetch(`${API}/evaluate/with-evidence`, {
       method: 'POST', body: form, headers: { 'X-Auth-Token': AUTH_TOKEN },

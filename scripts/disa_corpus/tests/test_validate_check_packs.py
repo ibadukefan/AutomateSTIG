@@ -46,7 +46,7 @@ class SupportedTargetValidationTests(unittest.TestCase):
         expected = {
             "netapp_ontap9": (22, 16, 6),
             "freebsd_gpos": (30, 3, 27),
-            "cisco_ios_xe_router_ndm": (34, 18, 16),
+            "cisco_ios_xe_router_ndm": (34, 21, 13),
         }
         observed = {}
         for target_id, target in MODULE.EXPECTED_TARGETS.items():
@@ -63,8 +63,8 @@ class SupportedTargetValidationTests(unittest.TestCase):
 
         self.assertEqual(observed, expected)
         self.assertEqual(sum(counts[0] for counts in observed.values()), 86)
-        self.assertEqual(sum(counts[1] for counts in observed.values()), 37)
-        self.assertEqual(sum(counts[2] for counts in observed.values()), 49)
+        self.assertEqual(sum(counts[1] for counts in observed.values()), 40)
+        self.assertEqual(sum(counts[2] for counts in observed.values()), 46)
 
     def test_frontend_scanner_contract_has_only_three_benchmarks(self):
         source = (REPO / "crates/gui/frontend/app.js").read_text(encoding="utf-8")
@@ -168,7 +168,7 @@ class SupportedTargetValidationTests(unittest.TestCase):
         expected_counts = {
             "netapp_ontap9": (16, 6),
             "freebsd_gpos": (3, 27),
-            "cisco_ios_xe_router_ndm": (18, 16),
+            "cisco_ios_xe_router_ndm": (21, 13),
         }
         for target_id, (automated_count, manual_count) in expected_counts.items():
             with self.subTest(target=target_id):

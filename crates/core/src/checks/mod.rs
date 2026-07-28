@@ -72,6 +72,27 @@ pub enum Check {
 
     /// Multiple checks where any can pass (OR logic).
     Any { checks: Vec<Check> },
+
+    /// Organization-policy-bound concurrent VTY/HTTP management-session limit.
+    CiscoVtySessionLimit,
+
+    /// Organization-policy-bound IOS-XE in-memory audit buffer capacity.
+    CiscoLoggingBufferCapacity,
+
+    /// Effective IOS-XE remote logging severity includes critical events.
+    CiscoLoggingTrapSeverity,
+}
+
+impl Check {
+    pub fn requires_organization_policy(&self) -> bool {
+        match self {
+            Self::CiscoVtySessionLimit | Self::CiscoLoggingBufferCapacity => true,
+            Self::All { checks } | Self::Any { checks } => {
+                checks.iter().any(Self::requires_organization_policy)
+            }
+            _ => false,
+        }
+    }
 }
 
 /// Expected result for comparison.
@@ -145,6 +166,11 @@ pub struct SystemData {
     /// Command outputs (command -> output).
     #[serde(default)]
     pub command_outputs: std::collections::HashMap<String, String>,
+
+    /// Verified, asset-bound organization parameters. Never deserialize this
+    /// from a device evidence document.
+    #[serde(skip)]
+    pub organization_policy: Option<crate::organization_policy::VerifiedOrganizationPolicy>,
 }
 
 /// A set of check definitions for a specific STIG.

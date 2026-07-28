@@ -1,21 +1,23 @@
 {
   "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
   "version": "V3R7",
-  "source": "Reviewed AutomateSTIG Cisco IOS-XE V3R7 executable/manual boundary",
+  "source": "AutomateSTIG current check pack: content/check_packs/cisco_ios_xe_router_ndm.json",
   "status": "experimental",
-  "generated_at": "2026-07-13T16:00:00Z",
+  "generated_at": "2026-07-28T18:11:00Z",
   "generated_from": "content/check_packs/cisco_ios_xe_router_ndm.json",
   "total_rules": 34,
   "rules": [
     {
       "vuln_id": "V-215807",
       "rule_id": "V-215807_automatestig_check",
-      "classification": "manual",
-      "reason": "The organization-defined session limit and every enabled management path require independent review; directive presence alone cannot prove the requirement.",
+      "classification": "automated",
+      "reason": "Every VTY and enabled HTTP(S) management path is limited to the signed organization-policy maximum",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215807",
       "evidence_required": true,
       "validated_by": [
-        "docs/cisco-ios-xe.md",
-        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
       ]
     },
     {
@@ -282,23 +284,27 @@
     {
       "vuln_id": "V-215836",
       "rule_id": "V-215836_automatestig_check",
-      "classification": "manual",
-      "reason": "The organization-defined audit storage capacity requires an independently approved numeric value; logging-buffer presence alone cannot prove sufficiency.",
+      "classification": "automated",
+      "reason": "Numeric logging buffer capacity meets the signed organization-policy minimum",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215836",
       "evidence_required": true,
       "validated_by": [
-        "docs/cisco-ios-xe.md",
-        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
       ]
     },
     {
       "vuln_id": "V-215837",
       "rule_id": "V-215837_automatestig_check",
-      "classification": "manual",
-      "reason": "The configured trap severity must include critical audit-failure events; logging-trap presence without a parsed severity can be too restrictive.",
+      "classification": "automated",
+      "reason": "Effective logging trap severity includes critical audit failure events",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215837",
       "evidence_required": true,
       "validated_by": [
-        "docs/cisco-ios-xe.md",
-        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
       ]
     },
     {

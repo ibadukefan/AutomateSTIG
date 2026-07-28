@@ -23,30 +23,58 @@ BIN = os.environ.get("AUTOMATESTIG_BIN", f"{REPO}/target/release/automatestig{EX
 GUI_BIN = os.environ.get("AUTOMATESTIG_GUI_BIN", f"{REPO}/target/release/automatestig-gui{EXE}")
 WORK = os.environ.get("E2E_WORK") or tempfile.mkdtemp(prefix="automatestig-e2e-")
 FIX = f"{REPO}/fixtures"
+CHECK_PACKS = f"{REPO}/content/check_packs"
 ONTAP_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R2_STIG.zip"
 ONTAP_FINDINGS = f"{FIX}/ontap/ontap_evidence_findings.json"
 ONTAP_COMPLIANT = f"{FIX}/ontap/ontap_evidence_compliant.json"
-ONTAP_OPEN = {"V-246923", "V-246936", "V-246950", "V-246951", "V-246958", "V-246959"}
 ONTAP_MANUAL = {
     "V-246925", "V-246927", "V-246930", "V-246931", "V-246932", "V-246933",
     "V-246938", "V-246939", "V-246944", "V-246945", "V-246946", "V-246948",
     "V-246949",
 }
-ONTAP_AUTOMATED = 16
 GPOS_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_GPOS_V3R3_SRG.zip"
 BSD_FINDINGS = f"{FIX}/bsd/bsd_evidence_findings.json"
 BSD_COMPLIANT = f"{FIX}/bsd/bsd_evidence_compliant.json"
 ONTAP_TRANSPORT_FAILURE = f"{FIX}/ontap/ontap_evidence_transport_failure.json"
 BSD_TRANSPORT_FAILURE = f"{FIX}/bsd/bsd_evidence_transport_failure.json"
-BSD_OPEN = {"V-203615", "V-203714", "V-203754"}
-BSD_AUTOMATED = 3
 BSD_TOTAL = 203
 CISCO_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_Cisco_IOS-XE_Router_Y26M04_STIG.zip"
 IOS_COMPLIANT = f"{FIX}/network/ios_xe_router_compliant.txt"
 IOS_FINDINGS = f"{FIX}/network/ios_xe_router_findings.txt"
-IOS_OPEN = {"V-215832", "V-215849"}
-IOS_AUTOMATED = 18
 IOS_TOTAL = 42
+
+
+def shipped_vuln_ids(filename):
+    path = f"{CHECK_PACKS}/{filename}"
+    with open(path, encoding="utf-8") as stream:
+        document = json.load(stream)
+    checks = document.get("checks")
+    if not isinstance(checks, list) or not checks:
+        raise RuntimeError(f"shipped check pack has no checks: {path}")
+    vuln_ids = [check.get("vuln_id") for check in checks if isinstance(check, dict)]
+    if len(vuln_ids) != len(checks) or any(
+        not isinstance(vuln_id, str) or not vuln_id for vuln_id in vuln_ids
+    ):
+        raise RuntimeError(f"shipped check pack has an invalid vulnerability ID: {path}")
+    if len(set(vuln_ids)) != len(vuln_ids):
+        raise RuntimeError(f"shipped check pack has duplicate vulnerability IDs: {path}")
+    return frozenset(vuln_ids)
+
+
+ONTAP_OPEN = shipped_vuln_ids("netapp_ontap9.json")
+BSD_OPEN = shipped_vuln_ids("freebsd_gpos.json")
+IOS_OPEN = shipped_vuln_ids("cisco_ios_xe_router_ndm.json")
+AUTOMATED_OPEN_SETS = (ONTAP_OPEN, BSD_OPEN, IOS_OPEN)
+AUTOMATED_OPEN_UNION = set().union(*AUTOMATED_OPEN_SETS)
+if sum(map(len, AUTOMATED_OPEN_SETS)) != len(AUTOMATED_OPEN_UNION):
+    raise RuntimeError("shipped check-pack vulnerability IDs are not disjoint")
+if len(AUTOMATED_OPEN_UNION) != 40:
+    raise RuntimeError(
+        f"expected exactly 40 shipped automated rules, found {len(AUTOMATED_OPEN_UNION)}"
+    )
+ONTAP_AUTOMATED = len(ONTAP_OPEN)
+BSD_AUTOMATED = len(BSD_OPEN)
+IOS_AUTOMATED = len(IOS_OPEN)
 
 DB = f"{WORK}/data.db"
 LIB = f"{WORK}/library"
@@ -212,7 +240,7 @@ def evaluate_ontap():
 
     findings = parse_ckl(outputs["findings"])
     opens = {v for v, f in findings.items() if norm_status(f["status"]) == "open"}
-    check(section, "designed findings are exact", opens == ONTAP_OPEN,
+    check(section, "findings fixture opens every shipped automated rule", opens == ONTAP_OPEN,
           f"extra={sorted(opens - ONTAP_OPEN)} missing={sorted(ONTAP_OPEN - opens)}")
     manual = {v for v, f in findings.items() if norm_status(f["status"]) == "notreviewed"}
     check(section, "manual findings remain unreviewed", manual == ONTAP_MANUAL)
@@ -285,7 +313,9 @@ def evaluate_bsd():
         findings = parse_ckl(dest)
         if label == "findings":
             opens = {v for v, f in findings.items() if norm_status(f["status"]) == "open"}
-            check(section, "designed findings are exact", opens == BSD_OPEN)
+            check(section, "findings fixture opens every shipped automated rule",
+                  opens == BSD_OPEN,
+                  f"extra={sorted(opens - BSD_OPEN)} missing={sorted(BSD_OPEN - opens)}")
             counts = status_counts(findings)
             check(section, "unproved FreeBSD rules remain unreviewed",
                   counts.get("notreviewed") == BSD_TOTAL - BSD_AUTOMATED,
@@ -311,19 +341,75 @@ def evaluate_network():
     check(section, "import Cisco IOS-XE", run_cli("disa-import", "--input", CISCO_ZIP).returncode == 0)
     check(section, "DISA import does not create prose-derived executable checks",
           not os.path.exists(f"{LIB}/auto_check_packs/Cisco_IOS-XE_Router_NDM_STIG.json"))
+
+    policy_key = f"{WORK}/offline-signing/organization-policy.key"
+    generated = run_cli("generate-signing-key", "--output", policy_key)
+    policy_trust = f"{HOME}/.automatestig/organization_policy_keys"
+    os.makedirs(policy_trust, mode=0o700, exist_ok=True)
+    if generated.returncode == 0:
+        shutil.copy(
+            f"{WORK}/offline-signing/organization-policy.pub",
+            f"{policy_trust}/e2e-organization-policy.pub",
+        )
+    check(
+        section,
+        "dedicated offline organization-policy key is explicitly provisioned",
+        generated.returncode == 0 and os.path.exists(policy_key),
+        generated.combined[:300],
+    )
+
+    compliant_policy = None
+    compliant_policy_signature = None
     for label, config, hostname in (
         ("findings", IOS_FINDINGS, "rtr-findings-01"),
         ("compliant", IOS_COMPLIANT, "rtr-compliant-01"),
     ):
+        policy = f"{WORK}/ios-{label}-policy.json"
+        signature = f"{WORK}/ios-{label}-policy.sig"
+        with open(policy, "w", encoding="utf-8") as stream:
+            json.dump(
+                {
+                    "schema": "automatestig-organization-policy/v1",
+                    "policy_id": f"e2e-{label}",
+                    "policy_version": "1",
+                    "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+                    "stig_release": "V3R7",
+                    "asset_hostname": hostname,
+                    "effective_from": "2026-01-01T00:00:00Z",
+                    "expires_at": "2099-01-01T00:00:00Z",
+                    "rules": {
+                        "V-215807": {"max_concurrent_management_sessions": 2},
+                        "V-215836": {"minimum_logging_buffer_bytes": 4096000},
+                    },
+                },
+                stream,
+                separators=(",", ":"),
+            )
+        signed = run_cli(
+            "sign-organization-policy",
+            "--policy", policy,
+            "--signing-key", policy_key,
+            "--output", signature,
+        )
+        check(
+            section,
+            f"sign {label} organization policy offline",
+            signed.returncode == 0 and os.path.getsize(signature) == 64,
+            signed.combined[:300],
+        )
         dest = f"{OUT}/ios_{label}.ckl"
         result = run_cli("evaluate", "--stig", "Cisco_IOS-XE_Router_NDM_STIG",
                          "--config", config, "--host", hostname,
+                         "--organization-policy", policy,
+                         "--organization-policy-signature", signature,
                          "--output", dest, "--format", "ckl")
         check(section, f"evaluate {label}", result.returncode == 0, result.combined[:300])
         findings = parse_ckl(dest)
         if label == "findings":
             opens = {v for v, f in findings.items() if norm_status(f["status"]) == "open"}
-            check(section, "designed findings are exact", opens == IOS_OPEN)
+            check(section, "findings fixture opens every shipped automated rule",
+                  opens == IOS_OPEN,
+                  f"extra={sorted(opens - IOS_OPEN)} missing={sorted(IOS_OPEN - opens)}")
         else:
             counts = status_counts(findings)
             check(section, "compliant oracle", len(findings) == IOS_TOTAL
@@ -331,12 +417,42 @@ def evaluate_network():
                   and counts.get("notreviewed") == IOS_TOTAL - IOS_AUTOMATED
                   and not counts.get("open"), str(counts))
 
+        if label == "compliant":
+            compliant_policy = policy
+            compliant_policy_signature = signature
+            mutated = json.loads(open(policy, encoding="utf-8").read())
+            mutated["rules"]["V-215807"]["max_concurrent_management_sessions"] = 3
+            tampered_policy = f"{WORK}/ios-tampered-policy.json"
+            with open(tampered_policy, "w", encoding="utf-8") as stream:
+                json.dump(mutated, stream, separators=(",", ":"))
+            tampered_dest = f"{OUT}/ios-tampered-policy.ckl"
+            tampered = run_cli(
+                "evaluate",
+                "--stig", "Cisco_IOS-XE_Router_NDM_STIG",
+                "--config", config,
+                "--host", hostname,
+                "--organization-policy", tampered_policy,
+                "--organization-policy-signature", signature,
+                "--output", tampered_dest,
+                "--format", "ckl",
+                expect_ok=False,
+            )
+            check(
+                section,
+                "policy mutation is rejected before checklist output",
+                tampered.returncode != 0 and not os.path.exists(tampered_dest)
+                and "signature" in tampered.combined.lower(),
+                tampered.combined[:300],
+            )
+
     truncated = f"{WORK}/ios-truncated.cfg"
     with open(truncated, "w", encoding="utf-8") as stream:
-        stream.write("version 17.9\nhostname partial-router\ninterface Gi1\nend\n")
+        stream.write("version 17.9\nhostname rtr-compliant-01\ninterface Gi1\nend\n")
     destination = f"{OUT}/ios-truncated.ckl"
     result = run_cli("evaluate", "--stig", "Cisco_IOS-XE_Router_NDM_STIG",
-                     "--config", truncated, "--host", "partial-router",
+                     "--config", truncated, "--host", "rtr-compliant-01",
+                     "--organization-policy", compliant_policy,
+                     "--organization-policy-signature", compliant_policy_signature,
                      "--output", destination, "--format", "ckl", expect_ok=False)
     check(section, "truncated config cannot produce a checklist or absence pass",
           result.returncode != 0 and not os.path.exists(destination)

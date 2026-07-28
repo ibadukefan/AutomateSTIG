@@ -11,6 +11,16 @@ enum ScoreTone {
     Red,
 }
 
+pub enum SummaryScoreDisplay<'a> {
+    Available {
+        assessed_pass_pct: f64,
+        benchmark_coverage_pct: f64,
+    },
+    Withheld {
+        reason: &'a str,
+    },
+}
+
 fn assessed_pass_tone(assessed_pass_pct: f64, benchmark_coverage_pct: f64) -> ScoreTone {
     if assessed_pass_pct < 80.0 {
         ScoreTone::Red
@@ -84,8 +94,7 @@ pub fn print_summary_table(
     cat_i: usize,
     cat_ii: usize,
     cat_iii: usize,
-    assessed_pass_pct: f64,
-    benchmark_coverage_pct: f64,
+    scores: SummaryScoreDisplay<'_>,
 ) {
     let open_style = if open > 0 {
         Style::new().red().bold()
@@ -99,16 +108,6 @@ pub fn print_summary_table(
         Style::new().dim()
     };
 
-    let assessed_pass_style = match assessed_pass_tone(assessed_pass_pct, benchmark_coverage_pct) {
-        ScoreTone::Green => Style::new().green().bold(),
-        ScoreTone::Yellow => Style::new().yellow().bold(),
-        ScoreTone::Red => Style::new().red().bold(),
-    };
-    let coverage_style = if benchmark_coverage_pct >= 100.0 {
-        Style::new().green().bold()
-    } else {
-        Style::new().yellow().bold()
-    };
     let assessed = total.saturating_sub(nr);
 
     println!();
@@ -171,22 +170,59 @@ pub fn print_summary_table(
         format!("{assessed}/{total}"),
         style("│").dim(),
     );
-    println!(
-        "  {}  Assessed pass rate: {:<6}                      {}",
-        style("│").dim(),
-        assessed_pass_style.apply_to(format!("{:.1}%", assessed_pass_pct)),
-        style("│").dim(),
-    );
-    println!(
-        "  {}  Benchmark coverage: {:<6}                      {}",
-        style("│").dim(),
-        coverage_style.apply_to(format!("{:.1}%", benchmark_coverage_pct)),
-        style("│").dim(),
-    );
+    let withheld_reason = match scores {
+        SummaryScoreDisplay::Available {
+            assessed_pass_pct,
+            benchmark_coverage_pct,
+        } => {
+            let assessed_pass_style =
+                match assessed_pass_tone(assessed_pass_pct, benchmark_coverage_pct) {
+                    ScoreTone::Green => Style::new().green().bold(),
+                    ScoreTone::Yellow => Style::new().yellow().bold(),
+                    ScoreTone::Red => Style::new().red().bold(),
+                };
+            let coverage_style = if benchmark_coverage_pct >= 100.0 {
+                Style::new().green().bold()
+            } else {
+                Style::new().yellow().bold()
+            };
+            println!(
+                "  {}  Assessed pass rate: {:<6}                      {}",
+                style("│").dim(),
+                assessed_pass_style.apply_to(format!("{assessed_pass_pct:.1}%")),
+                style("│").dim(),
+            );
+            println!(
+                "  {}  Benchmark coverage: {:<6}                      {}",
+                style("│").dim(),
+                coverage_style.apply_to(format!("{benchmark_coverage_pct:.1}%")),
+                style("│").dim(),
+            );
+            None
+        }
+        SummaryScoreDisplay::Withheld { reason } => {
+            println!(
+                "  {}  Assessed pass rate: {:<9}                   {}",
+                style("│").dim(),
+                style("WITHHELD").yellow().bold(),
+                style("│").dim(),
+            );
+            println!(
+                "  {}  Benchmark coverage: {:<9}                   {}",
+                style("│").dim(),
+                style("WITHHELD").yellow().bold(),
+                style("│").dim(),
+            );
+            Some(reason)
+        }
+    };
     println!(
         "  {}",
         style("└──────────────────────────────────────────────────┘").dim()
     );
+    if let Some(reason) = withheld_reason {
+        println!("  Scores withheld: {reason}");
+    }
     println!();
 }
 

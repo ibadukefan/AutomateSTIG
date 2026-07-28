@@ -166,9 +166,206 @@ pub fn config_line_context_satisfies(
     !block_results.is_empty() && block_results.into_iter().all(|found| found == should_exist)
 }
 
+fn one_u32_after_prefix(command: &str, prefix: &str) -> Option<u32> {
+    let command_tokens: Vec<_> = command.split_whitespace().collect();
+    let prefix_tokens: Vec<_> = prefix.split_whitespace().collect();
+    if command_tokens.len() != prefix_tokens.len() + 1
+        || command_tokens[..prefix_tokens.len()] != prefix_tokens
+    {
+        return None;
+    }
+    command_tokens.last()?.parse().ok()
+}
+
+/// Evaluate the policy-bound `session-limit` path from the V3R7 procedure.
+///
+/// Every represented VTY block must carry one unambiguous positive limit. If
+/// HTTP(S) management is enabled, its independent maximum must also be bound.
+/// The alternative "disable surplus VTY lines" path is deliberately not
+/// inferred from an ordinary running configuration.
+pub fn vty_session_limit_observation(config: &str, maximum: u32) -> String {
+    let commands = config_commands(config);
+    let mut current_vty: Option<Vec<&str>> = None;
+    let mut vty_blocks = Vec::new();
+    for command in &commands {
+        if !command.indented && command_starts_with(command.text, "line vty") {
+            if let Some(block) = current_vty.replace(Vec::new()) {
+                vty_blocks.push(block);
+            }
+        } else if let Some(block) = current_vty.as_mut() {
+            if command.indented {
+                block.push(command.text);
+            } else {
+                vty_blocks.push(current_vty.take().expect("active VTY block"));
+            }
+        }
+    }
+    if let Some(block) = current_vty {
+        vty_blocks.push(block);
+    }
+    if vty_blocks.is_empty() {
+        return "finding: no VTY management block is present".to_string();
+    }
+    let mut observed = Vec::new();
+    for block in vty_blocks {
+        let limits: Vec<_> = block
+            .iter()
+            .filter(|line| command_starts_with(line, "session-limit"))
+            .map(|line| one_u32_after_prefix(line, "session-limit"))
+            .collect();
+        if limits.len() != 1 {
+            return "finding: every VTY block must have exactly one session-limit".to_string();
+        }
+        if block
+            .iter()
+            .any(|line| command_starts_with(line, "no session-limit"))
+        {
+            return "finding: VTY session-limit configuration is contradictory".to_string();
+        }
+        let Some(limit) = limits[0] else {
+            return "finding: VTY session-limit is malformed".to_string();
+        };
+        if limit == 0 || limit > maximum {
+            return format!(
+                "finding: VTY session-limit {limit} exceeds organization maximum {maximum}"
+            );
+        }
+        observed.push(limit);
+    }
+
+    let http_enabled = config_line_exists(config, "ip http server")
+        || config_line_exists(config, "ip http secure-server");
+    let http_limits: Vec<_> = commands
+        .iter()
+        .filter(|command| {
+            !command.indented && command_starts_with(command.text, "ip http max-connections")
+        })
+        .map(|command| one_u32_after_prefix(command.text, "ip http max-connections"))
+        .collect();
+    let http_reset = commands.iter().any(|command| {
+        !command.indented && command_starts_with(command.text, "no ip http max-connections")
+    });
+    if !http_limits.is_empty() && http_reset {
+        return "finding: HTTP(S) max-connections configuration is contradictory".to_string();
+    }
+    if http_enabled {
+        if http_limits.len() != 1 {
+            return "finding: enabled HTTP(S) management requires exactly one max-connections"
+                .to_string();
+        }
+        let Some(limit) = http_limits[0] else {
+            return "finding: HTTP(S) max-connections is malformed".to_string();
+        };
+        if limit == 0 || limit > maximum {
+            return format!(
+                "finding: HTTP(S) max-connections {limit} exceeds organization maximum {maximum}"
+            );
+        }
+    } else if !http_limits.is_empty() {
+        return "finding: orphaned or ambiguous HTTP max-connections configuration".to_string();
+    }
+    format!(
+        "compliant: VTY limits {observed:?}; HTTP enabled={http_enabled}; organization maximum={maximum}"
+    )
+}
+
+/// Evaluate the exact numeric `logging buffered <bytes> ...` capacity.
+pub fn logging_buffer_observation(config: &str, minimum_bytes: u32) -> String {
+    let commands = config_commands(config);
+    let values: Vec<_> = commands
+        .iter()
+        .filter_map(|command| {
+            if command.indented || !command_starts_with(command.text, "logging buffered") {
+                return None;
+            }
+            let tokens: Vec<_> = command.text.split_whitespace().collect();
+            Some(tokens.get(2).and_then(|value| value.parse::<u32>().ok()))
+        })
+        .collect();
+    let reset = commands.iter().any(|command| {
+        !command.indented && command_starts_with(command.text, "no logging buffered")
+    });
+    if !values.is_empty() && reset {
+        return "finding: logging buffered capacity configuration is contradictory".to_string();
+    }
+    if values.len() != 1 {
+        return "finding: exactly one numeric logging buffered capacity is required".to_string();
+    }
+    let Some(observed) = values[0] else {
+        return "finding: logging buffered capacity is missing or malformed".to_string();
+    };
+    if observed < minimum_bytes {
+        return format!(
+            "finding: logging buffer {observed} bytes is below organization minimum {minimum_bytes}"
+        );
+    }
+    format!("compliant: logging buffer={observed} bytes; organization minimum={minimum_bytes}")
+}
+
+fn logging_level(value: &str) -> Option<u8> {
+    match value.to_ascii_lowercase().as_str() {
+        "0" | "emergencies" => Some(0),
+        "1" | "alerts" => Some(1),
+        "2" | "critical" => Some(2),
+        "3" | "errors" => Some(3),
+        "4" | "warnings" => Some(4),
+        "5" | "notifications" => Some(5),
+        "6" | "informational" => Some(6),
+        "7" | "debugging" => Some(7),
+        _ => None,
+    }
+}
+
+/// Resolve the effective trap threshold. IOS-XE defaults to informational
+/// when the command is absent or explicitly reset with `no logging trap`.
+pub fn logging_trap_observation(config: &str) -> String {
+    if config_line_exists(config, "no logging on") {
+        return "finding: logging is globally disabled".to_string();
+    }
+    let commands = config_commands(config);
+    let positive: Vec<_> = commands
+        .iter()
+        .filter(|command| !command.indented && command_starts_with(command.text, "logging trap"))
+        .collect();
+    let reset_count = commands
+        .iter()
+        .filter(|command| !command.indented && command_starts_with(command.text, "no logging trap"))
+        .count();
+    if positive.len() + reset_count > 1 {
+        return "finding: logging trap severity is ambiguous".to_string();
+    }
+    let (level, source) = if positive.is_empty() {
+        (
+            6,
+            if reset_count == 1 {
+                "explicit default"
+            } else {
+                "IOS default"
+            },
+        )
+    } else {
+        let tokens: Vec<_> = positive[0].text.split_whitespace().collect();
+        if tokens.len() != 3 {
+            return "finding: logging trap severity is malformed".to_string();
+        }
+        let Some(level) = logging_level(tokens[2]) else {
+            return "finding: logging trap severity is unsupported".to_string();
+        };
+        (level, "configured")
+    };
+    if !(2..=6).contains(&level) {
+        return format!(
+            "finding: effective logging trap severity {level} omits or exceeds the reviewed range"
+        );
+    }
+    format!("compliant: effective logging trap severity={level} ({source})")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use ed25519_dalek::{Signer, SigningKey};
+    use sha2::{Digest, Sha256};
 
     const SAMPLE_CONFIG: &str = r#"hostname CORE-RTR-01
 !
@@ -365,19 +562,18 @@ end
     }
 
     #[test]
-    fn ambiguous_cisco_controls_have_no_executable_not_a_finding_path() {
+    fn remaining_manual_cisco_controls_have_no_executable_not_a_finding_path() {
         use crate::checks::{executor::execute_check_pack, CheckPack, SystemData};
 
-        const MANUAL_RULES: [&str; 16] = [
-            "V-215807", "V-215812", "V-215813", "V-215814", "V-215823", "V-215826", "V-215833",
-            "V-215836", "V-215837", "V-215841", "V-215842", "V-215843", "V-215844", "V-215845",
-            "V-215854", "V-215856",
+        const MANUAL_RULES: [&str; 13] = [
+            "V-215812", "V-215813", "V-215814", "V-215823", "V-215826", "V-215833", "V-215841",
+            "V-215842", "V-215843", "V-215844", "V-215845", "V-215854", "V-215856",
         ];
         let pack: CheckPack = serde_json::from_str(include_str!(
             "../../../../content/check_packs/cisco_ios_xe_router_ndm.json"
         ))
         .expect("embedded Cisco pack fixture must parse");
-        assert_eq!(pack.checks.len(), 18);
+        assert_eq!(pack.checks.len(), 21);
         for vuln_id in MANUAL_RULES {
             assert!(
                 pack.checks.iter().all(|check| check.vuln_id != vuln_id),
@@ -393,12 +589,114 @@ end
                 )
                 .to_string(),
             ),
+            organization_policy: Some(test_organization_policy()),
             ..Default::default()
         };
         let results = execute_check_pack(&pack, &data);
-        assert_eq!(results.len(), 18);
+        assert_eq!(results.len(), 21);
         assert!(results
             .iter()
             .all(|result| !MANUAL_RULES.contains(&result.vuln_id.as_str())));
+        for vuln_id in ["V-215807", "V-215836", "V-215837"] {
+            let result = results
+                .iter()
+                .find(|result| result.vuln_id == vuln_id)
+                .expect("restored Cisco check result");
+            assert!(
+                !result.passed && result.error.is_none(),
+                "{vuln_id} counterexample must be a finding: {result:?}"
+            );
+        }
+    }
+
+    fn test_organization_policy() -> crate::organization_policy::VerifiedOrganizationPolicy {
+        let now = chrono::Utc::now();
+        let document = serde_json::json!({
+            "schema": "automatestig-organization-policy/v1",
+            "policy_id": "network-unit-test",
+            "policy_version": "1",
+            "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+            "stig_release": "V3R7",
+            "asset_hostname": "rtr-semantic-counterexamples",
+            "effective_from": (now - chrono::Duration::days(1)).to_rfc3339(),
+            "expires_at": (now + chrono::Duration::days(1)).to_rfc3339(),
+            "rules": {
+                "V-215807": {"max_concurrent_management_sessions": 2},
+                "V-215836": {"minimum_logging_buffer_bytes": 4096000}
+            }
+        });
+        let raw = serde_json::to_vec(&document).expect("test policy JSON");
+        let signing_key = SigningKey::from_bytes(&[7; 32]);
+        let signature = signing_key.sign(&Sha256::digest(&raw)).to_bytes();
+        crate::organization_policy::VerifiedOrganizationPolicy::verify_and_parse(
+            &raw,
+            &signature,
+            &[signing_key.verifying_key().to_bytes()],
+            "Cisco_IOS-XE_Router_NDM_STIG",
+            "V3R7",
+            "rtr-semantic-counterexamples",
+            now,
+        )
+        .expect("valid test policy")
+    }
+
+    #[test]
+    fn policy_bound_session_limits_cover_every_vty_and_http_path() {
+        let compliant = r#"line vty 0 4
+ session-limit 2
+line vty 5 15
+ session-limit 1
+ip http secure-server
+ip http max-connections 2
+end
+"#;
+        assert!(vty_session_limit_observation(compliant, 2).starts_with("compliant:"));
+        for bad in [
+            "line vty 0 4\n session-limit 3\nend\n",
+            "line vty 0 4\n session-limit 2\n no session-limit\nend\n",
+            "line vty 0 4\n session-limit 2\nline vty 5 15\n transport input ssh\nend\n",
+            "line vty 0 4\n session-limit 2\nip http secure-server\nend\n",
+            "line vty 0 4\n session-limit 2\nip http secure-server\nip http max-connections 2\nno ip http max-connections\nend\n",
+            "line vty 0 4\n session-limit nope\nend\n",
+        ] {
+            assert!(vty_session_limit_observation(bad, 2).starts_with("finding:"));
+        }
+    }
+
+    #[test]
+    fn logging_buffer_uses_the_organization_numeric_threshold() {
+        assert!(
+            logging_buffer_observation("logging buffered 4096000 informational\n", 4096000)
+                .starts_with("compliant:")
+        );
+        for bad in [
+            "logging buffered 4096 informational\n",
+            "logging buffered informational\n",
+            "logging buffered 4096000 informational\nlogging buffered 8192000\n",
+            "logging buffered 4096000 informational\nno logging buffered\n",
+        ] {
+            assert!(logging_buffer_observation(bad, 4096000).starts_with("finding:"));
+        }
+    }
+
+    #[test]
+    fn logging_trap_resolves_default_names_numbers_and_ambiguity() {
+        for config in [
+            "logging host 192.0.2.1\n",
+            "no logging trap\n",
+            "logging trap critical\n",
+            "logging trap 6\n",
+        ] {
+            assert!(logging_trap_observation(config).starts_with("compliant:"));
+        }
+        for config in [
+            "logging trap alerts\n",
+            "logging trap debugging\n",
+            "logging trap unknown\n",
+            "logging trap critical\nlogging trap informational\n",
+            "no logging on\n",
+        ] {
+            assert!(logging_trap_observation(config).starts_with("finding:"));
+        }
     }
 }

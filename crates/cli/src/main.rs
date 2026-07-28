@@ -52,7 +52,7 @@ enum Commands {
         #[arg(long)]
         host: String,
 
-        /// Hostname recorded in evidence (defaults to --host).
+        /// Corroborating endpoint identity; when supplied, must equal --host.
         #[arg(long)]
         hostname: Option<String>,
 
@@ -110,6 +110,14 @@ enum Commands {
             conflicts_with = "evidence"
         )]
         config: Option<String>,
+
+        /// Signed organization-policy JSON for organization-defined Cisco controls.
+        #[arg(long, requires = "organization_policy_signature")]
+        organization_policy: Option<String>,
+
+        /// Detached Ed25519 signature for --organization-policy.
+        #[arg(long, requires = "organization_policy")]
+        organization_policy_signature: Option<String>,
 
         /// Path(s) to answer file(s) (JSON/YAML).
         #[arg(short, long)]
@@ -222,6 +230,22 @@ enum Commands {
     GenerateSigningKey {
         /// Output path for the private key; the public key uses `.pub`.
         #[arg(long)]
+        output: String,
+    },
+
+    /// Sign an organization-policy artifact on an isolated signing host.
+    #[command(name = "sign-organization-policy")]
+    SignOrganizationPolicy {
+        /// Exact organization-policy JSON bytes to sign.
+        #[arg(long)]
+        policy: String,
+
+        /// Existing external raw 32-byte Ed25519 private key.
+        #[arg(long)]
+        signing_key: String,
+
+        /// Create-new detached signature output.
+        #[arg(short, long)]
         output: String,
     },
 
@@ -346,6 +370,8 @@ fn main() {
             ref evidence,
             allow_legacy_evidence,
             ref config,
+            ref organization_policy,
+            ref organization_policy_signature,
             ref answer,
             ref host,
             ref output,
@@ -357,6 +383,8 @@ fn main() {
                 evidence: evidence.clone(),
                 allow_legacy_evidence: *allow_legacy_evidence,
                 config: config.clone(),
+                organization_policy: organization_policy.clone(),
+                organization_policy_signature: organization_policy_signature.clone(),
                 answer_paths: answer.clone(),
                 host: host.clone(),
                 output: output.clone(),
@@ -396,6 +424,11 @@ fn main() {
         Commands::GenerateSigningKey { ref output } => {
             commands::build_pack::generate_signing_key(output)
         }
+        Commands::SignOrganizationPolicy {
+            ref policy,
+            ref signing_key,
+            ref output,
+        } => commands::evaluate::sign_organization_policy(policy, signing_key, output),
         Commands::BuildPack {
             ref id,
             ref name,

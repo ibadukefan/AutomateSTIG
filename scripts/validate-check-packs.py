@@ -51,7 +51,7 @@ EXPECTED_TARGETS: dict[str, dict[str, Any]] = {
         "stig_release": "V3R7",
         "platform": "cisco_ios",
         "evidence_mode": "running_configuration",
-        "expected_automated_checks": 18,
+        "expected_automated_checks": 21,
         "expected_reviewed_rules": 34,
         "check_pack": "content/check_packs/cisco_ios_xe_router_ndm.json",
         "coverage_manifest": "content/coverage/current-checkpacks/cisco_ios_xe_router_ndm.current.json",
@@ -59,7 +59,12 @@ EXPECTED_TARGETS: dict[str, dict[str, Any]] = {
     },
 }
 
-KNOWN_CHECK_TYPES = {"command", "config_line", "all", "any"}
+TYPED_CISCO_CHECKS = {
+    "cisco_vty_session_limit": "V-215807",
+    "cisco_logging_buffer_capacity": "V-215836",
+    "cisco_logging_trap_severity": "V-215837",
+}
+KNOWN_CHECK_TYPES = {"command", "config_line", "all", "any", *TYPED_CISCO_CHECKS}
 KNOWN_EXPECTED_TYPES = {"matches", "not_contains", "is_true", "match_count_at_least"}
 
 
@@ -83,7 +88,14 @@ def _load_json(path: Path, repo: Path, errors: list[str]) -> dict[str, Any] | No
     return value
 
 
-def _validate_check(pack: str, vuln_id: str, check: Any, errors: list[str]) -> None:
+def _validate_check(
+    pack: str,
+    vuln_id: str,
+    check: Any,
+    errors: list[str],
+    *,
+    top_level: bool = True,
+) -> None:
     if not isinstance(check, dict):
         errors.append(f"{pack}: {vuln_id}: check must be an object")
         return
@@ -109,13 +121,29 @@ def _validate_check(pack: str, vuln_id: str, check: Any, errors: list[str]) -> N
             errors.append(f"{pack}: {vuln_id}: command pattern must be a string")
         if "is_regex" in check and not isinstance(check["is_regex"], bool):
             errors.append(f"{pack}: {vuln_id}: command is_regex must be a boolean")
-    else:
+    elif check_type in {"all", "any"}:
         children = check.get("checks")
         if not isinstance(children, list) or not children:
             errors.append(f"{pack}: {vuln_id}: {check_type} needs non-empty checks[]")
             return
         for child in children:
-            _validate_check(pack, vuln_id, child, errors)
+            _validate_check(
+                pack,
+                vuln_id,
+                child,
+                errors,
+                top_level=False,
+            )
+    else:
+        if not top_level:
+            errors.append(f"{pack}: {vuln_id}: {check_type} must be top-level")
+        if set(check) != {"type"}:
+            errors.append(f"{pack}: {vuln_id}: {check_type} accepts only the type field")
+        if TYPED_CISCO_CHECKS[check_type] != vuln_id:
+            errors.append(
+                f"{pack}: {vuln_id}: {check_type} is reserved for "
+                f"{TYPED_CISCO_CHECKS[check_type]}"
+            )
 
 
 def _validate_expected(pack: str, vuln_id: str, expected: Any, errors: list[str]) -> None:

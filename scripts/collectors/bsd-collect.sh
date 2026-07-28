@@ -6,11 +6,11 @@
 #
 # Usage:
 #   AUTOMATESTIG_SSH_PASSWORD='...' bsd-collect.sh admin@bsdhost evidence.json
-#   AUTOMATESTIG_SSH_KEY=~/.ssh/id_ed25519 bsd-collect.sh admin@bsdhost evidence.json bsd01
+#   AUTOMATESTIG_SSH_KEY=~/.ssh/id_ed25519 bsd-collect.sh admin@bsdhost evidence.json
 set -eu
 
-if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
-    echo "usage: $0 user@host output.json [evidence-hostname]" >&2
+if [ "$#" -ne 2 ]; then
+    echo "usage: $0 user@host output.json" >&2
     exit 2
 fi
 
@@ -20,16 +20,15 @@ case "$TARGET" in
     *) echo "target must be user@host" >&2; exit 2 ;;
 esac
 OUTPUT=$2
-HOSTNAME=${3:-$HOST}
 BIN=${AUTOMATESTIG_BIN:-automatestig}
 
 if [ -n "${AUTOMATESTIG_SSH_KEY:-}" ]; then
     exec "$BIN" collect \
         --stig General_Purpose_Operating_System \
-        --host "$HOST" --hostname "$HOSTNAME" --username "$USER" \
+        --host "$HOST" --username "$USER" \
         --key "$AUTOMATESTIG_SSH_KEY" --output "$OUTPUT"
 fi
 
 exec "$BIN" collect \
     --stig General_Purpose_Operating_System \
-    --host "$HOST" --hostname "$HOSTNAME" --username "$USER" --output "$OUTPUT"
+    --host "$HOST" --username "$USER" --output "$OUTPUT"
