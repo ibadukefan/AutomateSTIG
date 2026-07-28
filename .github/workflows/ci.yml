@@ -3,7 +3,9 @@ name: CI
 on:
   push:
     branches: ["**"]
+    tags: ["v*"]
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
 
 env:
   CARGO_TERM_COLOR: always
@@ -11,17 +13,45 @@ env:
 
 permissions:
   contents: read
-  id-token: write
-  attestations: write
 
 jobs:
+  governance:
+    name: Governance
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+      - name: Enforce release feature freeze
+        run: python3 scripts/validate-release-freeze.py --repo-root .
+      - name: Enforce immutable workflow dependencies
+        run: python3 scripts/validate-workflow-pins.py --repo-root .
+      - name: Validate release approval evidence
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.AUTOMATESTIG_GOVERNANCE_TOKEN }}
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            if [[ -z "$GH_TOKEN" ]]; then
+              echo "AUTOMATESTIG_GOVERNANCE_TOKEN is required for tag governance validation" >&2
+              exit 1
+            fi
+            python3 scripts/validate-release-evidence.py --repo-root . --tag "$GITHUB_REF_NAME"
+          else
+            python3 scripts/validate-release-evidence.py --repo-root . --schema-only
+          fi
+
   check:
     name: Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
       - run: cargo check --workspace --all-targets
@@ -33,20 +63,38 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
       - run: cargo test --workspace
+      - name: Validate POSIX installer syntax
+        if: runner.os != 'Windows'
+        run: sh -n install-linux.sh install-macos.sh
+      - name: Validate PowerShell installer syntax
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path install-windows.ps1),
+            [ref] $tokens,
+            [ref] $errors
+          ) | Out-Null
+          if ($errors.Count -ne 0) {
+            $errors | ForEach-Object { Write-Error $_.Message }
+            exit 1
+          }
 
   e2e:
     name: E2E acceptance
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
       - run: cargo build --release --bin automatestig --bin automatestig-gui
@@ -57,8 +105,8 @@ jobs:
     name: Format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
         with:
           components: rustfmt
       - run: cargo fmt --all -- --check
@@ -67,11 +115,11 @@ jobs:
     name: Clippy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
         with:
           components: clippy
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
       - run: cargo clippy --workspace --all-targets -- -D warnings
@@ -80,74 +128,125 @@ jobs:
     name: Frontend syntax
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
-          node-version: '20'
+          node-version: '24'
       - run: node --check crates/gui/frontend/app.js
+
+  archive-fuzz-smoke:
+    name: Archive fuzz smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@efcb852328a9f50117170cc43094fb6f09eaf1ae
+      - uses: taiki-e/install-action@82fc405565b9cf90abfe700ba43b4751ce2fe422
+        with:
+          tool: cargo-fuzz
+      - name: Run bounded archive fuzz corpus and mutations
+        run: >-
+          cargo fuzz run safe_zip_archive fuzz/corpus/safe_zip_archive --
+          -runs=100000 -max_len=4096 -timeout=2 -rss_limit_mb=1024
+          -dict=fuzz/safe_zip_archive.dict
 
   coverage-validation:
     name: Coverage manifest validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
-      - run: python3 -m py_compile scripts/disa_corpus/*.py scripts/validate-rule-implementations.py
+      - run: python3 -m py_compile scripts/disa_corpus/*.py scripts/validate-check-packs.py
       - run: python3 scripts/validate-check-packs.py
       - run: python3 -m unittest discover -s scripts/disa_corpus/tests -v
       - run: python3 scripts/disa_corpus/index_disa_downloads.py --seed-only --output /tmp/disa-download-index.json
       - run: python3 scripts/validate-all-coverage.py --repo-root .
       - run: python3 scripts/validate-authorized-fixtures.py fixtures/authorized/manifest.example.json --repo-root .
       - run: python3 scripts/validate-authorized-fixtures.py content/disa-corpus/artifacts.manifest.json --repo-root .
-      - run: python3 scripts/validate-rule-implementations.py --coverage-root content/coverage/disa-authoritative --implementation-root content/rule-implementations
-      - run: python3 scripts/disa_corpus/validate_corpus_regression.py --repo-root .
-      - run: python3 scripts/disa_corpus/generate_candidate_check_packs.py --implementation-root content/rule-implementations/generated --out /tmp/automatestig-candidate-check-packs
-      - run: python3 scripts/disa_corpus/generate_candidate_fixture_evidence.py --candidate-root content/check_packs/generated-candidates --out /tmp/automatestig-candidate-evidence
-      - run: python3 scripts/disa_corpus/generate_all_authoritative_manifests.py --corpus content/disa-corpus/artifacts.manifest.json --out /tmp/automatestig-authoritative-coverage --repo-root .
       - run: python3 scripts/validate-external-workflows.py --repo-root .
       - run: python3 scripts/run-live-external-acceptance.py --repo-root .
+      - run: python3 scripts/run-live-device-acceptance.py --repo-root .
 
   dependency-audit:
     name: Dependency audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
       - name: Install cargo-audit
-        uses: taiki-e/install-action@cargo-audit
+        uses: taiki-e/install-action@b3acd5417a6eccf7e7f11042455fe275eebb2fb9
       # RUSTSEC-2023-0071 is documented in docs/audit-exceptions.md. Keep the
       # exception explicit so all other vulnerabilities fail CI.
       - run: cargo audit --ignore RUSTSEC-2023-0071
 
   build-release:
-    name: Build Release
-    needs: [check, test, fmt, clippy, frontend-syntax, coverage-validation, dependency-audit]
+    name: Build Release (${{ matrix.target }})
+    needs: [governance, check, test, e2e, fmt, clippy, frontend-syntax, archive-fuzz-smoke, coverage-validation, dependency-audit]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            artifact: automatestig
+            cli: automatestig
+            gui: automatestig-gui
+            extension: tar.gz
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            cli: automatestig
+            gui: automatestig-gui
+            extension: tar.gz
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            artifact: automatestig.exe
-          - os: macos-latest
+            cli: automatestig.exe
+            gui: automatestig-gui.exe
+            extension: zip
+          - os: macos-15-intel
             target: x86_64-apple-darwin
-            artifact: automatestig
+            cli: automatestig
+            gui: automatestig-gui
+            extension: tar.gz
+          - os: macos-15
+            target: aarch64-apple-darwin
+            cli: automatestig
+            gui: automatestig-gui
+            extension: tar.gz
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
-      - run: cargo build --release --bin automatestig
+      - name: Install Linux ARM64 cross linker
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> "$GITHUB_ENV"
+      - run: cargo build --release --locked --target ${{ matrix.target }} --bin automatestig --bin automatestig-gui
+      - name: Package the tested release binaries
+        shell: bash
+        run: |
+          package="automatestig-${GITHUB_REF_NAME}-${{ matrix.target }}"
+          mkdir -p "dist/$package"
+          cp "target/${{ matrix.target }}/release/${{ matrix.cli }}" "dist/$package/"
+          cp "target/${{ matrix.target }}/release/${{ matrix.gui }}" "dist/$package/"
+          cp README.md LICENSE docs/quickstart.md docs/installation.md "dist/$package/"
+          if [[ "${{ matrix.extension }}" == "zip" ]]; then
+            powershell -NoProfile -Command "Compress-Archive -Path 'dist/$package/*' -DestinationPath 'dist/$package.zip'"
+          else
+            tar -C "dist/$package" -czf "dist/$package.tar.gz" .
+          fi
+          rm -rf "dist/$package"
+          echo "PACKAGE=dist/$package.${{ matrix.extension }}" >> "$GITHUB_ENV"
       - name: Generate formal SBOM, dependency inventory, and provenance scaffold
         shell: bash
         run: |
@@ -159,7 +258,7 @@ jobs:
             --target ${{ matrix.target }}
           cat > target/release/provenance/provenance-${{ matrix.target }}.json <<EOF
           {
-            "artifact": "${{ matrix.artifact }}",
+            "artifact": "$(basename "$PACKAGE")",
             "target": "${{ matrix.target }}",
             "repository": "${{ github.repository }}",
             "ref": "${{ github.ref }}",
@@ -173,35 +272,135 @@ jobs:
       - name: Generate SHA-256 checksum
         shell: bash
         run: |
-          cd target/release
+          package_dir="$(dirname "$PACKAGE")"
+          package_name="$(basename "$PACKAGE")"
           if command -v sha256sum >/dev/null 2>&1; then
-            sha256sum "${{ matrix.artifact }}" > "${{ matrix.artifact }}.sha256"
+            (cd "$package_dir" && sha256sum "$package_name" > "$package_name.sha256")
           else
-            shasum -a 256 "${{ matrix.artifact }}" > "${{ matrix.artifact }}.sha256"
+            (cd "$package_dir" && shasum -a 256 "$package_name" > "$package_name.sha256")
           fi
-      - name: Generate GitHub artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-path: target/release/${{ matrix.artifact }}
-      - name: Install cosign for keyless blob signing
-        uses: sigstore/cosign-installer@v3
-      - name: Generate keyless Sigstore signature bundle
+      - name: Stage one flat, closed release-artifact set
         shell: bash
-        env:
-          COSIGN_EXPERIMENTAL: "1"
         run: |
-          cosign sign-blob --yes \
-            --bundle "target/release/${{ matrix.artifact }}.sigstore.bundle" \
-            "target/release/${{ matrix.artifact }}"
-      - uses: actions/upload-artifact@v4
+          rm -rf release-upload
+          mkdir release-upload
+          cp "$PACKAGE" "$PACKAGE.sha256" release-upload/
+          cp \
+            "target/release/provenance/cargo-metadata-${{ matrix.target }}.json" \
+            "target/release/provenance/automatestig-${{ matrix.target }}.cdx.json" \
+            "target/release/provenance/provenance-${{ matrix.target }}.json" \
+            release-upload/
+          [[ "$(find release-upload -type f | wc -l | tr -d ' ')" == 5 ]]
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: automatestig-${{ matrix.target }}
-          path: |
-            target/release/${{ matrix.artifact }}
-            target/release/${{ matrix.artifact }}.sha256
-            target/release/${{ matrix.artifact }}.sigstore.bundle
-            target/release/provenance/cargo-metadata-${{ matrix.target }}.json
-            target/release/provenance/automatestig-${{ matrix.target }}.cdx.json
-            target/release/provenance/provenance-${{ matrix.target }}.json
+          path: release-upload/
           retention-days: 14
           if-no-files-found: error
+
+  publish-release:
+    name: Publish attested release artifacts
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build-release
+    runs-on: ubuntu-latest
+    permissions:
+      artifact-metadata: write
+      attestations: write
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: automatestig-*
+          path: release-artifacts
+          merge-multiple: true
+      - name: Attest the exact archives selected for publication
+        uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
+        with:
+          subject-path: |
+            release-artifacts/*.tar.gz
+            release-artifacts/*.zip
+      - name: Install cosign for publication verification
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+      - name: Generate keyless Sigstore bundles for the exact archives
+        shell: bash
+        run: |
+          for archive in release-artifacts/*.tar.gz release-artifacts/*.zip; do
+            [[ -f "$archive" ]] || continue
+            cosign sign-blob --yes \
+              --bundle "$archive.sigstore.bundle" \
+              "$archive"
+          done
+      - name: Cryptographically verify every release archive
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/ci.yml@${GITHUB_REF}"
+          for archive in release-artifacts/*.tar.gz release-artifacts/*.zip; do
+            [[ -f "$archive" ]] || continue
+            gh attestation verify "$archive" \
+              --repo "$GITHUB_REPOSITORY" \
+              --cert-identity "$identity" \
+              --source-ref "$GITHUB_REF" \
+              --source-digest "$GITHUB_SHA"
+            cosign verify-blob \
+              --bundle "$archive.sigstore.bundle" \
+              --certificate-identity "$identity" \
+              --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+              "$archive"
+          done
+      - name: Verify companions and generate release manifest
+        shell: bash
+        run: |
+          python3 scripts/generate-release-manifest.py \
+            --artifact-dir release-artifacts \
+            --tag "$GITHUB_REF_NAME" \
+            --repository "$GITHUB_REPOSITORY" \
+            --commit "$GITHUB_SHA" \
+            --run-id "$GITHUB_RUN_ID" \
+            --output release-artifacts/release-manifest.json
+          (cd release-artifacts && sha256sum release-manifest.json > release-manifest.json.sha256)
+      - name: Attest the final release manifest
+        uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
+        with:
+          subject-path: release-artifacts/release-manifest.json
+      - name: Sign and verify the final release manifest
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          manifest=release-artifacts/release-manifest.json
+          identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/ci.yml@${GITHUB_REF}"
+          cosign sign-blob --yes \
+            --bundle "$manifest.sigstore.bundle" \
+            "$manifest"
+          gh attestation verify "$manifest" \
+            --repo "$GITHUB_REPOSITORY" \
+            --cert-identity "$identity" \
+            --source-ref "$GITHUB_REF" \
+            --source-digest "$GITHUB_SHA"
+          cosign verify-blob \
+            --bundle "$manifest.sigstore.bundle" \
+            --certificate-identity "$identity" \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            "$manifest"
+      - name: Publish one immutable release with the exact gated artifacts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "release $GITHUB_REF_NAME already exists; refusing to replace assets" >&2
+            exit 1
+          fi
+          gh release create "$GITHUB_REF_NAME" release-artifacts/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --generate-notes \
+            --draft
+          gh release edit "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft=false
+          gh release verify "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY"

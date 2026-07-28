@@ -40,31 +40,61 @@ try {
     if ([string]::IsNullOrWhiteSpace($Tag)) {
         Fail 'Could not determine release tag.'
     }
+    if ($Tag -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$') {
+        Fail "Invalid release tag: $Tag"
+    }
+
+    $Cosign = Get-Command cosign -CommandType Application -ErrorAction SilentlyContinue
+    if (-not $Cosign) {
+        Fail 'Required command not found: cosign. Install cosign from https://docs.sigstore.dev/cosign/system_config/installation/.'
+    }
 
     $ArchiveName = "automatestig-$Tag-$Target.zip"
-    $ChecksumName = "automatestig-$Tag-$Target.sha256"
+    $ChecksumName = "$ArchiveName.sha256"
+    $BundleName = "$ArchiveName.sigstore.bundle"
     $DownloadBase = "https://github.com/$Repo/releases/download/$Tag"
     $TempDir = Join-Path ([System.IO.Path]::GetTempPath()) ("automatestig-" + [guid]::NewGuid().ToString('N'))
     $ExtractDir = Join-Path $TempDir 'extract'
     $ArchivePath = Join-Path $TempDir $ArchiveName
     $ChecksumPath = Join-Path $TempDir $ChecksumName
+    $BundlePath = Join-Path $TempDir $BundleName
 
     New-Item -ItemType Directory -Path $ExtractDir -Force | Out-Null
 
     Write-Host "Downloading AutomateSTIG $Tag for $Target..."
     Invoke-WebRequest -Uri "$DownloadBase/$ArchiveName" -OutFile $ArchivePath -UseBasicParsing
     Invoke-WebRequest -Uri "$DownloadBase/$ChecksumName" -OutFile $ChecksumPath -UseBasicParsing
+    Invoke-WebRequest -Uri "$DownloadBase/$BundleName" -OutFile $BundlePath -UseBasicParsing
 
     Write-Host 'Verifying SHA-256 checksum...'
-    $ChecksumLine = Get-Content -Path $ChecksumPath | Where-Object { $_.Trim().Length -gt 0 } | Select-Object -First 1
-    if (-not $ChecksumLine) {
-        Fail "$ChecksumName is empty."
+    $ChecksumLines = @(Get-Content -Path $ChecksumPath | Where-Object { $_.Trim().Length -gt 0 })
+    if ($ChecksumLines.Count -ne 1) {
+        Fail "$ChecksumName must contain exactly one checksum record."
+    }
+    $ChecksumParts = @($ChecksumLines[0].Trim() -split '\s+')
+    if ($ChecksumParts.Count -ne 2 -or $ChecksumParts[0] -notmatch '^[0-9A-Fa-f]{64}$') {
+        Fail "$ChecksumName contains an invalid checksum record."
+    }
+    if ($ChecksumParts[1] -cne $ArchiveName) {
+        Fail "$ChecksumName does not name $ArchiveName."
     }
 
-    $ExpectedHash = (($ChecksumLine -split '\s+')[0]).ToUpperInvariant()
+    $ExpectedHash = $ChecksumParts[0].ToUpperInvariant()
     $ActualHash = (Get-FileHash -Algorithm SHA256 -Path $ArchivePath).Hash.ToUpperInvariant()
     if ($ExpectedHash -ne $ActualHash) {
         Fail "Checksum verification failed for $ArchiveName."
+    }
+
+    Write-Host 'Verifying keyless Sigstore signature...'
+    $Identity = "https://github.com/$Repo/.github/workflows/ci.yml@refs/tags/$Tag"
+    $env:COSIGN_EXPERIMENTAL = '1'
+    & $Cosign.Path verify-blob `
+        --bundle $BundlePath `
+        --certificate-identity $Identity `
+        --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' `
+        $ArchivePath | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Fail "Sigstore verification failed for $ArchiveName."
     }
 
     Expand-Archive -Path $ArchivePath -DestinationPath $ExtractDir -Force

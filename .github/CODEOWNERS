@@ -1,6 +1,29 @@
-# Check packs are security-critical logic: a pattern edit can silently flip a
-# fleet's compliance results. Content and evaluation changes require review by
-# a code owner before merge.
-/content/check_packs/            @ibadukefan
-/crates/core/src/checks/         @ibadukefan
-/scripts/validate-check-packs.py @ibadukefan
+# Release, collection, evaluation, content, and audit paths can change a
+# compliance decision or its provenance. Branch protection requires a code
+# owner review; the release checklist separately requires independent software
+# and security approvals from people other than the author.
+/.github/                         @ibadukefan
+/Cargo.toml                       @ibadukefan
+/Cargo.lock                       @ibadukefan
+/crates/archive-safety/           @ibadukefan
+/crates/collector/                @ibadukefan
+/crates/core/src/checks/          @ibadukefan
+/crates/core/src/library.rs       @ibadukefan
+/crates/core/src/library_content.rs @ibadukefan
+/crates/core/src/remote.rs        @ibadukefan
+/crates/gui/src/api.rs            @ibadukefan
+/crates/gui/src/secrets.rs        @ibadukefan
+/crates/gui/src/ssh.rs            @ibadukefan
+/crates/gui/frontend/app.js       @ibadukefan
+/crates/parsers/                  @ibadukefan
+/crates/stigpack/                 @ibadukefan
+/crates/storage/                  @ibadukefan
+/content/check_packs/             @ibadukefan
+/content/coverage/current-checkpacks/ @ibadukefan
+/content/supported-targets.json   @ibadukefan
+/schemas/                         @ibadukefan
+/scripts/collectors/              @ibadukefan
+/scripts/validate-check-packs.py  @ibadukefan
+/scripts/run-content-signing-ceremony.py @ibadukefan
+/scripts/validate-release-evidence.py @ibadukefan
+/release-evidence/                @ibadukefan

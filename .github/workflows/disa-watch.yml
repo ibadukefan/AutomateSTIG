@@ -14,7 +14,7 @@ jobs:
     name: Check for new DISA STIG releases
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - name: Index live DISA downloads page
         run: python3 scripts/disa_corpus/index_disa_downloads.py --output /tmp/current-index.json
       - name: Compare against checked-in baseline
@@ -52,3 +52,10 @@ jobs:
             --title "New DISA STIG releases detected ($(date -u +%Y-%m))" \
             --label disa-drift \
             --body-file /tmp/issue-body.md
+      - name: Upload catalog snapshot for research review
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: disa-download-index-${{ github.run_id }}
+          path: /tmp/current-index.json
+          retention-days: 30
+          if-no-files-found: error
