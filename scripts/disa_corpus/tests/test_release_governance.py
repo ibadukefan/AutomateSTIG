@@ -544,11 +544,20 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             allowed = run(command, root)
             self.assertEqual(allowed.returncode, 0, allowed.stderr)
 
-    def test_fuzz_job_builds_pinned_cargo_fuzz_for_runner_host(self):
+    def test_governance_linter_and_fuzz_bootstraps_are_pinned(self):
         workflow = (REPO / ".github/workflows/ci.yml").read_text()
         self.assertIn('branches: ["main"]', workflow)
         self.assertNotIn('branches: ["**"]', workflow)
-        self.assertIn("tool: actionlint@1.7.12", workflow)
+        governance = workflow.split("  governance:", 1)[1].split(
+            "  check:", 1
+        )[0]
+        self.assertIn('ACTIONLINT_VERSION: "1.7.12"', governance)
+        self.assertIn(
+            'ACTIONLINT_SHA256: "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"',
+            governance,
+        )
+        self.assertIn("sha256sum --check -", governance)
+        self.assertNotIn("tool: actionlint", governance)
         self.assertIn("run: actionlint", workflow)
         job = workflow.split("  archive-fuzz-smoke:", 1)[1].split(
             "  coverage-validation:", 1
