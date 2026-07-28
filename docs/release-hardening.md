@@ -9,6 +9,8 @@ there is no independent rebuild-and-publish workflow.
   `.github/release-freeze.json`, `CODEOWNERS`, and the pull-request template.
 - Every external GitHub Action reference is pinned to a full commit SHA and
   `scripts/validate-workflow-pins.py` prevents a mutable tag from returning.
+- Required branch checks are bound to the GitHub Actions App ID, and release
+  validation rejects same-named checks from any other integration.
 - Formatting, clippy with warnings denied, cross-platform tests, end-to-end
   acceptance, frontend syntax, exact supported-target/content validation, 100,000 fuzz
   mutations, RustSec audit, and dependency review are required gates.

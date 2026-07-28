@@ -14,7 +14,8 @@ the exception for review; it does not approve the code itself.
 
 Branch protection must require:
 
-- a pull request and all CI checks;
+- a pull request and all CI checks, with every required status bound to the
+  GitHub Actions App rather than accepted by name alone;
 - two approvals from people other than the author;
 - code-owner approval for compliance, collection, content, storage, signing,
   release, and audit paths;
@@ -55,8 +56,10 @@ change with unrelated formatting, generated corpus churn, or release plumbing.
 ## Tag gate
 
 A repository tag ruleset restricts creation, replacement, and deletion of
-matching `v*` release tags to the named release administrator. Granting normal
-write access to a reviewer does not grant release-tag authority.
+matching `v*` release tags to exactly one named user release administrator with
+an always bypass. The release validator rejects a broad repository-role,
+additional actor, or different bypass mode. Granting normal write access to a
+reviewer does not grant release-tag authority.
 
 A `v*` tag cannot publish unless `release-evidence/<tag>.json` passes
 `scripts/validate-release-evidence.py`. It requires:

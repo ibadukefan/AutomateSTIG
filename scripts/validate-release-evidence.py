@@ -56,6 +56,12 @@ REQUIRED_STATUS_CONTEXTS = {
     "Build Release (x86_64-apple-darwin)",
     "Build Release (aarch64-apple-darwin)",
 }
+GITHUB_ACTIONS_APP_ID = 15368
+RELEASE_TAG_AUTHORITY = {
+    "actor_id": 3534006,
+    "actor_type": "User",
+    "bypass_mode": "always",
+}
 
 
 def fail(message: str) -> None:
@@ -659,6 +665,61 @@ def validate_content_ceremony_workflow(
     validate_content_ceremony_artifact(repository, run_id, expected_files)
 
 
+def validate_required_status_bindings(checks: object) -> None:
+    if not isinstance(checks, dict):
+        fail("main branch required-status-check response must be an object")
+    raw_bindings = checks.get("checks")
+    if not isinstance(raw_bindings, list):
+        fail("main branch required checks must be bound to their expected GitHub App")
+    bindings: dict[str, object] = {}
+    duplicates: set[str] = set()
+    for item in raw_bindings:
+        if not isinstance(item, dict):
+            continue
+        context = item.get("context")
+        if context not in REQUIRED_STATUS_CONTEXTS:
+            continue
+        if context in bindings:
+            duplicates.add(context)
+        bindings[context] = item.get("app_id")
+    missing = sorted(REQUIRED_STATUS_CONTEXTS - set(bindings))
+    misbound = sorted(
+        context
+        for context, app_id in bindings.items()
+        if app_id != GITHUB_ACTIONS_APP_ID
+    )
+    if missing or misbound or duplicates:
+        details = []
+        if missing:
+            details.append(f"missing={missing}")
+        if misbound:
+            details.append(
+                f"not bound to github-actions app {GITHUB_ACTIONS_APP_ID}={misbound}"
+            )
+        if duplicates:
+            details.append(f"duplicate={sorted(duplicates)}")
+        fail("main branch required-status policy is invalid; " + "; ".join(details))
+
+
+def validate_release_tag_authority(tag_ruleset: object) -> None:
+    if not isinstance(tag_ruleset, dict):
+        fail("an active v* release-tag ruleset is required")
+    bypass_actors = tag_ruleset.get("bypass_actors")
+    if (
+        not isinstance(bypass_actors, list)
+        or len(bypass_actors) != 1
+        or not isinstance(bypass_actors[0], dict)
+        or any(
+            bypass_actors[0].get(field) != expected
+            for field, expected in RELEASE_TAG_AUTHORITY.items()
+        )
+    ):
+        fail(
+            "the v* release-tag ruleset must name exactly the reviewed release "
+            "authority with an always bypass"
+        )
+
+
 def validate_repository_controls() -> None:
     repository = os.environ["GITHUB_REPOSITORY"]
     immutable = github_json(f"repos/{repository}/immutable-releases")
@@ -670,11 +731,9 @@ def validate_repository_controls() -> None:
         fail("main branch protection response must be an object")
     reviews = protection.get("required_pull_request_reviews") or {}
     checks = protection.get("required_status_checks") or {}
-    contexts = set(checks.get("contexts") or [])
-    missing = sorted(REQUIRED_STATUS_CONTEXTS - contexts)
+    validate_required_status_bindings(checks)
     if (
         checks.get("strict") is not True
-        or missing
         or reviews.get("required_approving_review_count", 0) < 2
         or reviews.get("dismiss_stale_reviews") is not True
         or reviews.get("require_code_owner_reviews") is not True
@@ -685,10 +744,7 @@ def validate_repository_controls() -> None:
         or (protection.get("allow_force_pushes") or {}).get("enabled") is not False
         or (protection.get("allow_deletions") or {}).get("enabled") is not False
     ):
-        fail(
-            "main branch protection does not enforce the reviewed release policy"
-            + (f"; missing contexts: {missing}" if missing else "")
-        )
+        fail("main branch protection does not enforce the reviewed release policy")
 
     for environment_name in ("live-device-acceptance", "external-acceptance"):
         environment = github_json(f"repos/{repository}/environments/{environment_name}")
@@ -733,8 +789,7 @@ def validate_repository_controls() -> None:
             if include == ["refs/tags/v*"] and {"creation", "update", "deletion"} <= types:
                 tag_ruleset = candidate
                 break
-    if not tag_ruleset or not tag_ruleset.get("bypass_actors"):
-        fail("an active v* release-tag ruleset with a named release authority is required")
+    validate_release_tag_authority(tag_ruleset)
 
 
 def validate_github_approvals(

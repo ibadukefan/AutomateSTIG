@@ -378,6 +378,79 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                             {},
                         )
 
+    def test_required_status_checks_are_bound_to_github_actions(self):
+        import importlib.util
+        import io
+        from contextlib import redirect_stderr
+
+        spec = importlib.util.spec_from_file_location(
+            "validate_release_evidence_status_bindings",
+            REPO / "scripts/validate-release-evidence.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        valid = {
+            "checks": [
+                {
+                    "context": context,
+                    "app_id": module.GITHUB_ACTIONS_APP_ID,
+                }
+                for context in sorted(module.REQUIRED_STATUS_CONTEXTS)
+            ],
+        }
+        module.validate_required_status_bindings(valid)
+
+        cases = {
+            "unbound": {
+                "checks": [
+                    {**item, "app_id": None}
+                    if index == 0
+                    else item
+                    for index, item in enumerate(valid["checks"])
+                ],
+            },
+            "missing": {"checks": valid["checks"][1:]},
+            "duplicate": {"checks": [*valid["checks"], valid["checks"][0]]},
+        }
+        for name, value in cases.items():
+            with (
+                self.subTest(name=name),
+                redirect_stderr(io.StringIO()),
+                self.assertRaises(SystemExit),
+            ):
+                module.validate_required_status_bindings(value)
+
+    def test_release_tag_ruleset_requires_exact_singleton_authority(self):
+        import importlib.util
+        import io
+        from contextlib import redirect_stderr
+
+        spec = importlib.util.spec_from_file_location(
+            "validate_release_evidence_tag_authority",
+            REPO / "scripts/validate-release-evidence.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        authority = dict(module.RELEASE_TAG_AUTHORITY)
+        module.validate_release_tag_authority({"bypass_actors": [authority]})
+
+        cases = {
+            "wrong actor": {**authority, "actor_id": authority["actor_id"] + 1},
+            "broad role": {**authority, "actor_type": "RepositoryRole"},
+            "wrong mode": {**authority, "bypass_mode": "pull_request"},
+        }
+        for name, actor in cases.items():
+            with (
+                self.subTest(name=name),
+                redirect_stderr(io.StringIO()),
+                self.assertRaises(SystemExit),
+            ):
+                module.validate_release_tag_authority({"bypass_actors": [actor]})
+        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            module.validate_release_tag_authority(
+                {"bypass_actors": [authority, authority]}
+            )
+
     def test_sbom_uses_workspace_version_and_target_bound_serial(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = pathlib.Path(temporary)
