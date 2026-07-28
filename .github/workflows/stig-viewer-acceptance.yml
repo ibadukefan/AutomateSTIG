@@ -39,6 +39,8 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
       - run: cargo build --release --locked --bin automatestig
       - name: Compare real Viewer round trips with exact modeled semantics
         shell: bash

@@ -1,5 +1,6 @@
 import datetime
 import hashlib
+import importlib.util
 import json
 import os
 import pathlib
@@ -41,6 +42,25 @@ def write_json_artifact(path, value):
 
 
 class ReleaseGovernanceTests(unittest.TestCase):
+    def test_release_ssh_fingerprint_regex_requires_canonical_base64(self):
+        script = REPO / "scripts/validate-release-evidence.py"
+        spec = importlib.util.spec_from_file_location(
+            "validate_release_evidence", script
+        )
+        validator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(validator)
+
+        self.assertIsNotNone(
+            validator.SSH_SERVER_KEY_FINGERPRINT.fullmatch(
+                "SHA256:" + ("A" * 43)
+            )
+        )
+        self.assertIsNone(
+            validator.SSH_SERVER_KEY_FINGERPRINT.fullmatch(
+                "SHA256:" + ("A" * 42) + "B"
+            )
+        )
+
     def test_collector_wrappers_require_an_explicit_output_path(self):
         for name in ("ontap-collect.sh", "bsd-collect.sh"):
             with self.subTest(name=name):
@@ -55,7 +75,7 @@ class ReleaseGovernanceTests(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn("output.json", result.stderr)
 
-    def test_installers_bind_archive_name_and_tagged_workflow_identity(self):
+    def test_supported_installers_bind_archive_name_and_tagged_workflow_identity(self):
         for name in ("install-linux.sh", "install-macos.sh"):
             with self.subTest(installer=name):
                 path = REPO / name
@@ -72,10 +92,12 @@ class ReleaseGovernanceTests(unittest.TestCase):
         self.assertNotIn("xattr -d", macos)
 
         windows = (REPO / "install-windows.ps1").read_text()
-        self.assertIn('$ChecksumName = "$ArchiveName.sha256"', windows)
-        self.assertIn('$BundleName = "$ArchiveName.sigstore.bundle"', windows)
-        self.assertIn("--certificate-identity $Identity", windows)
-        self.assertIn("refs/tags/$Tag", windows)
+        self.assertIn(
+            "does not currently publish or support Windows release binaries",
+            windows,
+        )
+        self.assertIn("source-portability testing only", windows)
+        self.assertNotIn("Invoke-WebRequest", windows)
 
     def test_posix_installers_verify_before_installing(self):
         cases = (
@@ -314,6 +336,137 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                     "ibadukefan/AutomateSTIG", "different-user"
                 )
 
+    def test_live_device_environment_binds_adjudicator_and_distinct_dispatcher(self):
+        import importlib.util
+        import io
+        from contextlib import redirect_stderr
+        from unittest import mock
+
+        spec = importlib.util.spec_from_file_location(
+            "validate_live_device_environment",
+            REPO / "scripts/validate-release-evidence.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        environment = {
+            "can_admins_bypass": False,
+            "protection_rules": [{
+                "type": "required_reviewers",
+                "prevent_self_review": True,
+                "reviewers": [{
+                    "type": "User",
+                    "reviewer": {"login": "independent-reviewer"},
+                }],
+            }],
+            "deployment_branch_policy": {
+                "protected_branches": True,
+                "custom_branch_policies": False,
+            },
+        }
+        run = {
+            "id": 1234,
+            "run_attempt": 1,
+            "actor": {"login": "lab-operator"},
+            "triggering_actor": {"login": "lab-operator"},
+        }
+        approval = [{
+            "state": "approved",
+            "environments": [{"name": "live-device-acceptance"}],
+            "user": {"login": "independent-reviewer"},
+        }]
+        jobs = {
+            "total_count": 1,
+            "jobs": [{
+                "name": "all collection and evaluation",
+                "conclusion": "success",
+                "labels": [
+                    "self-hosted",
+                    "Linux",
+                    "X64",
+                    "automatestig-live-devices",
+                ],
+                "runner_id": 42,
+                "runner_name": "lab-runner-01",
+            }],
+        }
+
+        def github_response(endpoint):
+            if endpoint.endswith("/approvals"):
+                return approval
+            if "/jobs?" in endpoint:
+                return jobs
+            return environment
+
+        with mock.patch.object(module, "github_json", side_effect=github_response):
+            module.validate_live_device_environment(
+                "ibadukefan/AutomateSTIG",
+                "Independent-Reviewer",
+                run,
+                "acceptance.ontap",
+            )
+            for bad_run in (
+                {**run, "actor": {"login": "independent-reviewer"}},
+                {**run, "triggering_actor": {"login": "other-operator"}},
+            ):
+                with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                    module.validate_live_device_environment(
+                        "ibadukefan/AutomateSTIG",
+                        "independent-reviewer",
+                        bad_run,
+                        "acceptance.ontap",
+                    )
+            with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                module.validate_live_device_environment(
+                    "ibadukefan/AutomateSTIG",
+                    "other-reviewer",
+                    run,
+                    "acceptance.ontap",
+                )
+            wrong_architecture = {
+                **jobs,
+                "jobs": [{
+                    **jobs["jobs"][0],
+                    "labels": [
+                        "self-hosted",
+                        "Linux",
+                        "automatestig-live-devices",
+                    ],
+                }],
+            }
+            with mock.patch.object(
+                module,
+                "github_json",
+                side_effect=lambda endpoint: (
+                    approval
+                    if endpoint.endswith("/approvals")
+                    else wrong_architecture
+                    if "/jobs?" in endpoint
+                    else environment
+                ),
+            ), redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                module.validate_live_device_environment(
+                    "ibadukefan/AutomateSTIG",
+                    "independent-reviewer",
+                    run,
+                    "acceptance.ontap",
+                )
+            bad_approval = [{**approval[0], "user": {"login": "other-reviewer"}}]
+            with mock.patch.object(
+                module,
+                "github_json",
+                side_effect=lambda endpoint: (
+                    bad_approval
+                    if endpoint.endswith("/approvals")
+                    else jobs if "/jobs?" in endpoint else environment
+                ),
+            ), redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                module.validate_live_device_environment(
+                    "ibadukefan/AutomateSTIG",
+                    "independent-reviewer",
+                    run,
+                    "acceptance.ontap",
+                )
+
     def test_content_ceremony_run_requires_approved_commit_and_custodian_actor(self):
         import importlib.util
         import io
@@ -450,6 +603,47 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             module.validate_release_tag_authority(
                 {"bypass_actors": [authority, authority]}
             )
+
+        closed = {
+            "conditions": {
+                "ref_name": {
+                    "include": ["refs/tags/v*"],
+                    "exclude": [],
+                }
+            },
+            "rules": [
+                {"type": "creation"},
+                {"type": "update"},
+                {"type": "deletion"},
+            ],
+        }
+        self.assertTrue(module.is_closed_release_tag_ruleset(closed))
+        excluded = {
+            **closed,
+            "conditions": {
+                "ref_name": {
+                    "include": ["refs/tags/v*"],
+                    "exclude": ["refs/tags/v*"],
+                }
+            },
+        }
+        self.assertFalse(module.is_closed_release_tag_ruleset(excluded))
+
+    def test_release_security_json_rejects_duplicate_members_recursively(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "validate_release_evidence_unique_json",
+            REPO / "scripts/validate-release-evidence.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        for raw in (
+            '{"schema":"one","schema":"two"}',
+            '{"outer":{"value":1,"value":2}}',
+        ):
+            with self.assertRaisesRegex(ValueError, "duplicate JSON member"):
+                module.strict_json_loads(raw)
 
     def test_sbom_uses_workspace_version_and_target_bound_serial(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -655,11 +849,126 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
         job = workflow.split("  archive-fuzz-smoke:", 1)[1].split(
             "  coverage-validation:", 1
         )[0]
+        nightly = "nightly-2026-07-12"
+        self.assertIn(
+            f"toolchain: {nightly}",
+            job,
+        )
         self.assertRegex(
             job,
-            r"cargo install cargo-fuzz --locked --version \d+\.\d+\.\d+",
+            rf"cargo \+{nightly} install cargo-fuzz --locked "
+            r"--version \d+\.\d+\.\d+",
         )
+        self.assertIn(f"cargo +{nightly} fuzz run", job)
         self.assertNotIn("tool: cargo-fuzz", job)
+
+    def test_workflows_install_the_repository_pinned_stable_toolchain(self):
+        import tomllib
+
+        pinned = tomllib.loads((REPO / "rust-toolchain.toml").read_text())[
+            "toolchain"
+        ]["channel"]
+        self.assertEqual(pinned, "1.94.0")
+        stable_action = (
+            "dtolnay/rust-toolchain@"
+            "4be7066ada62dd38de10e7b70166bc74ed198c30"
+        )
+        for path in sorted((REPO / ".github/workflows").glob("*.yml")):
+            lines = path.read_text().splitlines()
+            for index, line in enumerate(lines):
+                if stable_action not in line:
+                    continue
+                with self.subTest(workflow=path.name, line=index + 1):
+                    self.assertIn(
+                        f"toolchain: {pinned}",
+                        "\n".join(lines[index + 1:index + 6]),
+                    )
+
+    def test_windows_is_portability_tested_but_not_published(self):
+        workflow = (REPO / ".github/workflows/ci.yml").read_text()
+        test_job = workflow.split("  test:", 1)[1].split("  e2e:", 1)[0]
+        release_job = workflow.split("  build-release:", 1)[1].split(
+            "  publish-release:", 1
+        )[0]
+        self.assertIn("windows-latest", test_job)
+        self.assertNotIn("x86_64-pc-windows-msvc", release_job)
+
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "generate_release_manifest",
+            REPO / "scripts/generate-release-manifest.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        self.assertNotIn("x86_64-pc-windows-msvc", module.TARGETS)
+
+        validator_spec = importlib.util.spec_from_file_location(
+            "validate_release_evidence_platforms",
+            REPO / "scripts/validate-release-evidence.py",
+        )
+        validator = importlib.util.module_from_spec(validator_spec)
+        validator_spec.loader.exec_module(validator)
+        self.assertIn("Test (windows-latest)", validator.REQUIRED_STATUS_CONTEXTS)
+        self.assertNotIn(
+            "Build Release (x86_64-pc-windows-msvc)",
+            validator.REQUIRED_STATUS_CONTEXTS,
+        )
+
+    def test_tag_publication_requires_exact_live_tested_linux_cli(self):
+        workflow = (REPO / ".github/workflows/ci.yml").read_text()
+        release = workflow.split("  build-release:", 1)[1].split(
+            "  live-binary-equivalence:", 1
+        )[0]
+        equivalence = workflow.split(
+            "  live-binary-equivalence:", 1
+        )[1].split("  publish-release:", 1)[0]
+        publication = workflow.split("  publish-release:", 1)[1]
+        self.assertIn("toolchain: 1.94.0", release)
+        self.assertIn("targets: ${{ matrix.target }}", release)
+        self.assertNotIn('-czf "dist/$package.tar.gz" .', release)
+        for member in (
+            '"${{ matrix.cli }}"',
+            '"${{ matrix.gui }}"',
+            "README.md",
+            "LICENSE",
+            "quickstart.md",
+            "installation.md",
+        ):
+            with self.subTest(member=member):
+                self.assertIn(member, release)
+        self.assertIn("needs: build-release", equivalence)
+        self.assertIn(
+            "name: automatestig-x86_64-unknown-linux-gnu",
+            equivalence,
+        )
+        self.assertIn(
+            "scripts/validate-release-binary-equivalence.py",
+            equivalence,
+        )
+        self.assertIn(
+            "needs: [build-release, live-binary-equivalence]",
+            publication,
+        )
+
+    def test_ssh_dependency_and_audit_have_no_rsa_exception(self):
+        import tomllib
+
+        workspace = tomllib.loads((REPO / "Cargo.toml").read_text())
+        russh = workspace["workspace"]["dependencies"]["russh"]
+        self.assertIs(russh["default-features"], False)
+        self.assertEqual(russh["features"], ["aws-lc-rs"])
+
+        lockfile = tomllib.loads((REPO / "Cargo.lock").read_text())
+        package_names = {package["name"] for package in lockfile["package"]}
+        self.assertNotIn("rsa", package_names)
+
+        workflow = (REPO / ".github/workflows/ci.yml").read_text()
+        audit_job = workflow.split("  dependency-audit:", 1)[1].split(
+            "  build-release:", 1
+        )[0]
+        self.assertIn("- run: cargo audit", audit_job)
+        self.assertNotIn("cargo audit --ignore", audit_job)
 
     def test_content_ceremony_uses_step_scoped_runner_temp(self):
         workflow = (
@@ -672,25 +981,71 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             workflow,
         )
 
+    def test_live_device_workflow_supplies_protected_cisco_policy_inputs(self):
+        workflow = (
+            REPO / ".github/workflows/live-device-acceptance.yml"
+        ).read_text()
+        self.assertIn(
+            "runs-on: [self-hosted, linux, x64, automatestig-live-devices]",
+            workflow,
+        )
+        self.assertIn("toolchain: 1.94.0", workflow)
+        self.assertIn("targets: x86_64-unknown-linux-gnu", workflow)
+        self.assertIn(
+            "cargo build --release --locked\n"
+            "          --target x86_64-unknown-linux-gnu",
+            workflow,
+        )
+        self.assertIn(
+            "--binary target/x86_64-unknown-linux-gnu/release/automatestig",
+            workflow,
+        )
+        for name in (
+            "AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY",
+            "AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY_SIGNATURE",
+            "AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY_SHA256",
+            "AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR",
+        ):
+            with self.subTest(name=name):
+                self.assertIn(f"{name}: ${{{{ vars.{name} }}}}", workflow)
+
     def test_release_evidence_allows_only_evidence_after_approval(self):
         cases = (
-            (False, False, False, False),
-            (True, False, False, False),
-            (False, True, False, False),
-            (False, False, True, False),
-            (False, False, False, True),
+            (False, False, False, False, False, False, False, False, False, False),
+            (True, False, False, False, False, False, False, False, False, False),
+            (False, True, False, False, False, False, False, False, False, False),
+            (False, False, True, False, False, False, False, False, False, False),
+            (False, False, False, True, False, False, False, False, False, False),
+            (False, False, False, False, True, False, False, False, False, False),
+            (False, False, False, False, False, True, False, False, False, False),
+            (False, False, False, False, False, False, True, False, False, False),
+            (False, False, False, False, False, False, False, True, False, False),
+            (False, False, False, False, False, False, False, False, True, False),
+            (False, False, False, False, False, False, False, False, False, True),
         )
         for (
             add_unapproved_code,
             wrong_benchmark_binding,
             wrong_key_binding,
             wrong_oracle_result,
+            wrong_policy_binding,
+            untrusted_policy,
+            wrong_evaluated_pack,
+            wrong_evaluation_plan,
+            wrong_evaluated_input,
+            missing_manager_cli_binding,
         ) in cases:
             with self.subTest(
                 add_unapproved_code=add_unapproved_code,
                 wrong_benchmark_binding=wrong_benchmark_binding,
                 wrong_key_binding=wrong_key_binding,
                 wrong_oracle_result=wrong_oracle_result,
+                wrong_policy_binding=wrong_policy_binding,
+                untrusted_policy=untrusted_policy,
+                wrong_evaluated_pack=wrong_evaluated_pack,
+                wrong_evaluation_plan=wrong_evaluation_plan,
+                wrong_evaluated_input=wrong_evaluated_input,
+                missing_manager_cli_binding=missing_manager_cli_binding,
             ), tempfile.TemporaryDirectory() as temporary:
                 root = pathlib.Path(temporary)
                 init_repo(root)
@@ -723,13 +1078,22 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                     "negative_control_count": 1,
                     "negative_finding_count": 1,
                     "benchmark_sha256": "1" * 64,
+                    "evaluated_benchmark_sha256": "8" * 64,
+                    "oracle_evaluated_benchmark_sha256": "8" * 64,
                     "benchmark_rule_set_sha256": "2" * 64,
                     "automated_vuln_set_sha256": "3" * 64,
                     "check_pack_sha256": "4" * 64,
+                    "evaluated_check_pack_sha256": (
+                        "e" * 64 if wrong_evaluated_pack else "4" * 64
+                    ),
                     "input_sha256": "a" * 64,
+                    "evaluated_input_sha256": (
+                        "e" * 64 if wrong_evaluated_input else "a" * 64
+                    ),
                     "source_state_sha256": "b" * 64,
                     "scenario_bindings_sha256": "d" * 64,
                     "oracle_sha256": "c" * 64,
+                    "oracle_pinned_sha256": "c" * 64,
                     "oracle_adjudicated_at": now,
                     "oracle_adjudicator": "independent-reviewer",
                     "oracle_expected_status_sha256": status_digest,
@@ -737,6 +1101,26 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                 }
                 if wrong_oracle_result:
                     result_template["observed_status_sha256"] = "f" * 64
+                policy_sha256 = "5" * 64
+                cisco_policy_result = {
+                    "organization_policy_sha256": policy_sha256,
+                    "organization_policy_pinned_sha256": policy_sha256,
+                    "oracle_organization_policy_sha256": (
+                        "9" * 64 if wrong_policy_binding else policy_sha256
+                    ),
+                    "evaluated_organization_policy_sha256": policy_sha256,
+                    "organization_policy_signature_sha256": "6" * 64,
+                    "oracle_organization_policy_signature_sha256": "6" * 64,
+                    "organization_policy_id": "site-policy",
+                    "organization_policy_version": "1",
+                    "organization_policy_signer_fingerprint": (
+                        f"SHA256:{'7' * 64}"
+                    ),
+                    "oracle_organization_policy_signer_fingerprint": (
+                        f"SHA256:{'7' * 64}"
+                    ),
+                    "organization_policy_signature_verified": not untrusted_policy,
+                }
                 benchmark_identity = {
                     "ontap": ("NetApp_ONTAP_DSC_9-x_STIG", "V2R2"),
                     "freebsd": ("General_Purpose_Operating_System", "V3R3"),
@@ -747,6 +1131,30 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                         "NetApp_ONTAP_DSC_9-x_STIG",
                         "V1R1",
                     )
+
+                def evaluation_plan(target):
+                    payload = {
+                        "stig_id": benchmark_identity[target][0],
+                        "stig_release": benchmark_identity[target][1],
+                        "benchmark_sha256": result_template[
+                            "evaluated_benchmark_sha256"
+                        ],
+                        "check_pack_sha256": result_template[
+                            "check_pack_sha256"
+                        ],
+                        "organization_policy_sha256": (
+                            policy_sha256 if target == "cisco_ios_xe" else None
+                        ),
+                    }
+                    return hashlib.sha256(
+                        json.dumps(
+                            payload,
+                            sort_keys=True,
+                            separators=(",", ":"),
+                            ensure_ascii=False,
+                        ).encode()
+                    ).hexdigest()
+
                 device_path = artifact_root / "devices.json"
                 device_sha = write_json_artifact(device_path, {
                     "schema": "automatestig-live-device-acceptance/v1",
@@ -763,6 +1171,28 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                             "target": target,
                             "stig_id": benchmark_identity[target][0],
                             "stig_release": benchmark_identity[target][1],
+                            "evaluation_plan_sha256": (
+                                "f" * 64
+                                if wrong_evaluation_plan
+                                else evaluation_plan(target)
+                            ),
+                            **(
+                                cisco_policy_result
+                                if target == "cisco_ios_xe"
+                                else {}
+                            ),
+                            **(
+                                {
+                                    "server_key_fingerprint": (
+                                        "SHA256:" + ("A" * 43)
+                                    ),
+                                    "oracle_server_key_fingerprint": (
+                                        "SHA256:" + ("A" * 43)
+                                    ),
+                                }
+                                if target != "cisco_ios_xe"
+                                else {}
+                            ),
                         }
                         for target in ("ontap", "freebsd", "cisco_ios_xe")
                     ],
@@ -804,15 +1234,46 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                     "protected_environment": "external-acceptance",
                     "product_version": "1.6.13+1",
                     "environment": "test",
+                    "automatestig_cli_sha256": (
+                        None if missing_manager_cli_binding else "d" * 64
+                    ),
                     "automatestig_gui_sha256": "f" * 64,
                     "benchmark_sha256": "1" * 64,
                     "config_fixture_sha256": "2" * 64,
-                    "checks": [{"name": "exact reviews", "passed": True}],
+                    "checks": [
+                        {
+                            "name": (
+                                "AutomateSTIG evaluates Cisco running config "
+                                "with a signed policy"
+                            ),
+                            "passed": True,
+                        },
+                        {
+                            "name": (
+                                "source checklist retains verified "
+                                "organization-policy provenance"
+                            ),
+                            "passed": True,
+                        },
+                        {
+                            "name": (
+                                "STIG-Manager integration configured over HTTPS"
+                            ),
+                            "passed": True,
+                        },
+                        {"name": "exact reviews", "passed": True},
+                    ],
                     "metrics": {
                         "review_count": 2,
                         "source_finding_count": 2,
                         "rule_set_sha256": "8" * 64,
                         "benchmark_id": "Cisco_IOS-XE_Router_NDM_STIG",
+                        "organization_policy_sha256": "9" * 64,
+                        "organization_policy_signature_sha256": "a" * 64,
+                        "organization_policy_signer_fingerprint": (
+                            f"SHA256:{'b' * 64}"
+                        ),
+                        "stig_manager_transport": "ephemeral-loopback-https",
                     },
                 })
                 recovery_path = artifact_root / "recovery.json"
@@ -920,6 +1381,24 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                 elif wrong_oracle_result:
                     self.assertNotEqual(result.returncode, 0)
                     self.assertIn("independent oracle", result.stderr)
+                elif wrong_policy_binding:
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("policy snapshot", result.stderr)
+                elif untrusted_policy:
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("trusted signature", result.stderr)
+                elif wrong_evaluated_pack:
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("check-pack provenance", result.stderr)
+                elif wrong_evaluation_plan:
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("evaluation-plan provenance", result.stderr)
+                elif wrong_evaluated_input:
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("evaluated input provenance", result.stderr)
+                elif missing_manager_cli_binding:
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("automatestig_cli_sha256", result.stderr)
                 else:
                     self.assertEqual(result.returncode, 0, result.stderr)
 
@@ -927,7 +1406,6 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
         targets = {
             "x86_64-unknown-linux-gnu": "tar.gz",
             "aarch64-unknown-linux-gnu": "tar.gz",
-            "x86_64-pc-windows-msvc": "zip",
             "x86_64-apple-darwin": "tar.gz",
             "aarch64-apple-darwin": "tar.gz",
         }
@@ -981,12 +1459,14 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             self.assertEqual(accepted.returncode, 0, accepted.stderr)
             self.assertEqual(
                 len(json.loads((root / "release-manifest.json").read_text())["artifacts"]),
-                5,
+                4,
             )
 
             (root / "release-manifest.json").unlink()
-            unexpected = root / "undeclared-release-asset.txt"
-            unexpected.write_text("must not be published")
+            unexpected = (
+                root / "automatestig-v0.3.0-x86_64-pc-windows-msvc.zip"
+            )
+            unexpected.write_text("Windows release artifacts must not be published")
             denied = run(command, root)
             self.assertNotEqual(denied.returncode, 0)
             self.assertIn("artifact set is not closed", denied.stderr)

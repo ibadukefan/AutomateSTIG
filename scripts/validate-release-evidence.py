@@ -19,6 +19,12 @@ from pathlib import Path
 TAG = re.compile(r"^v\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
 SHA = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
+GITHUB_LOGIN = re.compile(r"^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$")
+POLICY_IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
+SIGNER_FINGERPRINT = re.compile(r"^SHA256:[0-9a-f]{64}$")
+SSH_SERVER_KEY_FINGERPRINT = re.compile(
+    r"^SHA256:[A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]$"
+)
 GATES = ("ontap", "freebsd", "cisco_ios_xe", "stig_viewer", "stig_manager")
 EXPECTED_DEVICE_BENCHMARKS = {
     "ontap": ("NetApp_ONTAP_DSC_9-x_STIG", "V2R2"),
@@ -50,9 +56,10 @@ REQUIRED_STATUS_CONTEXTS = {
     "CodeQL (javascript-typescript)",
     "CodeQL (python)",
     "CodeQL (rust)",
+    # Windows portability remains required through Test (windows-latest), but
+    # there is deliberately no Windows release-build context.
     "Build Release (x86_64-unknown-linux-gnu)",
     "Build Release (aarch64-unknown-linux-gnu)",
-    "Build Release (x86_64-pc-windows-msvc)",
     "Build Release (x86_64-apple-darwin)",
     "Build Release (aarch64-apple-darwin)",
 }
@@ -83,6 +90,30 @@ def timestamp(value: object, field: str) -> datetime:
 
 def sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def canonical_json_sha256(value: object) -> str:
+    encoded = json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False,
+    ).encode("utf-8")
+    return sha256_bytes(encoded)
+
+
+def unique_json_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON member: {key}")
+        result[key] = value
+    return result
+
+
+def strict_json_loads(raw):
+    return json.loads(raw, object_pairs_hook=unique_json_object)
 
 
 def read_bound_file(
@@ -145,8 +176,8 @@ def read_bound_artifact(
 ) -> tuple[Path, dict]:
     relative, raw = read_bound_file(repo, reference, expected_sha256, tag, field)
     try:
-        document = json.loads(raw)
-    except json.JSONDecodeError as error:
+        document = strict_json_loads(raw)
+    except ValueError as error:
         fail(f"{field} artifact is not valid JSON: {error}")
     if not isinstance(document, dict):
         fail(f"{field} artifact must contain a JSON object")
@@ -170,6 +201,7 @@ def validate_artifact_semantics(
     expected_version: str,
     expected_environment: str,
 ) -> None:
+    run: object = None
     if document.get("passed") is not True:
         fail(f"{field} artifact is not a passing record")
     if document.get("source_commit") != approved_commit:
@@ -232,18 +264,42 @@ def validate_artifact_semantics(
             )
         for name in (
             "benchmark_sha256",
+            "evaluated_benchmark_sha256",
+            "oracle_evaluated_benchmark_sha256",
             "benchmark_rule_set_sha256",
             "automated_vuln_set_sha256",
             "check_pack_sha256",
+            "evaluated_check_pack_sha256",
+            "evaluation_plan_sha256",
             "input_sha256",
+            "evaluated_input_sha256",
             "source_state_sha256",
             "scenario_bindings_sha256",
             "oracle_sha256",
+            "oracle_pinned_sha256",
             "oracle_expected_status_sha256",
             "observed_status_sha256",
         ):
             if not isinstance(result.get(name), str) or not SHA256.fullmatch(result[name]):
                 fail(f"{field} artifact result.{name} must be a SHA-256 digest")
+        if result["evaluated_check_pack_sha256"] != result["check_pack_sha256"]:
+            fail(
+                f"{field} artifact evaluated check-pack provenance differs "
+                "from the live/oracle binding"
+            )
+        if (
+            result["evaluated_benchmark_sha256"]
+            != result["oracle_evaluated_benchmark_sha256"]
+        ):
+            fail(
+                f"{field} artifact evaluated benchmark provenance differs "
+                "from the independently pinned oracle benchmark"
+            )
+        if result["evaluated_input_sha256"] != result["input_sha256"]:
+            fail(
+                f"{field} artifact evaluated input provenance differs from "
+                "the protected scenario snapshots"
+            )
         if not all(isinstance(result.get(name), int) and result[name] > 0 for name in ("findings", "automated_determinations")):
             fail(f"{field} artifact must record non-zero exact finding and automation counts")
         if (
@@ -257,8 +313,15 @@ def validate_artifact_semantics(
                 "nontrivial negative-control scenario"
             )
         adjudicator = result.get("oracle_adjudicator")
-        if not isinstance(adjudicator, str) or len(adjudicator.strip()) < 3:
-            fail(f"{field} artifact must name the independent oracle adjudicator")
+        if (
+            not isinstance(adjudicator, str)
+            or len(adjudicator.strip()) > 39
+            or not GITHUB_LOGIN.fullmatch(adjudicator.strip())
+        ):
+            fail(
+                f"{field} artifact must name the independent oracle adjudicator "
+                "by GitHub login"
+            )
         adjudicated_at = timestamp(
             result.get("oracle_adjudicated_at"),
             f"{field} artifact result.oracle_adjudicated_at",
@@ -267,12 +330,138 @@ def validate_artifact_semantics(
         if adjudicated_at > now or now - adjudicated_at > timedelta(days=90):
             fail(f"{field} artifact decision oracle is in the future or older than 90 days")
         if (
+            result["oracle_pinned_sha256"] != result["oracle_sha256"]
+            or
             result["oracle_expected_status_sha256"]
             != result["observed_status_sha256"]
         ):
             fail(
-                f"{field} artifact automated decisions do not match its "
-                "independent oracle"
+                f"{field} artifact oracle pin or automated decisions do not match "
+                "its independent oracle"
+            )
+        policy_fields = {
+            "organization_policy_sha256",
+            "organization_policy_pinned_sha256",
+            "oracle_organization_policy_sha256",
+            "evaluated_organization_policy_sha256",
+            "organization_policy_signature_sha256",
+            "oracle_organization_policy_signature_sha256",
+            "organization_policy_id",
+            "organization_policy_version",
+            "organization_policy_signer_fingerprint",
+            "oracle_organization_policy_signer_fingerprint",
+            "organization_policy_signature_verified",
+        }
+        ssh_key_fields = {
+            "server_key_fingerprint",
+            "oracle_server_key_fingerprint",
+        }
+        if gate in {"ontap", "freebsd"}:
+            server_key = result.get("server_key_fingerprint")
+            if (
+                not isinstance(server_key, str)
+                or not SSH_SERVER_KEY_FINGERPRINT.fullmatch(server_key)
+                or result.get("oracle_server_key_fingerprint") != server_key
+            ):
+                fail(
+                    f"{field} artifact SSH server key differs from its "
+                    "independently pinned oracle"
+                )
+        elif any(name in result for name in ssh_key_fields):
+            fail(
+                f"{field} artifact Cisco result must not contain SSH "
+                "server-key provenance"
+            )
+        if gate == "cisco_ios_xe":
+            for name in (
+                "organization_policy_sha256",
+                "organization_policy_pinned_sha256",
+                "oracle_organization_policy_sha256",
+                "evaluated_organization_policy_sha256",
+                "organization_policy_signature_sha256",
+                "oracle_organization_policy_signature_sha256",
+            ):
+                if (
+                    not isinstance(result.get(name), str)
+                    or not SHA256.fullmatch(result[name])
+                ):
+                    fail(
+                        f"{field} artifact Cisco result.{name} must be a "
+                        "SHA-256 digest"
+                    )
+            if len({
+                result["organization_policy_sha256"],
+                result["organization_policy_pinned_sha256"],
+                result["oracle_organization_policy_sha256"],
+                result["evaluated_organization_policy_sha256"],
+            }) != 1:
+                fail(
+                    f"{field} artifact Cisco policy snapshot, pin, oracle, "
+                    "and evaluated provenance differ"
+                )
+            if (
+                result["organization_policy_signature_sha256"]
+                != result["oracle_organization_policy_signature_sha256"]
+            ):
+                fail(
+                    f"{field} artifact Cisco detached signature differs from "
+                    "its independent oracle"
+                )
+            if not all(
+                isinstance(result.get(name), str)
+                and POLICY_IDENTIFIER.fullmatch(result[name])
+                for name in (
+                    "organization_policy_id",
+                    "organization_policy_version",
+                )
+            ):
+                fail(
+                    f"{field} artifact Cisco organization-policy identity is invalid"
+                )
+            if (
+                not isinstance(
+                    result.get("organization_policy_signer_fingerprint"), str
+                )
+                or not SIGNER_FINGERPRINT.fullmatch(
+                    result["organization_policy_signer_fingerprint"]
+                )
+                or result.get("oracle_organization_policy_signer_fingerprint")
+                != result["organization_policy_signer_fingerprint"]
+                or result.get("organization_policy_signature_verified") is not True
+            ):
+                fail(
+                    f"{field} artifact Cisco organization policy lacks trusted "
+                    "signature provenance"
+                )
+        elif any(name in result for name in policy_fields):
+            fail(
+                f"{field} artifact non-Cisco result must not contain "
+                "organization-policy provenance"
+            )
+        expected_evaluation_plan_sha256 = canonical_json_sha256(
+            {
+                "stig_id": expected_stig_id,
+                "stig_release": expected_stig_release,
+                "benchmark_sha256": result["evaluated_benchmark_sha256"],
+                "check_pack_sha256": result["check_pack_sha256"],
+                "organization_policy_sha256": (
+                    result["organization_policy_sha256"]
+                    if gate == "cisco_ios_xe"
+                    else None
+                ),
+            }
+        )
+        if result["evaluation_plan_sha256"] != expected_evaluation_plan_sha256:
+            fail(
+                f"{field} artifact evaluation-plan provenance differs from "
+                "the benchmark, effective check pack, or organization policy"
+            )
+        if verify_github:
+            validate_live_device_environment(
+                repository,
+                adjudicator.strip(),
+                run,
+                field,
             )
         if not isinstance(document.get("binary_sha256"), str) or not SHA256.fullmatch(document["binary_sha256"]):
             fail(f"{field} artifact must bind the tested AutomateSTIG binary")
@@ -320,6 +509,7 @@ def validate_artifact_semantics(
         ):
             fail(f"{field} version/environment does not match its bound artifact")
         for name in (
+            "automatestig_cli_sha256",
             "automatestig_gui_sha256",
             "benchmark_sha256",
             "config_fixture_sha256",
@@ -329,6 +519,19 @@ def validate_artifact_semantics(
         checks = document.get("checks") or []
         if not checks or any(item.get("passed") is not True for item in checks):
             fail(f"{field} artifact contains a missing or failed STIG Manager check")
+        passed_check_names = {
+            item.get("name") for item in checks if isinstance(item, dict)
+        }
+        required_checks = {
+            "AutomateSTIG evaluates Cisco running config with a signed policy",
+            "source checklist retains verified organization-policy provenance",
+            "STIG-Manager integration configured over HTTPS",
+        }
+        if not required_checks.issubset(passed_check_names):
+            fail(
+                f"{field} artifact does not prove signed-policy evaluation "
+                "over the staging HTTPS bridge"
+            )
         metrics = document.get("metrics") or {}
         review_count = metrics.get("review_count")
         if (
@@ -340,6 +543,28 @@ def validate_artifact_semantics(
             or not SHA256.fullmatch(metrics["rule_set_sha256"])
         ):
             fail(f"{field} artifact does not prove an exact non-empty review set")
+        if (
+            not isinstance(metrics.get("organization_policy_sha256"), str)
+            or not SHA256.fullmatch(metrics["organization_policy_sha256"])
+            or not isinstance(
+                metrics.get("organization_policy_signature_sha256"), str
+            )
+            or not SHA256.fullmatch(
+                metrics["organization_policy_signature_sha256"]
+            )
+            or not isinstance(
+                metrics.get("organization_policy_signer_fingerprint"), str
+            )
+            or not SIGNER_FINGERPRINT.fullmatch(
+                metrics["organization_policy_signer_fingerprint"]
+            )
+            or metrics.get("stig_manager_transport")
+            != "ephemeral-loopback-https"
+        ):
+            fail(
+                f"{field} artifact does not bind the verified Cisco policy "
+                "and HTTPS staging transport"
+            )
     elif gate == "recovery_drill":
         if document.get("schema") != "automatestig-transaction-recovery-drill/v1":
             fail(f"{field} artifact has the wrong recovery-drill schema")
@@ -420,8 +645,8 @@ def github_json(endpoint: str) -> object:
     if result.returncode:
         fail(f"GitHub verification failed for {endpoint}: {result.stderr.strip()}")
     try:
-        return json.loads(result.stdout)
-    except json.JSONDecodeError as error:
+        return strict_json_loads(result.stdout)
+    except ValueError as error:
         fail(f"GitHub returned invalid JSON for {endpoint}: {error}")
 
 
@@ -440,6 +665,99 @@ def github_bytes(endpoint: str) -> bytes:
     if not result.stdout or len(result.stdout) > MAX_WORKFLOW_ARTIFACT_BYTES:
         fail("protected workflow artifact ZIP is empty or exceeds 16 MiB")
     return result.stdout
+
+
+def validate_live_device_environment(
+    repository: str,
+    adjudicator: str,
+    run: object,
+    field: str,
+) -> None:
+    environment = github_json(
+        f"repos/{repository}/environments/live-device-acceptance"
+    )
+    if not isinstance(environment, dict) or not isinstance(run, dict):
+        fail(f"{field} live-device environment or workflow run is invalid")
+    review_rules = [
+        rule
+        for rule in environment.get("protection_rules") or []
+        if isinstance(rule, dict) and rule.get("type") == "required_reviewers"
+    ]
+    reviewers = review_rules[0].get("reviewers") if len(review_rules) == 1 else None
+    branch_policy = environment.get("deployment_branch_policy") or {}
+    reviewer = reviewers[0] if isinstance(reviewers, list) and len(reviewers) == 1 else {}
+    reviewer_login = (
+        ((reviewer.get("reviewer") or {}).get("login") or "")
+        if isinstance(reviewer, dict)
+        else ""
+    )
+    actor = ((run.get("actor") or {}).get("login") or "")
+    triggering_actor = ((run.get("triggering_actor") or {}).get("login") or "")
+    approvals = github_json(
+        f"repos/{repository}/actions/runs/{run.get('id') or run.get('run_id')}/approvals"
+    )
+    approved = [
+        review
+        for review in approvals
+        if isinstance(review, dict) and review.get("state") == "approved"
+    ] if isinstance(approvals, list) else []
+    approval = approved[0] if len(approved) == 1 and len(approvals) == 1 else {}
+    approved_environments = approval.get("environments") or []
+    approval_login = ((approval.get("user") or {}).get("login") or "")
+    jobs = github_json(
+        f"repos/{repository}/actions/runs/{run.get('id') or run.get('run_id')}"
+        "/jobs?filter=latest&per_page=100"
+    )
+    job_items = jobs.get("jobs") if isinstance(jobs, dict) else None
+    job = job_items[0] if isinstance(job_items, list) and len(job_items) == 1 else {}
+    labels = {
+        str(label).casefold()
+        for label in (job.get("labels") or [])
+        if isinstance(label, str)
+    } if isinstance(job, dict) else set()
+    if (
+        environment.get("can_admins_bypass") is not False
+        or len(review_rules) != 1
+        or review_rules[0].get("prevent_self_review") is not True
+        or not isinstance(reviewer, dict)
+        or reviewer.get("type") != "User"
+        or reviewer_login.casefold() != adjudicator.casefold()
+        or branch_policy.get("protected_branches") is not True
+        or branch_policy.get("custom_branch_policies") is not False
+        or not GITHUB_LOGIN.fullmatch(actor)
+        or not GITHUB_LOGIN.fullmatch(triggering_actor)
+        or actor.casefold() != triggering_actor.casefold()
+        or actor.casefold() == adjudicator.casefold()
+        or run.get("run_attempt") != 1
+        or not isinstance(approval, dict)
+        or approval_login.casefold() != adjudicator.casefold()
+        or len(approved_environments) != 1
+        or not isinstance(approved_environments[0], dict)
+        or approved_environments[0].get("name") != "live-device-acceptance"
+        or not isinstance(jobs, dict)
+        or jobs.get("total_count") != 1
+        or not isinstance(job, dict)
+        or job.get("conclusion") != "success"
+        or not re.fullmatch(
+            r"(?:all|ontap|freebsd|cisco-ios-xe) collection and evaluation",
+            str(job.get("name", "")),
+        )
+        or not {
+            "self-hosted",
+            "linux",
+            "x64",
+            "automatestig-live-devices",
+        }.issubset(labels)
+        or not isinstance(job.get("runner_id"), int)
+        or job["runner_id"] <= 0
+        or not isinstance(job.get("runner_name"), str)
+        or not job["runner_name"].strip()
+    ):
+        fail(
+            f"{field} must use one identified protected Linux x64 runner, be "
+            "dispatched by one actor, and be independently approved by its exact "
+            "sole oracle adjudicator"
+        )
 
 
 def validate_workflow_artifact(
@@ -720,6 +1038,23 @@ def validate_release_tag_authority(tag_ruleset: object) -> None:
         )
 
 
+def is_closed_release_tag_ruleset(candidate: object) -> bool:
+    """Accept only a ruleset whose ref condition protects every v* tag."""
+    if not isinstance(candidate, dict):
+        return False
+    ref_name = ((candidate.get("conditions") or {}).get("ref_name") or {})
+    rule_types = {
+        rule.get("type")
+        for rule in candidate.get("rules") or []
+        if isinstance(rule, dict)
+    }
+    return (
+        ref_name.get("include") == ["refs/tags/v*"]
+        and ref_name.get("exclude") == []
+        and {"creation", "update", "deletion"} <= rule_types
+    )
+
+
 def validate_repository_controls() -> None:
     repository = os.environ["GITHUB_REPOSITORY"]
     immutable = github_json(f"repos/{repository}/immutable-releases")
@@ -780,13 +1115,7 @@ def validate_repository_controls() -> None:
             candidate = github_json(f"repos/{repository}/rulesets/{summary.get('id')}")
             if not isinstance(candidate, dict):
                 continue
-            include = ((candidate.get("conditions") or {}).get("ref_name") or {}).get("include") or []
-            types = {
-                rule.get("type")
-                for rule in candidate.get("rules") or []
-                if isinstance(rule, dict)
-            }
-            if include == ["refs/tags/v*"] and {"creation", "update", "deletion"} <= types:
+            if is_closed_release_tag_ruleset(candidate):
                 tag_ruleset = candidate
                 break
     validate_release_tag_authority(tag_ruleset)
@@ -826,8 +1155,8 @@ def validate_github_approvals(
     latest: dict[str, dict] = {}
     for line in result.stdout.splitlines():
         try:
-            review = json.loads(line)
-        except json.JSONDecodeError as error:
+            review = strict_json_loads(line)
+        except ValueError as error:
             fail(f"GitHub returned an invalid review record: {error}")
         login = ((review.get("user") or {}).get("login") or "").casefold()
         previous = latest.get(login)
@@ -853,8 +1182,8 @@ def validate_github_approvals(
 
 def validate_document(repo: Path, path: Path, expected_tag: str, offline: bool) -> None:
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as error:
+        data = strict_json_loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
         fail(f"cannot read release evidence {path}: {error}")
     if data.get("schema") != "automatestig-release-evidence/v1":
         fail("release evidence has an unsupported schema")
@@ -976,8 +1305,8 @@ def validate_document(repo: Path, path: Path, expected_tag: str, offline: bool) 
     ):
         fail("content-signing ceremony files must use the three fixed, distinct names")
     try:
-        ceremony = json.loads(ceremony_raw)
-    except json.JSONDecodeError as error:
+        ceremony = strict_json_loads(ceremony_raw)
+    except ValueError as error:
         fail(f"content-signing ceremony artifact is not valid JSON: {error}")
     ceremony_fields = {
         "schema",
@@ -1111,8 +1440,8 @@ def main() -> None:
     repo = args.repo_root.resolve()
     schema = repo / "schemas/release-evidence.schema.json"
     try:
-        document = json.loads(schema.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as error:
+        document = strict_json_loads(schema.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
         fail(f"cannot read release evidence schema: {error}")
     if document.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
         fail("release evidence schema must use JSON Schema 2020-12")

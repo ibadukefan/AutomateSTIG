@@ -11,7 +11,12 @@
     "stig_id",
     "stig_release",
     "benchmark_sha256",
+    "evaluated_benchmark_sha256",
     "check_pack_sha256",
+    "organization_policy_sha256",
+    "organization_policy_signature_sha256",
+    "organization_policy_signer_fingerprint",
+    "ssh_server_key_fingerprint",
     "adjudicated_at",
     "adjudicator",
     "adjudication_basis",
@@ -38,11 +43,37 @@
     },
     "benchmark_sha256": {
       "type": "string",
-      "pattern": "^[0-9a-f]{64}$"
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the exact authorized DISA source artifact."
+    },
+    "evaluated_benchmark_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Canonical JSON SHA-256 of the effective imported benchmark evaluation model."
     },
     "check_pack_sha256": {
       "type": "string",
-      "pattern": "^[0-9a-f]{64}$"
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Canonical JSON SHA-256 of the effective embedded runtime check-pack set, including source-tier priority and serde defaults."
+    },
+    "organization_policy_sha256": {
+      "type": ["string", "null"],
+      "description": "Exact signed organization-policy JSON digest for Cisco IOS-XE; null for targets without organization-defined executable thresholds."
+    },
+    "organization_policy_signature_sha256": {
+      "type": ["string", "null"],
+      "description": "Exact detached-signature digest for the Cisco organization policy; null for other targets."
+    },
+    "organization_policy_signer_fingerprint": {
+      "type": ["string", "null"],
+      "description": "Trusted Ed25519 signer fingerprint expected for the Cisco organization policy; null for other targets."
+    },
+    "ssh_server_key_fingerprint": {
+      "type": ["string", "null"],
+      "minLength": 50,
+      "maxLength": 50,
+      "pattern": "^SHA256:[A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]$",
+      "description": "Exact independently pinned SSH server-key fingerprint for ONTAP and FreeBSD; null for Cisco configuration evaluation."
     },
     "adjudicated_at": {
       "type": "string",
@@ -50,8 +81,9 @@
     },
     "adjudicator": {
       "type": "string",
-      "minLength": 3,
-      "maxLength": 200
+      "maxLength": 39,
+      "pattern": "^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
+      "description": "GitHub login of the independent adjudicator and sole protected-environment reviewer."
     },
     "adjudication_basis": {
       "type": "string",
@@ -81,6 +113,56 @@
       "maxContains": 1
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "target": {
+            "const": "cisco_ios_xe"
+          }
+        },
+        "required": ["target"]
+      },
+      "then": {
+        "properties": {
+          "organization_policy_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "organization_policy_signature_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "organization_policy_signer_fingerprint": {
+            "type": "string",
+            "pattern": "^SHA256:[0-9a-f]{64}$"
+          },
+          "ssh_server_key_fingerprint": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "organization_policy_sha256": {
+            "type": "null"
+          },
+          "organization_policy_signature_sha256": {
+            "type": "null"
+          },
+          "organization_policy_signer_fingerprint": {
+            "type": "null"
+          },
+          "ssh_server_key_fingerprint": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 50,
+            "pattern": "^SHA256:[A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]$"
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "scenario": {
       "type": "object",

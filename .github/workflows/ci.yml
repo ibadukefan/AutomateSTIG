@@ -73,6 +73,8 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
@@ -87,6 +89,8 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
@@ -94,7 +98,7 @@ jobs:
       - name: Validate POSIX installer syntax
         if: runner.os != 'Windows'
         run: sh -n install-linux.sh install-macos.sh
-      - name: Validate PowerShell installer syntax
+      - name: Validate Windows unsupported-installer stub syntax
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
@@ -116,6 +120,8 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
@@ -130,6 +136,7 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
         with:
+          toolchain: 1.94.0
           components: rustfmt
       - run: cargo fmt --all -- --check
 
@@ -140,6 +147,7 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
         with:
+          toolchain: 1.94.0
           components: clippy
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
@@ -162,11 +170,14 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@efcb852328a9f50117170cc43094fb6f09eaf1ae
+        with:
+          toolchain: nightly-2026-07-12
       - name: Install cargo-fuzz for the runner host
-        run: cargo install cargo-fuzz --locked --version 0.13.2
+        run: cargo +nightly-2026-07-12 install cargo-fuzz --locked --version 0.13.2
       - name: Run bounded archive fuzz corpus and mutations
         run: >-
-          cargo fuzz run safe_zip_archive fuzz/corpus/safe_zip_archive --
+          cargo +nightly-2026-07-12 fuzz run
+          safe_zip_archive fuzz/corpus/safe_zip_archive --
           -runs=100000 -max_len=4096 -timeout=2 -rss_limit_mb=1024
           -dict=fuzz/safe_zip_archive.dict
 
@@ -176,6 +187,8 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
@@ -196,14 +209,14 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
       - name: Install cargo-audit
         uses: taiki-e/install-action@b3acd5417a6eccf7e7f11042455fe275eebb2fb9
-      # RUSTSEC-2023-0071 is documented in docs/audit-exceptions.md. Keep the
-      # exception explicit so all other vulnerabilities fail CI.
-      - run: cargo audit --ignore RUSTSEC-2023-0071
+      - run: cargo audit
 
   build-release:
     name: Build Release (${{ matrix.target }})
@@ -212,6 +225,8 @@ jobs:
     strategy:
       matrix:
         include:
+          # Windows remains in the test matrix above, but is intentionally not
+          # a release target until equivalent ACL/reparse custody checks land.
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             cli: automatestig
@@ -222,11 +237,6 @@ jobs:
             cli: automatestig
             gui: automatestig-gui
             extension: tar.gz
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-            cli: automatestig.exe
-            gui: automatestig-gui.exe
-            extension: zip
           - os: macos-15-intel
             target: x86_64-apple-darwin
             cli: automatestig
@@ -241,6 +251,7 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
         with:
+          toolchain: 1.94.0
           targets: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
@@ -264,7 +275,13 @@ jobs:
           if [[ "${{ matrix.extension }}" == "zip" ]]; then
             powershell -NoProfile -Command "Compress-Archive -Path 'dist/$package/*' -DestinationPath 'dist/$package.zip'"
           else
-            tar -C "dist/$package" -czf "dist/$package.tar.gz" .
+            tar -C "dist/$package" -czf "dist/$package.tar.gz" \
+              "${{ matrix.cli }}" \
+              "${{ matrix.gui }}" \
+              README.md \
+              LICENSE \
+              quickstart.md \
+              installation.md
           fi
           rm -rf "dist/$package"
           echo "PACKAGE=dist/$package.${{ matrix.extension }}" >> "$GITHUB_ENV"
@@ -319,10 +336,31 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
+  live-binary-equivalence:
+    name: Live-tested release binary
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build-release
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: automatestig-x86_64-unknown-linux-gnu
+          path: release-artifacts
+      - name: Match the exact protected live-tested CLI bytes
+        run: >-
+          python3 scripts/validate-release-binary-equivalence.py
+          --repo-root .
+          --tag "$GITHUB_REF_NAME"
+          --artifact-dir release-artifacts
+
   publish-release:
     name: Publish attested release artifacts
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: build-release
+    needs: [build-release, live-binary-equivalence]
     runs-on: ubuntu-latest
     permissions:
       artifact-metadata: write
@@ -339,15 +377,13 @@ jobs:
       - name: Attest the exact archives selected for publication
         uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
         with:
-          subject-path: |
-            release-artifacts/*.tar.gz
-            release-artifacts/*.zip
+          subject-path: release-artifacts/*.tar.gz
       - name: Install cosign for publication verification
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
       - name: Generate keyless Sigstore bundles for the exact archives
         shell: bash
         run: |
-          for archive in release-artifacts/*.tar.gz release-artifacts/*.zip; do
+          for archive in release-artifacts/*.tar.gz; do
             [[ -f "$archive" ]] || continue
             cosign sign-blob --yes \
               --bundle "$archive.sigstore.bundle" \
@@ -359,7 +395,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/ci.yml@${GITHUB_REF}"
-          for archive in release-artifacts/*.tar.gz release-artifacts/*.zip; do
+          for archive in release-artifacts/*.tar.gz; do
             [[ -f "$archive" ]] || continue
             gh attestation verify "$archive" \
               --repo "$GITHUB_REPOSITORY" \

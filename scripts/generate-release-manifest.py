@@ -11,10 +11,12 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+# Closed supported-release set. Windows is portability-tested in CI but is not
+# accepted into a release manifest until its filesystem custody boundary is
+# equivalent to the Unix implementation.
 TARGETS = {
     "x86_64-unknown-linux-gnu": "tar.gz",
     "aarch64-unknown-linux-gnu": "tar.gz",
-    "x86_64-pc-windows-msvc": "zip",
     "x86_64-apple-darwin": "tar.gz",
     "aarch64-apple-darwin": "tar.gz",
 }
