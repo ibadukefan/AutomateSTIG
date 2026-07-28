@@ -564,6 +564,10 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             governance,
         )
         self.assertIn('"$install_dir/actionlint" -version', governance)
+        self.assertIn(
+            'test "$installed_version" = "$ACTIONLINT_VERSION"',
+            governance,
+        )
         self.assertNotIn("tool: actionlint", governance)
         self.assertIn("run: actionlint", governance)
         freeze = governance.index("- name: Enforce release feature freeze")

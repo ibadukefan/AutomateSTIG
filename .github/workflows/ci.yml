@@ -44,7 +44,7 @@ jobs:
           tar -xzf "$archive" -C "$install_dir" actionlint
           chmod 0755 "$install_dir/actionlint"
           installed_version="$("$install_dir/actionlint" -version | sed -n '1p')"
-          test "$installed_version" = "v$ACTIONLINT_VERSION"
+          test "$installed_version" = "$ACTIONLINT_VERSION"
           echo "$install_dir" >> "$GITHUB_PATH"
       - name: Validate Actions workflow semantics
         run: actionlint
