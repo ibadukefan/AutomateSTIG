@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AutomateSTIG Supported Targets",
+  "type": "object",
+  "required": ["$schema", "schema_version", "release_line", "targets"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "const": "../schemas/supported-targets.schema.json" },
+    "schema_version": { "const": 1 },
+    "release_line": { "const": "0.3" },
+    "targets": {
+      "type": "object",
+      "required": ["netapp_ontap9", "freebsd_gpos", "cisco_ios_xe_router_ndm"],
+      "additionalProperties": false,
+      "properties": {
+        "netapp_ontap9": { "$ref": "#/$defs/target" },
+        "freebsd_gpos": { "$ref": "#/$defs/target" },
+        "cisco_ios_xe_router_ndm": { "$ref": "#/$defs/target" }
+      }
+    }
+  },
+  "$defs": {
+    "target": {
+      "type": "object",
+      "required": [
+        "display_name",
+        "stig_id",
+        "stig_release",
+        "platform",
+        "evidence_mode",
+        "expected_automated_checks",
+        "expected_reviewed_rules",
+        "check_pack",
+        "coverage_manifest",
+        "acceptance_gate"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "display_name": { "type": "string", "minLength": 1 },
+        "stig_id": { "type": "string", "minLength": 1 },
+        "stig_release": { "type": "string", "pattern": "^V[0-9]+R[0-9]+$" },
+        "platform": { "enum": ["ontap", "bsd", "cisco_ios"] },
+        "evidence_mode": { "enum": ["ssh_transcript", "running_configuration"] },
+        "expected_automated_checks": { "type": "integer", "minimum": 1 },
+        "expected_reviewed_rules": { "type": "integer", "minimum": 1 },
+        "check_pack": { "type": "string", "pattern": "^content/check_packs/[a-z0-9_]+\\.json$" },
+        "coverage_manifest": { "type": "string", "pattern": "^content/coverage/current-checkpacks/[a-z0-9_]+\\.current\\.json$" },
+        "acceptance_gate": { "enum": ["ontap", "freebsd", "cisco_ios_xe"] }
+      }
+    }
+  }
+}

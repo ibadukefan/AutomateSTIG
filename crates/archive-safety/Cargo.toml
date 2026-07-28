@@ -1,0 +1,13 @@
+[package]
+name = "automatestig-archive-safety"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Bounded, fail-closed ZIP archive reader for AutomateSTIG"
+
+[dependencies]
+thiserror = { workspace = true }
+zip = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }

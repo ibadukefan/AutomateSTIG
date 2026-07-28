@@ -3,7 +3,42 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use super::asset::Asset;
-use super::finding::{Finding, FindingStatus, FindingSummary};
+use super::finding::{Finding, FindingSource, FindingStatus, FindingSummary};
+
+/// How device data entered an evaluation. This is deliberately distinct from
+/// a finding's result so imported/self-asserted evidence cannot be presented as
+/// a locally observed live scan.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum EvaluationOrigin {
+    LiveSsh,
+    EvidenceFile,
+    ConfigFile,
+    ImportedChecklist,
+}
+
+/// Durable collection provenance retained with the checklist.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EvaluationProvenance {
+    pub origin: EvaluationOrigin,
+    pub collection_complete: bool,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub collection_errors: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub evidence_sha256: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claimed_hostname: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub collector_version: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub collected_at: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub plan_sha256: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub server_key_fingerprint: Option<String>,
+    #[serde(default)]
+    pub unsafe_legacy_evidence: bool,
+}
 
 /// A STIG checklist — the core output artifact (.ckl / .cklb).
 ///
@@ -36,6 +71,10 @@ pub struct Checklist {
 
     /// Classification marking.
     pub classification: Classification,
+
+    /// Collection provenance for evaluations which consumed device evidence.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub evaluation_provenance: Option<EvaluationProvenance>,
 }
 
 impl Checklist {
@@ -52,6 +91,7 @@ impl Checklist {
             generated_by: format!("AutomateSTIG {}", env!("CARGO_PKG_VERSION")),
             format_version: "1".to_string(),
             classification: Classification::Unclassified,
+            evaluation_provenance: None,
         }
     }
 
@@ -89,6 +129,56 @@ impl Checklist {
     /// Mark this checklist as modified.
     pub fn touch(&mut self) {
         self.modified_at = Utc::now();
+    }
+
+    /// Explain why this checklist cannot cross an external compliance/export
+    /// boundary. Imported manual checklists remain usable, but automated or
+    /// supplied-evidence claims require complete, safe, durable provenance.
+    pub fn external_export_block_reason(&self) -> Option<String> {
+        if self
+            .findings
+            .iter()
+            .any(|finding| finding.source == FindingSource::CollectionError)
+        {
+            return Some(
+                "one or more rules have unresolved collection/evaluation errors".to_string(),
+            );
+        }
+
+        match &self.evaluation_provenance {
+            Some(provenance) if provenance.unsafe_legacy_evidence => Some(
+                "unsafe legacy evidence cannot be used for an external compliance result"
+                    .to_string(),
+            ),
+            Some(provenance)
+                if provenance.origin != EvaluationOrigin::ImportedChecklist
+                    && (!provenance.collection_complete
+                        || !provenance.collection_errors.is_empty()) =>
+            {
+                Some("device collection is incomplete".to_string())
+            }
+            Some(provenance)
+                if provenance.origin == EvaluationOrigin::ImportedChecklist
+                    && self.findings.iter().any(|finding| {
+                        matches!(
+                            finding.source,
+                            FindingSource::Automated | FindingSource::Evidence
+                        )
+                    }) =>
+            {
+                Some("imported checklist contains unverified automation attribution".to_string())
+            }
+            None if self.findings.iter().any(|finding| {
+                matches!(
+                    finding.source,
+                    FindingSource::Automated | FindingSource::Evidence
+                )
+            }) =>
+            {
+                Some("automated findings are missing durable evaluation provenance".to_string())
+            }
+            _ => None,
+        }
     }
 }
 
@@ -207,5 +297,35 @@ mod tests {
         assert_eq!(summary.open, 1);
         assert_eq!(summary.not_a_finding, 1);
         assert_eq!(summary.cat_i_open, 1);
+    }
+
+    #[test]
+    fn external_export_requires_complete_provenance_for_automated_results() {
+        let mut cl = Checklist::new(Asset::new("server01"), make_stig_info());
+        let mut finding = Finding::new_not_reviewed("V-1", "SV-1", "V-1", "Rule", Severity::High);
+        finding.source = FindingSource::Automated;
+        finding.status = FindingStatus::NotAFinding;
+        cl.findings.push(finding);
+        assert!(cl.external_export_block_reason().is_some());
+
+        cl.evaluation_provenance = Some(EvaluationProvenance {
+            origin: EvaluationOrigin::LiveSsh,
+            collection_complete: true,
+            collection_errors: Vec::new(),
+            evidence_sha256: None,
+            claimed_hostname: Some("server01".to_string()),
+            collector_version: Some("test".to_string()),
+            collected_at: Some("2026-01-01T00:00:00Z".to_string()),
+            plan_sha256: Some("digest".to_string()),
+            server_key_fingerprint: Some("SHA256:test".to_string()),
+            unsafe_legacy_evidence: false,
+        });
+        assert!(cl.external_export_block_reason().is_none());
+
+        cl.evaluation_provenance
+            .as_mut()
+            .unwrap()
+            .collection_complete = false;
+        assert!(cl.external_export_block_reason().is_some());
     }
 }

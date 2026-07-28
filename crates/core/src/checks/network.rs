@@ -1,92 +1,104 @@
 //! Network device check helpers.
 //!
-//! Parses Cisco IOS/NX-OS/ASA running configs for STIG compliance.
+//! Parses Cisco IOS-XE running configurations for STIG compliance.
 
-use std::collections::HashMap;
-
-/// Extract specific configuration values from a Cisco IOS running config.
-pub fn extract_ios_settings(config: &str) -> HashMap<String, String> {
-    let mut settings = HashMap::new();
-
-    for line in config.lines() {
-        let trimmed = line.trim();
-
-        // SSH settings.
-        if trimmed.starts_with("ip ssh version") {
-            settings.insert(
-                "ip_ssh_version".to_string(),
-                trimmed.replace("ip ssh version ", ""),
-            );
-        }
-        if trimmed.starts_with("ip ssh time-out") {
-            settings.insert(
-                "ip_ssh_timeout".to_string(),
-                trimmed.replace("ip ssh time-out ", ""),
-            );
-        }
-
-        // Services.
-        if trimmed == "service password-encryption" {
-            settings.insert(
-                "service_password_encryption".to_string(),
-                "enabled".to_string(),
-            );
-        }
-        if trimmed == "service timestamps log datetime msec" {
-            settings.insert(
-                "service_timestamps_log".to_string(),
-                "datetime msec".to_string(),
-            );
-        }
-
-        // AAA.
-        if trimmed.starts_with("aaa new-model") {
-            settings.insert("aaa_new_model".to_string(), "enabled".to_string());
-        }
-
-        // Hostname.
-        if trimmed.starts_with("hostname ") {
-            settings.insert("hostname".to_string(), trimmed.replace("hostname ", ""));
-        }
-
-        // Banner.
-        if trimmed.starts_with("banner login") || trimmed.starts_with("banner motd") {
-            settings.insert("banner_configured".to_string(), "true".to_string());
-        }
-
-        // NTP.
-        if trimmed.starts_with("ntp server") {
-            let count = settings
-                .get("ntp_server_count")
-                .and_then(|v| v.parse::<usize>().ok())
-                .unwrap_or(0);
-            settings.insert("ntp_server_count".to_string(), (count + 1).to_string());
-        }
-    }
-
-    settings
+#[derive(Debug, Clone, Copy)]
+struct ConfigCommand<'a> {
+    text: &'a str,
+    indented: bool,
 }
 
-fn contains_token(haystack: &str, needle: &str) -> bool {
-    if needle.is_empty() {
-        return false;
+/// Return the delimiter when `line` opens a multi-line IOS banner.
+///
+/// IOS permits any delimiter character and commonly renders control-C as the
+/// two-character token `^C`. An inline banner contains the delimiter twice on
+/// its command line and therefore does not open a multi-line payload.
+fn multiline_banner_delimiter(line: &str) -> Option<String> {
+    let after_banner = line.strip_prefix("banner ")?;
+    let banner_type_end = after_banner.find(char::is_whitespace)?;
+    let body = after_banner[banner_type_end..].trim_start();
+    if body.is_empty() {
+        return None;
     }
 
-    haystack.match_indices(needle).any(|(start, matched)| {
-        let left_bounded = start == 0
-            || haystack[..start]
-                .chars()
-                .next_back()
-                .is_some_and(char::is_whitespace);
-        let end = start + matched.len();
-        let right_bounded = end == haystack.len()
-            || haystack[end..]
-                .chars()
-                .next()
-                .is_some_and(char::is_whitespace);
+    let delimiter = if body.starts_with('^') {
+        body.chars().take(2).collect::<String>()
+    } else {
+        body.chars().next()?.to_string()
+    };
+    let after_opening = body.strip_prefix(&delimiter)?;
+    (!after_opening.contains(&delimiter)).then_some(delimiter)
+}
 
-        left_bounded && right_bounded
-    })
+/// Parse only IOS-XE configuration commands.
+///
+/// Banner payload is arbitrary operator-controlled prose. Treating it as
+/// configuration allowed a banner containing text such as `min-length 15` to
+/// satisfy an unrelated control. Comments have the same problem. Preserve the
+/// banner declaration itself for potential banner-presence checks, but never
+/// expose its payload to command matchers.
+fn parse_config_commands(config: &str) -> (Vec<ConfigCommand<'_>>, Option<String>) {
+    let mut commands = Vec::new();
+    let mut banner_delimiter: Option<String> = None;
+
+    for raw_line in config.lines() {
+        let text = raw_line.trim();
+
+        if let Some(delimiter) = banner_delimiter.as_deref() {
+            if text == delimiter || text.ends_with(delimiter) {
+                banner_delimiter = None;
+            }
+            continue;
+        }
+
+        if text.is_empty() || text.starts_with('!') {
+            continue;
+        }
+
+        commands.push(ConfigCommand {
+            text,
+            indented: raw_line.chars().next().is_some_and(char::is_whitespace),
+        });
+        banner_delimiter = multiline_banner_delimiter(text);
+    }
+
+    (commands, banner_delimiter)
+}
+
+fn config_commands(config: &str) -> Vec<ConfigCommand<'_>> {
+    parse_config_commands(config).0
+}
+
+/// Reject a running configuration whose final banner payload is unterminated.
+///
+/// Call this at the evidence boundary before evaluating any checks. In
+/// particular, a terminal-looking `end` line inside an unterminated banner is
+/// payload, not proof that collection reached the end of the running config.
+pub fn validate_balanced_banners(config: &str) -> Result<(), String> {
+    let (_, unterminated) = parse_config_commands(config);
+    if unterminated.is_some() {
+        Err("Cisco running-config contains an unterminated banner payload".to_string())
+    } else {
+        Ok(())
+    }
+}
+
+/// Match complete command tokens from the start of the IOS command.
+///
+/// A pattern is a command prefix, not an arbitrary substring. This prevents a
+/// fragment from matching a different command such as an interface
+/// `description` while retaining IOS trailing arguments used by reviewed
+/// checks (for example, `logging buffered 4096000 informational`).
+fn command_starts_with(command: &str, pattern: &str) -> bool {
+    let mut command_tokens = command.split_whitespace();
+    let mut saw_pattern_token = false;
+    for pattern_token in pattern.split_whitespace() {
+        saw_pattern_token = true;
+        if command_tokens.next() != Some(pattern_token) {
+            return false;
+        }
+    }
+    saw_pattern_token
 }
 
 fn line_enables(line: &str, pattern: &str) -> bool {
@@ -96,46 +108,62 @@ fn line_enables(line: &str, pattern: &str) -> bool {
         return false;
     }
 
-    let negated = trimmed.strip_prefix("no ").is_some_and(|remainder| {
-        remainder.strip_prefix(pattern).is_some_and(|suffix| {
-            suffix.is_empty() || suffix.chars().next().is_some_and(char::is_whitespace)
-        })
-    });
+    // A positive pattern must not be satisfied by its explicit IOS negation.
+    // Patterns that intentionally begin with `no` (for example `no shutdown`)
+    // still describe the literal configured command and remain matchable.
+    if !pattern.starts_with("no ") && trimmed.starts_with("no ") {
+        return false;
+    }
 
-    !negated && contains_token(trimmed, pattern)
+    command_starts_with(trimmed, pattern)
 }
 
 /// Check if a specific configuration line exists in the running config.
 pub fn config_line_exists(config: &str, pattern: &str) -> bool {
-    config.lines().any(|line| line_enables(line, pattern))
+    config_commands(config)
+        .into_iter()
+        .any(|command| line_enables(command.text, pattern))
 }
 
-/// Check if a line exists within a specific interface/context block.
-pub fn config_line_in_context(config: &str, context: &str, pattern: &str) -> bool {
-    let mut in_context = false;
+/// Evaluate a line predicate across every matching configuration block.
+///
+/// Context-scoped STIG controls apply to every matching management block, not
+/// merely the first compliant one. A missing context is also not evidence of
+/// compliance. Comparing each block with `should_exist` is important for
+/// negative predicates: a forbidden line in any one block must fail the rule.
+pub fn config_line_context_satisfies(
+    config: &str,
+    context: &str,
+    pattern: &str,
+    should_exist: bool,
+) -> bool {
+    let mut current_block = None;
+    let mut block_results = Vec::new();
 
-    for line in config.lines() {
-        let trimmed = line.trim();
+    for command in config_commands(config) {
+        let trimmed = command.text;
 
-        if trimmed == context || trimmed.starts_with(&format!("{} ", context)) {
-            in_context = true;
+        if !command.indented && command_starts_with(trimmed, context) {
+            if let Some(found) = current_block.replace(false) {
+                block_results.push(found);
+            }
             continue;
         }
 
-        if in_context {
-            if !line.starts_with(' ')
-                && !line.starts_with('\t')
-                && !trimmed.is_empty()
-                && trimmed != "!"
-            {
-                in_context = false;
-            } else if line_enables(line, pattern) {
-                return true;
+        if current_block.is_some() {
+            if !command.indented {
+                block_results.push(current_block.take().expect("matching context block"));
+            } else if line_enables(trimmed, pattern) {
+                current_block = Some(true);
             }
         }
     }
 
-    false
+    if let Some(found) = current_block {
+        block_results.push(found);
+    }
+
+    !block_results.is_empty() && block_results.into_iter().all(|found| found == should_exist)
 }
 
 #[cfg(test)]
@@ -168,20 +196,6 @@ Authorized users only.
 ^
 !
 "#;
-
-    #[test]
-    fn test_extract_settings() {
-        let settings = extract_ios_settings(SAMPLE_CONFIG);
-        assert_eq!(settings.get("ip_ssh_version"), Some(&"2".to_string()));
-        assert_eq!(settings.get("hostname"), Some(&"CORE-RTR-01".to_string()));
-        assert_eq!(
-            settings.get("service_password_encryption"),
-            Some(&"enabled".to_string())
-        );
-        assert_eq!(settings.get("aaa_new_model"), Some(&"enabled".to_string()));
-        assert_eq!(settings.get("ntp_server_count"), Some(&"2".to_string()));
-        assert_eq!(settings.get("banner_configured"), Some(&"true".to_string()));
-    }
 
     #[test]
     fn test_config_line_exists() {
@@ -222,33 +236,169 @@ Authorized users only.
     }
 
     #[test]
+    fn config_line_exists_ignores_banner_payload_and_description_text() {
+        let config = r#"banner login ^C
+min-length 15
+service password-encryption
+^C
+interface GigabitEthernet0/0
+ description logging buffered
+! login on-success log
+end
+"#;
+        assert!(!config_line_exists(config, "min-length 15"));
+        assert!(!config_line_exists(config, "service password-encryption"));
+        assert!(!config_line_exists(config, "logging buffered"));
+        assert!(!config_line_exists(config, "login on-success log"));
+    }
+
+    #[test]
+    fn inline_banner_does_not_hide_following_commands() {
+        let config = "banner motd #Authorized users only#\nlogging buffered 4096\n";
+        assert!(config_line_exists(config, "logging buffered"));
+    }
+
+    #[test]
+    fn banner_validation_rejects_fake_terminal_marker_inside_payload() {
+        let unterminated = r#"version 17.9
+hostname rtr01
+banner login ^C
+Authorized users only
+end
+"#;
+        assert!(validate_balanced_banners(unterminated).is_err());
+
+        let terminated = r#"version 17.9
+hostname rtr01
+banner login ^C
+Authorized users only
+^C
+end
+"#;
+        assert!(validate_balanced_banners(terminated).is_ok());
+        assert!(validate_balanced_banners("banner motd #Authorized users only#\nend\n").is_ok());
+    }
+
+    #[test]
     fn test_config_line_in_context() {
-        assert!(config_line_in_context(
+        assert!(config_line_context_satisfies(
             SAMPLE_CONFIG,
             "interface GigabitEthernet0/0",
-            "no shutdown"
+            "no shutdown",
+            true,
         ));
-        assert!(!config_line_in_context(
+        assert!(!config_line_context_satisfies(
             SAMPLE_CONFIG,
             "interface GigabitEthernet0/1",
-            "no shutdown"
+            "no shutdown",
+            true,
         ));
     }
 
     #[test]
-    fn config_line_in_context_scopes_matches_to_the_block() {
+    fn context_checks_require_every_matching_block_and_at_least_one_block() {
         let config_with_vty_setting = "line vty 0 4\n session-limit 2\nline console 0";
-        assert!(config_line_in_context(
+        assert!(config_line_context_satisfies(
             config_with_vty_setting,
             "line vty",
-            "session-limit"
+            "session-limit",
+            true,
         ));
 
         let config_with_setting_outside_vty = "session-limit 2\nline vty 0 4\n exec-timeout 10";
-        assert!(!config_line_in_context(
+        assert!(!config_line_context_satisfies(
             config_with_setting_outside_vty,
             "line vty",
-            "session-limit"
+            "session-limit",
+            true,
         ));
+
+        let split_vty = "line vty 0 4\n session-limit 2\nline vty 5 15\n exec-timeout 5 0\nend";
+        assert!(!config_line_context_satisfies(
+            split_vty,
+            "line vty",
+            "session-limit",
+            true,
+        ));
+        assert!(!config_line_context_satisfies(
+            "line console 0\n exec-timeout 5 0\nend",
+            "line vty",
+            "exec-timeout 5 0",
+            true,
+        ));
+    }
+
+    #[test]
+    fn negative_context_checks_fail_if_any_matching_block_enables_the_line() {
+        let split_vty =
+            "line vty 0 4\n no transport input telnet\nline vty 5 15\n transport input telnet\nend";
+        assert!(!config_line_context_satisfies(
+            split_vty,
+            "line vty",
+            "transport input telnet",
+            false,
+        ));
+        let safe_vty =
+            "line vty 0 4\n no transport input telnet\nline vty 5 15\n transport input ssh\nend";
+        assert!(config_line_context_satisfies(
+            safe_vty,
+            "line vty",
+            "transport input telnet",
+            false,
+        ));
+    }
+
+    #[test]
+    fn global_checks_reject_weak_value_and_prefix_near_misses() {
+        assert!(!config_line_exists(
+            "login block-for 900 attempts 30 within 120",
+            "attempts 3 within"
+        ));
+        assert!(!config_line_exists(
+            "common-criteria policy STIG min-length 150",
+            "min-length 15"
+        ));
+        assert!(!config_line_exists(
+            "ip ssh server algorithm encryption aes256-ctr-legacy",
+            "algorithm encryption aes256-ctr"
+        ));
+    }
+
+    #[test]
+    fn ambiguous_cisco_controls_have_no_executable_not_a_finding_path() {
+        use crate::checks::{executor::execute_check_pack, CheckPack, SystemData};
+
+        const MANUAL_RULES: [&str; 16] = [
+            "V-215807", "V-215812", "V-215813", "V-215814", "V-215823", "V-215826", "V-215833",
+            "V-215836", "V-215837", "V-215841", "V-215842", "V-215843", "V-215844", "V-215845",
+            "V-215854", "V-215856",
+        ];
+        let pack: CheckPack = serde_json::from_str(include_str!(
+            "../../../../content/check_packs/cisco_ios_xe_router_ndm.json"
+        ))
+        .expect("embedded Cisco pack fixture must parse");
+        assert_eq!(pack.checks.len(), 18);
+        for vuln_id in MANUAL_RULES {
+            assert!(
+                pack.checks.iter().all(|check| check.vuln_id != vuln_id),
+                "{vuln_id} must remain manual"
+            );
+        }
+
+        let data = SystemData {
+            collection_complete: true,
+            network_config: Some(
+                include_str!(
+                    "../../../../fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+                )
+                .to_string(),
+            ),
+            ..Default::default()
+        };
+        let results = execute_check_pack(&pack, &data);
+        assert_eq!(results.len(), 18);
+        assert!(results
+            .iter()
+            .all(|result| !MANUAL_RULES.contains(&result.vuln_id.as_str())));
     }
 }

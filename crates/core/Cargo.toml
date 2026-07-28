@@ -12,10 +12,13 @@ serde_norway = { workspace = true }
 chrono = { workspace = true }
 uuid = { workspace = true }
 thiserror = { workspace = true }
-tracing = { workspace = true }
 regex = { workspace = true }
 sha2 = { workspace = true }
+ed25519-dalek = { workspace = true }
 rust-embed = { workspace = true, features = ["include-exclude"] }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Storage_FileSystem"] }
 
 [dev-dependencies]
 tempfile = { workspace = true }

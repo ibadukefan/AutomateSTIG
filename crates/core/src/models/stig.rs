@@ -61,8 +61,16 @@ pub struct StigRule {
     /// Group ID / STIG ID (e.g., "V-254239").
     pub group_id: String,
 
+    /// Original group title/SRG reference (e.g., "SRG-OS-000033-GPOS-00014").
+    #[serde(default)]
+    pub group_title: String,
+
     /// Rule title.
     pub title: String,
+
+    /// Rule version from the source benchmark.
+    #[serde(default)]
+    pub rule_version: String,
 
     /// Full discussion/description of the vulnerability.
     pub discussion: String,
@@ -90,12 +98,6 @@ pub struct StigRule {
 
     /// Whether this rule can be checked automatically.
     pub automatable: CheckAutomation,
-
-    /// Automated check definition (if automatable).
-    pub automated_check: Option<AutomatedCheck>,
-
-    /// Associated remediation script IDs.
-    pub remediation_ids: Vec<String>,
 }
 
 /// Severity / Category for a STIG rule.
@@ -169,56 +171,6 @@ pub enum CheckAutomation {
     /// Manual only — requires human review.
     #[serde(rename = "manual")]
     Manual,
-}
-
-/// Definition of an automated check that can be executed deterministically.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AutomatedCheck {
-    /// Type of check to perform.
-    pub check_type: CheckType,
-
-    /// Platform-specific check parameters.
-    pub parameters: serde_json::Value,
-
-    /// Expected result for a "Not a Finding" determination.
-    pub expected: serde_json::Value,
-}
-
-/// Types of automated checks.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum CheckType {
-    /// Check a Windows registry key/value.
-    RegistryCheck,
-
-    /// Check a Windows security policy setting.
-    SecurityPolicy,
-
-    /// Check a Windows audit policy setting.
-    AuditPolicy,
-
-    /// Check a file permission.
-    FilePermission,
-
-    /// Check a service status/configuration.
-    ServiceCheck,
-
-    /// Check file content against a pattern.
-    FileContentMatch,
-
-    /// Execute a command and check output.
-    CommandOutput,
-
-    /// Check a Cisco IOS/NX-OS configuration line.
-    CiscoConfigCheck,
-
-    /// Check a Linux configuration file.
-    LinuxConfigCheck,
-
-    /// Check an XCCDF/OVAL result.
-    XccdfResult,
-
-    /// Custom check via script.
-    CustomScript,
 }
 
 /// Target platform for a STIG benchmark.

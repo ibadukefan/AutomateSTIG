@@ -46,7 +46,6 @@ pub struct CoverageRule {
 #[serde(rename_all = "snake_case")]
 pub enum RuleCoverageClassification {
     Automated,
-    ScannerImport,
     Manual,
     NotApplicable,
     Unsupported,
@@ -62,7 +61,6 @@ pub struct CoverageValidationIssue {
 pub struct CoverageValidationReport {
     pub total_rules: usize,
     pub automated: usize,
-    pub scanner_import: usize,
     pub manual: usize,
     pub not_applicable: usize,
     pub unsupported: usize,
@@ -90,7 +88,6 @@ fn validate_coverage_manifest_internal(manifest: &CoverageManifest) -> CoverageV
     let mut report = CoverageValidationReport {
         total_rules: manifest.rules.len(),
         automated: 0,
-        scanner_import: 0,
         manual: 0,
         not_applicable: 0,
         unsupported: 0,
@@ -128,7 +125,6 @@ fn validate_coverage_manifest_internal(manifest: &CoverageManifest) -> CoverageV
         let prefix = format!("rules[{}]", idx);
         match rule.classification {
             RuleCoverageClassification::Automated => report.automated += 1,
-            RuleCoverageClassification::ScannerImport => report.scanner_import += 1,
             RuleCoverageClassification::Manual => report.manual += 1,
             RuleCoverageClassification::NotApplicable => report.not_applicable += 1,
             RuleCoverageClassification::Unsupported => report.unsupported += 1,
@@ -187,19 +183,17 @@ fn validate_coverage_manifest_internal(manifest: &CoverageManifest) -> CoverageV
             }
         }
 
-        if matches!(
-            rule.classification,
-            RuleCoverageClassification::Automated | RuleCoverageClassification::ScannerImport
-        ) && (rule.validated_by.is_empty()
-            || rule
-                .validated_by
-                .iter()
-                .any(|reference| reference.trim().is_empty()))
+        if rule.classification == RuleCoverageClassification::Automated
+            && (rule.validated_by.is_empty()
+                || rule
+                    .validated_by
+                    .iter()
+                    .any(|reference| reference.trim().is_empty()))
         {
             push_issue(
                 &mut report,
                 &format!("{}.validated_by", prefix),
-                "automated and scanner-import rules require non-empty validation evidence references",
+                "automated rules require non-empty validation evidence references",
             );
         }
 
@@ -347,8 +341,6 @@ fn validate_evidence_reference(
     if let Some(path) = reference.strip_prefix("fixture:") {
         let path = match path {
             "xccdf" => "fixtures/disa-xccdf",
-            "scc-results" => "fixtures/scc-results",
-            "openscap-results" => "fixtures/openscap-results",
             "ckl" => "fixtures/ckl",
             "cklb" => "fixtures/cklb",
             other => other,
@@ -386,17 +378,22 @@ mod tests {
     use super::*;
 
     #[test]
-    fn validates_example_manifest_counts_and_evidence() {
-        let manifest =
-            parse_coverage_manifest(include_str!("../../../content/coverage/rhel8.example.json"))
-                .unwrap();
+    fn validates_automated_manifest_counts_and_evidence() {
+        let manifest = parse_coverage_manifest(
+            r#"{
+          "stig_id":"Example_STIG","version":"1","source":"test","status":"experimental",
+          "total_rules":1,"rules":[{"vuln_id":"V-1","rule_id":"SV-1",
+          "classification":"automated","check_pack":"Example_STIG","check_id":"V-1",
+          "reason":"deterministic check","validated_by":["fixture:ckl"]}]
+        }"#,
+        )
+        .unwrap();
 
         let report = validate_coverage_manifest(&manifest);
 
         assert!(report.is_valid(), "unexpected issues: {:?}", report.issues);
-        assert_eq!(report.total_rules, 2);
-        assert_eq!(report.automated, 0);
-        assert_eq!(report.scanner_import, 2);
+        assert_eq!(report.total_rules, 1);
+        assert_eq!(report.automated, 1);
     }
 
     #[test]
@@ -418,7 +415,9 @@ mod tests {
                 {
                   "vuln_id": "V-1 ",
                   "rule_id": "SV-1_rule ",
-                  "classification": "scanner_import",
+                  "classification": "automated",
+                  "check_pack": "Example_STIG",
+                  "check_id": "V-1",
                   "reason": "missing validation references",
                   "validated_by": [""]
                 },

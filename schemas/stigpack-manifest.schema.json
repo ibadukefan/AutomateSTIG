@@ -4,7 +4,7 @@
   "title": "Stigpack Manifest",
   "description": "Schema for .stigpack manifest.json files",
   "type": "object",
-  "required": ["format_version", "pack_id", "name", "version", "created_at", "pack_type", "files"],
+  "required": ["format_version", "pack_id", "name", "version", "created_at", "files"],
   "properties": {
     "format_version": {
       "type": "string",
@@ -32,12 +32,10 @@
     "author": {
       "type": "string"
     },
-    "min_app_version": {
-      "type": ["string", "null"]
-    },
-    "pack_type": {
+    "signing_key_fingerprint": {
       "type": "string",
-      "enum": ["stig_content", "app_update", "custom_checks", "remediation"]
+      "pattern": "^SHA256:[a-f0-9]{64}$",
+      "description": "Fingerprint of the Ed25519 key used to sign this pack"
     },
     "files": {
       "type": "object",

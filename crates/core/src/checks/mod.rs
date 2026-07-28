@@ -5,15 +5,11 @@
 //! engine interprets — no code changes needed when DISA updates STIGs.
 //!
 //! Check types:
-//! - Windows: registry, security policy, audit policy, services, features
-//! - Linux: file content, file permissions, services, packages, sysctl
-//! - Network: Cisco IOS/NX-OS/ASA config line checks
-//! - Generic: command output matching, file existence
+//! - Cisco IOS-XE running-configuration line checks
+//! - ONTAP and FreeBSD command-output matching
 
 pub mod executor;
-pub mod linux;
 pub mod network;
-pub mod registry;
 
 use serde::{Deserialize, Serialize};
 
@@ -21,6 +17,7 @@ use crate::models::finding::FindingStatus;
 
 /// A check definition — describes how to evaluate a single STIG rule.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct CheckDefinition {
     /// Vuln ID this check applies to (e.g., "V-254239").
     pub vuln_id: String,
@@ -39,81 +36,20 @@ pub struct CheckDefinition {
 }
 
 /// Platform a check targets.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum CheckPlatform {
-    Windows,
-    Linux,
-    #[serde(alias = "cisco_ios")]
+    #[serde(rename = "cisco_ios", alias = "ciscoios")]
     CiscoIos,
-    #[serde(alias = "cisco_nxos")]
-    CiscoNxos,
-    #[serde(alias = "cisco_asa")]
-    CiscoAsa,
     Ontap,
     Bsd,
-    Generic,
 }
 
 /// A specific check to perform.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
+#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Check {
-    /// Check a Windows registry value.
-    Registry {
-        path: String,
-        value_name: String,
-        #[serde(default)]
-        value_type: Option<String>,
-    },
-
-    /// Check a Windows security policy setting (secedit).
-    SecurityPolicy { section: String, key: String },
-
-    /// Check a Windows audit policy setting (auditpol).
-    AuditPolicy {
-        subcategory: String,
-        setting: String,
-    },
-
-    /// Check a Windows/Linux service status.
-    Service {
-        name: String,
-        expected_status: ServiceStatus,
-    },
-
-    /// Check if a Windows feature/role is installed.
-    WindowsFeature {
-        name: String,
-        should_be_installed: bool,
-    },
-
-    /// Check a file's content against a pattern.
-    FileContent {
-        path: String,
-        pattern: String,
-        #[serde(default)]
-        is_regex: bool,
-    },
-
-    /// Check file/directory permissions.
-    FilePermission {
-        path: String,
-        owner: Option<String>,
-        group: Option<String>,
-        mode: Option<String>,
-    },
-
-    /// Check a Linux sysctl value.
-    Sysctl { key: String },
-
-    /// Check if a Linux package is installed.
-    Package {
-        name: String,
-        should_be_installed: bool,
-    },
-
-    /// Check a network device config line.
+    /// Check a Cisco IOS-XE running-configuration line.
     ConfigLine {
         pattern: String,
         context: Option<String>,
@@ -121,11 +57,14 @@ pub enum Check {
         should_exist: bool,
     },
 
-    /// Run a command and check the output.
+    /// Check reviewed ONTAP or FreeBSD command output.
     Command {
         command: String,
+        /// Optional predicate used by curated UNIX command checks.
         #[serde(default)]
-        shell: Option<String>,
+        pattern: Option<String>,
+        #[serde(default)]
+        is_regex: bool,
     },
 
     /// Multiple checks that must all pass (AND logic).
@@ -135,48 +74,21 @@ pub enum Check {
     Any { checks: Vec<Check> },
 }
 
-/// Expected service status.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum ServiceStatus {
-    Running,
-    Stopped,
-    Disabled,
-}
-
 /// Expected result for comparison.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
+#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum ExpectedResult {
-    /// Value must equal this exactly.
-    Equals { value: serde_json::Value },
-
     /// Value must match this regex.
     Matches { pattern: String },
 
     /// The regex `pattern` must match at least `min` times in the actual value.
     MatchCountAtLeast { pattern: String, min: usize },
 
-    /// Value must be >= this number.
-    GreaterOrEqual { value: f64 },
-
-    /// Value must be <= this number.
-    LessOrEqual { value: f64 },
-
-    /// Value must contain this substring.
-    Contains { substring: String },
-
     /// Value must NOT contain this.
     NotContains { substring: String },
 
     /// Check must return true (for boolean checks like file exists, service running).
     IsTrue,
-
-    /// Check must return false.
-    IsFalse,
-
-    /// For compound checks — all sub-results must pass.
-    AllPass,
 }
 
 /// Result of executing a check.
@@ -217,66 +129,27 @@ impl CheckResult {
 /// Instead of running live checks, we collect data first, then evaluate.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SystemData {
-    /// Windows registry values.
+    /// Whether every command required by the collection plan produced trusted evidence.
     #[serde(default)]
-    pub registry: std::collections::HashMap<String, serde_json::Value>,
+    pub collection_complete: bool,
 
-    /// Windows security policy settings (secedit output).
+    /// Collection failures keyed by the same data key used by the check plan.
+    /// Diagnostic stdout is deliberately not stored here or in `command_outputs`.
     #[serde(default)]
-    pub security_policy: std::collections::HashMap<String, String>,
+    pub collection_errors: std::collections::HashMap<String, String>,
 
-    /// Windows audit policy settings (auditpol output).
-    #[serde(default)]
-    pub audit_policy: std::collections::HashMap<String, String>,
-
-    /// Service statuses.
-    #[serde(default)]
-    pub services: std::collections::HashMap<String, String>,
-
-    /// Installed packages/features.
-    #[serde(default)]
-    pub packages: std::collections::HashMap<String, bool>,
-
-    /// File contents (path -> content).
-    #[serde(default)]
-    pub file_contents: std::collections::HashMap<String, String>,
-
-    /// File permissions (path -> {owner, group, mode}).
-    #[serde(default)]
-    pub file_permissions: std::collections::HashMap<String, FilePermData>,
-
-    /// Sysctl values.
-    #[serde(default)]
-    pub sysctl: std::collections::HashMap<String, String>,
-
-    /// Network device config (full running config).
+    /// Cisco IOS-XE running configuration.
     #[serde(default)]
     pub network_config: Option<String>,
 
     /// Command outputs (command -> output).
     #[serde(default)]
     pub command_outputs: std::collections::HashMap<String, String>,
-
-    /// Platform identifier.
-    #[serde(default)]
-    pub platform: String,
-
-    /// Hostname.
-    #[serde(default)]
-    pub hostname: String,
-}
-
-/// File permission data.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct FilePermData {
-    pub owner: Option<String>,
-    pub group: Option<String>,
-    pub mode: Option<String>,
-    pub exists: bool,
 }
 
 /// A set of check definitions for a specific STIG.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct CheckPack {
     /// STIG ID these checks apply to.
     pub stig_id: String,
@@ -304,22 +177,18 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_checkplatform_accepts_cisco_aliases() {
+    fn supported_platforms_roundtrip() {
         assert_eq!(
             serde_json::from_str::<CheckPlatform>("\"cisco_ios\"").unwrap(),
             CheckPlatform::CiscoIos
         );
         assert_eq!(
-            serde_json::from_str::<CheckPlatform>("\"cisco_nxos\"").unwrap(),
-            CheckPlatform::CiscoNxos
-        );
-        assert_eq!(
-            serde_json::from_str::<CheckPlatform>("\"cisco_asa\"").unwrap(),
-            CheckPlatform::CiscoAsa
-        );
-        assert_eq!(
             serde_json::from_str::<CheckPlatform>("\"ciscoios\"").unwrap(),
             CheckPlatform::CiscoIos
+        );
+        assert_eq!(
+            serde_json::to_string(&CheckPlatform::CiscoIos).unwrap(),
+            "\"cisco_ios\""
         );
         assert_eq!(
             serde_json::from_str::<CheckPlatform>("\"ontap\"").unwrap(),
@@ -338,43 +207,44 @@ mod tests {
     #[test]
     fn test_check_definition_json_roundtrip() {
         let check = CheckDefinition {
-            vuln_id: "V-254239".to_string(),
-            platform: CheckPlatform::Windows,
-            check: Check::Registry {
-                path: r"HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Client".to_string(),
-                value_name: "Enabled".to_string(),
-                value_type: Some("REG_DWORD".to_string()),
+            vuln_id: "V-100001".to_string(),
+            platform: CheckPlatform::Bsd,
+            check: Check::Command {
+                command: "sysctl kern.elf64.aslr.enable".to_string(),
+                pattern: None,
+                is_regex: false,
             },
-            expected: ExpectedResult::Equals {
-                value: serde_json::json!(1),
+            expected: ExpectedResult::Matches {
+                pattern: "^0$".to_string(),
             },
-            description: Some("TLS 1.2 must be enabled".to_string()),
+            description: Some("IP forwarding must be disabled".to_string()),
         };
 
         let json = serde_json::to_string_pretty(&check).unwrap();
         let parsed: CheckDefinition = serde_json::from_str(&json).unwrap();
-        assert_eq!(parsed.vuln_id, "V-254239");
+        assert_eq!(parsed.vuln_id, "V-100001");
     }
 
     #[test]
     fn test_compound_check() {
         let check = CheckDefinition {
             vuln_id: "V-100001".to_string(),
-            platform: CheckPlatform::Linux,
+            platform: CheckPlatform::Bsd,
             check: Check::All {
                 checks: vec![
-                    Check::FileContent {
-                        path: "/etc/ssh/sshd_config".to_string(),
-                        pattern: "PermitRootLogin no".to_string(),
+                    Check::Command {
+                        command: "cat /etc/ssh/sshd_config".to_string(),
+                        pattern: Some("PermitRootLogin no".to_string()),
                         is_regex: false,
                     },
-                    Check::Service {
-                        name: "sshd".to_string(),
-                        expected_status: ServiceStatus::Running,
+                    Check::Command {
+                        command: "freebsd-version -k".to_string(),
+                        pattern: Some("14".to_string()),
+                        is_regex: false,
                     },
                 ],
             },
-            expected: ExpectedResult::AllPass,
+            expected: ExpectedResult::IsTrue,
             description: None,
         };
 
@@ -385,20 +255,20 @@ mod tests {
     #[test]
     fn test_check_pack_json() {
         let pack = CheckPack {
-            stig_id: "Windows_Server_2022_STIG".to_string(),
-            platform: CheckPlatform::Windows,
+            stig_id: "General_Purpose_Operating_System".to_string(),
+            platform: CheckPlatform::Bsd,
             version: "1.0.0".to_string(),
             priority: 100,
             checks: vec![CheckDefinition {
-                vuln_id: "V-254239".to_string(),
-                platform: CheckPlatform::Windows,
-                check: Check::Registry {
-                    path: "HKLM\\TEST".to_string(),
-                    value_name: "Value1".to_string(),
-                    value_type: None,
+                vuln_id: "V-100001".to_string(),
+                platform: CheckPlatform::Bsd,
+                check: Check::Command {
+                    command: "sysctl kern.elf64.aslr.enable".to_string(),
+                    pattern: None,
+                    is_regex: false,
                 },
-                expected: ExpectedResult::Equals {
-                    value: serde_json::json!(1),
+                expected: ExpectedResult::Matches {
+                    pattern: "^1$".to_string(),
                 },
                 description: None,
             }],

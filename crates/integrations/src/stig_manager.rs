@@ -1,8 +1,7 @@
 //! STIG-Manager integration.
 //!
-//! Provides data structures and export functions for STIG-Manager compatibility.
-//! The actual HTTP client is gated behind a feature flag since it requires
-//! network access (not available in air-gapped mode).
+//! Provides data structures and offline JSON export functions for
+//! STIG-Manager compatibility. Connected API operations live in the GUI client.
 
 use serde::{Deserialize, Serialize};
 
@@ -90,20 +89,6 @@ pub struct ResultEngine {
 
     /// Product version.
     pub version: String,
-
-    /// When the check was performed.
-    #[serde(rename = "checkContent", skip_serializing_if = "Option::is_none")]
-    pub check_content: Option<CheckContent>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CheckContent {
-    /// Location/source of the check.
-    pub location: Option<String>,
-
-    /// Hash of the check content for reproducibility.
-    #[serde(rename = "component")]
-    pub component: Option<String>,
 }
 
 /// Convert a Checklist to STIG-Manager import format.
@@ -127,21 +112,13 @@ pub fn checklist_to_stig_manager(checklist: &Checklist) -> StigManagerImport {
 }
 
 fn finding_to_review(finding: &Finding) -> StigManagerReview {
-    let is_automated = matches!(
-        finding.source,
-        FindingSource::Automated
-            | FindingSource::SccScan
-            | FindingSource::AcasScan
-            | FindingSource::OpenScap
-            | FindingSource::CustomCheck
-    );
+    let is_automated = finding.source == FindingSource::Automated;
 
     let result_engine = if is_automated {
         Some(ResultEngine {
             engine_type: "script".to_string(),
             product: "AutomateSTIG".to_string(),
             version: env!("CARGO_PKG_VERSION").to_string(),
-            check_content: None,
         })
     } else {
         None
@@ -200,9 +177,9 @@ mod tests {
         let mut f =
             Finding::new_not_reviewed("V-1", "SV-1r1_rule", "V-1", "Golden Rule", Severity::High);
         f.status = FindingStatus::Open;
-        f.source = FindingSource::SccScan;
-        f.finding_details = "Scanner evidence: registry value missing".to_string();
-        f.comments = "Scanner: SCC\nRaw result: fail".to_string();
+        f.source = FindingSource::Automated;
+        f.finding_details = "Collected evidence did not match the expected value".to_string();
+        f.comments = "AutomateSTIG evidence transcript".to_string();
         f.cci_refs = vec!["CCI-000068".to_string()];
         cl.findings.push(f);
         cl
@@ -224,7 +201,7 @@ mod tests {
         let mut cl = Checklist::new(Asset::new("webserver01"), stig_info);
         let mut f = Finding::new_not_reviewed("V-1", "SV-1r1_rule", "V-1", "Test", Severity::High);
         f.status = FindingStatus::Open;
-        f.source = FindingSource::SccScan;
+        f.source = FindingSource::Automated;
         f.finding_details = "Not configured".to_string();
         cl.findings.push(f);
 

@@ -72,24 +72,12 @@ impl std::fmt::Display for FindingStatus {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FindingSource {
     /// Determined by an automated check in the tool.
-    #[serde(rename = "automated")]
+    #[serde(rename = "automated", alias = "custom_check")]
     Automated,
 
     /// Populated from an answer file template.
     #[serde(rename = "answer_file")]
     AnswerFile,
-
-    /// Imported from an SCC/SCAP scan result.
-    #[serde(rename = "scc_scan")]
-    SccScan,
-
-    /// Imported from an ACAS/Tenable scan.
-    #[serde(rename = "acas_scan")]
-    AcasScan,
-
-    /// Imported from an OpenSCAP scan.
-    #[serde(rename = "openscap")]
-    OpenScap,
 
     /// Manually entered by a reviewer.
     #[serde(rename = "manual")]
@@ -99,9 +87,16 @@ pub enum FindingSource {
     #[serde(rename = "imported")]
     Imported,
 
-    /// Determined by a custom check/plugin.
-    #[serde(rename = "custom_check")]
-    CustomCheck,
+    /// Evaluated from a supplied transcript/config whose collection transport
+    /// was not authenticated by this process.
+    #[serde(rename = "evidence")]
+    Evidence,
+
+    /// The rule could not be evaluated because required collection or
+    /// evaluation data failed validation. This source is immutable to answer
+    /// files and merge operations so an error cannot become a claimed result.
+    #[serde(rename = "collection_error")]
+    CollectionError,
 }
 
 /// A single finding — the result of evaluating one STIG rule against one asset.
@@ -119,8 +114,36 @@ pub struct Finding {
     /// Group ID / STIG ID.
     pub group_id: String,
 
+    /// Original group title/SRG reference from the benchmark or checklist.
+    #[serde(default)]
+    pub group_title: String,
+
     /// Rule title (denormalized for reporting convenience).
     pub rule_title: String,
+
+    /// Rule version from the source benchmark/checklist.
+    #[serde(default)]
+    pub rule_version: String,
+
+    /// Rule weight from the source benchmark/checklist.
+    #[serde(default)]
+    pub weight: f64,
+
+    /// Full rule discussion text.
+    #[serde(default)]
+    pub discussion: String,
+
+    /// Procedure used to evaluate the rule.
+    #[serde(default)]
+    pub check_content: String,
+
+    /// Procedure used to correct the rule.
+    #[serde(default)]
+    pub fix_text: String,
+
+    /// Original STIG reference value, when present.
+    #[serde(default)]
+    pub stig_ref: Option<String>,
 
     /// Severity of the rule at evaluation time.
     pub severity: Severity,
@@ -157,6 +180,10 @@ pub struct Finding {
 
     /// Legacy IDs (denormalized).
     pub legacy_ids: Vec<String>,
+
+    /// Format-specific rule metadata retained to reduce CKL/CKLB round-trip loss.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format_metadata: Option<serde_json::Value>,
 }
 
 impl Finding {
@@ -173,7 +200,14 @@ impl Finding {
             vuln_id: vuln_id.to_string(),
             rule_id: rule_id.to_string(),
             group_id: group_id.to_string(),
+            group_title: group_id.to_string(),
             rule_title: title.to_string(),
+            rule_version: String::new(),
+            weight: severity.default_weight(),
+            discussion: String::new(),
+            check_content: String::new(),
+            fix_text: String::new(),
+            stig_ref: None,
             severity,
             status: FindingStatus::NotReviewed,
             source: FindingSource::Manual,
@@ -186,6 +220,7 @@ impl Finding {
             evidence: None,
             cci_refs: Vec::new(),
             legacy_ids: Vec::new(),
+            format_metadata: None,
         }
     }
 }
@@ -228,13 +263,44 @@ impl FindingSummary {
         summary
     }
 
-    /// Compliance percentage (findings that are resolved / total evaluated).
-    pub fn compliance_pct(&self) -> f64 {
-        let evaluated = self.total.saturating_sub(self.not_reviewed);
-        if evaluated == 0 {
+    /// Number of benchmark controls for which an assessment result exists.
+    pub fn assessed(&self) -> usize {
+        self.total.saturating_sub(self.not_reviewed)
+    }
+
+    /// Number of assessed controls that apply to this asset.
+    pub fn applicable_assessed(&self) -> usize {
+        self.open + self.not_a_finding
+    }
+
+    /// Pass rate among assessed controls that apply to this asset.
+    ///
+    /// `NotApplicable` and `NotReviewed` are both excluded from the pass-rate
+    /// denominator. Coverage still counts a defensible `NotApplicable`
+    /// determination as assessed and is represented separately by
+    /// [`Self::benchmark_coverage_pct`].
+    pub fn assessed_pass_pct(&self) -> f64 {
+        let applicable = self.applicable_assessed();
+        if applicable == 0 {
             return 0.0;
         }
-        ((self.not_a_finding + self.not_applicable) as f64 / evaluated as f64) * 100.0
+        (self.not_a_finding as f64 / applicable as f64) * 100.0
+    }
+
+    /// Percentage of all benchmark controls that have been assessed.
+    pub fn benchmark_coverage_pct(&self) -> f64 {
+        if self.total == 0 {
+            return 0.0;
+        }
+        (self.assessed() as f64 / self.total as f64) * 100.0
+    }
+
+    /// Legacy name for the pass rate among assessed controls.
+    ///
+    /// New presentation code must label this value as an assessed-control pass
+    /// rate and show [`Self::benchmark_coverage_pct`] alongside it.
+    pub fn compliance_pct(&self) -> f64 {
+        self.assessed_pass_pct()
     }
 }
 
@@ -287,7 +353,48 @@ mod tests {
         assert_eq!(summary.not_reviewed, 1);
         assert_eq!(summary.cat_i_open, 1);
         assert_eq!(summary.cat_ii_open, 0);
-        // 2 resolved out of 3 evaluated (excluding Not_Reviewed)
-        assert!((summary.compliance_pct() - 66.66).abs() < 0.1);
+        // 1 pass out of 2 applicable assessed controls; the NotApplicable
+        // determination still counts toward 3-of-4 benchmark coverage.
+        assert_eq!(summary.assessed(), 3);
+        assert_eq!(summary.applicable_assessed(), 2);
+        assert!((summary.assessed_pass_pct() - 50.0).abs() < f64::EPSILON);
+        assert!((summary.benchmark_coverage_pct() - 75.0).abs() < f64::EPSILON);
+        assert_eq!(summary.compliance_pct(), summary.assessed_pass_pct());
+    }
+
+    #[test]
+    fn partial_benchmark_does_not_look_fully_assessed() {
+        let summary = FindingSummary {
+            total: 203,
+            not_a_finding: 3,
+            not_reviewed: 200,
+            ..Default::default()
+        };
+
+        assert_eq!(summary.assessed(), 3);
+        assert_eq!(summary.assessed_pass_pct(), 100.0);
+        assert!((summary.benchmark_coverage_pct() - (3.0 / 203.0 * 100.0)).abs() < f64::EPSILON);
+        assert!(summary.benchmark_coverage_pct() < 1.5);
+    }
+
+    #[test]
+    fn empty_summary_has_zero_pass_rate_and_coverage() {
+        let summary = FindingSummary::default();
+        assert_eq!(summary.assessed(), 0);
+        assert_eq!(summary.assessed_pass_pct(), 0.0);
+        assert_eq!(summary.benchmark_coverage_pct(), 0.0);
+    }
+
+    #[test]
+    fn all_not_applicable_is_fully_assessed_but_not_a_pass_claim() {
+        let summary = FindingSummary {
+            total: 2,
+            not_applicable: 2,
+            ..Default::default()
+        };
+        assert_eq!(summary.assessed(), 2);
+        assert_eq!(summary.applicable_assessed(), 0);
+        assert_eq!(summary.assessed_pass_pct(), 0.0);
+        assert_eq!(summary.benchmark_coverage_pct(), 100.0);
     }
 }

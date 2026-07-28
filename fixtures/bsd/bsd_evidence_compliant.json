@@ -1,0 +1,39 @@
+{
+  "schema": "automatestig-evidence/v2",
+  "hostname": "bsd-compliant-01",
+  "platform": "bsd",
+  "collector_version": "fixture",
+  "collected_at": "2026-01-01T00:00:00Z",
+  "plan_sha256": "7df3f55b1aafb5664ab573251657ffe60c3af00da920b73482a7e8aaaeecca4f",
+  "server_key_fingerprint": null,
+  "complete": true,
+  "commands": [
+    {
+      "data_key": "service auditd onestatus",
+      "command": "service auditd onestatus",
+      "status": "success",
+      "stdout": "auditd is running as pid 812.",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "cat /var/db/zoneinfo",
+      "command": "cat /var/db/zoneinfo",
+      "status": "success",
+      "stdout": "Etc/UTC",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "sysctl kern.elf64.aslr.enable",
+      "command": "sysctl kern.elf64.aslr.enable",
+      "status": "success",
+      "stdout": "kern.elf64.aslr.enable: 1",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    }
+  ]
+}

@@ -21,14 +21,8 @@ pub struct ManagedAsset {
     /// Platform type.
     pub platform: CheckPlatform,
 
-    /// Connection port (None = default for protocol).
+    /// SSH connection port (None = 22).
     pub port: Option<u16>,
-
-    /// Protocol for remote scanning.
-    pub protocol: ScanProtocol,
-
-    /// ID of the stored credential to use.
-    pub credential_id: Option<String>,
 
     /// STIGs assigned to this asset.
     pub assigned_stigs: Vec<String>,
@@ -58,25 +52,15 @@ pub struct ManagedAsset {
     pub created_at: DateTime<Utc>,
 }
 
-/// Protocol for connecting to an asset.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum ScanProtocol {
-    Ssh,
-    Local,
-}
-
 impl ManagedAsset {
     /// Create a new managed asset.
-    pub fn new(name: &str, address: &str, platform: CheckPlatform, protocol: ScanProtocol) -> Self {
+    pub fn new(name: &str, address: &str, platform: CheckPlatform) -> Self {
         Self {
             id: Uuid::new_v4().to_string(),
             name: name.to_string(),
             address: address.to_string(),
             platform,
             port: None,
-            protocol,
-            credential_id: None,
             assigned_stigs: Vec::new(),
             tags: Vec::new(),
             os_info: None,
@@ -88,22 +72,6 @@ impl ManagedAsset {
             created_at: Utc::now(),
         }
     }
-
-    /// Default port for this asset's protocol.
-    pub fn effective_port(&self) -> u16 {
-        self.port.unwrap_or(match self.protocol {
-            ScanProtocol::Ssh => 22,
-            ScanProtocol::Local => 0,
-        })
-    }
-}
-
-/// Asset group / tag summary.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AssetGroup {
-    pub tag: String,
-    pub asset_count: usize,
-    pub avg_compliance: f64,
 }
 
 #[cfg(test)]
@@ -112,38 +80,14 @@ mod tests {
 
     #[test]
     fn test_create_asset() {
-        let asset = ManagedAsset::new(
-            "server01",
-            "10.0.1.50",
-            CheckPlatform::Linux,
-            ScanProtocol::Ssh,
-        );
-        assert_eq!(asset.name, "server01");
-        assert_eq!(asset.effective_port(), 22);
+        let asset = ManagedAsset::new("freebsd01", "10.0.1.50", CheckPlatform::Bsd);
+        assert_eq!(asset.name, "freebsd01");
         assert!(asset.enabled);
     }
 
     #[test]
-    fn test_effective_port() {
-        let mut asset = ManagedAsset::new(
-            "local01",
-            "10.0.1.60",
-            CheckPlatform::Linux,
-            ScanProtocol::Local,
-        );
-        assert_eq!(asset.effective_port(), 0);
-        asset.port = Some(2222);
-        assert_eq!(asset.effective_port(), 2222);
-    }
-
-    #[test]
     fn test_asset_json_roundtrip() {
-        let mut asset = ManagedAsset::new(
-            "rtr01",
-            "10.0.1.1",
-            CheckPlatform::CiscoIos,
-            ScanProtocol::Ssh,
-        );
+        let mut asset = ManagedAsset::new("rtr01", "10.0.1.1", CheckPlatform::CiscoIos);
         asset.assigned_stigs = vec!["Cisco_IOS_XE_Router_STIG".to_string()];
         asset.tags = vec!["network".to_string(), "core".to_string()];
 

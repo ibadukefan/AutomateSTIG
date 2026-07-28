@@ -1,6 +1,8 @@
 [workspace]
 resolver = "2"
 members = [
+    "crates/archive-safety",
+    "crates/collector",
     "crates/core",
     "crates/parsers",
     "crates/storage",
@@ -12,7 +14,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/ibadukefan/AutomateSTIG"
@@ -31,13 +33,13 @@ rusqlite = { version = "0.32", features = ["bundled"] }
 # CLI
 clap = { version = "4", features = ["derive"] }
 console = "0.15"
-indicatif = "0.17"
 
 # GUI / Web server
 axum = { version = "0.8", features = ["multipart"] }
 tokio = { version = "1", features = ["full"] }
 tower-http = { version = "0.6", features = ["fs", "cors", "limit"] }
-rust-embed = { version = "8", features = ["compression"] }
+tower = { version = "0.5", features = ["util"] }
+rust-embed = "8"
 mime_guess = "2"
 open = "5"
 
@@ -50,7 +52,7 @@ ed25519-dalek = { version = "2", features = ["pkcs8", "pem"] }
 ring = "0.17"
 
 # Compression
-zip = "2"
+zip = { version = "2", default-features = false, features = ["deflate"] }
 
 # Error handling
 anyhow = "1"
@@ -73,7 +75,6 @@ tempfile = "3"
 # SSH / Remote
 russh = "0.62"
 # russh-keys merged into russh::keys
-async-trait = "0.1"
 
 # HTTP client (for STIG-Manager integration)
 # reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
@@ -83,6 +84,8 @@ regex = "1"
 
 # Workspace crates
 automatestig-core = { path = "crates/core" }
+automatestig-archive-safety = { path = "crates/archive-safety" }
+automatestig-collector = { path = "crates/collector" }
 automatestig-parsers = { path = "crates/parsers" }
 automatestig-storage = { path = "crates/storage" }
 automatestig-stigpack = { path = "crates/stigpack" }

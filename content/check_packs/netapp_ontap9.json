@@ -11,10 +11,9 @@
         "command": "security session limit show -interface cli"
       },
       "expected": {
-        "type": "matches",
-        "pattern": "(?m)^\\S+\\s+cli\\s+\\S+\\s+1\\s*$"
+        "type": "is_true"
       },
-      "description": "Concurrent CLI sessions must be limited to 1 (max-active-limit column)"
+      "description": "Every CLI session-limit row must have max-active-limit exactly 1"
     },
     {
       "vuln_id": "V-246923",
@@ -30,19 +29,6 @@
       "description": "CLI session timeout must be 15 minutes or less"
     },
     {
-      "vuln_id": "V-246925",
-      "platform": "ontap",
-      "check": {
-        "type": "command",
-        "command": "cluster log-forwarding show"
-      },
-      "expected": {
-        "type": "matches",
-        "pattern": "(?i)\\b(tcp|udp)[a-z-]*\\b"
-      },
-      "description": "A remote syslog destination must be defined so account actions are audited centrally"
-    },
-    {
       "vuln_id": "V-246926",
       "platform": "ontap",
       "check": {
@@ -54,32 +40,6 @@
         "pattern": "1 entr(y was|ies were) displayed"
       },
       "description": "Exactly one local password account (the account of last resort) may exist"
-    },
-    {
-      "vuln_id": "V-246931",
-      "platform": "ontap",
-      "check": {
-        "type": "command",
-        "command": "security login role config show -role admin -instance"
-      },
-      "expected": {
-        "type": "matches",
-        "pattern": "(?i)Maximum Number of Failed Attempts:\\s*3\\b"
-      },
-      "description": "Maximum consecutive failed logon attempts must be 3"
-    },
-    {
-      "vuln_id": "V-246932",
-      "platform": "ontap",
-      "check": {
-        "type": "command",
-        "command": "security login banner show"
-      },
-      "expected": {
-        "type": "matches",
-        "pattern": "You are accessing a U\\.S\\. Government \\(USG\\) Information System"
-      },
-      "description": "Standard Mandatory DoD Notice and Consent Banner must be configured"
     },
     {
       "vuln_id": "V-246935",
@@ -103,23 +63,10 @@
       },
       "expected": {
         "type": "match_count_at_least",
-        "pattern": "(?m)^\\s*\\d{1,3}(\\.\\d{1,3}){3}",
+        "pattern": "(?m)^\\S+\\s+(true|false)$",
         "min": 2
       },
-      "description": "At least two NTP servers configured (redundant authoritative time sources; counts server rows)"
-    },
-    {
-      "vuln_id": "V-246938",
-      "platform": "ontap",
-      "check": {
-        "type": "command",
-        "command": "cluster date show"
-      },
-      "expected": {
-        "type": "matches",
-        "pattern": "(?i)\\b(UTC|GMT|Etc/UTC)\\b"
-      },
-      "description": "Cluster time zone must map to UTC/GMT for audit record timestamps"
+      "description": "At least two canonical NTP server rows must be configured"
     },
     {
       "vuln_id": "V-246940",
@@ -135,19 +82,6 @@
       "description": "An external authentication server (domain) must provide administrator authentication"
     },
     {
-      "vuln_id": "V-246944",
-      "platform": "ontap",
-      "check": {
-        "type": "command",
-        "command": "system configuration backup show"
-      },
-      "expected": {
-        "type": "matches",
-        "pattern": "(?i)\\.7z"
-      },
-      "description": "System configuration backups must exist (advanced privilege: system configuration backup show)"
-    },
-    {
       "vuln_id": "V-246947",
       "platform": "ontap",
       "check": {
@@ -159,19 +93,6 @@
         "pattern": "[1-9]\\d* entr(y was|ies were) displayed"
       },
       "description": "Administrators must authenticate via the authentication server (domain) before privilege assignment"
-    },
-    {
-      "vuln_id": "V-246948",
-      "platform": "ontap",
-      "check": {
-        "type": "command",
-        "command": "security login show -role admin -authentication-method password"
-      },
-      "expected": {
-        "type": "matches",
-        "pattern": "1 entr(y was|ies were) displayed"
-      },
-      "description": "Only the account of last resort may use non-replay-resistant (password) authentication"
     },
     {
       "vuln_id": "V-246950",
@@ -195,7 +116,7 @@
       },
       "expected": {
         "type": "matches",
-        "pattern": "(?m)\\b(1[5-9]|[2-9]\\d)\\b"
+        "pattern": "^(1[5-9]|[2-9]\\d|[1-9]\\d{2,})$"
       },
       "description": "Minimum password length must be 15 or greater"
     },
@@ -208,9 +129,9 @@
       },
       "expected": {
         "type": "matches",
-        "pattern": "(?m)admin\\s+[1-9]"
+        "pattern": "^[1-9]\\d*$"
       },
-      "description": "At least one uppercase character must be required in passwords"
+      "description": "Every admin-role row must require at least one uppercase character"
     },
     {
       "vuln_id": "V-246953",
@@ -221,9 +142,9 @@
       },
       "expected": {
         "type": "matches",
-        "pattern": "(?m)admin\\s+[1-9]"
+        "pattern": "^[1-9]\\d*$"
       },
-      "description": "At least one lowercase character must be required in passwords"
+      "description": "Every admin-role row must require at least one lowercase character"
     },
     {
       "vuln_id": "V-246954",
@@ -234,9 +155,9 @@
       },
       "expected": {
         "type": "matches",
-        "pattern": "(?i)enabled|true"
+        "pattern": "^true$"
       },
-      "description": "Alphanumeric requirement (at least one letter and one number) must be enabled"
+      "description": "Every admin-role row must enable the alphanumeric password requirement"
     },
     {
       "vuln_id": "V-246955",
@@ -247,9 +168,9 @@
       },
       "expected": {
         "type": "matches",
-        "pattern": "(?m)admin\\s+[1-9]"
+        "pattern": "^[1-9]\\d*$"
       },
-      "description": "At least one special character must be required in passwords"
+      "description": "Every admin-role row must require at least one special character"
     },
     {
       "vuln_id": "V-246958",

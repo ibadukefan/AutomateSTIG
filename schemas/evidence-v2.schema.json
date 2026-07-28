@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.invalid/schemas/evidence-v2.schema.json",
+  "title": "AutomateSTIG Remote Evidence v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "hostname", "platform", "collector_version", "collected_at", "plan_sha256", "complete", "commands"],
+  "properties": {
+    "schema": { "const": "automatestig-evidence/v2" },
+    "hostname": { "type": "string", "minLength": 1 },
+    "platform": {
+      "type": "string",
+      "enum": ["cisco_ios", "ontap", "bsd"]
+    },
+    "collector_version": { "type": "string", "minLength": 1 },
+    "collected_at": { "type": "string", "format": "date-time" },
+    "plan_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "server_key_fingerprint": {
+      "oneOf": [
+        { "type": "string", "pattern": "^SHA256:.+" },
+        { "type": "null" }
+      ]
+    },
+    "complete": { "type": "boolean" },
+    "commands": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/command" }
+    }
+  },
+  "$defs": {
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["data_key", "command", "status"],
+      "properties": {
+        "data_key": { "type": "string", "minLength": 1 },
+        "command": { "type": "string", "minLength": 1 },
+        "status": {
+          "enum": ["success", "exit_failure", "missing_exit_status", "transport_error", "timeout", "output_limit", "protocol_error", "semantic_error", "missing_evidence"]
+        },
+        "stdout": { "type": "string" },
+        "stderr": { "type": "string" },
+        "exit_code": { "type": ["integer", "null"], "minimum": 0 },
+        "duration_ms": { "type": "integer", "minimum": 0 },
+        "error": { "type": ["string", "null"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "success" } } },
+          "then": {
+            "required": ["exit_code"],
+            "properties": {
+              "exit_code": { "type": "integer", "minimum": 0 },
+              "error": { "type": "null" }
+            }
+          },
+          "else": {
+            "required": ["error"],
+            "properties": { "error": { "type": "string", "minLength": 1 } }
+          }
+        }
+      ]
+    }
+  }
+}

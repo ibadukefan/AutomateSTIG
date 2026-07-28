@@ -1,55 +1,35 @@
 #!/bin/sh
-# AutomateSTIG NetApp ONTAP evidence collector.
-#
-# Runs read-only ONTAP CLI show commands over SSH and emits an evidence
-# transcript on stdout in the format `automatestig evaluate --evidence`
-# consumes. Nothing is installed on the filer and nothing is modified;
-# the two advanced-privilege commands are read-only "show" commands.
+# Thin wrapper around the shared, fail-closed Rust SSH collector. The required
+# output path is written atomically with private permissions. A partial
+# evidence v2 document is still written, then the command exits
+# nonzero; never treat a nonzero run as a completed compliance collection.
 #
 # Usage:
-#   scripts/collectors/ontap-collect.sh admin@filer > filer-evidence.txt
-#   scripts/collectors/ontap-collect.sh admin@filer mycluster01 > filer-evidence.txt
-#
-# The optional second argument sets the hostname recorded in the transcript
-# (defaults to the SSH target).
+#   AUTOMATESTIG_SSH_PASSWORD='...' ontap-collect.sh admin@filer evidence.json
+#   AUTOMATESTIG_SSH_KEY=~/.ssh/id_ed25519 ontap-collect.sh admin@filer evidence.json cluster01
 set -eu
 
-TARGET="$1"
-HOSTNAME="${2:-${TARGET#*@}}"
+if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
+    echo "usage: $0 user@host output.json [evidence-hostname]" >&2
+    exit 2
+fi
 
-echo "### automatestig:hostname ${HOSTNAME}"
+TARGET=$1
+case "$TARGET" in
+    *@*) USER=${TARGET%@*}; HOST=${TARGET#*@} ;;
+    *) echo "target must be user@host" >&2; exit 2 ;;
+esac
+OUTPUT=$2
+HOSTNAME=${3:-$HOST}
+BIN=${AUTOMATESTIG_BIN:-automatestig}
 
-run() {
-    # $1 = storage key (plain command), $2 = actual remote command line
-    echo "### automatestig:command $1"
-    ssh "$TARGET" "$2" 2>&1 || true
-}
+if [ -n "${AUTOMATESTIG_SSH_KEY:-}" ]; then
+    exec "$BIN" collect \
+        --stig NetApp_ONTAP_DSC_9-x_STIG \
+        --host "$HOST" --hostname "$HOSTNAME" --username "$USER" \
+        --key "$AUTOMATESTIG_SSH_KEY" --output "$OUTPUT"
+fi
 
-plain() {
-    run "$1" "$1"
-}
-
-advanced() {
-    run "$1" "set -privilege advanced -confirmations off; $1"
-}
-
-plain "security session limit show -interface cli"
-plain "system timeout show"
-plain "cluster log-forwarding show"
-plain "security login show -role admin -authentication-method password"
-plain "security login role config show -role admin -instance"
-plain "security login banner show"
-plain "vserver audit show -fields audit-guarantee"
-plain "cluster time-service ntp server show"
-plain "cluster date show"
-plain "security login show -authentication-method domain"
-plain "security login show -role admin -authentication-method domain"
-plain "options -option-name snmp*"
-plain "security snmpusers -authmethod usm"
-plain "security login role config show -role admin -fields passwd-minlength"
-plain "security login role config show -role admin -fields passwd-min-uppercase-chars"
-plain "security login role config show -role admin -fields passwd-min-lowercase-chars"
-plain "security login role config show -role admin -fields passwd-alphanum"
-plain "security login role config show -role admin -fields passwd-min-special-chars"
-advanced "system configuration backup show"
-advanced "security config show"
+exec "$BIN" collect \
+    --stig NetApp_ONTAP_DSC_9-x_STIG \
+    --host "$HOST" --hostname "$HOSTNAME" --username "$USER" --output "$OUTPUT"

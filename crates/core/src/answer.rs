@@ -2,7 +2,7 @@
 //!
 //! Answer files are JSON/YAML templates that pre-populate finding status,
 //! details, and comments for specific STIG rules. They replace the tedious
-//! XML answer files from Evaluate-STIG with a modern, version-controllable format.
+//! Review decisions in a modern, version-controllable format.
 
 use serde::{Deserialize, Serialize};
 use std::io;
@@ -68,7 +68,7 @@ pub struct AnswerEntry {
     /// Justification for severity override.
     pub severity_override_justification: Option<String>,
 
-    /// Whether to override even if a scan result already set the status.
+    /// Whether to override even if automated evidence already set the status.
     #[serde(default)]
     pub force_override: bool,
 }
