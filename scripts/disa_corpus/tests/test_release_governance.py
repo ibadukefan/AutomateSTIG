@@ -450,6 +450,44 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                 allowed = invoke(["release-freeze-approved"])
                 self.assertEqual(allowed.returncode, 0, allowed.stderr)
 
+    def test_freeze_policy_bootstrap_requires_declared_label(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            init_repo(root)
+            (root / "README.md").write_text("base")
+            git(root, "add", ".")
+            git(root, "commit", "-qm", "base without freeze")
+            base = git(root, "rev-parse", "HEAD")
+
+            path = root / ".github/release-freeze.json"
+            path.parent.mkdir()
+            path.write_text(json.dumps({
+                "schema_version": 1,
+                "active": True,
+                "target_release": "v1.2.3",
+                "approval_label": "release-freeze-approved",
+                "non_product_paths": [".github/**", "docs/**", "*.md"],
+            }))
+            git(root, "add", ".")
+            git(root, "commit", "-qm", "bootstrap freeze")
+            head = git(root, "rev-parse", "HEAD")
+            command = [
+                "python3",
+                REPO / "scripts/validate-release-freeze.py",
+                "--repo-root",
+                root,
+                "--base",
+                base,
+                "--head",
+                head,
+            ]
+
+            denied = run(command, root)
+            self.assertNotEqual(denied.returncode, 0)
+            self.assertIn("release-freeze-approved", denied.stderr)
+            allowed = run(command + ["--label", "release-freeze-approved"], root)
+            self.assertEqual(allowed.returncode, 0, allowed.stderr)
+
     def test_freeze_policy_cannot_disable_or_relabel_itself(self):
         for mutation in ("disable", "relabel", "widen"):
             with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as temporary:

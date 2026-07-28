@@ -61,7 +61,23 @@ def load_config(repo: Path) -> dict:
     return validate_config(config, str(path))
 
 
-def load_config_at(repo: Path, revision: str) -> dict:
+def load_config_at(repo: Path, revision: str) -> dict | None:
+    commit = subprocess.run(
+        ["git", "cat-file", "-e", f"{revision}^{{commit}}"],
+        cwd=repo,
+        text=True,
+        capture_output=True,
+    )
+    if commit.returncode:
+        fail(f"cannot resolve base commit {revision}: {commit.stderr.strip()}")
+    blob = subprocess.run(
+        ["git", "cat-file", "-e", f"{revision}:.github/release-freeze.json"],
+        cwd=repo,
+        text=True,
+        capture_output=True,
+    )
+    if blob.returncode:
+        return None
     result = subprocess.run(
         ["git", "show", f"{revision}:.github/release-freeze.json"],
         cwd=repo,
@@ -145,7 +161,9 @@ def main() -> None:
     base, head, labels = context
     changed = changed_paths(repo, base, head)
     base_config = load_config_at(repo, base)
-    active_configs = [item for item in (base_config, config) if item["active"]]
+    active_configs = [
+        item for item in (base_config, config) if item is not None and item["active"]
+    ]
     if not active_configs:
         print("Release freeze is inactive in both the base and proposed trees")
         return
@@ -161,7 +179,13 @@ def main() -> None:
             if not is_non_product(path, active_config["non_product_paths"])
         )
         required_labels.add(active_config["approval_label"])
-    if config != base_config:
+    if base_config is None:
+        # Bootstrap the policy without trusting its own non-product allowlist:
+        # the first active policy must approve its addition with its declared
+        # release-manager label.
+        product_paths.add(".github/release-freeze.json")
+        required_labels.add(config["approval_label"])
+    elif config != base_config:
         product_paths.add(".github/release-freeze.json")
         required_labels.add(base_config["approval_label"])
     missing_labels = sorted(required_labels - labels) if product_paths else []
