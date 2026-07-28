@@ -485,19 +485,29 @@ pub struct UpdateCheckResult {
 mod tests {
     use super::*;
     async fn raw_http_response(response: &'static [u8]) -> reqwest::Response {
-        use tokio::io::AsyncWriteExt;
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
         let address = listener.local_addr().unwrap();
-        tokio::spawn(async move {
+        let server = tokio::spawn(async move {
             let (mut socket, _) = listener.accept().await.unwrap();
+            let mut request = Vec::new();
+            let mut buffer = [0_u8; 1024];
+            while !request.windows(4).any(|window| window == b"\r\n\r\n") {
+                let bytes_read = socket.read(&mut buffer).await.unwrap();
+                assert_ne!(bytes_read, 0, "client closed before sending HTTP headers");
+                request.extend_from_slice(&buffer[..bytes_read]);
+                assert!(request.len() <= 16 * 1024, "request headers are too large");
+            }
             socket.write_all(response).await.unwrap();
+            socket.shutdown().await.unwrap();
         });
-        reqwest::Client::new()
+        let response = reqwest::Client::new()
             .get(format!("http://{address}/"))
             .send()
-            .await
-            .unwrap()
+            .await;
+        server.await.unwrap();
+        response.unwrap()
     }
 
     #[test]
