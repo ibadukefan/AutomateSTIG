@@ -557,8 +557,24 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             governance,
         )
         self.assertIn("sha256sum --check -", governance)
+        self.assertIn("--proto-redir '=https'", governance)
+        self.assertIn(
+            "github.com/rhysd/actionlint/releases/download/"
+            "v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz",
+            governance,
+        )
+        self.assertIn('"$install_dir/actionlint" -version', governance)
         self.assertNotIn("tool: actionlint", governance)
-        self.assertIn("run: actionlint", workflow)
+        self.assertIn("run: actionlint", governance)
+        freeze = governance.index("- name: Enforce release feature freeze")
+        self.assertLess(
+            governance.index("- name: Enforce immutable workflow dependencies"),
+            freeze,
+        )
+        self.assertLess(
+            governance.index("- name: Validate release approval evidence"),
+            freeze,
+        )
         job = workflow.split("  archive-fuzz-smoke:", 1)[1].split(
             "  coverage-validation:", 1
         )[0]

@@ -35,7 +35,7 @@ jobs:
           set -euo pipefail
           archive="${RUNNER_TEMP:?}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
           install_dir="${RUNNER_TEMP:?}/actionlint-bin"
-          curl --fail --location --proto '=https' --tlsv1.2 \
+          curl --fail --location --proto '=https' --proto-redir '=https' --tlsv1.2 \
             --retry 3 --retry-all-errors \
             --output "$archive" \
             "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
@@ -43,11 +43,11 @@ jobs:
           mkdir -p "$install_dir"
           tar -xzf "$archive" -C "$install_dir" actionlint
           chmod 0755 "$install_dir/actionlint"
+          installed_version="$("$install_dir/actionlint" -version | sed -n '1p')"
+          test "$installed_version" = "v$ACTIONLINT_VERSION"
           echo "$install_dir" >> "$GITHUB_PATH"
       - name: Validate Actions workflow semantics
         run: actionlint
-      - name: Enforce release feature freeze
-        run: python3 scripts/validate-release-freeze.py --repo-root .
       - name: Enforce immutable workflow dependencies
         run: python3 scripts/validate-workflow-pins.py --repo-root .
       - name: Validate release approval evidence
@@ -64,6 +64,8 @@ jobs:
           else
             python3 scripts/validate-release-evidence.py --repo-root . --schema-only
           fi
+      - name: Enforce release feature freeze
+        run: python3 scripts/validate-release-freeze.py --repo-root .
 
   check:
     name: Check
