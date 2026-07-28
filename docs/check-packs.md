@@ -8,8 +8,8 @@ Code reference: `crates/core/src/checks`.
 
 ```json
 {
-  "stig_id": "MS_Windows_Server_2022_STIG",
-  "platform": "windows",
+  "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
+  "platform": "ontap",
   "version": "1.0.0",
   "checks": []
 }
@@ -26,19 +26,17 @@ Fields:
 
 ```json
 {
-  "vuln_id": "V-254239",
-  "platform": "windows",
+  "vuln_id": "V-246923",
+  "platform": "ontap",
   "check": {
-    "type": "registry",
-    "path": "HKLM\\Software\\Example",
-    "value_name": "Enabled",
-    "value_type": "REG_DWORD"
+    "type": "command",
+    "command": "system timeout show"
   },
   "expected": {
-    "type": "equals",
-    "value": 1
+    "type": "matches",
+    "pattern": "(?i)timeout[^0-9]*(1[0-5]|[1-9])\\b"
   },
-  "description": "Example registry check"
+  "description": "CLI session timeout must be 15 minutes or less"
 }
 ```
 
@@ -52,16 +50,15 @@ Fields:
 
 ## Platforms
 
-Platforms are lowercase:
+The v0.3 shipped platform identifiers are:
 
-- `windows`
-- `linux`
-- `ciscoios`
-- `cisconxos`
-- `ciscoasa`
-- `generic`
+- `ontap`
+- `bsd`
+- `cisco_ios`
 
-The snake_case Cisco aliases `cisco_ios`, `cisco_nxos`, and `cisco_asa` are also accepted.
+Evidence v2, check packs, and API payloads all serialize the IOS-XE identifier
+as `cisco_ios`. The legacy `ciscoios` spelling is accepted only while reading
+older local data. No other Cisco or operating-system platform is a v0.3 target.
 
 ## Check Types
 
@@ -69,17 +66,8 @@ Checks use a snake_case `type` tag.
 
 | Type | Fields |
 | --- | --- |
-| `registry` | `path`, `value_name`, optional `value_type` |
-| `security_policy` | `section`, `key` |
-| `audit_policy` | `subcategory`, `setting` |
-| `service` | `name`, `expected_status` of `running`, `stopped`, or `disabled` |
-| `windows_feature` | `name`, `should_be_installed` |
-| `file_content` | `path`, `pattern`, optional `is_regex` |
-| `file_permission` | `path`, optional `owner`, optional `group`, optional `mode` |
-| `sysctl` | `key` |
-| `package` | `name`, `should_be_installed` |
 | `config_line` | `pattern`, optional `context`, optional `should_exist` |
-| `command` | `command`, optional `shell` |
+| `command` | `command`, optional `pattern` and `is_regex` |
 | `all` | `checks` |
 | `any` | `checks` |
 
@@ -89,29 +77,39 @@ Expected results also use a snake_case `type` tag.
 
 | Type | Fields |
 | --- | --- |
-| `equals` | `value` |
 | `matches` | `pattern` |
-| `greater_or_equal` | `value` |
-| `less_or_equal` | `value` |
-| `contains` | `substring` |
 | `not_contains` | `substring` |
 | `is_true` | none |
-| `is_false` | none |
-| `all_pass` | none |
+| `match_count_at_least` | `pattern`, `min` |
 
 ## Load Locations
 
-Packs load from:
+Packs load in deterministic priority order from:
 
-- `<data_dir>/plugins`
-- `content/check_packs`
-- `<library>/auto_check_packs`
+- `content/check_packs` or the equivalent packs embedded in the binary
+- `<library>/custom_checks`
+- `<library>/reviewed_check_packs` (promoted only by trusted signed `.stigpack` import)
 
-## Auto-Generation Scope
+Invalid pack content is fatal; it is not silently skipped.
+Filesystem location alone never establishes trust. Both library directories are
+loaded only through `trusted-executable-content.json`, which retains the exact
+signed manifest, signature, signer key, member mapping, and SHA-256 hash from
+the journaled import. Runtime verifies those proofs against the current trust
+directory. Bare files, changed bytes, changed proofs, and revoked keys are
+rejected before parsing or execution.
 
-DISA import converts structured check-content into deterministic checks where it can be mapped safely:
+The three packs shipped by v0.3 are listed in
+`content/supported-targets.json`. `scripts/validate-check-packs.py` rejects an
+extra shipped pack, a missing pack, target metadata drift, or coverage/check ID
+mismatches.
 
-- Windows registry blocks.
-- Linux sysctl and systemd content.
+Custom and imported content does not expand the advertised target matrix.
+Adding a target requires the complete review and live-acceptance process in
+[Supported Targets](supported-targets.md).
 
-Unstructured and manual-review controls are intentionally left unautomated. For example, Windows Server 2022 V2R8 auto-generates about 96 checks from 282 rules; the remainder require manual review.
+Raw XCCDF/DISA import never generates executable checks from prose. Signed
+`.stigpack` archives retain the compatible `auto_check_packs/` member name, but
+trusted import validates those definitions and promotes them into
+`<library>/reviewed_check_packs`; legacy local `auto_check_packs` files are never
+loaded. ONTAP and FreeBSD use their reviewed curated packs unless an operator
+explicitly imports a trusted reviewed extension.

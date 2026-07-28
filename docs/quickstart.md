@@ -1,6 +1,6 @@
 # Quickstart
 
-This path assumes you already have a DISA STIG XCCDF XML or ZIP file and, for automated evaluation, scan results or answer files that match the benchmark.
+This path assumes you have the matching DISA benchmark plus plan-bound ONTAP/FreeBSD evidence or an authorized Cisco IOS-XE Router NDM running configuration. See [Supported Targets](supported-targets.md).
 
 ## GUI: 5 Minute Path
 
@@ -16,11 +16,11 @@ This path assumes you already have a DISA STIG XCCDF XML or ZIP file and, for au
 
 3. Add an asset.
 
-   Open `Assets`, choose `Add Asset`, and enter name, address, platform, protocol, and tags.
+   Open `Assets`, choose `Add Asset`, and select ONTAP, FreeBSD, or Cisco IOS-XE Router NDM.
 
 4. Run an assessment.
 
-   Open `Assessments`, use the Run assessment form, select the asset, choose the STIG benchmark, set the target hostname, and optionally attach a scan-results file.
+   Open `Assessments`, use the Run assessment form, select the asset, choose the STIG benchmark and platform, then attach an evidence transcript or running configuration.
 
 5. Triage findings.
 
@@ -44,26 +44,29 @@ List installed benchmarks and choose the benchmark ID:
 cargo run --release --bin automatestig -- library list
 ```
 
-Run an evaluation:
+Collect and evaluate SSH evidence:
 
 ```bash
+AUTOMATESTIG_SSH_PASSWORD='...' cargo run --release --bin automatestig -- collect \
+  --stig NetApp_ONTAP_DSC_9-x_STIG --host filer01 --username scanner \
+  --output filer01-evidence.json
+
 cargo run --release --bin automatestig -- evaluate \
-  --stig <STIG_ID> \
-  --scan results.xml \
-  --host server01 \
-  --output server01.ckl \
+  --stig NetApp_ONTAP_DSC_9-x_STIG \
+  --evidence filer01-evidence.json \
+  --output filer01.ckl \
   --format ckl
 ```
 
 Summarize open findings:
 
 ```bash
-cargo run --release --bin automatestig -- summary --input server01.ckl --open-only
+cargo run --release --bin automatestig -- summary --input filer01.ckl --open-only
 ```
 
 Convert or export when needed:
 
 ```bash
-cargo run --release --bin automatestig -- convert --input server01.ckl --output server01.cklb --format cklb
-cargo run --release --bin automatestig -- export --input server01.ckl --output stigman.json --format stig-manager --collection "Production"
+cargo run --release --bin automatestig -- convert --input filer01.ckl --output filer01.cklb --format cklb
+cargo run --release --bin automatestig -- export --input filer01.ckl --output stigman.json --format stig-manager --collection "Production"
 ```

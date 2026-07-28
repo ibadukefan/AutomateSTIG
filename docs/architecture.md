@@ -1,13 +1,15 @@
 # Architecture
 
-AutomateSTIG is a Rust workspace with 8 crates and two binaries.
+AutomateSTIG is a Rust workspace with 10 crates and two binaries.
 
 ## Crate Map
 
 | Crate | Purpose |
 | --- | --- |
+| `archive-safety` | Shared bounded ZIP parsing and archive policy enforcement. |
+| `collector` | Shared fail-closed SSH transport and typed command evidence. |
 | `core` | Data models, deterministic evaluation engine, checks, and answer files. |
-| `parsers` | CKL, CKLB, XCCDF, scan, and config parsing. |
+| `parsers` | CKL, CKLB, XCCDF, and strict evidence v2 parsing/plan binding. |
 | `storage` | SQLite persistence. |
 | `stigpack` | `.stigpack` build, verify, import, manifest, hashes, and Ed25519 signing support. |
 | `integrations` | STIG-Manager export and push integration code. |
@@ -24,12 +26,16 @@ AutomateSTIG is a Rust workspace with 8 crates and two binaries.
 
 1. Load a benchmark from the local library.
 2. Initialize checklist findings from benchmark rules.
-3. Apply scan evidence and structured check results when present.
+3. Evaluate device evidence/configuration with structured checks.
 4. Apply answer files.
 5. Merge prior checklist entries when requested.
 6. Export results or persist checklist state.
 
 Evaluation is deterministic and does not use AI or ML.
+
+The release scanner boundary is exactly ONTAP 9.x, FreeBSD/GPOS, and Cisco
+IOS-XE Router NDM running configurations. See [Supported Targets](supported-targets.md);
+format parsing and content-library breadth are not device support claims.
 
 ## Storage
 
@@ -57,12 +63,3 @@ No network calls are made by default. These features are connected and opt-in:
 - DISA fetch and update checks.
 - STIG-Manager calls.
 - Remote SSH collection.
-
-## Known technical debt
-
-`crates/gui/src/api.rs` has grown large as the HTTP surface accreted. A split
-into per-domain modules (library, evaluation, export, stigman, assets,
-credentials) is planned. It is deferred deliberately: it is a pure
-refactor with broad blast radius and no behavioral change, so it is
-sequenced after the security and correctness work rather than interleaved
-with it, to keep each change independently reviewable.

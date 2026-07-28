@@ -34,20 +34,20 @@ Each entry may include:
 
 ```json
 {
-  "name": "Server baseline answers",
-  "description": "Site-reviewed answers for a server baseline",
-  "stig_id": "MS_Windows_Server_2022_STIG",
+  "name": "ONTAP site answers",
+  "description": "Site-reviewed answers for an ONTAP assessment",
+  "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
   "version": "1.0.0",
   "entries": [
     {
-      "vuln_id": "V-254239",
+      "vuln_id": "V-246927",
       "status": "NotAFinding",
       "finding_details": "Validated by site evidence.",
       "comments": "Reviewed by ISSO.",
       "force_override": false
     },
     {
-      "vuln_id": "V-254240",
+      "vuln_id": "V-246930",
       "status": "Open",
       "finding_details": "Control is not implemented.",
       "comments": "Tracked for follow-up.",
@@ -62,17 +62,17 @@ Each entry may include:
 ## YAML Example
 
 ```yaml
-name: Server baseline answers
-description: Site-reviewed answers for a server baseline
-stig_id: MS_Windows_Server_2022_STIG
+name: ONTAP site answers
+description: Site-reviewed answers for an ONTAP assessment
+stig_id: NetApp_ONTAP_DSC_9-x_STIG
 version: 1.0.0
 entries:
-  - vuln_id: V-254239
+  - vuln_id: V-246927
     status: NotAFinding
     finding_details: Validated by site evidence.
     comments: Reviewed by ISSO.
     force_override: false
-  - vuln_id: V-254240
+  - vuln_id: V-246930
     status: Open
     finding_details: Control is not implemented.
     comments: Tracked for follow-up.
@@ -98,5 +98,5 @@ automatestig gen-answer --input server01.ckl --output answers.yaml --include-unr
 Use the answer file during evaluation:
 
 ```bash
-automatestig evaluate --stig <STIG_ID> --scan results.xml --answer answers.yaml --host server01 --output server01.ckl --format ckl
+automatestig evaluate --stig <STIG_ID> --evidence device01-evidence.json --answer answers.yaml --output device01.ckl --format ckl
 ```

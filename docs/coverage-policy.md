@@ -1,6 +1,6 @@
 # STIG Coverage Policy
 
-> **Scope note (2026-07-09):** This document predates the product pivot and is retained as a historical record. AutomateSTIG no longer pursues Evaluate-STIG replacement or every-DISA-STIG coverage. The product scope is now: evidence collection and deterministic evaluation for device classes that scripted scanners cannot reach — network devices (config-file evaluation), Linux/UNIX over SSH, NetApp ONTAP and FreeBSD via evidence transcripts — with results delivered to STIG Manager. Current content posture: 35 authoritative coverage manifests over 9,977 tracked rules (9,759 automated, 94 manual, 124 unsupported after the pivot content trim). Statements below about broader replacement goals, 100% automation, or platform breadth beyond the pivot scope are superseded.
+AutomateSTIG v0.3 covers deterministic evidence collection and evaluation for NetApp ONTAP 9.x and FreeBSD over SSH, plus Cisco IOS-XE Router NDM running configurations. It does not claim to replace a general-purpose host scanner. The exact target, benchmark, input, pack, and acceptance-gate mappings live in `content/supported-targets.json`.
 
 AutomateSTIG must not advertise a STIG/platform as comprehensive unless every DISA rule for that release is represented in a coverage manifest.
 
@@ -9,7 +9,6 @@ AutomateSTIG must not advertise a STIG/platform as comprehensive unless every DI
 Every rule in a supported STIG must be classified as one of:
 
 - `automated` — AutomateSTIG executes a check and records evidence.
-- `scanner_import` — AutomateSTIG maps an external scanner result such as SCC/OpenSCAP/ACAS.
 - `manual` — Human review is required; the manifest explains why.
 - `not_applicable` — Always not applicable for the supported platform profile; reason required.
 - `unsupported` — Known gap; reason and tracking issue required.
@@ -34,7 +33,7 @@ Coverage manifests are validated with:
 automatestig coverage validate --manifest content/coverage/<manifest>.json
 ```
 
-The validator fails closed for internal inconsistencies, duplicate rule IDs, missing reasons, missing automation metadata, unsupported entries without `tracking_issue`, and automated/scanner-import entries that lack validation evidence references.
+The validator fails closed for internal inconsistencies, duplicate rule IDs, missing reasons, missing automation metadata, unsupported entries without `tracking_issue`, and automated entries that lack validation evidence references.
 
 ## Evidence Requirement
 
@@ -43,7 +42,7 @@ Automated checks must record evidence sufficient for an auditor to understand th
 - check ID
 - target asset
 - source type
-- command/query/file/registry path used
+- command/query/file/config path used
 - expected value
 - actual value
 - timestamp
@@ -51,10 +50,4 @@ Automated checks must record evidence sufficient for an auditor to understand th
 
 ## Release Claims
 
-Allowed:
-
-> AutomateSTIG has validated replacement-ready support for Windows Server 2022 STIG VxRy and RHEL 8 STIG VxRy.
-
-Not allowed without proof:
-
-> AutomateSTIG comprehensively supports Windows, Linux, ACAS, SCC, and all DISA STIGs.
+Coverage claims must name the exact device class, STIG release, check pack, evidence mode, and validation fixture or authorized acceptance run. Repository manifest counts are content-governance metrics; they do not establish that a deployment is audit-ready or accepted by an external system of record.

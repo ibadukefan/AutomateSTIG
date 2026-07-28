@@ -19,6 +19,11 @@ Warnings that do not make `cargo audit` fail are still tracked during release re
 
 - Removed the GUI dependency on `scraper`, which removed the transitive unmaintained `fxhash` warning from the audit graph.
 - Updated the lockfile to `rand 0.8.6`, clearing the prior `rand 0.8.5` RustSec warning.
+- Updated `anyhow` to `1.0.103`, which includes the fix for RUSTSEC-2026-0190.
+- Removed unused rust-embed compression, eliminating the unmaintained `proc-macro-error2` dependency reported by RUSTSEC-2026-0173.
+- Updated the transitive multipart dependency from yanked `spin 0.9.8` to
+  `spin 0.9.9`, which fixes the upstream `Once` ownership unsoundness and
+  clears the yanked-package warning.
 
 ## Current warning backlog
 

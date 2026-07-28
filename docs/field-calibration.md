@@ -7,16 +7,18 @@ The ONTAP, FreeBSD, and Cisco check packs are written against canonical device o
 1. **One NetApp ONTAP filer** — from any host with SSH access to the cluster management LIF:
 
    ```bash
-   scripts/collectors/ontap-collect.sh admin@filer > ontap-evidence.txt
+   AUTOMATESTIG_SSH_PASSWORD='...' scripts/collectors/ontap-collect.sh admin@filer ontap-evidence.json
    ```
 
 2. **One FreeBSD host**:
 
    ```bash
-   scripts/collectors/bsd-collect.sh admin@bsdhost > bsd-evidence.txt
+   AUTOMATESTIG_SSH_PASSWORD='...' scripts/collectors/bsd-collect.sh admin@bsdhost bsd-evidence.json
    ```
 
-3. **One router/switch running config** — any existing config backup (RANCID, Oxidized, SolarWinds NCM export) or a manual `show running-config` capture. No collector needed.
+3. **One representative Cisco IOS-XE router running config** — an authorized
+   config backup (for example, RANCID, Oxidized, or SolarWinds NCM) or a manual
+   `show running-config` capture. No AutomateSTIG collector is used for IOS-XE.
 
 ## Sanitization
 
@@ -32,8 +34,8 @@ Do **not** reword command output, change column spacing, or drop "N entries were
 ## Running the calibration
 
 ```bash
-automatestig evaluate --stig NetApp_ONTAP_DSC_9-x_STIG --evidence ontap-evidence.txt --host filer01 --output filer01.ckl --format ckl
-automatestig evaluate --stig General_Purpose_Operating_System --evidence bsd-evidence.txt --host bsdhost01 --output bsdhost01.ckl --format ckl
+automatestig evaluate --stig NetApp_ONTAP_DSC_9-x_STIG --evidence ontap-evidence.json --output filer01.ckl --format ckl
+automatestig evaluate --stig General_Purpose_Operating_System --evidence bsd-evidence.json --output bsdhost01.ckl --format ckl
 automatestig evaluate --stig Cisco_IOS-XE_Router_NDM_STIG --config router-config.txt --host rtr01 --output rtr01.ckl --format ckl
 ```
 
@@ -49,4 +51,4 @@ Where your site meets a requirement through a different-but-compliant mechanism 
 
 ## Chain of Custody
 
-Every checklist evaluated from an evidence transcript or config file records the SHA-256 of the exact input bytes in each finding's comments (`Automated evaluation provenance: ... SHA-256: <hex>`). A reviewer can independently confirm the checklist came from a specific artifact with `sha256sum evidence.txt` (or `shasum -a 256`). If the evidence is altered by a single byte, the digest no longer matches — this is the audit anchor binding results to collected evidence.
+Every completed checklist evaluated from an evidence document or config file records the SHA-256 of the exact input bytes in each finding's comments (`Supplied evidence provenance ... SHA-256: <hex>`). A reviewer can independently confirm a specific artifact with `sha256sum ontap-evidence.json` (or `shasum -a 256`). Evidence v2 also carries the exact collection-plan digest and observed SSH server-key fingerprint.

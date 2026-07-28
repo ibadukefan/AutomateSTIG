@@ -7,49 +7,20 @@ AutomateSTIG publishes release archives that contain both binaries:
 - `automatestig`
 - `automatestig-gui`
 
-### Desktop app (double-click installers)
-
-Launching the desktop app starts the local AutomateSTIG GUI and opens it in your browser at a localhost address. The CLI (`automatestig`) is included in every archive and installed on `PATH` by the command-line installers.
-
-macOS:
-
-1. Download `AutomateSTIG-<tag>-macos-<arch>.dmg` from the [latest GitHub Release](https://github.com/ibadukefan/AutomateSTIG/releases/latest). Use `arm64` for Apple Silicon and `x86_64` for Intel Macs.
-2. Open the `.dmg` and drag **AutomateSTIG** to Applications.
-3. Launch **AutomateSTIG**. On first launch, right-click **AutomateSTIG** and choose Open because the app is not notarized.
-
-Windows:
-
-1. Download `AutomateSTIG-<tag>-windows-x64-setup.exe` from the [latest GitHub Release](https://github.com/ibadukefan/AutomateSTIG/releases/latest).
-2. Run the setup file and click through the wizard.
-3. Launch **AutomateSTIG** from the Start Menu or Desktop shortcut. On first run, Windows may show SmartScreen; choose More info, then Run anyway because the installer is not signed.
-
-Linux:
-
-1. Download `AutomateSTIG-<tag>-linux-x86_64.AppImage` from the [latest GitHub Release](https://github.com/ibadukefan/AutomateSTIG/releases/latest).
-2. Make it executable:
-
-   ```bash
-   chmod +x AutomateSTIG-<tag>-linux-x86_64.AppImage
-   ```
-
-3. Double-click it, or run it from a terminal:
-
-   ```bash
-   ./AutomateSTIG-<tag>-linux-x86_64.AppImage
-   ```
-
 ### One-line installers — one per OS
 
 macOS:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-macos.sh | sh
+curl --proto '=https' --proto-redir '=https' -fsSL \
+  https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-macos.sh | sh
 ```
 
 Linux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-linux.sh | sh
+curl --proto '=https' --proto-redir '=https' -fsSL \
+  https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-linux.sh | sh
 ```
 
 Windows (PowerShell):
@@ -58,9 +29,17 @@ Windows (PowerShell):
 irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-windows.ps1 | iex
 ```
 
-Each installer picks the right build for your CPU (Intel/x86_64 or Apple Silicon/arm64) automatically.
+Each installer picks the right build for your CPU (Intel/x86_64 or Apple
+Silicon/arm64) automatically. The installers require
+[Cosign](https://docs.sigstore.dev/cosign/system_config/installation/) and stop
+unless both the exact archive checksum and its keyless Sigstore signature from
+this repository's tagged CI workflow verify. Download and inspect an installer
+before running it if your environment does not permit piping remote scripts to
+a shell.
 
-Set `AUTOMATESTIG_VERSION` to pin a specific release tag, such as `v0.1.0`. On macOS and Linux, set `AUTOMATESTIG_INSTALL_DIR` to choose a different install directory.
+Set `AUTOMATESTIG_VERSION` to pin a specific release tag, such as `v0.3.0`.
+On macOS and Linux, set `AUTOMATESTIG_INSTALL_DIR` to choose a different
+install directory.
 
 ### Manual download
 
@@ -99,19 +78,35 @@ Run `automatestig-gui` to open the local web GUI. Run `automatestig --help` for 
 
 ### macOS Gatekeeper
 
-The release binaries are not notarized. The install script removes the quarantine attribute from both binaries. If you install manually and macOS blocks the GUI, run:
-
-```bash
-xattr -d com.apple.quarantine automatestig-gui
-```
-
-You can also right-click `automatestig-gui` and choose Open the first time.
+The release binaries are not notarized. The installer deliberately does not
+remove macOS quarantine metadata or bypass Gatekeeper. If Gatekeeper blocks a
+verified binary, use your organization's approved exception process or build
+from reviewed source. Do not clear quarantine merely to make an unfamiliar
+download run.
 
 ### Verification and provenance
 
-Tagged release CI publishes SHA-256 checksum files next to every archive. Download the matching `.sha256` file from the release and verify it before extracting.
+Tagged release CI publishes `<archive>.sha256` and
+`<archive>.sigstore.bundle` next to every archive. A checksum detects accidental
+or post-download changes but does not authenticate the publisher, so verify the
+bundle against the exact workflow identity before extracting:
 
-The existing CI workflow also produces SBOM, artifact attestation, and Sigstore provenance artifacts for release-build outputs.
+```bash
+archive=automatestig-v0.3.0-x86_64-unknown-linux-gnu.tar.gz
+cosign verify-blob \
+  --bundle "$archive.sigstore.bundle" \
+  --certificate-identity \
+    "https://github.com/ibadukefan/AutomateSTIG/.github/workflows/ci.yml@refs/tags/v0.3.0" \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  "$archive"
+sha256sum -c "$archive.sha256"
+```
+
+The release also includes a CycloneDX SBOM, dependency inventory, GitHub
+artifact attestation, provenance record, and hash-complete release manifest.
+With GitHub CLI installed, verify the independent GitHub attestation using the
+same repository, workflow identity, tag ref, and source commit recorded by the
+release.
 
 ## Prerequisites
 
