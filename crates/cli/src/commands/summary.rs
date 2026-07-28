@@ -48,7 +48,8 @@ pub fn run(input: &str, open_only: bool, severity: Option<&str>) -> Result<()> {
         summary.cat_i_open,
         summary.cat_ii_open,
         summary.cat_iii_open,
-        summary.compliance_pct(),
+        summary.assessed_pass_pct(),
+        summary.benchmark_coverage_pct(),
     );
 
     // Show findings list.

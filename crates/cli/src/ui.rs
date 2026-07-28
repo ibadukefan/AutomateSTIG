@@ -4,6 +4,25 @@
 
 use console::{style, Style, Term};
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ScoreTone {
+    Green,
+    Yellow,
+    Red,
+}
+
+fn assessed_pass_tone(assessed_pass_pct: f64, benchmark_coverage_pct: f64) -> ScoreTone {
+    if assessed_pass_pct < 80.0 {
+        ScoreTone::Red
+    } else if benchmark_coverage_pct < 100.0 {
+        ScoreTone::Yellow
+    } else if assessed_pass_pct >= 95.0 {
+        ScoreTone::Green
+    } else {
+        ScoreTone::Yellow
+    }
+}
+
 /// Application banner shown on startup.
 pub fn print_banner() {
     let term = Term::stdout();
@@ -65,7 +84,8 @@ pub fn print_summary_table(
     cat_i: usize,
     cat_ii: usize,
     cat_iii: usize,
-    compliance_pct: f64,
+    assessed_pass_pct: f64,
+    benchmark_coverage_pct: f64,
 ) {
     let open_style = if open > 0 {
         Style::new().red().bold()
@@ -79,13 +99,17 @@ pub fn print_summary_table(
         Style::new().dim()
     };
 
-    let compliance_style = if compliance_pct >= 95.0 {
-        Style::new().green().bold()
-    } else if compliance_pct >= 80.0 {
-        Style::new().yellow().bold()
-    } else {
-        Style::new().red().bold()
+    let assessed_pass_style = match assessed_pass_tone(assessed_pass_pct, benchmark_coverage_pct) {
+        ScoreTone::Green => Style::new().green().bold(),
+        ScoreTone::Yellow => Style::new().yellow().bold(),
+        ScoreTone::Red => Style::new().red().bold(),
     };
+    let coverage_style = if benchmark_coverage_pct >= 100.0 {
+        Style::new().green().bold()
+    } else {
+        Style::new().yellow().bold()
+    };
+    let assessed = total.saturating_sub(nr);
 
     println!();
     println!(
@@ -142,9 +166,21 @@ pub fn print_summary_table(
         style("│──────────────────────────────────────────────────│").dim()
     );
     println!(
-        "  {}  Compliance:         {:<6}                      {}",
+        "  {}  Assessed controls:  {:<12}                {}",
         style("│").dim(),
-        compliance_style.apply_to(format!("{:.1}%", compliance_pct)),
+        format!("{assessed}/{total}"),
+        style("│").dim(),
+    );
+    println!(
+        "  {}  Assessed pass rate: {:<6}                      {}",
+        style("│").dim(),
+        assessed_pass_style.apply_to(format!("{:.1}%", assessed_pass_pct)),
+        style("│").dim(),
+    );
+    println!(
+        "  {}  Benchmark coverage: {:<6}                      {}",
+        style("│").dim(),
+        coverage_style.apply_to(format!("{:.1}%", benchmark_coverage_pct)),
         style("│").dim(),
     );
     println!(
@@ -212,4 +248,20 @@ pub fn hr() {
     let term = Term::stdout();
     let width = (term.size().1 as usize).min(80);
     println!("  {}", style("─".repeat(width.saturating_sub(4))).dim());
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{assessed_pass_tone, ScoreTone};
+
+    #[test]
+    fn unresolved_controls_prevent_a_green_pass_grade() {
+        assert_eq!(
+            assessed_pass_tone(100.0, 3.0 / 203.0 * 100.0),
+            ScoreTone::Yellow
+        );
+        assert_eq!(assessed_pass_tone(100.0, 99.9), ScoreTone::Yellow);
+        assert_eq!(assessed_pass_tone(100.0, 100.0), ScoreTone::Green);
+        assert_eq!(assessed_pass_tone(50.0, 10.0), ScoreTone::Red);
+    }
 }

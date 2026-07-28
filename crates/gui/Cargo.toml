@@ -11,10 +11,10 @@ path = "src/main.rs"
 
 [dependencies]
 automatestig-core = { workspace = true }
+automatestig-collector = { workspace = true }
 automatestig-parsers = { workspace = true }
 automatestig-storage = { workspace = true }
 automatestig-stigpack = { workspace = true }
-automatestig-integrations = { workspace = true }
 axum = { workspace = true }
 tokio = { workspace = true }
 tower-http = { workspace = true }
@@ -27,7 +27,6 @@ anyhow = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 chrono = { workspace = true }
-uuid = { workspace = true }
 zip = { workspace = true }
 tempfile = { workspace = true }
 reqwest = { workspace = true }
@@ -35,4 +34,10 @@ ring = { workspace = true }
 sha2 = { workspace = true }
 hostname = "0.4"
 russh = { workspace = true }
-async-trait = { workspace = true }
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[dev-dependencies]
+rand = "0.10"
+tower = { workspace = true }

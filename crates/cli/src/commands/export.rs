@@ -29,6 +29,10 @@ pub fn run(input: &str, output: &str, format: &str, collection: Option<&str>) ->
     ui::detail("Source", input);
     ui::detail("Format", format);
 
+    if let Some(reason) = checklist.external_export_block_reason() {
+        anyhow::bail!("Checklist cannot be exported: {reason}");
+    }
+
     match format {
         "stig-manager" => {
             let coll = collection.unwrap_or("Default Collection");

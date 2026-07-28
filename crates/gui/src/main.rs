@@ -11,7 +11,7 @@ pub mod ssh;
 mod state;
 pub mod stigman;
 
-use std::net::SocketAddr;
+use std::net::{IpAddr, SocketAddr};
 
 use axum::extract::Request;
 use axum::middleware::{self, Next};
@@ -62,16 +62,35 @@ async fn main() {
     let auth_token = resolve_auth_token(std::env::var("AUTOMATESTIG_AUTH_TOKEN").ok(), is_loopback)
         .expect("Invalid AutomateSTIG auth configuration");
     let auth_token_for_middleware = auth_token.clone();
+    let listener_port = local_addr.port();
 
     // Build the router with security layers:
     // 1. CORS restricted to same origin
-    // 2. Request body limit (100 MB)
+    // 2. Hard transport ceiling (individual upload routes enforce lower exact caps)
     // 3. Auth token verification on /api routes
     let app = Router::new()
         .nest("/api", api::routes())
         .layer(middleware::from_fn(move |req: Request, next: Next| {
             let token = auth_token_for_middleware.clone();
             async move {
+                // A loopback listener is still reachable by a browser through DNS
+                // rebinding. Only serve requests whose authority names loopback on
+                // the actual listener port, so an attacker-controlled Host cannot
+                // receive the token-bearing frontend or call the API same-origin.
+                if is_loopback
+                    && !is_allowed_loopback_host(
+                        req.headers().get(axum::http::header::HOST),
+                        listener_port,
+                    )
+                {
+                    return Ok::<Response, std::convert::Infallible>(
+                        axum::response::IntoResponse::into_response((
+                            axum::http::StatusCode::MISDIRECTED_REQUEST,
+                            "Invalid Host header",
+                        )),
+                    );
+                }
+
                 // Allow unauthenticated health checks.
                 if req.uri().path() == "/api/status" {
                     return Ok::<Response, std::convert::Infallible>(next.run(req).await);
@@ -108,7 +127,7 @@ async fn main() {
                 async move { serve_frontend_with_token(uri, t.as_deref()) }
             }
         })
-        .layer(RequestBodyLimitLayer::new(100 * 1024 * 1024)) // 100 MB
+        .layer(RequestBodyLimitLayer::new(258 * 1024 * 1024))
         .layer(axum::extract::DefaultBodyLimit::max(100 * 1024 * 1024))
         .layer({
             let mut cors = CorsLayer::new()
@@ -132,13 +151,13 @@ async fn main() {
     // the user has opted in. Air-gapped by default.
     tokio::spawn(async move {
         // Check if background updates are enabled in config.
-        let enabled = update_bg_state
-            .db()
-            .get_config("auto_update_enabled")
-            .ok()
-            .flatten()
-            .map(|v| v == "true")
-            .unwrap_or(false);
+        let enabled = match update_bg_state.db().get_config("auto_update_enabled") {
+            Ok(value) => value.map(|value| value == "true").unwrap_or(false),
+            Err(error) => {
+                tracing::error!("Failed to read background-update setting: {error}");
+                false
+            }
+        };
 
         if enabled {
             tracing::info!("Background STIG update checker enabled");
@@ -181,11 +200,8 @@ fn ct_token_eq(candidate: &str, expected: &str) -> bool {
 
 fn resolve_auth_token(explicit_token: Option<String>, is_loopback: bool) -> Result<String, String> {
     if let Some(token) = explicit_token {
-        if token.len() < 16 && !is_loopback {
-            return Err(
-                "AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters for non-localhost binds"
-                    .to_string(),
-            );
+        if token.len() < 16 {
+            return Err("AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters".to_string());
         }
         return Ok(token);
     }
@@ -197,12 +213,40 @@ fn resolve_auth_token(explicit_token: Option<String>, is_loopback: bool) -> Resu
     Err("AUTOMATESTIG_AUTH_TOKEN is required when binding outside localhost".to_string())
 }
 
+fn is_allowed_loopback_host(
+    host_header: Option<&axum::http::HeaderValue>,
+    listener_port: u16,
+) -> bool {
+    let Some(raw) = host_header.and_then(|value| value.to_str().ok()) else {
+        return false;
+    };
+    let Ok(authority) = raw.parse::<axum::http::uri::Authority>() else {
+        return false;
+    };
+    if authority.port_u16() != Some(listener_port) {
+        return false;
+    }
+
+    let host = authority.host().trim_matches(['[', ']']);
+    host.eq_ignore_ascii_case("localhost")
+        || host
+            .parse::<IpAddr>()
+            .is_ok_and(|address| address.is_loopback())
+}
+
 /// Serve embedded frontend files.
 /// For index.html, injects the session auth token so the JS can authenticate API calls.
 fn serve_frontend_with_token(
     uri: axum::http::Uri,
     token: Option<&str>,
 ) -> axum::response::Response {
+    // Unknown API paths must stay API 404s. Serving the single-page frontend
+    // here can make a removed mutation endpoint appear to succeed with HTTP
+    // 200 and HTML, which is unsafe for scripts and misleading for operators.
+    if uri.path() == "/api" || uri.path().starts_with("/api/") {
+        return (axum::http::StatusCode::NOT_FOUND, "API endpoint not found").into_response();
+    }
+
     let path = uri.path().trim_start_matches('/');
     let path = if path.is_empty() { "index.html" } else { path };
 
@@ -210,7 +254,14 @@ fn serve_frontend_with_token(
         let Some(token) = token else {
             return body.to_vec();
         };
-        let script = format!("<script>window.__AUTH_TOKEN__='{}';</script>", token);
+        // JSON string encoding plus HTML-significant escaping safely embeds an
+        // arbitrary configured token without permitting a `</script>` break-out.
+        let encoded = serde_json::to_string(token)
+            .expect("string serialization cannot fail")
+            .replace('<', "\\u003c")
+            .replace('>', "\\u003e")
+            .replace('&', "\\u0026");
+        let script = format!("<script>window.__AUTH_TOKEN__={encoded};</script>");
         let html = String::from_utf8_lossy(body);
         html.replace("</head>", &format!("{}</head>", script))
             .into_bytes()
@@ -254,6 +305,16 @@ mod tests {
     use super::*;
 
     #[test]
+    fn unknown_api_paths_are_not_rewritten_to_the_frontend() {
+        let response = serve_frontend_with_token(
+            "/api/library/removed-mutation".parse().unwrap(),
+            Some("test-token-0123456789"),
+        );
+
+        assert_eq!(response.status(), axum::http::StatusCode::NOT_FOUND);
+    }
+
+    #[test]
     fn non_loopback_server_without_token_is_rejected() {
         let error = resolve_auth_token(None, false).expect_err("server mode needs a token");
 
@@ -270,8 +331,58 @@ mod tests {
 
         assert_eq!(
             error,
-            "AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters for non-localhost binds"
+            "AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters"
         );
+    }
+
+    #[test]
+    fn loopback_empty_or_short_explicit_token_is_rejected() {
+        for token in ["", "short"] {
+            let error = resolve_auth_token(Some(token.to_string()), true)
+                .expect_err("an explicit weak token must never disable authentication");
+            assert_eq!(
+                error,
+                "AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters"
+            );
+        }
+    }
+
+    #[test]
+    fn loopback_host_guard_rejects_dns_rebinding_and_wrong_ports() {
+        use axum::http::HeaderValue;
+
+        for allowed in ["127.0.0.1:4567", "localhost:4567", "[::1]:4567"] {
+            assert!(is_allowed_loopback_host(
+                Some(&HeaderValue::from_str(allowed).unwrap()),
+                4567
+            ));
+        }
+        for rejected in [
+            "attacker.example:4567",
+            "127.0.0.1:9999",
+            "127.0.0.1",
+            "192.0.2.1:4567",
+        ] {
+            assert!(!is_allowed_loopback_host(
+                Some(&HeaderValue::from_str(rejected).unwrap()),
+                4567
+            ));
+        }
+        assert!(!is_allowed_loopback_host(None, 4567));
+    }
+
+    #[tokio::test]
+    async fn frontend_token_is_javascript_escaped() {
+        let response = serve_frontend_with_token(
+            "/".parse().unwrap(),
+            Some("0123456789abc'</script><script>alert(1)</script>"),
+        );
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let html = String::from_utf8(body.to_vec()).unwrap();
+        assert!(!html.contains("</script><script>alert(1)"));
+        assert!(html.contains("\\u003c/script\\u003e"));
     }
 
     #[test]

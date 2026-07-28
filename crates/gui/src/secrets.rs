@@ -14,16 +14,18 @@
 use ring::aead::{Aad, LessSafeKey, Nonce, UnboundKey, AES_256_GCM};
 use ring::rand::{SecureRandom, SystemRandom};
 use sha2::{Digest, Sha256};
+use std::io::{Read, Write};
 
 const APP_SALT: &[u8] = b"AutomateSTIG-secret-encryption-v1";
 
 /// Load the shared random key material, creating it on first use.
 pub fn load_or_create_key_material(data_dir: &std::path::Path) -> Result<String, String> {
+    secure_private_directory(data_dir)?;
     let key_path = data_dir.join("secret.key");
-    if key_path.exists() {
-        return std::fs::read_to_string(&key_path)
-            .map(|key| key.trim().to_string())
-            .map_err(|e| format!("Failed to read {}: {}", key_path.display(), e));
+    match std::fs::symlink_metadata(&key_path) {
+        Ok(_) => return read_private_key_material(&key_path),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+        Err(error) => return Err(format!("Failed to inspect {}: {error}", key_path.display())),
     }
 
     let rng = SystemRandom::new();
@@ -32,20 +34,115 @@ pub fn load_or_create_key_material(data_dir: &std::path::Path) -> Result<String,
         .map_err(|_| "Random number generation failed".to_string())?;
     let key_material = hex::encode(&bytes);
 
-    std::fs::create_dir_all(data_dir)
-        .map_err(|e| format!("Failed to create {}: {}", data_dir.display(), e))?;
-    std::fs::write(&key_path, &key_material)
-        .map_err(|e| format!("Failed to write {}: {}", key_path.display(), e))?;
-
+    let mut options = std::fs::OpenOptions::new();
+    options.write(true).create_new(true);
     #[cfg(unix)]
     {
-        use std::os::unix::fs::PermissionsExt;
-
-        std::fs::set_permissions(&key_path, std::fs::Permissions::from_mode(0o600))
-            .map_err(|e| format!("Failed to set permissions on {}: {}", key_path.display(), e))?;
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600).custom_flags(libc::O_NOFOLLOW);
     }
+    let mut file = match options.open(&key_path) {
+        Ok(file) => file,
+        // A concurrent process may have won creation. Validate and use its file.
+        Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+            return read_private_key_material(&key_path)
+        }
+        Err(error) => return Err(format!("Failed to create {}: {error}", key_path.display())),
+    };
+    file.write_all(key_material.as_bytes())
+        .and_then(|_| file.sync_all())
+        .map_err(|e| format!("Failed to write {}: {e}", key_path.display()))?;
 
     Ok(key_material)
+}
+
+fn secure_private_directory(path: &std::path::Path) -> Result<(), String> {
+    match std::fs::symlink_metadata(path) {
+        Ok(metadata) => {
+            if metadata.file_type().is_symlink() || !metadata.is_dir() {
+                return Err(format!(
+                    "Secret directory must be a real directory, not a symlink: {}",
+                    path.display()
+                ));
+            }
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::{MetadataExt, PermissionsExt};
+                if metadata.uid() != unsafe { libc::geteuid() } {
+                    return Err(format!(
+                        "Secret directory is not owned by the current user: {}",
+                        path.display()
+                    ));
+                }
+                std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o700))
+                    .map_err(|error| format!("Failed to protect {}: {error}", path.display()))?;
+            }
+        }
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+            std::fs::create_dir_all(path)
+                .map_err(|error| format!("Failed to create {}: {error}", path.display()))?;
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o700))
+                    .map_err(|error| format!("Failed to protect {}: {error}", path.display()))?;
+            }
+        }
+        Err(error) => return Err(format!("Failed to inspect {}: {error}", path.display())),
+    }
+    Ok(())
+}
+
+fn read_private_key_material(path: &std::path::Path) -> Result<String, String> {
+    let metadata = std::fs::symlink_metadata(path)
+        .map_err(|error| format!("Failed to inspect {}: {error}", path.display()))?;
+    if metadata.file_type().is_symlink() || !metadata.is_file() {
+        return Err(format!(
+            "Secret key must be a regular non-symlink file: {}",
+            path.display()
+        ));
+    }
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::{MetadataExt, OpenOptionsExt, PermissionsExt};
+        if metadata.uid() != unsafe { libc::geteuid() }
+            || metadata.permissions().mode() & 0o077 != 0
+        {
+            return Err(format!(
+                "Secret key must be owned by the current user with mode 0600: {}",
+                path.display()
+            ));
+        }
+        let mut options = std::fs::OpenOptions::new();
+        options.read(true).custom_flags(libc::O_NOFOLLOW);
+        let file = options
+            .open(path)
+            .map_err(|error| format!("Failed to open {}: {error}", path.display()))?;
+        let mut key = String::new();
+        file.take(129)
+            .read_to_string(&mut key)
+            .map_err(|error| format!("Failed to read {}: {error}", path.display()))?;
+        validate_key_material(path, key)
+    }
+    #[cfg(not(unix))]
+    {
+        let mut key = String::new();
+        std::fs::File::open(path)
+            .and_then(|mut file| file.take(129).read_to_string(&mut key))
+            .map_err(|error| format!("Failed to read {}: {error}", path.display()))?;
+        validate_key_material(path, key)
+    }
+}
+
+fn validate_key_material(path: &std::path::Path, key: String) -> Result<String, String> {
+    let key = key.trim().to_string();
+    if key.len() != 64 || !key.bytes().all(|byte| byte.is_ascii_hexdigit()) {
+        return Err(format!(
+            "Secret key must contain exactly 32 hex-encoded bytes: {}",
+            path.display()
+        ));
+    }
+    Ok(key)
 }
 
 /// Encrypt a secret string for storage.
@@ -213,5 +310,32 @@ mod tests {
             let mode = std::fs::metadata(key_path).unwrap().permissions().mode() & 0o777;
             assert_eq!(mode, 0o600);
         }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn secret_key_rejects_symlinks_and_permissive_existing_files() {
+        use std::os::unix::fs::{symlink, PermissionsExt};
+
+        let temp_dir = tempfile::tempdir().unwrap();
+        let target = temp_dir.path().join("target");
+        std::fs::write(&target, "0".repeat(64)).unwrap();
+        std::fs::set_permissions(&target, std::fs::Permissions::from_mode(0o600)).unwrap();
+        symlink(&target, temp_dir.path().join("secret.key")).unwrap();
+        assert!(load_or_create_key_material(temp_dir.path())
+            .unwrap_err()
+            .contains("non-symlink"));
+        assert_eq!(std::fs::read_to_string(&target).unwrap(), "0".repeat(64));
+
+        std::fs::remove_file(temp_dir.path().join("secret.key")).unwrap();
+        std::fs::write(temp_dir.path().join("secret.key"), "0".repeat(64)).unwrap();
+        std::fs::set_permissions(
+            temp_dir.path().join("secret.key"),
+            std::fs::Permissions::from_mode(0o644),
+        )
+        .unwrap();
+        assert!(load_or_create_key_material(temp_dir.path())
+            .unwrap_err()
+            .contains("mode 0600"));
     }
 }

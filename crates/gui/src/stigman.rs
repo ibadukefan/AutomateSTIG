@@ -7,11 +7,13 @@
 //! - List collections, assets, STIGs
 //! - Push evaluation results (reviews) with Result Engine metadata
 //! - Create assets and assign STIGs
-//! - Pull existing reviews for comparison/merge
 
+use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use std::net::IpAddr;
 use std::time::{Duration, Instant};
+
+const MAX_STIGMAN_RESPONSE_BYTES: usize = 10 * 1024 * 1024;
 
 /// STIG-Manager connection configuration.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -56,6 +58,10 @@ impl StigManagerConfig {
             && !self.client_secret.is_empty()
     }
 
+    /// Validate a possibly-empty persisted configuration.
+    ///
+    /// Both endpoints may be blank while STIG Manager is unconfigured, but a
+    /// partial endpoint pair is never accepted.
     pub fn validate_urls(&self) -> Result<(), String> {
         if self.api_url.trim().is_empty() && self.token_url.trim().is_empty() {
             return Ok(());
@@ -65,8 +71,18 @@ impl StigManagerConfig {
                 "STIG Manager api_url and token_url must both be set or both be blank".to_string(),
             );
         }
-        validate_stigman_url("api_url", &self.api_url)?;
-        validate_stigman_url("token_url", &self.token_url)?;
+        self.validate_endpoints()
+    }
+
+    /// Validate the complete endpoint pair required by a live client.
+    pub fn validate_endpoints(&self) -> Result<(), String> {
+        if self.api_url.trim().is_empty() || self.token_url.trim().is_empty() {
+            return Err(
+                "STIG Manager api_url and token_url must both be set for a connection".to_string(),
+            );
+        }
+        validate_stigman_url("STIG Manager API", &self.api_url)?;
+        validate_stigman_url("OAuth token", &self.token_url)?;
         Ok(())
     }
 }
@@ -95,8 +111,10 @@ pub(crate) fn validate_stigman_url(label: &str, raw: &str) -> Result<(), String>
     if url.scheme() != "https" {
         return Err(format!("{label} must use https://"));
     }
-    if !url.username().is_empty() || url.password().is_some() {
-        return Err(format!("{label} must not include embedded credentials"));
+    if !url.username().is_empty() || url.password().is_some() || url.fragment().is_some() {
+        return Err(format!(
+            "{label} must not include embedded credentials or a fragment"
+        ));
     }
     let host = url
         .host_str()
@@ -208,34 +226,7 @@ pub struct SmResultEngine {
     pub engine_type: String,
     pub product: String,
     pub version: String,
-    #[serde(rename = "checkContent", skip_serializing_if = "Option::is_none")]
-    pub check_content: Option<SmCheckContent>,
     pub time: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct SmCheckContent {
-    pub location: Option<String>,
-    pub component: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct SmReviewPost {
-    pub source: SmReviewSource,
-    pub assets: Vec<SmAssetReviews>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct SmReviewSource {
-    pub benchmark: String,
-    pub results: Vec<SmReview>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct SmAssetReviews {
-    #[serde(rename = "assetId")]
-    pub asset_id: String,
-    pub reviews: Vec<SmReview>,
 }
 
 // --- Token response ---
@@ -244,15 +235,51 @@ pub struct SmAssetReviews {
 struct TokenResponse {
     access_token: String,
     expires_in: Option<u64>,
-    #[allow(dead_code)]
-    token_type: Option<String>,
+}
+
+async fn parse_response<T: DeserializeOwned>(
+    mut response: reqwest::Response,
+    operation: &str,
+) -> Result<T, String> {
+    let status = response.status();
+    if response
+        .content_length()
+        .is_some_and(|length| length > MAX_STIGMAN_RESPONSE_BYTES as u64)
+    {
+        return Err(format!(
+            "{operation} response exceeds the {MAX_STIGMAN_RESPONSE_BYTES}-byte limit"
+        ));
+    }
+    let initial_capacity = response
+        .content_length()
+        .and_then(|length| usize::try_from(length).ok())
+        .unwrap_or(0)
+        .min(MAX_STIGMAN_RESPONSE_BYTES);
+    let mut body = Vec::with_capacity(initial_capacity);
+    while let Some(chunk) = response
+        .chunk()
+        .await
+        .map_err(|error| format!("Failed to read {operation} response: {error}"))?
+    {
+        if chunk.len() > MAX_STIGMAN_RESPONSE_BYTES.saturating_sub(body.len()) {
+            return Err(format!(
+                "{operation} response exceeds the {MAX_STIGMAN_RESPONSE_BYTES}-byte limit"
+            ));
+        }
+        body.extend_from_slice(&chunk);
+    }
+    if !status.is_success() {
+        let detail: String = String::from_utf8_lossy(&body).chars().take(2_000).collect();
+        return Err(format!("{operation} failed ({status}): {detail}"));
+    }
+    serde_json::from_slice(&body)
+        .map_err(|error| format!("Failed to parse {operation} response: {error}"))
 }
 
 impl StigManagerClient {
     /// Create a new client with the given configuration.
     pub fn new(config: StigManagerConfig) -> Result<Self, String> {
-        config.validate_urls()?;
-
+        config.validate_endpoints()?;
         let allow_invalid_certs = env_flag("AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS");
         let accept_invalid_certs = !config.verify_tls && allow_invalid_certs;
         if accept_invalid_certs {
@@ -263,6 +290,7 @@ impl StigManagerClient {
 
         let http = reqwest::Client::builder()
             .timeout(Duration::from_secs(30))
+            .redirect(reqwest::redirect::Policy::none())
             .danger_accept_invalid_certs(accept_invalid_certs)
             .user_agent(format!("AutomateSTIG/{}", env!("CARGO_PKG_VERSION")))
             .build()
@@ -303,16 +331,7 @@ impl StigManagerClient {
             .await
             .map_err(|e| format!("Token request failed: {}", e))?;
 
-        if !resp.status().is_success() {
-            let status = resp.status();
-            let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Authentication failed ({}): {}", status, body));
-        }
-
-        let token_resp: TokenResponse = resp
-            .json()
-            .await
-            .map_err(|e| format!("Token parse error: {}", e))?;
+        let token_resp: TokenResponse = parse_response(resp, "Authentication").await?;
 
         let expires_in = token_resp.expires_in.unwrap_or(300);
         // Refresh 30 seconds before actual expiry.
@@ -331,10 +350,10 @@ impl StigManagerClient {
     async fn get_token(&self) -> Result<String, String> {
         self.authenticate().await?;
         let guard = self.token.lock().await;
-        Ok(guard
+        guard
             .as_ref()
             .map(|t| t.access_token.clone())
-            .unwrap_or_default())
+            .ok_or_else(|| "Authentication succeeded without caching an access token".to_string())
     }
 
     /// Test the connection — authenticate and fetch user info.
@@ -351,13 +370,9 @@ impl StigManagerClient {
             .await
             .map_err(|e| format!("Connection test failed: {}", e))?;
 
-        if resp.status().is_success() {
-            let body: serde_json::Value = resp.json().await.unwrap_or_default();
-            let username = body["username"].as_str().unwrap_or("unknown");
-            Ok(format!("Connected as: {}", username))
-        } else {
-            Err(format!("API returned {}", resp.status()))
-        }
+        let body: serde_json::Value = parse_response(resp, "Connection test").await?;
+        let username = body["username"].as_str().unwrap_or("unknown");
+        Ok(format!("Connected as: {}", username))
     }
 
     /// List all collections the user has access to.
@@ -373,7 +388,7 @@ impl StigManagerClient {
             .await
             .map_err(|e| format!("Request failed: {}", e))?;
 
-        resp.json().await.map_err(|e| format!("Parse error: {}", e))
+        parse_response(resp, "List collections").await
     }
 
     /// List assets in a collection.
@@ -392,7 +407,7 @@ impl StigManagerClient {
             .await
             .map_err(|e| format!("Request failed: {}", e))?;
 
-        resp.json().await.map_err(|e| format!("Parse error: {}", e))
+        parse_response(resp, "List assets").await
     }
 
     /// List STIGs assigned to an asset.
@@ -415,7 +430,7 @@ impl StigManagerClient {
             .await
             .map_err(|e| format!("Request failed: {}", e))?;
 
-        resp.json().await.map_err(|e| format!("Parse error: {}", e))
+        parse_response(resp, "List assigned STIGs").await
     }
 
     /// Create an asset in a collection.
@@ -452,13 +467,7 @@ impl StigManagerClient {
             .await
             .map_err(|e| format!("Request failed: {}", e))?;
 
-        if !resp.status().is_success() {
-            let status = resp.status();
-            let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Create asset failed ({}): {}", status, body));
-        }
-
-        resp.json().await.map_err(|e| format!("Parse error: {}", e))
+        parse_response(resp, "Create asset").await
     }
 
     /// Push reviews (evaluation results) for an asset+STIG in a collection.
@@ -483,14 +492,8 @@ impl StigManagerClient {
             .await
             .map_err(|e| format!("Request failed: {}", e))?;
 
-        if !resp.status().is_success() {
-            let status = resp.status();
-            let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Push reviews failed ({}): {}", status, body));
-        }
-
         // STIG-Manager returns stats on success.
-        resp.json().await.map_err(|e| format!("Parse error: {}", e))
+        parse_response(resp, "Push reviews").await
     }
 
     /// Convert an AutomateSTIG checklist to STIG-Manager reviews.
@@ -501,14 +504,8 @@ impl StigManagerClient {
             .findings
             .iter()
             .map(|f| {
-                let is_automated = matches!(
-                    f.source,
-                    automatestig_core::models::finding::FindingSource::Automated
-                        | automatestig_core::models::finding::FindingSource::SccScan
-                        | automatestig_core::models::finding::FindingSource::AcasScan
-                        | automatestig_core::models::finding::FindingSource::OpenScap
-                        | automatestig_core::models::finding::FindingSource::CustomCheck
-                );
+                let is_automated =
+                    f.source == automatestig_core::models::finding::FindingSource::Automated;
 
                 SmReview {
                     rule_id: f.rule_id.clone(),
@@ -522,7 +519,6 @@ impl StigManagerClient {
                             engine_type: "script".to_string(),
                             product: "AutomateSTIG".to_string(),
                             version: env!("CARGO_PKG_VERSION").to_string(),
-                            check_content: None,
                             time: Some(f.evaluated_at.to_rfc3339()),
                         })
                     } else {
@@ -553,6 +549,72 @@ mod tests {
             verify_tls: true,
         };
         assert!(configured.is_configured());
+        assert!(configured.validate_urls().is_ok());
+        assert!(configured.validate_endpoints().is_ok());
+        assert!(empty.validate_urls().is_ok());
+        assert!(empty.validate_endpoints().is_err());
+    }
+
+    #[test]
+    fn endpoints_require_https_and_reject_userinfo_or_fragments() {
+        for invalid in [
+            "http://stigman.example.mil/api",
+            "http://127.0.0.1:54000/api",
+            "https://user:secret@stigman.example.mil/api",
+            "https://stigman.example.mil/api#fragment",
+            "file:///tmp/token",
+        ] {
+            assert!(validate_stigman_url("test", invalid).is_err());
+        }
+        assert!(validate_stigman_url("test", "https://stigman.example.mil/api").is_ok());
+    }
+
+    #[tokio::test]
+    async fn chunked_response_is_stopped_at_the_running_size_limit() {
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+
+        let listener = tokio::net::TcpListener::bind(("127.0.0.1", 0))
+            .await
+            .unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            let mut request = [0_u8; 1024];
+            let _ = stream.read(&mut request).await;
+            stream
+                .write_all(
+                    b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\n\r\n",
+                )
+                .await
+                .unwrap();
+            let chunk = vec![b'x'; 1024 * 1024];
+            for _ in 0..=MAX_STIGMAN_RESPONSE_BYTES / chunk.len() {
+                if stream
+                    .write_all(format!("{:X}\r\n", chunk.len()).as_bytes())
+                    .await
+                    .is_err()
+                {
+                    return;
+                }
+                if stream.write_all(&chunk).await.is_err()
+                    || stream.write_all(b"\r\n").await.is_err()
+                {
+                    return;
+                }
+            }
+            let _ = stream.write_all(b"0\r\n\r\n").await;
+        });
+
+        let response = reqwest::Client::new()
+            .get(format!("http://{address}/oversized"))
+            .send()
+            .await
+            .unwrap();
+        let error = parse_response::<serde_json::Value>(response, "Chunked test")
+            .await
+            .unwrap_err();
+        assert!(error.contains("exceeds"), "unexpected error: {error}");
+        server.await.unwrap();
     }
 
     #[test]
@@ -614,7 +676,7 @@ mod tests {
         let mut cl = Checklist::new(Asset::new("server01"), stig_info);
         let mut f = Finding::new_not_reviewed("V-1", "SV-1r1_rule", "V-1", "Test", Severity::High);
         f.status = FindingStatus::Open;
-        f.source = FindingSource::SccScan;
+        f.source = FindingSource::Automated;
         f.finding_details = "Not configured".to_string();
         cl.findings.push(f);
 

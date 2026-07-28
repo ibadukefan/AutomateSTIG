@@ -11,6 +11,7 @@ path = "src/main.rs"
 
 [dependencies]
 automatestig-core = { workspace = true }
+automatestig-collector = { workspace = true }
 automatestig-parsers = { workspace = true }
 automatestig-storage = { workspace = true }
 automatestig-stigpack = { workspace = true }
@@ -22,4 +23,10 @@ tracing-subscriber = { workspace = true }
 chrono = { workspace = true }
 console = { workspace = true }
 sha2.workspace = true
-zip = { workspace = true }
+tokio = { workspace = true }
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[dev-dependencies]
+tempfile = { workspace = true }

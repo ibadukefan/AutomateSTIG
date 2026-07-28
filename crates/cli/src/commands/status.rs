@@ -42,13 +42,14 @@ pub fn run(cli: &crate::Cli) -> Result<()> {
     let db = db_path(cli);
     match Database::open(&db) {
         Ok(database) => {
-            let checklists = database.list_checklists().unwrap_or_default();
+            let checklists = database.list_checklists()?;
             ui::detail("Location", &db.display().to_string());
             ui::detail("Checklists", &checklists.len().to_string());
         }
-        Err(_) => {
+        Err(_) if !db.exists() => {
             ui::detail("Status", "Not yet created");
         }
+        Err(error) => return Err(error.into()),
     }
 
     println!();

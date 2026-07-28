@@ -1,20 +1,22 @@
 //! REST API endpoints for the GUI.
 
 use std::collections::HashSet;
-use std::io::Read;
 use std::path::Path;
 
 use axum::extract::{Multipart, State};
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
 use axum::{Json, Router};
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 
-use automatestig_core::engine::EvaluationEngine;
+use automatestig_core::library::{BenchmarkImport, GeneratedCheckPackIntent};
 use automatestig_core::models::asset::Asset;
-use automatestig_core::models::checklist::Checklist;
-use automatestig_core::models::finding::FindingStatus;
+use automatestig_core::models::checklist::{Checklist, EvaluationOrigin, EvaluationProvenance};
+use automatestig_core::models::finding::{FindingSource, FindingStatus};
 use automatestig_core::models::stig::Severity;
-use automatestig_parsers::{ckl, cklb, xccdf};
+use automatestig_parsers::{ckl, cklb, disa};
 
 use crate::state::AppState;
 
@@ -26,24 +28,29 @@ pub fn routes() -> Router<AppState> {
         // Library
         .route("/library/benchmarks", get(list_benchmarks))
         .route("/library/benchmarks/{id}", get(get_benchmark))
-        .route("/library/import-disa", post(import_disa))
-        .route("/library/import-stigpack", post(import_stigpack))
+        .route(
+            "/library/import-disa",
+            post(import_disa).layer(axum::extract::DefaultBodyLimit::max(
+                (disa::MAX_DISA_ARCHIVE_BYTES + 1024 * 1024) as usize,
+            )),
+        )
+        .route(
+            "/library/import-stigpack",
+            post(import_stigpack).layer(axum::extract::DefaultBodyLimit::max(257 * 1024 * 1024)),
+        )
         // Checklists
         .route("/checklists", get(list_checklists))
         .route("/checklists/{id}", get(get_checklist))
         .route("/checklists/{id}", axum::routing::delete(delete_checklist))
         .route("/checklists/import", post(import_checklist))
-        // Evaluate
-        .route("/evaluate", post(evaluate))
-        // Auto-generate check packs from imported benchmarks
-        .route("/library/generate-checks/{id}", post(generate_checks))
         // DISA content fetching
         .route("/disa/available", get(disa_list_available))
         .route("/disa/fetch", post(disa_fetch))
         .route("/disa/fetch-all", post(disa_fetch_all))
         .route("/disa/check-updates", get(disa_check_updates))
-        // Offline pack for air-gapped transfer
+        // Explicit external signing key required; no GUI key generation.
         .route("/offline-pack", get(generate_offline_pack))
+        .route("/offline-pack/trust-key", get(download_offline_trust_key))
         // STIG-Manager integration
         .route("/stigman/config", get(stigman_get_config))
         .route("/stigman/config", post(stigman_set_config))
@@ -56,15 +63,13 @@ pub fn routes() -> Router<AppState> {
         .route("/stigman/sync/{cid}", post(stigman_sync_assets))
         .route("/stigman/diff/{cid}", get(stigman_diff_assets))
         .route("/stigman/push/{checklist_id}", post(stigman_push_checklist))
-        // Batch evaluation
-        .route("/evaluate/batch", post(evaluate_batch))
         // Finding editing
         .route(
             "/checklists/{id}/findings/{vuln_id}",
             axum::routing::patch(update_finding),
         )
-        // Scan import (file upload -> evaluate)
-        .route("/evaluate/with-scan", post(evaluate_with_scan))
+        // Uploaded device evidence or running configuration
+        .route("/evaluate/with-evidence", post(evaluate_with_evidence))
         // Remote scanning
         .route("/scan/ssh", post(scan_ssh))
         // Asset inventory
@@ -73,24 +78,87 @@ pub fn routes() -> Router<AppState> {
         .route("/assets/{id}", get(get_asset_inv))
         .route("/assets/{id}", axum::routing::put(update_asset_inv))
         .route("/assets/{id}", axum::routing::delete(delete_asset_inv))
-        // Credential vault
-        .route("/credentials", get(list_credentials))
-        .route("/credentials", post(create_credential))
-        .route(
-            "/credentials/{id}",
-            axum::routing::delete(delete_credential),
-        )
         // Bulk operations
         .route("/assets/bulk-assign-stig", post(bulk_assign_stig))
         .route("/assets/bulk-update", post(bulk_update_assets))
-        .route("/checklists/{id}/re-evaluate", post(re_evaluate))
         // Answer file management
         .route("/answer-files", get(list_answer_files))
         .route("/answer-files", post(save_answer_file))
+        // Immutable checklist audit trail
+        .route("/audit-log", get(list_audit_log))
         // Export
         .route("/export/ckl/{id}", get(export_ckl))
         .route("/export/cklb/{id}", get(export_cklb))
         .route("/export/all-zip", get(export_all_zip))
+}
+
+fn trusted_content_keys_dir() -> std::path::PathBuf {
+    std::env::var("AUTOMATESTIG_TRUSTED_KEYS_DIR")
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|_| {
+            std::env::var("HOME")
+                .or_else(|_| std::env::var("USERPROFILE"))
+                .map(std::path::PathBuf::from)
+                .unwrap_or_else(|_| std::path::PathBuf::from("."))
+                .join(".automatestig")
+                .join("trusted_keys")
+        })
+}
+
+fn load_external_offline_signing_key(state: &AppState) -> Result<([u8; 32], [u8; 32]), String> {
+    let private_path = std::env::var("AUTOMATESTIG_OFFLINE_SIGNING_KEY")
+        .map(std::path::PathBuf::from)
+        .map_err(|_| {
+            "GUI offline-pack export is disabled. Set AUTOMATESTIG_OFFLINE_SIGNING_KEY to an existing external key only for a controlled signing host, or use the CLI build-pack command offline."
+                .to_string()
+        })?;
+    let canonical_private = private_path.canonicalize().map_err(|error| {
+        format!(
+            "Failed to resolve external offline signing key {}: {error}",
+            private_path.display()
+        )
+    })?;
+    if let Ok(canonical_data_dir) = state.inner.data_dir.canonicalize() {
+        if canonical_private.starts_with(&canonical_data_dir) {
+            return Err(format!(
+                "Offline signing key must be outside the AutomateSTIG application data directory: {}",
+                state.inner.data_dir.display()
+            ));
+        }
+    }
+    let public_path = private_path.with_extension("pub");
+    automatestig_stigpack::signing::load_signing_key_pair(&private_path, &public_path)
+        .map_err(|error| format!("Failed to load external offline signing key pair: {error}"))
+}
+
+fn add_trusted_executables_to_offline_pack(
+    mut builder: automatestig_stigpack::builder::PackBuilder,
+    library: &automatestig_core::library::StigLibrary,
+    trusted_public_keys: &[[u8; 32]],
+) -> Result<automatestig_stigpack::builder::PackBuilder, String> {
+    let custom_checks = library
+        .load_trusted_executable_files("custom_checks", trusted_public_keys)
+        .map_err(|error| format!("Refusing to re-sign untrusted custom checks: {error}"))?;
+    for file in custom_checks {
+        let path = file.relative_path.to_string_lossy().replace('\\', "/");
+        builder = builder.add_file_bytes(&path, &file.bytes);
+    }
+
+    // Never re-sign legacy local auto_check_packs. Only bytes whose retained
+    // signed provenance still verifies are eligible for offline re-packaging.
+    let reviewed = library
+        .load_trusted_executable_files("reviewed_check_packs", trusted_public_keys)
+        .map_err(|error| format!("Refusing to re-sign untrusted reviewed checks: {error}"))?;
+    for file in reviewed {
+        let filename = file
+            .relative_path
+            .strip_prefix("reviewed_check_packs")
+            .map_err(|_| "Reviewed check path escaped its trusted directory".to_string())?;
+        let archive_path = Path::new("auto_check_packs").join(filename);
+        let archive_path = archive_path.to_string_lossy().replace('\\', "/");
+        builder = builder.add_file_bytes(&archive_path, &file.bytes);
+    }
+    Ok(builder)
 }
 
 // ---------------------------------------------------------------------------
@@ -125,12 +193,50 @@ fn api_ok(data: impl Serialize) -> Json<serde_json::Value> {
     }))
 }
 
+fn sha256_hex(data: &[u8]) -> String {
+    format!("{:x}", Sha256::digest(data))
+}
+
 fn api_error(msg: &str) -> Json<serde_json::Value> {
     Json(serde_json::json!({
         "success": false,
         "data": null,
         "error": msg
     }))
+}
+
+fn api_response(
+    status: StatusCode,
+    data: Option<serde_json::Value>,
+    error: Option<&str>,
+) -> Response {
+    (
+        status,
+        Json(serde_json::json!({
+            "success": status.is_success(),
+            "data": data,
+            "error": error
+        })),
+    )
+        .into_response()
+}
+
+fn api_response_ok(data: impl Serialize) -> Response {
+    let value = match serde_json::to_value(data) {
+        Ok(value) => value,
+        Err(error) => {
+            return api_response(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                None,
+                Some(&format!("Failed to serialize response: {error}")),
+            )
+        }
+    };
+    api_response(StatusCode::OK, Some(value), None)
+}
+
+fn api_response_error(status: StatusCode, message: impl AsRef<str>) -> Response {
+    api_response(status, None, Some(message.as_ref()))
 }
 
 // ---------------------------------------------------------------------------
@@ -145,11 +251,14 @@ struct StatusResponse {
 }
 
 async fn get_status(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let benchmark_count = state
-        .library()
-        .map(|l| l.list_benchmarks().len())
-        .unwrap_or(0);
-    let checklist_count = state.db().list_checklists().map(|c| c.len()).unwrap_or(0);
+    let benchmark_count = match state.library() {
+        Ok(library) => library.list_benchmarks().len(),
+        Err(error) => return api_error(&error.to_string()),
+    };
+    let checklist_count = match state.db().list_checklists() {
+        Ok(checklists) => checklists.len(),
+        Err(error) => return api_error(&format!("Failed to read checklist database: {error}")),
+    };
 
     api_ok(StatusResponse {
         version: env!("CARGO_PKG_VERSION").to_string(),
@@ -177,34 +286,27 @@ struct BenchmarkInfo {
 async fn list_benchmarks(State(state): State<AppState>) -> Json<serde_json::Value> {
     match state.library() {
         Ok(library) => {
-            let benchmarks: Vec<BenchmarkInfo> = library
+            let benchmarks = library
                 .list_benchmarks()
                 .iter()
                 .map(|b| {
-                    let (cat_i, cat_ii, cat_iii) = library
-                        .load_benchmark(&b.id)
-                        .map(|full| {
-                            (
-                                full.rules_by_severity(Severity::High).len(),
-                                full.rules_by_severity(Severity::Medium).len(),
-                                full.rules_by_severity(Severity::Low).len(),
-                            )
-                        })
-                        .unwrap_or((0, 0, 0));
-
-                    BenchmarkInfo {
+                    let full = library.load_benchmark(&b.id)?;
+                    Ok(BenchmarkInfo {
                         id: b.id.clone(),
                         title: b.title.clone(),
                         version: b.version.clone(),
                         platform: b.platform_family.clone(),
                         rule_count: b.rule_count,
-                        cat_i,
-                        cat_ii,
-                        cat_iii,
-                    }
+                        cat_i: full.rules_by_severity(Severity::High).len(),
+                        cat_ii: full.rules_by_severity(Severity::Medium).len(),
+                        cat_iii: full.rules_by_severity(Severity::Low).len(),
+                    })
                 })
-                .collect();
-            api_ok(benchmarks)
+                .collect::<automatestig_core::Result<Vec<_>>>();
+            match benchmarks {
+                Ok(benchmarks) => api_ok(benchmarks),
+                Err(error) => api_error(&format!("Failed to load benchmark index: {error}")),
+            }
         }
         Err(e) => api_error(&e.to_string()),
     }
@@ -282,237 +384,290 @@ struct ImportResult {
     details: Vec<String>,
 }
 
-async fn import_disa(
-    State(state): State<AppState>,
+async fn stream_single_upload(
     mut multipart: Multipart,
-) -> Json<serde_json::Value> {
-    let mut imported = 0;
-    let mut skipped = 0;
-    let mut details = Vec::new();
-
-    while let Ok(Some(field)) = multipart.next_field().await {
-        let filename = field.file_name().unwrap_or("upload").to_string();
-        let data = match field.bytes().await {
-            Ok(d) => d,
-            Err(e) => {
-                return api_error(&format!("Failed to read upload: {}", e));
-            }
-        };
-
-        let mut library = match state.library() {
-            Ok(l) => l,
-            Err(e) => return api_error(&e.to_string()),
-        };
-
-        if filename.ends_with(".zip") {
-            if data.len() > crate::disa::MAX_XCCDF_ZIP_BYTES {
-                return api_error(&format!(
-                    "ZIP file too large: {} > {} bytes",
-                    data.len(),
-                    crate::disa::MAX_XCCDF_ZIP_BYTES
-                ));
-            }
-            // Parse ZIP for XCCDF files.
-            let cursor = std::io::Cursor::new(&data);
-            match zip::ZipArchive::new(cursor) {
-                Ok(mut archive) => {
-                    if let Err(e) = crate::disa::validate_xccdf_zip_limits(&mut archive) {
-                        return api_error(&format!("Unsafe ZIP file: {}", e));
-                    }
-                    for i in 0..archive.len() {
-                        let mut file = match archive.by_index(i) {
-                            Ok(f) => f,
-                            Err(_) => continue,
-                        };
-                        let name = file.name().to_string();
-                        let lower = name.to_lowercase();
-                        if lower.ends_with("-xccdf.xml") || lower.ends_with("_xccdf.xml") {
-                            let mut xml = String::new();
-                            if file.read_to_string(&mut xml).is_ok() {
-                                match xccdf::parse_xccdf_benchmark_str(&xml) {
-                                    Ok(benchmark) => {
-                                        let info = format!(
-                                            "{} {} ({} rules)",
-                                            benchmark.id,
-                                            benchmark.version_string(),
-                                            benchmark.rules.len()
-                                        );
-                                        match library.add_benchmark(&benchmark) {
-                                            Ok(()) => {
-                                                // Auto-generate check pack from check-content text.
-                                                let conv =
-                                                    automatestig_core::converter::convert_benchmark(
-                                                        &benchmark,
-                                                    );
-                                                if conv.automated > 0 {
-                                                    let packs_dir =
-                                                        library.root().join("auto_check_packs");
-                                                    let _ = std::fs::create_dir_all(&packs_dir);
-                                                    if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
-                                                        if let Ok(dest) = automatestig_core::path_safety::safe_join_under(&packs_dir, &format!("{}.json", benchmark.id)) {
-                                                            let _ = std::fs::write(dest, &json);
-                                                        }
-                                                    }
-                                                    details.push(format!(
-                                                        "Imported: {} (auto-generated {} checks)",
-                                                        info, conv.automated
-                                                    ));
-                                                } else {
-                                                    details.push(format!("Imported: {}", info));
-                                                }
-                                                imported += 1;
-                                            }
-                                            Err(e) => {
-                                                details.push(format!("Failed: {} - {}", info, e));
-                                                skipped += 1;
-                                            }
-                                        }
-                                    }
-                                    Err(e) => {
-                                        details.push(format!("Parse error in {}: {}", name, e));
-                                        skipped += 1;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                Err(e) => {
-                    return api_error(&format!("Invalid ZIP file: {}", e));
-                }
-            }
-        } else if filename.ends_with(".xml") {
-            let xml = String::from_utf8_lossy(&data);
-            match xccdf::parse_xccdf_benchmark_str(&xml) {
-                Ok(benchmark) => {
-                    let info = format!(
-                        "{} {} ({} rules)",
-                        benchmark.id,
-                        benchmark.version_string(),
-                        benchmark.rules.len()
-                    );
-                    match library.add_benchmark(&benchmark) {
-                        Ok(()) => {
-                            let conv = automatestig_core::converter::convert_benchmark(&benchmark);
-                            if conv.automated > 0 {
-                                let packs_dir = library.root().join("auto_check_packs");
-                                let _ = std::fs::create_dir_all(&packs_dir);
-                                if let Ok(json) = automatestig_core::converter::check_pack_to_json(
-                                    &conv.check_pack,
-                                ) {
-                                    if let Ok(dest) =
-                                        automatestig_core::path_safety::safe_join_under(
-                                            &packs_dir,
-                                            &format!("{}.json", benchmark.id),
-                                        )
-                                    {
-                                        let _ = std::fs::write(dest, &json);
-                                    }
-                                }
-                                details.push(format!(
-                                    "Imported: {} (auto-generated {} checks)",
-                                    info, conv.automated
-                                ));
-                            } else {
-                                details.push(format!("Imported: {}", info));
-                            }
-                            imported += 1;
-                        }
-                        Err(e) => {
-                            details.push(format!("Failed: {} - {}", info, e));
-                            skipped += 1;
-                        }
-                    }
-                }
-                Err(e) => {
-                    return api_error(&format!("Failed to parse XCCDF: {}", e));
-                }
-            }
+    max_bytes: u64,
+) -> Result<(String, tempfile::NamedTempFile), (StatusCode, String)> {
+    let mut field = multipart
+        .next_field()
+        .await
+        .map_err(multipart_error)?
+        .ok_or_else(|| (StatusCode::BAD_REQUEST, "No file uploaded".to_owned()))?;
+    let filename = field.file_name().unwrap_or("upload").to_owned();
+    let mut temporary = tempfile::NamedTempFile::new().map_err(|error| {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Failed to create upload staging file: {error}"),
+        )
+    })?;
+    let mut received = 0u64;
+    while let Some(chunk) = field.chunk().await.map_err(multipart_error)? {
+        received = received.checked_add(chunk.len() as u64).ok_or_else(|| {
+            (
+                StatusCode::PAYLOAD_TOO_LARGE,
+                "Upload size overflow".to_owned(),
+            )
+        })?;
+        if received > max_bytes {
+            return Err((
+                StatusCode::PAYLOAD_TOO_LARGE,
+                format!("Upload exceeds the {max_bytes}-byte limit"),
+            ));
         }
+        std::io::Write::write_all(temporary.as_file_mut(), &chunk).map_err(|error| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to stage upload: {error}"),
+            )
+        })?;
     }
+    drop(field);
+    std::io::Write::flush(temporary.as_file_mut()).map_err(|error| {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Failed to flush upload staging file: {error}"),
+        )
+    })?;
 
-    api_ok(ImportResult {
-        imported,
-        skipped,
-        details,
-    })
+    match multipart.next_field().await {
+        Ok(None) => Ok((filename, temporary)),
+        Ok(Some(_)) => Err((
+            StatusCode::BAD_REQUEST,
+            "Exactly one uploaded file is required".to_owned(),
+        )),
+        Err(error) => Err(multipart_error(error)),
+    }
 }
 
-async fn import_stigpack(
-    State(state): State<AppState>,
-    mut multipart: Multipart,
-) -> Json<serde_json::Value> {
-    let field = match multipart.next_field().await {
-        Ok(Some(f)) => f,
-        Ok(None) => return api_error("No file uploaded"),
-        Err(e) => return api_error(&format!("Upload error: {}", e)),
+fn multipart_error(error: axum::extract::multipart::MultipartError) -> (StatusCode, String) {
+    let message = error.to_string();
+    let lower = message.to_ascii_lowercase();
+    let status = if lower.contains("length limit") || lower.contains("too large") {
+        StatusCode::PAYLOAD_TOO_LARGE
+    } else {
+        StatusCode::BAD_REQUEST
     };
+    (status, format!("Invalid multipart upload: {message}"))
+}
+
+enum DisaTaskError {
+    Input(disa::DisaImportError),
+    Library(String),
+}
+
+async fn import_disa(State(state): State<AppState>, multipart: Multipart) -> Response {
+    let (filename, temporary) =
+        match stream_single_upload(multipart, disa::MAX_DISA_ARCHIVE_BYTES).await {
+            Ok(upload) => upload,
+            Err((status, error)) => return api_response_error(status, error),
+        };
+    let extension = Path::new(&filename)
+        .extension()
+        .and_then(|value| value.to_str())
+        .unwrap_or("")
+        .to_ascii_lowercase();
+    if extension != "zip" && extension != "xml" {
+        return api_response_error(
+            StatusCode::UNSUPPORTED_MEDIA_TYPE,
+            "Expected a .zip DISA archive or .xml XCCDF benchmark",
+        );
+    }
+
+    let permit = match state
+        .inner
+        .content_import_lock
+        .clone()
+        .acquire_owned()
+        .await
     {
-        let data = match field.bytes().await {
-            Ok(d) => d,
-            Err(e) => return api_error(&format!("Failed to read upload: {}", e)),
-        };
-
-        // Write to temp file for the importer.
-        let tmp = match tempfile::NamedTempFile::new() {
-            Ok(f) => f,
-            Err(e) => return api_error(&format!("Failed to create temp file: {}", e)),
-        };
-        if let Err(e) = std::fs::write(tmp.path(), &data) {
-            return api_error(&format!("Failed to write temp file: {}", e));
+        Ok(permit) => permit,
+        Err(_) => {
+            return api_response_error(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Content import coordinator is unavailable",
+            )
         }
+    };
+    let task_state = state.clone();
+    let task = tokio::task::spawn_blocking(move || {
+        // spawn_blocking tasks continue after their waiting request is cancelled;
+        // the worker must own the permit for exactly that lifetime.
+        let _permit = permit;
+        let parsed = if extension == "zip" {
+            disa::parse_disa_zip_path(temporary.path())
+        } else {
+            disa::parse_xccdf_path(temporary.path()).map(|benchmark| vec![benchmark])
+        }
+        .map_err(DisaTaskError::Input)?;
 
-        let mut library = match state.library() {
-            Ok(l) => l,
-            Err(e) => return api_error(&e.to_string()),
-        };
+        let imports: Vec<_> = parsed
+            .iter()
+            .map(|item| BenchmarkImport::new(&item.benchmark, GeneratedCheckPackIntent::Remove))
+            .collect();
+        let mut library = task_state
+            .library()
+            .map_err(|error| DisaTaskError::Library(error.to_string()))?;
+        let outcome = library
+            .import_benchmarks(&imports)
+            .map_err(|error| DisaTaskError::Library(error.to_string()))?;
+        let details = parsed
+            .iter()
+            .map(|item| {
+                format!(
+                    "{} {} ({} rules, reference content only; source {})",
+                    item.benchmark.id,
+                    item.benchmark.version_string(),
+                    item.benchmark.rules.len(),
+                    item.source_name
+                )
+            })
+            .collect();
+        Ok::<_, DisaTaskError>(ImportResult {
+            imported: outcome.added_count() + outcome.updated_count(),
+            skipped: 0,
+            details,
+        })
+    })
+    .await;
 
+    match task {
+        Ok(Ok(result)) => api_response_ok(result),
+        Ok(Err(DisaTaskError::Input(error))) => {
+            let status = match &error {
+                disa::DisaImportError::Archive(archive) if !archive.is_resource_limit() => {
+                    StatusCode::BAD_REQUEST
+                }
+                error if error.is_resource_limit() => StatusCode::PAYLOAD_TOO_LARGE,
+                disa::DisaImportError::Io(_) => StatusCode::INTERNAL_SERVER_ERROR,
+                _ => StatusCode::UNPROCESSABLE_ENTITY,
+            };
+            api_response_error(status, error.to_string())
+        }
+        Ok(Err(DisaTaskError::Library(error))) => {
+            api_response_error(StatusCode::INTERNAL_SERVER_ERROR, error)
+        }
+        Err(error) => api_response_error(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Content import worker failed: {error}"),
+        ),
+    }
+}
+
+enum StigpackTaskError {
+    Pack(automatestig_stigpack::StigpackError),
+    Configuration(String),
+    Library(String),
+}
+
+async fn import_stigpack(State(state): State<AppState>, multipart: Multipart) -> Response {
+    let compressed_limit =
+        automatestig_stigpack::verifier::stigpack_archive_policy().max_compressed_bytes;
+    let (filename, temporary) = match stream_single_upload(multipart, compressed_limit).await {
+        Ok(upload) => upload,
+        Err((status, error)) => return api_response_error(status, error),
+    };
+    if !filename.to_ascii_lowercase().ends_with(".stigpack") {
+        return api_response_error(
+            StatusCode::UNSUPPORTED_MEDIA_TYPE,
+            "Expected a .stigpack file",
+        );
+    }
+    let permit = match state
+        .inner
+        .content_import_lock
+        .clone()
+        .acquire_owned()
+        .await
+    {
+        Ok(permit) => permit,
+        Err(_) => {
+            return api_response_error(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Content import coordinator is unavailable",
+            )
+        }
+    };
+    let task_state = state.clone();
+    let task = tokio::task::spawn_blocking(move || {
+        let _permit = permit;
+        let mut library = task_state
+            .library()
+            .map_err(|error| StigpackTaskError::Library(error.to_string()))?;
         let allow_unsigned = std::env::var("AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK")
-            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+            .map(|value| matches!(value.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
             .unwrap_or(false);
-        let import_result = if allow_unsigned {
-            automatestig_stigpack::importer::import_pack(tmp.path(), &mut library)
+        let result = if allow_unsigned {
+            automatestig_stigpack::importer::import_pack_untrusted(
+                temporary.path(),
+                &mut library,
+            )
         } else {
             let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
-            let trust_dir = std::env::var("AUTOMATESTIG_TRUSTED_KEYS_DIR")
-                .map(std::path::PathBuf::from)
-                .unwrap_or_else(|_| {
-                    std::env::var("HOME")
-                        .or_else(|_| std::env::var("USERPROFILE"))
-                        .map(std::path::PathBuf::from)
-                        .unwrap_or_else(|_| std::path::PathBuf::from("."))
-                        .join(".automatestig")
-                        .join("trusted_keys")
-                });
-            if let Err(e) = trust_store.load_from_directory(&trust_dir) {
-                return api_error(&format!("Failed to load trusted .stigpack keys: {}", e));
-            }
+            let trust_dir = trusted_content_keys_dir();
+            trust_store.load_from_directory(&trust_dir).map_err(|error| {
+                StigpackTaskError::Configuration(format!(
+                    "Failed to load trusted .stigpack keys: {error}"
+                ))
+            })?;
             if trust_store.is_empty() {
-                return api_error(
-                    "Trusted .stigpack signature required, but no trusted keys are configured. Add Ed25519 .pub files to AUTOMATESTIG_TRUSTED_KEYS_DIR or set AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1 for explicit lab-only import.",
-                );
+                return Err(StigpackTaskError::Configuration(
+                    "Trusted .stigpack signature required, but no trusted keys are configured. Add Ed25519 .pub files to AUTOMATESTIG_TRUSTED_KEYS_DIR or set AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1 for explicit lab-only import."
+                        .to_owned(),
+                ));
             }
             automatestig_stigpack::importer::import_pack_trusted(
-                tmp.path(),
+                temporary.path(),
                 &mut library,
                 &trust_store,
             )
-        };
+        }
+        .map_err(StigpackTaskError::Pack)?;
 
-        match import_result {
-            Ok(result) => api_ok(ImportResult {
+        Ok::<_, StigpackTaskError>(ImportResult {
                 imported: result.benchmarks_imported,
                 skipped: 0,
                 details: vec![format!(
-                    "Pack {} v{}: {} benchmarks, {} templates",
+                    "Pack {} v{}: {} benchmarks, {} templates, {} custom checks, {} generated check packs",
                     result.pack_id,
                     result.pack_version,
                     result.benchmarks_imported,
-                    result.answer_templates_imported
+                    result.answer_templates_imported,
+                    result.custom_checks_imported,
+                    result.auto_check_packs_imported,
                 )],
-            }),
-            Err(e) => api_error(&format!("Import failed: {}", e)),
+            })
+    })
+    .await;
+
+    match task {
+        Ok(Ok(result)) => api_response_ok(result),
+        Ok(Err(StigpackTaskError::Pack(error))) => {
+            let status = match &error {
+                automatestig_stigpack::StigpackError::Archive(archive)
+                    if archive.is_resource_limit() =>
+                {
+                    StatusCode::PAYLOAD_TOO_LARGE
+                }
+                automatestig_stigpack::StigpackError::Archive(_)
+                | automatestig_stigpack::StigpackError::Zip(_) => StatusCode::BAD_REQUEST,
+                automatestig_stigpack::StigpackError::Io(_)
+                | automatestig_stigpack::StigpackError::Library(_) => {
+                    StatusCode::INTERNAL_SERVER_ERROR
+                }
+                _ => StatusCode::UNPROCESSABLE_ENTITY,
+            };
+            api_response_error(status, format!("Import failed: {error}"))
         }
+        Ok(Err(StigpackTaskError::Configuration(error))) => {
+            api_response_error(StatusCode::UNPROCESSABLE_ENTITY, error)
+        }
+        Ok(Err(StigpackTaskError::Library(error))) => {
+            api_response_error(StatusCode::INTERNAL_SERVER_ERROR, error)
+        }
+        Err(error) => api_response_error(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Content import worker failed: {error}"),
+        ),
     }
 }
 
@@ -534,10 +689,23 @@ struct ChecklistInfo {
     not_a_finding: usize,
     not_applicable: usize,
     not_reviewed: usize,
-    compliance_pct: f64,
+    assessed_pass_pct: Option<f64>,
+    benchmark_coverage_pct: Option<f64>,
+    /// Deprecated compatibility alias for `assessed_pass_pct`.
+    compliance_pct: Option<f64>,
+    collection_complete: Option<bool>,
+    evaluation_origin: Option<EvaluationOrigin>,
     cat_i_open: usize,
     cat_ii_open: usize,
     cat_iii_open: usize,
+}
+
+fn defensible_score(checklist: &Checklist, score: f64) -> Option<f64> {
+    let is_unverified_import = checklist
+        .evaluation_provenance
+        .as_ref()
+        .is_some_and(|provenance| provenance.origin == EvaluationOrigin::ImportedChecklist);
+    (checklist.external_export_block_reason().is_none() && !is_unverified_import).then_some(score)
 }
 
 async fn list_checklists(State(state): State<AppState>) -> Json<serde_json::Value> {
@@ -562,7 +730,17 @@ async fn list_checklists(State(state): State<AppState>) -> Json<serde_json::Valu
                         not_a_finding: s.not_a_finding,
                         not_applicable: s.not_applicable,
                         not_reviewed: s.not_reviewed,
-                        compliance_pct: s.compliance_pct(),
+                        assessed_pass_pct: defensible_score(&cl, s.assessed_pass_pct()),
+                        benchmark_coverage_pct: defensible_score(&cl, s.benchmark_coverage_pct()),
+                        compliance_pct: defensible_score(&cl, s.assessed_pass_pct()),
+                        collection_complete: cl
+                            .evaluation_provenance
+                            .as_ref()
+                            .map(|provenance| provenance.collection_complete),
+                        evaluation_origin: cl
+                            .evaluation_provenance
+                            .as_ref()
+                            .map(|provenance| provenance.origin),
                         cat_i_open: s.cat_i_open,
                         cat_ii_open: s.cat_ii_open,
                         cat_iii_open: s.cat_iii_open,
@@ -587,7 +765,11 @@ struct ChecklistDetail {
     not_a_finding: usize,
     not_applicable: usize,
     not_reviewed: usize,
-    compliance_pct: f64,
+    assessed_pass_pct: Option<f64>,
+    benchmark_coverage_pct: Option<f64>,
+    /// Deprecated compatibility alias for `assessed_pass_pct`.
+    compliance_pct: Option<f64>,
+    evaluation_provenance: Option<EvaluationProvenance>,
     cat_i_open: usize,
     cat_ii_open: usize,
     cat_iii_open: usize,
@@ -614,6 +796,9 @@ async fn get_checklist(
     match db.load_checklist(&id) {
         Ok(cl) => {
             let s = cl.summary();
+            let assessed_pass_pct = defensible_score(&cl, s.assessed_pass_pct());
+            let benchmark_coverage_pct = defensible_score(&cl, s.benchmark_coverage_pct());
+            let evaluation_provenance = cl.evaluation_provenance.clone();
             let findings: Vec<FindingInfo> = cl
                 .findings
                 .iter()
@@ -644,7 +829,10 @@ async fn get_checklist(
                 not_a_finding: s.not_a_finding,
                 not_applicable: s.not_applicable,
                 not_reviewed: s.not_reviewed,
-                compliance_pct: s.compliance_pct(),
+                assessed_pass_pct,
+                benchmark_coverage_pct,
+                compliance_pct: assessed_pass_pct,
+                evaluation_provenance,
                 cat_i_open: s.cat_i_open,
                 cat_ii_open: s.cat_ii_open,
                 cat_iii_open: s.cat_iii_open,
@@ -688,7 +876,7 @@ async fn import_checklist(
             .and_then(|e| e.to_str())
             .unwrap_or("");
 
-        let checklist = match ext {
+        let mut checklist = match ext {
             "ckl" => match ckl::parse_ckl(&text) {
                 Ok(c) => c,
                 Err(e) => return api_error(&format!("CKL parse error: {}", e)),
@@ -702,6 +890,51 @@ async fn import_checklist(
             },
             _ => return api_error(&format!("Unsupported format: .{}", ext)),
         };
+
+        if ext.eq_ignore_ascii_case("json") {
+            let unsafe_or_incomplete =
+                checklist
+                    .evaluation_provenance
+                    .as_ref()
+                    .is_some_and(|provenance| {
+                        !provenance.collection_complete
+                            || !provenance.collection_errors.is_empty()
+                            || provenance.unsafe_legacy_evidence
+                    })
+                    || checklist
+                        .findings
+                        .iter()
+                        .any(|finding| finding.source == FindingSource::CollectionError);
+            if unsafe_or_incomplete {
+                return api_error(
+                    "Incomplete or unsafe evaluation JSON cannot be imported as a checklist",
+                );
+            }
+        }
+
+        // Treat every uploaded checklist as an untrusted imported assertion.
+        // In particular, JSON must not be able to forge `Automated` findings
+        // which STIG Manager would publish as an AutomateSTIG autoResult.
+        let claimed_generated_by = checklist.generated_by.clone();
+        checklist.generated_by = format!("Imported by AutomateSTIG {}", env!("CARGO_PKG_VERSION"));
+        for finding in &mut checklist.findings {
+            finding.source = FindingSource::Imported;
+            finding.evaluated_by = "Imported checklist (unverified provenance)".to_string();
+        }
+        checklist.evaluation_provenance = Some(EvaluationProvenance {
+            origin: EvaluationOrigin::ImportedChecklist,
+            collection_complete: false,
+            collection_errors: vec![
+                "collection completeness is unknown for an imported checklist".to_string(),
+            ],
+            evidence_sha256: Some(sha256_hex(&data)),
+            claimed_hostname: Some(checklist.asset.hostname.clone()),
+            collector_version: None,
+            collected_at: None,
+            plan_sha256: None,
+            server_key_fingerprint: None,
+            unsafe_legacy_evidence: false,
+        });
 
         let s = checklist.summary();
         let info = ChecklistInfo {
@@ -720,14 +953,37 @@ async fn import_checklist(
             not_a_finding: s.not_a_finding,
             not_applicable: s.not_applicable,
             not_reviewed: s.not_reviewed,
-            compliance_pct: s.compliance_pct(),
+            assessed_pass_pct: defensible_score(&checklist, s.assessed_pass_pct()),
+            benchmark_coverage_pct: defensible_score(&checklist, s.benchmark_coverage_pct()),
+            compliance_pct: defensible_score(&checklist, s.assessed_pass_pct()),
+            collection_complete: checklist
+                .evaluation_provenance
+                .as_ref()
+                .map(|provenance| provenance.collection_complete),
+            evaluation_origin: checklist
+                .evaluation_provenance
+                .as_ref()
+                .map(|provenance| provenance.origin),
             cat_i_open: s.cat_i_open,
             cat_ii_open: s.cat_ii_open,
             cat_iii_open: s.cat_iii_open,
         };
 
         let db = state.db();
-        if let Err(e) = db.save_checklist(&checklist) {
+        if let Err(e) = db.save_checklist_with_audit(
+            &checklist,
+            "checklist.imported",
+            "gui",
+            Some(
+                &serde_json::json!({
+                    "filename": filename,
+                    "sha256": sha256_hex(&data),
+                    "claimed_generated_by": claimed_generated_by,
+                    "automation_attribution_normalized": true
+                })
+                .to_string(),
+            ),
+        ) {
             return api_error(&format!("Failed to save: {}", e));
         }
 
@@ -736,87 +992,14 @@ async fn import_checklist(
 }
 
 // ---------------------------------------------------------------------------
-// Evaluate
-// ---------------------------------------------------------------------------
-
-#[derive(Deserialize)]
-struct EvaluateRequest {
-    stig_id: String,
-    hostname: String,
-    #[serde(default)]
-    asset_id: Option<String>,
-}
-
-async fn evaluate(
-    State(state): State<AppState>,
-    Json(req): Json<EvaluateRequest>,
-) -> Json<serde_json::Value> {
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
-    };
-
-    let benchmark = match library.load_benchmark(&req.stig_id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
-
-    let asset = Asset::new(&req.hostname);
-    let engine = EvaluationEngine::with_defaults();
-
-    match engine.evaluate(&benchmark, &asset, None, &[]) {
-        Ok(checklist) => {
-            let s = checklist.summary();
-            let info = ChecklistInfo {
-                id: checklist.id.to_string(),
-                hostname: checklist.asset.hostname.clone(),
-                stig_id: checklist.stig_info.stig_id.clone(),
-                stig_title: checklist.stig_info.title.clone(),
-                stig_version: format!(
-                    "V{}R{}",
-                    checklist.stig_info.version, checklist.stig_info.release
-                ),
-                created_at: checklist.created_at.to_rfc3339(),
-                modified_at: checklist.modified_at.to_rfc3339(),
-                total: s.total,
-                open: s.open,
-                not_a_finding: s.not_a_finding,
-                not_applicable: s.not_applicable,
-                not_reviewed: s.not_reviewed,
-                compliance_pct: s.compliance_pct(),
-                cat_i_open: s.cat_i_open,
-                cat_ii_open: s.cat_ii_open,
-                cat_iii_open: s.cat_iii_open,
-            };
-
-            let db = state.db();
-            let _ = db.save_checklist(&checklist);
-            let _ = db.log_evaluation(&checklist, "gui", None);
-            if let Some(ref aid) = req.asset_id {
-                update_asset_after_eval(
-                    &db,
-                    aid,
-                    &req.stig_id,
-                    s.compliance_pct(),
-                    &checklist.id.to_string(),
-                );
-            }
-
-            api_ok(info)
-        }
-        Err(e) => api_error(&format!("Evaluation failed: {}", e)),
-    }
-}
-
-// ---------------------------------------------------------------------------
 // DISA Content Fetching
 // ---------------------------------------------------------------------------
 
 /// List available STIGs from DISA's public download page.
-async fn disa_list_available() -> Json<serde_json::Value> {
+async fn disa_list_available() -> Response {
     match crate::disa::list_available_stigs().await {
-        Ok(stigs) => api_ok(stigs),
-        Err(e) => api_error(&e),
+        Ok(stigs) => api_response_ok(stigs),
+        Err(error) => api_response_error(StatusCode::BAD_GATEWAY, error),
     }
 }
 
@@ -826,29 +1009,36 @@ struct DisaFetchRequest {
     url: String,
 }
 
-async fn disa_fetch(
-    State(state): State<AppState>,
-    Json(req): Json<DisaFetchRequest>,
-) -> Json<serde_json::Value> {
+async fn disa_fetch(State(state): State<AppState>, Json(req): Json<DisaFetchRequest>) -> Response {
     match crate::disa::download_and_import(&req.url, &state).await {
-        Ok(result) => api_ok(result),
-        Err(e) => api_error(&e),
+        Ok(result) => api_response_ok(result),
+        Err(error) => {
+            let status = if error.is_invalid_request() {
+                StatusCode::BAD_REQUEST
+            } else if error.is_library_error() {
+                StatusCode::INTERNAL_SERVER_ERROR
+            } else {
+                StatusCode::BAD_GATEWAY
+            };
+            api_response_error(status, error.to_string())
+        }
     }
 }
 
 /// Fetch all available STIGs from DISA.
-async fn disa_fetch_all(State(state): State<AppState>) -> Json<serde_json::Value> {
+async fn disa_fetch_all(State(state): State<AppState>) -> Response {
     match crate::disa::fetch_all_content(&state).await {
-        Ok(result) => api_ok(result),
-        Err(e) => api_error(&e),
+        Ok(result) if result.errors.is_empty() => api_response_ok(result),
+        Ok(result) => api_response_error(StatusCode::BAD_GATEWAY, result.errors.join("; ")),
+        Err(error) => api_response_error(StatusCode::BAD_GATEWAY, error),
     }
 }
 
 /// Check for updates without downloading.
-async fn disa_check_updates(State(state): State<AppState>) -> Json<serde_json::Value> {
+async fn disa_check_updates(State(state): State<AppState>) -> Response {
     match crate::disa::check_for_updates(&state).await {
-        Ok(result) => api_ok(result),
-        Err(e) => api_error(&e),
+        Ok(result) => api_response_ok(result),
+        Err(error) => api_response_error(StatusCode::BAD_GATEWAY, error),
     }
 }
 
@@ -875,7 +1065,27 @@ async fn generate_offline_pack(State(state): State<AppState>) -> impl IntoRespon
             .into_response();
     }
 
-    // Build a stigpack with all current library content.
+    let (private_key, public_key) = match load_external_offline_signing_key(&state) {
+        Ok(keys) => keys,
+        Err(error) => {
+            return (axum::http::StatusCode::SERVICE_UNAVAILABLE, error).into_response();
+        }
+    };
+    let trust_dir = trusted_content_keys_dir();
+    let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
+    if let Err(error) = trust_store.load_from_directory(&trust_dir) {
+        return (
+            axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+            format!(
+                "Failed to load executable-content trust anchors from {}: {error}",
+                trust_dir.display()
+            ),
+        )
+            .into_response();
+    }
+    let trusted_public_keys = trust_store.public_keys();
+
+    // Build a signed stigpack with all current library content.
     let mut builder = automatestig_stigpack::builder::PackBuilder::new(
         &format!(
             "automatestig-offline-{}",
@@ -885,19 +1095,55 @@ async fn generate_offline_pack(State(state): State<AppState>) -> impl IntoRespon
         &chrono::Utc::now().format("%Y.%m.%d").to_string(),
     )
     .author("AutomateSTIG")
-    .description("Offline update package for air-gapped AutomateSTIG installations");
+    .description("Offline update package for air-gapped AutomateSTIG installations")
+    .signing_key(private_key);
 
     for entry in &benchmarks {
         match library.load_benchmark(&entry.id) {
-            Ok(benchmark) => {
-                if let Ok(json) = serde_json::to_string_pretty(&benchmark) {
+            Ok(benchmark) => match serde_json::to_string_pretty(&benchmark) {
+                Ok(json) => {
                     let pack_path = format!("benchmarks/{}.json", entry.id);
                     builder = builder.add_file_bytes(&pack_path, json.as_bytes());
                 }
+                Err(error) => {
+                    return (
+                        axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                        format!("Failed to serialize benchmark {}: {error}", entry.id),
+                    )
+                        .into_response();
+                }
+            },
+            Err(error) => {
+                return (
+                    axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("Failed to load benchmark {}: {error}", entry.id),
+                )
+                    .into_response();
             }
-            Err(_) => continue,
         }
     }
+
+    let templates = library.root().join("answer_templates");
+    if templates.exists() {
+        builder = match builder.add_directory("answer_templates", &templates) {
+            Ok(builder) => builder,
+            Err(error) => {
+                return (
+                    axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("Failed to package answer_templates: {error}"),
+                )
+                    .into_response();
+            }
+        };
+    }
+
+    builder = match add_trusted_executables_to_offline_pack(builder, &library, &trusted_public_keys)
+    {
+        Ok(builder) => builder,
+        Err(error) => {
+            return (axum::http::StatusCode::CONFLICT, error).into_response();
+        }
+    };
 
     let tmp = match tempfile::NamedTempFile::new() {
         Ok(f) => f,
@@ -931,6 +1177,7 @@ async fn generate_offline_pack(State(state): State<AppState>) -> impl IntoRespon
         "automatestig-offline-{}.stigpack",
         chrono::Utc::now().format("%Y%m%d")
     );
+    let key_fingerprint = automatestig_stigpack::signing::public_key_fingerprint(&public_key);
 
     (
         [
@@ -942,8 +1189,40 @@ async fn generate_offline_pack(State(state): State<AppState>) -> impl IntoRespon
                 axum::http::header::CONTENT_DISPOSITION,
                 format!("attachment; filename=\"{}\"", filename),
             ),
+            (
+                axum::http::HeaderName::from_static("x-automatestig-signing-key"),
+                key_fingerprint,
+            ),
         ],
         data,
+    )
+        .into_response()
+}
+
+async fn download_offline_trust_key(State(state): State<AppState>) -> impl IntoResponse {
+    let (_, public_key) = match load_external_offline_signing_key(&state) {
+        Ok(keys) => keys,
+        Err(error) => {
+            return (axum::http::StatusCode::SERVICE_UNAVAILABLE, error).into_response();
+        }
+    };
+    let key_fingerprint = automatestig_stigpack::signing::public_key_fingerprint(&public_key);
+    (
+        [
+            (
+                axum::http::header::CONTENT_TYPE,
+                "application/octet-stream".to_string(),
+            ),
+            (
+                axum::http::header::CONTENT_DISPOSITION,
+                "attachment; filename=content-signing.pub".to_string(),
+            ),
+            (
+                axum::http::HeaderName::from_static("x-automatestig-signing-key"),
+                key_fingerprint,
+            ),
+        ],
+        public_key.to_vec(),
     )
         .into_response()
 }
@@ -955,7 +1234,10 @@ async fn generate_offline_pack(State(state): State<AppState>) -> impl IntoRespon
 /// Get current STIG-Manager configuration.
 async fn stigman_get_config(State(state): State<AppState>) -> Json<serde_json::Value> {
     let db = state.db();
-    let config = load_stigman_config(&db, &state.inner.data_dir);
+    let config = match load_stigman_config(&db, &state.inner.data_dir) {
+        Ok(config) => config,
+        Err(error) => return api_error(&error),
+    };
     api_ok(serde_json::json!({
         "configured": config.is_configured(),
         "api_url": config.api_url,
@@ -974,8 +1256,27 @@ async fn stigman_set_config(
 ) -> Json<serde_json::Value> {
     let db = state.db();
 
-    if let Err(e) = body.validate_urls() {
-        return api_error(&e);
+    // An empty secret means "keep the saved secret", matching the password
+    // placeholder in the UI. Loading/decryption errors are fatal so a corrupt
+    // secret cannot be silently replaced with an empty value.
+    if body.client_secret.is_empty() {
+        match load_stigman_config(&db, &state.inner.data_dir) {
+            Ok(existing) => {
+                if body.api_url != existing.api_url
+                    || body.token_url != existing.token_url
+                    || body.client_id != existing.client_id
+                {
+                    return api_error(
+                        "client_secret must be re-entered when an endpoint or client ID changes",
+                    );
+                }
+                body.client_secret = existing.client_secret;
+            }
+            Err(error) => return api_error(&error),
+        }
+    }
+    if let Err(error) = body.validate_urls() {
+        return api_error(&error);
     }
 
     // Encrypt the client secret before storing.
@@ -1009,7 +1310,10 @@ async fn stigman_set_config(
 async fn stigman_test_connection(State(state): State<AppState>) -> Json<serde_json::Value> {
     let config = {
         let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
+        match load_stigman_config(&db, &state.inner.data_dir) {
+            Ok(config) => config,
+            Err(error) => return api_error(&error),
+        }
     };
     if !config.is_configured() {
         return api_error("STIG-Manager is not configured");
@@ -1030,7 +1334,10 @@ async fn stigman_test_connection(State(state): State<AppState>) -> Json<serde_js
 async fn stigman_list_collections(State(state): State<AppState>) -> Json<serde_json::Value> {
     let config = {
         let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
+        match load_stigman_config(&db, &state.inner.data_dir) {
+            Ok(config) => config,
+            Err(error) => return api_error(&error),
+        }
     };
     if !config.is_configured() {
         return api_error("STIG-Manager is not configured");
@@ -1054,7 +1361,10 @@ async fn stigman_list_assets(
 ) -> Json<serde_json::Value> {
     let config = {
         let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
+        match load_stigman_config(&db, &state.inner.data_dir) {
+            Ok(config) => config,
+            Err(error) => return api_error(&error),
+        }
     };
     if !config.is_configured() {
         return api_error("STIG-Manager is not configured");
@@ -1071,6 +1381,43 @@ async fn stigman_list_assets(
     }
 }
 
+fn assigned_stig_ids(
+    asset_name: &str,
+    result: Result<Vec<crate::stigman::SmStig>, String>,
+) -> Result<Vec<String>, String> {
+    result
+        .map(|stigs| stigs.into_iter().map(|stig| stig.benchmark_id).collect())
+        .map_err(|error| format!("Failed to fetch assigned STIGs for asset {asset_name}: {error}"))
+}
+
+fn target_platform_for_stigs(
+    asset_name: &str,
+    stig_ids: &[String],
+) -> Result<automatestig_core::checks::CheckPlatform, String> {
+    use automatestig_core::checks::CheckPlatform;
+
+    let mut platforms = std::collections::HashSet::new();
+    for stig_id in stig_ids {
+        let platform = match stig_id.as_str() {
+            "NetApp_ONTAP_DSC_9-x_STIG" => CheckPlatform::Ontap,
+            "General_Purpose_Operating_System" => CheckPlatform::Bsd,
+            "Cisco_IOS-XE_Router_NDM_STIG" => CheckPlatform::CiscoIos,
+            _ => {
+                return Err(format!(
+                    "Asset {asset_name} is assigned out-of-scope STIG {stig_id}"
+                ))
+            }
+        };
+        platforms.insert(platform);
+    }
+    if platforms.len() != 1 {
+        return Err(format!(
+            "Asset {asset_name} must have assignments for exactly one supported target platform"
+        ));
+    }
+    Ok(*platforms.iter().next().expect("one platform"))
+}
+
 /// Sync assets from a STIG-Manager collection into local inventory.
 async fn stigman_sync_assets(
     State(state): State<AppState>,
@@ -1078,7 +1425,10 @@ async fn stigman_sync_assets(
 ) -> Json<serde_json::Value> {
     let config = {
         let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
+        match load_stigman_config(&db, &state.inner.data_dir) {
+            Ok(config) => config,
+            Err(error) => return api_error(&error),
+        }
     };
     if !config.is_configured() {
         return api_error("STIG-Manager is not configured");
@@ -1098,7 +1448,10 @@ async fn stigman_sync_assets(
     // Load local assets, then drop the DB lock before async work.
     let mut local_assets = {
         let db = state.db();
-        load_assets(&db)
+        match load_assets(&db) {
+            Ok(assets) => assets,
+            Err(error) => return api_error(&error),
+        }
     };
     let mut synced = 0;
     let mut details = Vec::new();
@@ -1108,14 +1461,22 @@ async fn stigman_sync_assets(
         let existing = local_assets.iter().position(|a| a.name == sm_asset.name);
 
         // Fetch STIGs assigned to this asset in STIG-Manager.
-        let stig_ids: Vec<String> = match client.list_asset_stigs(&cid, &sm_asset.asset_id).await {
-            Ok(stigs) => stigs.iter().map(|s| s.benchmark_id.clone()).collect(),
-            Err(_) => Vec::new(),
+        let stig_ids = match assigned_stig_ids(
+            &sm_asset.name,
+            client.list_asset_stigs(&cid, &sm_asset.asset_id).await,
+        ) {
+            Ok(stig_ids) => stig_ids,
+            Err(error) => return api_error(&error),
+        };
+        let target_platform = match target_platform_for_stigs(&sm_asset.name, &stig_ids) {
+            Ok(platform) => platform,
+            Err(error) => return api_error(&error),
         };
 
         if let Some(idx) = existing {
             // Update existing asset with STIG-Manager data.
             local_assets[idx].assigned_stigs = stig_ids.clone();
+            local_assets[idx].platform = target_platform;
             if let Some(ref ip) = sm_asset.ip {
                 if !ip.is_empty() {
                     local_assets[idx].address = ip.clone();
@@ -1131,8 +1492,7 @@ async fn stigman_sync_assets(
             let mut asset = automatestig_core::inventory::assets::ManagedAsset::new(
                 &sm_asset.name,
                 sm_asset.ip.as_deref().unwrap_or(&sm_asset.name),
-                automatestig_core::checks::CheckPlatform::Generic,
-                automatestig_core::inventory::assets::ScanProtocol::Ssh,
+                target_platform,
             );
             asset.assigned_stigs = stig_ids.clone();
             if let Some(ref fqdn) = sm_asset.fqdn {
@@ -1154,7 +1514,9 @@ async fn stigman_sync_assets(
 
     {
         let db = state.db();
-        save_assets(&db, &local_assets);
+        if let Err(error) = save_assets(&db, &local_assets) {
+            return api_error(&error);
+        }
     }
 
     api_ok(serde_json::json!({
@@ -1171,7 +1533,10 @@ async fn stigman_diff_assets(
 ) -> Json<serde_json::Value> {
     let config = {
         let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
+        match load_stigman_config(&db, &state.inner.data_dir) {
+            Ok(config) => config,
+            Err(error) => return api_error(&error),
+        }
     };
     if !config.is_configured() {
         return api_error("STIG-Manager is not configured");
@@ -1189,7 +1554,10 @@ async fn stigman_diff_assets(
 
     let local_assets = {
         let db = state.db();
-        load_assets(&db)
+        match load_assets(&db) {
+            Ok(assets) => assets,
+            Err(error) => return api_error(&error),
+        }
     };
 
     let local_names: std::collections::HashSet<String> =
@@ -1219,11 +1587,13 @@ async fn stigman_diff_assets(
     let mut stig_changes = Vec::new();
     for sm_asset in &sm_assets {
         if let Some(local) = local_assets.iter().find(|a| a.name == sm_asset.name) {
-            let sm_stigs: Vec<String> =
-                match client.list_asset_stigs(&cid, &sm_asset.asset_id).await {
-                    Ok(stigs) => stigs.iter().map(|s| s.benchmark_id.clone()).collect(),
-                    Err(_) => continue,
-                };
+            let sm_stigs = match assigned_stig_ids(
+                &sm_asset.name,
+                client.list_asset_stigs(&cid, &sm_asset.asset_id).await,
+            ) {
+                Ok(stigs) => stigs,
+                Err(error) => return api_error(&error),
+            };
 
             let local_set: std::collections::HashSet<&String> =
                 local.assigned_stigs.iter().collect();
@@ -1278,7 +1648,10 @@ async fn stigman_push_checklist(
 
     let config = {
         let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
+        match load_stigman_config(&db, &state.inner.data_dir) {
+            Ok(config) => config,
+            Err(error) => return api_error(&error),
+        }
     };
 
     match push_checklist_to_stigman(
@@ -1303,6 +1676,11 @@ async fn push_checklist_to_stigman(
     if !config.is_configured() {
         return Err("STIG-Manager is not configured".to_string());
     }
+    if let Some(reason) = checklist.external_export_block_reason() {
+        return Err(format!(
+            "checklist cannot be pushed to STIG Manager: {reason}"
+        ));
+    }
 
     let client = crate::stigman::StigManagerClient::new(config)?;
 
@@ -1312,12 +1690,10 @@ async fn push_checklist_to_stigman(
         None => match client
             .list_assets(collection_id)
             .await
-            .ok()
-            .and_then(|assets| {
-                assets
-                    .into_iter()
-                    .find(|asset| asset.name.eq_ignore_ascii_case(&checklist.asset.hostname))
-            }) {
+            .map_err(|error| format!("Failed to list STIG-Manager assets: {error}"))?
+            .into_iter()
+            .find(|asset| asset.name.eq_ignore_ascii_case(&checklist.asset.hostname))
+        {
             Some(asset) => {
                 // Reviews still require the STIG to be assigned to a found asset.
                 asset.asset_id
@@ -1360,13 +1736,15 @@ async fn push_checklist_to_stigman(
 fn load_stigman_config(
     db: &automatestig_storage::Database,
     data_dir: &std::path::Path,
-) -> crate::stigman::StigManagerConfig {
-    let mut config: crate::stigman::StigManagerConfig = db
+) -> Result<crate::stigman::StigManagerConfig, String> {
+    let mut config: crate::stigman::StigManagerConfig = match db
         .get_config("stigman_config")
-        .ok()
-        .flatten()
-        .and_then(|json| serde_json::from_str(&json).ok())
-        .unwrap_or_default();
+        .map_err(|error| format!("Failed to load STIG-Manager config: {error}"))?
+    {
+        Some(json) => serde_json::from_str(&json)
+            .map_err(|error| format!("Failed to parse STIG-Manager config: {error}"))?,
+        None => crate::stigman::StigManagerConfig::default(),
+    };
 
     // Decrypt client secret if it's encrypted.
     if config.client_secret.starts_with("enc:") {
@@ -1376,263 +1754,420 @@ fn load_stigman_config(
 
         match decrypted {
             Ok(decrypted) => config.client_secret = decrypted,
-            Err(_) => {
-                tracing::warn!("Failed to decrypt STIG-Manager client secret");
-                config.client_secret.clear();
+            Err(error) => {
+                return Err(format!(
+                    "Failed to decrypt STIG-Manager client secret: {error}"
+                ))
             }
         }
     }
 
-    config
+    Ok(config)
 }
 
 // ---------------------------------------------------------------------------
+// Evaluate uploaded device evidence
 // ---------------------------------------------------------------------------
-// Auto-generate Check Packs from Benchmarks
-// ---------------------------------------------------------------------------
 
-async fn generate_checks(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
-    };
-
-    let benchmark = match library.load_benchmark(&id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
-
-    let result = automatestig_core::converter::convert_benchmark(&benchmark);
-
-    // Save the generated check pack to disk.
-    let packs_dir = state.inner.library_path.join("auto_check_packs");
-    let _ = std::fs::create_dir_all(&packs_dir);
-
-    let filename = format!("{}.json", id);
-    let pack_path = packs_dir.join(&filename);
-
-    match automatestig_core::converter::check_pack_to_json(&result.check_pack) {
-        Ok(json) => {
-            if let Err(e) = std::fs::write(&pack_path, &json) {
-                return api_error(&format!("Failed to save check pack: {}", e));
-            }
-        }
-        Err(e) => return api_error(&format!("Serialization error: {}", e)),
+fn bind_claimed_hostname(
+    submitted_hostname: &mut String,
+    claimed_hostname: &str,
+    linked_asset_hostname: Option<&str>,
+    source_label: &str,
+) -> Result<(), String> {
+    let claimed_hostname = claimed_hostname.trim();
+    if claimed_hostname.is_empty() {
+        return Err(format!("{source_label} does not identify a hostname"));
     }
 
-    api_ok(serde_json::json!({
-        "stig_id": id,
-        "automated": result.automated,
-        "manual": result.manual,
-        "total_rules": result.automated + result.manual,
-        "automation_rate": format!("{:.0}%", if result.automated + result.manual > 0 {
-            result.automated as f64 / (result.automated + result.manual) as f64 * 100.0
-        } else { 0.0 }),
-        "pack_path": pack_path.display().to_string(),
-        "log": result.log,
-    }))
+    if submitted_hostname.is_empty() {
+        *submitted_hostname = claimed_hostname.to_owned();
+    } else if !submitted_hostname.eq_ignore_ascii_case(claimed_hostname) {
+        return Err(format!(
+            "submitted hostname does not match the hostname claimed by {source_label}"
+        ));
+    }
+
+    if linked_asset_hostname
+        .is_some_and(|asset_hostname| !asset_hostname.trim().eq_ignore_ascii_case(claimed_hostname))
+    {
+        return Err(format!(
+            "linked asset hostname does not match the hostname claimed by {source_label}"
+        ));
+    }
+
+    Ok(())
 }
 
-// ---------------------------------------------------------------------------
-// Batch Evaluation
-// ---------------------------------------------------------------------------
-
-#[derive(Deserialize)]
-struct BatchEvaluateRequest {
-    stig_id: String,
-    hostnames: Vec<String>,
-}
-
-async fn evaluate_batch(
-    State(state): State<AppState>,
-    Json(req): Json<BatchEvaluateRequest>,
-) -> Json<serde_json::Value> {
-    if req.hostnames.len() > 100 {
-        return api_error("Batch limit exceeded: maximum 100 hostnames per request");
-    }
-    if req.hostnames.iter().any(|h| h.len() > 255) {
-        return api_error("Hostname exceeds maximum length of 255 characters");
-    }
-
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
-    };
-
-    let benchmark = match library.load_benchmark(&req.stig_id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
-
-    let engine = std::sync::Arc::new(automatestig_core::engine::EvaluationEngine::with_defaults());
-    let benchmark = std::sync::Arc::new(benchmark);
-
-    // Parallel evaluation with semaphore (max 10 concurrent).
-    let sem = std::sync::Arc::new(tokio::sync::Semaphore::new(10));
-    let mut handles = Vec::new();
-
-    for hostname in req.hostnames.clone() {
-        let sem = sem.clone();
-        let engine = engine.clone();
-        let benchmark = benchmark.clone();
-        let state = state.clone();
-
-        handles.push(tokio::spawn(async move {
-            let _permit = sem.acquire().await;
-            let asset = Asset::new(&hostname);
-            match engine.evaluate(&benchmark, &asset, None, &[]) {
-                Ok(checklist) => {
-                    let s = checklist.summary();
-                    let db = state.db();
-                    let _ = db.save_checklist(&checklist);
-                    let _ = db.log_evaluation(&checklist, "gui-batch", None);
-                    serde_json::json!({
-                        "hostname": hostname,
-                        "id": checklist.id.to_string(),
-                        "total": s.total,
-                        "open": s.open,
-                        "compliance_pct": s.compliance_pct(),
-                        "success": true,
-                    })
-                }
-                Err(e) => {
-                    serde_json::json!({
-                        "hostname": hostname,
-                        "error": e.to_string(),
-                        "success": false,
-                    })
-                }
-            }
-        }));
-    }
-
-    // Collect results from all tasks.
-    let mut results = Vec::new();
-    for handle in handles {
-        if let Ok(result) = handle.await {
-            results.push(result);
-        }
-    }
-
-    api_ok(serde_json::json!({
-        "evaluated": results.len(),
-        "results": results,
-    }))
-}
-
-// ---------------------------------------------------------------------------
-// Evaluate with Scan Upload
-// ---------------------------------------------------------------------------
-
-async fn evaluate_with_scan(
+async fn evaluate_with_evidence(
     State(state): State<AppState>,
     mut multipart: Multipart,
-) -> Json<serde_json::Value> {
+) -> Response {
     let mut stig_id = String::new();
     let mut hostname = String::new();
     let mut asset_id: Option<String> = None;
-    let mut scan_data: Option<Vec<u8>> = None;
-    let mut scan_filename = String::new();
+    let mut platform = String::new();
+    let mut input_type = String::new();
+    let mut evidence_data: Option<Vec<u8>> = None;
 
-    // Parse multipart fields.
-    while let Ok(Some(field)) = multipart.next_field().await {
+    // Parse multipart fields without treating malformed or truncated uploads as
+    // missing evidence.
+    loop {
+        let field = match multipart.next_field().await {
+            Ok(Some(field)) => field,
+            Ok(None) => break,
+            Err(error) => {
+                let (status, message) = multipart_error(error);
+                return api_response_error(status, message);
+            }
+        };
         let name = field.name().unwrap_or("").to_string();
         match name.as_str() {
             "stig_id" => {
-                stig_id = field.text().await.unwrap_or_default();
+                stig_id = match field.text().await {
+                    Ok(value) => value,
+                    Err(error) => {
+                        let (status, message) = multipart_error(error);
+                        return api_response_error(
+                            status,
+                            format!("Invalid stig_id field: {message}"),
+                        );
+                    }
+                };
             }
             "hostname" => {
-                hostname = field.text().await.unwrap_or_default();
+                hostname = match field.text().await {
+                    Ok(value) => value,
+                    Err(error) => {
+                        let (status, message) = multipart_error(error);
+                        return api_response_error(
+                            status,
+                            format!("Invalid hostname field: {message}"),
+                        );
+                    }
+                };
             }
             "asset_id" => {
-                asset_id = Some(field.text().await.unwrap_or_default());
+                asset_id = match field.text().await {
+                    Ok(value) if value.trim().is_empty() => None,
+                    Ok(value) => Some(value.trim().to_owned()),
+                    Err(error) => {
+                        let (status, message) = multipart_error(error);
+                        return api_response_error(
+                            status,
+                            format!("Invalid asset_id field: {message}"),
+                        );
+                    }
+                };
             }
-            "scan" => {
-                scan_filename = field.file_name().unwrap_or("scan").to_string();
-                scan_data = field.bytes().await.ok().map(|b| b.to_vec());
+            "platform" => {
+                platform = match field.text().await {
+                    Ok(value) => value,
+                    Err(error) => {
+                        let (status, message) = multipart_error(error);
+                        return api_response_error(
+                            status,
+                            format!("Invalid platform field: {message}"),
+                        );
+                    }
+                };
+            }
+            "input_type" => {
+                input_type = match field.text().await {
+                    Ok(value) => value,
+                    Err(error) => {
+                        let (status, message) = multipart_error(error);
+                        return api_response_error(
+                            status,
+                            format!("Invalid input_type field: {message}"),
+                        );
+                    }
+                };
+            }
+            "evidence" => {
+                evidence_data = match field.bytes().await {
+                    Ok(value) => Some(value.to_vec()),
+                    Err(error) => {
+                        let (status, message) = multipart_error(error);
+                        return api_response_error(
+                            status,
+                            format!("Failed to read evidence: {message}"),
+                        );
+                    }
+                };
             }
             _ => {}
         }
     }
 
+    stig_id = stig_id.trim().to_owned();
+    hostname = hostname.trim().to_owned();
+    platform = platform.trim().to_owned();
+    input_type = input_type.trim().to_ascii_lowercase();
+
     if stig_id.is_empty() {
-        return api_error("stig_id is required");
+        return api_response_error(StatusCode::BAD_REQUEST, "stig_id is required");
     }
-
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
+    let data = match evidence_data {
+        Some(data) => data,
+        None => return api_response_error(StatusCode::BAD_REQUEST, "evidence file is required"),
     };
-
-    let benchmark = match library.load_benchmark(&stig_id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
-
-    // Parse scan results if uploaded.
-    let scan_results = if let Some(data) = scan_data {
-        let text = String::from_utf8_lossy(&data);
-        let ext = std::path::Path::new(&scan_filename)
-            .extension()
-            .and_then(|e| e.to_str())
-            .unwrap_or("");
-        match ext {
-            "xml" => xccdf::parse_xccdf_results_str(&text).ok(),
-            _ => None,
+    let input_sha256 = sha256_hex(&data);
+    let text = match String::from_utf8(data) {
+        Ok(text) => text,
+        Err(_) => {
+            return api_response_error(StatusCode::BAD_REQUEST, "evidence file must be UTF-8 text")
         }
+    };
+
+    let check_platform = match parse_check_platform(&platform) {
+        Some(platform) => platform,
+        None => {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                "platform must be ontap, bsd, or cisco_ios",
+            );
+        }
+    };
+    let linked_asset_hostname = if let Some(ref linked_asset_id) = asset_id {
+        let assets = match load_assets(&state.db()) {
+            Ok(assets) => assets,
+            Err(error) => return api_response_error(StatusCode::INTERNAL_SERVER_ERROR, error),
+        };
+        let Some(asset) = assets.iter().find(|asset| asset.id == *linked_asset_id) else {
+            return api_response_error(StatusCode::NOT_FOUND, "Linked asset was not found");
+        };
+        let expected = match platform_for_supported_stig(&stig_id) {
+            Ok(platform) => platform,
+            Err(error) => return api_response_error(StatusCode::BAD_REQUEST, error),
+        };
+        if asset.platform != expected || check_platform != expected {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                "linked asset, submitted platform, and target STIG platforms must match",
+            );
+        }
+        Some(asset.name.clone())
     } else {
         None
     };
 
-    // Detect hostname from scan if not provided.
-    if hostname.is_empty() {
-        hostname = scan_results
-            .as_ref()
-            .and_then(|s| s.source.target.clone())
-            .unwrap_or_else(|| "Unknown".to_string());
-    }
-
-    let asset = Asset::new(&hostname);
-    let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
-
-    match engine.evaluate(&benchmark, &asset, scan_results.as_ref(), &[]) {
-        Ok(checklist) => {
-            let s = checklist.summary();
-            let db = state.db();
-            let _ = db.save_checklist(&checklist);
-            let _ = db.log_evaluation(&checklist, "gui-scan-import", None);
-            if let Some(ref aid) = asset_id {
-                update_asset_after_eval(
-                    &db,
-                    aid,
-                    &stig_id,
-                    s.compliance_pct(),
-                    &checklist.id.to_string(),
-                );
-            }
-
-            api_ok(serde_json::json!({
-                "id": checklist.id.to_string(),
-                "hostname": hostname,
-                "stig_id": stig_id,
-                "total": s.total,
-                "open": s.open,
-                "not_a_finding": s.not_a_finding,
-                "compliance_pct": s.compliance_pct(),
-            }))
+    let (system_data, mut provenance) = if input_type == "config" {
+        if check_platform != automatestig_core::checks::CheckPlatform::CiscoIos {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                "config input is supported only for Cisco platforms",
+            );
         }
-        Err(e) => api_error(&format!("Evaluation failed: {}", e)),
+        if let Err(error) =
+            automatestig_core::remote::validate_network_config(check_platform, &text)
+        {
+            return api_response_error(StatusCode::UNPROCESSABLE_ENTITY, error);
+        }
+        let claimed_hostname = match automatestig_core::remote::cisco_config_hostname(&text) {
+            Ok(value) => value.trim().to_owned(),
+            Err(error) => return api_response_error(StatusCode::UNPROCESSABLE_ENTITY, error),
+        };
+        if let Err(error) = bind_claimed_hostname(
+            &mut hostname,
+            &claimed_hostname,
+            linked_asset_hostname.as_deref(),
+            "configuration",
+        ) {
+            return api_response_error(StatusCode::UNPROCESSABLE_ENTITY, error);
+        }
+        let checks = match load_check_definitions(&state, &stig_id) {
+            Ok(checks) => checks,
+            Err(error) => return device_evaluation_error_response(error),
+        };
+        if checks.first().map(|check| check.platform) != Some(check_platform) {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                "selected platform does not match the installed check pack",
+            );
+        }
+        (
+            automatestig_core::checks::SystemData {
+                collection_complete: true,
+                network_config: Some(text),
+                ..Default::default()
+            },
+            EvaluationProvenance {
+                origin: EvaluationOrigin::ConfigFile,
+                collection_complete: true,
+                collection_errors: Vec::new(),
+                evidence_sha256: Some(input_sha256.clone()),
+                claimed_hostname: Some(claimed_hostname),
+                collector_version: None,
+                collected_at: None,
+                plan_sha256: None,
+                server_key_fingerprint: None,
+                unsafe_legacy_evidence: false,
+            },
+        )
+    } else if input_type == "transcript" {
+        if check_platform == automatestig_core::checks::CheckPlatform::CiscoIos {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                "Cisco IOS-XE is config-file-only; transcript input is unsupported",
+            );
+        }
+        let transcript = match automatestig_parsers::evidence::parse_evidence(
+            &text,
+            automatestig_parsers::evidence::LegacyEvidencePolicy::Reject,
+        ) {
+            Ok(transcript) => transcript,
+            Err(error) => {
+                return api_response_error(
+                    StatusCode::UNPROCESSABLE_ENTITY,
+                    format!("Invalid evidence v2 document: {error}"),
+                )
+            }
+        };
+        let claimed_hostname = transcript
+            .hostname
+            .clone()
+            .unwrap_or_default()
+            .trim()
+            .to_owned();
+        if let Err(error) = bind_claimed_hostname(
+            &mut hostname,
+            &claimed_hostname,
+            linked_asset_hostname.as_deref(),
+            "evidence",
+        ) {
+            return api_response_error(StatusCode::UNPROCESSABLE_ENTITY, error);
+        }
+        let checks = match load_check_definitions(&state, &stig_id) {
+            Ok(checks) => checks,
+            Err(error) => return device_evaluation_error_response(error),
+        };
+        if checks.first().map(|check| check.platform) != Some(check_platform) {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                "selected platform does not match the installed check pack",
+            );
+        }
+        let plan =
+            match automatestig_core::remote::generate_collection_plan(check_platform, &checks) {
+                Ok(plan) => plan,
+                Err(error) => {
+                    return api_response_error(
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        format!("Failed to generate collection plan: {error}"),
+                    )
+                }
+            };
+        let system_data =
+            match automatestig_parsers::evidence::assemble_for_plan(&transcript, &plan) {
+                Ok(system_data) => system_data,
+                Err(error) => {
+                    return api_response_error(
+                        StatusCode::UNPROCESSABLE_ENTITY,
+                        format!("Evidence does not match scan plan: {error}"),
+                    )
+                }
+            };
+        let mut errors: Vec<String> = system_data
+            .collection_errors
+            .iter()
+            .map(|(key, error)| format!("{key}: {error}"))
+            .collect();
+        errors.sort();
+        (
+            system_data,
+            EvaluationProvenance {
+                origin: EvaluationOrigin::EvidenceFile,
+                collection_complete: transcript.complete,
+                collection_errors: errors,
+                evidence_sha256: Some(input_sha256.clone()),
+                claimed_hostname: Some(claimed_hostname),
+                collector_version: transcript.collector_version.clone(),
+                collected_at: transcript.collected_at.clone(),
+                plan_sha256: transcript.plan_sha256.clone(),
+                server_key_fingerprint: transcript.server_key_fingerprint.clone(),
+                unsafe_legacy_evidence: transcript.legacy,
+            },
+        )
+    } else {
+        return api_response_error(
+            StatusCode::BAD_REQUEST,
+            "input_type must be config or transcript",
+        );
+    };
+
+    if hostname.is_empty() {
+        return api_response_error(
+            StatusCode::BAD_REQUEST,
+            "hostname is required when evidence does not identify the target",
+        );
     }
+    if provenance.claimed_hostname.is_none() {
+        provenance.claimed_hostname = Some(hostname.clone());
+    }
+
+    let collection_errors = system_data.collection_errors.clone();
+    let mut response = match evaluate_with_system_data(
+        &state,
+        &stig_id,
+        &hostname,
+        &system_data,
+        FindingSource::Evidence,
+        provenance,
+    ) {
+        Ok(response) => response,
+        Err(error) => return device_evaluation_error_response(error),
+    };
+    if let Some(data) = response
+        .get_mut("data")
+        .and_then(serde_json::Value::as_object_mut)
+    {
+        data.insert(
+            "collection_errors".to_owned(),
+            serde_json::to_value(&collection_errors).unwrap_or(serde_json::Value::Null),
+        );
+    }
+    let evaluation_complete = response
+        .get("data")
+        .and_then(|data| data.get("collection_complete"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    // An incomplete attempt is audit-only and must not replace the asset's
+    // last completed evaluation.
+    if evaluation_complete {
+        if let Some(ref aid) = asset_id {
+            if let Some(data) = response.get("data") {
+                if let (Some(assessed_pass_pct), Some(checklist_id)) = (
+                    data.get("assessed_pass_pct").and_then(|v| v.as_f64()),
+                    data.get("id").and_then(|v| v.as_str()),
+                ) {
+                    if let Err(error) = update_asset_after_eval(
+                        &state.db(),
+                        aid,
+                        &stig_id,
+                        &hostname,
+                        assessed_pass_pct,
+                        checklist_id,
+                    ) {
+                        return api_response_error(StatusCode::INTERNAL_SERVER_ERROR, error);
+                    }
+                }
+            }
+        }
+    }
+    let status = if evaluation_complete {
+        StatusCode::OK
+    } else {
+        StatusCode::MULTI_STATUS
+    };
+    (status, Json(response)).into_response()
 }
 
 // ---------------------------------------------------------------------------
 // Finding Editing
 // ---------------------------------------------------------------------------
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 struct UpdateFindingRequest {
     status: Option<String>,
     finding_details: Option<String>,
@@ -1650,6 +2185,7 @@ async fn update_finding(
         Ok(cl) => cl,
         Err(e) => return api_error(&format!("Checklist not found: {}", e)),
     };
+    let before = checklist.find_by_vuln_id(&vuln_id).cloned();
 
     {
         let finding = match checklist.find_by_vuln_id_mut(&vuln_id) {
@@ -1658,19 +2194,23 @@ async fn update_finding(
         };
 
         if let Some(ref status_str) = req.status {
-            if let Some(status) =
+            let Some(status) =
                 automatestig_core::models::finding::FindingStatus::from_ckl_str(status_str)
-            {
-                finding.status = status;
-                finding.source = automatestig_core::models::finding::FindingSource::Manual;
-                finding.evaluated_at = chrono::Utc::now();
-            }
+            else {
+                return api_error(&format!("Invalid finding status: {status_str}"));
+            };
+            finding.status = status;
         }
         if let Some(ref details) = req.finding_details {
             finding.finding_details = details.clone();
         }
         if let Some(ref comments) = req.comments {
             finding.comments = comments.clone();
+        }
+        if req.status.is_some() || req.finding_details.is_some() || req.comments.is_some() {
+            finding.source = FindingSource::Manual;
+            finding.evaluated_at = chrono::Utc::now();
+            finding.evaluated_by = "Manual GUI edit".to_string();
         }
     }
 
@@ -1681,7 +2221,15 @@ async fn update_finding(
         .map(|f| f.status.to_string())
         .unwrap_or_default();
 
-    if let Err(e) = db.save_checklist(&checklist) {
+    let details = serde_json::json!({
+        "vuln_id": vuln_id,
+        "before": before,
+        "requested_changes": req,
+    })
+    .to_string();
+    if let Err(e) =
+        db.save_checklist_with_audit(&checklist, "finding.updated", "gui", Some(&details))
+    {
         return api_error(&format!("Failed to save: {}", e));
     }
 
@@ -1698,21 +2246,53 @@ async fn update_finding(
 
 fn load_assets(
     db: &automatestig_storage::Database,
-) -> Vec<automatestig_core::inventory::assets::ManagedAsset> {
-    db.get_config("asset_inventory")
-        .ok()
-        .flatten()
-        .and_then(|json| serde_json::from_str(&json).ok())
-        .unwrap_or_default()
+) -> Result<Vec<automatestig_core::inventory::assets::ManagedAsset>, String> {
+    match db
+        .get_config("asset_inventory")
+        .map_err(|error| error.to_string())?
+    {
+        Some(json) => serde_json::from_str(&json)
+            .map_err(|error| format!("Failed to parse asset inventory: {error}")),
+        None => Ok(Vec::new()),
+    }
 }
 
 fn save_assets(
     db: &automatestig_storage::Database,
     assets: &[automatestig_core::inventory::assets::ManagedAsset],
-) {
-    if let Ok(json) = serde_json::to_string(assets) {
-        let _ = db.set_config("asset_inventory", &json);
+) -> Result<(), String> {
+    let json = serde_json::to_string(assets).map_err(|error| error.to_string())?;
+    db.set_config("asset_inventory", &json)
+        .map_err(|error| error.to_string())
+}
+
+fn platform_for_supported_stig(
+    stig_id: &str,
+) -> Result<automatestig_core::checks::CheckPlatform, String> {
+    use automatestig_core::checks::CheckPlatform;
+    match stig_id {
+        "NetApp_ONTAP_DSC_9-x_STIG" => Ok(CheckPlatform::Ontap),
+        "General_Purpose_Operating_System" => Ok(CheckPlatform::Bsd),
+        "Cisco_IOS-XE_Router_NDM_STIG" => Ok(CheckPlatform::CiscoIos),
+        _ => Err(format!(
+            "STIG {stig_id} is outside the supported scanner targets"
+        )),
     }
+}
+
+fn validate_asset_assignments(
+    asset: &automatestig_core::inventory::assets::ManagedAsset,
+) -> Result<(), String> {
+    for stig_id in &asset.assigned_stigs {
+        let expected = platform_for_supported_stig(stig_id)?;
+        if asset.platform != expected {
+            return Err(format!(
+                "Asset {} platform {:?} does not match assigned STIG {} platform {:?}",
+                asset.name, asset.platform, stig_id, expected
+            ));
+        }
+    }
+    Ok(())
 }
 
 /// After an evaluation, reflect the result on the linked asset (if any).
@@ -1720,36 +2300,68 @@ fn update_asset_after_eval(
     db: &automatestig_storage::Database,
     asset_id: &str,
     stig_id: &str,
-    compliance_pct: f64,
+    evaluated_hostname: &str,
+    assessed_pass_pct: f64,
     checklist_id: &str,
-) {
-    let mut assets = load_assets(db);
+) -> Result<(), String> {
+    let mut assets = load_assets(db)?;
     if let Some(asset) = assets.iter_mut().find(|a| a.id == asset_id) {
+        let expected = platform_for_supported_stig(stig_id)?;
+        if asset.platform != expected {
+            return Err(format!(
+                "Asset {} platform {:?} does not match evaluation target {:?}",
+                asset.name, asset.platform, expected
+            ));
+        }
+        if !asset
+            .name
+            .trim()
+            .eq_ignore_ascii_case(evaluated_hostname.trim())
+        {
+            return Err(format!(
+                "Asset {} hostname does not match evaluated hostname {}",
+                asset.name, evaluated_hostname
+            ));
+        }
         asset.last_evaluated = Some(chrono::Utc::now());
-        asset.last_compliance_pct = Some(compliance_pct);
+        // Retained under the legacy inventory field name for storage/API
+        // compatibility. The value is the assessed-control pass rate.
+        asset.last_compliance_pct = Some(assessed_pass_pct);
         if !asset.assigned_stigs.iter().any(|s| s == stig_id) {
             asset.assigned_stigs.push(stig_id.to_string());
         }
         if !asset.last_checklist_ids.iter().any(|c| c == checklist_id) {
             asset.last_checklist_ids.push(checklist_id.to_string());
         }
-        save_assets(db, &assets);
+        save_assets(db, &assets)?;
     }
+    Ok(())
 }
 
 async fn list_assets_inv(State(state): State<AppState>) -> Json<serde_json::Value> {
     let db = state.db();
-    api_ok(load_assets(&db))
+    match load_assets(&db) {
+        Ok(assets) => api_ok(assets),
+        Err(error) => api_error(&error),
+    }
 }
 
 async fn create_asset_inv(
     State(state): State<AppState>,
     Json(asset): Json<automatestig_core::inventory::assets::ManagedAsset>,
 ) -> Json<serde_json::Value> {
+    if let Err(error) = validate_asset_assignments(&asset) {
+        return api_error(&error);
+    }
     let db = state.db();
-    let mut assets = load_assets(&db);
+    let mut assets = match load_assets(&db) {
+        Ok(assets) => assets,
+        Err(error) => return api_error(&error),
+    };
     assets.push(asset.clone());
-    save_assets(&db, &assets);
+    if let Err(error) = save_assets(&db, &assets) {
+        return api_error(&error);
+    }
     api_ok(asset)
 }
 
@@ -1758,7 +2370,10 @@ async fn get_asset_inv(
     axum::extract::Path(id): axum::extract::Path<String>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
-    let assets = load_assets(&db);
+    let assets = match load_assets(&db) {
+        Ok(assets) => assets,
+        Err(error) => return api_error(&error),
+    };
     match assets.into_iter().find(|a| a.id == id) {
         Some(asset) => api_ok(asset),
         None => api_error("Asset not found"),
@@ -1770,11 +2385,19 @@ async fn update_asset_inv(
     axum::extract::Path(id): axum::extract::Path<String>,
     Json(updated): Json<automatestig_core::inventory::assets::ManagedAsset>,
 ) -> Json<serde_json::Value> {
+    if let Err(error) = validate_asset_assignments(&updated) {
+        return api_error(&error);
+    }
     let db = state.db();
-    let mut assets = load_assets(&db);
+    let mut assets = match load_assets(&db) {
+        Ok(assets) => assets,
+        Err(error) => return api_error(&error),
+    };
     if let Some(asset) = assets.iter_mut().find(|a| a.id == id) {
         *asset = updated.clone();
-        save_assets(&db, &assets);
+        if let Err(error) = save_assets(&db, &assets) {
+            return api_error(&error);
+        }
         api_ok(updated)
     } else {
         api_error("Asset not found")
@@ -1786,116 +2409,16 @@ async fn delete_asset_inv(
     axum::extract::Path(id): axum::extract::Path<String>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
-    let mut assets = load_assets(&db);
+    let mut assets = match load_assets(&db) {
+        Ok(assets) => assets,
+        Err(error) => return api_error(&error),
+    };
     let len = assets.len();
     assets.retain(|a| a.id != id);
-    save_assets(&db, &assets);
+    if let Err(error) = save_assets(&db, &assets) {
+        return api_error(&error);
+    }
     api_ok(assets.len() < len)
-}
-
-// ---------------------------------------------------------------------------
-// Credential Vault
-// ---------------------------------------------------------------------------
-
-fn save_vault(
-    db: &automatestig_storage::Database,
-    data_dir: &std::path::Path,
-    vault: &automatestig_core::inventory::credentials::CredentialVault,
-) -> Result<(), String> {
-    let key_material = crate::secrets::load_or_create_key_material(data_dir)?;
-
-    let json = serde_json::to_string(vault).map_err(|e| e.to_string())?;
-    let encrypted = crate::secrets::encrypt_secret(&json, &key_material)?;
-    db.set_config("credential_vault", &format!("enc:{}", encrypted))
-        .map_err(|e| e.to_string())?;
-    db.set_config("credential_vault_format", "encrypted-v1")
-        .map_err(|e| e.to_string())?;
-    Ok(())
-}
-
-fn load_vault(
-    db: &automatestig_storage::Database,
-    data_dir: &std::path::Path,
-) -> Result<automatestig_core::inventory::credentials::CredentialVault, String> {
-    let raw = db
-        .get_config("credential_vault")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_default();
-    if raw.is_empty() {
-        return Ok(automatestig_core::inventory::credentials::CredentialVault::default());
-    }
-
-    let encrypted = raw.strip_prefix("enc:").ok_or_else(|| {
-        "Credential vault is plaintext/legacy and must be migrated before use".to_string()
-    })?;
-    let key_material = crate::secrets::load_or_create_key_material(data_dir)?;
-    let json = crate::secrets::decrypt_secret(encrypted, &key_material)?;
-    serde_json::from_str(&json).map_err(|e| e.to_string())
-}
-
-async fn list_credentials(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let db = state.db();
-    let vault = match load_vault(&db, &state.inner.data_dir) {
-        Ok(vault) => vault,
-        Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
-    };
-    api_ok(vault.list_summary())
-}
-
-async fn create_credential(
-    State(state): State<AppState>,
-    Json(cred): Json<automatestig_core::inventory::credentials::StoredCredential>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    let mut vault = match load_vault(&db, &state.inner.data_dir) {
-        Ok(vault) => vault,
-        Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
-    };
-    let summary = automatestig_core::inventory::credentials::CredentialSummary {
-        id: cred.id.clone(),
-        label: cred.label.clone(),
-        credential_type: match &cred.credential {
-            automatestig_core::inventory::credentials::CredentialType::Password { .. } => {
-                "password".to_string()
-            }
-            automatestig_core::inventory::credentials::CredentialType::SshKey { .. } => {
-                "ssh_key".to_string()
-            }
-            automatestig_core::inventory::credentials::CredentialType::SshCertificate {
-                ..
-            } => "ssh_certificate".to_string(),
-            automatestig_core::inventory::credentials::CredentialType::Kerberos { .. } => {
-                "kerberos".to_string()
-            }
-            automatestig_core::inventory::credentials::CredentialType::Token { .. } => {
-                "token".to_string()
-            }
-        },
-        username: cred.username().map(|s| s.to_string()),
-        is_expired: cred.is_expired(),
-        last_used: cred.last_used,
-    };
-    vault.add(cred);
-    if let Err(e) = save_vault(&db, &state.inner.data_dir, &vault) {
-        return api_error(&format!("Failed to save credential vault: {}", e));
-    }
-    api_ok(summary)
-}
-
-async fn delete_credential(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    let mut vault = match load_vault(&db, &state.inner.data_dir) {
-        Ok(vault) => vault,
-        Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
-    };
-    let removed = vault.remove(&id);
-    if let Err(e) = save_vault(&db, &state.inner.data_dir, &vault) {
-        return api_error(&format!("Failed to save credential vault: {}", e));
-    }
-    api_ok(removed)
 }
 
 // ---------------------------------------------------------------------------
@@ -1905,7 +2428,6 @@ async fn delete_credential(
 #[derive(Deserialize)]
 struct BulkUpdateRequest {
     asset_ids: Vec<String>,
-    credential_id: Option<String>,
     enabled: Option<bool>,
     add_tag: Option<String>,
     remove_tag: Option<String>,
@@ -1916,14 +2438,14 @@ async fn bulk_update_assets(
     Json(req): Json<BulkUpdateRequest>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
-    let mut assets = load_assets(&db);
+    let mut assets = match load_assets(&db) {
+        Ok(assets) => assets,
+        Err(error) => return api_error(&error),
+    };
     let mut count = 0;
 
     for asset in assets.iter_mut() {
         if req.asset_ids.contains(&asset.id) {
-            if let Some(ref cid) = req.credential_id {
-                asset.credential_id = Some(cid.clone());
-            }
             if let Some(enabled) = req.enabled {
                 asset.enabled = enabled;
             }
@@ -1939,7 +2461,9 @@ async fn bulk_update_assets(
         }
     }
 
-    save_assets(&db, &assets);
+    if let Err(error) = save_assets(&db, &assets) {
+        return api_error(&error);
+    }
     api_ok(serde_json::json!({ "updated": count }))
 }
 
@@ -1947,63 +2471,128 @@ async fn bulk_update_assets(
 // Answer File Management
 // ---------------------------------------------------------------------------
 
-async fn list_answer_files(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let lib_path = &state.inner.library_path;
-    let templates_dir = lib_path.join("answer_templates");
-    let mut files = Vec::new();
-
-    if templates_dir.exists() {
-        if let Ok(entries) = std::fs::read_dir(&templates_dir) {
-            for entry in entries.flatten() {
-                let path = entry.path();
-                let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
-                if ext == "json" || ext == "yaml" || ext == "yml" {
-                    if let Ok(af) = automatestig_core::answer::AnswerFile::load(&path) {
-                        files.push(serde_json::json!({
-                            "name": af.name,
-                            "stig_id": af.stig_id,
-                            "version": af.version,
-                            "entries": af.entries.len(),
-                            "path": path.display().to_string(),
-                        }));
-                    }
-                }
-            }
+async fn list_answer_files(State(state): State<AppState>) -> Response {
+    let permit = match state
+        .inner
+        .content_import_lock
+        .clone()
+        .acquire_owned()
+        .await
+    {
+        Ok(permit) => permit,
+        Err(_) => {
+            return api_response_error(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Content import coordinator is unavailable",
+            )
         }
-    }
+    };
+    let library_path = state.inner.library_path.clone();
+    let task = tokio::task::spawn_blocking(move || {
+        let _permit = permit;
+        let paths = automatestig_core::library_content::list_answer_template_files(&library_path)
+            .map_err(|error| error.to_string())?;
+        let mut files = Vec::with_capacity(paths.len());
+        for path in paths {
+            let af = automatestig_core::answer::AnswerFile::load(&path)
+                .map_err(|error| format!("Failed to load {}: {error}", path.display()))?;
+            files.push(serde_json::json!({
+                "name": af.name,
+                "stig_id": af.stig_id,
+                "version": af.version,
+                "entries": af.entries.len(),
+                "path": path.display().to_string(),
+            }));
+        }
+        Ok::<_, String>(files)
+    })
+    .await;
 
-    api_ok(files)
+    match task {
+        Ok(Ok(files)) => api_response_ok(files),
+        Ok(Err(error)) => api_response_error(StatusCode::INTERNAL_SERVER_ERROR, error),
+        Err(error) => api_response_error(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Answer-template listing worker failed: {error}"),
+        ),
+    }
 }
 
 async fn save_answer_file(
     State(state): State<AppState>,
     Json(af): Json<automatestig_core::answer::AnswerFile>,
-) -> Json<serde_json::Value> {
-    let lib_path = &state.inner.library_path;
-    let templates_dir = lib_path.join("answer_templates");
-    let _ = std::fs::create_dir_all(&templates_dir);
-
+) -> Response {
     let filename_base = match automatestig_core::path_safety::safe_filename(&af.name) {
         Ok(name) => name.to_lowercase(),
-        Err(e) => return api_error(&format!("Unsafe answer file name: {}", e)),
+        Err(error) => {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                format!("Unsafe answer file name: {error}"),
+            )
+        }
     };
     let filename = format!("{}.json", filename_base);
-    let path = match automatestig_core::path_safety::safe_join_under(&templates_dir, &filename) {
-        Ok(path) => path,
-        Err(e) => return api_error(&format!("Unsafe answer file path: {}", e)),
-    };
-
-    match af.save_json(&path) {
-        Ok(()) => {
-            let issues = af.validate();
-            api_ok(serde_json::json!({
-                "saved": true,
-                "path": path.display().to_string(),
-                "entries": af.entries.len(),
-                "validation_issues": issues,
-            }))
+    let bytes = match serde_json::to_vec_pretty(&af) {
+        Ok(bytes) => bytes,
+        Err(error) => {
+            return api_response_error(
+                StatusCode::UNPROCESSABLE_ENTITY,
+                format!("Failed to serialize answer file: {error}"),
+            )
         }
-        Err(e) => api_error(&format!("Failed to save: {}", e)),
+    };
+    let validation_issues = af.validate();
+    let entry_count = af.entries.len();
+    let permit = match state
+        .inner
+        .content_import_lock
+        .clone()
+        .acquire_owned()
+        .await
+    {
+        Ok(permit) => permit,
+        Err(_) => {
+            return api_response_error(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Content import coordinator is unavailable",
+            )
+        }
+    };
+    let library_path = state.inner.library_path.clone();
+    let task_filename = filename.clone();
+    let task = tokio::task::spawn_blocking(move || {
+        let _permit = permit;
+        automatestig_core::library_content::write_answer_template_atomic(
+            &library_path,
+            &task_filename,
+            &bytes,
+        )
+        .map_err(|error| error.to_string())
+    })
+    .await;
+
+    match task {
+        Ok(Ok(path)) => api_response_ok(serde_json::json!({
+            "saved": true,
+            "path": path.display().to_string(),
+            "entries": entry_count,
+            "validation_issues": validation_issues,
+        })),
+        Ok(Err(error)) => api_response_error(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Failed to save answer file: {error}"),
+        ),
+        Err(error) => api_response_error(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Answer-file save worker failed: {error}"),
+        ),
+    }
+}
+
+async fn list_audit_log(State(state): State<AppState>) -> Json<serde_json::Value> {
+    match state.db().list_audit_events() {
+        Ok(events) => api_ok(events),
+        Err(error) => api_error(&format!("Failed to load audit log: {error}")),
     }
 }
 
@@ -2024,61 +2613,168 @@ struct SshScanRequest {
 
 async fn scan_ssh(
     State(state): State<AppState>,
-    Json(req): Json<SshScanRequest>,
-) -> Json<serde_json::Value> {
-    if let Err(e) = crate::ssh::validate_scan_target(&req.host) {
-        return api_error(&e);
+    request: Result<Json<SshScanRequest>, axum::extract::rejection::JsonRejection>,
+) -> Response {
+    let Json(req) = match request {
+        Ok(request) => request,
+        Err(error) => {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                format!("Invalid SSH scan request: {error}"),
+            )
+        }
+    };
+    if req.host.trim().is_empty() {
+        return api_response_error(StatusCode::BAD_REQUEST, "host is required");
+    }
+    if req.username.trim().is_empty() {
+        return api_response_error(StatusCode::BAD_REQUEST, "username is required");
+    }
+    if req.stig_id.trim().is_empty() {
+        return api_response_error(StatusCode::BAD_REQUEST, "stig_id is required");
+    }
+    if req.port == Some(0) {
+        return api_response_error(StatusCode::BAD_REQUEST, "port must be greater than zero");
     }
 
     let ssh_config = crate::ssh::SshConfig {
-        host: req.host.clone(),
+        host: req.host.trim().to_owned(),
         port: req.port.unwrap_or(22),
-        username: req.username,
+        username: req.username.trim().to_owned(),
         auth: req.auth,
         timeout_secs: 30,
     };
+    let stig_id = req.stig_id.trim().to_owned();
 
-    let requested_collection_platform = req.platform.as_deref().and_then(|platform| match platform
-        .to_ascii_lowercase()
-        .as_str()
+    let check_platform = match req.platform.as_deref() {
+        Some(value) => match parse_check_platform(value.trim()) {
+            Some(platform) => platform,
+            None => {
+                return api_response_error(StatusCode::BAD_REQUEST, "unsupported SSH scan platform")
+            }
+        },
+        None => {
+            return api_response_error(
+                StatusCode::BAD_REQUEST,
+                "SSH scan platform is required (ontap or bsd)",
+            )
+        }
+    };
+    if check_platform == automatestig_core::checks::CheckPlatform::CiscoIos {
+        return api_response_error(
+            StatusCode::BAD_REQUEST,
+            "Cisco IOS-XE is config-file-only; SSH scanning is unsupported",
+        );
+    }
+    let checks = match load_check_definitions(&state, &stig_id) {
+        Ok(checks) => checks,
+        Err(error) => return device_evaluation_error_response(error),
+    };
+    if checks.first().map(|check| check.platform) != Some(check_platform) {
+        return api_response_error(
+            StatusCode::BAD_REQUEST,
+            "selected platform does not match the installed check pack",
+        );
+    }
+    // A benchmark is also required to evaluate the collected evidence. Check
+    // this before opening a network connection so missing local content cannot
+    // turn into an unnecessary SSH attempt.
+    if let Err(error) = load_evaluation_benchmark(&state, &stig_id) {
+        return device_evaluation_error_response(error);
+    }
+    let plan = match automatestig_core::remote::generate_collection_plan(check_platform, &checks) {
+        Ok(plan) => plan,
+        Err(error) => {
+            return api_response_error(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to generate collection plan: {error}"),
+            )
+        }
+    };
+    if let Err(error) =
+        crate::ssh::validate_scan_target_for_connection(&ssh_config.host, ssh_config.port).await
     {
-        "ontap" => Some(automatestig_core::checks::CheckPlatform::Ontap),
-        "bsd" => Some(automatestig_core::checks::CheckPlatform::Bsd),
-        _ => None,
-    });
-
-    let (check_platform, raw_outputs) =
-        if let Some(collection_platform) = requested_collection_platform {
-            let plan = automatestig_core::remote::generate_collection_plan(collection_platform);
-            let commands: Vec<(&str, &str)> = plan
-                .commands
-                .iter()
-                .map(|command| (command.data_key.as_str(), command.command.as_str()))
-                .collect();
-            let raw_outputs = match crate::ssh::execute_commands(&ssh_config, &commands).await {
-                Ok(data) => data,
-                Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
-            };
-            (collection_platform, raw_outputs)
-        } else {
-            let raw_outputs = match crate::ssh::collect_linux_data(&ssh_config).await {
-                Ok(data) => data,
-                Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
-            };
-            (automatestig_core::checks::CheckPlatform::Linux, raw_outputs)
-        };
-
-    let hostname = raw_outputs
-        .get("hostname")
-        .map(|h| h.trim().to_string())
-        .unwrap_or_else(|| req.host.clone());
-
-    // Assemble into SystemData.
+        return api_response_error(StatusCode::BAD_REQUEST, error);
+    }
+    let report = automatestig_collector::collect_plan(&ssh_config, &plan).await;
+    let hostname = report
+        .commands
+        .iter()
+        .find(|record| {
+            record.data_key == "hostname"
+                && record.status == automatestig_core::remote::CommandStatus::Success
+        })
+        .map(|record| record.stdout.trim().to_owned())
+        .filter(|hostname| !hostname.is_empty())
+        .unwrap_or_else(|| ssh_config.host.clone());
     let system_data =
-        automatestig_core::remote::assemble_system_data(check_platform, &hostname, &raw_outputs);
+        automatestig_core::remote::assemble_evidence_system_data(&plan, &report.commands);
+    let collection_complete = system_data.collection_complete;
+    let collection_errors = system_data.collection_errors.clone();
+    let mut provenance_errors: Vec<String> = collection_errors
+        .iter()
+        .map(|(key, error)| format!("{key}: {error}"))
+        .collect();
+    provenance_errors.sort();
+    let provenance = EvaluationProvenance {
+        origin: EvaluationOrigin::LiveSsh,
+        collection_complete,
+        collection_errors: provenance_errors,
+        evidence_sha256: None,
+        claimed_hostname: Some(hostname.clone()),
+        collector_version: Some(env!("CARGO_PKG_VERSION").to_string()),
+        collected_at: Some(chrono::Utc::now().to_rfc3339()),
+        plan_sha256: Some(plan.digest()),
+        server_key_fingerprint: report.server_key_fingerprint.clone(),
+        unsafe_legacy_evidence: false,
+    };
 
     // Load check pack and evaluate.
-    evaluate_with_system_data(&state, &req.stig_id, &hostname, &system_data)
+    let mut body = match evaluate_with_system_data(
+        &state,
+        &stig_id,
+        &hostname,
+        &system_data,
+        FindingSource::Automated,
+        provenance,
+    ) {
+        Ok(body) => body,
+        Err(error) => return device_evaluation_error_response(error),
+    };
+    if let Some(data) = body
+        .get_mut("data")
+        .and_then(serde_json::Value::as_object_mut)
+    {
+        data.insert(
+            "collection_errors".to_owned(),
+            serde_json::to_value(&collection_errors).unwrap_or(serde_json::Value::Null),
+        );
+        data.insert(
+            "server_key_fingerprint".to_owned(),
+            serde_json::to_value(&report.server_key_fingerprint).unwrap_or(serde_json::Value::Null),
+        );
+    }
+    let evaluation_complete = body
+        .get("data")
+        .and_then(|data| data.get("collection_complete"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    let status = if evaluation_complete {
+        StatusCode::OK
+    } else {
+        StatusCode::MULTI_STATUS
+    };
+    (status, Json(body)).into_response()
+}
+
+fn parse_check_platform(value: &str) -> Option<automatestig_core::checks::CheckPlatform> {
+    use automatestig_core::checks::CheckPlatform;
+    match value.to_ascii_lowercase().as_str() {
+        "cisco_ios" | "ciscoios" => Some(CheckPlatform::CiscoIos),
+        "ontap" => Some(CheckPlatform::Ontap),
+        "bsd" | "freebsd" => Some(CheckPlatform::Bsd),
+        _ => None,
+    }
 }
 
 fn evaluate_system_data_core(
@@ -2086,64 +2782,201 @@ fn evaluate_system_data_core(
     stig_id: &str,
     hostname: &str,
     system_data: &automatestig_core::checks::SystemData,
-) -> Result<Checklist, String> {
+    finding_source: FindingSource,
+    mut provenance: EvaluationProvenance,
+) -> Result<Checklist, DeviceEvaluationError> {
     // Load benchmark.
-    let library = state.library().map_err(|e| e.to_string())?;
+    let benchmark = load_evaluation_benchmark(state, stig_id)?;
 
-    let benchmark = library
-        .load_benchmark(stig_id)
-        .map_err(|e| format!("Benchmark not found: {}", e))?;
-
-    // Load check packs from all sources: plugins, hand-written packs, and auto-generated.
-    let mut plugin_registry = automatestig_core::plugins::PluginRegistry::new();
-    let plugins_dir = state.inner.data_dir.join("plugins");
-    let _ = plugin_registry.load_from_directory_with_priority(&plugins_dir, 5);
-
-    let content_dir = std::path::Path::new("content/check_packs");
-    let _ = plugin_registry.load_from_directory_with_priority(content_dir, 10);
-
-    // Load auto-generated check packs from the converter.
-    let auto_dir = state.inner.library_path.join("auto_check_packs");
-    let _ = plugin_registry.load_from_directory_with_priority(&auto_dir, 900);
-    let _ = plugin_registry.load_embedded();
+    let check_definitions = load_check_definitions(state, stig_id)?;
 
     // Execute checks.
-    let mut check_results: Vec<automatestig_core::checks::CheckResult> = plugin_registry
-        .checks_for_stig(stig_id)
+    let mut check_results: Vec<automatestig_core::checks::CheckResult> = check_definitions
         .iter()
         .map(|check_def| automatestig_core::checks::executor::execute_check(check_def, system_data))
         .collect();
     let mut seen_vuln_ids: HashSet<String> = HashSet::new();
-    // Curated packs load before auto-generated ones; first result per vuln wins.
+    // Curated packs load before reviewed imported ones; first result per vuln wins.
     check_results.retain(|cr| seen_vuln_ids.insert(cr.vuln_id.clone()));
+    provenance.collection_complete &= system_data.collection_complete;
+    provenance
+        .collection_errors
+        .extend(check_results.iter().filter_map(|result| {
+            result
+                .error
+                .as_ref()
+                .map(|error| format!("{}: {error}", result.vuln_id))
+        }));
+    provenance.collection_errors.sort();
+    provenance.collection_errors.dedup();
+    if !provenance.collection_errors.is_empty() || provenance.unsafe_legacy_evidence {
+        provenance.collection_complete = false;
+    }
 
     // Create checklist from benchmark + check results.
     let asset = Asset::new(hostname);
     let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
     let mut checklist = engine
-        .evaluate(&benchmark, &asset, None, &[])
-        .map_err(|e| format!("Evaluation failed: {}", e))?;
+        .evaluate(&benchmark, &asset, &[])
+        .map_err(|e| DeviceEvaluationError::Internal(format!("Evaluation failed: {e}")))?;
 
     // Apply check results to findings.
     for cr in &check_results {
         if let Some(finding) = checklist.find_by_vuln_id_mut(&cr.vuln_id) {
             finding.status = cr.to_finding_status();
-            finding.source = automatestig_core::models::finding::FindingSource::Automated;
+            finding.source = if cr.error.is_some() {
+                FindingSource::CollectionError
+            } else {
+                finding_source
+            };
             finding.finding_details = cr.evidence.clone();
             finding.evaluated_at = chrono::Utc::now();
             finding.evaluated_by = format!("AutomateSTIG {}", env!("CARGO_PKG_VERSION"));
+            if finding_source == FindingSource::Evidence {
+                let digest = provenance
+                    .evidence_sha256
+                    .as_deref()
+                    .unwrap_or("unavailable");
+                finding.comments = format!(
+                    "UNVERIFIED SUPPLIED EVIDENCE — not observed by this AutomateSTIG process. SHA-256: {digest}; claimed host: {}",
+                    provenance.claimed_hostname.as_deref().unwrap_or("unknown")
+                );
+            }
         }
     }
 
+    checklist.evaluation_provenance = Some(provenance.clone());
     checklist.touch();
 
     let db = state.db();
-    db.save_checklist(&checklist)
-        .map_err(|e| format!("Failed to save checklist: {}", e))?;
-    db.log_evaluation(&checklist, "remote-scan", Some(hostname))
-        .map_err(|e| format!("Failed to log evaluation: {}", e))?;
+    let audit_details = serde_json::to_string(&provenance).map_err(|error| {
+        DeviceEvaluationError::Internal(format!("Failed to serialize provenance: {error}"))
+    })?;
+    if provenance.collection_complete {
+        db.save_evaluation(&checklist, "device-evaluation", Some(&audit_details))
+            .map_err(|e| {
+                DeviceEvaluationError::Internal(format!("Failed to save evaluation: {e}"))
+            })?;
+    } else {
+        let details = serde_json::json!({
+            "hostname": hostname,
+            "stig_id": stig_id,
+            "provenance": provenance,
+            "artifact_written": false,
+            "checklist_saved": false,
+        });
+        db.record_incomplete_evaluation("device-evaluation", &details.to_string())
+            .map_err(|e| {
+                DeviceEvaluationError::Internal(format!(
+                    "Failed to record incomplete evaluation: {e}"
+                ))
+            })?;
+    }
 
     Ok(checklist)
+}
+
+enum DeviceEvaluationError {
+    MissingBenchmark(String),
+    MissingCheckPack(String),
+    Internal(String),
+}
+
+fn device_evaluation_error_response(error: DeviceEvaluationError) -> Response {
+    match error {
+        DeviceEvaluationError::MissingBenchmark(stig_id) => api_response_error(
+            StatusCode::NOT_FOUND,
+            format!("Benchmark not found: {stig_id}"),
+        ),
+        DeviceEvaluationError::MissingCheckPack(stig_id) => api_response_error(
+            StatusCode::NOT_FOUND,
+            format!("No check pack is installed for {stig_id}"),
+        ),
+        DeviceEvaluationError::Internal(message) => {
+            api_response_error(StatusCode::INTERNAL_SERVER_ERROR, message)
+        }
+    }
+}
+
+fn load_evaluation_benchmark(
+    state: &AppState,
+    stig_id: &str,
+) -> Result<automatestig_core::models::stig::StigBenchmark, DeviceEvaluationError> {
+    let library = state.library().map_err(|error| {
+        DeviceEvaluationError::Internal(format!("Failed to open STIG library: {error}"))
+    })?;
+    match library.load_benchmark(stig_id) {
+        Ok(benchmark) => Ok(benchmark),
+        Err(automatestig_core::Error::StigNotFound(_)) => {
+            Err(DeviceEvaluationError::MissingBenchmark(stig_id.to_owned()))
+        }
+        Err(error) => Err(DeviceEvaluationError::Internal(format!(
+            "Failed to load benchmark {stig_id}: {error}"
+        ))),
+    }
+}
+
+fn load_check_definitions(
+    state: &AppState,
+    stig_id: &str,
+) -> Result<Vec<automatestig_core::checks::CheckDefinition>, DeviceEvaluationError> {
+    let benchmark = load_evaluation_benchmark(state, stig_id)?;
+    let release = benchmark.version_string();
+    // Curated packs are compiled into the binary. Never trust an implicit
+    // `content/check_packs` directory relative to the process working directory:
+    // a writable launch directory must not be able to replace executable checks.
+    let mut check_pack_registry = automatestig_core::check_packs::CheckPackRegistry::new();
+    check_pack_registry.load_embedded().map_err(|error| {
+        DeviceEvaluationError::Internal(format!("Failed to load embedded check packs: {error}"))
+    })?;
+    let trust_dir = trusted_content_keys_dir();
+    let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
+    trust_store
+        .load_from_directory(&trust_dir)
+        .map_err(|error| {
+            DeviceEvaluationError::Internal(format!(
+                "Failed to load executable-content trust anchors from {}: {error}",
+                trust_dir.display()
+            ))
+        })?;
+    let trusted_public_keys = trust_store.public_keys();
+    let library = state.library().map_err(|error| {
+        DeviceEvaluationError::Internal(format!("Failed to open STIG library: {error}"))
+    })?;
+    check_pack_registry
+        .load_from_trusted_library_directory(&library, "custom_checks", 20, &trusted_public_keys)
+        .map_err(|error| {
+            DeviceEvaluationError::Internal(format!("Failed to load custom check packs: {error}"))
+        })?;
+
+    // Generated packs become executable only after trusted signed .stigpack
+    // import promotes them into the reviewed directory. Legacy prose-generated
+    // auto_check_packs are intentionally ignored.
+    check_pack_registry
+        .load_from_trusted_library_directory(
+            &library,
+            "reviewed_check_packs",
+            30,
+            &trusted_public_keys,
+        )
+        .map_err(|error| {
+            DeviceEvaluationError::Internal(format!(
+                "Failed to load reviewed generated check packs: {error}"
+            ))
+        })?;
+    let mut seen_vuln_ids = HashSet::new();
+    let checks: Vec<automatestig_core::checks::CheckDefinition> = check_pack_registry
+        .checks_for_stig_release(stig_id, &release)
+        .into_iter()
+        .filter(|check| seen_vuln_ids.insert(check.vuln_id.clone()))
+        .cloned()
+        .collect();
+    if checks.is_empty() {
+        return Err(DeviceEvaluationError::MissingCheckPack(format!(
+            "{stig_id} {release}"
+        )));
+    }
+    Ok(checks)
 }
 
 /// Evaluate collected SystemData against check packs and STIG benchmark.
@@ -2152,37 +2985,65 @@ fn evaluate_with_system_data(
     stig_id: &str,
     hostname: &str,
     system_data: &automatestig_core::checks::SystemData,
-) -> Json<serde_json::Value> {
-    let checklist = match evaluate_system_data_core(state, stig_id, hostname, system_data) {
-        Ok(checklist) => checklist,
-        Err(e) => return api_error(&e),
-    };
+    finding_source: FindingSource,
+    provenance: EvaluationProvenance,
+) -> Result<serde_json::Value, DeviceEvaluationError> {
+    let checklist = evaluate_system_data_core(
+        state,
+        stig_id,
+        hostname,
+        system_data,
+        finding_source,
+        provenance,
+    )?;
 
     let s = checklist.summary();
-    let automated_findings: Vec<_> = checklist
+    let collection_complete = checklist
+        .evaluation_provenance
+        .as_ref()
+        .is_some_and(|provenance| provenance.collection_complete);
+    let evaluation_errors = checklist
+        .evaluation_provenance
+        .as_ref()
+        .map(|provenance| provenance.collection_errors.clone())
+        .unwrap_or_default();
+    let evaluated_findings: Vec<_> = checklist
         .findings
         .iter()
         .filter(|finding| {
             matches!(
                 finding.source,
-                automatestig_core::models::finding::FindingSource::Automated
+                FindingSource::Automated | FindingSource::Evidence | FindingSource::CollectionError
             )
         })
         .collect();
-    api_ok(serde_json::json!({
-        "id": checklist.id.to_string(),
-        "hostname": hostname,
-        "stig_id": stig_id,
-        "total": s.total,
-        "open": s.open,
-        "not_a_finding": s.not_a_finding,
-        "not_reviewed": s.not_reviewed,
-        "compliance_pct": s.compliance_pct(),
-        "checks_executed": automated_findings.len(),
-        "checks_passed": automated_findings
-            .iter()
-            .filter(|finding| finding.status != FindingStatus::Open)
-            .count(),
+    Ok(serde_json::json!({
+        "success": true,
+        "data": {
+            "id": collection_complete.then(|| checklist.id.to_string()),
+            "hostname": hostname,
+            "stig_id": stig_id,
+            "total": s.total,
+            "open": s.open,
+            "not_a_finding": s.not_a_finding,
+            "not_reviewed": s.not_reviewed,
+            "assessed_pass_pct": defensible_score(&checklist, s.assessed_pass_pct()),
+            "benchmark_coverage_pct": defensible_score(
+                &checklist,
+                s.benchmark_coverage_pct()
+            ),
+            // Deprecated compatibility alias for assessed_pass_pct.
+            "compliance_pct": defensible_score(&checklist, s.assessed_pass_pct()),
+            "collection_complete": collection_complete,
+            "evaluation_errors": evaluation_errors,
+            "persisted": collection_complete,
+            "checks_executed": evaluated_findings.len(),
+            "checks_passed": evaluated_findings
+                .iter()
+                .filter(|finding| finding.status == FindingStatus::NotAFinding)
+                .count(),
+        },
+        "error": null,
     }))
 }
 
@@ -2201,7 +3062,23 @@ async fn bulk_assign_stig(
     Json(req): Json<BulkAssignRequest>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
-    let mut assets = load_assets(&db);
+    let mut assets = match load_assets(&db) {
+        Ok(assets) => assets,
+        Err(error) => return api_error(&error),
+    };
+    let expected_platform = match platform_for_supported_stig(req.stig_id.trim()) {
+        Ok(platform) => platform,
+        Err(error) => return api_error(&error),
+    };
+    if let Some(asset) = assets
+        .iter()
+        .find(|asset| req.asset_ids.contains(&asset.id) && asset.platform != expected_platform)
+    {
+        return api_error(&format!(
+            "Asset {} platform {:?} does not match STIG {} platform {:?}",
+            asset.name, asset.platform, req.stig_id, expected_platform
+        ));
+    }
     let mut count = 0;
     for asset in assets.iter_mut() {
         if req.asset_ids.contains(&asset.id) && !asset.assigned_stigs.contains(&req.stig_id) {
@@ -2209,74 +3086,19 @@ async fn bulk_assign_stig(
             count += 1;
         }
     }
-    save_assets(&db, &assets);
-    api_ok(serde_json::json!({ "assigned": count, "stig_id": req.stig_id }))
-}
-
-// ---------------------------------------------------------------------------
-// Quick Re-evaluate
-// ---------------------------------------------------------------------------
-
-async fn re_evaluate(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let (hostname, stig_id) = {
-        let db = state.db();
-        match db.load_checklist(&id) {
-            Ok(cl) => (cl.asset.hostname.clone(), cl.stig_info.stig_id.clone()),
-            Err(e) => return api_error(&format!("Checklist not found: {}", e)),
-        }
-    };
-
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
-    };
-
-    let benchmark = match library.load_benchmark(&stig_id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
-
-    let asset = Asset::new(&hostname);
-    let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
-
-    // Load previous checklist for merging manual findings.
-    let previous = {
-        let db = state.db();
-        db.load_checklist(&id).ok()
-    };
-
-    match engine.evaluate(&benchmark, &asset, None, &[]) {
-        Ok(mut checklist) => {
-            // Merge manual findings from the previous checklist.
-            if let Some(ref prev) = previous {
-                let _ = engine.merge_previous(&mut checklist, prev);
-            }
-
-            let s = checklist.summary();
-            let new_id = checklist.id.to_string();
-            let db = state.db();
-            let _ = db.save_checklist(&checklist);
-            let _ = db.log_evaluation(&checklist, "re-evaluate", Some(&hostname));
-
-            api_ok(serde_json::json!({
-                "id": new_id,
-                "hostname": hostname,
-                "stig_id": stig_id,
-                "total": s.total,
-                "open": s.open,
-                "compliance_pct": s.compliance_pct(),
-            }))
-        }
-        Err(e) => api_error(&format!("Re-evaluation failed: {}", e)),
+    if let Err(error) = save_assets(&db, &assets) {
+        return api_error(&error);
     }
+    api_ok(serde_json::json!({ "assigned": count, "stig_id": req.stig_id }))
 }
 
 // ---------------------------------------------------------------------------
 // Export
 // ---------------------------------------------------------------------------
+
+fn checklist_export_allowed(checklist: &Checklist) -> bool {
+    checklist.external_export_block_reason().is_none()
+}
 
 async fn export_ckl(
     State(state): State<AppState>,
@@ -2285,6 +3107,13 @@ async fn export_ckl(
     let db = state.db();
     match db.load_checklist(&id) {
         Ok(cl) => {
+            if !checklist_export_allowed(&cl) {
+                return (
+                    StatusCode::CONFLICT,
+                    "Incomplete device evidence cannot be exported; recollect the target",
+                )
+                    .into_response();
+            }
             let filename = sanitize_filename(&format!(
                 "{}_{}.ckl",
                 cl.asset.hostname, cl.stig_info.stig_id
@@ -2326,6 +3155,13 @@ async fn export_cklb(
     let db = state.db();
     match db.load_checklist(&id) {
         Ok(cl) => {
+            if !checklist_export_allowed(&cl) {
+                return (
+                    StatusCode::CONFLICT,
+                    "Incomplete device evidence cannot be exported; recollect the target",
+                )
+                    .into_response();
+            }
             let filename = sanitize_filename(&format!(
                 "{}_{}.cklb",
                 cl.asset.hostname, cl.stig_info.stig_id
@@ -2362,10 +3198,16 @@ async fn export_cklb(
 
 async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
     let db = state.db();
-    let rows = db.list_checklists().unwrap_or_else(|e| {
-        tracing::warn!("list_checklists failed: {e}");
-        Vec::new()
-    });
+    let rows = match db.list_checklists() {
+        Ok(rows) => rows,
+        Err(error) => {
+            return (
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to list checklists: {error}"),
+            )
+                .into_response();
+        }
+    };
 
     if rows.is_empty() {
         return (
@@ -2375,28 +3217,12 @@ async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
             .into_response();
     }
 
-    let mut zip_buffer = std::io::Cursor::new(Vec::new());
-    {
-        let mut zip = zip::ZipWriter::new(&mut zip_buffer);
-        let options = zip::write::SimpleFileOptions::default()
-            .compression_method(zip::CompressionMethod::Deflated);
-
-        for row in &rows {
-            if let Ok(cl) = db.load_checklist(&row.id) {
-                let filename = sanitize_filename(&format!(
-                    "{}_{}.ckl",
-                    cl.asset.hostname, cl.stig_info.stig_id
-                ));
-                if let Ok(xml) = ckl::write_ckl(&cl) {
-                    let _ = zip.start_file(&filename, options);
-                    let _ = std::io::Write::write_all(&mut zip, xml.as_bytes());
-                }
-            }
+    let data = match build_checklist_export_zip(&db, &rows) {
+        Ok(data) => data,
+        Err(error) => {
+            return (axum::http::StatusCode::INTERNAL_SERVER_ERROR, error).into_response();
         }
-        let _ = zip.finish();
-    }
-
-    let data = zip_buffer.into_inner();
+    };
     let filename = format!(
         "automatestig-export-{}.zip",
         chrono::Utc::now().format("%Y%m%d-%H%M")
@@ -2418,16 +3244,539 @@ async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
         .into_response()
 }
 
-use axum::response::IntoResponse;
+fn build_checklist_export_zip(
+    db: &automatestig_storage::Database,
+    rows: &[automatestig_storage::ChecklistSummaryRow],
+) -> Result<Vec<u8>, String> {
+    let mut buffer = std::io::Cursor::new(Vec::new());
+    {
+        let mut zip = zip::ZipWriter::new(&mut buffer);
+        let options = zip::write::SimpleFileOptions::default()
+            .compression_method(zip::CompressionMethod::Deflated);
+        for row in rows {
+            let checklist = db
+                .load_checklist(&row.id)
+                .map_err(|error| format!("Failed to load checklist {}: {error}", row.id))?;
+            if !checklist_export_allowed(&checklist) {
+                return Err(format!(
+                    "Checklist {} has incomplete device evidence and cannot be exported",
+                    row.id
+                ));
+            }
+            let filename = sanitize_filename(&format!(
+                "{}_{}.ckl",
+                checklist.asset.hostname, checklist.stig_info.stig_id
+            ));
+            let xml = ckl::write_ckl(&checklist)
+                .map_err(|error| format!("Failed to serialize checklist {}: {error}", row.id))?;
+            zip.start_file(&filename, options)
+                .map_err(|error| format!("Failed to create ZIP entry: {error}"))?;
+            std::io::Write::write_all(&mut zip, xml.as_bytes())
+                .map_err(|error| format!("Failed to write ZIP entry: {error}"))?;
+        }
+        zip.finish()
+            .map_err(|error| format!("Failed to finish export ZIP: {error}"))?;
+    }
+    Ok(buffer.into_inner())
+}
 
 #[cfg(test)]
 mod tests {
+    use std::sync::{Arc, Mutex};
+
+    use axum::body::Body;
+    use axum::http::{header, Request};
+    use tower::ServiceExt;
+
     use super::*;
+
+    fn test_state() -> (tempfile::TempDir, AppState) {
+        let temporary = tempfile::tempdir().unwrap();
+        let library_path = temporary.path().join("library");
+        automatestig_core::library::StigLibrary::init(&library_path).unwrap();
+        let state = AppState {
+            inner: Arc::new(crate::state::AppStateInner {
+                db: Mutex::new(automatestig_storage::Database::in_memory().unwrap()),
+                library_path,
+                data_dir: temporary.path().to_path_buf(),
+                content_import_lock: std::sync::Arc::new(tokio::sync::Semaphore::new(1)),
+            }),
+        };
+        (temporary, state)
+    }
+
+    #[test]
+    fn offline_pack_refuses_to_launder_bare_executable_content() {
+        let (_temporary, state) = test_state();
+        std::fs::write(
+            state.inner.library_path.join("custom_checks/bare.json"),
+            br#"{"stig_id":"General_Purpose_Operating_System"}"#,
+        )
+        .unwrap();
+        let library = state.library().unwrap();
+        let builder = automatestig_stigpack::builder::PackBuilder::new("test", "Test", "1.0.0");
+        let error = match add_trusted_executables_to_offline_pack(builder, &library, &[]) {
+            Ok(_) => panic!("bare executable content must not be re-signed"),
+            Err(error) => error,
+        };
+        assert!(error.contains("has no trusted signed provenance"));
+    }
+
+    fn multipart_part(boundary: &str, name: &str, value: &str) -> String {
+        format!(
+            "--{boundary}\r\nContent-Disposition: form-data; name=\"{name}\"\r\n\r\n{value}\r\n"
+        )
+    }
+
+    fn multipart_evidence_part(boundary: &str, value: &str) -> String {
+        format!(
+            "--{boundary}\r\nContent-Disposition: form-data; name=\"evidence\"; filename=\"evidence.json\"\r\nContent-Type: application/json\r\n\r\n{value}\r\n"
+        )
+    }
+
+    async fn post_multipart(body: String, boundary: &str) -> Response {
+        let (_temporary, state) = test_state();
+        post_multipart_with_state(state, body, boundary).await
+    }
+
+    async fn post_multipart_with_state(state: AppState, body: String, boundary: &str) -> Response {
+        routes()
+            .with_state(state)
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/evaluate/with-evidence")
+                    .header(
+                        header::CONTENT_TYPE,
+                        format!("multipart/form-data; boundary={boundary}"),
+                    )
+                    .body(Body::from(body))
+                    .unwrap(),
+            )
+            .await
+            .unwrap()
+    }
 
     #[test]
     fn test_sanitize_rejects_dot_components() {
         assert_ne!(sanitize_filename("."), ".");
         assert_ne!(sanitize_filename(".."), "..");
         assert_eq!(sanitize_filename("host.ckl"), "host.ckl");
+    }
+
+    #[test]
+    fn stigman_assignment_failures_and_unsupported_targets_are_not_silenced() {
+        let error =
+            assigned_stig_ids("switch-01", Err("upstream timeout".to_string())).unwrap_err();
+        assert!(error.contains("switch-01"));
+        assert!(error.contains("upstream timeout"));
+
+        assert!(target_platform_for_stigs(
+            "switch-01",
+            &["Cisco_IOS-XE_Router_NDM_STIG".to_string()]
+        )
+        .is_ok());
+        assert!(target_platform_for_stigs("unknown-01", &["RHEL_9_STIG".to_string()]).is_err());
+        assert!(target_platform_for_stigs("unassigned-01", &[]).is_err());
+    }
+
+    #[test]
+    fn asset_assignments_are_bound_to_the_target_platform() {
+        use automatestig_core::checks::CheckPlatform;
+        use automatestig_core::inventory::assets::ManagedAsset;
+
+        let mut asset = ManagedAsset::new("freebsd01", "192.0.2.10", CheckPlatform::Bsd);
+        asset.assigned_stigs = vec!["General_Purpose_Operating_System".to_string()];
+        assert!(validate_asset_assignments(&asset).is_ok());
+
+        asset.assigned_stigs = vec!["NetApp_ONTAP_DSC_9-x_STIG".to_string()];
+        assert!(validate_asset_assignments(&asset).is_err());
+        asset.assigned_stigs = vec!["RHEL_9_STIG".to_string()];
+        assert!(validate_asset_assignments(&asset).is_err());
+    }
+
+    #[test]
+    fn claimed_hostname_binding_is_case_insensitive_and_asset_bound() {
+        let mut submitted = "ACTUAL-ROUTER".to_string();
+        assert!(bind_claimed_hostname(
+            &mut submitted,
+            "actual-router",
+            Some("Actual-Router"),
+            "configuration",
+        )
+        .is_ok());
+
+        let error = bind_claimed_hostname(
+            &mut submitted,
+            "actual-router",
+            Some("different-router"),
+            "configuration",
+        )
+        .unwrap_err();
+        assert!(error.contains("linked asset hostname"));
+    }
+
+    #[test]
+    fn imported_all_pass_checklist_scores_are_withheld() {
+        let mut checklist = forged_automated_checklist();
+        checklist.findings[0].source = FindingSource::Imported;
+        checklist.evaluation_provenance = Some(EvaluationProvenance {
+            origin: EvaluationOrigin::ImportedChecklist,
+            collection_complete: false,
+            collection_errors: vec![
+                "collection completeness is unknown for an imported checklist".to_string(),
+            ],
+            evidence_sha256: None,
+            claimed_hostname: Some("device-01".to_string()),
+            collector_version: None,
+            collected_at: None,
+            plan_sha256: None,
+            server_key_fingerprint: None,
+            unsafe_legacy_evidence: false,
+        });
+
+        let summary = checklist.summary();
+        assert_eq!(summary.assessed_pass_pct(), 100.0);
+        assert_eq!(summary.benchmark_coverage_pct(), 100.0);
+        assert_eq!(
+            defensible_score(&checklist, summary.assessed_pass_pct()),
+            None
+        );
+        assert_eq!(
+            defensible_score(&checklist, summary.benchmark_coverage_pct()),
+            None
+        );
+    }
+
+    #[tokio::test]
+    async fn uploaded_evidence_missing_file_returns_bad_request() {
+        let boundary = "automatestig-missing-evidence";
+        let mut body = multipart_part(boundary, "stig_id", "TEST_STIG");
+        body.push_str(&multipart_part(boundary, "hostname", "switch-01"));
+        body.push_str(&multipart_part(boundary, "platform", "ontap"));
+        body.push_str(&multipart_part(boundary, "input_type", "transcript"));
+        body.push_str(&format!("--{boundary}--\r\n"));
+
+        let response = post_multipart(body, boundary).await;
+
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    }
+
+    #[tokio::test]
+    async fn uploaded_evidence_schema_failure_returns_unprocessable_entity() {
+        let boundary = "automatestig-invalid-evidence";
+        let mut body = multipart_part(boundary, "stig_id", "TEST_STIG");
+        body.push_str(&multipart_part(boundary, "hostname", "switch-01"));
+        body.push_str(&multipart_part(boundary, "platform", "ontap"));
+        body.push_str(&multipart_part(boundary, "input_type", "transcript"));
+        body.push_str(&multipart_evidence_part(boundary, "{}"));
+        body.push_str(&format!("--{boundary}--\r\n"));
+
+        let response = post_multipart(body, boundary).await;
+
+        assert_eq!(response.status(), StatusCode::UNPROCESSABLE_ENTITY);
+    }
+
+    #[tokio::test]
+    async fn uploaded_evidence_cannot_be_relabelled_to_another_host() {
+        let boundary = "automatestig-host-mismatch";
+        let mut body = multipart_part(boundary, "stig_id", "TEST_STIG");
+        body.push_str(&multipart_part(boundary, "hostname", "different-device"));
+        body.push_str(&multipart_part(boundary, "platform", "ontap"));
+        body.push_str(&multipart_part(boundary, "input_type", "transcript"));
+        body.push_str(&multipart_evidence_part(
+            boundary,
+            r#"{"schema":"automatestig-evidence/v2","hostname":"actual-device","platform":"ontap","collector_version":"test","collected_at":"2026-01-01T00:00:00Z","plan_sha256":"0000000000000000000000000000000000000000000000000000000000000000","complete":true,"commands":[{"data_key":"x","command":"x","status":"success","exit_code":0}]}"#,
+        ));
+        body.push_str(&format!("--{boundary}--\r\n"));
+
+        let response = post_multipart(body, boundary).await;
+        assert_eq!(response.status(), StatusCode::UNPROCESSABLE_ENTITY);
+    }
+
+    #[tokio::test]
+    async fn uploaded_configuration_cannot_be_relabelled_to_another_host() {
+        let boundary = "automatestig-config-host-mismatch";
+        let mut body = multipart_part(boundary, "stig_id", "Cisco_IOS-XE_Router_NDM_STIG");
+        body.push_str(&multipart_part(boundary, "hostname", "different-router"));
+        body.push_str(&multipart_part(boundary, "platform", "cisco_ios"));
+        body.push_str(&multipart_part(boundary, "input_type", "config"));
+        body.push_str(&multipart_evidence_part(
+            boundary,
+            "version 17.9\nhostname actual-router\nline vty 0 4\n transport input ssh\nend\n",
+        ));
+        body.push_str(&format!("--{boundary}--\r\n"));
+
+        let response = post_multipart(body, boundary).await;
+        assert_eq!(response.status(), StatusCode::UNPROCESSABLE_ENTITY);
+    }
+
+    #[tokio::test]
+    async fn uploaded_configuration_cannot_be_linked_to_another_asset_hostname() {
+        use automatestig_core::checks::CheckPlatform;
+        use automatestig_core::inventory::assets::ManagedAsset;
+
+        let (_temporary, state) = test_state();
+        let asset = ManagedAsset::new("inventory-router", "192.0.2.10", CheckPlatform::CiscoIos);
+        let asset_id = asset.id.clone();
+        save_assets(&state.db(), &[asset]).unwrap();
+
+        let boundary = "automatestig-config-asset-host-mismatch";
+        let mut body = multipart_part(boundary, "stig_id", "Cisco_IOS-XE_Router_NDM_STIG");
+        body.push_str(&multipart_part(boundary, "hostname", "actual-router"));
+        body.push_str(&multipart_part(boundary, "asset_id", &asset_id));
+        body.push_str(&multipart_part(boundary, "platform", "cisco_ios"));
+        body.push_str(&multipart_part(boundary, "input_type", "config"));
+        body.push_str(&multipart_evidence_part(
+            boundary,
+            "version 17.9\nhostname actual-router\nline vty 0 4\n transport input ssh\nend\n",
+        ));
+        body.push_str(&format!("--{boundary}--\r\n"));
+
+        let response = post_multipart_with_state(state.clone(), body, boundary).await;
+        assert_eq!(response.status(), StatusCode::UNPROCESSABLE_ENTITY);
+        assert!(state.db().list_checklists().unwrap().is_empty());
+        let assets = load_assets(&state.db()).unwrap();
+        assert!(assets[0].last_evaluated.is_none());
+        assert!(assets[0].last_checklist_ids.is_empty());
+    }
+
+    #[tokio::test]
+    async fn uploaded_evidence_cannot_be_linked_to_another_asset_hostname() {
+        use automatestig_core::checks::CheckPlatform;
+        use automatestig_core::inventory::assets::ManagedAsset;
+
+        let (_temporary, state) = test_state();
+        let asset = ManagedAsset::new("inventory-node", "192.0.2.11", CheckPlatform::Ontap);
+        let asset_id = asset.id.clone();
+        save_assets(&state.db(), &[asset]).unwrap();
+
+        let boundary = "automatestig-evidence-asset-host-mismatch";
+        let mut body = multipart_part(boundary, "stig_id", "NetApp_ONTAP_DSC_9-x_STIG");
+        body.push_str(&multipart_part(boundary, "hostname", "actual-node"));
+        body.push_str(&multipart_part(boundary, "asset_id", &asset_id));
+        body.push_str(&multipart_part(boundary, "platform", "ontap"));
+        body.push_str(&multipart_part(boundary, "input_type", "transcript"));
+        body.push_str(&multipart_evidence_part(
+            boundary,
+            r#"{"schema":"automatestig-evidence/v2","hostname":"actual-node","platform":"ontap","collector_version":"test","collected_at":"2026-01-01T00:00:00Z","plan_sha256":"0000000000000000000000000000000000000000000000000000000000000000","complete":true,"commands":[{"data_key":"x","command":"x","status":"success","exit_code":0}]}"#,
+        ));
+        body.push_str(&format!("--{boundary}--\r\n"));
+
+        let response = post_multipart_with_state(state.clone(), body, boundary).await;
+        assert_eq!(response.status(), StatusCode::UNPROCESSABLE_ENTITY);
+        assert!(state.db().list_checklists().unwrap().is_empty());
+        let assets = load_assets(&state.db()).unwrap();
+        assert!(assets[0].last_evaluated.is_none());
+        assert!(assets[0].last_checklist_ids.is_empty());
+    }
+
+    #[tokio::test]
+    async fn ssh_missing_json_field_returns_bad_request() {
+        let (_temporary, state) = test_state();
+        let response = routes()
+            .with_state(state)
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/scan/ssh")
+                    .header(header::CONTENT_TYPE, "application/json")
+                    .body(Body::from(
+                        r#"{"host":"192.0.2.10","auth":{"type":"password","password":"secret"},"stig_id":"TEST_STIG"}"#,
+                    ))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    }
+
+    #[tokio::test]
+    async fn ssh_missing_check_pack_returns_not_found_without_connecting() {
+        let (_temporary, state) = test_state();
+        let response = routes()
+            .with_state(state)
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/scan/ssh")
+                    .header(header::CONTENT_TYPE, "application/json")
+                    .body(Body::from(
+                        r#"{"host":"192.0.2.10","username":"admin","auth":{"type":"password","password":"secret"},"stig_id":"NO_SUCH_TEST_STIG","platform":"ontap"}"#,
+                    ))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    }
+
+    #[tokio::test]
+    async fn ssh_rejects_cisco_ios_before_loading_content_or_connecting() {
+        let (_temporary, state) = test_state();
+        let response = routes()
+            .with_state(state)
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/scan/ssh")
+                    .header(header::CONTENT_TYPE, "application/json")
+                    .body(Body::from(
+                        r#"{"host":"192.0.2.10","username":"admin","auth":{"type":"password","password":"secret"},"stig_id":"Cisco_IOS-XE_Router_NDM_STIG","platform":"cisco_ios"}"#,
+                    ))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    }
+
+    fn forged_automated_checklist() -> Checklist {
+        use automatestig_core::models::checklist::ChecklistStigInfo;
+        use automatestig_core::models::finding::Finding;
+
+        let mut checklist = Checklist::new(
+            Asset::new("device-01"),
+            ChecklistStigInfo {
+                stig_id: "TEST_STIG".to_string(),
+                title: "Test".to_string(),
+                version: "1".to_string(),
+                release: "1".to_string(),
+                release_date: None,
+                uuid: None,
+                description: None,
+                filename: None,
+            },
+        );
+        checklist.generated_by = "Forged AutomateSTIG".to_string();
+        let mut finding =
+            Finding::new_not_reviewed("V-1", "SV-1r1_rule", "V-1", "Test", Severity::High);
+        finding.status = FindingStatus::NotAFinding;
+        finding.source = FindingSource::Automated;
+        checklist.findings.push(finding);
+        checklist
+    }
+
+    #[tokio::test]
+    async fn json_import_cannot_forge_automated_attribution() {
+        let (_temporary, state) = test_state();
+        let checklist = forged_automated_checklist();
+        let id = checklist.id.to_string();
+        let boundary = "automatestig-forged-checklist";
+        let body = format!(
+            "--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"forged.json\"\r\nContent-Type: application/json\r\n\r\n{}\r\n--{boundary}--\r\n",
+            serde_json::to_string(&checklist).unwrap()
+        );
+        let response = routes()
+            .with_state(state.clone())
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/checklists/import")
+                    .header(
+                        header::CONTENT_TYPE,
+                        format!("multipart/form-data; boundary={boundary}"),
+                    )
+                    .body(Body::from(body))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let body = axum::body::to_bytes(response.into_body(), 1024 * 1024)
+            .await
+            .unwrap();
+        let payload: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert!(payload["data"]["assessed_pass_pct"].is_null());
+        assert!(payload["data"]["benchmark_coverage_pct"].is_null());
+        assert!(payload["data"]["compliance_pct"].is_null());
+
+        let stored = state.db().load_checklist(&id).unwrap();
+        assert_eq!(stored.findings[0].source, FindingSource::Imported);
+        assert_eq!(
+            stored.evaluation_provenance.as_ref().unwrap().origin,
+            EvaluationOrigin::ImportedChecklist
+        );
+        assert!(!crate::stigman::StigManagerClient::checklist_to_reviews(&stored)[0].auto_result);
+    }
+
+    #[tokio::test]
+    async fn incomplete_evaluation_json_cannot_be_laundered_through_import() {
+        let (_temporary, state) = test_state();
+        let mut checklist = forged_automated_checklist();
+        let id = checklist.id.to_string();
+        checklist.evaluation_provenance = Some(EvaluationProvenance {
+            origin: EvaluationOrigin::EvidenceFile,
+            collection_complete: false,
+            collection_errors: vec!["show config: timeout".to_string()],
+            evidence_sha256: Some("00".repeat(32)),
+            claimed_hostname: Some("device-01".to_string()),
+            collector_version: Some("test".to_string()),
+            collected_at: Some("2026-01-01T00:00:00Z".to_string()),
+            plan_sha256: Some("11".repeat(32)),
+            server_key_fingerprint: None,
+            unsafe_legacy_evidence: false,
+        });
+        let boundary = "automatestig-incomplete-checklist";
+        let body = format!(
+            "--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"incomplete.json\"\r\nContent-Type: application/json\r\n\r\n{}\r\n--{boundary}--\r\n",
+            serde_json::to_string(&checklist).unwrap()
+        );
+        let response = routes()
+            .with_state(state.clone())
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/checklists/import")
+                    .header(
+                        header::CONTENT_TYPE,
+                        format!("multipart/form-data; boundary={boundary}"),
+                    )
+                    .body(Body::from(body))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        let body = axum::body::to_bytes(response.into_body(), 1024 * 1024)
+            .await
+            .unwrap();
+        let payload: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(
+            payload.get("success").and_then(|value| value.as_bool()),
+            Some(false)
+        );
+        assert!(state.db().load_checklist(&id).is_err());
+    }
+
+    #[tokio::test]
+    async fn evidence_only_manual_edit_clears_automated_attribution() {
+        let (_temporary, state) = test_state();
+        let checklist = forged_automated_checklist();
+        let id = checklist.id.to_string();
+        state
+            .db()
+            .save_evaluation(&checklist, "test", None)
+            .unwrap();
+        let response = routes()
+            .with_state(state.clone())
+            .oneshot(
+                Request::builder()
+                    .method("PATCH")
+                    .uri(format!("/checklists/{id}/findings/V-1"))
+                    .header(header::CONTENT_TYPE, "application/json")
+                    .body(Body::from(
+                        r#"{"finding_details":"reviewer changed evidence"}"#,
+                    ))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let stored = state.db().load_checklist(&id).unwrap();
+        assert_eq!(stored.findings[0].source, FindingSource::Manual);
+        assert!(!crate::stigman::StigManagerClient::checklist_to_reviews(&stored)[0].auto_result);
     }
 }

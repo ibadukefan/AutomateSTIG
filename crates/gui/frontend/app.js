@@ -3,6 +3,22 @@
 
 const API = '/api';
 const AUTH_TOKEN = window.__AUTH_TOKEN__ || '';
+const SUPPORTED_SCANNER_TARGETS = Object.freeze({
+  'NetApp_ONTAP_DSC_9-x_STIG': Object.freeze({ platform: 'ontap', inputType: 'transcript', remote: true }),
+  General_Purpose_Operating_System: Object.freeze({ platform: 'bsd', inputType: 'transcript', remote: true }),
+  'Cisco_IOS-XE_Router_NDM_STIG': Object.freeze({ platform: 'cisco_ios', inputType: 'config', remote: false }),
+});
+
+function targetForBenchmark(benchmark) {
+  const id = typeof benchmark === 'string'
+    ? benchmark
+    : (benchmark?.stig_id || benchmark?.id);
+  return SUPPORTED_SCANNER_TARGETS[id] || null;
+}
+
+function normalizePlatform(platform) {
+  return platform === 'ciscoios' ? 'cisco_ios' : platform;
+}
 
 // ---------------------------------------------------------------------------
 // Theme Toggle
@@ -56,18 +72,16 @@ document.addEventListener('keydown', (e) => {
 // API Client
 // ---------------------------------------------------------------------------
 async function api(path, opts = {}) {
+  const { headers = {}, ...requestOpts } = opts;
   const res = await fetch(`${API}${path}`, {
+    ...requestOpts,
     headers: {
       'Content-Type': 'application/json',
       'X-Auth-Token': AUTH_TOKEN,
-      ...opts.headers,
+      ...headers,
     },
-    ...opts,
   });
-  if (opts.raw) return res;
-  const data = await res.json();
-  if (!data.success) throw new Error(data.error || 'API error');
-  return data.data;
+  return readApiResponse(res, 'API request failed');
 }
 
 async function apiUpload(path, file) {
@@ -78,8 +92,17 @@ async function apiUpload(path, file) {
     body: form,
     headers: { 'X-Auth-Token': AUTH_TOKEN },
   });
-  const data = await res.json();
-  if (!data.success) throw new Error(data.error || 'Upload failed');
+  return readApiResponse(res, 'Upload failed');
+}
+
+async function readApiResponse(res, fallback) {
+  let data;
+  try {
+    data = await res.json();
+  } catch (e) {
+    throw new Error(`${fallback} (${res.status}): invalid JSON response`);
+  }
+  if (!res.ok || !data.success) throw new Error(data.error || `${fallback} (${res.status})`);
   return data.data;
 }
 
@@ -184,15 +207,80 @@ function sevBadge(sev) {
   return h('span', { className: `sev ${cls}` }, sev);
 }
 
-function statusBadge(status) {
+function statusBadge(status, verified = true) {
   const cls = status === 'Open' ? 'status-open'
-    : status.includes('Not a Finding') ? 'status-naf'
+    : status.includes('Not a Finding') ? (verified ? 'status-naf' : 'status-na')
     : status.includes('Not Applicable') ? 'status-na' : 'status-nr';
   return h('span', { className: `status-badge ${cls}` }, status);
 }
 
-function complianceColor(pct) {
+function passRateColor(pct) {
   return pct >= 95 ? 'green' : pct >= 80 ? 'yellow' : 'red';
+}
+
+function optionalPercent(value) {
+  if (value == null || !Number.isFinite(Number(value))) return null;
+  return Number(value);
+}
+
+function checklistScore(checklist) {
+  const total = Math.max(0, Number(checklist?.total) || 0);
+  const notReviewed = Math.min(total, Math.max(0, Number(checklist?.not_reviewed) || 0));
+  const assessed = total - notReviewed;
+  // Presence matters: an explicit null marks an unverified score and must not
+  // fall through to the deprecated compatibility field or a derived value.
+  const hasExplicitPassRate = Object.prototype.hasOwnProperty.call(
+    checklist || {},
+    'assessed_pass_pct',
+  );
+  const hasExplicitCoverage = Object.prototype.hasOwnProperty.call(
+    checklist || {},
+    'benchmark_coverage_pct',
+  );
+  const assessedPassRate = optionalPercent(
+    hasExplicitPassRate ? checklist.assessed_pass_pct : checklist?.compliance_pct,
+  );
+  const benchmarkCoverage = optionalPercent(
+    hasExplicitCoverage
+      ? checklist.benchmark_coverage_pct
+      : (total > 0 ? assessed / total * 100 : null),
+  );
+  const provenance = checklist?.evaluation_provenance;
+  const origin = checklist?.evaluation_origin ?? provenance?.origin ?? null;
+  const collectionComplete = checklist?.collection_complete
+    ?? provenance?.collection_complete
+    ?? null;
+  const unverified = origin === 'imported_checklist'
+    || collectionComplete === false
+    || provenance?.unsafe_legacy_evidence === true;
+  const defensible = !unverified
+    && assessedPassRate != null
+    && benchmarkCoverage != null;
+
+  return {
+    total,
+    assessed,
+    assessedPassRate: defensible ? assessedPassRate : null,
+    benchmarkCoverage: defensible ? benchmarkCoverage : null,
+    defensible,
+  };
+}
+
+function scoreColor(score) {
+  if (!score.defensible || score.assessedPassRate == null) return '';
+  if (score.assessedPassRate < 80) return 'red';
+  // A perfect result on a partial assessment is still incomplete, not green.
+  if (score.benchmarkCoverage < 100) return 'yellow';
+  return passRateColor(score.assessedPassRate);
+}
+
+function coverageColor(score) {
+  if (!score.defensible || score.benchmarkCoverage == null) return '';
+  return score.benchmarkCoverage < 100 ? 'yellow' : 'green';
+}
+
+function formatScorePct(value) {
+  return value == null ? 'Unavailable' : `${value.toFixed(1)}%`;
 }
 
 function setPage(id, ...children) {
@@ -245,7 +333,7 @@ async function viewChecklist(id) {
     const page = document.getElementById('page-checklists');
     page.innerHTML = '';
 
-    const compColor = complianceColor(cl.compliance_pct);
+    const score = checklistScore(cl);
 
     page.appendChild(h('div', { className: 'page-header' },
       h('div', { style: 'display: flex; align-items: center; gap: 12px; margin-bottom: 4px' },
@@ -255,30 +343,43 @@ async function viewChecklist(id) {
       h('p', {}, `${cl.stig_title} (${cl.stig_version})`),
     ));
 
+    if (!score.defensible) {
+      page.appendChild(h('div', { className: 'card' },
+        h('div', { className: 'card-header' },
+          h('h2', {}, 'Unverified assessment results'),
+          h('span', { className: 'mini-pill mini-pill-accent' }, 'Unverified'),
+        ),
+        h('p', { style: 'color: var(--text-secondary)' },
+          'Pass-rate and coverage grades are unavailable because these results were imported or do not have complete, verified collection provenance.'),
+      ));
+    }
+
     page.appendChild(h('div', { className: 'stats-grid' },
       statCard('Total Rules', cl.total, ''),
-      statCard('Open', cl.open, cl.open > 0 ? 'red' : 'green'),
-      statCard('Not a Finding', cl.not_a_finding, 'green'),
+      statCard('Open', cl.open, cl.open > 0 ? 'red' : (score.defensible ? 'green' : '')),
+      statCard('Not a Finding', cl.not_a_finding, score.defensible ? 'green' : ''),
       statCard('Not Applicable', cl.not_applicable, ''),
       statCard('Not Reviewed', cl.not_reviewed, cl.not_reviewed > 0 ? 'yellow' : ''),
-      statCard('Compliance', `${(cl.compliance_pct ?? 0).toFixed(1)}%`, compColor),
+      statCard('Assessed Controls', `${score.assessed}/${score.total}`, coverageColor(score)),
+      statCard('Assessed Pass Rate', formatScorePct(score.assessedPassRate), scoreColor(score)),
+      statCard('Benchmark Coverage', formatScorePct(score.benchmarkCoverage), coverageColor(score)),
     ));
 
     // Severity breakdown
     if (cl.open > 0) {
       page.appendChild(h('div', { className: 'stats-grid', style: 'margin-bottom: 16px' },
-        statCard('CAT I Open', cl.cat_i_open, cl.cat_i_open > 0 ? 'red' : 'green'),
-        statCard('CAT II Open', cl.cat_ii_open, cl.cat_ii_open > 0 ? 'yellow' : 'green'),
-        statCard('CAT III Open', cl.cat_iii_open, cl.cat_iii_open > 0 ? 'yellow' : 'green'),
+        statCard('CAT I Open', cl.cat_i_open, cl.cat_i_open > 0 ? 'red' : (score.defensible ? 'green' : '')),
+        statCard('CAT II Open', cl.cat_ii_open, cl.cat_ii_open > 0 ? 'yellow' : (score.defensible ? 'green' : '')),
+        statCard('CAT III Open', cl.cat_iii_open, cl.cat_iii_open > 0 ? 'yellow' : (score.defensible ? 'green' : '')),
       ));
     }
 
     // Findings table
     const rows = cl.findings.map(f =>
-      h('tr', {},
+        h('tr', {},
         h('td', { className: 'mono' }, f.vuln_id),
         h('td', {}, sevBadge(f.severity)),
-        h('td', {}, statusBadge(f.status)),
+        h('td', {}, statusBadge(f.status, score.defensible)),
         h('td', { style: 'max-width: 400px' }, f.title),
         h('td', { style: 'font-size: 0.8rem; color: var(--text-muted); max-width: 300px' },
           f.finding_details || '\u2014'),
@@ -308,7 +409,7 @@ async function viewChecklist(id) {
         const tr = h('tr', { style: 'cursor: pointer', onClick: () => editFinding(id, f) },
           h('td', { className: 'mono' }, f.vuln_id),
           h('td', {}, sevBadge(f.severity)),
-          h('td', {}, statusBadge(f.status)),
+          h('td', {}, statusBadge(f.status, score.defensible)),
           h('td', { style: 'max-width: 400px' }, f.title),
           h('td', { style: 'font-size: 0.8rem; color: var(--text-muted); max-width: 300px' },
             f.finding_details.substring(0, 120) || '\u2014'),
@@ -326,7 +427,6 @@ async function viewChecklist(id) {
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(id) }, 'Export CKL'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(id) }, 'Export CKLB'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => pushToStigManager(id, cl.hostname) }, 'Push to STIG-Manager'),
-          h('button', { className: 'btn btn-primary btn-sm', onClick: () => reEvaluate(id) }, 'Re-evaluate'),
           h('button', { className: 'btn btn-danger btn-sm', onClick: () => deleteChecklist(id, cl.hostname) }, 'Delete'),
         ),
       ),
@@ -389,74 +489,75 @@ async function renderEvaluateWorkspace() {
   try {
     const [benchmarks, assets] = await Promise.all([
       api('/library/benchmarks'),
-      api('/assets').catch(() => []),
+      api('/assets'),
     ]);
 
-    const options = benchmarks.map(b =>
+    const supportedBenchmarks = benchmarks.filter(targetForBenchmark);
+    const supportedAssets = assets.filter(a => ['ontap', 'bsd', 'cisco_ios'].includes(normalizePlatform(a.platform)));
+    const options = supportedBenchmarks.map(b =>
       h('option', { value: b.id }, `${b.id} (${b.rule_count} rules)`),
     );
 
     container.appendChild(h('div', { className: 'card', style: 'max-width: 600px' },
       h('div', { className: 'card-header' }, h('h2', {}, 'Run assessment')),
-      assets.length > 0 ? h('div', { className: 'form-group' },
+      supportedAssets.length > 0 ? h('div', { className: 'form-group' },
         h('label', { className: 'form-label' }, 'Asset (optional)'),
         h('select', { className: 'form-select', id: 'eval-asset',
           onChange: (e) => {
-            const a = assets.find(x => x.id === e.target.value);
+            const a = supportedAssets.find(x => x.id === e.target.value);
             const host = document.getElementById('eval-host');
             if (a && host) host.value = a.name;
           } },
           h('option', { value: '' }, 'Manual entry…'),
-          ...assets.map(a => h('option', { value: a.id }, `${a.name} (${a.address})`)),
+          ...supportedAssets.map(a => h('option', { value: a.id, 'data-platform': normalizePlatform(a.platform) }, `${a.name} (${a.address})`)),
         ),
       ) : null,
       h('div', { className: 'form-group' },
         h('label', { className: 'form-label' }, 'STIG Benchmark'),
-        benchmarks.length
-          ? h('select', { className: 'form-select', id: 'eval-stig' },
+        supportedBenchmarks.length
+          ? h('select', { className: 'form-select', id: 'eval-stig', onChange: (event) => {
+              const target = targetForBenchmark(event.target.value);
+              const platform = document.getElementById('eval-platform');
+              const input = document.getElementById('eval-evidence');
+              if (target && platform) platform.value = target.platform;
+              if (target && input) {
+                input.accept = target.inputType === 'config'
+                  ? '.txt,.conf,.cfg,.log,text/plain'
+                  : '.json,application/json';
+              }
+            } },
               h('option', { value: '' }, 'Select a benchmark...'),
               ...options,
             )
           : h('p', { style: 'color: var(--text-muted)' },
-              'No benchmarks installed. ',
+              'No supported scanner benchmarks installed. ',
               h('a', { href: '#', onClick: (e) => { e.preventDefault(); nav('standards'); } }, 'Install STIG content first.'),
             ),
       ),
       h('div', { className: 'form-group' },
         h('label', { className: 'form-label' }, 'Target Hostname'),
-        h('input', { className: 'form-input', id: 'eval-host', type: 'text', placeholder: 'e.g. webserver01.navy.mil' }),
+        h('input', { className: 'form-input', id: 'eval-host', type: 'text', placeholder: 'e.g. device01.example.mil' }),
       ),
       h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Scan Results (optional)'),
-        h('input', { className: 'form-input', id: 'eval-scan', type: 'file', accept: '.xml,.ckl,.cklb,.json' }),
+        h('label', { className: 'form-label' }, 'Target Platform'),
+        h('select', { className: 'form-select', id: 'eval-platform', disabled: true },
+          h('option', { value: 'ontap' }, 'NetApp ONTAP'),
+          h('option', { value: 'bsd' }, 'FreeBSD'),
+          h('option', { value: 'cisco_ios' }, 'Cisco IOS-XE Router NDM')),
+      ),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Device Evidence (required)'),
+        h('input', {
+          className: 'form-input',
+          id: 'eval-evidence',
+          type: 'file',
+          accept: '.json,application/json',
+        }),
       ),
       h('button', { className: 'btn btn-primary', id: 'eval-btn', onClick: runEvaluation },
         'Run Evaluation',
       ),
     ));
-
-    if (benchmarks.length > 0) {
-      const batchOptions = benchmarks.map(b =>
-        h('option', { value: b.id }, `${b.id} (${b.rule_count} rules)`),
-      );
-      container.appendChild(h('div', { className: 'card', style: 'max-width: 600px; margin-top: 20px' },
-        h('div', { className: 'card-header' }, h('h2', {}, 'Batch Evaluate')),
-        h('p', { style: 'color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem' },
-          'Evaluate multiple hosts against a single STIG at once.',
-        ),
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'STIG Benchmark'),
-          h('select', { className: 'form-select', id: 'batch-stig' },
-            h('option', { value: '' }, 'Select...'), ...batchOptions),
-        ),
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'Hostnames (one per line)'),
-          h('textarea', { className: 'form-input', id: 'batch-hosts', rows: '6',
-            style: 'resize: vertical', placeholder: 'server01\nserver02\nserver03' }),
-        ),
-        h('button', { className: 'btn btn-primary', onClick: runBatchEvaluation }, 'Batch Evaluate'),
-      ));
-    }
 
     const remoteScanSection = await loadRemoteScan();
     if (remoteScanSection) container.appendChild(remoteScanSection);
@@ -468,41 +569,54 @@ async function renderEvaluateWorkspace() {
 async function runEvaluation() {
   const stigId = document.getElementById('eval-stig')?.value;
   const hostname = document.getElementById('eval-host')?.value;
-  const assetId = document.getElementById('eval-asset')?.value || null;
-  const scanInput = document.getElementById('eval-scan');
-  const scanFile = scanInput?.files?.[0];
+  const assetSelect = document.getElementById('eval-asset');
+  const assetId = assetSelect?.value || null;
+  const assetPlatform = assetSelect?.selectedOptions?.[0]?.getAttribute('data-platform') || null;
+  const evidenceFile = document.getElementById('eval-evidence')?.files?.[0];
+  const target = targetForBenchmark(stigId);
+  const platform = target?.platform;
+  const inputType = target?.inputType;
 
   if (!stigId) { toast('Select a STIG benchmark', 'error'); return; }
+  if (!target) { toast('The selected benchmark is not a supported scanner target', 'error'); return; }
+  if (assetPlatform && assetPlatform !== platform) {
+    toast('The selected asset platform does not match this benchmark', 'error');
+    return;
+  }
   if (!hostname) { toast('Enter a target hostname', 'error'); return; }
+  if (!evidenceFile) { toast('Choose a device evidence file', 'error'); return; }
 
   const btn = document.getElementById('eval-btn');
   btn.textContent = 'Evaluating...';
   btn.disabled = true;
 
   try {
-    let result;
-    if (scanFile) {
-      // Use multipart upload with scan file.
-      const form = new FormData();
-      form.append('stig_id', stigId);
-      form.append('hostname', hostname);
-      form.append('scan', scanFile);
-      if (assetId) form.append('asset_id', assetId);
-      const res = await fetch(`${API}/evaluate/with-scan`, {
-        method: 'POST',
-        body: form,
-        headers: { 'X-Auth-Token': AUTH_TOKEN },
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error || 'Evaluation failed');
-      result = data.data;
+    const form = new FormData();
+    form.append('stig_id', stigId);
+    form.append('hostname', hostname);
+    form.append('platform', platform);
+    form.append('input_type', inputType);
+    form.append('evidence', evidenceFile);
+    if (assetId) form.append('asset_id', assetId);
+    const res = await fetch(`${API}/evaluate/with-evidence`, {
+      method: 'POST', body: form, headers: { 'X-Auth-Token': AUTH_TOKEN },
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Evaluation failed');
+    const result = data.data;
+    if (result.collection_complete === false) {
+      const failures = Object.keys(result.collection_errors || {}).length;
+      toast(
+        `Evaluation incomplete: ${failures} collection command(s) failed; no checklist was saved`,
+        'info',
+      );
     } else {
-      result = await api('/evaluate', {
-        method: 'POST',
-        body: JSON.stringify({ stig_id: stigId, hostname, asset_id: assetId }),
-      });
+      const score = checklistScore(result);
+      toast(
+        `Evaluation complete: ${result.open} open, ${formatScorePct(score.assessedPassRate)} assessed pass rate, ${formatScorePct(score.benchmarkCoverage)} benchmark coverage`,
+        'success',
+      );
     }
-    toast(`Evaluation complete: ${result.total} rules, ${result.open} open, ${result.compliance_pct?.toFixed(1) || '?'}% compliance`, 'success');
     loadAssessments();
   } catch (e) {
     toast(e.message, 'error');
@@ -581,7 +695,8 @@ async function editFinding(checklistId, finding) {
 async function loadRemoteScan() {
   try {
     const benchmarks = await api('/library/benchmarks');
-    const options = benchmarks.map(b =>
+    const remoteBenchmarks = benchmarks.filter(b => targetForBenchmark(b)?.remote);
+    const options = remoteBenchmarks.map(b =>
       h('option', { value: b.id }, `${b.id} (${b.rule_count} rules)`),
     );
 
@@ -592,20 +707,6 @@ async function loadRemoteScan() {
       ),
       h('div', { className: 'grid-2' },
         h('div', {},
-          h('div', { className: 'form-group' },
-            h('label', { className: 'form-label' }, 'Protocol'),
-            h('select', { className: 'form-select', id: 'scan-protocol' },
-              h('option', { value: 'ssh' }, 'SSH (Linux / Network)'),
-            ),
-          ),
-          h('div', { className: 'form-group' },
-            h('label', { className: 'form-label' }, 'Platform'),
-            h('select', { className: 'form-select', id: 'scan-platform' },
-              h('option', { value: 'linux' }, 'Linux'),
-              h('option', { value: 'ontap' }, 'NetApp ONTAP'),
-              h('option', { value: 'bsd' }, 'FreeBSD'),
-            ),
-          ),
           h('div', { className: 'form-group' },
             h('label', { className: 'form-label' }, 'Host'),
             h('input', { className: 'form-input', id: 'scan-host', type: 'text', placeholder: '10.0.1.50' }),
@@ -622,7 +723,7 @@ async function loadRemoteScan() {
         h('div', {},
           h('div', { className: 'form-group' },
             h('label', { className: 'form-label' }, 'STIG Benchmark'),
-            benchmarks.length
+            remoteBenchmarks.length
               ? h('select', { className: 'form-select', id: 'scan-stig' },
                   h('option', { value: '' }, 'Select...'), ...options)
               : h('p', { style: 'color: var(--text-muted)' }, 'No benchmarks. Import content first.'),
@@ -635,26 +736,26 @@ async function loadRemoteScan() {
         ),
       ),
     );
-  } catch (_) {
-    return h('div', {});
+  } catch (e) {
+    return errorCard(e.message);
   }
 }
 
 async function runRemoteScan() {
-  const protocol = document.getElementById('scan-protocol')?.value;
-  const platform = document.getElementById('scan-platform')?.value || 'linux';
   const host = document.getElementById('scan-host')?.value;
   const user = document.getElementById('scan-user')?.value;
   const pass = document.getElementById('scan-pass')?.value;
   const stigId = document.getElementById('scan-stig')?.value;
+  const target = targetForBenchmark(stigId);
+  const platform = target?.platform;
   const port = document.getElementById('scan-port')?.value;
 
-  if (!host || !user || !stigId) {
-    toast('Fill in host, username, and STIG', 'error');
+  if (!host || !user || !stigId || !target?.remote) {
+    toast('Fill in host, username, and a supported SSH benchmark', 'error');
     return;
   }
 
-  toast(`Scanning ${host} via ${protocol.toUpperCase()}...`, 'info');
+  toast(`Scanning ${host} via SSH...`, 'info');
 
   try {
     const result = await api('/scan/ssh', {
@@ -665,11 +766,20 @@ async function runRemoteScan() {
         auth: { type: 'password', password: pass },
       }),
     });
-    toast(
-      `Scan complete: ${result.checks_executed} checks, ${(result.compliance_pct ?? 0).toFixed(1)}% compliance`,
-      'success',
-    );
-    viewChecklist(result.id);
+    if (result.collection_complete === false) {
+      const failures = Object.keys(result.collection_errors || {}).length;
+      toast(
+        `Scan incomplete: ${failures} collection command(s) failed; no checklist was saved`,
+        'info',
+      );
+    } else {
+      const score = checklistScore(result);
+      toast(
+        `Scan complete: ${result.checks_executed} checks, ${formatScorePct(score.assessedPassRate)} assessed pass rate, ${formatScorePct(score.benchmarkCoverage)} benchmark coverage`,
+        'success',
+      );
+      viewChecklist(result.id);
+    }
   } catch (e) {
     toast(`Scan failed: ${e.message}`, 'error');
   }
@@ -692,12 +802,13 @@ function exportCklb(id) {
 async function loadSettings() {
   setPage('settings', loadingState());
 
-  let config = {};
-  let creds = [];
-  await Promise.all([
-    api('/stigman/config').then(data => { config = data; }).catch(() => {}),
-    api('/credentials').then(data => { creds = Array.isArray(data) ? data : []; }).catch(() => {}),
-  ]);
+  let config;
+  try {
+    config = await api('/stigman/config');
+  } catch (e) {
+    setPage('settings', errorCard(e.message));
+    return;
+  }
 
   setPage('settings',
     h('div', { className: 'page-header' },
@@ -762,29 +873,6 @@ async function loadSettings() {
       ),
       h('button', { className: 'btn btn-primary', onClick: openAnswerEditor }, 'Open Answer File Editor'),
     ),
-    h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
-      h('div', { className: 'card-header' },
-        h('h2', {}, `Credentials (${creds.length})`),
-        h('button', { className: 'btn btn-secondary btn-sm', onClick: addCredentialDialog }, 'Add Credential'),
-      ),
-      creds.length > 0
-        ? h('table', { className: 'data-table' },
-            h('thead', {}, h('tr', {},
-              h('th', {}, 'Label'), h('th', {}, 'Type'), h('th', {}, 'Username'), h('th', {}, ''),
-            )),
-            h('tbody', {}, ...creds.map(c =>
-              h('tr', {},
-                h('td', { style: 'font-weight: 600' }, c.label),
-                h('td', {}, sevBadge(c.credential_type)),
-                h('td', {}, c.username || '\u2014'),
-                h('td', {},
-                  h('button', { className: 'btn btn-danger btn-sm', onClick: () => removeCred(c.id, c.label) }, '\u00D7'),
-                ),
-              ),
-            )),
-          )
-        : h('p', { style: 'color: var(--text-muted); padding: 16px' }, 'No credentials stored.'),
-    ),
   );
 }
 
@@ -797,17 +885,6 @@ async function saveStigManagerConfig() {
     default_collection_id: document.getElementById('sm-collection-id')?.value || null,
     verify_tls: document.getElementById('sm-verify-tls')?.checked !== false,
   };
-
-  // Don't overwrite secret with empty string if placeholder is showing
-  if (!config.client_secret) {
-    try {
-      const existing = await api('/stigman/config');
-      if (existing.has_secret) {
-        toast('Secret not changed (field was empty)', 'info');
-        // We need the secret — for now just warn
-      }
-    } catch (_) {}
-  }
 
   try {
     await api('/stigman/config', { method: 'POST', body: JSON.stringify(config) });
@@ -985,8 +1062,9 @@ async function fetchSingleStig(stig) {
 }
 
 function downloadOfflinePack() {
-  toast('Generating offline .stigpack — check your downloads folder. Transfer to air-gapped systems via USB/DVD.', 'info');
+  toast('Offline export requires an explicitly configured external signing key. Prefer the CLI on an offline signing workstation.', 'info');
   downloadAuthed('/offline-pack', 'automatestig-offline.stigpack');
+  downloadAuthed('/offline-pack/trust-key', 'content-signing.pub');
 }
 
 function addAssetDialog() {
@@ -994,19 +1072,16 @@ function addAssetDialog() {
     h('div', { className: 'modal', style: 'max-width: 500px' },
       h('h3', {}, 'Add Asset'),
       h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Name'), h('input', { className: 'form-input', id: 'aa-name', placeholder: 'server01' })),
+        h('label', { className: 'form-label' }, 'Name'), h('input', { className: 'form-input', id: 'aa-name', placeholder: 'device01' })),
       h('div', { className: 'form-group' },
         h('label', { className: 'form-label' }, 'Address'), h('input', { className: 'form-input', id: 'aa-addr', placeholder: '10.0.1.50' })),
       h('div', { className: 'grid-2' },
         h('div', { className: 'form-group' },
           h('label', { className: 'form-label' }, 'Platform'),
           h('select', { className: 'form-select', id: 'aa-platform' },
-            h('option', { value: 'linux' }, 'Linux'), h('option', { value: 'windows' }, 'Windows'),
-            h('option', { value: 'cisco_ios' }, 'Cisco IOS'), h('option', { value: 'generic' }, 'Other'))),
-        h('div', { className: 'form-group' },
-          h('label', { className: 'form-label' }, 'Protocol'),
-          h('select', { className: 'form-select', id: 'aa-proto' },
-            h('option', { value: 'ssh' }, 'SSH')))),
+            h('option', { value: 'ontap' }, 'NetApp ONTAP'),
+            h('option', { value: 'bsd' }, 'FreeBSD'),
+            h('option', { value: 'cisco_ios' }, 'Cisco IOS-XE Router NDM')))),
       h('div', { className: 'form-group' },
         h('label', { className: 'form-label' }, 'Tags (comma-separated)'),
         h('input', { className: 'form-input', id: 'aa-tags', placeholder: 'production, web-tier' })),
@@ -1017,9 +1092,8 @@ function addAssetDialog() {
             id: crypto.randomUUID(), name: document.getElementById('aa-name')?.value,
             address: document.getElementById('aa-addr')?.value,
             platform: document.getElementById('aa-platform')?.value,
-            protocol: document.getElementById('aa-proto')?.value,
             tags: (document.getElementById('aa-tags')?.value || '').split(',').map(t => t.trim()).filter(t => t),
-            assigned_stigs: [], enabled: true, port: null, credential_id: null,
+            assigned_stigs: [], enabled: true, port: null,
             os_info: null, notes: null, last_evaluated: null, last_compliance_pct: null,
             last_checklist_ids: [], created_at: new Date().toISOString(),
           };
@@ -1032,9 +1106,24 @@ function addAssetDialog() {
   document.body.appendChild(overlay);
 }
 
-async function bulkAssignStig(assetIds, benchmarks) {
+async function bulkAssignStig(assetIds, benchmarks, assets) {
   if (!assetIds.length) return;
-  const stigId = await pickBenchmark(benchmarks);
+  const selectedPlatforms = new Set(
+    assets.filter(asset => assetIds.includes(asset.id)).map(asset => normalizePlatform(asset.platform)),
+  );
+  if (selectedPlatforms.size !== 1) {
+    toast('Select assets from one supported platform before assigning a STIG', 'error');
+    return;
+  }
+  const compatibleBenchmarks = benchmarks.filter(benchmark => {
+    const target = targetForBenchmark(benchmark);
+    return target && selectedPlatforms.size === 1 && selectedPlatforms.has(target.platform);
+  });
+  if (!compatibleBenchmarks.length) {
+    toast('No installed supported benchmark matches the selected assets', 'error');
+    return;
+  }
+  const stigId = await pickBenchmark(compatibleBenchmarks);
   if (!stigId) return;
   try {
     await api('/assets/bulk-assign-stig', { method: 'POST', body: JSON.stringify({ asset_ids: assetIds, stig_id: stigId }) });
@@ -1065,12 +1154,13 @@ async function bulkSetEnabled(assetIds, enabled) {
 
 function pickBenchmark(benchmarks) {
   return new Promise(resolve => {
-    if (!benchmarks || !benchmarks.length) { toast('No standards installed', 'error'); resolve(null); return; }
+    const supported = (benchmarks || []).filter(targetForBenchmark);
+    if (!supported.length) { toast('No supported scanner standards installed', 'error'); resolve(null); return; }
     const overlay = h('div', { className: 'modal-overlay', onClick: (e) => { if (e.target === overlay) { overlay.remove(); resolve(null); } } },
       h('div', { className: 'modal' },
         h('h3', {}, 'Assign standard'),
         h('div', { className: 'stack-list', style: 'margin-top: 12px' },
-          ...benchmarks.map(b => h('button', { className: 'action-row', onClick: () => { overlay.remove(); resolve(b.id); } },
+          ...supported.map(b => h('button', { className: 'action-row', onClick: () => { overlay.remove(); resolve(b.id); } },
             h('div', {}, h('div', { className: 'list-title' }, b.title || b.id), h('div', { className: 'list-subtitle' }, b.id)),
             h('span', { className: 'action-arrow' }, '→'))),
         ),
@@ -1193,68 +1283,12 @@ async function syncFromStigManager() {
   }
 }
 
-function addCredentialDialog() {
-  const overlay = h('div', { className: 'modal-overlay' },
-    h('div', { className: 'modal', style: 'max-width: 500px' },
-      h('h3', {}, 'Add Credential'),
-      h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Label'), h('input', { className: 'form-input', id: 'ac-label', placeholder: 'Linux admin account' })),
-      h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Type'),
-        h('select', { className: 'form-select', id: 'ac-type' },
-          h('option', { value: 'password' }, 'Password'), h('option', { value: 'ssh_key' }, 'SSH Key'),
-          h('option', { value: 'kerberos' }, 'Kerberos'), h('option', { value: 'token' }, 'Token'))),
-      h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Username'), h('input', { className: 'form-input', id: 'ac-user', placeholder: 'admin' })),
-      h('div', { className: 'form-group' },
-        h('label', { className: 'form-label' }, 'Password / Key / Token'), h('input', { className: 'form-input', id: 'ac-secret', type: 'password' })),
-      h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
-        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
-        h('button', { className: 'btn btn-primary', onClick: async () => {
-          const type = document.getElementById('ac-type')?.value;
-          const cred = {
-            id: crypto.randomUUID(), label: document.getElementById('ac-label')?.value,
-            credential: type === 'password' ? { type: 'password', username: document.getElementById('ac-user')?.value, password: document.getElementById('ac-secret')?.value }
-              : type === 'ssh_key' ? { type: 'ssh_key', username: document.getElementById('ac-user')?.value, private_key: document.getElementById('ac-secret')?.value, passphrase: null }
-              : type === 'kerberos' ? { type: 'kerberos', username: document.getElementById('ac-user')?.value, domain: 'DOMAIN', password: document.getElementById('ac-secret')?.value }
-              : { type: 'token', token: document.getElementById('ac-secret')?.value, token_type: 'bearer' },
-            description: null, created_at: new Date().toISOString(), last_used: null, expires_at: null,
-          };
-          try { await api('/credentials', { method: 'POST', body: JSON.stringify(cred) }); overlay.remove(); toast('Credential saved', 'success'); loadSettings(); }
-          catch (e) { toast(e.message, 'error'); }
-        }}, 'Save'),
-      ),
-    ),
-  );
-  document.body.appendChild(overlay);
-}
-
-async function removeCred(id, label) {
-  if (!(await confirmDialog('Delete Credential', `Remove "${label}"?`))) return;
-  try { await api(`/credentials/${id}`, { method: 'DELETE' }); toast('Credential removed', 'success'); loadSettings(); }
-  catch (e) { toast(e.message, 'error'); }
-}
-
 // ---------------------------------------------------------------------------
 // Export All ZIP
 // ---------------------------------------------------------------------------
 function exportAllZip() {
   downloadAuthed('/export/all-zip', 'automatestig-checklists.zip');
   toast('Exporting all checklists as ZIP...', 'info');
-}
-
-// ---------------------------------------------------------------------------
-// Re-evaluate
-// ---------------------------------------------------------------------------
-async function reEvaluate(checklistId) {
-  toast('Re-evaluating...', 'info');
-  try {
-    const result = await api(`/checklists/${checklistId}/re-evaluate`, { method: 'POST' });
-    toast(`Re-evaluation complete: ${(result.compliance_pct ?? 0).toFixed(1)}% compliance`, 'success');
-    viewChecklist(result.id);
-  } catch (e) {
-    toast(`Re-evaluation failed: ${e.message}`, 'error');
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1269,44 +1303,6 @@ async function deleteChecklist(id, hostname) {
     nav('assessments');
   } catch (e) {
     toast(`Delete failed: ${e.message}`, 'error');
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Batch Evaluate (Fix #3)
-// ---------------------------------------------------------------------------
-async function runBatchEvaluation() {
-  const stigId = document.getElementById('batch-stig')?.value;
-  const hostsText = document.getElementById('batch-hosts')?.value;
-  if (!stigId || !hostsText) { toast('Select a STIG and enter hostnames', 'error'); return; }
-
-  const hostnames = hostsText.split('\n').map(h => h.trim()).filter(h => h.length > 0);
-  if (hostnames.length === 0) { toast('Enter at least one hostname', 'error'); return; }
-
-  toast(`Evaluating ${hostnames.length} hosts...`, 'info');
-  try {
-    const result = await api('/evaluate/batch', {
-      method: 'POST',
-      body: JSON.stringify({ stig_id: stigId, hostnames }),
-    });
-    const successes = result.results.filter(r => r.success).length;
-    toast(`Batch complete: ${successes}/${result.evaluated} succeeded`, 'success');
-    loadAssessments();
-  } catch (e) {
-    toast(`Batch failed: ${e.message}`, 'error');
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Generate Checks (Fix #7)
-// ---------------------------------------------------------------------------
-async function generateChecks(benchmarkId) {
-  toast(`Generating check pack for ${benchmarkId}...`, 'info');
-  try {
-    const result = await api(`/library/generate-checks/${benchmarkId}`, { method: 'POST' });
-    toast(`Generated: ${result.automated} automated checks (${result.automation_rate} of ${result.total_rules} rules)`, 'success');
-  } catch (e) {
-    toast(`Generation failed: ${e.message}`, 'error');
   }
 }
 
@@ -1368,7 +1364,7 @@ async function updateStatusBar() {
 async function openAnswerEditor() {
   try {
     const [files, benchmarks] = await Promise.all([api('/answer-files'), api('/library/benchmarks')]);
-    const opts = benchmarks.map(b => h('option', { value: b.id }, b.id));
+    const opts = benchmarks.filter(targetForBenchmark).map(b => h('option', { value: b.id }, b.id));
     const overlay = h('div', { className: 'modal-overlay' },
       h('div', { className: 'modal', style: 'max-width: 700px; max-height: 80vh; overflow-y: auto' },
         h('h3', {}, 'Answer File Editor'),
@@ -1387,7 +1383,7 @@ async function openAnswerEditor() {
         h('div', { className: 'form-group' },
           h('label', { className: 'form-label' }, 'Entries (JSON)'),
           h('textarea', { className: 'form-input', id: 'af-entries', rows: '8', style: 'font-family: monospace; font-size: 0.8rem',
-            placeholder: '[{"vuln_id":"V-254239","status":"Not_Applicable","finding_details":"Not used"}]' })),
+            placeholder: '[{"vuln_id":"V-246927","status":"Not_Applicable","finding_details":"Not used"}]' })),
         h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 12px' },
           h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Close'),
           h('button', { className: 'btn btn-primary', onClick: async () => {
@@ -1417,14 +1413,13 @@ updateStatusBar();
 // ---------------------------------------------------------------------------
 async function fetchChecklistsWithFindings() {
   const summaries = await api('/checklists');
-  return Promise.all(summaries.map(summary =>
-    api(`/checklists/${summary.id}`).catch(() => summary),
-  ));
+  return Promise.all(summaries.map(summary => api(`/checklists/${summary.id}`)));
 }
 
 function flattenFindings(checklists) {
   const rows = [];
   for (const checklist of checklists || []) {
+    const score = checklistScore(checklist);
     const findings = checklist.findings || [];
     for (const finding of findings) {
       rows.push({
@@ -1432,7 +1427,6 @@ function flattenFindings(checklists) {
         hostname: checklist.hostname || checklist.asset?.hostname || 'Unknown asset',
         benchmark: checklist.stig_title || checklist.title || checklist.stig_id || 'Unknown standard',
         stigId: checklist.stig_id || checklist.stigInfo?.stig_id || '',
-        compliance: checklist.compliance_pct,
         vulnId: finding.vuln_id || finding.group_id || 'Unknown',
         title: finding.rule_title || finding.title || 'Untitled finding',
         severity: finding.severity || 'Unknown',
@@ -1441,6 +1435,7 @@ function flattenFindings(checklists) {
         details: finding.finding_details || '',
         evaluatedBy: finding.evaluated_by || '',
         evaluatedAt: finding.evaluated_at || checklist.modified_at || checklist.created_at || '',
+        scoreDefensible: score.defensible,
       });
     }
   }
@@ -1483,7 +1478,10 @@ function pickChecklistDialog(items) {
         ...items.map(item => h('button', { className: 'action-row', onClick: () => { overlay.remove(); viewChecklist(item.id); } },
           h('div', {},
             h('div', { className: 'list-title' }, item.stig_title || item.stig_id || 'Checklist'),
-            h('div', { className: 'list-subtitle' }, `${(item.compliance_pct || 0).toFixed(1)}% compliant • ${item.open || 0} open`),
+            h('div', { className: 'list-subtitle' }, (() => {
+              const score = checklistScore(item);
+              return `${formatScorePct(score.assessedPassRate)} assessed pass rate • ${formatScorePct(score.benchmarkCoverage)} coverage • ${item.open || 0} open`;
+            })()),
           ),
           h('span', { className: 'action-arrow' }, '→'),
         )),
@@ -1502,8 +1500,8 @@ async function loadAssessments() {
   try {
     const [checklists, assets, benchmarks] = await Promise.all([
       api('/checklists'),
-      api('/assets').catch(() => []),
-      api('/library/benchmarks').catch(() => []),
+      api('/assets'),
+      api('/library/benchmarks'),
     ]);
 
     const grouped = new Map();
@@ -1515,9 +1513,42 @@ async function loadAssessments() {
 
     const assessments = [...grouped.entries()].map(([name, items], index) => {
       const standards = [...new Set(items.map(item => item.stig_title || item.stig_id).filter(Boolean))];
-      const compliance = items.length ? items.reduce((sum, item) => sum + (item.compliance_pct || 0), 0) / items.length : 0;
+      const totals = items.reduce((summary, item) => ({
+        total: summary.total + (Number(item.total) || 0),
+        not_reviewed: summary.not_reviewed + (Number(item.not_reviewed) || 0),
+        not_a_finding: summary.not_a_finding + (Number(item.not_a_finding) || 0),
+        not_applicable: summary.not_applicable + (Number(item.not_applicable) || 0),
+      }), { total: 0, not_reviewed: 0, not_a_finding: 0, not_applicable: 0 });
+      const assessed = totals.total - totals.not_reviewed;
+      const applicableAssessed = Math.max(0, assessed - totals.not_applicable);
+      const allScoresDefensible = items.length > 0
+        && items.every(item => checklistScore(item).defensible);
+      totals.assessed_pass_pct = allScoresDefensible
+        ? (applicableAssessed > 0
+          ? totals.not_a_finding / applicableAssessed * 100
+          : 0)
+        : null;
+      totals.benchmark_coverage_pct = allScoresDefensible
+        ? (totals.total > 0 ? assessed / totals.total * 100 : 0)
+        : null;
+      totals.collection_complete = allScoresDefensible;
+      const score = checklistScore(totals);
       const open = items.reduce((sum, item) => sum + (item.open || 0), 0);
-      return { id: `assessment-${index}`, name, items, standards, compliance, open, lastRun: items[0]?.modified_at || items[0]?.created_at || null };
+      const status = !score.defensible
+        ? { label: 'Unverified', color: 'accent' }
+        : (open || score.benchmarkCoverage < 100
+          ? { label: 'Needs review', color: 'yellow' }
+          : { label: 'Fully assessed', color: 'green' });
+      return {
+        id: `assessment-${index}`,
+        name,
+        items,
+        standards,
+        score,
+        open,
+        status,
+        lastRun: items[0]?.modified_at || items[0]?.created_at || null,
+      };
     });
 
     setPage('assessments',
@@ -1539,7 +1570,7 @@ async function loadAssessments() {
                 h('th', {}, 'Scope'),
                 h('th', {}, 'Last run'),
                 h('th', {}, 'Open findings'),
-                h('th', {}, 'Compliance'),
+                h('th', {}, 'Assessed pass / coverage'),
                 h('th', {}, 'Status'),
               )),
               h('tbody', {}, ...assessments.map(assessment =>
@@ -1550,9 +1581,14 @@ async function loadAssessments() {
                   ),
                   h('td', {}, `${assessment.name !== 'Imported results' ? 1 : assets.length || 0} asset • ${assessment.standards.length} standard${assessment.standards.length === 1 ? '' : 's'}`),
                   h('td', {}, formatDate(assessment.lastRun)),
-                  h('td', {}, h('span', { className: `mini-pill mini-pill-${assessment.open ? 'red' : 'green'}` }, assessment.open)),
-                  h('td', {}, h('span', { className: `mini-pill mini-pill-${complianceColor(assessment.compliance)}` }, `${assessment.compliance.toFixed(1)}%`)),
-                  h('td', {}, h('span', { className: 'mini-pill mini-pill-accent' }, assessment.open ? 'Needs review' : 'Healthy')),
+                  h('td', {}, h('span', { className: `mini-pill mini-pill-${assessment.open ? 'red' : (assessment.score.defensible ? 'green' : 'accent')}` }, assessment.open)),
+                  h('td', {},
+                    h('span', { className: `mini-pill mini-pill-${scoreColor(assessment.score) || 'accent'}` }, formatScorePct(assessment.score.assessedPassRate)),
+                    ' / ',
+                    h('span', { className: `mini-pill mini-pill-${coverageColor(assessment.score) || 'accent'}` }, formatScorePct(assessment.score.benchmarkCoverage)),
+                  ),
+                  h('td', {}, h('span', { className: `mini-pill mini-pill-${assessment.status.color}` },
+                    assessment.status.label)),
                 ),
               )),
             ),
@@ -1579,9 +1615,7 @@ async function loadStandards() {
   setPage('standards', loadingState());
 
   try {
-    const [benchmarks] = await Promise.all([
-      api('/library/benchmarks').catch(() => []),
-    ]);
+    const benchmarks = await api('/library/benchmarks');
 
     const rows = benchmarks.map(benchmark => h('tr', {},
       h('td', {},
@@ -1592,14 +1626,13 @@ async function loadStandards() {
       h('td', {}, `${benchmark.version || '—'} / ${benchmark.release || '—'}`),
       h('td', {}, benchmark.rule_count ?? benchmark.rules ?? '—'),
       h('td', {}, formatDate(benchmark.imported_at || benchmark.created_at)),
-      h('td', {}, h('button', { className: 'btn btn-secondary btn-sm', onClick: (e) => { e.stopPropagation(); generateChecks(benchmark.id); } }, 'Generate Checks')),
     ));
 
     setPage('standards',
       h('div', { className: 'page-header page-header-with-actions' },
         h('div', {},
           h('h1', {}, 'Standards'),
-          h('p', {}, 'Installed benchmark content, imports, updates, and DISA content operations'),
+          h('p', {}, 'Benchmark library and the three supported scanner targets'),
         ),
         h('div', { className: 'btn-group' },
           h('button', { className: 'btn btn-primary', onClick: importStigpackFile }, 'Import Benchmark Pack'),
@@ -1609,7 +1642,7 @@ async function loadStandards() {
       h('div', { className: 'stats-grid' },
         statCard('Installed', benchmarks.length, 'accent'),
         statCard('Available actions', 4, 'accent'),
-        statCard('Offline packs', 'Ready', 'green'),
+        statCard('Offline signing', 'External key', 'accent'),
         statCard('Source', 'DISA + local packs', 'accent'),
       ),
       h('div', { className: 'overview-grid' },
@@ -1623,7 +1656,6 @@ async function loadStandards() {
                   h('th', {}, 'Version / Release'),
                   h('th', {}, 'Rules'),
                   h('th', {}, 'Imported'),
-                  h('th', {}, ''),
                 )),
                 h('tbody', {}, ...rows),
               )
@@ -1635,7 +1667,7 @@ async function loadStandards() {
             actionRow('Fetch from DISA', 'Download the latest public benchmark content.', fetchAllContent),
             actionRow('Check for updates', 'Compare installed standards with available upstream content.', checkForUpdates),
             actionRow('Browse available content', 'Inspect available DISA packages before importing.', browseAvailable),
-            actionRow('Generate offline pack', 'Create a .stigpack for transfer into air-gapped environments.', downloadOfflinePack),
+            actionRow('Generate offline pack', 'Requires an explicit external signing key; no GUI key is created.', downloadOfflinePack),
           ),
         ),
       ),
@@ -1693,13 +1725,13 @@ async function loadFindings() {
                   h('td', {}, h('span', { className: `mini-pill mini-pill-${severityTone(row.severity)}` }, row.severity)),
                   h('td', {}, row.hostname),
                   h('td', {}, row.benchmark),
-                  h('td', {}, statusBadge(row.status)),
+                  h('td', {}, statusBadge(row.status, row.scoreDefensible)),
                   h('td', {}, formatDate(row.evaluatedAt)),
                 ),
               )),
             ),
           )
-        : emptyState('No findings yet', 'Run an assessment or import existing results to review compliance status.',
+        : emptyState('No findings yet', 'Run an assessment or import existing results to review assessment status.',
             h('button', { className: 'btn btn-primary', onClick: importChecklistFile }, 'Import Results')),
     );
   } catch (e) {
@@ -1711,25 +1743,39 @@ async function loadAssetsPage() {
   setPage('assets', loadingState());
 
   try {
-    const assets = await api('/assets');
-    const benchmarks = await api('/library/benchmarks').catch(() => []);
+    const [assets, benchmarks, checklists] = await Promise.all([
+      api('/assets'),
+      api('/library/benchmarks'),
+      api('/checklists'),
+    ]);
+    const checklistsById = new Map(checklists.map(checklist => [checklist.id, checklist]));
     const selected = new Set();
-    const rows = assets.map(asset => h('tr', {},
-      h('td', {}, h('input', { type: 'checkbox', className: 'asset-check', 'data-id': asset.id,
-        onChange: (e) => { if (e.target.checked) selected.add(asset.id); else selected.delete(asset.id); updateBulkBar(); } })),
-      h('td', {},
-        h('div', { className: 'list-title' }, asset.name),
-        h('div', { className: 'list-subtitle' }, asset.address),
-      ),
-      h('td', {}, asset.platform),
-      h('td', {}, asset.protocol),
-      h('td', {}, asset.tags?.length ? asset.tags.join(', ') : '—'),
-      h('td', {}, asset.assigned_stigs?.length || 0),
-      h('td', {}, asset.last_compliance_pct != null
-        ? h('span', { className: `mini-pill mini-pill-${complianceColor(asset.last_compliance_pct)}` }, `${asset.last_compliance_pct.toFixed(1)}%`)
-        : '—'),
-      h('td', {}, formatDate(asset.last_evaluated)),
-    ));
+    const rows = assets.map(asset => {
+      const latestChecklist = [...(asset.last_checklist_ids || [])]
+        .reverse()
+        .map(id => checklistsById.get(id))
+        .find(Boolean);
+      const score = latestChecklist ? checklistScore(latestChecklist) : null;
+      return h('tr', {},
+        h('td', {}, h('input', { type: 'checkbox', className: 'asset-check', 'data-id': asset.id,
+          onChange: (e) => { if (e.target.checked) selected.add(asset.id); else selected.delete(asset.id); updateBulkBar(); } })),
+        h('td', {},
+          h('div', { className: 'list-title' }, asset.name),
+          h('div', { className: 'list-subtitle' }, asset.address),
+        ),
+        h('td', {}, asset.platform),
+        h('td', {}, asset.tags?.length ? asset.tags.join(', ') : '—'),
+        h('td', {}, asset.assigned_stigs?.length || 0),
+        h('td', {}, score
+          ? [
+              h('span', { className: `mini-pill mini-pill-${scoreColor(score) || 'accent'}` }, formatScorePct(score.assessedPassRate)),
+              ' / ',
+              h('span', { className: `mini-pill mini-pill-${coverageColor(score) || 'accent'}` }, formatScorePct(score.benchmarkCoverage)),
+            ]
+          : '—'),
+        h('td', {}, formatDate(asset.last_evaluated)),
+      );
+    });
 
     function updateBulkBar() {
       const bar = document.getElementById('bulk-bar');
@@ -1743,18 +1789,17 @@ async function loadAssetsPage() {
       h('div', { className: 'page-header page-header-with-actions' },
         h('div', {},
           h('h1', {}, `Assets (${assets.length})`),
-          h('p', {}, 'Inventory-first view of managed hosts, assigned standards, and current compliance posture'),
+          h('p', {}, 'Inventory view for ONTAP, FreeBSD, and Cisco IOS-XE Router NDM targets'),
         ),
         h('div', { className: 'btn-group' },
           h('button', { className: 'btn btn-primary', onClick: addAssetDialog }, 'Add Asset'),
-          h('button', { className: 'btn btn-secondary', onClick: () => nav('settings') }, 'Credentials'),
         ),
       ),
       h('div', { id: 'bulk-bar', className: 'card', style: 'display:none; margin-bottom: 16px; align-items:center' },
         h('div', { className: 'page-header-with-actions' },
           h('div', {}, h('span', { id: 'bulk-count', className: 'list-title' }, '0 selected')),
           h('div', { className: 'btn-group' },
-            h('button', { className: 'btn btn-secondary btn-sm', onClick: () => bulkAssignStig([...selected], benchmarks) }, 'Assign STIG'),
+            h('button', { className: 'btn btn-secondary btn-sm', onClick: () => bulkAssignStig([...selected], benchmarks, assets) }, 'Assign STIG'),
             h('button', { className: 'btn btn-secondary btn-sm', onClick: () => bulkAddTag([...selected]) }, 'Add tag'),
             h('button', { className: 'btn btn-secondary btn-sm', onClick: () => bulkSetEnabled([...selected], true) }, 'Enable'),
             h('button', { className: 'btn btn-secondary btn-sm', onClick: () => bulkSetEnabled([...selected], false) }, 'Disable'),
@@ -1768,10 +1813,9 @@ async function loadAssetsPage() {
                 h('th', {}, ''),
                 h('th', {}, 'Asset'),
                 h('th', {}, 'Platform'),
-                h('th', {}, 'Protocol'),
                 h('th', {}, 'Tags'),
                 h('th', {}, 'Standards'),
-                h('th', {}, 'Compliance'),
+                h('th', {}, 'Last pass / coverage'),
                 h('th', {}, 'Last assessed'),
               )),
               h('tbody', {}, ...rows),
@@ -1785,12 +1829,6 @@ async function loadAssetsPage() {
             actionRow('Add asset', 'Register a host for ongoing review and assessment grouping.', addAssetDialog),
             actionRow('Sync from STIG-Manager', 'Bring collections or assets into the local inventory.', syncFromStigManager),
             actionRow('Check STIG-Manager diff', 'See changes before you synchronize inventory.', checkStigManagerDiff),
-          ),
-        ),
-        h('div', { className: 'card' },
-          h('div', { className: 'card-header' }, h('h2', {}, 'Credentials')),
-          h('div', { className: 'stack-list' },
-            actionRow('Manage credentials', 'Stored credentials live under Settings.', () => nav('settings')),
           ),
         ),
       ),

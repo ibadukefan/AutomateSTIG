@@ -1,4 +1,5 @@
 pub mod build_pack;
+pub mod collect;
 pub mod convert;
 pub mod coverage;
 pub mod disa_import;
@@ -16,6 +17,14 @@ use std::path::PathBuf;
 /// Get the default AutomateSTIG data directory.
 pub fn default_data_dir() -> PathBuf {
     dirs_or_default().join(".automatestig")
+}
+
+/// Trust anchors used for both `.stigpack` import and runtime executable
+/// provenance verification.
+pub fn trusted_keys_dir() -> PathBuf {
+    std::env::var("AUTOMATESTIG_TRUSTED_KEYS_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| default_data_dir().join("trusted_keys"))
 }
 
 fn dirs_or_default() -> PathBuf {

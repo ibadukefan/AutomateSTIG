@@ -6,8 +6,8 @@ Flow:
   1. Wait for Keycloak (demo realm) and the STIG Manager API.
   2. Provision a confidential OAuth2 client with a service account and the
      stig-manager client scopes (this is the client AutomateSTIG will use).
-  3. Import the WS2022 DISA benchmark into STIG Manager; create a collection.
-  4. Start automatestig-gui, import the same benchmark, evaluate the SCC scan.
+  3. Import the Cisco IOS-XE NDM benchmark into STIG Manager; create a collection.
+  4. Start automatestig-gui, import the same benchmark, evaluate running-config evidence.
   5. Configure AutomateSTIG's STIG-Manager integration (client credentials),
      test the connection, and push the checklist.
   6. Independently verify in STIG Manager: asset exists, reviews match the
@@ -18,6 +18,9 @@ Flow:
 Requires: docker compose rig already up (see docker-compose.yml), release
 binaries built. Exits non-zero on any failure.
 """
+import argparse
+import datetime
+import hashlib
 import json
 import os
 import re
@@ -37,8 +40,9 @@ REPO = os.environ.get(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 EXE = ".exe" if sys.platform == "win32" else ""
 GUI_BIN = os.environ.get("AUTOMATESTIG_GUI_BIN", f"{REPO}/target/release/automatestig-gui{EXE}")
-WS2022_ZIP = f"{REPO}/fixtures/authorized/disa-public-2026-04/U_MS_Windows_Server_2022_V2R8_STIG.zip"
-SCC_XML = f"{REPO}/fixtures/scc-results/windows_server_2022_scc_results.xml"
+CISCO_ZIP = f"{REPO}/fixtures/authorized/disa-public-2026-07/U_Cisco_IOS-XE_Router_Y26M04_STIG.zip"
+CISCO_CONFIG = f"{REPO}/fixtures/network/ios_xe_router_findings.txt"
+CISCO_HOSTNAME = "rtr-findings-01"
 
 KC = os.environ.get("STAGING_AUTH_URL", "http://localhost:8080")
 SM = os.environ.get("STAGING_API_URL", "http://localhost:54000/api")
@@ -50,11 +54,40 @@ AS_PORT = 18441
 AS_TOKEN = "staging-acceptance-token-0123456789"
 
 RESULTS = []
+EVIDENCE_OUTPUT = None
+EVIDENCE_ENVIRONMENT = "local containerized staging"
+EVIDENCE_DETAILS = {}
 
 
 def check(name, ok, detail=""):
     RESULTS.append((name, bool(ok), detail))
     print(f"[{'PASS' if ok else 'FAIL'}] {name}" + (f" — {detail}" if detail and not ok else ""))
+
+
+def file_sha256(path):
+    value = hashlib.sha256()
+    with open(path, "rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            value.update(block)
+    return value.hexdigest()
+
+
+def product_version(body):
+    try:
+        value = json.loads(body)
+    except Exception:
+        return "unknown"
+    pending = [value]
+    while pending:
+        item = pending.pop()
+        if isinstance(item, dict):
+            for key, child in item.items():
+                if key.lower() in {"version", "apiversion", "appversion"} and isinstance(child, (str, int, float)):
+                    return str(child)
+                pending.append(child)
+        elif isinstance(item, list):
+            pending.extend(item)
+    return "unknown"
 
 
 def req(url, method="GET", data=None, headers=None, form=None, timeout=60):
@@ -161,9 +194,13 @@ def sm(path, token, method="GET", data=None):
 # --- STIG Manager provisioning ---------------------------------------------
 
 def import_benchmark(token):
-    with zipfile.ZipFile(WS2022_ZIP) as z:
-        names = [n for n in z.namelist() if n.lower().endswith(".xml") and "xccdf" in n.lower()]
-        xccdf = z.read(sorted(names, key=len)[0])
+    with zipfile.ZipFile(CISCO_ZIP) as z:
+        names = [n for n in z.namelist()
+                 if n.lower().endswith(".xml") and "xccdf" in n.lower()
+                 and "_ndm_" in n.lower()]
+        if len(names) != 1:
+            sys.exit(f"expected one Cisco NDM XCCDF member, found {len(names)}")
+        xccdf = z.read(names[0])
 
     boundary = "----automatestigstaging"
     body = (f"--{boundary}\r\n"
@@ -239,13 +276,18 @@ def start_automatestig(home):
 
 
 def main():
-    for f in (GUI_BIN, WS2022_ZIP, SCC_XML):
+    global EVIDENCE_DETAILS
+    for f in (GUI_BIN, CISCO_ZIP, CISCO_CONFIG):
         if not os.path.exists(f):
             sys.exit(f"missing prerequisite: {f}")
 
     print("== waiting for rig ==")
     wait_for("Keycloak", f"{KC}/realms/stigman")
     wait_for("STIG Manager API", f"{SM}/op/definition", ok_statuses=(200, 401))
+    definition_status, definition_body = req(f"{SM}/op/definition")
+    EVIDENCE_DETAILS["stig_manager_version"] = (
+        product_version(definition_body) if definition_status == 200 else "unknown"
+    )
 
     print("== provisioning Keycloak client ==")
     provision_client()
@@ -264,16 +306,19 @@ def main():
     home = tempfile.mkdtemp(prefix="automatestig-staging-")
     proc = start_automatestig(home)
     try:
-        out = as_multipart("/api/library/import-disa", {}, {"file": WS2022_ZIP})
+        out = as_multipart("/api/library/import-disa", {}, {"file": CISCO_ZIP})
         check("AutomateSTIG imports DISA zip", '"success":true' in out.replace(" ", ""), out[:200])
         st, body = as_req("/api/library/benchmarks")
-        stig_id = (unwrap(body) or [{}])[0].get("id")
+        benchmarks = unwrap(body) or []
+        stig_id = next((item.get("id") for item in benchmarks
+                        if item.get("id") == "Cisco_IOS-XE_Router_NDM_STIG"), None)
 
-        out = as_multipart("/api/evaluate/with-scan",
-                           {"stig_id": stig_id or "", "hostname": "staging-host-01"},
-                           {"scan": SCC_XML})
+        out = as_multipart("/api/evaluate/with-evidence",
+                           {"stig_id": stig_id or "", "hostname": CISCO_HOSTNAME,
+                            "platform": "cisco_ios", "input_type": "config"},
+                           {"evidence": CISCO_CONFIG})
         cid = (unwrap(out) or {}).get("checklist_id") or (unwrap(out) or {}).get("id")
-        check("AutomateSTIG evaluates SCC scan", bool(cid), out[:300])
+        check("AutomateSTIG evaluates Cisco running config", bool(cid), out[:300])
 
         st, body = as_req("/api/stigman/config", method="POST", data={
             "api_url": SM,
@@ -308,7 +353,15 @@ def main():
             stv = f.get("status")
             if isinstance(stv, dict):
                 stv = next(iter(stv))
-            expected[f.get("rule_id")] = re.sub(r"[^a-z]", "", str(stv).lower())
+            rule_id = f.get("rule_id")
+            if not isinstance(rule_id, str) or not rule_id:
+                check("source checklist has complete Rule IDs", False, str(rule_id))
+                continue
+            if rule_id in expected:
+                check("source checklist has unique Rule IDs", False, rule_id)
+                continue
+            expected[rule_id] = re.sub(r"[^a-z]", "", str(stv).lower())
+        check("source checklist contains findings", bool(expected), f"{len(expected)} findings")
     finally:
         proc.kill()
         proc.wait()
@@ -317,7 +370,7 @@ def main():
     print("== verifying in STIG Manager ==")
     st, resp = sm(f"/assets?collectionId={collection_id}&benchmarkId={benchmark_id}", token)
     assets = json.loads(resp) if st == 200 else []
-    check("asset created in collection", len(assets) == 1 and assets[0]["name"] == "staging-host-01",
+    check("asset created in collection", len(assets) == 1 and assets[0]["name"] == CISCO_HOSTNAME,
           resp[:300])
     if not assets:
         report()
@@ -329,15 +382,43 @@ def main():
     reviews = json.loads(resp) if st == 200 else []
     tostatus = {"pass": "notafinding", "fail": "open",
                 "notapplicable": "notapplicable", "notchecked": "notreviewed"}
-    mismatch = []
+    observed = {}
+    invalid_reviews = []
     for r in reviews:
-        want = expected.get(r.get("ruleId"))
+        rule_id = r.get("ruleId")
         got = tostatus.get(r.get("result"))
-        if want and got and want != got:
-            mismatch.append((r.get("ruleId"), r.get("result"), want))
-    check("reviews exist in STIG Manager", len(reviews) > 0, f"{len(reviews)} reviews")
+        if not isinstance(rule_id, str) or not rule_id or got is None or rule_id in observed:
+            invalid_reviews.append((rule_id, r.get("result")))
+            continue
+        observed[rule_id] = got
+    missing_reviews = sorted(set(expected) - set(observed))
+    extra_reviews = sorted(set(observed) - set(expected))
+    mismatch = [
+        (rule_id, observed[rule_id], expected[rule_id])
+        for rule_id in sorted(set(expected) & set(observed))
+        if observed[rule_id] != expected[rule_id]
+    ]
+    exact_reviews = (
+        not invalid_reviews
+        and not missing_reviews
+        and not extra_reviews
+        and len(reviews) == len(expected)
+    )
+    check(
+        "STIG Manager contains the exact source Rule-ID set once",
+        exact_reviews,
+        f"invalid={invalid_reviews[:5]} missing={missing_reviews[:5]} extra={extra_reviews[:5]}",
+    )
     check("every review result matches the source checklist", not mismatch, str(mismatch[:5]))
     print(f"  reviews in STIG Manager: {len(reviews)}; source findings: {len(expected)}")
+    EVIDENCE_DETAILS.update({
+        "review_count": len(reviews),
+        "source_finding_count": len(expected),
+        "rule_set_sha256": hashlib.sha256(
+            json.dumps(sorted(expected), separators=(",", ":")).encode()
+        ).hexdigest(),
+        "benchmark_id": benchmark_id,
+    })
 
     # The reviewer-facing round trip: the CKL STIG Manager serves back.
     st, resp = sm("/stigs", token)
@@ -351,14 +432,24 @@ def main():
         for vuln in root.iter("VULN"):
             attrs = {sd.findtext("VULN_ATTRIBUTE"): sd.findtext("ATTRIBUTE_DATA") or ""
                      for sd in vuln.findall("STIG_DATA")}
-            by_rule[attrs.get("Rule_ID", "")] = re.sub(
+            rule_id = attrs.get("Rule_ID", "")
+            if not rule_id or rule_id in by_rule:
+                by_rule[rule_id] = "__duplicate_or_missing__"
+                continue
+            by_rule[rule_id] = re.sub(
                 r"[^a-z]", "", (vuln.findtext("STATUS") or "").lower())
-        bad = []
-        for rid, want in expected.items():
-            got = by_rule.get(rid) or by_rule.get(re.sub(r"(r\d+)?_rule$", "", rid or ""))
-            if got and got != want:
-                bad.append((rid, got, want))
-        check("CKL exported from STIG Manager round-trips statuses", not bad, str(bad[:5]))
+        missing_ckl = sorted(set(expected) - set(by_rule))
+        extra_ckl = sorted(set(by_rule) - set(expected))
+        bad = [
+            (rid, by_rule[rid], expected[rid])
+            for rid in sorted(set(expected) & set(by_rule))
+            if by_rule[rid] != expected[rid]
+        ]
+        check(
+            "CKL exported from STIG Manager preserves the exact Rule-ID set and statuses",
+            not missing_ckl and not extra_ckl and not bad and len(by_rule) == len(expected),
+            f"missing={missing_ckl[:5]} extra={extra_ckl[:5]} status={bad[:5]}",
+        )
     else:
         check("CKL exported from STIG Manager round-trips statuses", False,
               f"ckl export {st}: {ckl_body[:200]}")
@@ -382,8 +473,57 @@ def report():
     print(f"STAGING ACCEPTANCE: {len(RESULTS) - len(fails)}/{len(RESULTS)} checks passed")
     for n, ok, d in fails:
         print(f"  FAIL {n} — {d[:300]}")
+    if EVIDENCE_OUTPUT:
+        evidence = {
+            "schema": "automatestig-stig-manager-acceptance/v1",
+            "passed": not fails,
+            "tested_at": datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z"),
+            "product": "STIG Manager",
+            "product_version": EVIDENCE_DETAILS.get("stig_manager_version", "unknown"),
+            "environment": EVIDENCE_ENVIRONMENT,
+            "source_commit": subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=REPO,
+                text=True,
+                capture_output=True,
+                check=True,
+            ).stdout.strip(),
+            "repository": os.environ.get("GITHUB_REPOSITORY"),
+            "workflow_run_id": os.environ.get("GITHUB_RUN_ID"),
+            "protected_environment": os.environ.get("AUTOMATESTIG_PROTECTED_ENVIRONMENT"),
+            "automatestig_gui_sha256": file_sha256(GUI_BIN),
+            "benchmark_sha256": file_sha256(CISCO_ZIP),
+            "config_fixture_sha256": file_sha256(CISCO_CONFIG),
+            "checks": [{"name": name, "passed": ok} for name, ok, _ in RESULTS],
+            "metrics": {
+                key: value for key, value in EVIDENCE_DETAILS.items()
+                if key != "stig_manager_version"
+            },
+        }
+        os.makedirs(os.path.dirname(os.path.abspath(EVIDENCE_OUTPUT)), exist_ok=True)
+        with open(EVIDENCE_OUTPUT, "w", encoding="utf-8") as stream:
+            json.dump(evidence, stream, indent=2, sort_keys=True)
+            stream.write("\n")
+        print(f"Redacted acceptance evidence written to {EVIDENCE_OUTPUT}")
     sys.exit(1 if fails else 0)
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--binary",
+        help=(
+            "automatestig-gui binary under test; overrides AUTOMATESTIG_GUI_BIN "
+            "and is resolved relative to E2E_REPO_ROOT"
+        ),
+    )
+    parser.add_argument("--evidence-output")
+    parser.add_argument("--environment", default=EVIDENCE_ENVIRONMENT)
+    arguments = parser.parse_args()
+    if arguments.binary:
+        GUI_BIN = arguments.binary
+    if not os.path.isabs(GUI_BIN):
+        GUI_BIN = os.path.abspath(os.path.join(REPO, GUI_BIN))
+    EVIDENCE_OUTPUT = arguments.evidence_output
+    EVIDENCE_ENVIRONMENT = arguments.environment
     main()

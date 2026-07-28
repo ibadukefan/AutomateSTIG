@@ -1,7 +1,7 @@
 //! AutomateSTIG CLI — STIG evaluation and compliance automation.
 //!
 //! Usage:
-//!   automatestig evaluate --stig <STIG_ID> [--scan <SCAN_FILE>] [--evidence <EVIDENCE_FILE>] [--answer <ANSWER_FILE>] [--output <OUTPUT>]
+//!   automatestig evaluate --stig <STIG_ID> (--evidence <FILE> | --config <FILE>) [--answer <FILE>] [--output <OUTPUT>]
 //!   automatestig import --pack <STIGPACK_FILE>
 //!   automatestig library list
 //!   automatestig convert --input <FILE> --format <ckl|cklb|json>
@@ -9,7 +9,7 @@
 //!   automatestig summary --input <CKL_FILE>
 
 mod commands;
-pub mod ui;
+mod ui;
 
 use clap::{Parser, Subcommand};
 
@@ -19,8 +19,8 @@ use clap::{Parser, Subcommand};
     version,
     about = "AutomateSTIG — Cross-platform STIG evaluation and compliance automation",
     long_about = "AutomateSTIG is a deterministic, air-gapped-first STIG evaluation platform.\n\
-                   It automates checklist population from scan results, provides a robust\n\
-                   answer file system, and generates audit-ready compliance artifacts.\n\n\
+                   Its v0.3 scanner targets are NetApp ONTAP 9.x and FreeBSD over\n\
+                   plan-bound SSH evidence, plus Cisco IOS-XE Router NDM running configs.\n\n\
                    All operations are 100% deterministic and reproducible."
 )]
 struct Cli {
@@ -42,29 +42,80 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Evaluate a STIG against scan results and answer files.
+    /// Collect versioned evidence from a remote device over SSH.
+    Collect {
+        /// STIG benchmark ID whose check pack defines the collection plan.
+        #[arg(short, long)]
+        stig: String,
+
+        /// Remote host name or address (without username).
+        #[arg(long)]
+        host: String,
+
+        /// Hostname recorded in evidence (defaults to --host).
+        #[arg(long)]
+        hostname: Option<String>,
+
+        /// SSH username.
+        #[arg(short, long)]
+        username: String,
+
+        /// SSH port.
+        #[arg(long, default_value_t = 22)]
+        port: u16,
+
+        /// Private-key file; when absent, password is read from --password-env.
+        #[arg(long)]
+        key: Option<String>,
+
+        /// Environment variable containing the SSH password.
+        #[arg(long, default_value = "AUTOMATESTIG_SSH_PASSWORD")]
+        password_env: String,
+
+        /// Environment variable containing the private-key passphrase.
+        #[arg(long, default_value = "AUTOMATESTIG_SSH_KEY_PASSPHRASE")]
+        passphrase_env: String,
+
+        /// Per-command wall-clock and inactivity timeout.
+        #[arg(long, default_value_t = 30)]
+        timeout_secs: u64,
+
+        /// Evidence JSON path, or '-' for stdout.
+        #[arg(short, long)]
+        output: String,
+
+        /// Enroll an unknown server key for this collection only.
+        #[arg(long)]
+        trust_on_first_use: bool,
+    },
+
+    /// Evaluate a STIG against a device evidence transcript or running configuration.
     Evaluate {
         /// STIG benchmark ID to evaluate.
         #[arg(short, long)]
         stig: String,
 
-        /// Path to scan result file (XCCDF, CKL, or config dump).
-        #[arg(short = 'S', long)]
-        scan: Option<String>,
-
-        /// Evidence transcript file collected from the target device (### automatestig:command format).
-        #[arg(long)]
+        /// Evidence v2 JSON file collected from the target device.
+        #[arg(long, required_unless_present = "config", conflicts_with = "config")]
         evidence: Option<String>,
 
+        /// Unsafely assume marker-based v1 evidence commands succeeded.
+        #[arg(long, requires = "evidence", conflicts_with = "config")]
+        allow_legacy_evidence: bool,
+
         /// Device running-config file (e.g. show running-config output) evaluated via config_line check packs.
-        #[arg(long)]
+        #[arg(
+            long,
+            required_unless_present = "evidence",
+            conflicts_with = "evidence"
+        )]
         config: Option<String>,
 
         /// Path(s) to answer file(s) (JSON/YAML).
         #[arg(short, long)]
         answer: Vec<String>,
 
-        /// Target hostname (auto-detected from scan if not specified).
+        /// Target hostname (auto-detected from evidence if not specified).
         #[arg(long)]
         host: Option<String>,
 
@@ -116,7 +167,7 @@ enum Commands {
         format: Option<String>,
     },
 
-    /// Show summary of a checklist or scan result.
+    /// Show summary of a checklist.
     Summary {
         /// Input file path (.ckl, .cklb, or .json).
         #[arg(short, long)]
@@ -166,6 +217,14 @@ enum Commands {
         collection: Option<String>,
     },
 
+    /// Explicitly create a new external content-signing key pair.
+    #[command(name = "generate-signing-key")]
+    GenerateSigningKey {
+        /// Output path for the private key; the public key uses `.pub`.
+        #[arg(long)]
+        output: String,
+    },
+
     /// Build a .stigpack content pack.
     #[command(name = "build-pack")]
     BuildPack {
@@ -188,6 +247,13 @@ enum Commands {
         /// Output .stigpack file path.
         #[arg(short, long)]
         output: String,
+
+        /// Existing external raw 32-byte Ed25519 signing key.
+        ///
+        /// The matching public key must exist at the same path with a `.pub`
+        /// extension. AutomateSTIG never creates either key during pack build.
+        #[arg(long)]
+        signing_key: String,
     },
 
     /// Import DISA STIG content directly from XCCDF files or ZIP archives.
@@ -247,10 +313,38 @@ fn main() {
         .init();
 
     let result = match &cli.command {
+        Commands::Collect {
+            stig,
+            host,
+            hostname,
+            username,
+            port,
+            key,
+            password_env,
+            passphrase_env,
+            timeout_secs,
+            output,
+            trust_on_first_use,
+        } => commands::collect::run(
+            commands::collect::CollectArgs {
+                stig_id: stig.clone(),
+                host: host.clone(),
+                hostname: hostname.clone(),
+                username: username.clone(),
+                port: *port,
+                key: key.clone(),
+                password_env: password_env.clone(),
+                passphrase_env: passphrase_env.clone(),
+                timeout_secs: *timeout_secs,
+                output: output.clone(),
+                trust_on_first_use: *trust_on_first_use,
+            },
+            &cli,
+        ),
         Commands::Evaluate {
             ref stig,
-            ref scan,
             ref evidence,
+            allow_legacy_evidence,
             ref config,
             ref answer,
             ref host,
@@ -260,8 +354,8 @@ fn main() {
         } => commands::evaluate::run(
             commands::evaluate::EvaluateArgs {
                 stig_id: stig.clone(),
-                scan: scan.clone(),
                 evidence: evidence.clone(),
+                allow_legacy_evidence: *allow_legacy_evidence,
                 config: config.clone(),
                 answer_paths: answer.clone(),
                 host: host.clone(),
@@ -299,13 +393,17 @@ fn main() {
             ref format,
             ref collection,
         } => commands::export::run(input, output, format, collection.as_deref()),
+        Commands::GenerateSigningKey { ref output } => {
+            commands::build_pack::generate_signing_key(output)
+        }
         Commands::BuildPack {
             ref id,
             ref name,
             ref version,
             ref source,
             ref output,
-        } => commands::build_pack::run(id, name, version, source, output),
+            ref signing_key,
+        } => commands::build_pack::run(id, name, version, source, output, signing_key),
         Commands::DisaImport { ref input } => commands::disa_import::run(input, &cli),
         Commands::Coverage { ref action } => match action {
             CoverageAction::Validate { ref manifest } => commands::coverage::validate(manifest),
@@ -316,5 +414,68 @@ fn main() {
     if let Err(e) = result {
         ui::error(&format!("{:#}", e));
         std::process::exit(1);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Cli;
+    use clap::{error::ErrorKind, Parser};
+
+    #[test]
+    fn evaluate_requires_exactly_one_primary_input() {
+        let missing = match Cli::try_parse_from(["automatestig", "evaluate", "--stig", "example"]) {
+            Err(error) => error,
+            Ok(_) => panic!("an evaluation without an input must be rejected"),
+        };
+        assert_eq!(missing.kind(), ErrorKind::MissingRequiredArgument);
+
+        let mixed = match Cli::try_parse_from([
+            "automatestig",
+            "evaluate",
+            "--stig",
+            "example",
+            "--evidence",
+            "evidence.json",
+            "--config",
+            "running-config.txt",
+        ]) {
+            Err(error) => error,
+            Ok(_) => panic!("evidence and config must be mutually exclusive"),
+        };
+        assert_eq!(mixed.kind(), ErrorKind::ArgumentConflict);
+
+        assert!(Cli::try_parse_from([
+            "automatestig",
+            "evaluate",
+            "--stig",
+            "example",
+            "--evidence",
+            "evidence.json",
+        ])
+        .is_ok());
+        assert!(Cli::try_parse_from([
+            "automatestig",
+            "evaluate",
+            "--stig",
+            "example",
+            "--config",
+            "running-config.txt",
+        ])
+        .is_ok());
+    }
+
+    #[test]
+    fn legacy_override_is_valid_only_with_evidence() {
+        let result = Cli::try_parse_from([
+            "automatestig",
+            "evaluate",
+            "--stig",
+            "example",
+            "--config",
+            "running-config.txt",
+            "--allow-legacy-evidence",
+        ]);
+        assert!(result.is_err());
     }
 }
