@@ -26,6 +26,12 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           fetch-depth: 0
+      - name: Install Actions workflow linter
+        uses: taiki-e/install-action@b3acd5417a6eccf7e7f11042455fe275eebb2fb9
+        with:
+          tool: actionlint@1.7.12
+      - name: Validate Actions workflow semantics
+        run: actionlint
       - name: Enforce release feature freeze
         run: python3 scripts/validate-release-freeze.py --repo-root .
       - name: Enforce immutable workflow dependencies

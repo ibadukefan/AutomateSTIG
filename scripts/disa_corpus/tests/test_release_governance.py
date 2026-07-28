@@ -548,6 +548,8 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
         workflow = (REPO / ".github/workflows/ci.yml").read_text()
         self.assertIn('branches: ["main"]', workflow)
         self.assertNotIn('branches: ["**"]', workflow)
+        self.assertIn("tool: actionlint@1.7.12", workflow)
+        self.assertIn("run: actionlint", workflow)
         job = workflow.split("  archive-fuzz-smoke:", 1)[1].split(
             "  coverage-validation:", 1
         )[0]
@@ -556,6 +558,17 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             r"cargo install cargo-fuzz --locked --version \d+\.\d+\.\d+",
         )
         self.assertNotIn("tool: cargo-fuzz", job)
+
+    def test_content_ceremony_uses_step_scoped_runner_temp(self):
+        workflow = (
+            REPO / ".github/workflows/content-signing-ceremony.yml"
+        ).read_text()
+        self.assertNotIn("CARGO_TARGET_DIR: ${{ runner.temp }}", workflow)
+        self.assertIn(
+            "CARGO_TARGET_DIR=${RUNNER_TEMP:?}/automatestig-content-ceremony-"
+            "${GITHUB_RUN_ID:?}",
+            workflow,
+        )
 
     def test_release_evidence_allows_only_evidence_after_approval(self):
         cases = (
