@@ -9,9 +9,14 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import zipfile
 from pathlib import Path
 from xml.etree import ElementTree as ET
+
+SCRIPTS_ROOT = Path(__file__).resolve().parent
+if str(SCRIPTS_ROOT) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_ROOT))
+
+from bounded_xccdf import BoundedXccdfArchive, BoundedXccdfError
 
 
 def fail(message: str) -> None:
@@ -62,12 +67,15 @@ def validate_stig_manager(path: Path) -> None:
 
 
 def validate_disa_zip(path: Path) -> None:
-    with zipfile.ZipFile(path) as zf:
-        xml_members = [n for n in zf.namelist() if n.lower().endswith(".xml")]
-        if not xml_members:
-            fail(f"{path} contains no XCCDF/XML member")
-        # Parse at least one XML member to catch corrupt downloads.
-        ET.fromstring(zf.read(xml_members[0]))
+    try:
+        with BoundedXccdfArchive(path) as archive:
+            xml_members = [n for n in archive.names if n.lower().endswith(".xml")]
+            if not xml_members:
+                fail(f"{path} contains no XCCDF/XML member")
+            # Parse at least one XML member to catch corrupt downloads.
+            ET.fromstring(archive.read_member(xml_members[0]))
+    except BoundedXccdfError as error:
+        fail(f"unsafe DISA ZIP {path}: {error}")
 
 
 def main() -> None:
@@ -80,8 +88,8 @@ def main() -> None:
         (validate_ckl, root / "fixtures/ckl/windows_server_2022_sanitized.ckl"),
         (validate_cklb, root / "fixtures/cklb/windows_server_2022_sanitized.cklb"),
         (validate_stig_manager, root / "fixtures/exports/stig_manager_golden.json"),
-        (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-04/U_MS_Windows_Server_2022_V2R8_STIG.zip"),
-        (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-04/U_RHEL_8_V2R7_STIG.zip"),
+        (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-07/U_Cisco_IOS-XE_Router_Y26M04_STIG.zip"),
+        (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R2_STIG.zip"),
     ]
     for fn, path in checks:
         if not path.is_file():

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.dev/schemas/live-decision-oracle.schema.json",
+  "title": "AutomateSTIG independently adjudicated live decision-oracle bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "target",
+    "stig_id",
+    "stig_release",
+    "benchmark_sha256",
+    "check_pack_sha256",
+    "adjudicated_at",
+    "adjudicator",
+    "adjudication_basis",
+    "independent_of_automatestig_output",
+    "scenarios"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://automatestig.dev/schemas/live-decision-oracle.schema.json"
+    },
+    "schema": {
+      "const": "automatestig-live-decision-oracle/v2"
+    },
+    "target": {
+      "enum": ["ontap", "freebsd", "cisco_ios_xe"]
+    },
+    "stig_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stig_release": {
+      "type": "string",
+      "pattern": "^V[0-9]+R[0-9]+$"
+    },
+    "benchmark_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "check_pack_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "adjudicated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "adjudicator": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
+    "adjudication_basis": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 2000
+    },
+    "independent_of_automatestig_output": {
+      "const": true
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/scenario"
+      },
+      "contains": {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": {
+            "const": "baseline"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  },
+  "$defs": {
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "asset_hostname",
+        "source_state_sha256",
+        "expected_status_by_vuln"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+        },
+        "kind": {
+          "enum": ["baseline", "negative_control"]
+        },
+        "asset_hostname": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "source_state_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Independently captured state/configuration digest; the live runner requires an exact match."
+        },
+        "expected_status_by_vuln": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "enum": ["Finding", "NotAFinding", "NotApplicable"]
+          },
+          "propertyNames": {
+            "pattern": "^V-[0-9]+$"
+          }
+        }
+      }
+    }
+  }
+}

@@ -111,7 +111,6 @@ def classify(title,url):
     text=(title+' '+url).lower()
     if 'scap' in text or 'benchmark' in text: return 'scap_benchmark_zip'
     if 'stig' in text and url.lower().endswith('.zip'): return 'manual_stig_zip'
-    if 'scc' in text: return 'scc_content'
     return 'other'
 
 def release_from(text):

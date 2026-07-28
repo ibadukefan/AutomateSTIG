@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
 """Extract deterministic rule inventory from XCCDF XML or ZIP artifacts."""
 from __future__ import annotations
-import argparse, json, re, zipfile, xml.etree.ElementTree as ET
+import argparse, json, sys, xml.etree.ElementTree as ET
 from pathlib import Path
+
+SCRIPTS_ROOT = Path(__file__).resolve().parents[1]
+if str(SCRIPTS_ROOT) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_ROOT))
+
+from bounded_xccdf import (  # noqa: E402
+    BoundedXccdfArchive,
+    BoundedXccdfError,
+    is_zipfile,
+    read_bounded_file,
+)
 
 def local(tag): return tag.rsplit('}',1)[-1]
 def text_of(elem,name):
@@ -17,12 +28,17 @@ def all_text(elem,name):
 
 def read_xml(path, member=None):
     p=Path(path)
-    if zipfile.is_zipfile(p):
-        with zipfile.ZipFile(p) as z:
-            names=[n for n in z.namelist() if n.lower().endswith(('.xml','.xccdf'))]
-            chosen=member or next((n for n in names if 'xccdf' in n.lower() or 'benchmark' in n.lower()), names[0])
-            return z.read(chosen), chosen
-    return p.read_bytes(), p.name
+    if is_zipfile(p):
+        with BoundedXccdfArchive(p) as archive:
+            names=[n for n in archive.names if n.lower().endswith(('.xml','.xccdf'))]
+            if member:
+                chosen=member
+            else:
+                if not names:
+                    raise BoundedXccdfError(f'{p} contains no XML/XCCDF member')
+                chosen=next((n for n in names if 'xccdf' in n.lower() or 'benchmark' in n.lower()), names[0])
+            return archive.read_member(chosen), chosen
+    return read_bounded_file(p), p.name
 
 def extract(path, member=None):
     raw, source_member=read_xml(path, member)

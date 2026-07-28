@@ -1,6 +1,6 @@
 # Authorized Fixture Corpus
 
-This directory defines how AutomateSTIG proves compatibility with real DISA/SCC/OpenSCAP/CKL/CKLB artifacts without committing sensitive system output by accident.
+This directory defines how AutomateSTIG proves compatibility with authorized DISA, CKL/CKLB, device-evidence, and STIG-Manager artifacts without committing sensitive system output by accident.
 
 ## Required production process
 
@@ -8,19 +8,24 @@ This directory defines how AutomateSTIG proves compatibility with real DISA/SCC/
 2. Strip or tokenize hostnames, IPs, usernames, command output that identifies a real system, and any credentials/secrets.
 3. Record each file in a manifest with:
    - fixture `id`;
-   - `kind` (`disa-xccdf`, `scc-results`, `openscap-results`, `ckl`, `cklb`, `stig-manager`, `emass`);
+   - `kind` (`disa-xccdf`, `device-evidence`, `network-config`, `ckl`, `cklb`, or `stig-manager`);
    - repo-relative `path`;
    - lowercase SHA-256 digest;
    - source/authorization notes;
    - classification (`sanitized`, `authorized_public`, or approved internal handling label).
-4. Validate the manifest before making replacement-readiness claims:
+4. Validate the manifest before making coverage claims:
 
 ```bash
 python3 scripts/validate-authorized-fixtures.py fixtures/authorized/manifest.example.json --repo-root .
 ```
 
-The included `manifest.example.json` now records both sanitized scaffold fixtures and official public DISA Cyber Exchange ZIPs for Windows Server 2022 V2R8 and RHEL 8 V2R7. The public DISA ZIPs are authorized benchmark fixtures for rule-inventory validation; sanitized SCC/OpenSCAP/CKL/CKLB fixtures still remain harness fixtures rather than production evidence from representative target systems.
+The included `manifest.example.json` records sanitized format fixtures and
+official public DISA Cyber Exchange ZIPs used for content/format testing and the
+three scoped scanner targets: ONTAP, FreeBSD/GPOS, and Cisco IOS-XE Router NDM.
+The Windows and RHEL artifacts exercise ingestion and conversion only; they do
+not add scanner targets. Sanitized fixtures remain test harness inputs rather
+than production evidence from representative targets.
 
 ## Production claim rule
 
-A platform may not move to `production` coverage status until its coverage manifest references a validated authorized fixture corpus and the validation report documents the exact fixture manifest, hashes, STIG release, scanner versions, and golden export payloads used.
+A platform may not move to `production` coverage status until its coverage manifest references a validated authorized fixture corpus and acceptance records document the exact fixture manifest, hashes, STIG release, device/software versions, and golden export payloads used.
