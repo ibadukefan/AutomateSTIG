@@ -28,13 +28,32 @@ Each configured target also requires `ORACLE`, the protected-runner path to an
 independently adjudicated decision-oracle bundle conforming to
 `schemas/live-decision-oracle.schema.json`. The named adjudicator must apply the
 DISA check procedure and vendor guidance without consulting AutomateSTIG's
-result. The bundle has exactly one representative baseline and one independently
+result. `ORACLE_SHA256` is the bundle's exact lowercase SHA-256, committed as a
+protected-environment variable before dispatch. The adjudicator must be named by
+GitHub login, be the environment's sole required reviewer, verify that pin out
+of band before approval, and differ from both the workflow actor and triggering
+actor. The bundle has exactly one representative baseline and one independently
 captured negative-control scenario. Each scenario must cover every and only
 executable rule, bind its exact source state and asset, and contain no
 `NotReviewed` result. The negative control must differ from the baseline and
 contain at least one `Finding`; an all-pass-only oracle is rejected.
 `source_state_sha256` must match each fresh command-state/configuration digest
-exactly. Oracles older than 90 days are rejected. Derive the state bindings
+exactly. `benchmark_sha256` binds the exact authorized DISA source artifact,
+while `evaluated_benchmark_sha256` is the canonical JSON SHA-256 of the
+effective imported benchmark model. `check_pack_sha256` is the canonical JSON
+SHA-256 of the effective
+embedded pack set: the selected source pack is normalized to its runtime serde
+defaults, assigned `priority: 0`, wrapped in a one-item list, recursively
+key-sorted, encoded as whitespace-free UTF-8 JSON, and hashed. Every oracle also
+carries `organization_policy_sha256`,
+`organization_policy_signature_sha256`, and
+`organization_policy_signer_fingerprint`. They bind the exact signed policy,
+detached signature, and trusted signer for Cisco and are `null` for ONTAP and
+FreeBSD. For ONTAP and FreeBSD, `ssh_server_key_fingerprint` is the exact
+independently pinned SSH fingerprint in `SHA256:<43 base64 characters>` form;
+it is `null` for Cisco. Both live evidence scenarios and their checklist
+provenance must retain that exact key. Oracles older than 90 days are rejected.
+Derive the state bindings
 without running an evaluation:
 
 ```bash
@@ -48,10 +67,13 @@ For SSH targets, other required suffixes are `HOST`, `USERNAME`,
 `NEGATIVE_EVIDENCE` (a complete evidence-v2 capture from the independently
 adjudicated negative state), and either `KEY` (plus optional
 `KEY_PASSPHRASE`) or `PASSWORD`. Optional suffixes are `PORT`, `HOSTNAME`,
-`XCCDF`, and `TIMEOUT_SECS`. This runner rejects `TRUST_ON_FIRST_USE`; perform
-and record enrollment separately, then pin the host key out of band. The
-redacted evidence stores matching expected/observed status-map digests, but
-never the status map, credentials, commands, target output, or host addresses.
+`XCCDF`, and `TIMEOUT_SECS`. If `HOSTNAME` is set, it must equal `HOST` after
+case and trailing DNS-dot normalization; aliases cannot replace the SSH
+endpoint identity bound by the evidence and oracle. This runner rejects
+`TRUST_ON_FIRST_USE`; perform and record enrollment separately, then pin the
+host key out of band. The redacted evidence stores matching expected/observed
+status-map digests, but never the status map, credentials, commands, target
+output, or host addresses.
 
 Cisco acceptance is deliberately file-based. Set
 `AUTOMATESTIG_LIVE_CISCO_IOS_XE_CONFIG` to a protected path containing a fresh,
@@ -60,16 +82,52 @@ Set `AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORACLE` to its independently adjudicated
 oracle bundle, `AUTOMATESTIG_LIVE_CISCO_IOS_XE_NEGATIVE_CONFIG` to the separately
 captured negative-control configuration, and bind both scenario hashes.
 `AUTOMATESTIG_LIVE_CISCO_IOS_XE_HOSTNAME` is required and must match both
-configurations; `XCCDF` is optional. The configurations themselves are hashed
-in the acceptance record but are never copied into the release artifact.
+configurations; `XCCDF` is optional.
+
+The organization-defined Cisco checks also require these protected-environment
+paths and bindings:
+
+- `AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY` points to the exact
+  asset/STIG-bound policy JSON;
+- `AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY_SIGNATURE` points to its
+  raw 64-byte detached Ed25519 signature;
+- `AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY_SHA256` is the exact
+  lowercase SHA-256 committed before dispatch; and
+- `AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR` points to the protected directory
+  containing the independently installed organization-policy public trust
+  anchor.
+
+The policy JSON must be runner-user or root owned, single-linked, and mode
+`0600`; the detached signature may be mode `0644` but must not be group/world
+writable. The runner snapshots both through no-follow descriptors, rejects a
+policy that differs from the protected digest, and passes only those snapshots
+to the CLI. The Cisco oracle must carry the same policy digest, detached
+signature digest, and trusted signer fingerprint. Acceptance then requires
+equality among the protected pin, snapshots, oracle, and verified checklist
+provenance, including `signature_verified=true`.
+
+For every device target, the checklist must also retain the exact input digest,
+the canonical imported-benchmark digest, the canonical effective check-pack
+digest, and the canonical evaluation-plan digest derived from the STIG
+identity/release, imported-benchmark digest, check-pack digest, and nullable
+organization-policy digest. Both scenarios must agree on the benchmark, pack,
+and plan.
+Release validation recomputes those bindings and rejects substituted runtime
+content or inputs. Configurations and policy bytes are hashed but never copied
+into the release artifact.
 
 The manual `Live Device Acceptance` workflow runs on an environment-protected
-self-hosted runner labeled `automatestig-live-devices`. Its environment must
-require reviewer approval and contain the lab secrets, protected oracle paths,
-and protected Cisco configuration. A target-specific run is useful for
-diagnosis; release evidence needs passing results for all three device targets,
- including exact agreement with both scenarios in all three independent oracle
- bundles.
+Linux x64 self-hosted runner labeled `automatestig-live-devices`. Its
+environment must require reviewer approval and contain the lab secrets,
+protected oracle paths, and protected Cisco configuration. A target-specific
+run is useful for diagnosis; release evidence needs passing results for all
+three device targets,
+including exact agreement with both scenarios in all three independent oracle
+bundles. Oracle and detached-signature files may be runner-user or root owned,
+must have one hard link, and must not be group/world writable. Raw
+configurations, organization-policy JSON, negative evidence, and other private
+source files must additionally have no group/other permissions (for example,
+mode `0600`).
 
 ONTAP simulator media is distributed through NetApp support channels and cannot
 be checked into or fetched by this project. A real or licensed simulator lab is
@@ -120,17 +178,28 @@ logs in the referenced assessment record and hash the JSON evidence.
 ## STIG Manager
 
 `staging/stigman/` uses the real STIG Manager, Keycloak, and MySQL containers.
-It provisions OAuth client credentials, imports authoritative XCCDF, evaluates
+It provisions OAuth client credentials, imports authoritative XCCDF, generates
+an ephemeral Ed25519 key and currently effective signed Cisco policy, evaluates
 a Cisco device fixture in AutomateSTIG, pushes twice, compares every review, and
-round-trips the CKL served by STIG Manager:
+round-trips the CKL served by STIG Manager. The GUI reaches the HTTP-only demo
+containers through one-run, loopback-only HTTPS bridges. Its child environment
+alone permits the exact `127.0.0.1` destination and the self-signed
+certificate. The numeric allowlist authorizes loopback without a broad private
+destination override; production validation is not bypassed:
 
 ```bash
-cargo build --release --locked --bin automatestig-gui
+cargo build --release --locked --bin automatestig --bin automatestig-gui
 docker compose -f staging/stigman/docker-compose.yml up -d
 python3 staging/stigman/run-staging-acceptance.py \
-  --binary target/release/automatestig-gui
+  --binary target/release/automatestig-gui \
+  --cli-binary target/release/automatestig
 docker compose -f staging/stigman/docker-compose.yml down -v
 ```
+
+The policy private seed is deleted immediately after signing. The remaining
+temporary certificate, signed policy, trust anchor, and GUI state are removed
+on exit. Never copy these demo-only URL or certificate overrides into an
+operational deployment.
 
 The project also runs this on demand in a protected environment. Production
 release evidence should use the deployed STIG Manager version in an authorized

@@ -70,6 +70,13 @@ Checks use a snake_case `type` tag.
 | `command` | `command`, optional `pattern` and `is_regex` |
 | `all` | `checks` |
 | `any` | `checks` |
+| `cisco_vty_session_limit` | None; the maximum is read from the verified organization policy |
+| `cisco_logging_buffer_capacity` | None; the minimum byte count is read from the verified organization policy |
+| `cisco_logging_trap_severity` | None |
+
+The first two typed Cisco checks fail closed unless evaluation includes a
+currently effective, asset-bound organization policy with a trusted Ed25519
+signature.
 
 ## Expected Results
 

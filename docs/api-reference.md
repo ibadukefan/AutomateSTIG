@@ -82,9 +82,14 @@ remain available, but must not be presented as a verified grade.
 
 | Method | Path | Purpose |
 | --- | --- | --- |
-| POST | `/evaluate/with-evidence` | Multipart evaluation with `stig_id`, `hostname`, `platform`, `input_type`, `evidence`, and optional `asset_id`. |
+| POST | `/evaluate/with-evidence` | Multipart evaluation with `stig_id`, `hostname`, `platform`, `input_type`, `evidence`, optional `asset_id`, and the Cisco policy fields described below. |
 
 `input_type=config` is accepted for Cisco IOS-XE Router NDM running configurations. `input_type=transcript` requires strict `automatestig-evidence/v2` JSON for ONTAP or FreeBSD. The document's platform and plan digest must match the selected platform and currently installed check pack. Marker-based v1 evidence is rejected; unlike the CLI migration switch, the API has no unsafe legacy override.
+
+Cisco configuration evaluation also requires both `organization_policy` and
+`organization_policy_signature` multipart files. They must be supplied as a
+pair, are rejected for transcript evaluation, and are verified against the
+dedicated organization-policy trust directory before any result is produced.
 
 A complete evaluation returns HTTP `200`. If one or more typed collection records failed validation, successfully collected rules still evaluate and dependent rules become `Not_Reviewed`; the API returns HTTP `207 Multi-Status`. The response remains in the standard envelope and adds:
 

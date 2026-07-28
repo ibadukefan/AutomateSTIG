@@ -1,15 +1,20 @@
 # AutomateSTIG
 
-AutomateSTIG is a cross-platform, offline-capable STIG evidence collection and evaluation platform. It is a Rust workspace with two binaries:
+AutomateSTIG is an offline-capable STIG evidence collection and evaluation platform. Supported release binaries are published for Linux and macOS. It is a Rust workspace with two binaries:
 
 - `automatestig` - command-line interface
 - `automatestig-gui` - local web GUI
 
 AutomateSTIG v0.3 has a deliberately narrow scanner scope: NetApp ONTAP 9.x against the DISA ONTAP DSC STIG, FreeBSD against DISA GPOS, and Cisco IOS-XE Router NDM from an authorized running configuration. ONTAP and FreeBSD use read-only SSH command evidence; IOS-XE does not use remote collection. SSH evidence records each command's stdout, stderr, exit status, duration, collection error, plan digest, and SSH server-key fingerprint. Evaluation is deterministic. There is no AI or ML in the evaluation path. The default workflow makes no network calls; DISA fetching, STIG-Manager integration, and remote SSH collection are opt-in connected features.
 
-The shipped inventories contain 86 reviewed candidate rules and 37 executable checks: ONTAP 22 reviewed/16 automated/6 manual, FreeBSD 30/3/27, and Cisco IOS-XE 34/18/16. These are curated evidence boundaries, not claims of complete benchmark automation.
+The shipped inventories contain 86 reviewed candidate rules and 40 executable checks: ONTAP 22 reviewed/16 automated/6 manual, FreeBSD 30/3/27, and Cisco IOS-XE 34/21/13. These are curated evidence boundaries, not claims of complete benchmark automation.
 
 General Linux/AIX/Solaris scanning, Windows scanning, Cisco NX-OS, and Cisco ASA are not v0.3 targets. Importing or converting another benchmark/checklist does not imply scanning support. See the [supported-target contract](docs/supported-targets.md).
+
+Windows remains a CI portability-test platform, but Windows release binaries
+and operational support are withheld until equivalent Windows filesystem
+ownership, ACL, and reparse-point custody controls are implemented. Do not use
+a source-built Windows binary for security-sensitive work.
 
 ## Features
 
@@ -31,12 +36,10 @@ Launching the desktop app starts the local AutomateSTIG GUI and opens it in your
 
 - macOS/Linux: download the target-specific `.tar.gz`, verify its checksum and
   Sigstore bundle, extract it, and run `automatestig-gui`.
-- Windows: download the target-specific `.zip`, verify its checksum and
-  Sigstore bundle, extract it, and run `automatestig-gui.exe`.
 
 ### Command-line installers
 
-Install the prebuilt binaries with one command for your OS. The installers
+Install the prebuilt Linux or macOS binaries with one command. The installers
 require `cosign` and refuse an archive unless its tagged CI workflow identity
 and exact checksum both verify:
 
@@ -48,11 +51,6 @@ curl --proto '=https' --proto-redir '=https' -fsSL \
 # Linux
 curl --proto '=https' --proto-redir '=https' -fsSL \
   https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-linux.sh | sh
-```
-
-```powershell
-# Windows (PowerShell)
-irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-windows.ps1 | iex
 ```
 
 See [installation](docs/installation.md) for manual release downloads,

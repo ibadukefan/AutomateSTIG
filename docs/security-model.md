@@ -1,5 +1,14 @@
 # Security Model
 
+## Supported Release Hosts
+
+AutomateSTIG publishes and supports release binaries for Linux and macOS only.
+Windows remains in CI as a portability-test platform, but source-built Windows
+binaries are not supported for security-sensitive use. The release pipeline
+will not build, attest, manifest, or publish a Windows archive until Windows
+ACL, ownership, reparse-point, and same-file custody checks protect the same
+trust-bearing state as the Unix implementation.
+
 ## Bind And Auth
 
 The GUI defaults to localhost-only bind. API auth is enforced on all `/api/*` routes except `/api/status`.
@@ -33,7 +42,7 @@ The key material is outside the database, but possession of both `data.db` and `
 
 ## Remote Transport Hardening
 
-STIG Manager integration accepts HTTPS URLs only and rejects embedded credentials, localhost, cloud metadata hostnames, and private/local/link-local literal IP addresses by default. Before any OAuth token or API request, hostnames are resolved and private/local/link-local DNS results are rejected unless explicitly allowlisted. Prefer a narrow comma-separated host/IP/CIDR allowlist:
+STIG Manager integration accepts HTTPS URLs only and rejects embedded credentials, localhost, cloud metadata hostnames, and non-global special-use/private/local/link-local literal IP addresses by default. Invalid, reserved, multicast, and documentation addresses are always rejected. API and OAuth hostnames are each resolved once when the client is created, every answer is authorized, and separate HTTP clients pin those numeric addresses while retaining the original hostname for Host/SNI and TLS verification. Redirects are disabled. If a target allowlist is configured, unlisted public destinations are also rejected. A non-global special-use/private/local/link-local result requires a matching IP/CIDR entry or an explicit isolated-lab override; an exact hostname entry alone cannot authorize such a DNS answer. Prefer a narrow comma-separated host/IP/CIDR allowlist:
 
 ```bash
 AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST=stigman.example.mil,keycloak.example.mil,10.20.0.0/16
@@ -45,7 +54,7 @@ The legacy broad private-destination override remains for isolated labs only:
 AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS=1
 ```
 
-Remote SSH collection validates scan targets before opening outbound connections and revalidates DNS results after resolution. Set `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` to a comma-separated list of exact hostnames/IPs or CIDRs to restrict scan destinations. Private/local/link-local literal IP scans and private DNS results are blocked by default unless they match the allowlist or this explicit lab override is set:
+Remote SSH collection applies the same outbound policy in the shared collector used by both the GUI and CLI. Set `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` to a comma-separated list of exact hostnames/IPs or CIDRs to restrict scan destinations; when it is set, unlisted public targets are rejected too. Non-global special-use/private/local/link-local literal IP scans and DNS results require a matching IP/CIDR entry or this explicit isolated-lab override:
 
 ```bash
 AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN=1
@@ -59,7 +68,12 @@ automatestig collect ... --trust-on-first-use
 
 The GUI service also recognizes `AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE=1` as a one-shot enrollment arm: a running process can enroll at most one collection before it must be deliberately restarted. Enrolled fingerprints are host-and-port scoped, recorded in `~/.automatestig/known_hosts`, included in evidence when key exchange completes, and a changed key is rejected.
 
-The target is resolved once under the configured timeout, then SSH connects to that numeric address while retaining the operator-supplied hostname for host-key pinning. Unspecified, multicast, broadcast, and link-local addresses fail closed, and mixed loopback/private/public/link-local DNS results are rejected. `AUTOMATESTIG_SSH_ALLOW_LINK_LOCAL=1` is an explicit exception for a scoped link-local device. Private keys must resolve beneath `~/.ssh` or `~/.automatestig/ssh_keys`; other secure roots require an explicit platform-separated `AUTOMATESTIG_SSH_KEY_ROOTS` list. Key files are bounded and must be regular, nonsymlink, current-user-owned files without group/other access; their direct parent and configured root are checked separately.
+The target is resolved once under the configured timeout, every answer is authorized, and SSH receives only those pinned numeric addresses while retaining the operator-supplied hostname for host-key pinning. Unspecified, multicast, broadcast, reserved/documentation, and unauthorized link-local addresses fail closed, and mixed loopback/private/public/link-local DNS results are rejected. `AUTOMATESTIG_SSH_ALLOW_LINK_LOCAL=1` remains a narrower explicit exception for a scoped link-local device. Private keys must resolve beneath `~/.ssh` or `~/.automatestig/ssh_keys`; other secure roots require an explicit platform-separated `AUTOMATESTIG_SSH_KEY_ROOTS` list. Key files are bounded and must be regular, nonsymlink, current-user-owned files without group/other access; their direct parent and configured root are checked separately.
+
+SSH client authentication and host-key negotiation support Ed25519 and ECDSA
+keys. RSA SSH keys are deliberately unsupported: the collector rejects an RSA
+private key with an actionable error, and the RSA algorithm is not advertised
+during host-key negotiation.
 
 SSH collection keeps stdout, stderr, exit status, timeout, and protocol states separate. Output is bounded to 50 MiB per command and 256 MiB per collection. A failed, missing-status, timed-out, oversized, malformed, or semantically invalid command remains a typed collection error; its diagnostic stdout is never evaluation input. Unaffected rules may evaluate, affected rules become `Not_Reviewed`, and the incomplete operation returns nonzero from the CLI or HTTP 207 from the API.
 
@@ -130,16 +144,17 @@ file is never executable.
 | `AUTOMATESTIG_BIND` | Explicit GUI bind IP; defaults to `127.0.0.1`. |
 | `AUTOMATESTIG_AUTH_TOKEN` | Required for non-loopback API auth; must be at least 16 characters. |
 | `AUTOMATESTIG_TRUSTED_KEYS_DIR` | Directory containing trusted Ed25519 public keys for `.stigpack` import. |
+| `AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR` | Dedicated directory containing trusted Ed25519 public keys for signed Cisco organization policies. It is intentionally separate from executable-content trust. |
 | `AUTOMATESTIG_OFFLINE_SIGNING_KEY` | Existing external private key for explicitly enabled GUI offline export. It must be outside application data; unset disables the endpoints. Prefer offline CLI signing. |
 | `AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK` | Set to `1` to allow unsigned non-executable `.stigpack` content for explicit lab workflows; executable checks still require trust. |
 | `AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE` | GUI/service-only explicit enrollment of an unknown SSH host key; CLI users should prefer `collect --trust-on-first-use`. |
 | `AUTOMATESTIG_SSH_ALLOW_LINK_LOCAL` | Set to `1` only to scan an explicitly scoped link-local SSH address. |
 | `AUTOMATESTIG_SSH_KEY_ROOTS` | Platform-separated additional secure roots from which SSH private keys may be loaded. |
-| `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` | Comma-separated exact host/IP/CIDR allowlist for SSH scan targets. |
-| `AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN` | Set to `1` to allow private/local/link-local SSH targets outside the allowlist only in an isolated lab. |
-| `AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST` | Comma-separated exact host/IP/CIDR allowlist for STIG Manager API and token endpoints. |
-| `AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS` | Set to `1` to allow private/local/link-local STIG Manager DNS results only in an isolated lab. |
-| `AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS` | Legacy broad override for private/local literal IP STIG Manager URLs and resolved destinations; prefer `AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST`. |
+| `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` | Comma-separated exact host/IP/CIDR allowlist for SSH scan targets. Every non-global special-use, private, local, or link-local answer requires an IP/CIDR entry; hostname-only entries authorize ordinary global-unicast answers only. |
+| `AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN` | Set to `1` to allow non-global special-use/private/local/link-local SSH targets outside the allowlist only in an isolated lab. |
+| `AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST` | Comma-separated exact host/IP/CIDR allowlist for STIG Manager API and token endpoints. Every non-global special-use, private, local, or link-local answer requires an IP/CIDR entry; hostname-only entries authorize ordinary global-unicast answers only. |
+| `AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS` | Set to `1` to allow non-global special-use/private/local/link-local STIG Manager DNS results only in an isolated lab. Invalid addresses remain denied. |
+| `AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS` | Legacy broad override for non-global special-use/private/local literal IP STIG Manager URLs and resolved destinations; prefer `AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST`. Invalid addresses remain denied. |
 | `AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS` | Disable STIG-Manager TLS certificate validation for explicit lab use. |
 
 ## SSH host-key verification (trust-on-first-use)

@@ -16,7 +16,10 @@ Assessments groups checklist workspaces by host. Selecting a row opens checklist
 
 The page includes:
 
-- Run assessment form with asset picker, STIG benchmark, target hostname, platform, input type, and evidence/config file.
+- Run assessment form with asset picker, STIG benchmark, target hostname,
+  platform, input type, and evidence/config file. Cisco configuration
+  assessments additionally require a signed organization-policy file and its
+  detached signature.
 - Remote Scan card for SSH collection.
 
 The asset picker fills the hostname field.
@@ -34,7 +37,9 @@ finding says `NotAFinding`.
 The benchmark selector is limited to ONTAP, FreeBSD, and Cisco IOS-XE Router
 NDM; the platform and input type are derived from that benchmark. ONTAP and
 FreeBSD accept evidence v2 transcripts; IOS-XE accepts a running configuration.
-The Remote Scan card is available only for ONTAP and FreeBSD.
+IOS-XE verifies the policy/signature pair against the dedicated offline-policy
+trust anchors before evaluation. The Remote Scan card is available only for
+ONTAP and FreeBSD.
 
 ## Assets
 

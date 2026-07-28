@@ -8,8 +8,8 @@ extra pack is shipped or a required pack/coverage manifest is missing.
 | --- | --- | --- | ---: | ---: | ---: | --- |
 | NetApp ONTAP 9.x | `NetApp_ONTAP_DSC_9-x_STIG` V2R2 | Plan-bound read-only SSH transcript | 22 | 16 | 6 | Real or licensed ONTAP target |
 | FreeBSD / DISA GPOS | `General_Purpose_Operating_System` V3R3 | Plan-bound read-only SSH transcript | 30 | 3 | 27 | Real FreeBSD host or VM kernel |
-| Cisco IOS-XE Router NDM | `Cisco_IOS-XE_Router_NDM_STIG` V3R7 | Authorized running configuration | 34 | 18 | 16 | Representative IOS-XE device configuration |
-| **Total** |  |  | **86** | **37** | **49** |  |
+| Cisco IOS-XE Router NDM | `Cisco_IOS-XE_Router_NDM_STIG` V3R7 | Authorized running configuration plus signed organization policy | 34 | 21 | 13 | Representative IOS-XE device configuration |
+| **Total** |  |  | **86** | **40** | **46** |  |
 
 The automated counts describe only rules whose collected evidence proves the
 full decision. The reviewed counts are curated candidate inventories, not the

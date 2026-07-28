@@ -2,7 +2,7 @@
 
 Deterministic STIG evidence collection and evaluation for three hard-to-scan
 targets: NetApp ONTAP 9.x, FreeBSD/GPOS, and Cisco IOS-XE Router NDM running
-configurations. The shipped boundary is 37 executable checks across 86 reviewed
+configurations. The shipped boundary is 40 executable checks across 86 reviewed
 candidate rules; importing other benchmarks does not add scanner support.
 
 ## Architecture

@@ -7,7 +7,12 @@ AutomateSTIG publishes release archives that contain both binaries:
 - `automatestig`
 - `automatestig-gui`
 
-### One-line installers — one per OS
+Prebuilt, supported releases are published for Linux and macOS only. Windows
+remains in CI for source-portability testing, but no Windows archive is
+published or supported until Windows filesystem ownership, ACL, and
+reparse-point custody controls match the Unix release boundary.
+
+### One-line installers
 
 macOS:
 
@@ -23,14 +28,8 @@ curl --proto '=https' --proto-redir '=https' -fsSL \
   https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-linux.sh | sh
 ```
 
-Windows (PowerShell):
-
-```powershell
-irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-windows.ps1 | iex
-```
-
-Each installer picks the right build for your CPU (Intel/x86_64 or Apple
-Silicon/arm64) automatically. The installers require
+Each supported installer picks the right build for your CPU (Intel/x86_64 or
+Apple Silicon/arm64) automatically. The installers require
 [Cosign](https://docs.sigstore.dev/cosign/system_config/installation/) and stop
 unless both the exact archive checksum and its keyless Sigstore signature from
 this repository's tagged CI workflow verify. Download and inspect an installer
@@ -51,7 +50,6 @@ Download the archive for your platform from the [latest GitHub Release](https://
 | Linux arm64 | `aarch64-unknown-linux-gnu` | `automatestig-<tag>-aarch64-unknown-linux-gnu.tar.gz` |
 | macOS Intel | `x86_64-apple-darwin` | `automatestig-<tag>-x86_64-apple-darwin.tar.gz` |
 | macOS Apple Silicon | `aarch64-apple-darwin` | `automatestig-<tag>-aarch64-apple-darwin.tar.gz` |
-| Windows x86_64 | `x86_64-pc-windows-msvc` | `automatestig-<tag>-x86_64-pc-windows-msvc.zip` |
 
 For macOS and Linux:
 
@@ -62,15 +60,6 @@ chmod +x automatestig automatestig-gui
 ```
 
 Move `automatestig` and `automatestig-gui` to a directory on `PATH`, such as `$HOME/.local/bin` or `/usr/local/bin`.
-
-For Windows:
-
-```powershell
-Expand-Archive .\automatestig-<tag>-x86_64-pc-windows-msvc.zip -DestinationPath .\automatestig
-.\automatestig\automatestig-gui.exe
-```
-
-Move `automatestig.exe` and `automatestig-gui.exe` to a directory on `PATH`, such as `%LOCALAPPDATA%\AutomateSTIG`.
 
 ### Launching
 
@@ -119,6 +108,10 @@ From the repository root:
 ```bash
 cargo build --release --workspace
 ```
+
+This source build is supported for Linux and macOS. A Windows build may compile
+for portability testing, but is not a supported deployment artifact and must
+not be used for security-sensitive operation.
 
 The workspace builds two binaries:
 

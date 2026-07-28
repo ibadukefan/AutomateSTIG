@@ -14,7 +14,10 @@ there is no independent rebuild-and-publish workflow.
 - Formatting, clippy with warnings denied, cross-platform tests, end-to-end
   acceptance, frontend syntax, exact supported-target/content validation, 100,000 fuzz
   mutations, RustSec audit, and dependency review are required gates.
-- Linux, Windows, and macOS archives contain the exact gated CLI/GUI binaries.
+- Linux and macOS archives contain the exact gated CLI/GUI binaries. Windows
+  remains a required portability-test runner, but the release workflow,
+  required release contexts, closed manifest, and publisher intentionally
+  exclude Windows artifacts.
 - Each archive has a SHA-256 checksum, CycloneDX SBOM, locked Cargo dependency
   inventory, source/run provenance, GitHub OIDC build attestation, and keyless
   Sigstore bundle.
@@ -57,8 +60,8 @@ sha256sum -c automatestig-v0.3.0-<target>.tar.gz.sha256
 gh release verify v0.3.0 --repo ibadukefan/AutomateSTIG
 ```
 
-Use the corresponding `.zip` names on Windows and compare
-`Get-FileHash -Algorithm SHA256` with the published checksum.
+Windows release archives are not published. A Windows source build passing CI
+does not change that support boundary.
 
 ## Disconnected verification
 

@@ -26,6 +26,8 @@ Evaluate a STIG against a collected evidence transcript or Cisco running configu
 | `--evidence <FILE>` | Plan-bound evidence v2 JSON. Mutually exclusive with `--config`; exactly one primary input is required. |
 | `--allow-legacy-evidence` | Unsafely assume marker-based v1 command sections succeeded; migration/testing only and valid only with `--evidence`. |
 | `--config <FILE>` | Cisco running configuration. Mutually exclusive with `--evidence`; exactly one primary input is required. |
+| `--organization-policy <FILE>` | Signed organization-policy JSON required by policy-bound Cisco checks. Valid only with `--config`. |
+| `--organization-policy-signature <FILE>` | Exact 64-byte detached Ed25519 signature required with `--organization-policy`. |
 | `-a`, `--answer <FILE>` | Answer file. Repeatable. |
 | `--host <NAME>` | Target hostname. |
 | `-o`, `--output <FILE>` | Output file. |
@@ -56,10 +58,10 @@ Collect evidence v2 from a remote device with the same SSH implementation used b
 | --- | --- |
 | `-s`, `--stig <ID>` | Required STIG benchmark whose installed check pack defines the plan. |
 | `--host <HOST>` | Required remote hostname or address. |
-| `--hostname <NAME>` | Optional hostname recorded in evidence; defaults to `--host`. |
+| `--hostname <NAME>` | Optional corroborating endpoint identity; it must equal `--host` and cannot relabel the collected asset. |
 | `-u`, `--username <USER>` | Required SSH username. |
 | `--port <PORT>` | SSH port; default `22`. |
-| `--key <FILE>` | Private-key file under `~/.ssh` or `~/.automatestig/ssh_keys`. Without it, password authentication is used. |
+| `--key <FILE>` | Ed25519/ECDSA private-key file under `~/.ssh` or `~/.automatestig/ssh_keys`. RSA keys are rejected. Without it, password authentication is used. |
 | `--password-env <NAME>` | Password environment variable; default `AUTOMATESTIG_SSH_PASSWORD`. |
 | `--passphrase-env <NAME>` | Key-passphrase environment variable; default `AUTOMATESTIG_SSH_KEY_PASSPHRASE`. |
 | `--timeout-secs <SECONDS>` | DNS, connection, authentication, key-loading, and per-command timeout; default `30`. |
@@ -80,7 +82,12 @@ automatestig collect \
 
 Collection always writes a complete diagnostic document when it can determine the plan. If any required command fails, the document has `complete=false` and the command has a typed failure status; the process then exits nonzero. Failed stdout is retained only as diagnostics and is never exposed to check predicates.
 
-Collection resolves the target once and connects to that numeric address while retaining the supplied hostname for host-key pinning. Unspecified, multicast, broadcast, and link-local targets are rejected, as are DNS answers spanning loopback, private, public, or link-local trust classes. An explicitly scoped link-local device requires `AUTOMATESTIG_SSH_ALLOW_LINK_LOCAL=1`. Private keys outside the two default roots require a secure root listed in `AUTOMATESTIG_SSH_KEY_ROOTS` (using the platform path-list separator); key files, their direct parent, and the selected root must pass ownership, type, symlink, size, and permission checks.
+The evidence asset identity is the exact SSH endpoint name or address whose
+host key is verified. Supported plans do not independently observe the
+device's configured hostname, so `--hostname` is only a corroborating equality
+check and cannot assign a different label.
+
+Collection resolves the target once, authorizes every DNS answer under `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` and the destination policy, and passes only those pinned numeric addresses to SSH while retaining the supplied hostname for host-key pinning. The CLI uses the same policy as the GUI: a configured allowlist rejects unlisted public targets, and non-global special-use/private/local/link-local answers require an IP/CIDR allowlist entry or the explicit isolated-lab override `AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN=1`. Unspecified, multicast, broadcast, and reserved/documentation targets are always rejected, as are DNS answers spanning loopback, private/special, public, or link-local trust classes. The narrower `AUTOMATESTIG_SSH_ALLOW_LINK_LOCAL=1` switch remains available for an explicitly scoped link-local device. Private keys outside the two default roots require a secure root listed in `AUTOMATESTIG_SSH_KEY_ROOTS` (using the platform path-list separator); key files, their direct parent, and the selected root must pass ownership, type, symlink, size, and permission checks.
 
 ## `import`
 
@@ -139,6 +146,12 @@ automatestig convert --input server01.ckl --output server01.cklb --format cklb
 ## `summary`
 
 Show a checklist or scan summary.
+
+Rule counts remain visible for every supported input. Assessed-pass and
+benchmark-coverage percentages are shown only when the checklist retains
+complete, internally consistent evaluation provenance. Imported CKL/CKLB
+files, missing provenance, unsafe evidence, and malformed input/content
+bindings display `WITHHELD` with the blocking reason.
 
 | Option | Purpose |
 | --- | --- |
@@ -201,6 +214,28 @@ automatestig build-pack --id site-content --name "Site Content" --version 1.0.0 
 
 `generate-signing-key` is an explicit offline ceremony command and refuses to
 replace existing key material. `build-pack` never creates keys.
+
+## `sign-organization-policy`
+
+Validate and sign a closed-schema Cisco organization-policy document with an
+existing offline Ed25519 key.
+
+| Option | Purpose |
+| --- | --- |
+| `--policy <FILE>` | Required organization-policy JSON. |
+| `--signing-key <FILE>` | Required existing external raw Ed25519 private key with a matching sibling `.pub` file. |
+| `--output <FILE>` | Required new path for the exact 64-byte detached signature; existing files are not replaced. |
+
+```bash
+automatestig sign-organization-policy \
+  --policy router-policy.json \
+  --signing-key /secure-media/organization-policy.key \
+  --output router-policy.sig
+```
+
+Signing does not install trust. Copy only the public key into the dedicated
+directory selected by `AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR`; keep the
+private key offline.
 
 ## `disa-import`
 

@@ -4,6 +4,10 @@ AutomateSTIG is a single-operator scanner and evidence workstation. It is not a
 multi-tenant web service or the enterprise audit system of record. Use STIG
 Manager for shared review and workflow.
 
+Supported release deployments use Linux or macOS. Windows is a CI
+portability-test platform only; do not deploy a source-built Windows binary for
+security-sensitive work.
+
 ## Host baseline
 
 - Use a dedicated, patched OS account and encrypted disk. Do not share its home

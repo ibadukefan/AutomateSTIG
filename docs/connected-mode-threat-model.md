@@ -7,8 +7,8 @@ AutomateSTIG is safest as a localhost desktop/offline evaluator. Connected mode 
 | Feature | Boundary | Default control |
 | --- | --- | --- |
 | DISA content fetch | Outbound HTTPS to public DISA hosts | Parsed URL allowlist for exact DISA hosts; redirects revalidated; response body streamed with hard byte cap; ZIP member/path/size limits before XML parsing. |
-| STIG Manager OAuth/API | Outbound HTTPS to operator-configured API and token endpoints | HTTPS-only; no embedded credentials; local/metadata hostnames rejected; literal and resolved private/local/link-local addresses rejected unless allowlisted or explicit lab override is set. |
-| SSH scan | Outbound SSH to operator-selected assets | Host syntax validation, optional exact host/IP/CIDR allowlist, private/local/link-local literal and resolved addresses blocked by default, host-key pinning/changed-key rejection. |
+| STIG Manager OAuth/API | Outbound HTTPS to operator-configured API and token endpoints | HTTPS-only; no embedded credentials; local/metadata hostnames rejected; non-global special-use/private/local/link-local addresses require explicit authorization; invalid/reserved/multicast/documentation addresses are always rejected. |
+| SSH scan | Outbound SSH to operator-selected assets | Host syntax validation, optional exact host/IP/CIDR allowlist, non-global special-use/private/local/link-local addresses blocked by default, invalid addresses always rejected, and host-key pinning/changed-key rejection. |
 
 ## Operator guidance
 
