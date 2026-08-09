@@ -1,0 +1,51 @@
+{
+  "schema": "automatestig-scanner-scenario/v1",
+  "id": "cisco-connected-fail-conflict",
+  "actors": ["cybersecurity_analyst", "cybersecurity_manager"],
+  "mode": "connected",
+  "target": {
+    "profile_id": "cisco_ios_xe_router_ndm",
+    "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+    "stig_release": "V3R7",
+    "hostname": "rtr-findings-01",
+    "software_version": "17.6.6a"
+  },
+  "input": {
+    "kind": "running_configuration",
+    "path": "../network/ios_xe_router_findings.txt",
+    "sha256": "26404af69add55b9af53b911e80dea2e37933ead8be0a74bd20ff9750daff612",
+    "organization_policy": {
+      "path": "inputs/cisco-findings-policy.json",
+      "sha256": "fa104eeb401a7173890a5e360b75badf01dd0f98e3fb82ce1a964047a1787695",
+      "signature": "ephemeral_test_signature_required"
+    }
+  },
+  "destination": {
+    "inventory_path": "stig_manager/inventory.json",
+    "collection_id": 7001,
+    "asset_id": 7302,
+    "assignment_id": "assignment-cisco-v3r7-findings"
+  },
+  "remote_state": "stig_manager/cisco-human-conflict.json",
+  "delivery_attempts": [],
+  "receipt": null,
+  "expected": {
+    "evaluation": "fail",
+    "collection_complete": true,
+    "automated_results": 33,
+    "manual_untouched": 9,
+    "out_of_scope_untouched": 0,
+    "run_state": "conflicted",
+    "delivery_state": "conflicted",
+    "creates": 32,
+    "updates": 0,
+    "unchanged": 0,
+    "conflicts": 1,
+    "review_write_count": 0,
+    "handoff": true
+  },
+  "notes": [
+    "V-215807 is represented as a newer human-owned remote review.",
+    "The whole delivery remains conflicted until the operator resolves ownership in STIG Manager; AutomateSTIG writes nothing and retains the selected-run handoff."
+  ]
+}

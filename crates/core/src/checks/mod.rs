@@ -9,6 +9,7 @@
 //! - ONTAP and FreeBSD command-output matching
 
 pub mod executor;
+pub(crate) mod freebsd;
 pub mod network;
 
 use serde::{Deserialize, Serialize};
@@ -73,6 +74,12 @@ pub enum Check {
     /// Multiple checks where any can pass (OR logic).
     Any { checks: Vec<Check> },
 
+    /// Effective OpenBSM selection for both successful and failed events.
+    BsdAuditClassSelection { classes: Vec<String> },
+
+    /// Effective FreeBSD PF packet-filter state.
+    BsdPfEnabled,
+
     /// Organization-policy-bound concurrent VTY/HTTP management-session limit.
     CiscoVtySessionLimit,
 
@@ -81,12 +88,53 @@ pub enum Check {
 
     /// Effective IOS-XE remote logging severity includes critical events.
     CiscoLoggingTrapSeverity,
+
+    /// IOS-XE login throttling enforces the V3R7 attempt and lockout limits.
+    CiscoLoginBlockFor,
+
+    /// Every deny entry in an interface-bound ACL records ingress context.
+    CiscoInterfaceAclDenyLogInput,
+
+    /// Exactly one Common-Criteria-bound local account is the final AAA fallback.
+    CiscoSingleLocalFallbackAccount,
+
+    /// Every configured IOS-XE Common Criteria policy enforces 15 characters.
+    CiscoPasswordMinimumLength,
+
+    /// Persistent audit files cannot be modified by privilege levels below 15.
+    CiscoPersistentAuditModificationProtection,
+
+    /// Persistent audit files cannot be deleted by privilege levels below 15.
+    CiscoPersistentAuditDeletionProtection,
+
+    /// Effective IOS-XE file-system privilege is the default or explicit level 15.
+    CiscoFileSystemPrivilege,
+
+    /// Console, VTY, auxiliary, and enabled HTTP(S) management paths time out.
+    CiscoManagementIdleTimeout,
+
+    /// NTP uses at least two sources approved by the signed organization policy.
+    CiscoRedundantAuthoritativeNtpSources,
+
+    /// Every configured NTP server is bound to a trusted SHA-2 authentication key.
+    CiscoNtpAuthentication,
+
+    /// The complete IOS-XE SSH MAC allowlist contains only reviewed SHA-2 HMACs.
+    CiscoSshMacAlgorithms,
+
+    /// The complete IOS-XE SSH encryption allowlist contains only reviewed AES CTR ciphers.
+    CiscoSshEncryptionAlgorithms,
+
+    /// IOS-XE forwards logs to at least two distinct remote syslog destinations.
+    CiscoSyslogServerCount,
 }
 
 impl Check {
     pub fn requires_organization_policy(&self) -> bool {
         match self {
-            Self::CiscoVtySessionLimit | Self::CiscoLoggingBufferCapacity => true,
+            Self::CiscoVtySessionLimit
+            | Self::CiscoLoggingBufferCapacity
+            | Self::CiscoRedundantAuthoritativeNtpSources => true,
             Self::All { checks } | Self::Any { checks } => {
                 checks.iter().any(Self::requires_organization_policy)
             }
@@ -132,12 +180,19 @@ pub struct CheckResult {
 
     /// Error message if the check failed to execute.
     pub error: Option<String>,
+
+    /// Explicit evaluator-owned applicability decision. Device-controlled
+    /// output cannot set this during check execution.
+    #[serde(default)]
+    not_applicable: bool,
 }
 
 impl CheckResult {
     pub fn to_finding_status(&self) -> FindingStatus {
         if self.error.is_some() {
             FindingStatus::NotReviewed
+        } else if self.passed && self.not_applicable {
+            FindingStatus::NotApplicable
         } else if self.passed {
             FindingStatus::NotAFinding
         } else {

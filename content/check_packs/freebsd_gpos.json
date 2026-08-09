@@ -4,6 +4,46 @@
   "version": "V3R3",
   "checks": [
     {
+      "vuln_id": "V-203767",
+      "platform": "bsd",
+      "check": {
+        "type": "bsd_audit_class_selection",
+        "classes": ["lo"]
+      },
+      "expected": { "type": "is_true" },
+      "description": "OpenBSM must audit successful and failed attributable and non-attributable logon events without per-user exclusions"
+    },
+    {
+      "vuln_id": "V-203621",
+      "platform": "bsd",
+      "check": {
+        "type": "bsd_audit_class_selection",
+        "classes": ["aa"]
+      },
+      "expected": { "type": "is_true" },
+      "description": "OpenBSM must audit successful and failed authentication and authorization events without per-user exclusions"
+    },
+    {
+      "vuln_id": "V-203774",
+      "platform": "bsd",
+      "check": {
+        "type": "bsd_audit_class_selection",
+        "classes": ["ad"]
+      },
+      "expected": { "type": "is_true" },
+      "description": "OpenBSM must audit successful and failed administrative account events without per-user exclusions"
+    },
+    {
+      "vuln_id": "V-203772",
+      "platform": "bsd",
+      "check": {
+        "type": "bsd_audit_class_selection",
+        "classes": ["fr", "fw", "fa", "fm", "fc", "fd"]
+      },
+      "expected": { "type": "is_true" },
+      "description": "OpenBSM must audit successful and failed file read, write, attribute access, attribute modification, creation, and deletion events"
+    },
+    {
       "vuln_id": "V-203615",
       "platform": "bsd",
       "check": { "type": "command", "command": "service auditd onestatus" },
@@ -14,24 +54,11 @@
       "description": "auditd must be observed in the running state"
     },
     {
-      "vuln_id": "V-203714",
+      "vuln_id": "V-203784",
       "platform": "bsd",
-      "check": { "type": "command", "command": "cat /var/db/zoneinfo" },
-      "expected": {
-        "type": "matches",
-        "pattern": "(?i)\\A\\s*(?:Etc/)?(?:UTC|GMT)\\s*\\z"
-      },
-      "description": "The configured system time zone must be exactly UTC or GMT"
-    },
-    {
-      "vuln_id": "V-203754",
-      "platform": "bsd",
-      "check": { "type": "command", "command": "sysctl kern.elf64.aslr.enable" },
-      "expected": {
-        "type": "matches",
-        "pattern": "\\A\\s*kern\\.elf64\\.aslr\\.enable:\\s*1\\s*\\z"
-      },
-      "description": "The effective 64-bit ASLR kernel setting must be enabled"
+      "check": { "type": "bsd_pf_enabled" },
+      "expected": { "type": "is_true" },
+      "description": "The effective PF packet-filter status must be enabled"
     }
   ]
 }

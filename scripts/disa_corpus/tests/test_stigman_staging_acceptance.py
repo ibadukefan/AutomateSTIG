@@ -1,15 +1,10 @@
 import datetime
-import http.server
 import importlib.util
 import json
 import os
 import pathlib
-import shutil
-import ssl
 import tempfile
-import threading
 import unittest
-import urllib.request
 from unittest import mock
 
 
@@ -46,14 +41,16 @@ class StigmanStagingAcceptanceTests(unittest.TestCase):
         self.assertGreater(expires, now)
         self.assertEqual(
             set(policy["rules"]),
-            {"V-215807", "V-215836"},
+            {"V-215807", "V-215836", "V-215838"},
         )
 
-    def test_gui_lab_permissions_are_child_scoped_and_exact(self):
+    def test_disconnected_gui_environment_strips_stig_manager_escape_hatches(self):
         with mock.patch.dict(
             os.environ,
             {
                 "AUTOMATESTIG_DEMO": "1",
+                "AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST": "127.0.0.1",
+                "AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS": "1",
                 "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS": "1",
                 "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS": "1",
                 "UNRELATED_PARENT_VALUE": "retained",
@@ -66,23 +63,18 @@ class StigmanStagingAcceptanceTests(unittest.TestCase):
             )
             self.assertEqual(dict(os.environ), parent_environment)
 
-        self.assertEqual(
-            environment["AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST"], "127.0.0.1"
-        )
-        self.assertNotIn(
-            "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS", environment
-        )
-        self.assertNotIn(
-            "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS", environment
-        )
-        self.assertEqual(
-            environment["AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS"], "1"
-        )
+        for name in (
+            "AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST",
+            "AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS",
+            "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS",
+            "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS",
+            "AUTOMATESTIG_DEMO",
+        ):
+            self.assertNotIn(name, environment)
         self.assertEqual(
             environment["AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR"],
             "/tmp/staging-policy-trust",
         )
-        self.assertNotIn("AUTOMATESTIG_DEMO", environment)
         self.assertEqual(environment["UNRELATED_PARENT_VALUE"], "retained")
 
     def test_policy_provisioning_deletes_private_seed_and_installs_public_anchor(self):
@@ -129,65 +121,89 @@ class StigmanStagingAcceptanceTests(unittest.TestCase):
             document = json.loads(pathlib.Path(policy["path"]).read_text())
             self.assertEqual(document["asset_hostname"], STAGING.CISCO_HOSTNAME)
 
-    @unittest.skipUnless(shutil.which("openssl"), "openssl is required")
-    def test_ephemeral_https_proxy_forwards_to_loopback_http(self):
-        class EchoHandler(http.server.BaseHTTPRequestHandler):
-            def do_POST(self):
-                length = int(self.headers["Content-Length"])
-                body = self.rfile.read(length)
-                response = json.dumps(
-                    {
-                        "body": body.decode(),
-                        "host": self.headers["Host"],
-                        "path": self.path,
-                    }
-                ).encode()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.send_header("Content-Length", str(len(response)))
-                self.end_headers()
-                self.wfile.write(response)
+    def test_receiver_translates_only_sparse_review_fields(self):
+        sparse = [
+            {
+                "rule_id": "SV-1r1_rule",
+                "result": "fail",
+                "detail": "  evidence detail  ",
+                "comment": "  analyst note  ",
+                "evidence_source": "supplied_evidence",
+                "evaluated_at": "2026-08-08T12:00:00Z",
+                "ignored": "must not cross the boundary",
+            }
+        ]
 
-            def log_message(self, _format, *_arguments):
-                pass
+        writes = STAGING.receiver_review_writes(sparse)
 
-        backend = http.server.ThreadingHTTPServer(
-            ("127.0.0.1", 0), EchoHandler
+        self.assertEqual(len(writes), 1)
+        self.assertEqual(writes[0]["ruleId"], "SV-1r1_rule")
+        self.assertEqual(writes[0]["result"], "fail")
+        self.assertEqual(writes[0]["detail"], "evidence detail")
+        self.assertEqual(writes[0]["comment"], "analyst note")
+        self.assertFalse(writes[0]["autoResult"])
+        self.assertEqual(writes[0]["status"], "saved")
+        self.assertNotIn("ignored", writes[0])
+
+    def test_xccdf_is_verified_as_supplemental_not_receiver_transport(self):
+        run_id = "11111111-2222-4333-8444-555555555555"
+        manifest = {
+            "run_id": run_id,
+            "stig_id": STAGING.CISCO_STIG,
+            "stig_revision": STAGING.CISCO_REVISION,
+        }
+        sparse = [
+            {
+                "rule_id": "SV-1r1_rule",
+                "result": "fail",
+                "detail": "evidence detail",
+                "comment": "analyst note",
+                "evidence_source": "supplied_evidence",
+                "evaluated_at": "2026-08-08T12:00:00Z",
+            }
+        ]
+        xccdf = f"""<?xml version="1.0" encoding="UTF-8"?>
+<cdf:Benchmark xmlns:cdf="{STAGING.XCCDF_NAMESPACE}"
+ xmlns:sm="{STAGING.STIG_MANAGER_NAMESPACE}"
+ xmlns:ast="{STAGING.AUTOMATESTIG_XCCDF_NAMESPACE}"
+ id="{STAGING.XCCDF_BENCHMARK_PREFIX}{STAGING.CISCO_STIG}">
+  <cdf:TestResult id="{STAGING.XCCDF_TEST_RESULT_PREFIX}{run_id}"
+   version="{STAGING.CISCO_REVISION}">
+    <cdf:rule-result idref="{STAGING.XCCDF_RULE_PREFIX}SV-1r1_rule">
+      <cdf:result>fail</cdf:result>
+      <cdf:metadata>
+        <ast:rule-identity rule-id="SV-1r1_rule" />
+      </cdf:metadata>
+      <cdf:check><cdf:check-content>
+        <sm:detail>evidence detail</sm:detail>
+        <sm:comment>analyst note</sm:comment>
+      </cdf:check-content></cdf:check>
+    </cdf:rule-result>
+    <cdf:metadata>
+      <ast:provenance stig-id="{STAGING.CISCO_STIG}">
+        <ast:field name="run-id" value="{run_id}" />
+      </ast:provenance>
+    </cdf:metadata>
+  </cdf:TestResult>
+</cdf:Benchmark>
+""".encode()
+
+        projection = STAGING.supplemental_xccdf_reviews(
+            xccdf, manifest, sparse
         )
-        backend_thread = threading.Thread(
-            target=backend.serve_forever, daemon=True
+        writes = STAGING.receiver_review_writes(sparse)
+
+        self.assertEqual(set(projection), {"SV-1r1_rule"})
+        self.assertEqual(writes[0]["ruleId"], "SV-1r1_rule")
+        self.assertNotIn("xccdf", writes[0])
+
+        wrong_namespace = xccdf.replace(
+            STAGING.XCCDF_NAMESPACE.encode(), b"urn:wrong:xccdf", 1
         )
-        backend_thread.start()
-        proxy = None
-        try:
-            with tempfile.TemporaryDirectory() as temporary:
-                certificate, private_key = STAGING.generate_lab_certificate(
-                    temporary
-                )
-                proxy = STAGING.HttpsReverseProxy(
-                    backend.server_port, certificate, private_key
-                ).start()
-                request = urllib.request.Request(
-                    f"https://127.0.0.1:{proxy.port}/api/test?value=1",
-                    data=b"payload",
-                    method="POST",
-                )
-                context = ssl._create_unverified_context()
-                with urllib.request.urlopen(
-                    request, context=context, timeout=10
-                ) as response:
-                    observed = json.loads(response.read())
-                self.assertEqual(observed["body"], "payload")
-                self.assertEqual(observed["path"], "/api/test?value=1")
-                self.assertEqual(
-                    observed["host"], f"localhost:{backend.server_port}"
-                )
-        finally:
-            if proxy is not None:
-                proxy.close()
-            backend.shutdown()
-            backend.server_close()
-            backend_thread.join(timeout=5)
+        with self.assertRaisesRegex(ValueError, "XCCDF 1.2 Benchmark"):
+            STAGING.supplemental_xccdf_reviews(
+                wrong_namespace, manifest, sparse
+            )
 
     def test_workflow_builds_and_passes_both_release_binaries(self):
         workflow = (
@@ -196,6 +212,8 @@ class StigmanStagingAcceptanceTests(unittest.TestCase):
         self.assertIn("--bin automatestig\n", workflow)
         self.assertIn("--bin automatestig-gui", workflow)
         self.assertIn("--cli-binary target/release/automatestig", workflow)
+        self.assertIn("Scanner Handoff", workflow)
+        self.assertNotIn("AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS", workflow)
 
 
 if __name__ == "__main__":

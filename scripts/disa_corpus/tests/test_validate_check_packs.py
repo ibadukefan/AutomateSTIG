@@ -44,9 +44,9 @@ class SupportedTargetValidationTests(unittest.TestCase):
 
     def test_reviewed_and_executable_totals_match_the_product_claim(self):
         expected = {
-            "netapp_ontap9": (22, 16, 6),
-            "freebsd_gpos": (30, 3, 27),
-            "cisco_ios_xe_router_ndm": (34, 21, 13),
+            "netapp_ontap9": (22, 15, 7),
+            "freebsd_gpos": (30, 6, 24),
+            "cisco_ios_xe_router_ndm": (42, 33, 9),
         }
         observed = {}
         for target_id, target in MODULE.EXPECTED_TARGETS.items():
@@ -62,9 +62,9 @@ class SupportedTargetValidationTests(unittest.TestCase):
             observed[target_id] = (len(manifest["rules"]), automated, manual)
 
         self.assertEqual(observed, expected)
-        self.assertEqual(sum(counts[0] for counts in observed.values()), 86)
-        self.assertEqual(sum(counts[1] for counts in observed.values()), 40)
-        self.assertEqual(sum(counts[2] for counts in observed.values()), 46)
+        self.assertEqual(sum(counts[0] for counts in observed.values()), 94)
+        self.assertEqual(sum(counts[1] for counts in observed.values()), 54)
+        self.assertEqual(sum(counts[2] for counts in observed.values()), 40)
 
     def test_frontend_scanner_contract_has_only_three_benchmarks(self):
         source = (REPO / "crates/gui/frontend/app.js").read_text(encoding="utf-8")
@@ -166,9 +166,9 @@ class SupportedTargetValidationTests(unittest.TestCase):
 
     def test_coverage_refresh_preserves_explicit_manual_boundary(self):
         expected_counts = {
-            "netapp_ontap9": (16, 6),
-            "freebsd_gpos": (3, 27),
-            "cisco_ios_xe_router_ndm": (21, 13),
+            "netapp_ontap9": (15, 7),
+            "freebsd_gpos": (6, 24),
+            "cisco_ios_xe_router_ndm": (33, 9),
         }
         for target_id, (automated_count, manual_count) in expected_counts.items():
             with self.subTest(target=target_id):

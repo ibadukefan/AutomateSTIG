@@ -1,5 +1,9 @@
 # STIG Pack Files
 
+> `.stigpack` build/import is protected maintainer and transition tooling. The
+> scanner-first GUI ships exact immutable scanner profiles and does not expose
+> general pack import or signing to an everyday analyst.
+
 `.stigpack` files transfer STIG benchmarks, answer templates, curated checks, and generated check packs.
 
 They are intended for air-gapped transfer and policy-controlled import.
@@ -59,17 +63,10 @@ CLI:
 automatestig import --pack site-content.stigpack
 ```
 
-GUI:
-
-- Use the benchmark pack import flow in `Reports` or `Standards`.
-
-API:
-
-```bash
-curl -H "X-Auth-Token: $AUTOMATESTIG_AUTH_TOKEN" \
-  -F "file=@site-content.stigpack" \
-  http://127.0.0.1:<PORT>/api/library/import-stigpack
-```
+The scanner-first GUI has no pack-import action. Use the protected
+maintainer/transition CLI only. The former unversioned
+`/api/library/import-stigpack` route is an HTTP `410 Gone` tombstone and does
+not accept uploads.
 
 ## Signing And Trust
 
@@ -127,7 +124,8 @@ Offline signing workstation:
 3. Authenticate the public-key fingerprint over an independent channel.
 4. Transfer only the `.stigpack` and public key by approved media.
 
-The GUI does not generate keys. Its offline-pack endpoints are disabled unless
+The scanner-first GUI exposes no pack-signing workflow. Legacy protected
+offline-pack endpoints are disabled unless
 `AUTOMATESTIG_OFFLINE_SIGNING_KEY` explicitly names an existing key outside the
 application data directory. Prefer the offline CLI workflow so an online GUI
 process never handles private signing material.

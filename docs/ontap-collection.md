@@ -2,19 +2,21 @@
 
 AutomateSTIG evaluates NetApp ONTAP filers from read-only, plan-bound SSH evidence. ONTAP filers cannot run scanner scripts, so the workflow collects CLI state remotely and evaluates it against the DISA NetApp ONTAP DSC 9.x STIG.
 
-The `netapp_ontap9` check pack targets DISA NetApp ONTAP DSC 9.x STIG V2R2,
+The `netapp_ontap9` check pack targets DISA NetApp ONTAP DSC 9.x STIG V2R4,
 which contains 29 rules. Its reviewed candidate inventory contains 22 rules:
 
-- 16 rules automated by the `netapp_ontap9` check pack.
-- 6 reviewed rules kept manual because the supported command evidence cannot
+- 15 rules automated by the `netapp_ontap9` check pack.
+- 7 reviewed rules kept manual because the supported command evidence cannot
   prove the full requirement: `V-246925`, `V-246931`, `V-246932`, `V-246938`,
-  `V-246944`, and `V-246948`.
+  `V-246940`, `V-246944`, and `V-246948`. V2R4 explicitly permits domain,
+  public-key, or SAML authentication for `V-246940`; the prior domain-only
+  query could therefore create a false finding and is no longer automated.
 
 Seven additional benchmark rules are outside the current reviewed candidate
 inventory and also remain `Not_Reviewed`: `V-246927`, `V-246930`, `V-246933`,
-`V-246939`, `V-246945`, `V-246946`, and `V-246949`. Thus 13 of the 29 benchmark
+`V-246939`, `V-246945`, `V-246946`, and `V-246949`. Thus 14 of the 29 benchmark
 rules require assessor review, while the governed candidate inventory is
-exactly 22 reviewed/16 automated/6 manual.
+exactly 22 reviewed/15 automated/7 manual.
 
 ## Collecting Evidence
 
@@ -22,10 +24,18 @@ Use one of these collection paths.
 
 ### Connected GUI Scan
 
-On the `Assessments` page, start a GUI SSH scan and select the ONTAP benchmark;
-the target platform is derived from that supported benchmark.
+On **Scan**, select a live existing STIG Manager asset with
+`NetApp_ONTAP_DSC_9-x_STIG` V2R4 assigned, then select the release-bundled
+`netapp_ontap9` profile. Preflight verifies the observed ONTAP 9 identity,
+endpoint/host key, exact assignment, privilege, content hashes, and every
+read-only command before collection.
 
-The GUI connects over SSH and runs the check pack's generated ONTAP plan through the shared fail-closed collector. An incomplete collection returns HTTP 207 with diagnostic errors and marks every dependent rule `Not_Reviewed`, but it does not persist a checklist or compliance score.
+The GUI runs the adapter's ONTAP plan through the shared fail-closed collector.
+An incomplete collection persists diagnostic run state only and creates no
+handoff. A complete run previews only the 15 scanner-owned rules. An identical
+remote result can receive an exact-no-op receipt; any create or update uses the
+selected-run handoff. Manual and out-of-profile STIG Manager reviews remain
+untouched.
 
 ### Air-Gapped Transcript
 
@@ -56,10 +66,12 @@ If automated collection is unavailable, record the needed evidence for manual re
 
 ## Evaluating
 
-Import the DISA STIG once:
+The scanner GUI uses its release-bundled exact benchmark subset. The following
+raw-content import is a legacy CLI/maintainer transition path, not a normal GUI
+prerequisite:
 
 ```bash
-automatestig disa-import --input U_NetApp_ONTAP_DSC_9-x_V2R2_STIG.zip
+automatestig disa-import --input U_NetApp_ONTAP_DSC_9-x_V2R4_STIG.zip
 ```
 
 Then evaluate the evidence document:
@@ -72,7 +84,10 @@ automatestig evaluate \
   --format ckl
 ```
 
-Completed results can merge with answer files and be pushed to STIG Manager or imported as CKL.
+The scanner-first delivery path does not merge answer files or prior checklists.
+Human determinations and manual-rule completion occur in STIG Manager. Legacy
+CLI conversion/export preserves its original attribution during the migration
+window.
 
 If any required record failed collection or semantic validation, AutomateSTIG appends an `evaluation.incomplete` audit event, writes no checklist, and exits nonzero. Answer files and prior-checklist merges cannot override affected `Not_Reviewed` collection errors; failed stdout is diagnostic only and cannot satisfy `not_contains` or a broad regex.
 

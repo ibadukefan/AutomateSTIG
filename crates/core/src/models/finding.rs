@@ -280,11 +280,17 @@ impl FindingSummary {
     /// determination as assessed and is represented separately by
     /// [`Self::benchmark_coverage_pct`].
     pub fn assessed_pass_pct(&self) -> f64 {
+        self.assessed_pass_pct_opt().unwrap_or(0.0)
+    }
+
+    /// Pass rate when at least one assessed control applies to the asset.
+    ///
+    /// A zero denominator is not a failing score: all controls may have a
+    /// defensible `NotApplicable` determination. Presentation and API layers
+    /// should use this nullable form so they can render that state as `N/A`.
+    pub fn assessed_pass_pct_opt(&self) -> Option<f64> {
         let applicable = self.applicable_assessed();
-        if applicable == 0 {
-            return 0.0;
-        }
-        (self.not_a_finding as f64 / applicable as f64) * 100.0
+        (applicable > 0).then(|| (self.not_a_finding as f64 / applicable as f64) * 100.0)
     }
 
     /// Percentage of all benchmark controls that have been assessed.
@@ -358,6 +364,7 @@ mod tests {
         assert_eq!(summary.assessed(), 3);
         assert_eq!(summary.applicable_assessed(), 2);
         assert!((summary.assessed_pass_pct() - 50.0).abs() < f64::EPSILON);
+        assert_eq!(summary.assessed_pass_pct_opt(), Some(50.0));
         assert!((summary.benchmark_coverage_pct() - 75.0).abs() < f64::EPSILON);
         assert_eq!(summary.compliance_pct(), summary.assessed_pass_pct());
     }
@@ -382,6 +389,7 @@ mod tests {
         let summary = FindingSummary::default();
         assert_eq!(summary.assessed(), 0);
         assert_eq!(summary.assessed_pass_pct(), 0.0);
+        assert_eq!(summary.assessed_pass_pct_opt(), None);
         assert_eq!(summary.benchmark_coverage_pct(), 0.0);
     }
 
@@ -395,6 +403,7 @@ mod tests {
         assert_eq!(summary.assessed(), 2);
         assert_eq!(summary.applicable_assessed(), 0);
         assert_eq!(summary.assessed_pass_pct(), 0.0);
+        assert_eq!(summary.assessed_pass_pct_opt(), None);
         assert_eq!(summary.benchmark_coverage_pct(), 100.0);
     }
 }

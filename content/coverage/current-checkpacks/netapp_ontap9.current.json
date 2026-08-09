@@ -1,9 +1,9 @@
 {
   "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
-  "version": "V2R2",
+  "version": "V2R4",
   "source": "AutomateSTIG current check pack: content/check_packs/netapp_ontap9.json",
   "status": "experimental",
-  "generated_at": "2026-07-13T20:13:29Z",
+  "generated_at": "2026-08-08T00:00:00Z",
   "generated_from": "content/check_packs/netapp_ontap9.json",
   "total_rules": 22,
   "rules": [
@@ -11,7 +11,7 @@
       "vuln_id": "V-246922",
       "rule_id": "V-246922_automatestig_check",
       "classification": "automated",
-      "reason": "Every CLI session-limit row must have max-active-limit exactly 1",
+      "reason": "Every CLI session-limit row must have max-active-limit exactly 3",
       "check_pack": "netapp_ontap9",
       "check_id": "V-246922",
       "evidence_required": true,
@@ -119,14 +119,12 @@
     {
       "vuln_id": "V-246940",
       "rule_id": "V-246940_automatestig_check",
-      "classification": "automated",
-      "reason": "An external authentication server (domain) must provide administrator authentication",
-      "check_pack": "netapp_ontap9",
-      "check_id": "V-246940",
+      "classification": "manual",
+      "reason": "V2R4 permits domain, publickey, or SAML; the prior domain-only query could report a false finding when another approved MFA method is configured.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/netapp_ontap9.json",
-        "cargo test --workspace"
+        "docs/ontap-collection.md",
+        "crates/core/src/check_packs.rs"
       ]
     },
     {

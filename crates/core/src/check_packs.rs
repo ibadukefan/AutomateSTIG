@@ -8,12 +8,25 @@ use std::collections::HashSet;
 use std::path::Path;
 
 use crate::checks::{Check, CheckDefinition, CheckPack, CheckPlatform};
-use crate::library::StigLibrary;
+use crate::library::{StigLibrary, TrustedExecutableFile};
+use crate::models::stig::StigBenchmark;
 
 #[derive(rust_embed::Embed)]
 #[folder = "../../content/check_packs"]
 #[include = "*.json"]
 struct EmbeddedCheckPacks;
+
+pub(crate) fn embedded_check_pack_paths() -> Vec<String> {
+    let mut paths: Vec<_> = EmbeddedCheckPacks::iter()
+        .map(|path| path.into_owned())
+        .collect();
+    paths.sort();
+    paths
+}
+
+pub(crate) fn embedded_check_pack_bytes(path: &str) -> Option<Vec<u8>> {
+    EmbeddedCheckPacks::get(path).map(|content| content.data.into_owned())
+}
 
 fn append_canonical_json(value: &serde_json::Value, output: &mut String) -> serde_json::Result<()> {
     match value {
@@ -72,6 +85,32 @@ struct EvaluationPlanBinding<'a> {
     organization_policy_sha256: Option<&'a str>,
 }
 
+#[derive(Serialize)]
+struct EvaluationPlanWithAnswerFileBinding<'a> {
+    stig_id: &'a str,
+    stig_release: &'a str,
+    benchmark_sha256: &'a str,
+    check_pack_sha256: &'a str,
+    organization_policy_sha256: Option<&'a str>,
+    answer_file_sha256: &'a str,
+}
+
+#[derive(Serialize)]
+struct EvaluationPlanAnswerFileBinding<'a> {
+    id: &'a str,
+    sha256: &'a str,
+}
+
+#[derive(Serialize)]
+struct EvaluationPlanWithAnswerFilesBinding<'a> {
+    stig_id: &'a str,
+    stig_release: &'a str,
+    benchmark_sha256: &'a str,
+    check_pack_sha256: &'a str,
+    organization_policy_sha256: Option<&'a str>,
+    answer_files: Vec<EvaluationPlanAnswerFileBinding<'a>>,
+}
+
 /// Bind every effective input which can change an automated determination.
 pub fn evaluation_plan_sha256(
     stig_id: &str,
@@ -87,6 +126,78 @@ pub fn evaluation_plan_sha256(
         check_pack_sha256,
         organization_policy_sha256,
     })
+}
+
+/// Bind an answer file in addition to every automated-evaluation input. This
+/// is a separate schema rather than an optional field on the original binding
+/// so previously persisted evaluation-plan digests remain verifiable.
+pub fn evaluation_plan_sha256_with_answer_file(
+    stig_id: &str,
+    stig_release: &str,
+    benchmark_sha256: &str,
+    check_pack_sha256: &str,
+    organization_policy_sha256: Option<&str>,
+    answer_file_sha256: &str,
+) -> crate::Result<String> {
+    canonical_json_sha256(&EvaluationPlanWithAnswerFileBinding {
+        stig_id,
+        stig_release,
+        benchmark_sha256,
+        check_pack_sha256,
+        organization_policy_sha256,
+        answer_file_sha256,
+    })
+}
+
+/// Bind an ordered set of answer files in addition to every automated input.
+///
+/// Both each library-local identifier and canonical content digest participate
+/// in the plan. Array order is intentionally retained because repeated CLI
+/// `--answer` arguments are applied in user-supplied order.
+pub fn evaluation_plan_sha256_with_answer_files(
+    stig_id: &str,
+    stig_release: &str,
+    benchmark_sha256: &str,
+    check_pack_sha256: &str,
+    organization_policy_sha256: Option<&str>,
+    answer_files: &[(&str, &str)],
+) -> crate::Result<String> {
+    let answer_files = answer_files
+        .iter()
+        .map(|(id, sha256)| EvaluationPlanAnswerFileBinding { id, sha256 })
+        .collect();
+    canonical_json_sha256(&EvaluationPlanWithAnswerFilesBinding {
+        stig_id,
+        stig_release,
+        benchmark_sha256,
+        check_pack_sha256,
+        organization_policy_sha256,
+        answer_files,
+    })
+}
+
+/// Return effective check-pack vulnerability IDs that have no exact rule in
+/// the installed benchmark. Extra benchmark rules are allowed; executable
+/// checks without a benchmark finding target are not.
+pub fn check_pack_vuln_ids_missing_from_benchmark(
+    benchmark: &StigBenchmark,
+    check_packs: &[CheckPack],
+) -> Vec<String> {
+    let benchmark_vuln_ids: HashSet<_> = benchmark
+        .rules
+        .iter()
+        .map(|rule| rule.vuln_id.as_str())
+        .collect();
+    let mut missing: Vec<_> = check_packs
+        .iter()
+        .flat_map(|pack| pack.checks.iter())
+        .map(|definition| definition.vuln_id.as_str())
+        .filter(|vuln_id| !benchmark_vuln_ids.contains(vuln_id))
+        .map(str::to_owned)
+        .collect();
+    missing.sort();
+    missing.dedup();
+    missing
 }
 
 #[derive(Debug, Default)]
@@ -150,7 +261,17 @@ impl CheckPackRegistry {
         trusted_public_keys: &[[u8; 32]],
     ) -> crate::Result<usize> {
         let files = library.load_trusted_executable_files(directory, trusted_public_keys)?;
-        for file in &files {
+        self.load_from_verified_library_files(&files, base_priority)
+    }
+
+    /// Parse executable files whose signed provenance and bytes were already
+    /// verified by the library while holding its transaction lock.
+    pub(crate) fn load_from_verified_library_files(
+        &mut self,
+        files: &[TrustedExecutableFile],
+        base_priority: i32,
+    ) -> crate::Result<usize> {
+        for file in files {
             let content = std::str::from_utf8(&file.bytes).map_err(|error| {
                 crate::Error::Other(format!(
                     "trusted check pack {} is not UTF-8: {error}",
@@ -327,10 +448,63 @@ fn validate_typed_check_identity(
     check: &Check,
     top_level: bool,
 ) -> Result<(), String> {
-    let expected_vuln_id = match check {
-        Check::CiscoVtySessionLimit => Some("V-215807"),
-        Check::CiscoLoggingBufferCapacity => Some("V-215836"),
-        Check::CiscoLoggingTrapSeverity => Some("V-215837"),
+    let expected = match check {
+        Check::BsdAuditClassSelection { classes } => {
+            let required: &[&str] =
+                match vuln_id {
+                    "V-203767" => &["lo"],
+                    "V-203621" => &["aa"],
+                    "V-203774" => &["ad"],
+                    "V-203772" => &["fr", "fw", "fa", "fm", "fc", "fd"],
+                    _ => return Err(
+                        "bsd_audit_class_selection is reserved for the reviewed GPOS audit rules"
+                            .to_string(),
+                    ),
+                };
+            if classes.len() != required.len()
+                || !required.iter().all(|class| {
+                    classes
+                        .iter()
+                        .filter(|candidate| candidate.as_str() == *class)
+                        .count()
+                        == 1
+                })
+            {
+                return Err(format!(
+                    "bsd_audit_class_selection for {vuln_id} requires exactly {required:?}"
+                ));
+            }
+            Some((vuln_id, "bsd_audit_class_selection"))
+        }
+        Check::BsdPfEnabled => Some(("V-203784", "bsd_pf_enabled")),
+        Check::CiscoVtySessionLimit => Some(("V-215807", "cisco_vty_session_limit")),
+        Check::CiscoLoginBlockFor => Some(("V-215813", "cisco_login_block_for")),
+        Check::CiscoInterfaceAclDenyLogInput => {
+            Some(("V-215818", "cisco_interface_acl_deny_log_input"))
+        }
+        Check::CiscoPersistentAuditModificationProtection => {
+            Some(("V-215820", "cisco_persistent_audit_modification_protection"))
+        }
+        Check::CiscoPersistentAuditDeletionProtection => {
+            Some(("V-215821", "cisco_persistent_audit_deletion_protection"))
+        }
+        Check::CiscoFileSystemPrivilege => Some(("V-215822", "cisco_file_system_privilege")),
+        Check::CiscoSingleLocalFallbackAccount => {
+            Some(("V-215824", "cisco_single_local_fallback_account"))
+        }
+        Check::CiscoPasswordMinimumLength => Some(("V-215826", "cisco_password_minimum_length")),
+        Check::CiscoManagementIdleTimeout => Some(("V-215833", "cisco_management_idle_timeout")),
+        Check::CiscoLoggingBufferCapacity => Some(("V-215836", "cisco_logging_buffer_capacity")),
+        Check::CiscoLoggingTrapSeverity => Some(("V-215837", "cisco_logging_trap_severity")),
+        Check::CiscoRedundantAuthoritativeNtpSources => {
+            Some(("V-215838", "cisco_redundant_authoritative_ntp_sources"))
+        }
+        Check::CiscoNtpAuthentication => Some(("V-215843", "cisco_ntp_authentication")),
+        Check::CiscoSshMacAlgorithms => Some(("V-215844", "cisco_ssh_mac_algorithms")),
+        Check::CiscoSshEncryptionAlgorithms => {
+            Some(("V-215845", "cisco_ssh_encryption_algorithms"))
+        }
+        Check::CiscoSyslogServerCount => Some(("V-220139", "cisco_syslog_server_count")),
         Check::All { checks } | Check::Any { checks } => {
             for nested in checks {
                 validate_typed_check_identity(vuln_id, nested, false)?;
@@ -339,21 +513,12 @@ fn validate_typed_check_identity(
         }
         _ => None,
     };
-    if let Some(expected_vuln_id) = expected_vuln_id {
+    if let Some((expected_vuln_id, check_name)) = expected {
         if !top_level {
-            return Err("typed Cisco checks must be top-level definitions".to_string());
+            return Err("typed checks must be top-level definitions".to_string());
         }
         if vuln_id != expected_vuln_id {
-            return Err(format!(
-                "{} is reserved for {}",
-                match check {
-                    Check::CiscoVtySessionLimit => "cisco_vty_session_limit",
-                    Check::CiscoLoggingBufferCapacity => "cisco_logging_buffer_capacity",
-                    Check::CiscoLoggingTrapSeverity => "cisco_logging_trap_severity",
-                    _ => unreachable!("typed check matched above"),
-                },
-                expected_vuln_id
-            ));
+            return Err(format!("{check_name} is reserved for {expected_vuln_id}"));
         }
     }
     Ok(())
@@ -361,7 +526,7 @@ fn validate_typed_check_identity(
 
 fn supported_pack_contract(stig_id: &str) -> Option<(CheckPlatform, &'static str)> {
     match stig_id {
-        "NetApp_ONTAP_DSC_9-x_STIG" => Some((CheckPlatform::Ontap, "V2R2")),
+        "NetApp_ONTAP_DSC_9-x_STIG" => Some((CheckPlatform::Ontap, "V2R4")),
         "General_Purpose_Operating_System" => Some((CheckPlatform::Bsd, "V3R3")),
         "Cisco_IOS-XE_Router_NDM_STIG" => Some((CheckPlatform::CiscoIos, "V3R7")),
         _ => None,
@@ -438,16 +603,50 @@ fn validate_check_capabilities(platform: CheckPlatform, check: &Check) -> Result
         Check::ConfigLine { .. } => {
             Err("configuration-line checks are supported only for Cisco IOS-XE".to_string())
         }
+        Check::BsdAuditClassSelection { .. } | Check::BsdPfEnabled
+            if platform == CheckPlatform::Bsd =>
+        {
+            Ok(())
+        }
+        Check::BsdAuditClassSelection { .. } | Check::BsdPfEnabled => {
+            Err("typed FreeBSD checks are supported only for FreeBSD".to_string())
+        }
         Check::CiscoVtySessionLimit
+        | Check::CiscoLoginBlockFor
+        | Check::CiscoInterfaceAclDenyLogInput
+        | Check::CiscoPersistentAuditModificationProtection
+        | Check::CiscoPersistentAuditDeletionProtection
+        | Check::CiscoFileSystemPrivilege
+        | Check::CiscoSingleLocalFallbackAccount
+        | Check::CiscoPasswordMinimumLength
+        | Check::CiscoManagementIdleTimeout
         | Check::CiscoLoggingBufferCapacity
         | Check::CiscoLoggingTrapSeverity
+        | Check::CiscoRedundantAuthoritativeNtpSources
+        | Check::CiscoNtpAuthentication
+        | Check::CiscoSshMacAlgorithms
+        | Check::CiscoSshEncryptionAlgorithms
+        | Check::CiscoSyslogServerCount
             if platform == CheckPlatform::CiscoIos =>
         {
             Ok(())
         }
         Check::CiscoVtySessionLimit
+        | Check::CiscoLoginBlockFor
+        | Check::CiscoInterfaceAclDenyLogInput
+        | Check::CiscoPersistentAuditModificationProtection
+        | Check::CiscoPersistentAuditDeletionProtection
+        | Check::CiscoFileSystemPrivilege
+        | Check::CiscoSingleLocalFallbackAccount
+        | Check::CiscoPasswordMinimumLength
+        | Check::CiscoManagementIdleTimeout
         | Check::CiscoLoggingBufferCapacity
-        | Check::CiscoLoggingTrapSeverity => {
+        | Check::CiscoLoggingTrapSeverity
+        | Check::CiscoRedundantAuthoritativeNtpSources
+        | Check::CiscoNtpAuthentication
+        | Check::CiscoSshMacAlgorithms
+        | Check::CiscoSshEncryptionAlgorithms
+        | Check::CiscoSyslogServerCount => {
             Err("typed Cisco checks are supported only for Cisco IOS-XE".to_string())
         }
         Check::All { checks } | Check::Any { checks } => {
@@ -508,7 +707,6 @@ const APPROVED_ONTAP_COMMANDS: &[&str] = &[
     "security login role config show -role admin -fields passwd-min-special-chars",
     "security login role config show -role admin -fields passwd-min-uppercase-chars",
     "security login role config show -role admin -fields passwd-minlength",
-    "security login show -authentication-method domain",
     "security login show -role admin -authentication-method domain",
     "security login show -role admin -authentication-method password",
     "security session limit show -interface cli",
@@ -517,9 +715,12 @@ const APPROVED_ONTAP_COMMANDS: &[&str] = &[
 ];
 
 const APPROVED_FREEBSD_COMMANDS: &[&str] = &[
-    "cat /var/db/zoneinfo",
+    "cat /etc/security/audit_control",
+    "cat /etc/security/audit_user",
     "service auditd onestatus",
-    "sysctl kern.elf64.aslr.enable",
+    "service pf onestatus",
+    "sha256 -q /etc/security/audit_class",
+    "sha256 -q /etc/security/audit_event",
 ];
 
 #[cfg(test)]
@@ -569,12 +770,12 @@ mod tests {
                 vuln_id: "V-1".to_string(),
                 platform: CheckPlatform::Bsd,
                 check: Check::Command {
-                    command: "sysctl kern.elf64.aslr.enable".to_string(),
+                    command: "service auditd onestatus".to_string(),
                     pattern: None,
                     is_regex: false,
                 },
                 expected: ExpectedResult::Matches {
-                    pattern: r"(?m)^kern\.elf64\.aslr\.enable:\s*1\s*$".to_string(),
+                    pattern: r"(?i)\bauditd\s+is\s+running\b".to_string(),
                 },
                 description: None,
             }],
@@ -600,7 +801,7 @@ mod tests {
         let pack = CheckPack {
             stig_id: "NetApp_ONTAP_DSC_9-x_STIG".to_string(),
             platform: CheckPlatform::Ontap,
-            version: "V2R2".to_string(),
+            version: "V2R4".to_string(),
             priority: 100,
             checks: vec![CheckDefinition {
                 vuln_id: "V-246923".to_string(),
@@ -649,7 +850,7 @@ mod tests {
         let pack = CheckPack {
             stig_id: "NetApp_ONTAP_DSC_9-x_STIG".to_string(),
             platform: CheckPlatform::Bsd,
-            version: "V2R2".to_string(),
+            version: "V2R4".to_string(),
             priority: 100,
             checks: vec![CheckDefinition {
                 vuln_id: "V-WRONG".to_string(),
@@ -699,7 +900,6 @@ mod tests {
             "cat /etc/ntp.conf",
             "cat /etc/pam.d/passwd",
             "cat /etc/rc.conf",
-            "cat /etc/security/audit_control",
             "cat /etc/ssh/sshd_config",
             "freebsd-version -k",
             "cat /etc/master.passwd",
@@ -717,9 +917,23 @@ mod tests {
         ] {
             assert!(validate_read_only_command(CheckPlatform::Ontap, command).is_err());
         }
-        assert!(
-            validate_read_only_command(CheckPlatform::Bsd, "sysctl kern.elf64.aslr.enable").is_ok()
-        );
+        for command in [
+            "service auditd onestatus",
+            "cat /etc/security/audit_control",
+            "cat /etc/security/audit_user",
+            "sha256 -q /etc/security/audit_class",
+            "sha256 -q /etc/security/audit_event",
+            "service pf onestatus",
+        ] {
+            assert!(validate_read_only_command(CheckPlatform::Bsd, command).is_ok());
+        }
+        for retired in [
+            "ntpq -pn",
+            "cat /var/db/zoneinfo",
+            "sysctl kern.elf64.aslr.enable",
+        ] {
+            assert!(validate_read_only_command(CheckPlatform::Bsd, retired).is_err());
+        }
         assert!(validate_read_only_command(
             CheckPlatform::Ontap,
             "security login role config show -role admin -fields passwd-minlength"
@@ -732,12 +946,12 @@ mod tests {
         let mut registry = CheckPackRegistry::new();
         registry.load_embedded().unwrap();
         let pack = registry
-            .check_packs_for_stig_release("NetApp_ONTAP_DSC_9-x_STIG", "V2R2")
+            .check_packs_for_stig_release("NetApp_ONTAP_DSC_9-x_STIG", "V2R4")
             .into_iter()
             .next()
             .unwrap();
         for vuln_id in [
-            "V-246925", "V-246931", "V-246932", "V-246938", "V-246944", "V-246948",
+            "V-246925", "V-246931", "V-246932", "V-246938", "V-246940", "V-246944", "V-246948",
         ] {
             assert!(
                 pack.checks.iter().all(|check| check.vuln_id != vuln_id),
@@ -746,6 +960,7 @@ mod tests {
         }
         for command in [
             "cluster date show",
+            "security login show -authentication-method domain",
             "security login banner show",
             "security login role config show -role admin -instance",
             "system configuration backup show",
@@ -778,12 +993,12 @@ mod tests {
                 vuln_id: "V-1".to_string(),
                 platform: CheckPlatform::Ontap,
                 check: Check::Command {
-                    command: "sysctl kern.elf64.aslr.enable".to_string(),
+                    command: "service auditd onestatus".to_string(),
                     pattern: None,
                     is_regex: false,
                 },
                 expected: ExpectedResult::Matches {
-                    pattern: r"(?m)^kern\.elf64\.aslr\.enable:\s*1\s*$".to_string(),
+                    pattern: r"(?i)\bauditd\s+is\s+running\b".to_string(),
                 },
                 description: None,
             }],
@@ -801,12 +1016,12 @@ mod tests {
             vuln_id: "V-TEST".to_string(),
             platform: CheckPlatform::Bsd,
             check: Check::Command {
-                command: "sysctl kern.elf64.aslr.enable".to_string(),
+                command: "service auditd onestatus".to_string(),
                 pattern: None,
                 is_regex: false,
             },
             expected: ExpectedResult::Matches {
-                pattern: r"(?m)^kern\.elf64\.aslr\.enable:\s*1\s*$".to_string(),
+                pattern: r"(?i)\bauditd\s+is\s+running\b".to_string(),
             },
             description: None,
         };
@@ -925,7 +1140,7 @@ mod tests {
         let mut registry = CheckPackRegistry::new();
         registry.load_embedded().unwrap();
         assert!(!registry
-            .check_packs_for_stig_release("NetApp_ONTAP_DSC_9-x_STIG", "V2R2")
+            .check_packs_for_stig_release("NetApp_ONTAP_DSC_9-x_STIG", "V2R4")
             .is_empty());
         assert!(registry
             .check_packs_for_stig_release("NetApp_ONTAP_DSC_9-x_STIG", "V2R3")

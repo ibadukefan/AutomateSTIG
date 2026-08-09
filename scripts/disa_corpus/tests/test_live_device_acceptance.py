@@ -153,7 +153,7 @@ class LiveDecisionOracleTests(unittest.TestCase):
             "name": "ONTAP",
             "slug": "ontap",
             "stig": "NetApp_ONTAP_DSC_9-x_STIG",
-            "stig_release": "V2R2",
+            "stig_release": "V2R4",
             "mode": "ssh",
         }
         fingerprint = "SHA256:" + ("A" * 43)

@@ -21,7 +21,10 @@ AutomateSTIG is safest as a localhost desktop/offline evaluator. Connected mode 
 ## Current product posture
 
 Current scope is deterministic collection and evaluation for NetApp ONTAP 9
-and FreeBSD over SSH, plus Cisco IOS-XE Router NDM running configurations,
-with results exported or pushed to STIG Manager. The exact supported-target
-contract is `content/supported-targets.json`; AutomateSTIG does not claim to be
-a general-purpose host scanner or Evaluate-STIG replacement.
+and FreeBSD over SSH, plus Cisco IOS-XE Router NDM running configurations.
+Changed scanner reviews move through a verified sparse handoff to an existing
+exact STIG Manager assignment; the connected API directly records only an
+exact remote no-op verification. The exact supported-target contract is
+`content/supported-targets.json`; AutomateSTIG supplements STIG Manager and
+does not claim to be a general-purpose host scanner or Evaluate-STIG
+replacement.

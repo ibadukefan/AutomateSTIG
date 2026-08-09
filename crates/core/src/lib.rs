@@ -25,5 +25,9 @@ pub mod network_policy;
 pub mod organization_policy;
 pub mod path_safety;
 pub mod remote;
+pub mod scanner_benchmarks;
+pub mod scanner_profiles;
+pub mod target_adapters;
+pub mod xccdf_results;
 
 pub use error::{Error, Result};

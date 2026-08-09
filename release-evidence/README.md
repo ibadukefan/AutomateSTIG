@@ -35,12 +35,15 @@ from the author, with `approved_commit` equal to that PR's merge commit on
 result is not release-eligible.
 
 The device-gate `version` values are exact benchmark releases: ONTAP is
-`V2R2`, FreeBSD is `V3R3`, and Cisco IOS-XE Router NDM is `V3R7`. The STIG
+`V2R4`, FreeBSD is `V3R3`, and Cisco IOS-XE Router NDM is `V3R7`. The STIG
 Viewer gate records the tested product version and uses its platform as the
 environment. The STIG Manager gate records the tested product version and the
-same staging-environment descriptor as its artifact. The recovery gate uses
-`v1` and its protected artifact contains both the JSON result and the complete
-log bound by `output_sha256`.
+same staging-environment descriptor as its artifact. It must exercise the
+verified sparse selected-run handoff into an existing exact assignment and
+prove that AutomateSTIG made no asset, assignment, or direct changed-review
+write. An exact remote no-op may be verified separately. The recovery gate
+uses `v1` and its protected artifact contains both the JSON result and the
+complete log bound by `output_sha256`.
 
 Do not invent a pass, reviewer, fingerprint, or evidence digest. ONTAP,
 FreeBSD, Cisco IOS-XE, STIG Viewer, STIG Manager, and recovery must all have

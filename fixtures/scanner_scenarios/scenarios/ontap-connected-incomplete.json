@@ -1,0 +1,46 @@
+{
+  "schema": "automatestig-scanner-scenario/v1",
+  "id": "ontap-connected-incomplete",
+  "actors": ["cybersecurity_analyst"],
+  "mode": "connected",
+  "target": {
+    "profile_id": "netapp_ontap9",
+    "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
+    "stig_release": "V2R4",
+    "hostname": "ontap-transport-failure",
+    "software_version": "9.15.1P2"
+  },
+  "input": {
+    "kind": "evidence_v2",
+    "path": "../ontap/ontap_evidence_transport_failure.json",
+    "sha256": "b19255e67f7e9c89f9cbe7b3c227c975877aeca41c5197fd5121e8e276883a4c"
+  },
+  "destination": {
+    "inventory_path": "stig_manager/inventory.json",
+    "collection_id": 7001,
+    "asset_id": 7103,
+    "assignment_id": "assignment-ontap-v2r4-incomplete"
+  },
+  "remote_state": "stig_manager/empty-reviews.json",
+  "delivery_attempts": [],
+  "receipt": null,
+  "expected": {
+    "evaluation": "incomplete",
+    "collection_complete": false,
+    "automated_results": 0,
+    "manual_untouched": 7,
+    "out_of_scope_untouched": 7,
+    "run_state": "incomplete",
+    "delivery_state": "none",
+    "creates": 0,
+    "updates": 0,
+    "unchanged": 0,
+    "conflicts": 0,
+    "review_write_count": 0,
+    "handoff": false
+  },
+  "notes": [
+    "A transport diagnostic is not evaluation evidence.",
+    "The incomplete run is retained for diagnosis but cannot be delivered."
+  ]
+}

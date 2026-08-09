@@ -1,17 +1,21 @@
 use std::collections::{HashMap, HashSet};
 
-use automatestig_core::checks::executor::execute_check_pack;
+use automatestig_core::checks::executor::{execute_check, execute_check_pack};
 use automatestig_core::checks::{CheckPack, SystemData};
 use automatestig_core::models::finding::FindingStatus;
 use automatestig_core::remote::generate_collection_plan;
+use automatestig_parsers::evidence::{assemble_for_plan, parse_evidence, LegacyEvidencePolicy};
 
-const RETAINED_IDS: [&str; 3] = ["V-203615", "V-203714", "V-203754"];
+const AUTOMATED_IDS: [&str; 6] = [
+    "V-203767", "V-203621", "V-203774", "V-203772", "V-203615", "V-203784",
+];
 
-const REMOVED_IDS: [&str; 27] = [
+const ADDED_IDS: [&str; 5] = ["V-203767", "V-203621", "V-203774", "V-203772", "V-203784"];
+
+const MANUAL_IDS: [&str; 24] = [
     "V-278977", "V-203595", "V-203665", "V-203597", "V-203683", "V-203594", "V-203625", "V-203626",
     "V-203627", "V-203676", "V-203634", "V-203632", "V-203630", "V-203669", "V-203736", "V-203737",
-    "V-203645", "V-203646", "V-203767", "V-203621", "V-203774", "V-203772", "V-203700", "V-203777",
-    "V-203711", "V-203712", "V-203784",
+    "V-203645", "V-203646", "V-203700", "V-203777", "V-203711", "V-203712", "V-203714", "V-203754",
 ];
 
 fn pack() -> CheckPack {
@@ -39,20 +43,36 @@ fn outputs(entries: &[(&str, &str)]) -> SystemData {
     }
 }
 
+fn fixture_data(raw: &str) -> SystemData {
+    let pack = pack();
+    let plan = generate_collection_plan(pack.platform, &pack.checks).unwrap();
+    let transcript = parse_evidence(raw, LegacyEvidencePolicy::Reject).unwrap();
+    assemble_for_plan(&transcript, &plan).unwrap()
+}
+
+fn status_for(pack: &CheckPack, data: &SystemData, vuln_id: &str) -> FindingStatus {
+    let definition = pack
+        .checks
+        .iter()
+        .find(|definition| definition.vuln_id == vuln_id)
+        .unwrap();
+    execute_check(definition, data).to_finding_status()
+}
+
 #[test]
-fn freebsd_pack_contains_only_direct_effective_state_checks() {
+fn freebsd_pack_contains_the_reviewed_effective_state_checks() {
     let pack = pack();
     let ids = pack
         .checks
         .iter()
         .map(|definition| definition.vuln_id.as_str())
         .collect::<HashSet<_>>();
-    assert_eq!(ids, HashSet::from(RETAINED_IDS));
+    assert_eq!(ids, HashSet::from(AUTOMATED_IDS));
 
-    for vuln_id in REMOVED_IDS {
+    for vuln_id in MANUAL_IDS {
         assert!(
             !ids.contains(vuln_id),
-            "{vuln_id} must remain manual until its effective semantics can be collected"
+            "{vuln_id} must remain manual until its complete semantics can be collected"
         );
     }
 
@@ -66,8 +86,11 @@ fn freebsd_pack_contains_only_direct_effective_state_checks() {
         commands,
         HashSet::from([
             "service auditd onestatus",
-            "cat /var/db/zoneinfo",
-            "sysctl kern.elf64.aslr.enable",
+            "cat /etc/security/audit_control",
+            "cat /etc/security/audit_user",
+            "sha256 -q /etc/security/audit_class",
+            "sha256 -q /etc/security/audit_event",
+            "service pf onestatus",
         ])
     );
 }
@@ -93,7 +116,7 @@ fn coverage_preserves_the_reviewed_inventory_and_manual_boundary() {
             .collect::<HashSet<_>>()
     };
     assert_eq!(classified("automated"), pack_ids);
-    assert_eq!(classified("manual"), HashSet::from(REMOVED_IDS));
+    assert_eq!(classified("manual"), HashSet::from(MANUAL_IDS));
 
     for rule in rules
         .iter()
@@ -109,130 +132,151 @@ fn coverage_preserves_the_reviewed_inventory_and_manual_boundary() {
 }
 
 #[test]
-fn known_configuration_counterexamples_cannot_be_automated_passes() {
-    // These are the exact false-pass shapes which motivated removing raw-file
-    // heuristics. They intentionally include conflicting first/effective
-    // directives, disabled PAM enforcement, audit prefixes, and an unbound
-    // banner. Keeping the text here makes any future re-automation confront
-    // the complete adversarial corpus instead of reintroducing a line regex.
-    let data = outputs(&[
-        ("freebsd-version -k", "13.4-RELEASE-p9"),
-        (
-            "cat /etc/ssh/sshd_config",
-            "Banner none\nBanner /etc/issue\nBanner /etc/empty\n\
-             MaxSessions 100\nMaxSessions 10\n\
-             ClientAliveInterval 1200\nClientAliveInterval 600\n\
-             ClientAliveCountMax 100\n\
-             Ciphers 3des-cbc\nCiphers aes256-ctr\n\
-             MACs hmac-md5\nMACs hmac-sha2-256\n\
-             Include /usr/local/etc/ssh/sshd_config.d/*.conf\n\
-             Match User example\nProtocol 2",
-        ),
-        (
-            "cat /etc/rc.conf",
-            "blacklistd_enable=YES\nblacklistd_enable=NO\n\
-             auditdistd_enable=YES\nauditdistd_enable=NO\n\
-             ntpd_enable=YES\nntpd_enable=NO\n\
-             pf_enable=YES\npf_enable=NO\ntelnetd_enable=YES",
-        ),
-        (
-            "cat /etc/pam.d/passwd",
-            "password sufficient pam_unix.so\n\
-             password optional pam_passwdqc.so \
-             min=disabled,disabled,disabled,disabled,15 enforce=none",
-        ),
-        (
-            "cat /etc/security/audit_control",
-            "flags:-lo,+aa,-ad,+fr\nexpire-after:14d",
-        ),
-        (
-            "cat /etc/login.conf",
-            "default:\\\n  :passwordtime=90d:\nunused:\\\n  :passwordtime=60d:",
-        ),
-        (
-            "cat /etc/motd.template /etc/motd",
-            "You are accessing a U.S. Government (USG) Information System",
-        ),
-        ("cat /etc/ntp.conf", "server not-authoritative.invalid"),
-        ("service auditd onestatus", "auditd is not running."),
-        ("cat /var/db/zoneinfo", "Etc/GMT+5"),
-        (
-            "sysctl kern.elf64.aslr.enable",
-            "kern.elf64.aslr.enable: 0\nkern.elf64.aslr.enable: 1",
-        ),
-    ]);
-
-    let results = execute_check_pack(&pack(), &data);
-    assert_eq!(results.len(), RETAINED_IDS.len());
-    assert!(results
-        .iter()
-        .all(|result| result.to_finding_status() == FindingStatus::Open));
-    for vuln_id in REMOVED_IDS {
-        assert!(
-            results.iter().all(|result| result.vuln_id != vuln_id),
-            "removed heuristic {vuln_id} must not produce NotAFinding"
-        );
-    }
-}
-
-#[test]
-fn exact_effective_state_evidence_can_pass_the_retained_checks() {
-    let data = outputs(&[
-        ("service auditd onestatus", "auditd is running as pid 812."),
-        ("cat /var/db/zoneinfo", "Etc/UTC\n"),
-        (
-            "sysctl kern.elf64.aslr.enable",
-            "kern.elf64.aslr.enable: 1\n",
-        ),
-    ]);
-    let results = execute_check_pack(&pack(), &data);
-    assert_eq!(results.len(), RETAINED_IDS.len());
-    assert!(results
-        .iter()
-        .all(|result| result.to_finding_status() == FindingStatus::NotAFinding));
-}
-
-#[test]
-fn retained_patterns_reject_ambiguous_or_embedded_success_text() {
+fn every_added_rule_has_compliant_finding_transport_and_truncation_coverage() {
+    let pack = pack();
     let cases = [
         (
-            "service auditd onestatus",
-            "auditd is running? no",
-            "cat /var/db/zoneinfo",
-            "UTC",
-            "sysctl kern.elf64.aslr.enable",
-            "kern.elf64.aslr.enable: 1",
+            "compliant",
+            fixture_data(include_str!(
+                "../../../fixtures/bsd/bsd_evidence_compliant.json"
+            )),
+            FindingStatus::NotAFinding,
         ),
         (
-            "service auditd onestatus",
-            "auditd is running as pid 0.",
-            "cat /var/db/zoneinfo",
-            "America/UTCville",
-            "sysctl kern.elf64.aslr.enable",
-            "kern.elf64.aslr.enable: 1",
+            "finding",
+            fixture_data(include_str!(
+                "../../../fixtures/bsd/bsd_evidence_findings.json"
+            )),
+            FindingStatus::Open,
         ),
         (
-            "service auditd onestatus",
-            "auditd is running.",
-            "cat /var/db/zoneinfo",
-            "UTC",
-            "sysctl kern.elf64.aslr.enable",
-            "warning\nkern.elf64.aslr.enable: 1",
+            "transport",
+            fixture_data(include_str!(
+                "../../../fixtures/bsd/bsd_evidence_transport_failure.json"
+            )),
+            FindingStatus::NotReviewed,
+        ),
+        (
+            "truncation",
+            fixture_data(include_str!(
+                "../../../fixtures/bsd/bsd_evidence_truncated.json"
+            )),
+            FindingStatus::NotReviewed,
         ),
     ];
 
-    for (service_cmd, service, zone_cmd, zone, sysctl_cmd, sysctl) in cases {
-        let data = outputs(&[
-            (service_cmd, service),
-            (zone_cmd, zone),
-            (sysctl_cmd, sysctl),
-        ]);
-        let results = execute_check_pack(&pack(), &data);
-        assert!(
-            results
-                .iter()
-                .any(|result| result.to_finding_status() == FindingStatus::Open),
-            "at least one deliberately ambiguous effective-state value must fail"
+    for vuln_id in ADDED_IDS {
+        for (scenario, data, expected) in &cases {
+            assert_eq!(
+                status_for(&pack, data, vuln_id),
+                *expected,
+                "{vuln_id} did not produce {expected:?} for {scenario} evidence"
+            );
+        }
+    }
+}
+
+#[test]
+fn missing_or_ambiguous_added_rule_evidence_fails_closed() {
+    let pack = pack();
+    for vuln_id in ADDED_IDS {
+        assert_eq!(
+            status_for(&pack, &SystemData::default(), vuln_id),
+            FindingStatus::NotReviewed,
+            "{vuln_id} accepted missing evidence"
         );
     }
+
+    let ambiguous_audit = outputs(&[
+        (
+            "sha256 -q /etc/security/audit_class",
+            "834a1fde758a45269874a5c0655046ca7354a7afa3cf9aee8d29bbfe5d8ab2fd",
+        ),
+        (
+            "sha256 -q /etc/security/audit_event",
+            "124c60b738ec9eb36e497213fded40a7ed9023dc7854258f9c17d5cbcfffcff2",
+        ),
+        ("service auditd onestatus", "auditd is running as pid 123."),
+        (
+            "cat /etc/security/audit_control",
+            "flags:all\nflags:all\nnaflags:all",
+        ),
+        ("cat /etc/security/audit_user", "# none"),
+    ]);
+    for vuln_id in &ADDED_IDS[..4] {
+        assert_eq!(
+            status_for(&pack, &ambiguous_audit, vuln_id),
+            FindingStatus::NotReviewed,
+            "{vuln_id} accepted duplicate OpenBSM fields"
+        );
+    }
+
+    let unreviewed_mapping = outputs(&[
+        (
+            "sha256 -q /etc/security/audit_class",
+            "0000000000000000000000000000000000000000000000000000000000000000",
+        ),
+        (
+            "sha256 -q /etc/security/audit_event",
+            "124c60b738ec9eb36e497213fded40a7ed9023dc7854258f9c17d5cbcfffcff2",
+        ),
+        ("service auditd onestatus", "auditd is running as pid 123."),
+        ("cat /etc/security/audit_control", "flags:all\nnaflags:all"),
+        ("cat /etc/security/audit_user", "# none"),
+    ]);
+    for vuln_id in &ADDED_IDS[..4] {
+        assert_eq!(
+            status_for(&pack, &unreviewed_mapping, vuln_id),
+            FindingStatus::NotReviewed,
+            "{vuln_id} trusted an unreviewed OpenBSM class mapping"
+        );
+    }
+
+    let ambiguous_pf = outputs(&[("service pf onestatus", "Status: Enabled\nStatus: Disabled")]);
+    assert_eq!(
+        status_for(&pack, &ambiguous_pf, "V-203784"),
+        FindingStatus::NotReviewed
+    );
+}
+
+#[test]
+fn valid_counterexamples_are_findings_not_automated_passes() {
+    let data = outputs(&[
+        (
+            "sha256 -q /etc/security/audit_class",
+            "834a1fde758a45269874a5c0655046ca7354a7afa3cf9aee8d29bbfe5d8ab2fd",
+        ),
+        (
+            "sha256 -q /etc/security/audit_event",
+            "124c60b738ec9eb36e497213fded40a7ed9023dc7854258f9c17d5cbcfffcff2",
+        ),
+        ("service auditd onestatus", "auditd is not running."),
+        (
+            "cat /etc/security/audit_control",
+            "flags:+lo,+aa,+ad,+fr,+fw,+fa,+fm,+fc,+fd\nnaflags:-lo,-aa,-ad,-fr,-fw,-fa,-fm,-fc,-fd",
+        ),
+        ("cat /etc/security/audit_user", "root:no:lo,aa,ad"),
+        ("service pf onestatus", "Status: Disabled"),
+    ]);
+
+    let results = execute_check_pack(&pack(), &data);
+    assert_eq!(results.len(), AUTOMATED_IDS.len());
+    assert!(results
+        .iter()
+        .all(|result| result.to_finding_status() == FindingStatus::Open));
+    for vuln_id in MANUAL_IDS {
+        assert!(results.iter().all(|result| result.vuln_id != vuln_id));
+    }
+}
+
+#[test]
+fn compliant_fixture_passes_every_automated_rule() {
+    let data = fixture_data(include_str!(
+        "../../../fixtures/bsd/bsd_evidence_compliant.json"
+    ));
+    let results = execute_check_pack(&pack(), &data);
+    assert_eq!(results.len(), AUTOMATED_IDS.len());
+    assert!(results
+        .iter()
+        .all(|result| result.to_finding_status() == FindingStatus::NotAFinding));
 }

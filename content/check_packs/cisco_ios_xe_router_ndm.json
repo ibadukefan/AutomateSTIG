@@ -72,6 +72,18 @@
       "description": "Account removal audited via archive config change logging"
     },
     {
+      "vuln_id": "V-215813",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_login_block_for"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "Numeric login throttling allows no more than three attempts and locks access for at least 15 minutes"
+    },
+    {
       "vuln_id": "V-215815",
       "platform": "cisco_ios",
       "check": {
@@ -111,6 +123,18 @@
       "description": "Audit records carry date and time (service timestamps log datetime)"
     },
     {
+      "vuln_id": "V-215818",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_interface_acl_deny_log_input"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "Every deny entry in every IPv4 or IPv6 ACL bound to an interface includes log-input"
+    },
+    {
       "vuln_id": "V-215819",
       "platform": "cisco_ios",
       "check": {
@@ -125,18 +149,64 @@
       "description": "Full-text logging of configuration changes (archive log config)"
     },
     {
+      "vuln_id": "V-215820",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_persistent_audit_modification_protection"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^(compliant|not_applicable):"
+      },
+      "description": "When persistent logging is enabled, effective file-system privilege is the default or explicit level 15; otherwise the rule is NotApplicable"
+    },
+    {
+      "vuln_id": "V-215821",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_persistent_audit_deletion_protection"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^(compliant|not_applicable):"
+      },
+      "description": "When persistent logging is enabled, effective file-system privilege is the default or explicit level 15; otherwise the rule is NotApplicable"
+    },
+    {
       "vuln_id": "V-215822",
       "platform": "cisco_ios",
       "check": {
-        "type": "config_line",
-        "pattern": "file privilege",
-        "context": null,
-        "should_exist": false
+        "type": "cisco_file_system_privilege"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "File system privilege must remain at default 15 (no 'file privilege' override present)"
+      "description": "Effective file-system privilege is the IOS default or an explicit level 15; malformed, ambiguous, or lower levels fail"
+    },
+    {
+      "vuln_id": "V-215824",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_single_local_fallback_account"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "Exactly one Common-Criteria-bound local account is configured and every AAA login list uses it only after RADIUS or TACACS"
+    },
+    {
+      "vuln_id": "V-215826",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_password_minimum_length"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "Every configured Common Criteria password policy has one numeric minimum length of at least 15 characters"
     },
     {
       "vuln_id": "V-215827",
@@ -223,6 +293,18 @@
       "description": "Passwords stored only as cryptographic representations (service password-encryption)"
     },
     {
+      "vuln_id": "V-215833",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_management_idle_timeout"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "Every console, VTY, auxiliary, and enabled HTTP(S) management path terminates inactivity within five minutes"
+    },
+    {
       "vuln_id": "V-215834",
       "platform": "cisco_ios",
       "check": {
@@ -259,6 +341,54 @@
         "pattern": "^compliant:"
       },
       "description": "Effective logging trap severity includes critical audit failure events"
+    },
+    {
+      "vuln_id": "V-215838",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_redundant_authoritative_ntp_sources"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "At least two distinct configured NTP servers are present in the signed organization-policy authoritative-source allowlist"
+    },
+    {
+      "vuln_id": "V-215843",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_ntp_authentication"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "NTP authentication is enabled and every server key links to a trusted hmac-sha2-256 definition"
+    },
+    {
+      "vuln_id": "V-215844",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_ssh_mac_algorithms"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "SSH version 2 uses a complete allowlist containing only hmac-sha2-256 or hmac-sha2-512"
+    },
+    {
+      "vuln_id": "V-215845",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_ssh_encryption_algorithms"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "SSH version 2 uses a complete allowlist containing only reviewed AES CTR ciphers"
     },
     {
       "vuln_id": "V-215848",
@@ -312,6 +442,18 @@
         "type": "is_true"
       },
       "description": "Privileged activities logged via archive config change logging"
+    },
+    {
+      "vuln_id": "V-220139",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_syslog_server_count"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "At least two distinct modern or legacy remote syslog destinations are configured"
     }
   ]
 }

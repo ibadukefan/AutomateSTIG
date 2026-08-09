@@ -45,9 +45,20 @@ Review each CKL against what you know to be true about the device:
 - A rule you know is misconfigured showing **NotAFinding** → report immediately; false-pass patterns are treated as defects.
 - Rules in the documented manual-review sets showing **Not_Reviewed** is correct behavior.
 
+Interpret counts against the complete benchmark, not just the reviewed
+profile: ONTAP is 15 automated/7 manual/22 reviewed/29 full, FreeBSD is
+6/24/30/203, and Cisco is 33/9/42/42. Across all three profiles that is 54
+automated, 40 manual, 94 reviewed, and 274 full-benchmark rules. Rules outside
+the reviewed profile remain work for STIG Manager; they are not implicit
+passes or scanner results.
+
 ## Recording site conventions
 
-Where your site meets a requirement through a different-but-compliant mechanism (e.g., a stricter password minimum than the canonical pattern expects), record it with an [answer file](answer-files.md) rather than editing the check pack — answer files are versioned, auditable, and survive content updates.
+Do not edit a scanner result to encode site convention. Complete human
+determinations and supporting comments in STIG Manager. A scanner check may
+consume a typed, asset-bound, signed organization policy only when the profile
+explicitly declares an organization-defined parameter (currently the relevant
+Cisco controls); that policy is not a substitute for device evidence.
 
 ## Chain of Custody
 

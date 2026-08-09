@@ -1,7 +1,8 @@
 //! Application state shared across API handlers.
 
+use std::collections::HashMap;
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, Weak};
 
 use automatestig_core::library::StigLibrary;
 use automatestig_storage::Database;
@@ -19,6 +20,70 @@ pub struct AppStateInner {
     /// Serializes all library-writing content imports. Each import still does
     /// parsing/decompression on the blocking pool while holding this permit.
     pub content_import_lock: Arc<tokio::sync::Semaphore>,
+    /// Serializes each STIG Manager asset lookup/create/push flow by remote
+    /// collection and case-insensitive checklist hostname. Weak entries avoid
+    /// retaining an unbounded set of one-off asset identities.
+    pub stigman_push_locks: StigManagerPushLocks,
+    /// Serializes operations that publish, mutate, or delete one checklist.
+    /// A push holds this lock through the remote review write so it cannot
+    /// publish a snapshot concurrently replaced or deleted by the GUI.
+    pub checklist_operation_locks: ChecklistOperationLocks,
+    /// Short-lived, non-secret preflight bindings. The scanner API stores only
+    /// target/profile/destination identity and observed fingerprints here;
+    /// device credentials remain in the request that performs the check.
+    pub scanner_preflights: Mutex<HashMap<String, serde_json::Value>>,
+}
+
+/// Per-remote-asset locks for idempotent STIG Manager list-then-create flows.
+#[derive(Default)]
+pub struct StigManagerPushLocks {
+    entries: Mutex<HashMap<String, Weak<tokio::sync::Mutex<()>>>>,
+}
+
+impl StigManagerPushLocks {
+    pub fn lock_for(&self, collection_id: &str, hostname: &str) -> Arc<tokio::sync::Mutex<()>> {
+        let key = format!(
+            "{}\0{}",
+            collection_id.trim(),
+            hostname.trim().to_ascii_lowercase()
+        );
+        let mut entries = self
+            .entries
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        entries.retain(|_, lock| lock.strong_count() > 0);
+        if let Some(lock) = entries.get(&key).and_then(Weak::upgrade) {
+            return lock;
+        }
+
+        let lock = Arc::new(tokio::sync::Mutex::new(()));
+        entries.insert(key, Arc::downgrade(&lock));
+        lock
+    }
+}
+
+/// Per-checklist locks for local mutation and external publication boundaries.
+#[derive(Default)]
+pub struct ChecklistOperationLocks {
+    entries: Mutex<HashMap<String, Weak<tokio::sync::Mutex<()>>>>,
+}
+
+impl ChecklistOperationLocks {
+    pub fn lock_for(&self, checklist_id: &str) -> Arc<tokio::sync::Mutex<()>> {
+        let key = checklist_id.trim().to_owned();
+        let mut entries = self
+            .entries
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        entries.retain(|_, lock| lock.strong_count() > 0);
+        if let Some(lock) = entries.get(&key).and_then(Weak::upgrade) {
+            return lock;
+        }
+
+        let lock = Arc::new(tokio::sync::Mutex::new(()));
+        entries.insert(key, Arc::downgrade(&lock));
+        lock
+    }
 }
 
 impl AppState {
@@ -42,6 +107,9 @@ impl AppState {
                 library_path,
                 data_dir,
                 content_import_lock: Arc::new(tokio::sync::Semaphore::new(1)),
+                stigman_push_locks: StigManagerPushLocks::default(),
+                checklist_operation_locks: ChecklistOperationLocks::default(),
+                scanner_preflights: Mutex::new(HashMap::new()),
             }),
         })
     }
@@ -129,17 +197,66 @@ fn secure_database_path(path: &std::path::Path) -> anyhow::Result<()> {
 }
 
 fn default_data_dir() -> PathBuf {
-    std::env::var("HOME")
-        .or_else(|_| std::env::var("USERPROFILE"))
+    std::env::var_os("AUTOMATESTIG_DATA_DIR")
         .map(PathBuf::from)
-        .unwrap_or_else(|_| PathBuf::from("."))
-        .join(".automatestig")
+        .unwrap_or_else(|| {
+            std::env::var("HOME")
+                .or_else(|_| std::env::var("USERPROFILE"))
+                .map(PathBuf::from)
+                .unwrap_or_else(|_| PathBuf::from("."))
+                .join(".automatestig")
+        })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use std::time::Duration;
+
+    #[tokio::test]
+    async fn stigman_push_locks_serialize_case_insensitive_remote_asset_identity() {
+        let locks = StigManagerPushLocks::default();
+        let first = locks.lock_for(" collection-7 ", " Router.Example.Mil ");
+        let same = locks.lock_for("collection-7", "router.example.mil");
+        let other_collection = locks.lock_for("collection-8", "router.example.mil");
+        let other_hostname = locks.lock_for("collection-7", "switch.example.mil");
+
+        assert!(Arc::ptr_eq(&first, &same));
+        assert!(!Arc::ptr_eq(&first, &other_collection));
+        assert!(!Arc::ptr_eq(&first, &other_hostname));
+
+        let first_guard = first.lock().await;
+        assert!(other_collection.try_lock().is_ok());
+        assert!(other_hostname.try_lock().is_ok());
+        assert!(tokio::time::timeout(Duration::from_millis(20), same.lock())
+            .await
+            .is_err());
+        drop(first_guard);
+        let _second_guard = tokio::time::timeout(Duration::from_secs(1), same.lock())
+            .await
+            .expect("same remote asset stayed locked");
+    }
+
+    #[tokio::test]
+    async fn checklist_operation_locks_serialize_only_the_same_checklist() {
+        let locks = ChecklistOperationLocks::default();
+        let first = locks.lock_for(" checklist-7 ");
+        let same = locks.lock_for("checklist-7");
+        let other = locks.lock_for("checklist-8");
+
+        assert!(Arc::ptr_eq(&first, &same));
+        assert!(!Arc::ptr_eq(&first, &other));
+
+        let first_guard = first.lock().await;
+        assert!(other.try_lock().is_ok());
+        assert!(tokio::time::timeout(Duration::from_millis(20), same.lock())
+            .await
+            .is_err());
+        drop(first_guard);
+        let _second_guard = tokio::time::timeout(Duration::from_secs(1), same.lock())
+            .await
+            .expect("same checklist stayed locked");
+    }
 
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
     async fn cancelled_waiter_cannot_release_a_running_blocking_workers_permit() {

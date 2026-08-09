@@ -57,8 +57,8 @@ TARGETS = (
     {
         "name": "ONTAP",
         "stig": "NetApp_ONTAP_DSC_9-x_STIG",
-        "stig_release": "V2R2",
-        "fixture": "fixtures/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R2_STIG.zip",
+        "stig_release": "V2R4",
+        "fixture": "fixtures/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R4_STIG.zip",
         "check_pack": "content/check_packs/netapp_ontap9.json",
         "slug": "ontap",
         "mode": "ssh",

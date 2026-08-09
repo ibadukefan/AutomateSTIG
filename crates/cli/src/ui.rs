@@ -13,7 +13,7 @@ enum ScoreTone {
 
 pub enum SummaryScoreDisplay<'a> {
     Available {
-        assessed_pass_pct: f64,
+        assessed_pass_pct: Option<f64>,
         benchmark_coverage_pct: f64,
     },
     Withheld {
@@ -47,7 +47,7 @@ pub fn print_banner() {
     );
     println!(
         "  {}",
-        style("STIG Evaluation & Compliance Automation").dim(),
+        style("Difficult-Device Scanner & Evidence Handoff").dim(),
     );
     println!("  {}", style("─".repeat(width.saturating_sub(4))).dim());
     println!();
@@ -175,23 +175,32 @@ pub fn print_summary_table(
             assessed_pass_pct,
             benchmark_coverage_pct,
         } => {
-            let assessed_pass_style =
-                match assessed_pass_tone(assessed_pass_pct, benchmark_coverage_pct) {
-                    ScoreTone::Green => Style::new().green().bold(),
-                    ScoreTone::Yellow => Style::new().yellow().bold(),
-                    ScoreTone::Red => Style::new().red().bold(),
-                };
             let coverage_style = if benchmark_coverage_pct >= 100.0 {
                 Style::new().green().bold()
             } else {
                 Style::new().yellow().bold()
             };
-            println!(
-                "  {}  Assessed pass rate: {:<6}                      {}",
-                style("│").dim(),
-                assessed_pass_style.apply_to(format!("{assessed_pass_pct:.1}%")),
-                style("│").dim(),
-            );
+            if let Some(assessed_pass_pct) = assessed_pass_pct {
+                let assessed_pass_style =
+                    match assessed_pass_tone(assessed_pass_pct, benchmark_coverage_pct) {
+                        ScoreTone::Green => Style::new().green().bold(),
+                        ScoreTone::Yellow => Style::new().yellow().bold(),
+                        ScoreTone::Red => Style::new().red().bold(),
+                    };
+                println!(
+                    "  {}  Assessed pass rate: {:<6}                      {}",
+                    style("│").dim(),
+                    assessed_pass_style.apply_to(format!("{assessed_pass_pct:.1}%")),
+                    style("│").dim(),
+                );
+            } else {
+                println!(
+                    "  {}  Assessed pass rate: {:<6}                      {}",
+                    style("│").dim(),
+                    style("N/A").dim().bold(),
+                    style("│").dim(),
+                );
+            }
             println!(
                 "  {}  Benchmark coverage: {:<6}                      {}",
                 style("│").dim(),

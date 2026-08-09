@@ -15,7 +15,6 @@ import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
 import zipfile
-from concurrent.futures import ThreadPoolExecutor
 
 REPO = os.environ.get("E2E_REPO_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 EXE = ".exe" if sys.platform == "win32" else ""
@@ -24,13 +23,13 @@ GUI_BIN = os.environ.get("AUTOMATESTIG_GUI_BIN", f"{REPO}/target/release/automat
 WORK = os.environ.get("E2E_WORK") or tempfile.mkdtemp(prefix="automatestig-e2e-")
 FIX = f"{REPO}/fixtures"
 CHECK_PACKS = f"{REPO}/content/check_packs"
-ONTAP_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R2_STIG.zip"
+ONTAP_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R4_STIG.zip"
 ONTAP_FINDINGS = f"{FIX}/ontap/ontap_evidence_findings.json"
 ONTAP_COMPLIANT = f"{FIX}/ontap/ontap_evidence_compliant.json"
 ONTAP_MANUAL = {
     "V-246925", "V-246927", "V-246930", "V-246931", "V-246932", "V-246933",
-    "V-246938", "V-246939", "V-246944", "V-246945", "V-246946", "V-246948",
-    "V-246949",
+    "V-246938", "V-246939", "V-246940", "V-246944", "V-246945", "V-246946",
+    "V-246948", "V-246949",
 }
 GPOS_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_GPOS_V3R3_SRG.zip"
 BSD_FINDINGS = f"{FIX}/bsd/bsd_evidence_findings.json"
@@ -68,9 +67,9 @@ AUTOMATED_OPEN_SETS = (ONTAP_OPEN, BSD_OPEN, IOS_OPEN)
 AUTOMATED_OPEN_UNION = set().union(*AUTOMATED_OPEN_SETS)
 if sum(map(len, AUTOMATED_OPEN_SETS)) != len(AUTOMATED_OPEN_UNION):
     raise RuntimeError("shipped check-pack vulnerability IDs are not disjoint")
-if len(AUTOMATED_OPEN_UNION) != 40:
+if len(AUTOMATED_OPEN_UNION) != 54:
     raise RuntimeError(
-        f"expected exactly 40 shipped automated rules, found {len(AUTOMATED_OPEN_UNION)}"
+        f"expected exactly 54 shipped automated rules, found {len(AUTOMATED_OPEN_UNION)}"
     )
 ONTAP_AUTOMATED = len(ONTAP_OPEN)
 BSD_AUTOMATED = len(BSD_OPEN)
@@ -204,7 +203,7 @@ def cli_basics():
 def evaluate_ontap():
     section = "ontap-evidence"
     result = run_cli("disa-import", "--input", ONTAP_ZIP)
-    check(section, "import ONTAP V2R2", result.returncode == 0, result.combined[:300])
+    check(section, "import ONTAP V2R4", result.returncode == 0, result.combined[:300])
 
     legacy = f"{WORK}/legacy-evidence.txt"
     with open(legacy, "w", encoding="utf-8") as stream:
@@ -380,6 +379,12 @@ def evaluate_network():
                     "rules": {
                         "V-215807": {"max_concurrent_management_sessions": 2},
                         "V-215836": {"minimum_logging_buffer_bytes": 4096000},
+                        "V-215838": {
+                            "approved_authoritative_ntp_sources": [
+                                "10.10.1.10",
+                                "10.10.1.11",
+                            ]
+                        },
                     },
                 },
                 stream,
@@ -534,138 +539,121 @@ def gui_request(path, method="GET", token=True):
         return 0, b""
 
 
-def multipart_response(path, fields, files):
-    command = ["curl", "-sS", "-w", "\n__HTTP_STATUS__%{http_code}",
-               "-H", f"X-Auth-Token: {TOKEN}", f"http://127.0.0.1:{GUI_PORT}{path}"]
-    for key, value in fields.items():
-        command += ["-F", f"{key}={value}"]
-    for key, value in files.items():
-        command += ["-F", f"{key}=@{value}"]
-    result = subprocess.run(command, capture_output=True, text=True)
-    body, marker, status = result.stdout.rpartition("\n__HTTP_STATUS__")
-    if not marker:
-        return 0, result.stdout + result.stderr
-    return int(status), body
+def scanner_gui_flow():
+    """Exercise only the scanner-first GUI/API and read-only handoff verifier.
 
-
-def multipart(path, fields, files):
-    return multipart_response(path, fields, files)[1]
-
-
-def gui_flow(cli_source, hostile):
-    section = "gui"
-    gui_home = f"{WORK}/gui-home"
-    os.makedirs(gui_home, exist_ok=True)
+    Legacy GUI import, local checklist, asset, finding, and portfolio mutations
+    are intentionally not acceptance targets; STIG Manager owns those product
+    surfaces. Their retired routes are checked separately below.
+    """
+    section = "scanner-gui"
+    data_dir = f"{WORK}/scanner-gui-data"
+    artifacts_dir = f"{WORK}/scanner-scenario-artifacts"
+    os.makedirs(data_dir, exist_ok=True)
+    os.makedirs(artifacts_dir, exist_ok=True)
     env = dict(os.environ)
-    env.update({"HOME": gui_home, "USERPROFILE": gui_home, "PORT": str(GUI_PORT),
-                "AUTOMATESTIG_AUTH_TOKEN": TOKEN})
-    log = open(f"{gui_home}/gui.log", "w")
-    process = subprocess.Popen([GUI_BIN], cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT)
+    env.update({
+        "PORT": str(GUI_PORT),
+        "AUTOMATESTIG_AUTH_TOKEN": TOKEN,
+        "AUTOMATESTIG_DATA_DIR": data_dir,
+    })
+    log_path = f"{data_dir}/gui.log"
+    log = open(log_path, "w", encoding="utf-8")
+    process = subprocess.Popen(
+        [GUI_BIN], cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT
+    )
     try:
         for _ in range(60):
-            if gui_request("/api/status")[0] == 200:
+            if gui_request("/api/v1/status")[0] == 200:
                 break
             time.sleep(0.5)
-        check(section, "API requires authentication", gui_request("/api/checklists", token=False)[0] in (401, 403))
-        imported = multipart("/api/library/import-disa", {}, {"file": ONTAP_ZIP})
-        check(section, "imports ONTAP content", '"success":true' in imported.replace(" ", ""), imported[:300])
+        else:
+            log.flush()
+            detail = open(log_path, encoding="utf-8").read()[:800]
+            check(section, "scanner API starts", False, detail)
+            return
 
-        status, before_body = gui_request("/api/status")
-        before_count = (json.loads(before_body).get("data") or {}).get("benchmark_count")
-        expected_statuses = {
-            "no XCCDF": (hostile["no_xccdf"], 422),
-            "mixed atomic batch": (hostile["mixed"], 422),
-            "decompression bomb": (hostile["bomb"], 413),
-            "path collision": (hostile["collision"], 400),
-            "malformed ZIP": (hostile["malformed"], 400),
-            "unsupported upload": (hostile["unsupported"], 415),
-        }
-        for name, (path, expected) in expected_statuses.items():
-            upload_status, body = multipart_response(
-                "/api/library/import-disa", {}, {"file": path}
+        check(
+            section,
+            "API requires authentication",
+            gui_request("/api/v1/runs", token=False)[0] in (401, 403),
+        )
+        harness = subprocess.run(
+            [
+                sys.executable,
+                f"{REPO}/scripts/scanner_scenarios/run_localhost.py",
+                "--base-url",
+                f"http://127.0.0.1:{GUI_PORT}",
+                "--auth-token",
+                TOKEN,
+                "--artifacts-dir",
+                artifacts_dir,
+            ],
+            cwd=REPO,
+            capture_output=True,
+            text=True,
+            timeout=180,
+        )
+        check(
+            section,
+            "scanner-first localhost scenarios pass",
+            harness.returncode == 0,
+            (harness.stdout + harness.stderr)[-1200:],
+        )
+
+        summary_path = f"{artifacts_dir}/summary.json"
+        summary = (
+            json.load(open(summary_path, encoding="utf-8"))
+            if os.path.exists(summary_path)
+            else {}
+        )
+        check(
+            section,
+            "complete and incomplete scanner outcomes are exercised",
+            len(summary.get("complete_handoff_runs") or []) == 2
+            and bool(summary.get("incomplete_fail_closed_run")),
+            str(summary)[:500],
+        )
+
+        handoffs = sorted(
+            os.path.join(artifacts_dir, name)
+            for name in os.listdir(artifacts_dir)
+            if name.endswith(".handoff.zip")
+        )
+        verifier_results = [
+            subprocess.run(
+                [BIN, "scanner", "verify-handoff", handoff],
+                cwd=REPO,
+                capture_output=True,
+                text=True,
+                timeout=60,
             )
-            check(section, f"{name} returns HTTP {expected}", upload_status == expected, body[:300])
-        _, after_body = gui_request("/api/status")
-        after_count = (json.loads(after_body).get("data") or {}).get("benchmark_count")
-        check(section, "rejected GUI imports leave index unchanged", before_count == after_count)
-
-        concurrent_archives = [GPOS_ZIP, CISCO_ZIP, ONTAP_ZIP, GPOS_ZIP, CISCO_ZIP, ONTAP_ZIP]
-        with ThreadPoolExecutor(max_workers=len(concurrent_archives)) as executor:
-            concurrent_results = list(executor.map(
-                lambda path: multipart_response(
-                    "/api/library/import-disa", {}, {"file": path}
-                ),
-                concurrent_archives,
-            ))
-        check(section, "concurrent imports are serialized",
-              all(status == 200 for status, _ in concurrent_results), str(concurrent_results)[:300])
-        _, concurrent_body = gui_request("/api/status")
-        concurrent_count = (json.loads(concurrent_body).get("data") or {}).get("benchmark_count")
-        with open(f"{LIB}/index.json", encoding="utf-8") as stream:
-            expected_count = len(json.load(stream).get("benchmarks") or {})
-        check(section, "concurrent imports preserve every benchmark",
-              concurrent_count == expected_count,
-              f"expected={expected_count} actual={concurrent_count}")
-
-        generation_status, generation_body = gui_request(
-            "/api/library/generate-checks/NetApp_ONTAP_DSC_9-x_STIG", method="POST"
+            for handoff in handoffs
+        ]
+        check(
+            section,
+            "every selected-run handoff passes the offline verifier",
+            len(handoffs) == 2
+            and all(result.returncode == 0 for result in verifier_results),
+            "\n".join(
+                (result.stdout + result.stderr)[-500:]
+                for result in verifier_results
+            ),
         )
-        check(section, "prose-derived check generation API is absent",
-              generation_status == 404,
-              generation_body[:300].decode("utf-8", "replace"))
 
-        evaluated = multipart(
+        for path in (
+            "/api/assets",
+            "/api/stigman/push/retired-checklist",
             "/api/evaluate/with-evidence",
-            {"stig_id": "NetApp_ONTAP_DSC_9-x_STIG", "hostname": "ontap-findings-01",
-             "platform": "ontap", "input_type": "transcript"},
-            {"evidence": ONTAP_FINDINGS},
-        )
-        payload = json.loads(evaluated)
-        checklist_id = (payload.get("data") or {}).get("id")
-        check(section, "evaluates uploaded evidence", bool(checklist_id), evaluated[:300])
-        if checklist_id:
-            status, body = gui_request(f"/api/export/ckl/{checklist_id}")
-            gui_path = f"{OUT}/gui.ckl"
-            open(gui_path, "wb").write(body)
-            check(section, "exports CKL", status == 200 and b"<CHECKLIST" in body)
-            check(section, "GUI and CLI statuses agree",
-                  {v: norm_status(f["status"]) for v, f in parse_ckl(gui_path).items()}
-                  == {v: norm_status(f["status"]) for v, f in parse_ckl(cli_source).items()})
-
-        partial_status, partial_body = multipart_response(
-            "/api/evaluate/with-evidence",
-            {"stig_id": "NetApp_ONTAP_DSC_9-x_STIG", "hostname": "ontap-transport-failure",
-             "platform": "ontap", "input_type": "transcript"},
-            {"evidence": ONTAP_TRANSPORT_FAILURE},
-        )
-        partial_payload = json.loads(partial_body)
-        partial_data = partial_payload.get("data") or {}
-        check(section, "partial evidence returns HTTP 207", partial_status == 207, partial_body[:300])
-        check(section, "partial evidence is explicit",
-              partial_data.get("collection_complete") is False
-              and len(partial_data.get("collection_errors") or {}) >= 3)
-        errors = partial_data.get("evaluation_errors") or []
-        check(section, "partial GUI result is audit-only",
-              partial_data.get("id") is None
-              and partial_data.get("persisted") is False
-              and partial_data.get("compliance_pct") is None)
-        check(section, "partial GUI false-pass rules remain unresolved",
-              all(any(error.startswith(f"{vuln_id}:") for error in errors)
-                  for vuln_id in {"V-246935", "V-246950", "V-246951"}), str(errors)[:300])
-        audit_status, audit_body = gui_request("/api/audit-log")
-        audit_events = (json.loads(audit_body).get("data") or []) if audit_status == 200 else []
-        check(section, "partial GUI attempt logs incomplete, never completed",
-              any(event.get("event_type") == "evaluation.incomplete" for event in audit_events)
-              and sum(event.get("event_type") == "evaluation.completed" for event in audit_events) == 1,
-              audit_body[:300].decode("utf-8", "replace"))
-        status, key = gui_request("/api/offline-pack/trust-key")
-        check(section, "GUI does not create or expose an implicit signing key",
-              status == 503 and b"disabled" in key.lower(), key[:300])
-        status, pack = gui_request("/api/offline-pack")
-        implicit_key_dir = f"{gui_home}/.automatestig/signing_keys"
-        check(section, "GUI signing requires explicit external key custody",
-              status == 503 and b"disabled" in pack.lower()
-              and not os.path.exists(implicit_key_dir), pack[:300])
+            "/api/library/import-disa",
+        ):
+            status, body = gui_request(path, method="POST")
+            check(
+                section,
+                f"retired manager-duplicate mutation returns 410: {path}",
+                status == 410,
+                body[:300].decode("utf-8", "replace"),
+            )
     finally:
         process.kill()
         process.wait()
@@ -690,7 +678,7 @@ def main():
     format_roundtrip(ontap["findings"])
     stigpack_flow()
     coverage_flow()
-    gui_flow(ontap["findings"], hostile)
+    scanner_gui_flow()
 
     failures = [result for result in RESULTS if not result[2]]
     print(f"\nE2E RESULT: {len(RESULTS) - len(failures)}/{len(RESULTS)} checks passed")

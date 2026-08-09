@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 use std::io::{Read, Write};
 use std::path::Path;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 use anyhow::{Context, Result};
 use automatestig_core::answer::AnswerFile;
@@ -10,9 +11,9 @@ use automatestig_core::engine::EvaluationEngine;
 use automatestig_core::library::StigLibrary;
 use automatestig_core::models::asset::Asset;
 use automatestig_core::models::checklist::{
-    EvaluationOrigin, EvaluationProvenance, OrganizationPolicyProvenance,
+    AnswerFileProvenance, EvaluationOrigin, EvaluationProvenance, OrganizationPolicyProvenance,
 };
-use automatestig_core::models::finding::{FindingSource, FindingStatus};
+use automatestig_core::models::finding::FindingSource;
 use automatestig_core::models::Checklist;
 use automatestig_core::remote::cisco_config_hostname;
 use automatestig_parsers::ckl;
@@ -110,6 +111,92 @@ pub struct EvaluateArgs {
 enum EvaluationInput {
     Evidence(String),
     Config(String),
+}
+
+#[derive(Debug)]
+struct SelectedAnswerFile {
+    id: String,
+    answer_file: AnswerFile,
+    sha256: String,
+}
+
+fn load_selected_answer_files(
+    answer_paths: &[String],
+    stig_id: &str,
+    benchmark_vuln_ids: &HashSet<String>,
+) -> Result<Vec<SelectedAnswerFile>> {
+    let mut selected = Vec::with_capacity(answer_paths.len());
+
+    for (index, path_string) in answer_paths.iter().enumerate() {
+        ui::detail("Answer file", path_string);
+        let path = Path::new(path_string);
+        let basename = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .context("Answer file path must end in a UTF-8 filename")?;
+        let display_id = automatestig_core::path_safety::safe_filename(basename)
+            .unwrap_or_else(|_| format!("answer-{}", index + 1));
+
+        let answer_file = AnswerFile::load(path)
+            .with_context(|| format!("Failed to load answer file: {path_string}"))?;
+        let validation_issues = answer_file.validate();
+        if !validation_issues.is_empty() {
+            anyhow::bail!(
+                "Answer file {display_id:?} is invalid: {}",
+                validation_issues.join("; ")
+            );
+        }
+        if answer_file
+            .stig_id
+            .as_deref()
+            .is_some_and(|answer_stig_id| answer_stig_id != stig_id)
+        {
+            anyhow::bail!(
+                "Answer file {display_id:?} targets {} rather than {stig_id}",
+                answer_file.stig_id.as_deref().unwrap_or_default()
+            );
+        }
+        let mut unknown_vuln_ids: Vec<_> = answer_file
+            .entries
+            .iter()
+            .map(|entry| entry.vuln_id.as_str())
+            .filter(|vuln_id| !benchmark_vuln_ids.contains(*vuln_id))
+            .collect();
+        unknown_vuln_ids.sort_unstable();
+        unknown_vuln_ids.dedup();
+        if !unknown_vuln_ids.is_empty() {
+            anyhow::bail!(
+                "Answer file {display_id:?} references unknown Vuln ID(s) for {stig_id}: {}",
+                unknown_vuln_ids.join(", ")
+            );
+        }
+        let sha256 = automatestig_core::check_packs::canonical_json_sha256(&answer_file)
+            .with_context(|| format!("Failed to bind answer file {display_id:?}"))?;
+        let mut id = automatestig_core::path_safety::safe_filename(basename).ok();
+        if id.as_ref().is_none_or(|candidate| {
+            selected
+                .iter()
+                .any(|prior: &SelectedAnswerFile| prior.id.eq_ignore_ascii_case(candidate))
+        }) {
+            let extension = path
+                .extension()
+                .and_then(|extension| extension.to_str())
+                .unwrap_or("json");
+            id = Some(format!(
+                "answer-{}-{}.{}",
+                index + 1,
+                &sha256[..12],
+                extension
+            ));
+        }
+        selected.push(SelectedAnswerFile {
+            id: id.expect("provenance ID fallback is always set"),
+            answer_file,
+            sha256,
+        });
+    }
+
+    Ok(selected)
 }
 
 impl EvaluationInput {
@@ -305,6 +392,7 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
             benchmark.version_string()
         );
     }
+    validate_check_pack_membership(&benchmark, &check_packs)?;
 
     ui::section(&format!(
         "{} ({}) — {} rules",
@@ -359,14 +447,16 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
         input_sha256
     );
 
-    // Load answer files.
-    let answer_files: Vec<AnswerFile> = answer_paths
+    // Load, validate, and bind all answer files in application order. Only
+    // safe basenames are retained in durable provenance; arbitrary host paths
+    // never cross into the checklist artifact.
+    let benchmark_vuln_ids: HashSet<_> = benchmark
+        .rules
         .iter()
-        .map(|p| {
-            ui::detail("Answer file", p);
-            AnswerFile::load(Path::new(p)).context(format!("Failed to load answer file: {}", p))
-        })
-        .collect::<Result<Vec<_>>>()?;
+        .map(|rule| rule.vuln_id.clone())
+        .collect();
+    let selected_answer_files =
+        load_selected_answer_files(&answer_paths, &stig_id, &benchmark_vuln_ids)?;
 
     // Bind the checklist identity to the identity inside the one consumed
     // primary input. `--host` is only an optional corroborating claim.
@@ -424,13 +514,36 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
                 signer_fingerprint: policy.signer_fingerprint().to_string(),
                 signature_verified: true,
             });
-    let evaluation_plan_sha256 = automatestig_core::check_packs::evaluation_plan_sha256(
-        &benchmark.id,
-        &benchmark.version_string(),
-        &benchmark_sha256,
-        &check_pack_sha256,
-        verified_policy.as_ref().map(|policy| policy.sha256()),
-    )?;
+    let answer_file_provenance: Vec<_> = selected_answer_files
+        .iter()
+        .map(|selected| AnswerFileProvenance {
+            id: selected.id.clone(),
+            sha256: selected.sha256.clone(),
+        })
+        .collect();
+    let answer_file_bindings: Vec<_> = answer_file_provenance
+        .iter()
+        .map(|answer_file| (answer_file.id.as_str(), answer_file.sha256.as_str()))
+        .collect();
+    let organization_policy_sha256 = verified_policy.as_ref().map(|policy| policy.sha256());
+    let evaluation_plan_sha256 = if answer_file_bindings.is_empty() {
+        automatestig_core::check_packs::evaluation_plan_sha256(
+            &benchmark.id,
+            &benchmark.version_string(),
+            &benchmark_sha256,
+            &check_pack_sha256,
+            organization_policy_sha256,
+        )
+    } else {
+        automatestig_core::check_packs::evaluation_plan_sha256_with_answer_files(
+            &benchmark.id,
+            &benchmark.version_string(),
+            &benchmark_sha256,
+            &check_pack_sha256,
+            organization_policy_sha256,
+            &answer_file_bindings,
+        )
+    }?;
 
     // Run evaluation.
     let engine = EvaluationEngine::with_defaults();
@@ -485,6 +598,8 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
             check_pack_sha256: Some(check_pack_sha256.clone()),
             evaluation_plan_sha256: Some(evaluation_plan_sha256.clone()),
             organization_policy: organization_policy_provenance.clone(),
+            answer_file: None,
+            answer_files: answer_file_provenance.clone(),
             unsafe_legacy_evidence,
         }
     } else {
@@ -498,10 +613,12 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
             collected_at: None,
             plan_sha256: None,
             server_key_fingerprint: None,
-            benchmark_sha256: Some(benchmark_sha256),
-            check_pack_sha256: Some(check_pack_sha256),
-            evaluation_plan_sha256: Some(evaluation_plan_sha256),
+            benchmark_sha256: Some(benchmark_sha256.clone()),
+            check_pack_sha256: Some(check_pack_sha256.clone()),
+            evaluation_plan_sha256: Some(evaluation_plan_sha256.clone()),
             organization_policy: organization_policy_provenance,
+            answer_file: None,
+            answer_files: answer_file_provenance,
             unsafe_legacy_evidence: false,
         }
     });
@@ -533,7 +650,7 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
         );
     }
 
-    apply_answer_files_to_checklist(&mut checklist, &answer_files);
+    apply_answer_files_to_checklist(&mut checklist, &selected_answer_files)?;
 
     // Merge with previous if requested.
     if let Some(ref merge_path) = merge {
@@ -555,7 +672,7 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
         summary.cat_ii_open,
         summary.cat_iii_open,
         ui::SummaryScoreDisplay::Available {
-            assessed_pass_pct: summary.assessed_pass_pct(),
+            assessed_pass_pct: summary.assessed_pass_pct_opt(),
             benchmark_coverage_pct: summary.benchmark_coverage_pct(),
         },
     );
@@ -572,27 +689,38 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
         .or_else(|| Path::new(&output_path).extension().and_then(|e| e.to_str()))
         .unwrap_or("ckl");
 
-    match out_format {
-        "ckl" => {
-            ckl::write_ckl_file(&checklist, Path::new(&output_path))?;
-            ui::output_file("Output", &output_path, "CKL");
-        }
-        "cklb" => {
-            cklb::write_cklb_file(&checklist, Path::new(&output_path))?;
-            ui::output_file("Output", &output_path, "CKLB");
-        }
-        "json" => {
-            let json = serde_json::to_string_pretty(&checklist)?;
-            std::fs::write(&output_path, json)?;
-            ui::output_file("Output", &output_path, "JSON");
-        }
+    let (artifact, artifact_label) = match out_format {
+        "ckl" => (ckl::write_ckl(&checklist)?.into_bytes(), "CKL"),
+        "cklb" => (cklb::write_cklb(&checklist)?.into_bytes(), "CKLB"),
+        "json" => (serde_json::to_vec_pretty(&checklist)?, "JSON"),
         _ => {
             anyhow::bail!("Unsupported output format: {}", out_format);
         }
+    };
+    let mut consumed_inputs = vec![Path::new(evaluation_input.path())];
+    consumed_inputs.extend(answer_paths.iter().map(Path::new));
+    if let Some(path) = organization_policy.as_deref() {
+        consumed_inputs.push(Path::new(path));
     }
+    if let Some(path) = organization_policy_signature.as_deref() {
+        consumed_inputs.push(Path::new(path));
+    }
+    if let Some(path) = merge.as_deref() {
+        consumed_inputs.push(Path::new(path));
+    }
+    super::ensure_safe_artifact_output(Path::new(&output_path), &consumed_inputs, cli)?;
+    write_evaluation_output_atomic(Path::new(&output_path), &artifact)?;
+    ui::output_file("Output", &output_path, artifact_label);
 
-    // Save to database.
-    let db = Database::open(&db_path(cli))?;
+    // Save to database. The output artifact is already durable at this point,
+    // so any database failure is a partial success rather than a cleanly
+    // retryable evaluation failure.
+    let partial_save_context = || {
+        format!(
+            "evaluation artifact exists at {output_path:?}, but its database record was not saved; preserve the artifact and correct the database problem before deciding whether to rerun"
+        )
+    };
+    let db = Database::open(&db_path(cli)).with_context(partial_save_context)?;
     let log_detail = format!(
         "input_kind={}, input_path={}, collection_complete={}, collection_errors={}",
         evaluation_input.kind(),
@@ -600,7 +728,8 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
         system_data.collection_complete,
         system_data.collection_errors.len()
     );
-    db.save_evaluation(&checklist, "cli-evaluate", Some(&log_detail))?;
+    db.save_evaluation(&checklist, "cli-evaluate", Some(&log_detail))
+        .with_context(partial_save_context)?;
 
     ui::success("Evaluation complete");
 
@@ -705,6 +834,25 @@ pub(crate) fn load_matching_check_packs(
         .collect())
 }
 
+pub(crate) fn validate_check_pack_membership(
+    benchmark: &automatestig_core::models::stig::StigBenchmark,
+    check_packs: &[CheckPack],
+) -> Result<()> {
+    let missing = automatestig_core::check_packs::check_pack_vuln_ids_missing_from_benchmark(
+        benchmark,
+        check_packs,
+    );
+    if !missing.is_empty() {
+        anyhow::bail!(
+            "trusted check pack for {} {} references rule(s) absent from the installed benchmark: {}",
+            benchmark.id,
+            benchmark.version_string(),
+            missing.join(", ")
+        );
+    }
+    Ok(())
+}
+
 fn apply_check_results_to_checklist(
     checklist: &mut Checklist,
     check_results: &[CheckResult],
@@ -731,42 +879,17 @@ fn apply_check_results_to_checklist(
     checklist.touch();
 }
 
-fn apply_answer_files_to_checklist(checklist: &mut Checklist, answer_files: &[AnswerFile]) {
-    for answer_file in answer_files {
-        if let Some(ref answer_stig_id) = answer_file.stig_id {
-            if answer_stig_id != &checklist.stig_info.stig_id {
-                continue;
-            }
-        }
-
-        for entry in &answer_file.entries {
-            if let Some(finding) = checklist.find_by_vuln_id_mut(&entry.vuln_id) {
-                let should_apply = finding.source != FindingSource::CollectionError
-                    && (entry.force_override
-                        || finding.status == FindingStatus::NotReviewed
-                        || finding.source == FindingSource::Manual);
-
-                if should_apply {
-                    finding.status = entry.status;
-                    finding.source = FindingSource::AnswerFile;
-
-                    if let Some(ref details) = entry.finding_details {
-                        finding.finding_details = details.clone();
-                    }
-                    if let Some(ref comments) = entry.comments {
-                        finding.comments = comments.clone();
-                    }
-                    if let Some(ref severity_override) = entry.severity_override {
-                        finding.severity_override = Some(*severity_override);
-                        finding.severity_override_justification =
-                            entry.severity_override_justification.clone();
-                    }
-                }
-            }
-        }
+fn apply_answer_files_to_checklist(
+    checklist: &mut Checklist,
+    answer_files: &[SelectedAnswerFile],
+) -> Result<()> {
+    let engine = EvaluationEngine::with_defaults();
+    for selected in answer_files {
+        engine
+            .apply_answer_file(checklist, &selected.answer_file)
+            .with_context(|| format!("Failed to apply answer file {:?}", selected.id))?;
     }
-
-    checklist.touch();
+    Ok(())
 }
 
 fn load_checklist_from_file(path: &Path) -> Result<automatestig_core::models::Checklist> {
@@ -782,11 +905,252 @@ fn load_checklist_from_file(path: &Path) -> Result<automatestig_core::models::Ch
     }
 }
 
+pub(crate) fn write_evaluation_output_atomic(path: &Path, bytes: &[u8]) -> Result<()> {
+    write_evaluation_output_atomic_with_hook(path, bytes, |_| Ok(()))
+}
+
+/// Validate every directory/destination constraint without creating the final
+/// artifact. Remote collection uses this before credentials or SSH so a known
+/// bad destination cannot discard an otherwise useful collection result.
+pub(crate) fn preflight_artifact_output(path: &Path) -> Result<()> {
+    let parent = path
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+        .unwrap_or_else(|| Path::new("."));
+    secure_evaluation_output_directory(parent)?;
+    validate_existing_evaluation_output(path)?;
+    let filename = path
+        .file_name()
+        .and_then(|value| value.to_str())
+        .context("artifact output path must have a UTF-8 filename")?;
+    let operation_parent = std::fs::canonicalize(parent).with_context(|| {
+        format!(
+            "failed to resolve artifact output parent {}",
+            parent.display()
+        )
+    })?;
+    validate_existing_evaluation_output(&operation_parent.join(filename))
+}
+
+fn write_evaluation_output_atomic_with_hook<F>(
+    path: &Path,
+    bytes: &[u8],
+    before_commit: F,
+) -> Result<()>
+where
+    F: FnOnce(&Path) -> Result<()>,
+{
+    write_evaluation_output_atomic_with_hooks(
+        path,
+        bytes,
+        before_commit,
+        sync_artifact_output_directory,
+    )
+}
+
+fn write_evaluation_output_atomic_with_hooks<F, G>(
+    path: &Path,
+    bytes: &[u8],
+    before_commit: F,
+    sync_directory: G,
+) -> Result<()>
+where
+    F: FnOnce(&Path) -> Result<()>,
+    G: FnOnce(&Path) -> std::io::Result<()>,
+{
+    let parent = path
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+        .unwrap_or_else(|| Path::new("."));
+    secure_evaluation_output_directory(parent)?;
+    validate_existing_evaluation_output(path)?;
+
+    static TEMP_SEQUENCE: AtomicU64 = AtomicU64::new(0);
+    let filename = path
+        .file_name()
+        .and_then(|value| value.to_str())
+        .context("artifact output path must have a UTF-8 filename")?;
+    // Resolve the verified parent once and use that path for staging, commit,
+    // cleanup, and directory fsync. An intermediate symlink in the original
+    // spelling cannot redirect only the later commit or cleanup operation.
+    let operation_parent = std::fs::canonicalize(parent).with_context(|| {
+        format!(
+            "failed to resolve artifact output parent {}",
+            parent.display()
+        )
+    })?;
+    let operation_path = operation_parent.join(filename);
+    validate_existing_evaluation_output(&operation_path)?;
+    let (temporary, mut file) = loop {
+        let sequence = TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed);
+        let candidate =
+            operation_parent.join(format!(".{filename}.tmp-{}-{sequence}", std::process::id()));
+        let mut options = std::fs::OpenOptions::new();
+        options.write(true).create_new(true);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::OpenOptionsExt;
+            options
+                .mode(0o600)
+                .custom_flags(libc::O_NOFOLLOW | libc::O_CLOEXEC);
+        }
+        match options.open(&candidate) {
+            Ok(file) => break (candidate, file),
+            Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
+            Err(error) => {
+                return Err(error)
+                    .with_context(|| format!("failed to create {}", candidate.display()))
+            }
+        }
+    };
+
+    let result = (|| -> Result<()> {
+        file.write_all(bytes)
+            .with_context(|| format!("failed to write {}", temporary.display()))?;
+        file.flush()
+            .with_context(|| format!("failed to flush {}", temporary.display()))?;
+        file.sync_all()
+            .with_context(|| format!("failed to sync {}", temporary.display()))?;
+        drop(file);
+        before_commit(&temporary)?;
+
+        // Recheck immediately before rename. The containing directory is
+        // current-user-owned and not writable by group/other users.
+        validate_existing_evaluation_output(&operation_path)?;
+        replace_output_file_atomic(&temporary, &operation_path).with_context(|| {
+            format!("failed to atomically replace {}", operation_path.display())
+        })?;
+        if let Err(error) = sync_directory(&operation_parent) {
+            anyhow::bail!(
+                "artifact was committed at {}, but directory durability sync failed: {error}. Preserve and inspect that artifact before deciding whether to retry",
+                operation_path.display()
+            );
+        }
+        Ok(())
+    })();
+    if result.is_err() {
+        let _ = std::fs::remove_file(&temporary);
+    }
+    result
+}
+
+fn sync_artifact_output_directory(parent: &Path) -> std::io::Result<()> {
+    #[cfg(unix)]
+    {
+        std::fs::File::open(parent)?.sync_all()
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = parent;
+        Ok(())
+    }
+}
+
+#[cfg(not(windows))]
+fn replace_output_file_atomic(source: &Path, destination: &Path) -> std::io::Result<()> {
+    std::fs::rename(source, destination)
+}
+
+#[cfg(windows)]
+fn replace_output_file_atomic(source: &Path, destination: &Path) -> std::io::Result<()> {
+    use std::os::windows::ffi::OsStrExt;
+    use windows_sys::Win32::Storage::FileSystem::{
+        MoveFileExW, MOVEFILE_REPLACE_EXISTING, MOVEFILE_WRITE_THROUGH,
+    };
+
+    let source: Vec<u16> = source
+        .as_os_str()
+        .encode_wide()
+        .chain(std::iter::once(0))
+        .collect();
+    let destination: Vec<u16> = destination
+        .as_os_str()
+        .encode_wide()
+        .chain(std::iter::once(0))
+        .collect();
+    let result = unsafe {
+        MoveFileExW(
+            source.as_ptr(),
+            destination.as_ptr(),
+            MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH,
+        )
+    };
+    if result == 0 {
+        Err(std::io::Error::last_os_error())
+    } else {
+        Ok(())
+    }
+}
+
+fn secure_evaluation_output_directory(parent: &Path) -> Result<()> {
+    match std::fs::symlink_metadata(parent) {
+        Ok(metadata) => {
+            anyhow::ensure!(
+                metadata.is_dir() && !metadata.file_type().is_symlink(),
+                "artifact output parent must be a real directory: {}",
+                parent.display()
+            );
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::{MetadataExt, PermissionsExt};
+                anyhow::ensure!(
+                    metadata.uid() == unsafe { libc::geteuid() },
+                    "artifact output directory is not owned by the current user: {}",
+                    parent.display()
+                );
+                anyhow::ensure!(
+                    metadata.permissions().mode() & 0o022 == 0,
+                    "artifact output directory is writable by group or other users: {}. Choose a private output directory",
+                    parent.display()
+                );
+            }
+        }
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+            std::fs::create_dir_all(parent)
+                .with_context(|| format!("failed to create {}", parent.display()))?;
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                std::fs::set_permissions(parent, std::fs::Permissions::from_mode(0o700))?;
+            }
+        }
+        Err(error) => return Err(error.into()),
+    }
+    Ok(())
+}
+
+fn validate_existing_evaluation_output(path: &Path) -> Result<()> {
+    match std::fs::symlink_metadata(path) {
+        Ok(metadata) => {
+            anyhow::ensure!(
+                metadata.is_file() && !metadata.file_type().is_symlink(),
+                "artifact output must be a regular non-symlink file: {}",
+                path.display()
+            );
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::MetadataExt;
+                anyhow::ensure!(
+                    metadata.uid() == unsafe { libc::geteuid() },
+                    "artifact output is not owned by the current user: {}",
+                    path.display()
+                );
+            }
+        }
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+        Err(error) => return Err(error.into()),
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
         bind_input_hostname, cisco_config_hostname, default_output_path, load_matching_check_packs,
-        read_regular_file_bounded, select_evaluation_input, sha256_hex, EvaluationInput,
+        load_selected_answer_files, preflight_artifact_output, read_regular_file_bounded,
+        select_evaluation_input, sha256_hex, validate_check_pack_membership,
+        write_evaluation_output_atomic, write_evaluation_output_atomic_with_hook,
+        write_evaluation_output_atomic_with_hooks, EvaluationInput,
     };
     use automatestig_core::checks::{
         Check, CheckDefinition, CheckPack, CheckPlatform, ExpectedResult,
@@ -799,6 +1163,125 @@ mod tests {
             sha256_hex(b"abc"),
             "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         );
+    }
+
+    #[test]
+    fn atomic_evaluation_output_is_private() {
+        let dir = tempfile::tempdir().unwrap();
+        let output = dir.path().join("result.ckl");
+
+        write_evaluation_output_atomic(&output, b"artifact").unwrap();
+
+        assert_eq!(std::fs::read(&output).unwrap(), b"artifact");
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            assert_eq!(
+                std::fs::metadata(&output).unwrap().permissions().mode() & 0o777,
+                0o600
+            );
+        }
+    }
+
+    #[test]
+    fn atomic_evaluation_output_replaces_an_existing_artifact() {
+        let dir = tempfile::tempdir().unwrap();
+        let output = dir.path().join("result.ckl");
+        std::fs::write(&output, b"old artifact").unwrap();
+
+        write_evaluation_output_atomic(&output, b"new artifact").unwrap();
+
+        assert_eq!(std::fs::read(&output).unwrap(), b"new artifact");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn atomic_evaluation_output_rejects_symlink_destination() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let target = dir.path().join("target.ckl");
+        let output = dir.path().join("result.ckl");
+        std::fs::write(&target, b"unchanged").unwrap();
+        symlink(&target, &output).unwrap();
+
+        let error = write_evaluation_output_atomic(&output, b"replacement").unwrap_err();
+
+        assert!(error.to_string().contains("regular non-symlink file"));
+        assert_eq!(std::fs::read(&target).unwrap(), b"unchanged");
+    }
+
+    #[test]
+    fn atomic_evaluation_output_preserves_existing_file_on_precommit_failure() {
+        let dir = tempfile::tempdir().unwrap();
+        let output = dir.path().join("result.ckl");
+        std::fs::write(&output, b"existing").unwrap();
+
+        let error = write_evaluation_output_atomic_with_hook(&output, b"replacement", |_| {
+            anyhow::bail!("injected pre-commit failure")
+        })
+        .unwrap_err();
+
+        assert!(error.to_string().contains("injected pre-commit failure"));
+        assert_eq!(std::fs::read(&output).unwrap(), b"existing");
+        assert!(std::fs::read_dir(dir.path()).unwrap().all(|entry| {
+            !entry
+                .unwrap()
+                .file_name()
+                .to_string_lossy()
+                .starts_with(".result.ckl.tmp-")
+        }));
+    }
+
+    #[test]
+    fn atomic_output_reports_directory_sync_failure_as_committed() {
+        let dir = tempfile::tempdir().unwrap();
+        let output = dir.path().join("result.ckl");
+
+        let error = write_evaluation_output_atomic_with_hooks(
+            &output,
+            b"committed artifact",
+            |_| Ok(()),
+            |_| {
+                Err(std::io::Error::other(
+                    "injected directory durability failure",
+                ))
+            },
+        )
+        .unwrap_err();
+
+        let message = error.to_string();
+        assert!(message.contains("artifact was committed at"));
+        assert!(message.contains("directory durability sync failed"));
+        assert!(message.contains("before deciding whether to retry"));
+        assert_eq!(std::fs::read(&output).unwrap(), b"committed artifact");
+        assert!(std::fs::read_dir(dir.path()).unwrap().all(|entry| {
+            !entry
+                .unwrap()
+                .file_name()
+                .to_string_lossy()
+                .starts_with(".result.ckl.tmp-")
+        }));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn collection_output_preflight_rejects_world_writable_parent() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let dir = tempfile::tempdir().unwrap();
+        let shared = dir.path().join("shared");
+        std::fs::create_dir(&shared).unwrap();
+        std::fs::set_permissions(&shared, std::fs::Permissions::from_mode(0o777)).unwrap();
+        let output = shared.join("evidence.json");
+
+        let error = preflight_artifact_output(&output).unwrap_err();
+
+        assert!(error
+            .to_string()
+            .contains("writable by group or other users"));
+        assert!(!output.exists());
+        assert_eq!(std::fs::read_dir(&shared).unwrap().count(), 0);
     }
 
     #[test]
@@ -837,6 +1320,75 @@ mod tests {
             Some("running-config.txt".into())
         )
         .is_err());
+    }
+
+    #[test]
+    fn answer_selection_binds_ordered_safe_ids_without_rejecting_paths() {
+        let temporary = tempfile::tempdir().unwrap();
+        let first_dir = temporary.path().join("first");
+        let second_dir = temporary.path().join("second");
+        std::fs::create_dir_all(&first_dir).unwrap();
+        std::fs::create_dir_all(&second_dir).unwrap();
+        let first_path = first_dir.join("same.json");
+        let second_path = second_dir.join("same.json");
+        let unicode_path = temporary.path().join("résumé.json");
+
+        let first = automatestig_core::answer::AnswerFile::new("First", Some("TEST_STIG"));
+        let second = automatestig_core::answer::AnswerFile::new("Second", Some("TEST_STIG"));
+        let third = automatestig_core::answer::AnswerFile::new("Third", Some("TEST_STIG"));
+        first.save_json(&first_path).unwrap();
+        second.save_json(&second_path).unwrap();
+        third.save_json(&unicode_path).unwrap();
+
+        let paths = vec![
+            first_path.to_string_lossy().into_owned(),
+            second_path.to_string_lossy().into_owned(),
+            unicode_path.to_string_lossy().into_owned(),
+        ];
+        let selected =
+            load_selected_answer_files(&paths, "TEST_STIG", &std::collections::HashSet::new())
+                .unwrap();
+
+        assert_eq!(selected.len(), 3);
+        assert_eq!(selected[0].id, "same.json");
+        assert!(selected[1].id.starts_with("answer-2-"));
+        assert!(selected[2].id.starts_with("answer-3-"));
+        for answer_file in &selected {
+            assert_eq!(
+                automatestig_core::path_safety::safe_filename(&answer_file.id).unwrap(),
+                answer_file.id
+            );
+            assert_eq!(answer_file.sha256.len(), 64);
+        }
+    }
+
+    #[test]
+    fn answer_selection_rejects_invalid_and_unknown_entries() {
+        let temporary = tempfile::tempdir().unwrap();
+        let path = temporary.path().join("answers.json");
+        let mut answer = automatestig_core::answer::AnswerFile::new("Answers", Some("TEST_STIG"));
+        answer.entries.push(automatestig_core::answer::AnswerEntry {
+            vuln_id: "V-UNKNOWN".to_string(),
+            status: automatestig_core::models::finding::FindingStatus::Open,
+            finding_details: None,
+            comments: None,
+            severity_override: None,
+            severity_override_justification: None,
+            force_override: false,
+        });
+        answer.save_json(&path).unwrap();
+        let paths = vec![path.to_string_lossy().into_owned()];
+        let error =
+            load_selected_answer_files(&paths, "TEST_STIG", &std::collections::HashSet::new())
+                .unwrap_err();
+        assert!(error.to_string().contains("unknown Vuln ID"));
+
+        answer.entries[0].vuln_id = "  ".to_string();
+        answer.save_json(&path).unwrap();
+        let error =
+            load_selected_answer_files(&paths, "TEST_STIG", &std::collections::HashSet::new())
+                .unwrap_err();
+        assert!(error.to_string().contains("Vuln ID is blank"));
     }
 
     #[test]
@@ -883,6 +1435,64 @@ mod tests {
     }
 
     #[test]
+    fn cli_rejects_check_pack_rules_absent_from_the_benchmark() {
+        let pack = CheckPack {
+            stig_id: "TEST_STIG".to_string(),
+            platform: CheckPlatform::Bsd,
+            version: "V1R1".to_string(),
+            priority: 100,
+            checks: vec![CheckDefinition {
+                vuln_id: "V-CHECK".to_string(),
+                platform: CheckPlatform::Bsd,
+                check: Check::Command {
+                    command: "sysctl test.value".to_string(),
+                    pattern: None,
+                    is_regex: false,
+                },
+                expected: ExpectedResult::Matches {
+                    pattern: "test.value: 1".to_string(),
+                },
+                description: None,
+            }],
+        };
+        let mut benchmark = automatestig_core::models::stig::StigBenchmark {
+            id: "TEST_STIG".to_string(),
+            title: "Test".to_string(),
+            description: "Test".to_string(),
+            version: "1".to_string(),
+            release: "1".to_string(),
+            release_date: None,
+            xccdf_id: None,
+            platform: automatestig_core::models::stig::Platform::default(),
+            rules: Vec::new(),
+        };
+        let error =
+            validate_check_pack_membership(&benchmark, std::slice::from_ref(&pack)).unwrap_err();
+        assert!(error.to_string().contains("V-CHECK"));
+
+        benchmark
+            .rules
+            .push(automatestig_core::models::stig::StigRule {
+                vuln_id: "V-CHECK".to_string(),
+                rule_id: "SV-CHECKr1_rule".to_string(),
+                group_id: "V-CHECK".to_string(),
+                group_title: "V-CHECK".to_string(),
+                title: "Test rule".to_string(),
+                rule_version: "test".to_string(),
+                discussion: "test".to_string(),
+                severity: automatestig_core::models::stig::Severity::Medium,
+                check_content: "test".to_string(),
+                fix_text: "test".to_string(),
+                cci_refs: Vec::new(),
+                legacy_ids: Vec::new(),
+                stig_ref: None,
+                weight: 8.0,
+                automatable: automatestig_core::models::stig::CheckAutomation::Full,
+            });
+        assert!(validate_check_pack_membership(&benchmark, &[pack]).is_ok());
+    }
+
+    #[test]
     fn runtime_rejects_bare_reviewed_pack_and_ignores_legacy_auto_directory() {
         let dir = tempfile::TempDir::new().unwrap();
         let root = dir.path().join("library");
@@ -896,12 +1506,12 @@ mod tests {
                 vuln_id: vuln_id.to_string(),
                 platform: CheckPlatform::Bsd,
                 check: Check::Command {
-                    command: "sysctl kern.elf64.aslr.enable".to_string(),
+                    command: "service auditd onestatus".to_string(),
                     pattern: None,
                     is_regex: false,
                 },
                 expected: ExpectedResult::Matches {
-                    pattern: "^kern\\.elf64\\.aslr\\.enable: 1$".to_string(),
+                    pattern: "(?i)\\bauditd\\s+is\\s+running\\b".to_string(),
                 },
                 description: None,
             }],

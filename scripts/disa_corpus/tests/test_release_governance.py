@@ -1122,7 +1122,7 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                     "organization_policy_signature_verified": not untrusted_policy,
                 }
                 benchmark_identity = {
-                    "ontap": ("NetApp_ONTAP_DSC_9-x_STIG", "V2R2"),
+                    "ontap": ("NetApp_ONTAP_DSC_9-x_STIG", "V2R4"),
                     "freebsd": ("General_Purpose_Operating_System", "V3R3"),
                     "cisco_ios_xe": ("Cisco_IOS-XE_Router_NDM_STIG", "V3R7"),
                 }
@@ -1243,29 +1243,66 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                     "checks": [
                         {
                             "name": (
-                                "AutomateSTIG evaluates Cisco running config "
-                                "with a signed policy"
+                                "STIG Manager rig creates the existing exact "
+                                "Cisco V3R7 assignment"
                             ),
                             "passed": True,
                         },
                         {
                             "name": (
-                                "source checklist retains verified "
+                                "AutomateSTIG completes disconnected Cisco "
+                                "scanner run with signed policy"
+                            ),
+                            "passed": True,
+                        },
+                        {
+                            "name": (
+                                "scanner run retains verified "
                                 "organization-policy provenance"
                             ),
                             "passed": True,
                         },
                         {
-                            "name": (
-                                "STIG-Manager integration configured over HTTPS"
-                            ),
+                            "name": "automatestig scanner verify-handoff accepts selected-run bundle",
                             "passed": True,
                         },
-                        {"name": "exact reviews", "passed": True},
+                        {
+                            "name": "fallback CKLB contains scanner-owned reviewed rows only",
+                            "passed": True,
+                        },
+                        {
+                            "name": "retired direct-push route returns 410",
+                            "passed": True,
+                        },
+                        {
+                            "name": "AutomateSTIG makes zero direct STIG Manager review writes",
+                            "passed": True,
+                        },
+                        {
+                            "name": "receiving operator revalidates the existing exact assignment",
+                            "passed": True,
+                        },
+                        {
+                            "name": "receiving operator reconciles only sparse-reviews.json",
+                            "passed": True,
+                        },
+                        {
+                            "name": "STIG Manager rule/status round-trip matches sparse handoff",
+                            "passed": True,
+                        },
                     ],
                     "metrics": {
                         "review_count": 2,
                         "source_finding_count": 2,
+                        "fallback_sparse_rule_count": 2,
+                        "automatestig_direct_review_writes": 0,
+                        "receiving_operator_review_writes": 2,
+                        "boundary": "disconnected-selected-run-handoff",
+                        "assignment_revision": "V3R7",
+                        "full_assignment_rule_count": 42,
+                        "full_ckl_rule_count": 42,
+                        "handoff_sha256": "c" * 64,
+                        "handoff_manifest_sha256": "d" * 64,
                         "rule_set_sha256": "8" * 64,
                         "benchmark_id": "Cisco_IOS-XE_Router_NDM_STIG",
                         "organization_policy_sha256": "9" * 64,
@@ -1273,7 +1310,6 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                         "organization_policy_signer_fingerprint": (
                             f"SHA256:{'b' * 64}"
                         ),
-                        "stig_manager_transport": "ephemeral-loopback-https",
                     },
                 })
                 recovery_path = artifact_root / "recovery.json"
@@ -1337,7 +1373,7 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                         {"role": "security", "github_login": "security-reviewer", "approved_at": now},
                     ],
                     "acceptance": {
-                        "ontap": gate(device_path, device_sha, "V2R2"),
+                        "ontap": gate(device_path, device_sha, "V2R4"),
                         "freebsd": gate(device_path, device_sha, "V3R3"),
                         "cisco_ios_xe": gate(device_path, device_sha, "V3R7"),
                         "stig_viewer": gate(viewer_path, viewer_sha, "3.5"),

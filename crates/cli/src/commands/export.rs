@@ -6,7 +6,13 @@ use automatestig_parsers::{ckl, cklb};
 
 use crate::ui;
 
-pub fn run(input: &str, output: &str, format: &str, collection: Option<&str>) -> Result<()> {
+pub fn run(
+    input: &str,
+    output: &str,
+    format: &str,
+    collection: Option<&str>,
+    cli: &crate::Cli,
+) -> Result<()> {
     let in_path = Path::new(input);
     if !in_path.exists() {
         anyhow::bail!("Input file not found: {}", input);
@@ -36,7 +42,8 @@ pub fn run(input: &str, output: &str, format: &str, collection: Option<&str>) ->
             let coll = collection.unwrap_or("Default Collection");
             ui::detail("Collection", coll);
             let json = stig_manager::export_to_stig_manager_json(&[checklist], coll)?;
-            std::fs::write(output, &json)?;
+            super::ensure_safe_artifact_output(Path::new(output), &[in_path], cli)?;
+            super::evaluate::write_evaluation_output_atomic(Path::new(output), json.as_bytes())?;
             println!();
             ui::success("Exported to STIG-Manager format");
             ui::output_file("Output", output, "STIG-Manager JSON");

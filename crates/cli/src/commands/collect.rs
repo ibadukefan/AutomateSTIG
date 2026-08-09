@@ -1,14 +1,18 @@
 use std::collections::HashSet;
 use std::io::Write;
 use std::path::Path;
-use std::sync::atomic::{AtomicU64, Ordering};
 
 use anyhow::{Context, Result};
 use automatestig_collector::{collect_plan, SshAuth, SshConfig};
+use automatestig_core::checks::{CheckPack, CheckPlatform};
 use automatestig_core::library::StigLibrary;
+use automatestig_core::models::stig::StigBenchmark;
 use automatestig_parsers::evidence::EvidenceTranscript;
 
-use super::{evaluate::load_matching_check_packs, library_path};
+use super::{
+    evaluate::{load_matching_check_packs, validate_check_pack_membership},
+    library_path,
+};
 
 pub struct CollectArgs {
     pub stig_id: String,
@@ -60,24 +64,16 @@ pub fn run(args: CollectArgs, cli: &crate::Cli) -> Result<()> {
             benchmark.version_string()
         );
     }
-    let platform = packs[0].platform;
-    if platform == automatestig_core::checks::CheckPlatform::CiscoIos {
-        anyhow::bail!(
-            "Cisco IOS-XE is config-file-only; evaluate an authorized running configuration"
-        );
+    let (platform, plan) = build_collection_plan(&benchmark, &packs)?;
+    let key_input = args.key.clone();
+
+    if args.output != "-" {
+        let consumed_inputs: Vec<&Path> = key_input.as_deref().map(Path::new).into_iter().collect();
+        super::ensure_safe_artifact_output(Path::new(&args.output), &consumed_inputs, cli)?;
+        // Fail before credentials and SSH if the destination cannot satisfy
+        // the private atomic writer's ownership/type/mode requirements.
+        super::evaluate::preflight_artifact_output(Path::new(&args.output))?;
     }
-    if packs.iter().any(|pack| pack.platform != platform) {
-        anyhow::bail!("matching check packs disagree on target platform");
-    }
-    let mut seen = HashSet::new();
-    let definitions: Vec<_> = packs
-        .iter()
-        .flat_map(|pack| pack.checks.iter())
-        .filter(|definition| seen.insert(definition.vuln_id.clone()))
-        .cloned()
-        .collect();
-    let plan = automatestig_core::remote::generate_collection_plan(platform, &definitions)
-        .map_err(anyhow::Error::msg)?;
 
     let auth = if let Some(path) = args.key {
         SshAuth::KeyFile {
@@ -109,6 +105,12 @@ pub fn run(args: CollectArgs, cli: &crate::Cli) -> Result<()> {
         EvidenceTranscript::new_v2(evidence_identity, platform, plan.digest(), report.commands);
     evidence.server_key_fingerprint = report.server_key_fingerprint;
     let bytes = serde_json::to_vec_pretty(&evidence)?;
+    if args.output != "-" {
+        let consumed_inputs: Vec<&Path> = key_input.as_deref().map(Path::new).into_iter().collect();
+        // Collection can take long enough for filesystem state to change.
+        // Revalidate immediately before the atomic artifact commit.
+        super::ensure_safe_artifact_output(Path::new(&args.output), &consumed_inputs, cli)?;
+    }
     write_atomic_or_stdout(&args.output, &bytes)?;
 
     if !evidence.complete {
@@ -122,127 +124,44 @@ pub fn run(args: CollectArgs, cli: &crate::Cli) -> Result<()> {
     Ok(())
 }
 
+fn build_collection_plan(
+    benchmark: &StigBenchmark,
+    packs: &[CheckPack],
+) -> Result<(CheckPlatform, automatestig_core::remote::CollectionPlan)> {
+    // This content-integrity guard intentionally precedes plan construction,
+    // credential lookup, runtime creation, and every SSH side effect.
+    validate_check_pack_membership(benchmark, packs)?;
+    let platform = packs
+        .first()
+        .context("no exact-release check pack is installed")?
+        .platform;
+    if platform == automatestig_core::checks::CheckPlatform::CiscoIos {
+        anyhow::bail!(
+            "Cisco IOS-XE is config-file-only; evaluate an authorized running configuration"
+        );
+    }
+    if packs.iter().any(|pack| pack.platform != platform) {
+        anyhow::bail!("matching check packs disagree on target platform");
+    }
+    let mut seen = HashSet::new();
+    let definitions: Vec<_> = packs
+        .iter()
+        .flat_map(|pack| pack.checks.iter())
+        .filter(|definition| seen.insert(definition.vuln_id.clone()))
+        .cloned()
+        .collect();
+    let plan = automatestig_core::remote::generate_collection_plan(platform, &definitions)
+        .map_err(anyhow::Error::msg)?;
+    Ok((platform, plan))
+}
+
 fn write_atomic_or_stdout(output: &str, bytes: &[u8]) -> Result<()> {
     if output == "-" {
         std::io::stdout().write_all(bytes)?;
         std::io::stdout().write_all(b"\n")?;
         return Ok(());
     }
-    let path = Path::new(output);
-    let parent = path
-        .parent()
-        .filter(|parent| !parent.as_os_str().is_empty())
-        .unwrap_or_else(|| Path::new("."));
-    secure_output_directory(parent)?;
-    validate_existing_output(path)?;
-
-    static TEMP_SEQUENCE: AtomicU64 = AtomicU64::new(0);
-    let filename = path
-        .file_name()
-        .and_then(|value| value.to_str())
-        .context("evidence output path must have a UTF-8 filename")?;
-    let (temporary, mut file) = loop {
-        let sequence = TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed);
-        let candidate = parent.join(format!(".{filename}.tmp-{}-{sequence}", std::process::id()));
-        let mut options = std::fs::OpenOptions::new();
-        options.write(true).create_new(true);
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::OpenOptionsExt;
-            options.mode(0o600).custom_flags(libc::O_NOFOLLOW);
-        }
-        match options.open(&candidate) {
-            Ok(file) => break (candidate, file),
-            Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
-            Err(error) => {
-                return Err(error)
-                    .with_context(|| format!("failed to create {}", candidate.display()))
-            }
-        }
-    };
-    let result = (|| -> Result<()> {
-        file.write_all(bytes)
-            .with_context(|| format!("failed to write {}", temporary.display()))?;
-        file.sync_all()
-            .with_context(|| format!("failed to sync {}", temporary.display()))?;
-        drop(file);
-        // Recheck immediately before rename. The containing directory is
-        // current-user-owned and not writable by group/other users.
-        validate_existing_output(path)?;
-        std::fs::rename(&temporary, path)
-            .with_context(|| format!("failed to atomically replace {}", path.display()))?;
-        #[cfg(unix)]
-        std::fs::File::open(parent)
-            .and_then(|directory| directory.sync_all())
-            .with_context(|| format!("failed to sync {}", parent.display()))?;
-        Ok(())
-    })();
-    if result.is_err() {
-        let _ = std::fs::remove_file(&temporary);
-    }
-    result?;
-    Ok(())
-}
-
-fn secure_output_directory(parent: &Path) -> Result<()> {
-    match std::fs::symlink_metadata(parent) {
-        Ok(metadata) => {
-            anyhow::ensure!(
-                metadata.is_dir() && !metadata.file_type().is_symlink(),
-                "evidence output parent must be a real directory: {}",
-                parent.display()
-            );
-            #[cfg(unix)]
-            {
-                use std::os::unix::fs::{MetadataExt, PermissionsExt};
-                anyhow::ensure!(
-                    metadata.uid() == unsafe { libc::geteuid() },
-                    "evidence output directory is not owned by the current user: {}",
-                    parent.display()
-                );
-                anyhow::ensure!(
-                    metadata.permissions().mode() & 0o022 == 0,
-                    "evidence output directory is writable by group or other users: {}",
-                    parent.display()
-                );
-            }
-        }
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
-            std::fs::create_dir_all(parent)
-                .with_context(|| format!("failed to create {}", parent.display()))?;
-            #[cfg(unix)]
-            {
-                use std::os::unix::fs::PermissionsExt;
-                std::fs::set_permissions(parent, std::fs::Permissions::from_mode(0o700))?;
-            }
-        }
-        Err(error) => return Err(error.into()),
-    }
-    Ok(())
-}
-
-fn validate_existing_output(path: &Path) -> Result<()> {
-    match std::fs::symlink_metadata(path) {
-        Ok(metadata) => {
-            anyhow::ensure!(
-                metadata.is_file() && !metadata.file_type().is_symlink(),
-                "evidence output must be a regular non-symlink file: {}",
-                path.display()
-            );
-            #[cfg(unix)]
-            {
-                use std::os::unix::fs::MetadataExt;
-                anyhow::ensure!(
-                    metadata.uid() == unsafe { libc::geteuid() },
-                    "evidence output is not owned by the current user: {}",
-                    path.display()
-                );
-            }
-        }
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
-        Err(error) => return Err(error.into()),
-    }
-    Ok(())
+    super::evaluate::write_evaluation_output_atomic(Path::new(output), bytes)
 }
 
 #[cfg(test)]
@@ -257,6 +176,46 @@ mod tests {
         );
         assert!(bind_connection_identity("10.0.0.8", Some("production-router")).is_err());
         assert!(bind_connection_identity(" ", None).is_err());
+    }
+
+    #[test]
+    fn incompatible_same_release_content_fails_before_collection_setup() {
+        let benchmark = StigBenchmark {
+            id: "TEST_STIG".to_string(),
+            title: "Test".to_string(),
+            description: "Test".to_string(),
+            version: "1".to_string(),
+            release: "1".to_string(),
+            release_date: None,
+            xccdf_id: None,
+            platform: automatestig_core::models::stig::Platform::default(),
+            rules: Vec::new(),
+        };
+        let pack = CheckPack {
+            stig_id: benchmark.id.clone(),
+            platform: CheckPlatform::Bsd,
+            version: benchmark.version_string(),
+            priority: 100,
+            checks: vec![automatestig_core::checks::CheckDefinition {
+                vuln_id: "V-NOT-IN-BENCHMARK".to_string(),
+                platform: CheckPlatform::Bsd,
+                check: automatestig_core::checks::Check::Command {
+                    command: "service auditd onestatus".to_string(),
+                    pattern: None,
+                    is_regex: false,
+                },
+                expected: automatestig_core::checks::ExpectedResult::Matches {
+                    pattern: "(?i)\\bauditd\\s+is\\s+running\\b".to_string(),
+                },
+                description: None,
+            }],
+        };
+
+        let error = match build_collection_plan(&benchmark, &[pack]) {
+            Err(error) => error,
+            Ok(_) => panic!("incompatible content must fail before plan or SSH setup"),
+        };
+        assert!(error.to_string().contains("V-NOT-IN-BENCHMARK"));
     }
 
     #[cfg(unix)]

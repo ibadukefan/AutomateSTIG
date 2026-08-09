@@ -57,7 +57,7 @@ pub fn run(input: &str, open_only: bool, severity: Option<&str>) -> Result<()> {
     let score_display = match score_block_reason.as_deref() {
         Some(reason) => ui::SummaryScoreDisplay::Withheld { reason },
         None => ui::SummaryScoreDisplay::Available {
-            assessed_pass_pct: summary.assessed_pass_pct(),
+            assessed_pass_pct: summary.assessed_pass_pct_opt(),
             benchmark_coverage_pct: summary.benchmark_coverage_pct(),
         },
     };
@@ -161,6 +161,8 @@ mod tests {
             check_pack_sha256: Some(check_pack_sha256),
             evaluation_plan_sha256: Some(evaluation_plan_sha256),
             organization_policy: None,
+            answer_file: None,
+            answer_files: Vec::new(),
             unsafe_legacy_evidence: false,
         }
     }

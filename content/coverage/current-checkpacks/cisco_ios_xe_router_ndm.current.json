@@ -3,9 +3,9 @@
   "version": "V3R7",
   "source": "AutomateSTIG current check pack: content/check_packs/cisco_ios_xe_router_ndm.json",
   "status": "experimental",
-  "generated_at": "2026-07-28T18:11:00Z",
+  "generated_at": "2026-08-09T14:33:39Z",
   "generated_from": "content/check_packs/cisco_ios_xe_router_ndm.json",
-  "total_rules": 34,
+  "total_rules": 42,
   "rules": [
     {
       "vuln_id": "V-215807",
@@ -86,12 +86,14 @@
     {
       "vuln_id": "V-215813",
       "rule_id": "V-215813_automatestig_check",
-      "classification": "manual",
-      "reason": "Lockout duration and attempt semantics require typed parsing; fragment presence is not evidence.",
+      "classification": "automated",
+      "reason": "Numeric login throttling allows no more than three attempts and locks access for at least 15 minutes",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215813",
       "evidence_required": true,
       "validated_by": [
-        "docs/cisco-ios-xe.md",
-        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
       ]
     },
     {
@@ -132,6 +134,19 @@
       ]
     },
     {
+      "vuln_id": "V-215818",
+      "rule_id": "V-215818_automatestig_check",
+      "classification": "automated",
+      "reason": "Every deny entry in every IPv4 or IPv6 ACL bound to an interface includes log-input",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215818",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
       "vuln_id": "V-215819",
       "rule_id": "V-215819_automatestig_check",
       "classification": "automated",
@@ -145,10 +160,36 @@
       ]
     },
     {
+      "vuln_id": "V-215820",
+      "rule_id": "V-215820_automatestig_check",
+      "classification": "automated",
+      "reason": "When persistent logging is enabled, effective file-system privilege is the default or explicit level 15; otherwise the rule is NotApplicable",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215820",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215821",
+      "rule_id": "V-215821_automatestig_check",
+      "classification": "automated",
+      "reason": "When persistent logging is enabled, effective file-system privilege is the default or explicit level 15; otherwise the rule is NotApplicable",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215821",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
       "vuln_id": "V-215822",
       "rule_id": "V-215822_automatestig_check",
       "classification": "automated",
-      "reason": "File system privilege must remain at default 15 (no 'file privilege' override present)",
+      "reason": "Effective file-system privilege is the IOS default or an explicit level 15; malformed, ambiguous, or lower levels fail",
       "check_pack": "cisco_ios_xe_router_ndm",
       "check_id": "V-215822",
       "evidence_required": true,
@@ -169,14 +210,29 @@
       ]
     },
     {
-      "vuln_id": "V-215826",
-      "rule_id": "V-215826_automatestig_check",
-      "classification": "manual",
-      "reason": "Password-policy scope and numeric minimum require typed parsing; banner or description text is not evidence.",
+      "vuln_id": "V-215824",
+      "rule_id": "V-215824_automatestig_check",
+      "classification": "automated",
+      "reason": "Exactly one Common-Criteria-bound local account is configured and every AAA login list uses it only after RADIUS or TACACS",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215824",
       "evidence_required": true,
       "validated_by": [
-        "docs/cisco-ios-xe.md",
-        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215826",
+      "rule_id": "V-215826_automatestig_check",
+      "classification": "automated",
+      "reason": "Every configured Common Criteria password policy has one numeric minimum length of at least 15 characters",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215826",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
       ]
     },
     {
@@ -260,12 +316,14 @@
     {
       "vuln_id": "V-215833",
       "rule_id": "V-215833_automatestig_check",
-      "classification": "manual",
-      "reason": "All VTY, console, and conditional HTTP management timeouts require typed and contextual review.",
+      "classification": "automated",
+      "reason": "Every console, VTY, auxiliary, and enabled HTTP(S) management path terminates inactivity within five minutes",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215833",
       "evidence_required": true,
       "validated_by": [
-        "docs/cisco-ios-xe.md",
-        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
       ]
     },
     {
@@ -308,6 +366,19 @@
       ]
     },
     {
+      "vuln_id": "V-215838",
+      "rule_id": "V-215838_automatestig_check",
+      "classification": "automated",
+      "reason": "At least two distinct configured NTP servers are present in the signed organization-policy authoritative-source allowlist",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215838",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
       "vuln_id": "V-215841",
       "rule_id": "V-215841_automatestig_check",
       "classification": "manual",
@@ -332,34 +403,40 @@
     {
       "vuln_id": "V-215843",
       "rule_id": "V-215843_automatestig_check",
-      "classification": "manual",
-      "reason": "NTP key algorithm, trusted-key linkage, and every server binding require typed review.",
+      "classification": "automated",
+      "reason": "NTP authentication is enabled and every server key links to a trusted hmac-sha2-256 definition",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215843",
       "evidence_required": true,
       "validated_by": [
-        "docs/cisco-ios-xe.md",
-        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
       ]
     },
     {
       "vuln_id": "V-215844",
       "rule_id": "V-215844_automatestig_check",
-      "classification": "manual",
-      "reason": "The complete SSH MAC allowlist must contain only approved algorithms; one approved fragment is insufficient.",
+      "classification": "automated",
+      "reason": "SSH version 2 uses a complete allowlist containing only hmac-sha2-256 or hmac-sha2-512",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215844",
       "evidence_required": true,
       "validated_by": [
-        "docs/cisco-ios-xe.md",
-        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
       ]
     },
     {
       "vuln_id": "V-215845",
       "rule_id": "V-215845_automatestig_check",
-      "classification": "manual",
-      "reason": "The complete SSH cipher allowlist must contain only approved algorithms; one approved fragment is insufficient.",
+      "classification": "automated",
+      "reason": "SSH version 2 uses a complete allowlist containing only reviewed AES CTR ciphers",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-215845",
       "evidence_required": true,
       "validated_by": [
-        "docs/cisco-ios-xe.md",
-        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
       ]
     },
     {
@@ -413,10 +490,45 @@
       ]
     },
     {
+      "vuln_id": "V-215855",
+      "rule_id": "V-215855_automatestig_check",
+      "classification": "manual",
+      "reason": "The benchmark's EEM/SCP example is not the only valid change-triggered backup design, so one configuration signature would create false findings.",
+      "evidence_required": true,
+      "validated_by": [
+        "docs/cisco-ios-xe.md",
+        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+      ]
+    },
+    {
       "vuln_id": "V-215856",
       "rule_id": "V-215856_automatestig_check",
       "classification": "manual",
       "reason": "Trustpoint presence cannot prove a valid DoD-approved CA chain; certificate-chain review is required.",
+      "evidence_required": true,
+      "validated_by": [
+        "docs/cisco-ios-xe.md",
+        "fixtures/network/ios_xe_router_semantic_counterexamples.txt"
+      ]
+    },
+    {
+      "vuln_id": "V-220139",
+      "rule_id": "V-220139_automatestig_check",
+      "classification": "automated",
+      "reason": "At least two distinct modern or legacy remote syslog destinations are configured",
+      "check_pack": "cisco_ios_xe_router_ndm",
+      "check_id": "V-220139",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/cisco_ios_xe_router_ndm.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-220140",
+      "rule_id": "V-220140_automatestig_check",
+      "classification": "manual",
+      "reason": "Supported-release status requires show version evidence and current Cisco lifecycle data; a running configuration alone cannot decide it.",
       "evidence_required": true,
       "validated_by": [
         "docs/cisco-ios-xe.md",

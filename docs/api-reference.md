@@ -1,6 +1,8 @@
 # API Reference
 
-The GUI exposes an HTTP API under `/api`. All paths below are relative to `/api`.
+The scanner GUI exposes its supported API under `/api/v1`. Paths in the
+scanner-first table below are written relative to `/api`. Unversioned workflow
+routes are retired compatibility seams, not a product contract for new clients.
 
 Responses use this envelope:
 
@@ -13,207 +15,89 @@ Responses use this envelope:
 ```
 
 On failure, `success` is false and `error` contains the error message.
-
-Handlers also return meaningful HTTP statuses. Content import uses `400` for
-malformed input, `413` for size/decompression limits, `415` for unsupported
-media, `422` for structurally invalid content, and `500` for local storage.
-Connected DISA fetch failures use `502` after the initial request has passed URL
-validation. Partial SSH/evidence evaluations return `207` without persisting a
-checklist, with `collection_complete=false` and keyed `collection_errors`.
+Scanner-first handlers use meaningful HTTP status codes and typed error codes;
+clients must always inspect both the status and response envelope.
 
 ## Auth
 
-Auth is enforced on every `/api/*` route except `/api/status`.
+Auth is enforced on every `/api/*` route except the status endpoint.
 
-Use:
+Use the `X-Auth-Token` header. Download endpoints require the header too;
+query-string tokens are intentionally not accepted.
 
-- `X-Auth-Token` header.
+Loopback desktop mode auto-generates a random per-session token and injects it
+into the served frontend, so the local browser is authenticated automatically.
+Non-loopback binds require `AUTOMATESTIG_AUTH_TOKEN` with at least 16 visible
+ASCII characters and no whitespace or the server refuses to start.
 
-Download endpoints also require the header; query-string tokens are intentionally not accepted.
-
-Loopback desktop mode auto-generates a random per-session token and injects it into the served frontend, so the local browser is authenticated automatically. Non-loopback binds require `AUTOMATESTIG_AUTH_TOKEN` with at least 16 characters or the server refuses to start.
-
-## Status
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/status` | Application status. |
-
-## Library
+## Scanner-first v1
 
 | Method | Path | Purpose |
 | --- | --- | --- |
-| GET | `/library/benchmarks` | List installed benchmarks with real CAT counts. |
-| GET | `/library/benchmarks/{id}` | Get benchmark detail. |
-| POST | `/library/import-disa` | Multipart import of DISA XCCDF XML or ZIP content. |
-| POST | `/library/import-stigpack` | Multipart import of a `.stigpack`. |
+| GET | `/v1/status` | Scanner/API version and readiness. |
+| GET | `/v1/stig-manager/connection` | Return sanitized connection state; never the client secret. |
+| PUT | `/v1/stig-manager/connection` | Save one HTTPS API/OAuth destination. |
+| DELETE | `/v1/stig-manager/connection` | Remove saved destination credentials only. |
+| POST | `/v1/stig-manager/connection/test` | Test submitted values and return version, capabilities, and privileges. |
+| GET | `/v1/stig-manager/collections` | Read live available collections. |
+| GET | `/v1/stig-manager/collections/{collection_id}/assets` | Read live existing assets. |
+| GET | `/v1/stig-manager/collections/{collection_id}/assets/{asset_id}/assignments` | Read exact assignments and scanner readiness reasons. |
+| GET | `/v1/scanner/profiles` | List exact release-bundled profiles, hashes, compatibility, coverage, and readiness. |
+| POST | `/v1/runs/preflight` | Bind destination, target fingerprint, exact profile, privilege, and read-only operation plan. |
+| POST | `/v1/runs/ssh` | Enqueue an authorized ONTAP/FreeBSD live collection from a valid preflight; returns `202` before device I/O. |
+| POST | `/v1/runs/evidence` | Start strict evidence or IOS-XE configuration evaluation from a valid preflight. |
+| GET | `/v1/runs/jobs` | List durable SSH coordination jobs; submitted credentials are never returned or persisted. |
+| GET | `/v1/runs/jobs/{job_id}` | Read queued/running/completed/failed SSH job state and its resulting run ID, when complete. |
+| GET | `/v1/runs` | List short-lived technical scan and handoff records. |
+| GET | `/v1/runs/{run_id}` | Read run steps, immutable result/provenance, sparse preview, attempts, and receipt. |
+| POST | `/v1/runs/{run_id}/deliver` | Recheck remote ownership/state; confirm an exact no-op or return an actionable handoff/conflict result. |
+| GET | `/v1/runs/{run_id}/handoff` | Download the selected-run handoff for any complete run. |
 
-Each import endpoint accepts exactly one file. DISA uploads are capped at 32
-MiB compressed ZIP input (raw XML at 16 MiB); `.stigpack` uploads are capped at
-256 MiB. Parsing/decompression runs off the async request executor, all library
-writes are serialized, and a multi-benchmark file commits as one batch.
+Connected preflight requires a live existing collection, asset, assignment, and
+exact STIG revision; the API has no asset-create or assignment mutation.
+Preflight returns a short-lived single-use token bound to all nonsecret inputs.
+Device credentials and passphrases are accepted only with preflight/run
+submission and are never present in run or connection responses.
 
-Raw DISA/XCCDF import installs benchmark reference content only. It never turns
-check prose into executable scanner decisions. Additional executable checks must
-arrive in a trusted, signed `.stigpack`.
+A complete connected run persists its immutable result, separately encrypted
+replay evidence, and sparse handoff state in one transaction. Incomplete runs
+have no handoff. The preview contains only scanner-owned evaluations.
+Create/update rows are handoff-only because the current STIG Manager API has no
+atomic conditional review precondition. `POST .../deliver` can record a
+technical receipt only when the exact scanner result is already present
+remotely; a conflict remains blocked. Long-running SSH collection returns a
+job identifier and is observed through the job endpoints.
 
-## Checklists
+The handoff endpoint emits
+`automatestig.selected-run-handoff.v3`. Its required payloads are
+`manifest.json`, `scanner-run.json`, `sparse-reviews.json`, `fallback.cklb`,
+`results.xccdf.xml`, and `integrity.json`; retained bundles also contain
+`evidence-envelope.json`. The staged STIG Manager transport maps
+`sparse-reviews.json` to the Review API for the existing exact assignment.
+The XCCDF 1.2 and CKLB members are digest-bound supplemental projections, not
+reference STIG content, asset/assignment creation requests, or evidence that a
+native file-import workflow was exercised. An incomplete run receives `409
+handoff_not_available` instead of a partial export.
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/checklists` | List checklists. |
-| GET | `/checklists/{id}` | Get checklist detail. |
-| DELETE | `/checklists/{id}` | Delete a checklist. |
-| POST | `/checklists/import` | Multipart import of a checklist. |
-| PATCH | `/checklists/{id}/findings/{vuln_id}` | Update finding status/details/comments. |
+## Retired unversioned API
 
-Checklist list and detail responses expose two distinct optional score fields:
+Do not build clients against unversioned routes. Every former unversioned
+product route below, for reads and writes alike, returns HTTP `410 Gone` with
+`data.code = "legacy_surface_retired"` and migration guidance. They do not
+create assets, change assignments or reviews, run a scan outside the versioned
+run service, import a broad catalog, or produce a portfolio export.
 
-- `assessed_pass_pct`: `NotAFinding / (NotAFinding + Open) * 100`.
-  `NotApplicable` and `NotReviewed` are excluded from this denominator.
-- `benchmark_coverage_pct`: `assessed controls / total benchmark controls * 100`.
+| Retired capability | Routes returning `410 Gone` |
+| --- | --- |
+| Broad library/content management | `/library/benchmarks`, `/library/benchmarks/{id}`, `/library/import-disa`, `/library/import-stigpack`, `/disa/available`, `/disa/fetch`, `/disa/fetch-all`, `/disa/check-updates`, `/offline-pack`, `/offline-pack/trust-key` |
+| Local checklist portfolio and review state | `/checklists`, `/checklists/import`, `/checklists/{id}`, `/checklists/{id}/findings/{vuln_id}`, `/answer-files`, `/answer-files/{id}`, `/audit-log` |
+| Local asset and assignment state | `/assets`, `/assets/{id}`, `/assets/bulk-assign-stig`, `/assets/bulk-update` |
+| Portfolio and selected-checklist exports | `/export/ckl/{id}`, `/export/cklb/{id}`, `/export/all-zip` |
+| Old STIG Manager connection, mirror, and push surface | `/stigman/config`, `/stigman/test`, `/stigman/collections`, `/stigman/collections/{collection_id}/assets`, `/stigman/sync/{collection_id}`, `/stigman/diff/{collection_id}`, `/stigman/push/{checklist_id}` |
+| Run-service bypass | `/evaluate/with-evidence`, `/scan/ssh` |
 
-`compliance_pct` is retained as a deprecated compatibility alias for
-`assessed_pass_pct`. New clients should use the explicit fields. Scores are
-`null` for imported or otherwise unverified results; the raw finding counts
-remain available, but must not be presented as a verified grade.
-
-## Evaluate
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| POST | `/evaluate/with-evidence` | Multipart evaluation with `stig_id`, `hostname`, `platform`, `input_type`, `evidence`, optional `asset_id`, and the Cisco policy fields described below. |
-
-`input_type=config` is accepted for Cisco IOS-XE Router NDM running configurations. `input_type=transcript` requires strict `automatestig-evidence/v2` JSON for ONTAP or FreeBSD. The document's platform and plan digest must match the selected platform and currently installed check pack. Marker-based v1 evidence is rejected; unlike the CLI migration switch, the API has no unsafe legacy override.
-
-Cisco configuration evaluation also requires both `organization_policy` and
-`organization_policy_signature` multipart files. They must be supplied as a
-pair, are rejected for transcript evaluation, and are verified against the
-dedicated organization-policy trust directory before any result is produced.
-
-A complete evaluation returns HTTP `200`. If one or more typed collection records failed validation, successfully collected rules still evaluate and dependent rules become `Not_Reviewed`; the API returns HTTP `207 Multi-Status`. The response remains in the standard envelope and adds:
-
-```json
-{
-  "success": true,
-  "data": {
-    "collection_complete": false,
-    "collection_errors": {
-      "cluster time-service ntp server show": "SSH channel closed without an exit status"
-    },
-    "evaluation_errors": ["V-246935: Command collection failed: SSH channel closed without an exit status"],
-    "id": null,
-    "persisted": false,
-    "assessed_pass_pct": null,
-    "benchmark_coverage_pct": null,
-    "compliance_pct": null
-  },
-  "error": null
-}
-```
-
-## DISA
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/disa/available` | List available DISA downloads. |
-| POST | `/disa/fetch` | Fetch one DISA item. |
-| POST | `/disa/fetch-all` | Fetch DISA items in bulk. |
-| GET | `/disa/check-updates` | Check available DISA updates. |
-
-`/disa/fetch` accepts only exact allowlisted DISA HTTPS hosts, validates every
-redirect, and counts at most 32 MiB of response bytes regardless of the remote
-`Content-Length` header.
-
-## Offline Pack
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/offline-pack` | Generate an offline `.stigpack` only when an external signing key is explicitly configured. |
-| GET | `/offline-pack/trust-key` | Download that external key's public trust anchor. |
-
-Both endpoints return `503 Service Unavailable` by default. Enabling them
-requires `AUTOMATESTIG_OFFLINE_SIGNING_KEY` to name an existing key outside the
-application data directory; no API request creates or stores key material.
-Prefer signing through the CLI on an offline signing workstation.
-
-## STIG-Manager
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/stigman/config` | Get STIG-Manager config. |
-| POST | `/stigman/config` | Save STIG-Manager config. |
-| POST | `/stigman/test` | Test STIG-Manager connection. |
-| GET | `/stigman/collections` | List collections. |
-| GET | `/stigman/collections/{cid}/assets` | List collection assets. |
-| POST | `/stigman/sync/{cid}` | Sync collection assets. |
-| GET | `/stigman/diff/{cid}` | Diff collection assets. |
-| POST | `/stigman/push/{checklist_id}` | Push checklist reviews. |
-
-## Remote Scan
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| POST | `/scan/ssh` | Run SSH collection. |
-
-The request selects a STIG/check-pack plan and carries one SSH authentication object:
-
-```json
-{
-  "host": "filer.example.mil",
-  "port": 22,
-  "username": "scanner",
-  "auth": { "type": "password", "password": "session-secret" },
-  "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
-  "platform": "ontap"
-}
-```
-
-Key authentication uses `{"type":"key_file","path":"/approved/id_ed25519","passphrase":null}`. The configured server process must be able to read that path. Unknown server keys are rejected unless the operator explicitly enables trust-on-first-use enrollment; a changed enrolled key is always rejected.
-
-The endpoint executes the generated plan through the shared SSH collector. Stdout, stderr, exit status, timeout, protocol, and output-limit states remain separate. An ONTAP `Error:` envelope is a semantic failure even with SSH exit status zero. FreeBSD's `service auditd onestatus` exit status 1 is accepted only as the successfully observed stopped-service state.
-
-Complete collection returns HTTP `200`. Incomplete collection returns HTTP `207 Multi-Status` and an append-only `evaluation.incomplete` audit event, but no checklist is persisted. The response includes:
-
-- `collection_complete`: `false`.
-- `collection_errors`: map of plan data key to collection/validation error.
-- `evaluation_errors`: affected rule IDs and their collection/evaluation errors.
-- `id`: `null` and `persisted`: `false`.
-- `assessed_pass_pct`, `benchmark_coverage_pct`, and the deprecated
-  `compliance_pct` alias: `null`.
-- `server_key_fingerprint`: the observed SHA-256 SSH server-key fingerprint, when a key exchange completed.
-
-No failed command's stdout can be evaluated as compliance evidence. The diagnostic response identifies dependent `Not_Reviewed` rules, but no partial result can be edited, exported, or pushed as compliance evidence.
-
-## Assets
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/assets` | List assets. |
-| POST | `/assets` | Create asset. |
-| GET | `/assets/{id}` | Get asset. |
-| PUT | `/assets/{id}` | Update asset. |
-| DELETE | `/assets/{id}` | Delete asset. |
-| POST | `/assets/bulk-assign-stig` | Bulk assign STIGs. |
-| POST | `/assets/bulk-update` | Bulk update assets. |
-
-## Answer Files
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/answer-files` | List answer files. |
-| POST | `/answer-files` | Save answer file. |
-
-## Audit Trail
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/audit-log` | Read append-only checklist evaluation, import, edit, and deletion events with snapshots. |
-
-## Export
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/export/ckl/{id}` | Export CKL. |
-| GET | `/export/cklb/{id}` | Export CKLB. |
-| GET | `/export/all-zip` | Export all checklists as ZIP. |
+Only `/api/v1`, `/api/status`, and `/api/auth/check` perform runtime work.
+Unknown `/api/v1` paths return `404`, not a legacy tombstone. Use the verified
+selected-run handoff for changed reviews and STIG Manager for inventory, human
+review, governance, reporting, and long-term history. Preserved local data is
+available through the separate transition CLI, not the retired HTTP surface.

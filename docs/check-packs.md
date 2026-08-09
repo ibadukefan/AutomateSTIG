@@ -70,11 +70,26 @@ Checks use a snake_case `type` tag.
 | `command` | `command`, optional `pattern` and `is_regex` |
 | `all` | `checks` |
 | `any` | `checks` |
+| `bsd_audit_class_selection` | `classes`; reserved for the four reviewed OpenBSM rules |
+| `bsd_pf_enabled` | None |
 | `cisco_vty_session_limit` | None; the maximum is read from the verified organization policy |
+| `cisco_login_block_for` | None |
+| `cisco_interface_acl_deny_log_input` | None |
+| `cisco_persistent_audit_modification_protection` | None; emits NotApplicable when persistent logging is disabled |
+| `cisco_persistent_audit_deletion_protection` | None; emits NotApplicable when persistent logging is disabled |
+| `cisco_file_system_privilege` | None |
+| `cisco_single_local_fallback_account` | None |
+| `cisco_password_minimum_length` | None |
+| `cisco_management_idle_timeout` | None |
 | `cisco_logging_buffer_capacity` | None; the minimum byte count is read from the verified organization policy |
 | `cisco_logging_trap_severity` | None |
+| `cisco_redundant_authoritative_ntp_sources` | None; approved sources are read from the verified organization policy |
+| `cisco_ntp_authentication` | None |
+| `cisco_ssh_mac_algorithms` | None |
+| `cisco_ssh_encryption_algorithms` | None |
+| `cisco_syslog_server_count` | None |
 
-The first two typed Cisco checks fail closed unless evaluation includes a
+The three policy-bound Cisco checks fail closed unless evaluation includes a
 currently effective, asset-bound organization policy with a trusted Ed25519
 signature.
 

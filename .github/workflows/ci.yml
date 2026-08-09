@@ -155,14 +155,18 @@ jobs:
       - run: cargo clippy --workspace --all-targets -- -D warnings
 
   frontend-syntax:
-    name: Frontend syntax
+    name: Scanner frontend contracts
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: '24'
-      - run: node --check crates/gui/frontend/app.js
+      - name: Check and test the served scanner-first frontend
+        working-directory: crates/gui/frontend/scanner
+        run: |
+          npm run check
+          npm test
 
   archive-fuzz-smoke:
     name: Archive fuzz smoke
@@ -192,7 +196,7 @@ jobs:
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
-      - run: python3 -m py_compile scripts/disa_corpus/*.py scripts/validate-check-packs.py
+      - run: python3 -m py_compile scripts/disa_corpus/*.py scripts/validate-check-packs.py scripts/compare-commercial-scanners.py
       - run: python3 scripts/validate-check-packs.py
       - run: python3 -m unittest discover -s scripts/disa_corpus/tests -v
       - run: python3 scripts/disa_corpus/index_disa_downloads.py --seed-only --output /tmp/disa-download-index.json

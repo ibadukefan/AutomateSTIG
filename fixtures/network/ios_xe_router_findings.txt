@@ -1,4 +1,4 @@
-! Synthetic IOS-XE running-config in which every shipped automated rule is a finding.
+! Synthetic IOS-XE running-config in which every one of the 33 automated rules is a finding.
 version 17.9
 hostname rtr-findings-01
 !
@@ -6,19 +6,20 @@ service finger
 !
 logging userinfo
 logging buffered 4096 informational
+logging persistent url disk0:/logfile size 134217728 filesize 16384
 logging trap alerts
 logging host 10.10.5.14
-logging host 10.10.5.15
 file privilege 1
 !
 aaa new-model
-aaa authentication login LOGIN_AUTHENTICATION group radius local
+aaa authentication login LOGIN_AUTHENTICATION local group radius
 aaa common-criteria policy PASSWORD_POLICY
  min-length 8
 !
 username fallback-admin privilege 15 common-criteria-policy PASSWORD_POLICY password 7 XXXXXXXXXXXX
+username second-admin privilege 15 common-criteria-policy PASSWORD_POLICY password 7 XXXXXXXXXXXX
 !
-login block-for 900 attempts 3 within 120
+login block-for 60 attempts 4 within 60
 login on-failure log
 !
 archive
@@ -27,20 +28,21 @@ archive
 !
 ip access-list extended MANAGEMENT_NET
  permit ip 10.10.0.0 0.0.255.255 any
- deny   ip any any log-input
+ deny   ip any any
+!
+interface GigabitEthernet0/0
+ ip access-group MANAGEMENT_NET in
 !
 snmp-server group V3GROUP v3 auth read V3READ write V3WRITE
 snmp-server host 10.10.5.20 version 3 auth V3USER
 !
-ntp authentication-key 1 hmac-sha2-256 XXXXXX
+ntp authentication-key 1 md5 XXXXXX
 ntp authenticate
-ntp trusted-key 1
-ntp server 10.10.1.10 key 1
-ntp server 10.10.1.11 key 1
+ntp server 10.10.1.10
 !
 ip ssh version 2
-ip ssh server algorithm encryption aes256-ctr aes192-ctr aes128-ctr
-ip ssh server algorithm mac hmac-sha2-512 hmac-sha2-256
+ip ssh server algorithm encryption aes256-ctr 3des-cbc
+ip ssh server algorithm mac hmac-sha2-256 hmac-md5
 !
 crypto pki trustpoint DOD_CA
  enrollment url http://ca.example.mil

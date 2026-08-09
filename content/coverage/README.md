@@ -17,10 +17,10 @@ any pack not listed by `content/supported-targets.json`.
 removed from execution because the supported evidence cannot prove the full
 requirement. The current boundary is:
 
-- ONTAP: 22 reviewed, 16 automated, 6 manual.
-- FreeBSD/GPOS: 30 reviewed, 3 automated, 27 manual.
-- Cisco IOS-XE Router NDM: 34 reviewed, 21 automated, 13 manual.
-- Total: 86 reviewed candidate rules, 40 automated and 46 manual.
+- ONTAP V2R4: 15 automated, 7 manual, 22 reviewed, 29 full-benchmark rules.
+- FreeBSD/GPOS V3R3: 6 automated, 24 manual, 30 reviewed, 203 full-benchmark rules.
+- Cisco IOS-XE Router NDM V3R7: 33 automated, 9 manual, 42 reviewed, 42 full-benchmark rules.
+- Total: 54 automated, 40 manual, 94 reviewed, 274 full-benchmark rules.
 
 Regenerate all three inventories after a reviewed pack change:
 
@@ -29,7 +29,9 @@ python3 scripts/generate-checkpack-coverage.py --repo-root .
 python3 scripts/validate-check-packs.py
 ```
 
-The checked-in manifests are reviewed candidate inventories, not comprehensive
-ONTAP or GPOS benchmark manifests. They do not establish full-benchmark
-automation, external acceptance, accreditation, or suitability as an audit
-system of record.
+The checked-in coverage manifests are reviewed candidate inventories, not
+claims that every full-benchmark rule was classified or assessed. The bundled
+benchmark models provide the full denominators above. The difference between
+the reviewed and full counts remains outside the scanner profile and must be
+completed in STIG Manager; it does not establish external acceptance,
+accreditation, or suitability as an audit system of record.

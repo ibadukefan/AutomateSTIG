@@ -16,8 +16,8 @@ use regex::Regex;
 use sha2::{Digest, Sha256};
 
 const EXPECTED_SHIPPED_PACKS: usize = 3;
-const EXPECTED_TOP_LEVEL_DEFINITIONS: usize = 40;
-const EXPECTED_RECURSIVE_CHECK_NODES: usize = 44;
+const EXPECTED_TOP_LEVEL_DEFINITIONS: usize = 54;
+const EXPECTED_RECURSIVE_CHECK_NODES: usize = 58;
 const EXPECTED_COMPOUND_NODES: usize = 2;
 
 const CONTRACT_EXCLUSIONS: &[&str] = &[
@@ -345,6 +345,39 @@ fn populate_boolean(check: &Check, desired: bool, data: &mut SystemData) -> Resu
                 populate_boolean(child, desired && index == 0, data)?;
             }
         }
+        Check::BsdAuditClassSelection { .. } => {
+            data.command_outputs.insert(
+                "sha256 -q /etc/security/audit_class".to_string(),
+                "834a1fde758a45269874a5c0655046ca7354a7afa3cf9aee8d29bbfe5d8ab2fd".to_string(),
+            );
+            data.command_outputs.insert(
+                "sha256 -q /etc/security/audit_event".to_string(),
+                "124c60b738ec9eb36e497213fded40a7ed9023dc7854258f9c17d5cbcfffcff2".to_string(),
+            );
+            data.command_outputs.insert(
+                "service auditd onestatus".to_string(),
+                "auditd is running as pid 123.".to_string(),
+            );
+            data.command_outputs.insert(
+                "cat /etc/security/audit_control".to_string(),
+                if desired {
+                    "flags:all\nnaflags:all\n"
+                } else {
+                    "flags:no\nnaflags:no\n"
+                }
+                .to_string(),
+            );
+            data.command_outputs.insert(
+                "cat /etc/security/audit_user".to_string(),
+                "# no per-user exclusions\n".to_string(),
+            );
+        }
+        Check::BsdPfEnabled => {
+            data.command_outputs.insert(
+                "service pf onestatus".to_string(),
+                format!("Status: {}\n", if desired { "Enabled" } else { "Disabled" }),
+            );
+        }
         Check::CiscoVtySessionLimit => {
             data.organization_policy = Some(synthetic_organization_policy()?);
             data.network_config = Some(
@@ -377,6 +410,102 @@ fn populate_boolean(check: &Check, desired: bool, data: &mut SystemData) -> Resu
                 .to_string(),
             );
         }
+        Check::CiscoLoginBlockFor => {
+            data.network_config = Some(
+                if desired {
+                    "login block-for 900 attempts 3 within 120\nend\n"
+                } else {
+                    "login block-for 60 attempts 4 within 60\nend\n"
+                }
+                .to_string(),
+            );
+        }
+        Check::CiscoInterfaceAclDenyLogInput => {
+            data.network_config = Some(
+                format!(
+                    "interface GigabitEthernet0/0\n ip access-group EDGE in\nip access-list extended EDGE\n deny ip any any{}\nend\n",
+                    if desired { " log-input" } else { "" }
+                ),
+            );
+        }
+        Check::CiscoPersistentAuditModificationProtection
+        | Check::CiscoPersistentAuditDeletionProtection => {
+            data.network_config = Some(format!(
+                "logging persistent url disk0:/logfile\n{}end\n",
+                if desired { "" } else { "file privilege 10\n" }
+            ));
+        }
+        Check::CiscoFileSystemPrivilege => {
+            data.network_config = Some(format!(
+                "file privilege {}\nend\n",
+                if desired { 15 } else { 10 }
+            ));
+        }
+        Check::CiscoSingleLocalFallbackAccount => {
+            data.network_config = Some(
+                if desired {
+                    "aaa authentication login default group radius local\nusername fallback common-criteria-policy STIG password 7 X\nend\n"
+                } else {
+                    "aaa authentication login default local\nusername first password 7 X\nusername second password 7 X\nend\n"
+                }
+                .to_string(),
+            );
+        }
+        Check::CiscoPasswordMinimumLength => {
+            data.network_config = Some(format!(
+                "aaa new-model\naaa common-criteria policy STIG\n min-length {}\nend\n",
+                if desired { 15 } else { 8 }
+            ));
+        }
+        Check::CiscoManagementIdleTimeout => {
+            data.network_config = Some(format!(
+                "line con 0\n exec-timeout 5 0\nline vty 0 4\n exec-timeout {} 0\nend\n",
+                if desired { 5 } else { 30 }
+            ));
+        }
+        Check::CiscoRedundantAuthoritativeNtpSources => {
+            data.organization_policy = Some(synthetic_organization_policy()?);
+            data.network_config = Some(
+                if desired {
+                    "ntp server 192.0.2.10\nntp server 192.0.2.11\nend\n"
+                } else {
+                    "ntp server 192.0.2.10\nend\n"
+                }
+                .to_string(),
+            );
+        }
+        Check::CiscoNtpAuthentication => {
+            data.network_config = Some(
+                if desired {
+                    "ntp authenticate\nntp authentication-key 1 hmac-sha2-256 X\nntp trusted-key 1\nntp server 192.0.2.10 key 1\nend\n"
+                } else {
+                    "ntp authenticate\nntp authentication-key 1 md5 X\nntp server 192.0.2.10\nend\n"
+                }
+                .to_string(),
+            );
+        }
+        Check::CiscoSshMacAlgorithms => {
+            data.network_config = Some(format!(
+                "ip ssh version 2\nip ssh server algorithm mac {}\nend\n",
+                if desired { "hmac-sha2-256" } else { "hmac-md5" }
+            ));
+        }
+        Check::CiscoSshEncryptionAlgorithms => {
+            data.network_config = Some(format!(
+                "ip ssh version 2\nip ssh server algorithm encryption {}\nend\n",
+                if desired { "aes256-ctr" } else { "3des-cbc" }
+            ));
+        }
+        Check::CiscoSyslogServerCount => {
+            data.network_config = Some(
+                if desired {
+                    "logging host 192.0.2.20\nlogging 192.0.2.21\nend\n"
+                } else {
+                    "logging host 192.0.2.20\nend\n"
+                }
+                .to_string(),
+            );
+        }
     }
     Ok(())
 }
@@ -395,7 +524,8 @@ fn synthetic_organization_policy(
         "expires_at": (now + chrono::Duration::days(1)).to_rfc3339(),
         "rules": {
             "V-215807": {"max_concurrent_management_sessions": 2},
-            "V-215836": {"minimum_logging_buffer_bytes": 4096000}
+            "V-215836": {"minimum_logging_buffer_bytes": 4096000},
+            "V-215838": {"approved_authoritative_ntp_sources": ["192.0.2.10", "192.0.2.11"]}
         }
     });
     let raw = serde_json::to_vec(&document).map_err(|error| error.to_string())?;

@@ -6,10 +6,11 @@
 //! Key operations:
 //! - List collections, assets, STIGs
 //! - Push evaluation results (reviews) with Result Engine metadata
-//! - Create assets and assign STIGs
+//! - Sparse scanner-result delivery to existing assigned assets
 
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::net::{IpAddr, SocketAddr};
 use std::time::{Duration, Instant};
 
@@ -32,6 +33,7 @@ pub struct StigManagerConfig {
     pub client_secret: String,
 
     /// Collection ID to push to (if set as default).
+    #[serde(default)]
     pub default_collection_id: Option<String>,
 
     /// Whether to verify TLS certificates (disable for self-signed).
@@ -282,18 +284,31 @@ pub struct SmAsset {
     pub description: Option<String>,
     #[serde(rename = "collectionId")]
     pub collection_id: Option<String>,
+    #[serde(default)]
+    pub collection: Option<SmAssetCollection>,
+    #[serde(default)]
+    pub stigs: Vec<SmStig>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct SmAssetCollection {
+    #[serde(rename = "collectionId")]
+    pub collection_id: String,
+    #[serde(default)]
+    pub name: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SmStig {
     #[serde(rename = "benchmarkId")]
     pub benchmark_id: String,
+    #[serde(default)]
     pub title: Option<String>,
-    #[serde(rename = "lastRevisionStr")]
-    pub last_revision_str: Option<String>,
+    #[serde(rename = "revisionStr", alias = "lastRevisionStr", default)]
+    pub revision_str: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SmReview {
     #[serde(rename = "ruleId")]
     pub rule_id: String,
@@ -307,13 +322,49 @@ pub struct SmReview {
     pub result_engine: Option<SmResultEngine>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SmResultEngine {
     #[serde(rename = "type")]
     pub engine_type: String,
     pub product: String,
     pub version: String,
     pub time: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SmExistingReview {
+    #[serde(rename = "ruleId")]
+    pub rule_id: String,
+    pub result: String,
+    #[serde(rename = "autoResult", default)]
+    pub auto_result: bool,
+    pub status: SmReviewStatus,
+    #[serde(rename = "resultEngine", default)]
+    pub result_engine: Option<SmResultEngine>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+pub enum SmReviewStatus {
+    Label(String),
+    Object { label: String },
+}
+
+impl SmReviewStatus {
+    fn label(&self) -> &str {
+        match self {
+            Self::Label(label) | Self::Object { label } => label,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct SmReviewConflict {
+    pub rule_id: String,
+    pub reason: String,
+    pub existing_result: String,
+    pub existing_status: String,
+    pub existing_engine: Option<String>,
 }
 
 // --- Token response ---
@@ -493,12 +544,15 @@ impl StigManagerClient {
     pub async fn list_assets(&self, collection_id: &str) -> Result<Vec<SmAsset>, String> {
         let token = self.get_token().await?;
 
+        let mut url = reqwest::Url::parse(&format!("{}/assets", self.config.api_url))
+            .map_err(|error| format!("Invalid STIG Manager assets URL: {error}"))?;
+        url.query_pairs_mut()
+            .append_pair("collectionId", collection_id)
+            .append_pair("projection", "stigs");
+
         let resp = self
             .api_http
-            .get(format!(
-                "{}/assets?collectionId={}",
-                self.config.api_url, collection_id
-            ))
+            .get(url)
             .bearer_auth(&token)
             .send()
             .await
@@ -515,54 +569,60 @@ impl StigManagerClient {
     ) -> Result<Vec<SmStig>, String> {
         let token = self.get_token().await?;
 
+        let asset_id = parse_numeric_identifier("asset ID", asset_id)?;
+        let mut url = reqwest::Url::parse(&format!("{}/assets/{asset_id}", self.config.api_url))
+            .map_err(|error| format!("Invalid STIG Manager asset URL: {error}"))?;
+        url.query_pairs_mut().append_pair("projection", "stigs");
+
         let resp = self
             .api_http
-            .get(format!(
-                "{}/collections/{}/assets/{}/stigs",
-                self.config.api_url, collection_id, asset_id
-            ))
+            .get(url)
             .bearer_auth(&token)
             .send()
             .await
             .map_err(|e| format!("Request failed: {}", e))?;
 
-        parse_response(resp, "List assigned STIGs").await
+        let asset: SmAsset = parse_response(resp, "Get asset assignments").await?;
+        let actual_collection = asset
+            .collection
+            .as_ref()
+            .map(|collection| collection.collection_id.as_str())
+            .or(asset.collection_id.as_deref());
+        if actual_collection != Some(collection_id) {
+            return Err(format!(
+                "STIG Manager asset {asset_id} does not belong to collection {collection_id}"
+            ));
+        }
+        Ok(asset.stigs)
     }
 
-    /// Create an asset in a collection.
-    pub async fn create_asset(
+    /// Return current reviews so delivery can refuse to overwrite human work.
+    pub async fn list_asset_reviews(
         &self,
         collection_id: &str,
-        name: &str,
-        fqdn: Option<&str>,
-        ip: Option<&str>,
-        benchmark_id: &str,
-    ) -> Result<SmAsset, String> {
+        asset_id: &str,
+    ) -> Result<Vec<SmExistingReview>, String> {
         let token = self.get_token().await?;
-
-        // AssetCreateOrReplace requires name, collectionId, description, ip,
-        // noncomputing, metadata, and stigs.
-        let body = serde_json::json!({
-            "name": name,
-            "collectionId": collection_id,
-            "description": "",
-            "fqdn": fqdn,
-            "ip": ip.unwrap_or(""),
-            "noncomputing": false,
-            "metadata": {},
-            "stigs": [benchmark_id],
-        });
+        let collection_id = parse_numeric_identifier("collection ID", collection_id)?;
+        let asset_id = parse_numeric_identifier("asset ID", asset_id)?;
+        let mut url = reqwest::Url::parse(&format!(
+            "{}/collections/{collection_id}/reviews",
+            self.config.api_url
+        ))
+        .map_err(|error| format!("Invalid STIG Manager reviews URL: {error}"))?;
+        url.query_pairs_mut()
+            .append_pair("assetId", asset_id)
+            .append_pair("rules", "mapped");
 
         let resp = self
             .api_http
-            .post(format!("{}/assets", self.config.api_url))
+            .get(url)
             .bearer_auth(&token)
-            .json(&body)
             .send()
             .await
-            .map_err(|e| format!("Request failed: {}", e))?;
+            .map_err(|error| format!("Request failed: {error}"))?;
 
-        parse_response(resp, "Create asset").await
+        parse_response(resp, "List asset reviews").await
     }
 
     /// Push reviews (evaluation results) for an asset+STIG in a collection.
@@ -573,6 +633,8 @@ impl StigManagerClient {
         reviews: Vec<SmReview>,
     ) -> Result<serde_json::Value, String> {
         let token = self.get_token().await?;
+        let collection_id = parse_numeric_identifier("collection ID", collection_id)?;
+        let asset_id = parse_numeric_identifier("asset ID", asset_id)?;
 
         let resp = self
             .api_http
@@ -590,16 +652,25 @@ impl StigManagerClient {
         parse_response(resp, "Push reviews").await
     }
 
-    /// Convert an AutomateSTIG checklist to STIG-Manager reviews.
+    /// Convert only evidence-owned machine determinations to STIG Manager
+    /// reviews. Manual, imported, answer-file, collection-error, and untouched
+    /// Not Reviewed rows belong to STIG Manager and are intentionally omitted.
     pub fn checklist_to_reviews(
         checklist: &automatestig_core::models::checklist::Checklist,
     ) -> Vec<SmReview> {
+        use automatestig_core::models::finding::{FindingSource, FindingStatus};
+
         checklist
             .findings
             .iter()
+            .filter(|finding| {
+                matches!(
+                    finding.source,
+                    FindingSource::Automated | FindingSource::Evidence
+                ) && finding.status != FindingStatus::NotReviewed
+            })
             .map(|f| {
-                let is_automated =
-                    f.source == automatestig_core::models::finding::FindingSource::Automated;
+                let is_automated = f.source == FindingSource::Automated;
 
                 SmReview {
                     rule_id: f.rule_id.clone(),
@@ -608,20 +679,70 @@ impl StigManagerClient {
                     comment: f.comments.clone(),
                     auto_result: is_automated,
                     status: "saved".to_string(),
-                    result_engine: if is_automated {
-                        Some(SmResultEngine {
-                            engine_type: "script".to_string(),
-                            product: "AutomateSTIG".to_string(),
-                            version: env!("CARGO_PKG_VERSION").to_string(),
-                            time: Some(f.evaluated_at.to_rfc3339()),
-                        })
-                    } else {
-                        None
-                    },
+                    // Supplied evidence is conservatively not marked as an
+                    // autoResult, but the deterministic evaluator still owns
+                    // the result and identifies itself for safe future retries.
+                    result_engine: Some(SmResultEngine {
+                        engine_type: "script".to_string(),
+                        product: "AutomateSTIG".to_string(),
+                        version: env!("CARGO_PKG_VERSION").to_string(),
+                        time: Some(f.evaluated_at.to_rfc3339()),
+                    }),
                 }
             })
             .collect()
     }
+}
+
+fn parse_numeric_identifier<'a>(label: &str, value: &'a str) -> Result<&'a str, String> {
+    let value = value.trim();
+    if value.is_empty() || !value.bytes().all(|byte| byte.is_ascii_digit()) {
+        return Err(format!("STIG Manager {label} must be a numeric identifier"));
+    }
+    Ok(value)
+}
+
+/// Identify remote reviews that cannot be safely replaced by this scanner.
+/// Only a saved review whose result engine is AutomateSTIG is scanner-owned.
+pub fn scanner_review_conflicts(
+    proposed: &[SmReview],
+    existing: &[SmExistingReview],
+) -> Vec<SmReviewConflict> {
+    let existing_by_rule: HashMap<&str, &SmExistingReview> = existing
+        .iter()
+        .map(|review| (review.rule_id.as_str(), review))
+        .collect();
+
+    proposed
+        .iter()
+        .filter_map(|review| {
+            let existing = existing_by_rule.get(review.rule_id.as_str())?;
+            let status = existing.status.label();
+            let engine = existing
+                .result_engine
+                .as_ref()
+                .map(|engine| engine.product.clone());
+            let owned = status == "saved"
+                && engine
+                    .as_deref()
+                    .is_some_and(|product| product.eq_ignore_ascii_case("AutomateSTIG"));
+            if owned {
+                return None;
+            }
+
+            Some(SmReviewConflict {
+                rule_id: review.rule_id.clone(),
+                reason: if status != "saved" {
+                    format!("remote review is {status}, not saved")
+                } else {
+                    "remote review is not owned by AutomateSTIG".to_string()
+                },
+                existing_result: existing.result.clone(),
+                existing_status: status.to_string(),
+                existing_engine: engine,
+            })
+        })
+        .collect()
 }
 
 #[cfg(test)]
@@ -924,16 +1045,105 @@ mod tests {
         cl.findings.push(f2);
 
         let reviews = StigManagerClient::checklist_to_reviews(&cl);
-        assert_eq!(reviews.len(), 2);
+        assert_eq!(reviews.len(), 1);
 
         assert_eq!(reviews[0].rule_id, "SV-1r1_rule");
         assert_eq!(reviews[0].result, "fail");
         assert!(reviews[0].auto_result);
         assert!(reviews[0].result_engine.is_some());
+    }
 
-        assert_eq!(reviews[1].rule_id, "SV-2r1_rule");
-        assert_eq!(reviews[1].result, "pass");
-        assert!(!reviews[1].auto_result);
-        assert!(reviews[1].result_engine.is_none());
+    #[test]
+    fn supplied_evidence_is_delivered_as_scanner_owned_but_not_auto_result() {
+        use automatestig_core::models::asset::Asset;
+        use automatestig_core::models::checklist::{Checklist, ChecklistStigInfo};
+        use automatestig_core::models::finding::{Finding, FindingSource, FindingStatus};
+        use automatestig_core::models::stig::Severity;
+
+        let mut checklist = Checklist::new(
+            Asset::new("router01"),
+            ChecklistStigInfo {
+                stig_id: "Cisco_STIG".to_string(),
+                title: "Cisco".to_string(),
+                version: "1".to_string(),
+                release: "1".to_string(),
+                release_date: None,
+                uuid: None,
+                description: None,
+                filename: None,
+            },
+        );
+        let mut finding =
+            Finding::new_not_reviewed("V-1", "SV-1_rule", "V-1", "Evidence rule", Severity::Medium);
+        finding.source = FindingSource::Evidence;
+        finding.status = FindingStatus::Open;
+        checklist.findings.push(finding);
+
+        let reviews = StigManagerClient::checklist_to_reviews(&checklist);
+        assert_eq!(reviews.len(), 1);
+        assert!(!reviews[0].auto_result);
+        assert_eq!(
+            reviews[0].result_engine.as_ref().unwrap().product,
+            "AutomateSTIG"
+        );
+    }
+
+    #[test]
+    fn conflict_detection_protects_human_and_submitted_reviews() {
+        let proposed = vec![SmReview {
+            rule_id: "SV-1_rule".to_string(),
+            result: "fail".to_string(),
+            detail: "evidence".to_string(),
+            comment: String::new(),
+            auto_result: true,
+            status: "saved".to_string(),
+            result_engine: Some(SmResultEngine {
+                engine_type: "script".to_string(),
+                product: "AutomateSTIG".to_string(),
+                version: "0.3.0".to_string(),
+                time: None,
+            }),
+        }];
+
+        let human = vec![SmExistingReview {
+            rule_id: "SV-1_rule".to_string(),
+            result: "pass".to_string(),
+            auto_result: false,
+            status: SmReviewStatus::Object {
+                label: "saved".to_string(),
+            },
+            result_engine: None,
+        }];
+        assert_eq!(scanner_review_conflicts(&proposed, &human).len(), 1);
+
+        let submitted_ours = vec![SmExistingReview {
+            rule_id: "SV-1_rule".to_string(),
+            result: "fail".to_string(),
+            auto_result: true,
+            status: SmReviewStatus::Object {
+                label: "submitted".to_string(),
+            },
+            result_engine: proposed[0].result_engine.clone(),
+        }];
+        assert_eq!(
+            scanner_review_conflicts(&proposed, &submitted_ours).len(),
+            1
+        );
+
+        let saved_ours = vec![SmExistingReview {
+            rule_id: "SV-1_rule".to_string(),
+            result: "pass".to_string(),
+            auto_result: true,
+            status: SmReviewStatus::Label("saved".to_string()),
+            result_engine: proposed[0].result_engine.clone(),
+        }];
+        assert!(scanner_review_conflicts(&proposed, &saved_ours).is_empty());
+    }
+
+    #[test]
+    fn stig_manager_ids_are_numeric_before_becoming_path_segments() {
+        assert_eq!(parse_numeric_identifier("asset ID", " 42 ").unwrap(), "42");
+        assert!(parse_numeric_identifier("asset ID", "../42").is_err());
+        assert!(parse_numeric_identifier("asset ID", "asset-42").is_err());
     }
 }

@@ -1,6 +1,11 @@
 # DISA Import
 
-AutomateSTIG can import DISA STIG content from XCCDF XML files or ZIP archives.
+> **Maintainer/transition tooling:** Normal scanner users receive the exact
+> release-bundled ONTAP V2R4, GPOS V3R3, and IOS-XE Router NDM V3R7 profiles.
+> Broad XCCDF import and catalog management are not in the scanner-first GUI.
+
+The legacy CLI and protected content-maintainer tooling can import DISA STIG
+content from XCCDF XML files or ZIP archives.
 
 ## CLI
 
@@ -16,7 +21,7 @@ with no XCCDF members returns nonzero and leaves the batch uncommitted.
 
 ## Safety Limits
 
-Local CLI import, GUI upload, and connected DISA download all use the same
+Legacy CLI import, protected upload, and connected maintainer download use the same
 fail-closed archive reader:
 
 - 32 MiB maximum compressed ZIP input and 256 entries.
@@ -30,52 +35,30 @@ names, encrypted entries, links and special files, unsupported compression,
 and overlapping member regions. Runtime decompression is capped independently
 of ZIP metadata using a limit-plus-one probe.
 
-## GUI
+## Retired GUI/API surface
 
-Use `Standards` or `Reports` to import a DISA XCCDF XML or ZIP.
+The former `Standards` workspace and its import, catalog browsing, update, and
+fetch actions are historical behavior only. The scanner GUI does not embed or
+link that workspace. Every former unversioned content route—including
+`/api/library/import-disa`, `/api/disa/available`, `/api/disa/fetch`,
+`/api/disa/fetch-all`, and `/api/disa/check-updates`—is an extraction-free
+HTTP `410 Gone` tombstone with migration guidance. There is no operational
+curl or browser workflow for these routes.
 
-`Standards` also includes connected content operations:
-
-- Fetch from DISA.
-- Check updates.
-- Browse available.
-
-Those operations are opt-in network features.
-
-Connected fetch accepts HTTPS URLs only on the exact DISA host allowlist and
-revalidates every redirect. It rejects credentials, non-default ports,
-non-`.zip` paths, oversized `Content-Length` values, and streams no more than
-32 MiB even when the server omits or lies about that header.
-
-## API
-
-Upload DISA content with multipart form data:
-
-```bash
-curl -H "X-Auth-Token: $AUTOMATESTIG_AUTH_TOKEN" \
-  -F "file=@U_STIG.zip" \
-  http://127.0.0.1:<PORT>/api/library/import-disa
-```
-
-Connected DISA operations:
-
-- `GET /api/disa/available`
-- `POST /api/disa/fetch`
-- `POST /api/disa/fetch-all`
-- `GET /api/disa/check-updates`
-
-Import errors use HTTP status codes as well as the JSON envelope: `400` for a
-malformed archive/request, `413` for a resource limit, `415` for an unsupported
-upload type, `422` for missing/invalid XCCDF content, `500` for local storage,
-and `502` when connected remote content is invalid or oversized.
+Release maintainers use the protected content pipeline or the hidden,
+transition-only CLI described above. Normal users select an immutable bundled
+scanner profile; they do not import or refresh a general DISA catalog. Existing
+pre-scanner data can be inventoried and preserved with `automatestig migration
+inventory` and `automatestig migration export` without re-enabling the retired
+HTTP surface.
 
 ## Scanner Scope
 
 Importing a benchmark adds content to the local library; it does not create a
 new supported scanner. Automated evaluation is limited to the three curated
 packs in `content/supported-targets.json`. Other imported benchmarks remain
-useful for checklist conversion and review workflows, but are not advertised as
-device scanning capability.
+useful to the separate transition conversion utility, but are not advertised
+as device scanning capability.
 
 Import-time generation is limited to demonstrable Cisco IOS-XE running-config
 `config_line` patterns. ONTAP, FreeBSD, and out-of-scope benchmarks generate no

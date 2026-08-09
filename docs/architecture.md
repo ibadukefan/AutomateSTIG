@@ -12,7 +12,7 @@ AutomateSTIG is a Rust workspace with 10 crates and two binaries.
 | `parsers` | CKL, CKLB, XCCDF, and strict evidence v2 parsing/plan binding. |
 | `storage` | SQLite persistence. |
 | `stigpack` | `.stigpack` build, verify, import, manifest, hashes, and Ed25519 signing support. |
-| `integrations` | STIG-Manager export and push integration code. |
+| `integrations` | STIG Manager lookup, sparse-review projection, remote no-op verification, and handoff integration. |
 | `cli` | `automatestig` command-line binary. |
 | `gui` | `automatestig-gui` local web GUI and HTTP API. |
 | `tests` | Workspace integration tests. |
@@ -22,16 +22,24 @@ AutomateSTIG is a Rust workspace with 10 crates and two binaries.
 - `automatestig` - CLI.
 - `automatestig-gui` - local web GUI.
 
-## Evaluation Engine Flow
+## Scanner application flow
 
-1. Load a benchmark from the local library.
-2. Initialize checklist findings from benchmark rules.
-3. Evaluate device evidence/configuration with structured checks.
-4. Apply answer files.
-5. Merge prior checklist entries when requested.
-6. Export results or persist checklist state.
+1. Resolve one immutable release-bundled profile and exact target/revision.
+2. Bind an observed device fingerprint and preview a read-only adapter plan.
+3. Collect authorized live evidence or validate an offline evidence/configuration artifact.
+4. Reject unsupported versions and incomplete, denied, truncated, malformed, or ambiguous observations.
+5. Deterministically evaluate scanner-owned rules and bind evidence/content/build provenance.
+6. Persist the immutable run, encrypted replay evidence, and sparse handoff
+   state in one local transaction.
+7. Compare with current remote reviews. Confirm only an exact no-op remotely;
+   keep create/update rows in the verified selected-run handoff, and persist
+   technical or reconciliation receipts without making a changed-review write.
 
 Evaluation is deterministic and does not use AI or ML.
+
+Legacy library, answer-file, checklist merge, and conversion paths remain only
+for the non-destructive transition and maintainer tooling. They cannot promote
+manual/imported state into scanner-owned results.
 
 The release scanner boundary is exactly ONTAP 9.x, FreeBSD/GPOS, and Cisco
 IOS-XE Router NDM running configurations. See [Supported Targets](supported-targets.md);
@@ -50,7 +58,12 @@ Contents:
 - `data.db`
 - `library/`
 
-The GUI uses SQLite persistence through the storage crate.
+The GUI uses SQLite persistence through the storage crate. Scanner-first tables
+retain scan run state, immutable result/provenance JSON, separately encrypted
+and expiring replay evidence, a transactional handoff/outbox record, retry
+leases, conflicts, and receipts. Existing asset,
+checklist, answer-file, and audit tables are preserved during the migration
+window but do not become authoritative STIG Manager mirrors.
 
 ## Embedded GUI
 
@@ -58,8 +71,14 @@ The GUI is served by the `automatestig-gui` binary as a local web application. I
 
 ## Offline And Connected Boundaries
 
-No network calls are made by default. These features are connected and opt-in:
+Disconnected scan/evaluation makes no destination call. These features are
+connected and opt-in:
 
-- DISA fetch and update checks.
-- STIG-Manager calls.
+- Live STIG Manager collection/asset/assignment lookup, ownership preview,
+  exact no-op verification, and selected-run handoff generation. Changed
+  reviews cross the boundary only through a verified handoff into the existing
+  exact assignment.
 - Remote SSH collection.
+
+Broad DISA fetch/import is maintainer or legacy transition tooling, not a
+normal scanner GUI workflow.

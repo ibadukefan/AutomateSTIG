@@ -2,6 +2,14 @@
 
 AutomateSTIG evaluation is deterministic. The same benchmark, evidence/config input, answer files, check packs, and merge input produce the same evaluation outcome.
 
+> The scanner-first workflow uses an immutable release-bundled profile,
+> accepted target-adapter evidence, and no answer-file or prior-checklist merge.
+> It persists a short-lived scanner run and verified sparse handoff. Changed
+> scanner reviews use that handoff; human and manual work remains in STIG
+> Manager. The answer/merge/checklist paths below are retained for transition
+> compatibility and reproducibility, not as the normal scanner GUI. See
+> [Scanner Operations](scanner-operations.md).
+
 ## Data Flow
 
 1. Benchmarks define the STIG rules.
@@ -98,14 +106,15 @@ compliance score, and keyed `collection_errors`.
 
 Collection provenance is stored with every completed evaluation checklist.
 Incomplete or unsafe evaluations cannot be changed by answer files or merge
-input, exported, or pushed to STIG Manager. Recollect the target before making
+input, exported, or handed to STIG Manager. Recollect the target before making
 a compliance decision.
 
 ONTAP collection rejects an anchored CLI `Error:` even when SSH reports exit
 status zero. Its structured table checks require canonical headers and terminal
 row-count summaries, reject pagination/truncation, and evaluate every applicable
-row. FreeBSD automation is limited to three direct effective-state observations:
-the `auditd` service state, the configured timezone, and the 64-bit ASLR sysctl.
+row. FreeBSD automation is limited to six defensible rules: the `auditd`
+service state, four OpenBSM event-class selections bound to reviewed system-file
+digests, and the live PF state.
 `service auditd onestatus` exit status 1 is an accepted observation of a stopped
 service and therefore evaluates `Open`, while a transport or permission failure
 remains `Not_Reviewed`.
@@ -118,9 +127,9 @@ Marker-based v1 transcripts cannot prove command success and are rejected by def
 
 Validating the success path requires reachable hosts, credentials, network access, and working SSH collectors.
 
-## Export
+## Legacy conversion and export
 
-Use the GUI checklist detail actions or CLI commands:
+During the migration window, use the separate CLI conversion/export commands:
 
 ```bash
 automatestig convert --input server01.ckl --output server01.cklb --format cklb

@@ -1,105 +1,147 @@
-# GUI Guide
+# Scanner GUI Guide
 
-Run the GUI with:
+Run the local GUI with:
 
 ```bash
 cargo run --release --bin automatestig-gui
 ```
 
-The GUI is served locally, opens in the browser automatically, and stores data in `~/.automatestig`.
+The browser opens on localhost and uses four workspaces: **Scan**,
+**Deliveries**, **Scanner Content**, and **Connection**. STIG Manager remains
+the system of record for assets, assignments, human findings, comments,
+approval, dashboards, and reports.
 
-The five navigation pages are Assessments, Assets, Standards, Findings, and Settings.
+## First open
 
-## Assessments
+The first screen offers two clear paths:
 
-Assessments groups checklist workspaces by host. Selecting a row opens checklist detail. If a host has multiple checklists, a picker is shown.
+- **Connect to STIG Manager** for authoritative destination selection and a
+  connected scan; or
+- **Run disconnected** for an authorized air-gapped collection/evaluation and
+  one selected-run handoff.
 
-The page includes:
+Connection is optional for scanning, but it is required for live authoritative
+asset/assignment selection and remote ownership classification. The browser never stores API
+tokens, STIG Manager secrets, device passwords, or key passphrases in local or
+session storage.
 
-- Run assessment form with asset picker, STIG benchmark, target hostname,
-  platform, input type, and evidence/config file. Cisco configuration
-  assessments additionally require a signed organization-policy file and its
-  detached signature.
-- Remote Scan card for SSH collection.
+## Scan
 
-The asset picker fills the hostname field.
+In connected mode, select in order:
 
-Assessment summaries distinguish the pass rate among applicable assessed
-controls from coverage of the complete benchmark. `NotApplicable` and
-`NotReviewed` are excluded from the pass-rate denominator, while a defensible
-`NotApplicable` determination still counts toward coverage. Any `NotReviewed` controls keep the
-assessment in a needs-review state even when every assessed control passes.
-Imported, incomplete, unsafe, or otherwise unverified results are shown
-neutrally as **Unverified** whenever the API withholds their score fields.
-Their pass-rate and coverage grades are unavailable, even when every imported
-finding says `NotAFinding`.
+1. a STIG Manager collection;
+2. an existing asset in that collection;
+3. an exact assigned STIG that maps to a scanner profile; and
+4. a collection method and target endpoint or input file.
 
-The benchmark selector is limited to ONTAP, FreeBSD, and Cisco IOS-XE Router
-NDM; the platform and input type are derived from that benchmark. ONTAP and
-FreeBSD accept evidence v2 transcripts; IOS-XE accepts a running configuration.
-IOS-XE verifies the policy/signature pair against the dedicated offline-policy
-trust anchors before evaluation. The Remote Scan card is available only for
-ONTAP and FreeBSD.
+The assignment list explains why unsupported targets or revisions cannot run.
+AutomateSTIG never offers an **Add asset** or **Assign STIG** action.
 
-## Assets
+For ONTAP and FreeBSD, enter a per-run SSH password or absolute secure private
+key path, or submit strict plan-bound evidence. For IOS-XE, attach a complete
+running configuration plus its asset/revision-bound organization policy and
+detached signature. The policy-signing private key never belongs in this GUI.
 
-Assets is the inventory workspace.
+Choose **Preflight** before starting a run. Review:
 
-The page includes:
+- selected remote collection, asset, assignment, and revision;
+- observed device identity and software compatibility;
+- host-key or offline-artifact identity;
+- content and plan bindings;
+- required privilege; and
+- every read-only command or offline operation.
 
-- Inventory table.
-- Multi-select bulk actions: Assign STIG, Add tag, Enable, Disable.
-- Add Asset dialog with name, address, platform, and tags.
-- STIG-Manager sync/diff actions.
+A preflight token is short lived and bound to these nonsecret inputs. Changing
+the target, input, profile, or destination requires a new preflight.
 
-## Standards
+During collection, the page shows target connection, evidence collection,
+completeness, evaluation, and delivery-preview stages separately. Permission,
+timeout, transport, truncation, parser, version, or policy errors remain visible
+collection errors. They cannot become passing findings.
 
-Standards shows installed benchmarks with real CAT I, CAT II, and CAT III counts.
+## Delivery preview
 
-The GUI does not generate executable checks from imported XCCDF prose. Standards
-provide reference content; executable extensions require a trusted signed
-`.stigpack` and are stored separately from legacy generated files.
+After a complete run, Scan displays a read-only preview with scanner result
+counts, evidence/provenance links, and the exact remote changes:
 
-Content operations include:
+- create;
+- update of an AutomateSTIG-owned review;
+- unchanged AutomateSTIG review; or
+- human-review conflict.
 
-- Fetch from DISA.
-- Check updates.
-- Browse available.
-- Generate an offline pack only when an operator has explicitly configured an
-  external signing key outside application data; the default action is disabled.
-- Import benchmark pack or XCCDF ZIP.
+The preview also states how many manual and out-of-scope rules remain
+untouched. There is no finding editor. Use STIG Manager for human decisions.
 
-DISA fetch and update checks are connected features and require network access.
-For normal air-gap distribution, build and sign packs with the CLI on an
-offline signing workstation instead of making the GUI process handle a private
-key.
+If all rows are unchanged, **Confirm remote no-op** rechecks the authoritative
+reviews and records a technical receipt without writing a review. If any row is
+a create or update, download and verify the selected-run handoff, then reconcile
+it in STIG Manager. AutomateSTIG does not directly write those changes because
+the current STIG Manager API cannot atomically protect the preview from a
+concurrent human edit. A conflict blocks no-op verification and remains visible
+with the handoff and **Open in STIG Manager** link.
 
-## Findings
+## Deliveries
 
-Findings shows open findings across all checklists with severity, asset, standard, and status. Rows open checklist detail.
+Deliveries is a technical queue, not a compliance dashboard. Each row shows:
 
-## Settings
+- run and target identity;
+- destination collection, asset, and exact assignment;
+- collection completeness and sparse review counts;
+- preview-ready, exact-no-op verified, retryable, conflicted, or rejected
+  state;
+- immutable payload digest;
+- attempt timestamps and typed errors; and
+- exact-no-op or reconciliation receipt and deep link.
 
-Settings contains:
+Retry is available only when it is safe. It reuses the committed payload
+digest and rechecks current remote state. Resolve human conflicts in STIG
+Manager before retrying.
 
-- STIG-Manager integration using OAuth2/Keycloak.
-- Answer Files editor.
+## Scanner Content
 
-## Checklist Detail
+Scanner Content lists only release-bundled scanner profiles. It shows exact
+STIG ID/revision, target family, compatible-version grammar, collection method,
+profile/check-pack/benchmark hashes, scanner-owned/manual counts, trust, and
+live-acceptance readiness.
 
-Checklist detail opens from Assessments or Findings rows. It is not a navigation page.
+It is not a general DISA catalog. Broad content fetch, arbitrary XCCDF import,
+STIG assignment, and GUI content signing are not part of the scanner workflow.
 
-It includes:
+## Connection
 
-- Summary tiles for assessed pass rate and full-benchmark coverage. Unverified
-  imports never receive a green score or a **Fully assessed** status.
-- Per-severity CAT open counts.
-- Findings table with search and status filters.
-- Click-to-edit finding editor for status, details, and comments.
+Connection saves or tests one STIG Manager destination. **Test these values**
+uses the values currently in the form without silently persisting them. A blank
+secret may reuse the saved secret only when the API URL, token URL, and client
+ID are unchanged. **Disconnect** removes the active destination configuration
+from the local database but cannot erase secrets from backups or snapshots.
 
-Actions:
+The connection response shows sanitized server identity, version,
+capabilities, and effective privileges. It never echoes the client secret.
 
-- Export CKL.
-- Export CKLB.
-- Push to STIG-Manager.
-- Delete.
+## Disconnected runs
+
+Disconnected mode omits remote destination selection and ownership preview. A complete
+run can download one selected-run integrity handoff containing the approved
+sparse result plus native evidence/provenance. It does not create a local asset
+inventory, editable checklist workspace, or portfolio export.
+
+An incomplete run remains diagnostic and has no compliance handoff. CKLB is the
+supplemental, as is XCCDF 1.2. The tested STIG Manager transport maps the
+handoff's sparse JSON reviews to the Review API; native XCCDF/CKLB/CKL file
+import remains withheld until semantic round-trip acceptance passes for the
+supported consumer versions.
+
+The same handoff is available for a complete connected run when create/update
+rows are safety-gated. Connection does not make AutomateSTIG an alternate
+review workspace.
+
+## Legacy transition
+
+Existing databases remain readable during one deprecation release. Legacy
+asset, finding, answer-file, import, and portfolio records are inventory/export
+sources only; the scanner GUI does not let them create new compliance state.
+No legacy `Manual`, `Imported`, or `AnswerFile` result is relabeled as scanner
+automation.
+
+See [Scanner Operations](scanner-operations.md) for ownership, retention, and
+sparse review rules.

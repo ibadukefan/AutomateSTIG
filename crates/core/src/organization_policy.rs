@@ -132,6 +132,8 @@ pub struct OrganizationPolicyDocument {
 pub struct CiscoIosNdmRules {
     #[serde(rename = "V-215807")]
     pub concurrent_management_sessions: ConcurrentManagementSessions,
+    #[serde(rename = "V-215838")]
+    pub authoritative_ntp_sources: AuthoritativeNtpSources,
     #[serde(rename = "V-215836")]
     pub logging_buffer_capacity: LoggingBufferCapacity,
 }
@@ -146,6 +148,12 @@ pub struct ConcurrentManagementSessions {
 #[serde(deny_unknown_fields)]
 pub struct LoggingBufferCapacity {
     pub minimum_logging_buffer_bytes: u32,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct AuthoritativeNtpSources {
+    pub approved_authoritative_ntp_sources: Vec<String>,
 }
 
 /// A policy whose exact bytes passed this module's Ed25519 trust check.
@@ -285,6 +293,27 @@ impl OrganizationPolicyDocument {
                 "V-215836 minimum_logging_buffer_bytes must be 4096..=2147483647".to_string(),
             );
         }
+        let ntp_sources = &self
+            .rules
+            .authoritative_ntp_sources
+            .approved_authoritative_ntp_sources;
+        if !(2..=64).contains(&ntp_sources.len()) {
+            return Err(
+                "V-215838 approved_authoritative_ntp_sources must contain 2..=64 entries"
+                    .to_string(),
+            );
+        }
+        let endpoint =
+            Regex::new(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,254}$").expect("static NTP endpoint regex");
+        let mut normalized = std::collections::HashSet::new();
+        if ntp_sources.iter().any(|source| {
+            !endpoint.is_match(source) || !normalized.insert(source.to_ascii_lowercase())
+        }) {
+            return Err(
+                "V-215838 approved_authoritative_ntp_sources entries must be unique valid host/IP tokens"
+                    .to_string(),
+            );
+        }
         Ok(())
     }
 }
@@ -345,6 +374,12 @@ mod tests {
                 },
                 logging_buffer_capacity: LoggingBufferCapacity {
                     minimum_logging_buffer_bytes: 4_096_000,
+                },
+                authoritative_ntp_sources: AuthoritativeNtpSources {
+                    approved_authoritative_ntp_sources: vec![
+                        "192.0.2.10".to_string(),
+                        "192.0.2.11".to_string(),
+                    ],
                 },
             },
         }
@@ -486,5 +521,33 @@ mod tests {
         let raw = serde_json::to_vec(&document()).unwrap();
         let now = Utc.with_ymd_and_hms(2026, 7, 28, 12, 0, 0).unwrap();
         OrganizationPolicyDocument::validate_for_signing(&raw, now).unwrap();
+    }
+
+    #[test]
+    fn authoritative_ntp_source_policy_is_bounded_unique_and_token_safe() {
+        let now = Utc.with_ymd_and_hms(2026, 7, 28, 12, 0, 0).unwrap();
+        for sources in [
+            vec!["192.0.2.10".to_string()],
+            vec!["NTP.EXAMPLE.MIL".to_string(), "ntp.example.mil".to_string()],
+            vec!["192.0.2.10".to_string(), "bad source".to_string()],
+        ] {
+            let mut invalid = document();
+            invalid
+                .rules
+                .authoritative_ntp_sources
+                .approved_authoritative_ntp_sources = sources;
+            let raw = serde_json::to_vec(&invalid).unwrap();
+            let (public_key, signature) = sign_policy(&raw, 7);
+            assert!(VerifiedOrganizationPolicy::verify_and_parse(
+                &raw,
+                &signature,
+                &[public_key],
+                IOS_XE_STIG,
+                IOS_XE_RELEASE,
+                "router-01",
+                now,
+            )
+            .is_err());
+        }
     }
 }

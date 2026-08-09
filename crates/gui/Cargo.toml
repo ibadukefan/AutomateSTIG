@@ -3,7 +3,7 @@ name = "automatestig-gui"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "AutomateSTIG Desktop GUI — STIG evaluation and compliance automation"
+description = "AutomateSTIG difficult-device scanner and evidence handoff GUI"
 
 [[bin]]
 name = "automatestig-gui"
@@ -12,6 +12,7 @@ path = "src/main.rs"
 [dependencies]
 automatestig-core = { workspace = true }
 automatestig-collector = { workspace = true }
+automatestig-integrations = { workspace = true }
 automatestig-parsers = { workspace = true }
 automatestig-storage = { workspace = true }
 automatestig-stigpack = { workspace = true }
@@ -32,6 +33,7 @@ tempfile = { workspace = true }
 reqwest = { workspace = true }
 ring = { workspace = true }
 sha2 = { workspace = true }
+uuid = { workspace = true }
 hostname = "0.4"
 russh = { workspace = true }
 

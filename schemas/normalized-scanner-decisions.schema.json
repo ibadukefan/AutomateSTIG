@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.dev/schemas/normalized-scanner-decisions.schema.json",
+  "title": "Double-reviewed normalization of a proprietary scanner export",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "source_export_sha256",
+    "normalization",
+    "status_by_vuln"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://automatestig.dev/schemas/normalized-scanner-decisions.schema.json"
+    },
+    "schema": {
+      "const": "automatestig-normalized-scanner-decisions/v1"
+    },
+    "source_export_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "normalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "procedure_sha256",
+        "independent_of_oracle",
+        "reviewers"
+      ],
+      "properties": {
+        "method": { "const": "double_reviewed_transcription" },
+        "procedure_sha256": { "$ref": "#/$defs/sha256" },
+        "independent_of_oracle": { "const": true },
+        "reviewers": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/slug" }
+        }
+      }
+    },
+    "status_by_vuln": {
+      "type": "object",
+      "propertyNames": { "pattern": "^V-[0-9]+$" },
+      "additionalProperties": {
+        "enum": ["Finding", "NotAFinding", "NotApplicable"]
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+    }
+  }
+}

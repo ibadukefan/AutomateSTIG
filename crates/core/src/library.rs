@@ -12,7 +12,9 @@ use ed25519_dalek::{Signature, Verifier, VerifyingKey};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
+use crate::check_packs::CheckPackRegistry;
 use crate::checks::CheckPack;
+use crate::library_content::{read_answer_template_snapshot_locked, AnswerTemplateSnapshot};
 use crate::library_transaction::{LibraryInstallStep, LibraryTransaction, LibraryWriteGuard};
 use crate::models::stig::StigBenchmark;
 use crate::{Error, Result};
@@ -128,6 +130,90 @@ pub struct TrustedExecutablePackImport<'a> {
 pub struct TrustedExecutableFile {
     pub relative_path: PathBuf,
     pub bytes: Vec<u8>,
+}
+
+/// Owned benchmark, optional answer template, and executable checks read from
+/// one committed library generation. Writers can proceed after this value is
+/// returned without changing an in-flight collection or evaluation.
+#[derive(Debug)]
+pub struct EvaluationContentSnapshot {
+    benchmark: StigBenchmark,
+    check_pack_registry: CheckPackRegistry,
+    answer_template: Option<AnswerTemplateSnapshot>,
+}
+
+impl EvaluationContentSnapshot {
+    pub fn benchmark(&self) -> &StigBenchmark {
+        &self.benchmark
+    }
+
+    pub fn check_pack_registry(&self) -> &CheckPackRegistry {
+        &self.check_pack_registry
+    }
+
+    pub fn answer_template(&self) -> Option<&AnswerTemplateSnapshot> {
+        self.answer_template.as_ref()
+    }
+}
+
+/// Identifies whether a coherent evaluation snapshot failed while reading its
+/// benchmark/check content or its explicitly selected answer template.
+#[derive(Debug, thiserror::Error)]
+pub enum EvaluationContentSnapshotLoadError {
+    #[error("{0}")]
+    Content(#[from] Error),
+    #[error("failed to load answer template {filename:?}: {source}")]
+    AnswerTemplate {
+        filename: String,
+        #[source]
+        source: Error,
+    },
+}
+
+/// One owned ancillary file captured for an offline content pack.
+#[derive(Debug)]
+pub struct OfflinePackFile {
+    relative_path: PathBuf,
+    bytes: Vec<u8>,
+}
+
+impl OfflinePackFile {
+    pub fn relative_path(&self) -> &Path {
+        &self.relative_path
+    }
+
+    pub fn bytes(&self) -> &[u8] {
+        &self.bytes
+    }
+}
+
+/// Owned inputs for one offline pack, all read from the same committed library
+/// generation. The filesystem lock is released after this snapshot is built,
+/// so imports can proceed while callers perform signing and compression.
+#[derive(Debug)]
+pub struct OfflinePackContentSnapshot {
+    benchmarks: Vec<StigBenchmark>,
+    answer_templates: Vec<OfflinePackFile>,
+    custom_checks: Vec<TrustedExecutableFile>,
+    reviewed_check_packs: Vec<TrustedExecutableFile>,
+}
+
+impl OfflinePackContentSnapshot {
+    pub fn benchmarks(&self) -> &[StigBenchmark] {
+        &self.benchmarks
+    }
+
+    pub fn answer_templates(&self) -> &[OfflinePackFile] {
+        &self.answer_templates
+    }
+
+    pub fn custom_checks(&self) -> &[TrustedExecutableFile] {
+        &self.custom_checks
+    }
+
+    pub fn reviewed_check_packs(&self) -> &[TrustedExecutableFile] {
+        &self.reviewed_check_packs
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -338,27 +424,125 @@ impl StigLibrary {
         // index while holding the same lock as writers so an index/artifact pair
         // is always observed from one committed generation.
         let _guard = LibraryWriteGuard::acquire(&self.root)?;
+        load_benchmark_locked(&self.root, id)
+    }
+
+    /// Load every library input needed for evaluation under one guard. The
+    /// returned value is owned, so callers can retain it across a long-running
+    /// collection without holding the cross-process writer lock.
+    pub fn load_evaluation_content_snapshot(
+        &self,
+        id: &str,
+        answer_template_filename: Option<&str>,
+        trusted_public_keys: &[[u8; 32]],
+    ) -> std::result::Result<EvaluationContentSnapshot, EvaluationContentSnapshotLoadError> {
+        self.load_evaluation_content_snapshot_with_hook(
+            id,
+            answer_template_filename,
+            trusted_public_keys,
+            || Ok(()),
+        )
+    }
+
+    fn load_evaluation_content_snapshot_with_hook<F>(
+        &self,
+        id: &str,
+        answer_template_filename: Option<&str>,
+        trusted_public_keys: &[[u8; 32]],
+        hook: F,
+    ) -> std::result::Result<EvaluationContentSnapshot, EvaluationContentSnapshotLoadError>
+    where
+        F: FnOnce() -> Result<()>,
+    {
+        let guard = LibraryWriteGuard::acquire(&self.root)?;
+        let benchmark = load_benchmark_locked(&self.root, id)?;
+        let answer_template = answer_template_filename
+            .map(|filename| {
+                read_answer_template_snapshot_locked(&guard, filename).map_err(|source| {
+                    EvaluationContentSnapshotLoadError::AnswerTemplate {
+                        filename: filename.to_string(),
+                        source,
+                    }
+                })
+            })
+            .transpose()?;
+        hook()?;
+
+        let catalog = read_trusted_executable_catalog(&self.root)?;
+        let custom_checks = load_trusted_executable_files_locked(
+            &self.root,
+            "custom_checks",
+            trusted_public_keys,
+            &catalog,
+        )?;
+        let reviewed_check_packs = load_trusted_executable_files_locked(
+            &self.root,
+            "reviewed_check_packs",
+            trusted_public_keys,
+            &catalog,
+        )?;
+
+        let mut check_pack_registry = CheckPackRegistry::new();
+        check_pack_registry.load_embedded()?;
+        check_pack_registry.load_from_verified_library_files(&custom_checks, 20)?;
+        check_pack_registry.load_from_verified_library_files(&reviewed_check_packs, 30)?;
+
+        Ok(EvaluationContentSnapshot {
+            benchmark,
+            check_pack_registry,
+            answer_template,
+        })
+    }
+
+    /// Capture every input eligible for an offline pack under one library
+    /// guard. Executable files are included only after their retained signing
+    /// proof has been verified against the current trust store.
+    pub fn load_offline_pack_content_snapshot(
+        &self,
+        trusted_public_keys: &[[u8; 32]],
+    ) -> Result<OfflinePackContentSnapshot> {
+        self.load_offline_pack_content_snapshot_with_hook(trusted_public_keys, || Ok(()))
+    }
+
+    fn load_offline_pack_content_snapshot_with_hook<F>(
+        &self,
+        trusted_public_keys: &[[u8; 32]],
+        hook: F,
+    ) -> Result<OfflinePackContentSnapshot>
+    where
+        F: FnOnce() -> Result<()>,
+    {
+        let _guard = LibraryWriteGuard::acquire(&self.root)?;
         let index = read_index(&self.root)?;
-        let entry = index
-            .benchmarks
-            .get(id)
-            .ok_or_else(|| Error::StigNotFound(id.to_string()))?;
+        let mut benchmark_ids = index.benchmarks.keys().cloned().collect::<Vec<_>>();
+        benchmark_ids.sort();
+        let benchmarks = benchmark_ids
+            .iter()
+            .map(|id| load_benchmark_from_index_locked(&self.root, &index, id))
+            .collect::<Result<Vec<_>>>()?;
+        hook()?;
 
-        let path = self.root.join(&entry.data_path);
-        let content = std::fs::read_to_string(&path)?;
+        let answer_templates = load_offline_pack_files_locked(&self.root, "answer_templates")?;
+        let catalog = read_trusted_executable_catalog(&self.root)?;
+        let custom_checks = load_trusted_executable_files_locked(
+            &self.root,
+            "custom_checks",
+            trusted_public_keys,
+            &catalog,
+        )?;
+        let reviewed_check_packs = load_trusted_executable_files_locked(
+            &self.root,
+            "reviewed_check_packs",
+            trusted_public_keys,
+            &catalog,
+        )?;
 
-        // Verify integrity.
-        let hash = compute_sha256(content.as_bytes());
-        if hash != entry.sha256 {
-            return Err(Error::IntegrityError {
-                expected: entry.sha256.clone(),
-                actual: hash,
-            });
-        }
-
-        let benchmark: StigBenchmark =
-            serde_json::from_str(&content).map_err(|e| Error::LibraryError(e.to_string()))?;
-        Ok(benchmark)
+        Ok(OfflinePackContentSnapshot {
+            benchmarks,
+            answer_templates,
+            custom_checks,
+            reviewed_check_packs,
+        })
     }
 
     /// Add a benchmark to the library as a one-item atomic batch.
@@ -681,111 +865,180 @@ impl StigLibrary {
 
         let _guard = LibraryWriteGuard::acquire(&self.root)?;
         let catalog = read_trusted_executable_catalog(&self.root)?;
-        let directory_path = self.root.join(directory);
-        ensure_real_directory(&directory_path)?;
-
-        let mut paths = Vec::new();
-        collect_regular_files(&directory_path, &mut paths)?;
-        paths.sort();
-
-        let mut loaded = Vec::new();
-        let mut observed = HashSet::new();
-        let mut verified_proofs = HashSet::new();
-        for path in paths {
-            if !matches!(
-                path.extension().and_then(|value| value.to_str()),
-                Some("json" | "yaml" | "yml")
-            ) {
-                continue;
-            }
-            let relative_path = path.strip_prefix(&self.root).map_err(|_| {
-                Error::LibraryError(format!(
-                    "executable content escaped the library root: {}",
-                    path.display()
-                ))
-            })?;
-            let relative_string = relative_path
-                .to_str()
-                .ok_or_else(|| {
-                    Error::LibraryError(format!(
-                        "executable content path is not UTF-8: {}",
-                        relative_path.display()
-                    ))
-                })?
-                .replace('\\', "/");
-            observed.insert(relative_string.clone());
-
-            let entry = catalog.entries.get(&relative_string).ok_or_else(|| {
-                Error::LibraryError(format!(
-                    "executable content has no trusted signed provenance and will not run: {relative_string}"
-                ))
-            })?;
-            let proof = catalog.proofs.get(&entry.proof_id).ok_or_else(|| {
-                Error::LibraryError(format!(
-                    "trusted executable proof {} is missing for {relative_string}",
-                    entry.proof_id
-                ))
-            })?;
-            if verified_proofs.insert(entry.proof_id.clone()) {
-                verify_stored_executable_proof(&entry.proof_id, proof, trusted_public_keys)?;
-            }
-
-            let bytes = fs::read(&path)?;
-            let actual_sha256 = compute_sha256(&bytes);
-            if actual_sha256 != entry.sha256 {
-                return Err(Error::IntegrityError {
-                    expected: entry.sha256.clone(),
-                    actual: actual_sha256,
-                });
-            }
-            let manifest: ProvenanceManifest =
-                serde_json::from_str(&proof.manifest_json).map_err(|error| {
-                    Error::LibraryError(format!(
-                        "stored signed manifest {} is invalid: {error}",
-                        entry.proof_id
-                    ))
-                })?;
-            let manifest_file =
-                manifest
-                    .files
-                    .get(&entry.manifest_member_path)
-                    .ok_or_else(|| {
-                        Error::LibraryError(format!(
-                            "stored signed manifest does not authorize {} for {relative_string}",
-                            entry.manifest_member_path
-                        ))
-                    })?;
-            if manifest_file.sha256 != entry.sha256 {
-                return Err(Error::LibraryError(format!(
-                    "stored signed manifest hash does not match trusted catalog for {relative_string}"
-                )));
-            }
-            loaded.push(TrustedExecutableFile {
-                relative_path: relative_path.to_path_buf(),
-                bytes,
-            });
-        }
-
-        let prefix = format!("{directory}/");
-        for relative_path in catalog
-            .entries
-            .keys()
-            .filter(|path| path.starts_with(&prefix))
-        {
-            if !observed.contains(relative_path) {
-                return Err(Error::LibraryError(format!(
-                    "trusted executable content is missing: {relative_path}"
-                )));
-            }
-        }
-
-        Ok(loaded)
+        load_trusted_executable_files_locked(&self.root, directory, trusted_public_keys, &catalog)
     }
 
     /// Get the library root path.
     pub fn root(&self) -> &Path {
         &self.root
     }
+}
+
+fn load_benchmark_locked(root: &Path, id: &str) -> Result<StigBenchmark> {
+    let index = read_index(root)?;
+    load_benchmark_from_index_locked(root, &index, id)
+}
+
+fn load_benchmark_from_index_locked(
+    root: &Path,
+    index: &LibraryIndex,
+    id: &str,
+) -> Result<StigBenchmark> {
+    let entry = index
+        .benchmarks
+        .get(id)
+        .ok_or_else(|| Error::StigNotFound(id.to_string()))?;
+    let path = root.join(&entry.data_path);
+    let content = fs::read_to_string(&path)?;
+    let hash = compute_sha256(content.as_bytes());
+    if hash != entry.sha256 {
+        return Err(Error::IntegrityError {
+            expected: entry.sha256.clone(),
+            actual: hash,
+        });
+    }
+    serde_json::from_str(&content).map_err(|error| Error::LibraryError(error.to_string()))
+}
+
+fn load_offline_pack_files_locked(root: &Path, directory: &str) -> Result<Vec<OfflinePackFile>> {
+    let directory_path = root.join(directory);
+    ensure_real_directory(&directory_path)?;
+
+    let mut paths = Vec::new();
+    collect_regular_files(&directory_path, &mut paths)?;
+    paths.sort();
+    paths
+        .into_iter()
+        .map(|path| {
+            let relative_path = path
+                .strip_prefix(root)
+                .map_err(|_| {
+                    Error::LibraryError(format!(
+                        "offline-pack content escaped the library root: {}",
+                        path.display()
+                    ))
+                })?
+                .to_path_buf();
+            let relative = relative_path.to_str().ok_or_else(|| {
+                Error::LibraryError(format!(
+                    "offline-pack content path is not UTF-8: {}",
+                    relative_path.display()
+                ))
+            })?;
+            validate_managed_file_path(relative)?;
+            let bytes = fs::read(&path)?;
+            Ok(OfflinePackFile {
+                relative_path,
+                bytes,
+            })
+        })
+        .collect()
+}
+
+fn load_trusted_executable_files_locked(
+    root: &Path,
+    directory: &str,
+    trusted_public_keys: &[[u8; 32]],
+    catalog: &TrustedExecutableCatalog,
+) -> Result<Vec<TrustedExecutableFile>> {
+    let directory_path = root.join(directory);
+    ensure_real_directory(&directory_path)?;
+
+    let mut paths = Vec::new();
+    collect_regular_files(&directory_path, &mut paths)?;
+    paths.sort();
+
+    let mut loaded = Vec::new();
+    let mut observed = HashSet::new();
+    let mut verified_proofs = HashSet::new();
+    for path in paths {
+        if !matches!(
+            path.extension().and_then(|value| value.to_str()),
+            Some("json" | "yaml" | "yml")
+        ) {
+            continue;
+        }
+        let relative_path = path.strip_prefix(root).map_err(|_| {
+            Error::LibraryError(format!(
+                "executable content escaped the library root: {}",
+                path.display()
+            ))
+        })?;
+        let relative_string = relative_path
+            .to_str()
+            .ok_or_else(|| {
+                Error::LibraryError(format!(
+                    "executable content path is not UTF-8: {}",
+                    relative_path.display()
+                ))
+            })?
+            .replace('\\', "/");
+        observed.insert(relative_string.clone());
+
+        let entry = catalog.entries.get(&relative_string).ok_or_else(|| {
+            Error::LibraryError(format!(
+                "executable content has no trusted signed provenance and will not run: {relative_string}"
+            ))
+        })?;
+        let proof = catalog.proofs.get(&entry.proof_id).ok_or_else(|| {
+            Error::LibraryError(format!(
+                "trusted executable proof {} is missing for {relative_string}",
+                entry.proof_id
+            ))
+        })?;
+        if verified_proofs.insert(entry.proof_id.clone()) {
+            verify_stored_executable_proof(&entry.proof_id, proof, trusted_public_keys)?;
+        }
+
+        let bytes = fs::read(&path)?;
+        let actual_sha256 = compute_sha256(&bytes);
+        if actual_sha256 != entry.sha256 {
+            return Err(Error::IntegrityError {
+                expected: entry.sha256.clone(),
+                actual: actual_sha256,
+            });
+        }
+        let manifest: ProvenanceManifest =
+            serde_json::from_str(&proof.manifest_json).map_err(|error| {
+                Error::LibraryError(format!(
+                    "stored signed manifest {} is invalid: {error}",
+                    entry.proof_id
+                ))
+            })?;
+        let manifest_file = manifest
+            .files
+            .get(&entry.manifest_member_path)
+            .ok_or_else(|| {
+                Error::LibraryError(format!(
+                    "stored signed manifest does not authorize {} for {relative_string}",
+                    entry.manifest_member_path
+                ))
+            })?;
+        if manifest_file.sha256 != entry.sha256 {
+            return Err(Error::LibraryError(format!(
+                "stored signed manifest hash does not match trusted catalog for {relative_string}"
+            )));
+        }
+        loaded.push(TrustedExecutableFile {
+            relative_path: relative_path.to_path_buf(),
+            bytes,
+        });
+    }
+
+    let prefix = format!("{directory}/");
+    for relative_path in catalog
+        .entries
+        .keys()
+        .filter(|path| path.starts_with(&prefix))
+    {
+        if !observed.contains(relative_path) {
+            return Err(Error::LibraryError(format!(
+                "trusted executable content is missing: {relative_path}"
+            )));
+        }
+    }
+
+    Ok(loaded)
 }
 
 fn empty_trusted_executable_catalog() -> TrustedExecutableCatalog {
@@ -1303,6 +1556,224 @@ mod tests {
         let loaded = lib.load_benchmark("Test_STIG").unwrap();
         assert_eq!(loaded.title, "Test STIG");
         assert_eq!(loaded.rules.len(), 1);
+    }
+
+    #[test]
+    fn evaluation_snapshot_keeps_answer_and_benchmark_from_one_import_generation() {
+        let dir = TempDir::new().unwrap();
+        let root = dir.path().join("stiglib");
+        let mut library = StigLibrary::init(&root).unwrap();
+        let original = make_benchmark();
+        library.add_benchmark(&original).unwrap();
+        let mut original_answer = crate::answer::AnswerFile::new("original", Some("Test_STIG"));
+        original_answer.entries.push(crate::answer::AnswerEntry {
+            vuln_id: "V-1".to_string(),
+            status: crate::models::finding::FindingStatus::Open,
+            finding_details: None,
+            comments: None,
+            severity_override: None,
+            severity_override_justification: None,
+            force_override: false,
+        });
+        let original_answer_bytes = serde_json::to_vec(&original_answer).unwrap();
+        crate::library_content::write_answer_template_atomic(
+            &root,
+            "site.json",
+            &original_answer_bytes,
+        )
+        .unwrap();
+
+        let snapshot_library = StigLibrary::open(&root).unwrap();
+        let writer_library = StigLibrary::open(&root).unwrap();
+        let (snapshot_locked_sender, snapshot_locked_receiver) = std::sync::mpsc::channel();
+        let (release_snapshot_sender, release_snapshot_receiver) = std::sync::mpsc::channel();
+        let snapshot_worker = thread::spawn(move || {
+            snapshot_library.load_evaluation_content_snapshot_with_hook(
+                "Test_STIG",
+                Some("site.json"),
+                &[],
+                || {
+                    snapshot_locked_sender.send(()).unwrap();
+                    release_snapshot_receiver.recv().unwrap();
+                    Ok(())
+                },
+            )
+        });
+        snapshot_locked_receiver
+            .recv_timeout(Duration::from_secs(1))
+            .unwrap();
+
+        let mut replacement = original.clone();
+        replacement.title = "replacement generation".to_string();
+        replacement.rules[0].vuln_id = "V-2".to_string();
+        replacement.rules[0].rule_id = "SV-2r1_rule".to_string();
+        replacement.rules[0].group_id = "V-2".to_string();
+        let mut replacement_answer =
+            crate::answer::AnswerFile::new("replacement", Some("Test_STIG"));
+        replacement_answer.entries.push(crate::answer::AnswerEntry {
+            vuln_id: "V-2".to_string(),
+            status: crate::models::finding::FindingStatus::NotAFinding,
+            finding_details: None,
+            comments: None,
+            severity_override: None,
+            severity_override_justification: None,
+            force_override: false,
+        });
+        let replacement_answer_bytes = serde_json::to_vec(&replacement_answer).unwrap();
+        let (writer_started_sender, writer_started_receiver) = std::sync::mpsc::channel();
+        let (writer_locked_sender, writer_locked_receiver) = std::sync::mpsc::channel();
+        let writer_worker = thread::spawn(move || {
+            let mut writer_library = writer_library;
+            let mut writer_locked_sender = Some(writer_locked_sender);
+            writer_started_sender.send(()).unwrap();
+            let imports = [BenchmarkImport::new(
+                &replacement,
+                GeneratedCheckPackIntent::Keep,
+            )];
+            let files = [LibraryFileImport {
+                relative_path: "answer_templates/site.json",
+                bytes: &replacement_answer_bytes,
+            }];
+            writer_library.import_benchmarks_and_files_with_hook(
+                &imports,
+                &files,
+                &[],
+                move |_, _| {
+                    if let Some(sender) = writer_locked_sender.take() {
+                        sender.send(()).unwrap();
+                    }
+                    Ok(())
+                },
+            )
+        });
+
+        writer_started_receiver
+            .recv_timeout(Duration::from_secs(1))
+            .unwrap();
+        assert!(matches!(
+            writer_locked_receiver.recv_timeout(Duration::from_millis(50)),
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout)
+        ));
+        release_snapshot_sender.send(()).unwrap();
+
+        let snapshot = snapshot_worker.join().unwrap().unwrap();
+        assert_eq!(snapshot.benchmark().title, original.title);
+        assert_eq!(
+            snapshot.answer_template().unwrap().bytes,
+            original_answer_bytes
+        );
+        let snapshotted_answer = crate::answer::AnswerFile::from_bytes(
+            &snapshot.answer_template().unwrap().bytes,
+            "json",
+        )
+        .unwrap();
+        assert_eq!(snapshotted_answer.entries[0].vuln_id, "V-1");
+        writer_locked_receiver
+            .recv_timeout(Duration::from_secs(1))
+            .unwrap();
+        writer_worker.join().unwrap().unwrap();
+        assert_eq!(
+            StigLibrary::open(&root)
+                .unwrap()
+                .load_benchmark("Test_STIG")
+                .unwrap()
+                .title,
+            "replacement generation"
+        );
+        let installed_answer =
+            crate::library_content::read_answer_template_snapshot(&root, "site.json").unwrap();
+        let installed_answer =
+            crate::answer::AnswerFile::from_bytes(&installed_answer.bytes, "json").unwrap();
+        assert_eq!(installed_answer.entries[0].vuln_id, "V-2");
+    }
+
+    #[test]
+    fn offline_pack_snapshot_cannot_mix_concurrent_import_generations() {
+        let dir = TempDir::new().unwrap();
+        let root = dir.path().join("stiglib");
+        let mut library = StigLibrary::init(&root).unwrap();
+        let mut original = make_benchmark();
+        original.title = "original generation".to_string();
+        library
+            .import_benchmarks_and_files(
+                &[BenchmarkImport::new(
+                    &original,
+                    GeneratedCheckPackIntent::Keep,
+                )],
+                &[LibraryFileImport {
+                    relative_path: "answer_templates/site.yaml",
+                    bytes: b"generation: original\n",
+                }],
+            )
+            .unwrap();
+
+        let snapshot_library = StigLibrary::open(&root).unwrap();
+        let writer_library = StigLibrary::open(&root).unwrap();
+        let (snapshot_locked_sender, snapshot_locked_receiver) = std::sync::mpsc::channel();
+        let (release_snapshot_sender, release_snapshot_receiver) = std::sync::mpsc::channel();
+        let snapshot_worker = thread::spawn(move || {
+            snapshot_library.load_offline_pack_content_snapshot_with_hook(&[], || {
+                snapshot_locked_sender.send(()).unwrap();
+                release_snapshot_receiver.recv().unwrap();
+                Ok(())
+            })
+        });
+        snapshot_locked_receiver
+            .recv_timeout(Duration::from_secs(1))
+            .unwrap();
+
+        let mut replacement = original.clone();
+        replacement.title = "replacement generation".to_string();
+        let (writer_locked_sender, writer_locked_receiver) = std::sync::mpsc::channel();
+        let writer_worker = thread::spawn(move || {
+            let mut writer_library = writer_library;
+            let mut writer_locked_sender = Some(writer_locked_sender);
+            writer_library.import_benchmarks_and_files_with_hook(
+                &[BenchmarkImport::new(
+                    &replacement,
+                    GeneratedCheckPackIntent::Keep,
+                )],
+                &[LibraryFileImport {
+                    relative_path: "answer_templates/site.yaml",
+                    bytes: b"generation: replacement\n",
+                }],
+                &[],
+                move |_, _| {
+                    if let Some(sender) = writer_locked_sender.take() {
+                        sender.send(()).unwrap();
+                    }
+                    Ok(())
+                },
+            )
+        });
+
+        assert!(matches!(
+            writer_locked_receiver.recv_timeout(Duration::from_millis(50)),
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout)
+        ));
+        release_snapshot_sender.send(()).unwrap();
+
+        let snapshot = snapshot_worker.join().unwrap().unwrap();
+        assert_eq!(snapshot.benchmarks()[0].title, "original generation");
+        assert_eq!(snapshot.answer_templates().len(), 1);
+        assert_eq!(
+            snapshot.answer_templates()[0].bytes(),
+            b"generation: original\n"
+        );
+
+        writer_locked_receiver
+            .recv_timeout(Duration::from_secs(1))
+            .unwrap();
+        writer_worker.join().unwrap().unwrap();
+        let current = StigLibrary::open(&root)
+            .unwrap()
+            .load_offline_pack_content_snapshot(&[])
+            .unwrap();
+        assert_eq!(current.benchmarks()[0].title, "replacement generation");
+        assert_eq!(
+            current.answer_templates()[0].bytes(),
+            b"generation: replacement\n"
+        );
     }
 
     #[test]

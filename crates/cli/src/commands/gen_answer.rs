@@ -6,7 +6,7 @@ use automatestig_parsers::{ckl, cklb};
 
 use crate::ui;
 
-pub fn run(input: &str, output: &str, include_unreviewed: bool) -> Result<()> {
+pub fn run(input: &str, output: &str, include_unreviewed: bool, cli: &crate::Cli) -> Result<()> {
     let in_path = Path::new(input);
     let out_path = Path::new(output);
 
@@ -37,11 +37,13 @@ pub fn run(input: &str, output: &str, include_unreviewed: bool) -> Result<()> {
         .extension()
         .and_then(|e| e.to_str())
         .unwrap_or("json");
-    match out_ext {
-        "json" => answer_file.save_json(out_path)?,
-        "yaml" | "yml" => answer_file.save_yaml(out_path)?,
+    let bytes = match out_ext {
+        "json" => serde_json::to_vec_pretty(&answer_file)?,
+        "yaml" | "yml" => serde_norway::to_string(&answer_file)?.into_bytes(),
         _ => anyhow::bail!("Unsupported output format: .{}", out_ext),
-    }
+    };
+    super::ensure_safe_artifact_output(out_path, &[in_path], cli)?;
+    super::evaluate::write_evaluation_output_atomic(out_path, &bytes)?;
 
     println!();
     ui::success(&format!("{} entries generated", answer_file.entries.len()));

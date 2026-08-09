@@ -208,45 +208,57 @@
     {
       "vuln_id": "V-203767",
       "rule_id": "V-203767_automatestig_check",
-      "classification": "manual",
-      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
+      "classification": "automated",
+      "reason": "Running OpenBSM must select both successful and failed lo events in attributable and non-attributable masks without per-user exclusions",
+      "check_pack": "freebsd_gpos",
+      "check_id": "V-203767",
       "evidence_required": true,
       "validated_by": [
-        "docs/bsd-collection.md",
-        "crates/tests/tests/freebsd_pack_semantics.rs"
+        "content/check_packs/freebsd_gpos.json",
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test -p automatestig-tests --test freebsd_pack_semantics"
       ]
     },
     {
       "vuln_id": "V-203621",
       "rule_id": "V-203621_automatestig_check",
-      "classification": "manual",
-      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
+      "classification": "automated",
+      "reason": "Running OpenBSM must select both successful and failed aa events in attributable and non-attributable masks without per-user exclusions",
+      "check_pack": "freebsd_gpos",
+      "check_id": "V-203621",
       "evidence_required": true,
       "validated_by": [
-        "docs/bsd-collection.md",
-        "crates/tests/tests/freebsd_pack_semantics.rs"
+        "content/check_packs/freebsd_gpos.json",
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test -p automatestig-tests --test freebsd_pack_semantics"
       ]
     },
     {
       "vuln_id": "V-203774",
       "rule_id": "V-203774_automatestig_check",
-      "classification": "manual",
-      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
+      "classification": "automated",
+      "reason": "Running OpenBSM must select both successful and failed ad events in attributable and non-attributable masks without per-user exclusions",
+      "check_pack": "freebsd_gpos",
+      "check_id": "V-203774",
       "evidence_required": true,
       "validated_by": [
-        "docs/bsd-collection.md",
-        "crates/tests/tests/freebsd_pack_semantics.rs"
+        "content/check_packs/freebsd_gpos.json",
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test -p automatestig-tests --test freebsd_pack_semantics"
       ]
     },
     {
       "vuln_id": "V-203772",
       "rule_id": "V-203772_automatestig_check",
-      "classification": "manual",
-      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
+      "classification": "automated",
+      "reason": "Running OpenBSM must select successful and failed fr, fw, fa, fm, fc, and fd object events without per-user exclusions",
+      "check_pack": "freebsd_gpos",
+      "check_id": "V-203772",
       "evidence_required": true,
       "validated_by": [
-        "docs/bsd-collection.md",
-        "crates/tests/tests/freebsd_pack_semantics.rs"
+        "content/check_packs/freebsd_gpos.json",
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test -p automatestig-tests --test freebsd_pack_semantics"
       ]
     },
     {
@@ -289,11 +301,12 @@
       "vuln_id": "V-203711",
       "rule_id": "V-203711_automatestig_check",
       "classification": "manual",
-      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics: a selected reachable NTP peer and its reference identifier do not establish that the source is organization-approved and authoritative.",
       "evidence_required": true,
       "validated_by": [
         "docs/bsd-collection.md",
-        "crates/tests/tests/freebsd_pack_semantics.rs"
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test --workspace"
       ]
     },
     {
@@ -310,13 +323,11 @@
     {
       "vuln_id": "V-203714",
       "rule_id": "V-203714_automatestig_check",
-      "classification": "automated",
-      "reason": "The configured system time zone must be exactly UTC or GMT",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203714",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics without falsely failing valid local timestamps that carry a verifiable UTC offset.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
+        "docs/bsd-collection.md",
         "crates/tests/tests/freebsd_pack_semantics.rs",
         "cargo test --workspace"
       ]
@@ -324,13 +335,11 @@
     {
       "vuln_id": "V-203754",
       "rule_id": "V-203754_automatestig_check",
-      "classification": "automated",
-      "reason": "The effective 64-bit ASLR kernel setting must be enabled",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203754",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics because one 64-bit sysctl does not establish 32-bit, PIE, and stack ASLR state across supported FreeBSD versions.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
+        "docs/bsd-collection.md",
         "crates/tests/tests/freebsd_pack_semantics.rs",
         "cargo test --workspace"
       ]
@@ -338,12 +347,15 @@
     {
       "vuln_id": "V-203784",
       "rule_id": "V-203784_automatestig_check",
-      "classification": "manual",
-      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
+      "classification": "automated",
+      "reason": "The live PF status must report the packet filter enabled",
+      "check_pack": "freebsd_gpos",
+      "check_id": "V-203784",
       "evidence_required": true,
       "validated_by": [
-        "docs/bsd-collection.md",
-        "crates/tests/tests/freebsd_pack_semantics.rs"
+        "content/check_packs/freebsd_gpos.json",
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test -p automatestig-tests --test freebsd_pack_semantics"
       ]
     }
   ]

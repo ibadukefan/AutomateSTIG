@@ -27,7 +27,7 @@ SSH_SERVER_KEY_FINGERPRINT = re.compile(
 )
 GATES = ("ontap", "freebsd", "cisco_ios_xe", "stig_viewer", "stig_manager")
 EXPECTED_DEVICE_BENCHMARKS = {
-    "ontap": ("NetApp_ONTAP_DSC_9-x_STIG", "V2R2"),
+    "ontap": ("NetApp_ONTAP_DSC_9-x_STIG", "V2R4"),
     "freebsd": ("General_Purpose_Operating_System", "V3R3"),
     "cisco_ios_xe": ("Cisco_IOS-XE_Router_NDM_STIG", "V3R7"),
 }
@@ -523,14 +523,21 @@ def validate_artifact_semantics(
             item.get("name") for item in checks if isinstance(item, dict)
         }
         required_checks = {
-            "AutomateSTIG evaluates Cisco running config with a signed policy",
-            "source checklist retains verified organization-policy provenance",
-            "STIG-Manager integration configured over HTTPS",
+            "STIG Manager rig creates the existing exact Cisco V3R7 assignment",
+            "AutomateSTIG completes disconnected Cisco scanner run with signed policy",
+            "scanner run retains verified organization-policy provenance",
+            "automatestig scanner verify-handoff accepts selected-run bundle",
+            "fallback CKLB contains scanner-owned reviewed rows only",
+            "retired direct-push route returns 410",
+            "AutomateSTIG makes zero direct STIG Manager review writes",
+            "receiving operator revalidates the existing exact assignment",
+            "receiving operator reconciles only sparse-reviews.json",
+            "STIG Manager rule/status round-trip matches sparse handoff",
         }
         if not required_checks.issubset(passed_check_names):
             fail(
-                f"{field} artifact does not prove signed-policy evaluation "
-                "over the staging HTTPS bridge"
+                f"{field} artifact does not prove the disconnected scanner "
+                "handoff and explicit receiving-operator boundary"
             )
         metrics = document.get("metrics") or {}
         review_count = metrics.get("review_count")
@@ -538,11 +545,27 @@ def validate_artifact_semantics(
             not isinstance(review_count, int)
             or review_count <= 0
             or review_count != metrics.get("source_finding_count")
+            or review_count != metrics.get("fallback_sparse_rule_count")
+            or review_count != metrics.get("receiving_operator_review_writes")
+            or metrics.get("automatestig_direct_review_writes") != 0
+            or metrics.get("boundary") != "disconnected-selected-run-handoff"
             or metrics.get("benchmark_id") != "Cisco_IOS-XE_Router_NDM_STIG"
+            or metrics.get("assignment_revision") != "V3R7"
+            or not isinstance(metrics.get("full_assignment_rule_count"), int)
+            or metrics["full_assignment_rule_count"] <= review_count
+            or metrics.get("full_ckl_rule_count")
+            != metrics.get("full_assignment_rule_count")
             or not isinstance(metrics.get("rule_set_sha256"), str)
             or not SHA256.fullmatch(metrics["rule_set_sha256"])
+            or not isinstance(metrics.get("handoff_sha256"), str)
+            or not SHA256.fullmatch(metrics["handoff_sha256"])
+            or not isinstance(metrics.get("handoff_manifest_sha256"), str)
+            or not SHA256.fullmatch(metrics["handoff_manifest_sha256"])
         ):
-            fail(f"{field} artifact does not prove an exact non-empty review set")
+            fail(
+                f"{field} artifact does not prove an exact sparse handoff into "
+                "a larger existing assignment with zero product writes"
+            )
         if (
             not isinstance(metrics.get("organization_policy_sha256"), str)
             or not SHA256.fullmatch(metrics["organization_policy_sha256"])
@@ -558,12 +581,9 @@ def validate_artifact_semantics(
             or not SIGNER_FINGERPRINT.fullmatch(
                 metrics["organization_policy_signer_fingerprint"]
             )
-            or metrics.get("stig_manager_transport")
-            != "ephemeral-loopback-https"
         ):
             fail(
-                f"{field} artifact does not bind the verified Cisco policy "
-                "and HTTPS staging transport"
+                f"{field} artifact does not bind the verified Cisco policy"
             )
     elif gate == "recovery_drill":
         if document.get("schema") != "automatestig-transaction-recovery-drill/v1":

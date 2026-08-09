@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.invalid/schemas/scanner-scenario-v1.json",
+  "title": "AutomateSTIG scanner workflow scenario",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "actors",
+    "mode",
+    "target",
+    "input",
+    "destination",
+    "remote_state",
+    "delivery_attempts",
+    "receipt",
+    "expected",
+    "notes"
+  ],
+  "properties": {
+    "schema": { "const": "automatestig-scanner-scenario/v1" },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$" },
+    "actors": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["cybersecurity_analyst", "cybersecurity_manager"] }
+    },
+    "mode": { "enum": ["connected", "disconnected"] },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_id", "stig_id", "stig_release", "hostname", "software_version"],
+      "properties": {
+        "profile_id": { "type": "string" },
+        "stig_id": { "type": "string" },
+        "stig_release": { "type": "string", "pattern": "^V[0-9]+R[0-9]+$" },
+        "hostname": { "type": "string" },
+        "software_version": { "type": "string" }
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path", "sha256"],
+      "properties": {
+        "kind": { "enum": ["evidence_v2", "running_configuration"] },
+        "path": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "organization_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "signature"],
+          "properties": {
+            "path": { "type": "string" },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "signature": { "const": "ephemeral_test_signature_required" }
+          }
+        }
+      }
+    },
+    "destination": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["inventory_path", "collection_id", "asset_id", "assignment_id"],
+          "properties": {
+            "inventory_path": { "type": "string" },
+            "collection_id": { "type": "integer", "minimum": 1 },
+            "asset_id": { "type": "integer", "minimum": 1 },
+            "assignment_id": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "remote_state": { "type": ["string", "null"] },
+    "delivery_attempts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["attempt", "outcome", "http_status", "payload_sha256"],
+        "properties": {
+          "attempt": { "type": "integer", "minimum": 1 },
+          "outcome": { "enum": ["transient_error", "delivered"] },
+          "http_status": { "type": "integer", "minimum": 100, "maximum": 599 },
+          "payload_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "receipt": { "type": ["string", "null"] },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evaluation",
+        "collection_complete",
+        "automated_results",
+        "manual_untouched",
+        "out_of_scope_untouched",
+        "run_state",
+        "delivery_state",
+        "creates",
+        "updates",
+        "unchanged",
+        "conflicts",
+        "review_write_count",
+        "handoff"
+      ],
+      "properties": {
+        "evaluation": { "enum": ["pass", "fail", "incomplete"] },
+        "collection_complete": { "type": "boolean" },
+        "automated_results": { "type": "integer", "minimum": 0 },
+        "manual_untouched": { "type": "integer", "minimum": 0 },
+        "out_of_scope_untouched": { "type": "integer", "minimum": 0 },
+        "run_state": { "enum": ["preview_ready", "incomplete", "delivered", "conflicted"] },
+        "delivery_state": { "enum": ["none", "preview_ready", "delivered", "conflicted"] },
+        "creates": { "type": "integer", "minimum": 0 },
+        "updates": { "type": "integer", "minimum": 0 },
+        "unchanged": { "type": "integer", "minimum": 0 },
+        "conflicts": { "type": "integer", "minimum": 0 },
+        "review_write_count": { "type": "integer", "minimum": 0 },
+        "handoff": { "type": "boolean" }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  }
+}

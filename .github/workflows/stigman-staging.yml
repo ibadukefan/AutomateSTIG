@@ -1,4 +1,4 @@
-name: STIG Manager Staging Acceptance
+name: STIG Manager Scanner Handoff Acceptance
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   staging-acceptance:
-    name: AutomateSTIG -> STIG Manager round-trip
+    name: Disconnected scanner handoff -> operator reconcile
     runs-on: ubuntu-latest
     environment: external-acceptance
     env:

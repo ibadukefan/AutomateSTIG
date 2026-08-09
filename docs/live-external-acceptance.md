@@ -178,14 +178,22 @@ logs in the referenced assessment record and hash the JSON evidence.
 ## STIG Manager
 
 `staging/stigman/` uses the real STIG Manager, Keycloak, and MySQL containers.
-It provisions OAuth client credentials, imports authoritative XCCDF, generates
-an ephemeral Ed25519 key and currently effective signed Cisco policy, evaluates
-a Cisco device fixture in AutomateSTIG, pushes twice, compares every review, and
-round-trips the CKL served by STIG Manager. The GUI reaches the HTTP-only demo
-containers through one-run, loopback-only HTTPS bridges. Its child environment
-alone permits the exact `127.0.0.1` destination and the self-signed
-certificate. The numeric allowlist authorizes loopback without a broad private
-destination override; production validation is not bypassed:
+It provisions OAuth client credentials, imports the authoritative XCCDF as
+reference benchmark content, and creates a pre-existing Cisco asset with the
+exact V3R7 assignment. The scanner evaluates an authorized configuration with
+a currently effective signed Cisco policy and produces one selected-run sparse
+handoff. The acceptance runner verifies that bundle offline, proves the
+supplemental XCCDF mirrors its sparse rows, maps only `sparse-reviews.json`
+through a controlled receiver to the Review API, and reads the destination
+back to prove exact semantic agreement. It does not exercise STIG Manager's
+browser-side result-XCCDF import wizard. AutomateSTIG never creates the remote
+asset or assignment and never uses the GUI or retired unversioned push route to
+write a changed review.
+
+AutomateSTIG receives no STIG Manager URL or credential. It runs disconnected,
+so there is no HTTPS bridge and no invalid-certificate product exception. Only
+the explicit rig administrator/receiver script talks to the loopback HTTP
+containers:
 
 ```bash
 cargo build --release --locked --bin automatestig --bin automatestig-gui
@@ -196,10 +204,17 @@ python3 staging/stigman/run-staging-acceptance.py \
 docker compose -f staging/stigman/docker-compose.yml down -v
 ```
 
+The gate must run `automatestig scanner verify-handoff` before receiver mapping.
+The receiver then explicitly selects and revalidates the existing collection,
+asset, and exact assignment before mapping only `sparse-reviews.json`; it
+rejects extra, manual, `NotReviewed`, or outside-profile rows. The gate also
+asserts that the retired `/api/stigman/push/{checklist_id}` route returns
+`410 Gone` and that AutomateSTIG performed zero direct changed-review writes. An
+exact remote no-op may be verified through the versioned API, but it does not
+replace the changed-result handoff case.
+
 The policy private seed is deleted immediately after signing. The remaining
-temporary certificate, signed policy, trust anchor, and GUI state are removed
-on exit. Never copy these demo-only URL or certificate overrides into an
-operational deployment.
+signed policy, trust anchor, handoff, and GUI state are removed on exit.
 
 The project also runs this on demand in a protected environment. Production
 release evidence should use the deployed STIG Manager version in an authorized
@@ -230,6 +245,17 @@ python3 scripts/run-live-external-acceptance.py --repo-root . --require-live
 
 The HTTP smoke in the combined gate is supplementary; the full staging
 round-trip above is the STIG Manager release evidence.
+
+## Evaluate-STIG and commercial A/B evidence
+
+Live target acceptance proves AutomateSTIG agrees with an independent oracle;
+it does not prove an advantage over another product. Use the separate
+[controlled scanner comparison](commercial-scanner-comparison.md) on the same
+representative target states to compare Evaluate-STIG, Tenable, Nipper, or
+another scanner. That protocol requires repeated randomized runs, exact tool
+and content hashes, retained native exports, and an oracle established before
+the tool outputs are visible. Licensed products and their reports remain on the
+protected runner and are never fetched by normal CI.
 
 ## Authoritative references
 

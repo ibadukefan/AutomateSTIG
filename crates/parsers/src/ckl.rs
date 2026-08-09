@@ -57,7 +57,10 @@ pub fn parse_ckl_file(path: &Path) -> ParseResult<Checklist> {
 /// Parse CKL XML content into a Checklist.
 pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
     let mut reader = Reader::from_str(xml);
-    reader.config_mut().trim_text(true);
+    // Preserve whitespace across adjacent text/entity/CDATA events. Trimming
+    // each event independently turns `A &amp; B` into `A&B` and can silently
+    // corrupt check, fix, finding-detail, and comment text.
+    reader.config_mut().trim_text(false);
 
     let mut asset = Asset::default();
     let mut stig_info = ChecklistStigInfo {
@@ -104,6 +107,14 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
             Ok(Event::Start(ref e)) => {
                 let tag = String::from_utf8_lossy(e.name().as_ref()).to_string();
                 current_tag = tag.clone();
+
+                // `Asset::default()` uses a user-facing "Unknown" hostname.
+                // Parsing is an accumulation operation because XML text can be
+                // split across events, so discard that placeholder when the
+                // actual HOST_NAME element begins.
+                if in_asset && tag == "HOST_NAME" {
+                    asset.hostname.clear();
+                }
 
                 match tag.as_str() {
                     "ASSET" => in_asset = true,
@@ -196,23 +207,23 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                 current_tag.clear();
             }
 
-            Ok(Event::Text(ref e)) => {
-                let text = e
-                    .decode()
-                    .map_err(|error| ParseError::XmlError(error.to_string()))?;
-                let text = quick_xml::escape::unescape(&text)
-                    .map_err(|error| ParseError::XmlError(error.to_string()))?
-                    .into_owned();
+            Ok(event)
+                if matches!(
+                    event,
+                    Event::Text(_) | Event::CData(_) | Event::GeneralRef(_)
+                ) =>
+            {
+                let text = decode_xml_text_event(event)?;
 
                 if in_asset {
                     match current_tag.as_str() {
                         "ROLE" => asset.role = AssetRole::from_ckl_str(&text),
                         "ASSET_TYPE" => asset.asset_type = AssetType::from_ckl_str(&text),
-                        "HOST_NAME" => asset.hostname = text,
-                        "HOST_IP" => asset.ip_address = Some(text),
-                        "HOST_MAC" => asset.mac_address = Some(text),
-                        "HOST_FQDN" => asset.fqdn = Some(text),
-                        "TARGET_COMMENT" => asset.target_comment = Some(text),
+                        "HOST_NAME" => asset.hostname.push_str(&text),
+                        "HOST_IP" => append_optional_text(&mut asset.ip_address, &text),
+                        "HOST_MAC" => append_optional_text(&mut asset.mac_address, &text),
+                        "HOST_FQDN" => append_optional_text(&mut asset.fqdn, &text),
+                        "TARGET_COMMENT" => append_optional_text(&mut asset.target_comment, &text),
                         "TECH_AREA" => {
                             asset.technology_area =
                                 Some(TechnologyArea::from_ckl_str(&text).ok_or_else(|| {
@@ -230,8 +241,10 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                             }
                             asset.web_or_database = Some(value);
                         }
-                        "WEB_DB_SITE" => asset.web_db_site = Some(text),
-                        "WEB_DB_INSTANCE" => asset.web_db_instance = Some(text),
+                        "WEB_DB_SITE" => append_optional_text(&mut asset.web_db_site, &text),
+                        "WEB_DB_INSTANCE" => {
+                            append_optional_text(&mut asset.web_db_instance, &text)
+                        }
                         "MARKING" => {
                             classification = match text.as_str() {
                                 "CUI" => Classification::Cui,
@@ -245,23 +258,23 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                     }
                 } else if in_si_data {
                     match current_tag.as_str() {
-                        "SID_NAME" => si_name = text,
-                        "SID_DATA" => si_data = text,
+                        "SID_NAME" => si_name.push_str(&text),
+                        "SID_DATA" => si_data.push_str(&text),
                         _ => {}
                     }
                 } else if in_stig_data && in_vuln {
                     match current_tag.as_str() {
-                        "VULN_ATTRIBUTE" => vuln_attr_name = text,
-                        "ATTRIBUTE_DATA" => vuln_attr_data = text,
+                        "VULN_ATTRIBUTE" => vuln_attr_name.push_str(&text),
+                        "ATTRIBUTE_DATA" => vuln_attr_data.push_str(&text),
                         _ => {}
                     }
                 } else if in_vuln {
                     match current_tag.as_str() {
-                        "STATUS" => vuln_status = text,
-                        "FINDING_DETAILS" => vuln_finding_details = text,
-                        "COMMENTS" => vuln_comments = text,
-                        "SEVERITY_OVERRIDE" => vuln_severity_override = text,
-                        "SEVERITY_JUSTIFICATION" => vuln_severity_justification = text,
+                        "STATUS" => vuln_status.push_str(&text),
+                        "FINDING_DETAILS" => vuln_finding_details.push_str(&text),
+                        "COMMENTS" => vuln_comments.push_str(&text),
+                        "SEVERITY_OVERRIDE" => vuln_severity_override.push_str(&text),
+                        "SEVERITY_JUSTIFICATION" => vuln_severity_justification.push_str(&text),
                         _ => {}
                     }
                 }
@@ -285,6 +298,39 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
     checklist.classification = classification;
 
     Ok(checklist)
+}
+
+fn append_optional_text(target: &mut Option<String>, text: &str) {
+    target.get_or_insert_with(String::new).push_str(text);
+}
+
+fn decode_xml_text_event(event: Event<'_>) -> ParseResult<String> {
+    match event {
+        Event::Text(text) => {
+            let decoded = text
+                .decode()
+                .map_err(|error| ParseError::XmlError(error.to_string()))?;
+            quick_xml::escape::unescape(&decoded)
+                .map(|text| text.into_owned())
+                .map_err(|error| ParseError::XmlError(error.to_string()))
+        }
+        Event::CData(text) => text
+            .decode()
+            .map(|text| text.into_owned())
+            .map_err(|error| ParseError::XmlError(error.to_string())),
+        Event::GeneralRef(reference) => {
+            let reference = reference
+                .decode()
+                .map_err(|error| ParseError::XmlError(error.to_string()))?;
+            let encoded = format!("&{reference};");
+            quick_xml::escape::unescape(&encoded)
+                .map(|text| text.into_owned())
+                .map_err(|error| ParseError::XmlError(error.to_string()))
+        }
+        _ => Err(ParseError::XmlError(
+            "internal CKL parser error: expected XML text content".to_string(),
+        )),
+    }
 }
 
 /// Write a Checklist to CKL XML format.
@@ -930,6 +976,71 @@ mod tests {
         let loaded = parse_ckl_file(&path).unwrap();
         assert_eq!(loaded.asset.hostname, "webserver01");
         assert_eq!(loaded.findings.len(), 2);
+    }
+
+    #[test]
+    fn entity_cdata_and_unicode_text_round_trip_without_truncation() {
+        let mut checklist = parse_ckl(sample_ckl()).unwrap();
+        checklist.asset.target_comment = Some("Operations & Security <Tier 1>".to_string());
+        checklist.stig_info.description = Some(
+            "Preserve “quoted” text, apostrophes, ampersands & line breaks.\nSecond line."
+                .to_string(),
+        );
+        {
+            let finding = checklist.find_by_vuln_id_mut("V-254239").unwrap();
+            finding.discussion =
+                "A & B must remain distinct; compare x < y and y > x.\nUnicode: café “quote”."
+                    .to_string();
+            finding.check_content =
+                "Review A & B.\nThen verify <enabled> and the operator’s entry.".to_string();
+            finding.fix_text =
+                "Set value to \"A&B\"; track under POA&M TEST-ONTAP-001.".to_string();
+            finding.finding_details = "Observed A & B\nwith <unexpected> state.".to_string();
+            finding.comments = "Analyst’s note: \"retain & verify\".".to_string();
+            finding.severity_override = Some(Severity::Medium);
+            finding.severity_override_justification =
+                Some("Mission impact & compensating control <documented>.".to_string());
+        }
+
+        let expected_finding = checklist.find_by_vuln_id("V-254239").unwrap().clone();
+
+        let xml = write_ckl(&checklist).unwrap();
+        assert!(xml.contains("A &amp; B"));
+        let parsed = parse_ckl(&xml).unwrap();
+        let round_trip = parsed.find_by_vuln_id("V-254239").unwrap();
+
+        assert_eq!(parsed.asset.target_comment, checklist.asset.target_comment);
+        assert_eq!(
+            parsed.stig_info.description,
+            checklist.stig_info.description
+        );
+        assert_eq!(round_trip.discussion, expected_finding.discussion);
+        assert_eq!(round_trip.check_content, expected_finding.check_content);
+        assert_eq!(round_trip.fix_text, expected_finding.fix_text);
+        assert_eq!(round_trip.finding_details, expected_finding.finding_details);
+        assert_eq!(round_trip.comments, expected_finding.comments);
+        assert_eq!(
+            round_trip.severity_override_justification,
+            expected_finding.severity_override_justification
+        );
+    }
+
+    #[test]
+    fn parser_accumulates_adjacent_entity_cdata_and_numeric_reference_events() {
+        let xml = sample_ckl()
+            .replace(
+                "TLS 1.2 is not enabled in registry.",
+                "TLS &amp; PKI <![CDATA[remain <distinct>]]> &#x2014; verified",
+            )
+            .replace("Needs remediation", "Track under POA&amp;M TEST-ONTAP-001.");
+
+        let parsed = parse_ckl(&xml).unwrap();
+        let finding = parsed.find_by_vuln_id("V-254239").unwrap();
+        assert_eq!(
+            finding.finding_details,
+            "TLS & PKI remain <distinct> — verified"
+        );
+        assert_eq!(finding.comments, "Track under POA&M TEST-ONTAP-001.");
     }
 
     #[test]

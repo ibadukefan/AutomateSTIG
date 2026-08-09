@@ -24,10 +24,11 @@ EXPECTED_TARGETS: dict[str, dict[str, Any]] = {
     "netapp_ontap9": {
         "display_name": "NetApp ONTAP 9.x",
         "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
-        "stig_release": "V2R2",
+        "stig_release": "V2R4",
         "platform": "ontap",
         "evidence_mode": "ssh_transcript",
-        "expected_automated_checks": 16,
+        "expected_benchmark_rules": 29,
+        "expected_automated_checks": 15,
         "expected_reviewed_rules": 22,
         "check_pack": "content/check_packs/netapp_ontap9.json",
         "coverage_manifest": "content/coverage/current-checkpacks/netapp_ontap9.current.json",
@@ -39,7 +40,8 @@ EXPECTED_TARGETS: dict[str, dict[str, Any]] = {
         "stig_release": "V3R3",
         "platform": "bsd",
         "evidence_mode": "ssh_transcript",
-        "expected_automated_checks": 3,
+        "expected_benchmark_rules": 203,
+        "expected_automated_checks": 6,
         "expected_reviewed_rules": 30,
         "check_pack": "content/check_packs/freebsd_gpos.json",
         "coverage_manifest": "content/coverage/current-checkpacks/freebsd_gpos.current.json",
@@ -51,8 +53,9 @@ EXPECTED_TARGETS: dict[str, dict[str, Any]] = {
         "stig_release": "V3R7",
         "platform": "cisco_ios",
         "evidence_mode": "running_configuration",
-        "expected_automated_checks": 21,
-        "expected_reviewed_rules": 34,
+        "expected_benchmark_rules": 42,
+        "expected_automated_checks": 33,
+        "expected_reviewed_rules": 42,
         "check_pack": "content/check_packs/cisco_ios_xe_router_ndm.json",
         "coverage_manifest": "content/coverage/current-checkpacks/cisco_ios_xe_router_ndm.current.json",
         "acceptance_gate": "cisco_ios_xe",
@@ -61,10 +64,38 @@ EXPECTED_TARGETS: dict[str, dict[str, Any]] = {
 
 TYPED_CISCO_CHECKS = {
     "cisco_vty_session_limit": "V-215807",
+    "cisco_login_block_for": "V-215813",
+    "cisco_interface_acl_deny_log_input": "V-215818",
+    "cisco_persistent_audit_modification_protection": "V-215820",
+    "cisco_persistent_audit_deletion_protection": "V-215821",
+    "cisco_file_system_privilege": "V-215822",
+    "cisco_single_local_fallback_account": "V-215824",
+    "cisco_password_minimum_length": "V-215826",
+    "cisco_management_idle_timeout": "V-215833",
     "cisco_logging_buffer_capacity": "V-215836",
     "cisco_logging_trap_severity": "V-215837",
+    "cisco_redundant_authoritative_ntp_sources": "V-215838",
+    "cisco_ntp_authentication": "V-215843",
+    "cisco_ssh_mac_algorithms": "V-215844",
+    "cisco_ssh_encryption_algorithms": "V-215845",
+    "cisco_syslog_server_count": "V-220139",
 }
-KNOWN_CHECK_TYPES = {"command", "config_line", "all", "any", *TYPED_CISCO_CHECKS}
+TYPED_BSD_CHECKS = {"bsd_pf_enabled": "V-203784"}
+TYPED_BSD_AUDIT_CLASSES = {
+    "V-203767": ["lo"],
+    "V-203621": ["aa"],
+    "V-203774": ["ad"],
+    "V-203772": ["fr", "fw", "fa", "fm", "fc", "fd"],
+}
+KNOWN_CHECK_TYPES = {
+    "command",
+    "config_line",
+    "all",
+    "any",
+    "bsd_audit_class_selection",
+    *TYPED_BSD_CHECKS,
+    *TYPED_CISCO_CHECKS,
+}
 KNOWN_EXPECTED_TYPES = {"matches", "not_contains", "is_true", "match_count_at_least"}
 
 
@@ -134,15 +165,35 @@ def _validate_check(
                 errors,
                 top_level=False,
             )
+    elif check_type == "bsd_audit_class_selection":
+        if not top_level:
+            errors.append(f"{pack}: {vuln_id}: {check_type} must be top-level")
+        if set(check) != {"type", "classes"}:
+            errors.append(
+                f"{pack}: {vuln_id}: {check_type} accepts only type and classes"
+            )
+        expected_classes = TYPED_BSD_AUDIT_CLASSES.get(vuln_id)
+        if expected_classes is None:
+            errors.append(
+                f"{pack}: {vuln_id}: {check_type} is not approved for this rule"
+            )
+        elif check.get("classes") != expected_classes:
+            errors.append(
+                f"{pack}: {vuln_id}: {check_type} requires {expected_classes!r}"
+            )
     else:
         if not top_level:
             errors.append(f"{pack}: {vuln_id}: {check_type} must be top-level")
         if set(check) != {"type"}:
             errors.append(f"{pack}: {vuln_id}: {check_type} accepts only the type field")
-        if TYPED_CISCO_CHECKS[check_type] != vuln_id:
+        expected_vuln_id = {
+            **TYPED_BSD_CHECKS,
+            **TYPED_CISCO_CHECKS,
+        }[check_type]
+        if expected_vuln_id != vuln_id:
             errors.append(
                 f"{pack}: {vuln_id}: {check_type} is reserved for "
-                f"{TYPED_CISCO_CHECKS[check_type]}"
+                f"{expected_vuln_id}"
             )
 
 

@@ -1,12 +1,16 @@
 //! STIG-Manager integration.
 //!
 //! Provides data structures and offline JSON export functions for
-//! STIG-Manager compatibility. Connected API operations live in the GUI client.
+//! STIG-Manager compatibility, plus the canonical scanner-delivery API client.
+
+mod client;
+
+pub use client::*;
 
 use serde::{Deserialize, Serialize};
 
 use automatestig_core::models::checklist::Checklist;
-use automatestig_core::models::finding::{Finding, FindingSource};
+use automatestig_core::models::finding::{Finding, FindingSource, FindingStatus};
 
 /// STIG-Manager collection import format.
 #[derive(Debug, Serialize, Deserialize)]
@@ -93,8 +97,17 @@ pub struct ResultEngine {
 
 /// Convert a Checklist to STIG-Manager import format.
 pub fn checklist_to_stig_manager(checklist: &Checklist) -> StigManagerImport {
-    let reviews: Vec<StigManagerReview> =
-        checklist.findings.iter().map(finding_to_review).collect();
+    let reviews: Vec<StigManagerReview> = checklist
+        .findings
+        .iter()
+        .filter(|finding| {
+            matches!(
+                finding.source,
+                FindingSource::Automated | FindingSource::Evidence
+            ) && finding.status != FindingStatus::NotReviewed
+        })
+        .map(finding_to_review)
+        .collect();
 
     StigManagerImport {
         collection: String::new(), // Set by caller.
@@ -114,15 +127,14 @@ pub fn checklist_to_stig_manager(checklist: &Checklist) -> StigManagerImport {
 fn finding_to_review(finding: &Finding) -> StigManagerReview {
     let is_automated = finding.source == FindingSource::Automated;
 
-    let result_engine = if is_automated {
-        Some(ResultEngine {
-            engine_type: "script".to_string(),
-            product: "AutomateSTIG".to_string(),
-            version: env!("CARGO_PKG_VERSION").to_string(),
-        })
-    } else {
-        None
-    };
+    // Supplied evidence is not a live autoResult, but the deterministic
+    // AutomateSTIG evaluator still owns the result for provenance/conflict
+    // purposes.
+    let result_engine = Some(ResultEngine {
+        engine_type: "script".to_string(),
+        product: "AutomateSTIG".to_string(),
+        version: env!("CARGO_PKG_VERSION").to_string(),
+    });
 
     StigManagerReview {
         rule_id: finding.rule_id.clone(),
@@ -214,6 +226,50 @@ mod tests {
         assert_eq!(parsed.assets[0].stigs[0].reviews[0].result, "fail");
         assert!(parsed.assets[0].stigs[0].reviews[0].auto_result);
         assert!(parsed.assets[0].stigs[0].reviews[0].result_engine.is_some());
+    }
+
+    #[test]
+    fn export_contains_only_completed_scanner_owned_reviews() {
+        let mut checklist = golden_checklist();
+
+        let mut manual =
+            Finding::new_not_reviewed("V-2", "SV-2_rule", "V-2", "Manual rule", Severity::Medium);
+        manual.status = FindingStatus::Open;
+        manual.source = FindingSource::Manual;
+        checklist.findings.push(manual);
+
+        let mut evidence = Finding::new_not_reviewed(
+            "V-3",
+            "SV-3_rule",
+            "V-3",
+            "Supplied evidence rule",
+            Severity::Low,
+        );
+        evidence.status = FindingStatus::NotAFinding;
+        evidence.source = FindingSource::Evidence;
+        checklist.findings.push(evidence);
+
+        let mut error = Finding::new_not_reviewed(
+            "V-4",
+            "SV-4_rule",
+            "V-4",
+            "Collection error",
+            Severity::High,
+        );
+        error.source = FindingSource::CollectionError;
+        checklist.findings.push(error);
+
+        let output = checklist_to_stig_manager(&checklist);
+        let reviews = &output.assets[0].stigs[0].reviews;
+        assert_eq!(reviews.len(), 2);
+        assert_eq!(reviews[0].rule_id, "SV-1r1_rule");
+        assert!(reviews[0].auto_result);
+        assert_eq!(reviews[1].rule_id, "SV-3_rule");
+        assert!(!reviews[1].auto_result);
+        assert_eq!(
+            reviews[1].result_engine.as_ref().unwrap().product,
+            "AutomateSTIG"
+        );
     }
 
     #[test]

@@ -16,6 +16,7 @@ regex = { workspace = true }
 sha2 = { workspace = true }
 ed25519-dalek = { workspace = true }
 rust-embed = { workspace = true, features = ["include-exclude"] }
+quick-xml = { workspace = true }
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.61", features = ["Win32_Storage_FileSystem"] }

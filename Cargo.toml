@@ -18,7 +18,7 @@ version = "0.3.0"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/ibadukefan/AutomateSTIG"
-description = "Cross-platform STIG evaluation and compliance automation platform"
+description = "Difficult-device STIG scanner and evidence handoff companion for STIG Manager"
 
 [workspace.dependencies]
 # Serialization
@@ -71,6 +71,8 @@ uuid = { version = "1", features = ["v4", "serde"] }
 # File system
 walkdir = "2"
 tempfile = "3"
+same-file = "1"
+unicode-normalization = "0.1"
 
 # SSH / Remote
 # Deliberately omit russh's `rsa` default feature. RUSTSEC-2023-0071 has no

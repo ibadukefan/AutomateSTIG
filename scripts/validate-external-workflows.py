@@ -89,7 +89,7 @@ def main() -> None:
         (validate_cklb, root / "fixtures/cklb/windows_server_2022_sanitized.cklb"),
         (validate_stig_manager, root / "fixtures/exports/stig_manager_golden.json"),
         (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-07/U_Cisco_IOS-XE_Router_Y26M04_STIG.zip"),
-        (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R2_STIG.zip"),
+        (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R4_STIG.zip"),
     ]
     for fn, path in checks:
         if not path.is_file():

@@ -4,7 +4,10 @@ use uuid::Uuid;
 
 use super::asset::Asset;
 use super::finding::{Finding, FindingSource, FindingStatus, FindingSummary};
-use crate::check_packs::evaluation_plan_sha256;
+use crate::check_packs::{
+    evaluation_plan_sha256, evaluation_plan_sha256_with_answer_file,
+    evaluation_plan_sha256_with_answer_files,
+};
 use crate::remote::is_openssh_sha256_fingerprint;
 
 fn is_lowercase_sha256(value: &str) -> bool {
@@ -47,6 +50,14 @@ pub struct OrganizationPolicyProvenance {
     pub signature_verified: bool,
 }
 
+/// Immutable identity of an answer template applied during evaluation. The
+/// filename is a library-local identifier, never an arbitrary client path.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AnswerFileProvenance {
+    pub id: String,
+    pub sha256: String,
+}
+
 /// Durable collection provenance retained with the checklist.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EvaluationProvenance {
@@ -74,6 +85,13 @@ pub struct EvaluationProvenance {
     pub evaluation_plan_sha256: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization_policy: Option<OrganizationPolicyProvenance>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub answer_file: Option<AnswerFileProvenance>,
+    /// Ordered answer-file set used by repeatable CLI `--answer` inputs. The
+    /// singular field above remains for backward compatibility with GUI and
+    /// already-persisted provenance.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub answer_files: Vec<AnswerFileProvenance>,
     #[serde(default)]
     pub unsafe_legacy_evidence: bool,
 }
@@ -176,9 +194,13 @@ impl Checklist {
         let has_external_evaluation = self.findings.iter().any(|finding| {
             matches!(
                 finding.source,
-                FindingSource::Automated | FindingSource::Evidence
+                FindingSource::Automated | FindingSource::Evidence | FindingSource::AnswerFile
             )
         });
+        let has_answer_evaluation = self
+            .findings
+            .iter()
+            .any(|finding| finding.source == FindingSource::AnswerFile);
 
         if self
             .findings
@@ -290,22 +312,88 @@ impl Checklist {
                     }
                 }
 
+                if provenance.answer_file.is_some() && !provenance.answer_files.is_empty() {
+                    return Some(
+                        "evaluation provenance contains conflicting singular and plural answer-file bindings"
+                            .to_string(),
+                    );
+                }
+                let answer_files: Vec<&AnswerFileProvenance> = if provenance.answer_files.is_empty()
+                {
+                    provenance.answer_file.iter().collect()
+                } else {
+                    provenance.answer_files.iter().collect()
+                };
+                if has_answer_evaluation && answer_files.is_empty() {
+                    return Some(
+                        "answer-file findings are missing durable answer-file provenance"
+                            .to_string(),
+                    );
+                }
+                for answer_file in &answer_files {
+                    let canonical_id = crate::path_safety::safe_filename(&answer_file.id)
+                        .is_ok_and(|safe| safe == answer_file.id);
+                    let supported_extension = std::path::Path::new(&answer_file.id)
+                        .extension()
+                        .and_then(|extension| extension.to_str())
+                        .is_some_and(|extension| matches!(extension, "json" | "yaml" | "yml"));
+                    if !canonical_id || !supported_extension {
+                        return Some(
+                            "answer-file provenance contains an invalid library identifier"
+                                .to_string(),
+                        );
+                    }
+                    if !is_lowercase_sha256(&answer_file.sha256) {
+                        return Some(
+                            "answer-file provenance contains a malformed SHA-256 binding"
+                                .to_string(),
+                        );
+                    }
+                }
+
                 let benchmark_sha256 = provenance.benchmark_sha256.as_deref().unwrap();
                 let check_pack_sha256 = provenance.check_pack_sha256.as_deref().unwrap();
                 let recorded_evaluation_plan_sha256 =
                     provenance.evaluation_plan_sha256.as_deref().unwrap();
                 let stig_release =
                     format!("V{}R{}", self.stig_info.version, self.stig_info.release);
-                let expected_evaluation_plan_sha256 = match evaluation_plan_sha256(
-                    &self.stig_info.stig_id,
-                    &stig_release,
-                    benchmark_sha256,
-                    check_pack_sha256,
-                    provenance
-                        .organization_policy
-                        .as_ref()
-                        .map(|policy| policy.policy_sha256.as_str()),
-                ) {
+                let organization_policy_sha256 = provenance
+                    .organization_policy
+                    .as_ref()
+                    .map(|policy| policy.policy_sha256.as_str());
+                let calculated_evaluation_plan_sha256 = if !provenance.answer_files.is_empty() {
+                    let bindings: Vec<_> = provenance
+                        .answer_files
+                        .iter()
+                        .map(|answer_file| (answer_file.id.as_str(), answer_file.sha256.as_str()))
+                        .collect();
+                    evaluation_plan_sha256_with_answer_files(
+                        &self.stig_info.stig_id,
+                        &stig_release,
+                        benchmark_sha256,
+                        check_pack_sha256,
+                        organization_policy_sha256,
+                        &bindings,
+                    )
+                } else if let Some(answer_file) = &provenance.answer_file {
+                    evaluation_plan_sha256_with_answer_file(
+                        &self.stig_info.stig_id,
+                        &stig_release,
+                        benchmark_sha256,
+                        check_pack_sha256,
+                        organization_policy_sha256,
+                        &answer_file.sha256,
+                    )
+                } else {
+                    evaluation_plan_sha256(
+                        &self.stig_info.stig_id,
+                        &stig_release,
+                        benchmark_sha256,
+                        check_pack_sha256,
+                        organization_policy_sha256,
+                    )
+                };
+                let expected_evaluation_plan_sha256 = match calculated_evaluation_plan_sha256 {
                     Ok(digest) => digest,
                     Err(_) => {
                         return Some("evaluation-plan provenance could not be verified".to_string())
@@ -438,6 +526,8 @@ mod tests {
             check_pack_sha256: Some(check_pack_sha256),
             evaluation_plan_sha256: Some(evaluation_plan_sha256),
             organization_policy: None,
+            answer_file: None,
+            answer_files: Vec::new(),
             unsafe_legacy_evidence: false,
         }
     }
@@ -671,6 +761,115 @@ mod tests {
     }
 
     #[test]
+    fn external_export_binds_selected_answer_file_into_evaluation_plan() {
+        let mut cl = automated_checklist();
+        let mut provenance =
+            valid_evaluation_provenance(&cl.stig_info, EvaluationOrigin::ConfigFile);
+        let answer_sha256 = repeated_sha256('e');
+        provenance.answer_file = Some(AnswerFileProvenance {
+            id: "site-baseline.json".to_string(),
+            sha256: answer_sha256.clone(),
+        });
+        provenance.evaluation_plan_sha256 = Some(
+            evaluation_plan_sha256_with_answer_file(
+                &cl.stig_info.stig_id,
+                &format!("V{}R{}", cl.stig_info.version, cl.stig_info.release),
+                provenance.benchmark_sha256.as_deref().unwrap(),
+                provenance.check_pack_sha256.as_deref().unwrap(),
+                None,
+                &answer_sha256,
+            )
+            .unwrap(),
+        );
+        cl.evaluation_provenance = Some(provenance);
+        assert!(cl.external_export_block_reason().is_none());
+
+        cl.evaluation_provenance
+            .as_mut()
+            .unwrap()
+            .answer_file
+            .as_mut()
+            .unwrap()
+            .sha256 = repeated_sha256('f');
+        let reason = cl
+            .external_export_block_reason()
+            .expect("answer-file mutation must invalidate the plan binding");
+        assert!(reason.contains("does not match"), "{reason}");
+
+        let provenance = cl.evaluation_provenance.as_mut().unwrap();
+        provenance.answer_file.as_mut().unwrap().id = "../outside.json".to_string();
+        let reason = cl
+            .external_export_block_reason()
+            .expect("unsafe answer-file identifier must block export");
+        assert!(reason.contains("invalid library identifier"), "{reason}");
+    }
+
+    #[test]
+    fn answer_only_findings_require_bound_answer_provenance() {
+        let mut cl = automated_checklist();
+        cl.findings[0].source = FindingSource::AnswerFile;
+        let reason = cl
+            .external_export_block_reason()
+            .expect("answer-only result without provenance must be blocked");
+        assert!(reason.contains("provenance"), "{reason}");
+
+        cl.evaluation_provenance = Some(valid_evaluation_provenance(
+            &cl.stig_info,
+            EvaluationOrigin::ConfigFile,
+        ));
+        let reason = cl
+            .external_export_block_reason()
+            .expect("answer-only result without an answer binding must be blocked");
+        assert!(reason.contains("answer-file provenance"), "{reason}");
+    }
+
+    #[test]
+    fn external_export_binds_ordered_plural_answer_files() {
+        let mut cl = automated_checklist();
+        cl.findings[0].source = FindingSource::AnswerFile;
+        let mut provenance =
+            valid_evaluation_provenance(&cl.stig_info, EvaluationOrigin::ConfigFile);
+        provenance.answer_files = vec![
+            AnswerFileProvenance {
+                id: "baseline.json".to_string(),
+                sha256: repeated_sha256('d'),
+            },
+            AnswerFileProvenance {
+                id: "exceptions.yaml".to_string(),
+                sha256: repeated_sha256('e'),
+            },
+        ];
+        let bindings: Vec<_> = provenance
+            .answer_files
+            .iter()
+            .map(|answer_file| (answer_file.id.as_str(), answer_file.sha256.as_str()))
+            .collect();
+        provenance.evaluation_plan_sha256 = Some(
+            evaluation_plan_sha256_with_answer_files(
+                &cl.stig_info.stig_id,
+                &format!("V{}R{}", cl.stig_info.version, cl.stig_info.release),
+                provenance.benchmark_sha256.as_deref().unwrap(),
+                provenance.check_pack_sha256.as_deref().unwrap(),
+                None,
+                &bindings,
+            )
+            .unwrap(),
+        );
+        cl.evaluation_provenance = Some(provenance);
+        assert!(cl.external_export_block_reason().is_none());
+
+        cl.evaluation_provenance
+            .as_mut()
+            .unwrap()
+            .answer_files
+            .swap(0, 1);
+        let reason = cl
+            .external_export_block_reason()
+            .expect("answer-file application order must participate in the plan");
+        assert!(reason.contains("does not match"), "{reason}");
+    }
+
+    #[test]
     fn external_export_enforces_fingerprint_grammar_by_evaluation_origin() {
         let mut cl = Checklist::new(Asset::new("server01"), make_stig_info());
         cl.evaluation_provenance = Some(EvaluationProvenance {
@@ -687,6 +886,8 @@ mod tests {
             check_pack_sha256: None,
             evaluation_plan_sha256: None,
             organization_policy: None,
+            answer_file: None,
+            answer_files: Vec::new(),
             unsafe_legacy_evidence: false,
         });
 

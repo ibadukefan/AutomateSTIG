@@ -1,12 +1,11 @@
-//! AutomateSTIG CLI — STIG evaluation and compliance automation.
+//! AutomateSTIG CLI — difficult-device STIG scanning and evidence handoff.
 //!
 //! Usage:
-//!   automatestig evaluate --stig <STIG_ID> (--evidence <FILE> | --config <FILE>) [--answer <FILE>] [--output <OUTPUT>]
-//!   automatestig import --pack <STIGPACK_FILE>
-//!   automatestig library list
-//!   automatestig convert --input <FILE> --format <ckl|cklb|json>
-//!   automatestig verify --pack <STIGPACK_FILE>
-//!   automatestig summary --input <CKL_FILE>
+//!   automatestig collect --stig <STIG_ID> --host <HOST> --username <USER> --output <EVIDENCE_JSON>
+//!   automatestig evaluate --stig <STIG_ID> (--evidence <FILE> | --config <FILE>) [--output <OUTPUT>]
+//!   automatestig scanner verify-handoff <HANDOFF_ZIP>
+//!   automatestig migration inventory [--output <REPORT_JSON>]
+//!   automatestig migration export --output <TRANSITION_ZIP>
 
 mod commands;
 mod ui;
@@ -17,11 +16,12 @@ use clap::{Parser, Subcommand};
 #[command(
     name = "automatestig",
     version,
-    about = "AutomateSTIG — Cross-platform STIG evaluation and compliance automation",
-    long_about = "AutomateSTIG is a deterministic, air-gapped-first STIG evaluation platform.\n\
+    about = "AutomateSTIG — difficult-device STIG scanner and evidence handoff",
+    long_about = "AutomateSTIG is a deterministic, air-gapped-first scanner and evidence producer that supplements STIG Manager.\n\
                    Its v0.3 scanner targets are NetApp ONTAP 9.x and FreeBSD over\n\
                    plan-bound SSH evidence, plus Cisco IOS-XE Router NDM running configs.\n\n\
-                   All operations are 100% deterministic and reproducible."
+                   Changed reviews use a verified selected-run handoff; connected verification records only an exact remote no-op.\n\n\
+                   Evaluation is deterministic and reproducible."
 )]
 struct Cli {
     /// Enable verbose output.
@@ -99,8 +99,8 @@ enum Commands {
         #[arg(long, required_unless_present = "config", conflicts_with = "config")]
         evidence: Option<String>,
 
-        /// Unsafely assume marker-based v1 evidence commands succeeded.
-        #[arg(long, requires = "evidence", conflicts_with = "config")]
+        /// Transition-only: unsafely assume marker-based v1 evidence commands succeeded.
+        #[arg(long, requires = "evidence", conflicts_with = "config", hide = true)]
         allow_legacy_evidence: bool,
 
         /// Device running-config file (e.g. show running-config output) evaluated via config_line check packs.
@@ -119,8 +119,8 @@ enum Commands {
         #[arg(long, requires = "organization_policy")]
         organization_policy_signature: Option<String>,
 
-        /// Path(s) to answer file(s) (JSON/YAML).
-        #[arg(short, long)]
+        /// Transition-only path(s) to legacy answer files.
+        #[arg(short, long, hide = true)]
         answer: Vec<String>,
 
         /// Target hostname (auto-detected from evidence if not specified).
@@ -135,12 +135,13 @@ enum Commands {
         #[arg(short, long)]
         format: Option<String>,
 
-        /// Merge with previous checklist (preserves manual entries).
-        #[arg(long)]
+        /// Transition-only merge with a previous local checklist.
+        #[arg(long, hide = true)]
         merge: Option<String>,
     },
 
     /// Import a .stigpack content pack into the STIG library.
+    #[command(hide = true)]
     Import {
         /// Path to the .stigpack file.
         #[arg(short, long)]
@@ -148,6 +149,7 @@ enum Commands {
     },
 
     /// Verify a .stigpack file without importing.
+    #[command(hide = true)]
     Verify {
         /// Path to the .stigpack file.
         #[arg(short, long)]
@@ -155,12 +157,14 @@ enum Commands {
     },
 
     /// Manage the STIG library.
+    #[command(hide = true)]
     Library {
         #[command(subcommand)]
         action: LibraryAction,
     },
 
     /// Convert between checklist formats.
+    #[command(hide = true)]
     Convert {
         /// Input file path.
         #[arg(short, long)]
@@ -176,6 +180,7 @@ enum Commands {
     },
 
     /// Show summary of a checklist.
+    #[command(hide = true)]
     Summary {
         /// Input file path (.ckl, .cklb, or .json).
         #[arg(short, long)]
@@ -191,7 +196,7 @@ enum Commands {
     },
 
     /// Generate an answer file template from an existing checklist.
-    #[command(name = "gen-answer")]
+    #[command(name = "gen-answer", hide = true)]
     GenAnswer {
         /// Input checklist file.
         #[arg(short, long)]
@@ -207,6 +212,7 @@ enum Commands {
     },
 
     /// Export checklist to external formats.
+    #[command(hide = true)]
     Export {
         /// Input checklist file.
         #[arg(short, long)]
@@ -226,7 +232,7 @@ enum Commands {
     },
 
     /// Explicitly create a new external content-signing key pair.
-    #[command(name = "generate-signing-key")]
+    #[command(name = "generate-signing-key", hide = true)]
     GenerateSigningKey {
         /// Output path for the private key; the public key uses `.pub`.
         #[arg(long)]
@@ -234,7 +240,7 @@ enum Commands {
     },
 
     /// Sign an organization-policy artifact on an isolated signing host.
-    #[command(name = "sign-organization-policy")]
+    #[command(name = "sign-organization-policy", hide = true)]
     SignOrganizationPolicy {
         /// Exact organization-policy JSON bytes to sign.
         #[arg(long)]
@@ -250,7 +256,7 @@ enum Commands {
     },
 
     /// Build a .stigpack content pack.
-    #[command(name = "build-pack")]
+    #[command(name = "build-pack", hide = true)]
     BuildPack {
         /// Pack ID.
         #[arg(long)]
@@ -281,7 +287,7 @@ enum Commands {
     },
 
     /// Import DISA STIG content directly from XCCDF files or ZIP archives.
-    #[command(name = "disa-import")]
+    #[command(name = "disa-import", hide = true)]
     DisaImport {
         /// Path to DISA STIG ZIP archive or XCCDF XML file.
         #[arg(short, long)]
@@ -289,9 +295,22 @@ enum Commands {
     },
 
     /// Validate rule-by-rule coverage manifests.
+    #[command(hide = true)]
     Coverage {
         #[command(subcommand)]
         action: CoverageAction,
+    },
+
+    /// Inspect or export preserved local data during the scanner-first transition.
+    Migration {
+        #[command(subcommand)]
+        action: MigrationAction,
+    },
+
+    /// Inspect scanner artifacts exchanged with an existing STIG Manager workflow.
+    Scanner {
+        #[command(subcommand)]
+        action: ScannerAction,
     },
 
     /// Show application version and library status.
@@ -305,6 +324,64 @@ enum CoverageAction {
         /// Path to coverage manifest JSON.
         #[arg(short, long)]
         manifest: String,
+    },
+}
+
+#[derive(Subcommand)]
+enum MigrationAction {
+    /// Produce a read-only attribution and migration inventory as JSON.
+    Inventory {
+        /// Report path, or '-' for stdout (default: stdout).
+        #[arg(short, long)]
+        output: Option<String>,
+    },
+
+    /// Create a new, private transition ZIP without changing local state.
+    Export {
+        /// Create-new ZIP path outside AutomateSTIG-managed state.
+        #[arg(short, long)]
+        output: String,
+    },
+}
+
+#[derive(Subcommand)]
+enum ScannerAction {
+    /// Verify a selected-run handoff ZIP without importing or changing local state.
+    #[command(name = "verify-handoff")]
+    VerifyHandoff {
+        /// Selected-run handoff ZIP downloaded from AutomateSTIG.
+        zip: String,
+
+        /// Detached signature sidecar created on a protected signing host.
+        #[arg(long)]
+        signature: Option<String>,
+
+        /// Dedicated directory of trusted handoff-producer `.pub` keys.
+        #[arg(long, requires = "signature")]
+        trust_dir: Option<String>,
+    },
+
+    /// Sign a semantically verified handoff on a protected CLI host.
+    #[command(name = "sign-handoff")]
+    SignHandoff {
+        /// Selected-run handoff ZIP downloaded from AutomateSTIG.
+        zip: String,
+
+        /// Existing external raw 32-byte Ed25519 private key.
+        #[arg(long)]
+        signing_key: String,
+
+        /// Create-new detached signature sidecar path.
+        #[arg(short, long)]
+        output: String,
+    },
+
+    /// Explicitly create a dedicated external handoff-signing key pair.
+    #[command(name = "generate-signing-key")]
+    GenerateSigningKey {
+        /// Create-new private key path; the public key uses `.pub`.
+        #[arg(long)]
+        output: String,
     },
 }
 
@@ -404,7 +481,7 @@ fn main() {
             ref input,
             ref output,
             ref format,
-        } => commands::convert::run(input, output, format.as_deref()),
+        } => commands::convert::run(input, output, format.as_deref(), &cli),
         Commands::Summary {
             ref input,
             open_only,
@@ -414,13 +491,13 @@ fn main() {
             ref input,
             ref output,
             include_unreviewed,
-        } => commands::gen_answer::run(input, output, *include_unreviewed),
+        } => commands::gen_answer::run(input, output, *include_unreviewed, &cli),
         Commands::Export {
             ref input,
             ref output,
             ref format,
             ref collection,
-        } => commands::export::run(input, output, format, collection.as_deref()),
+        } => commands::export::run(input, output, format, collection.as_deref(), &cli),
         Commands::GenerateSigningKey { ref output } => {
             commands::build_pack::generate_signing_key(output)
         }
@@ -441,6 +518,27 @@ fn main() {
         Commands::Coverage { ref action } => match action {
             CoverageAction::Validate { ref manifest } => commands::coverage::validate(manifest),
         },
+        Commands::Migration { ref action } => match action {
+            MigrationAction::Inventory { ref output } => {
+                commands::migration::inventory(output.as_deref(), &cli)
+            }
+            MigrationAction::Export { ref output } => commands::migration::export(output, &cli),
+        },
+        Commands::Scanner { ref action } => match action {
+            ScannerAction::VerifyHandoff {
+                ref zip,
+                ref signature,
+                ref trust_dir,
+            } => commands::handoff::run(zip, signature.as_deref(), trust_dir.as_deref()),
+            ScannerAction::SignHandoff {
+                ref zip,
+                ref signing_key,
+                ref output,
+            } => commands::handoff::sign_handoff(zip, signing_key, output, &cli),
+            ScannerAction::GenerateSigningKey { ref output } => {
+                commands::handoff::generate_signing_key(output, &cli)
+            }
+        },
         Commands::Status => commands::status::run(&cli),
     };
 
@@ -453,7 +551,33 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::Cli;
-    use clap::{error::ErrorKind, Parser};
+    use clap::{error::ErrorKind, CommandFactory, Parser};
+
+    #[test]
+    fn product_help_exposes_scanning_handoff_and_migration_not_manager_duplicates() {
+        let help = Cli::command().render_long_help().to_string();
+        for command in ["collect", "evaluate", "scanner", "migration", "status"] {
+            assert!(help.contains(command), "missing scanner command {command}");
+        }
+        for retired in [
+            "gen-answer",
+            "convert",
+            "summary",
+            "disa-import",
+            "library",
+            "export",
+        ] {
+            let command_is_listed = help.lines().any(|line| {
+                line.trim_start()
+                    .strip_prefix(retired)
+                    .is_some_and(|suffix| suffix.chars().next().is_some_and(char::is_whitespace))
+            });
+            assert!(
+                !command_is_listed,
+                "manager-duplicate command leaked: {retired}"
+            );
+        }
+    }
 
     #[test]
     fn evaluate_requires_exactly_one_primary_input() {
@@ -510,5 +634,78 @@ mod tests {
             "--allow-legacy-evidence",
         ]);
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn migration_cli_separates_inventory_from_create_new_export() {
+        assert!(Cli::try_parse_from(["automatestig", "migration", "inventory"]).is_ok());
+        assert!(Cli::try_parse_from([
+            "automatestig",
+            "migration",
+            "inventory",
+            "--output",
+            "inventory.json",
+        ])
+        .is_ok());
+        assert!(Cli::try_parse_from(["automatestig", "migration", "export"]).is_err());
+        assert!(Cli::try_parse_from([
+            "automatestig",
+            "migration",
+            "export",
+            "--output",
+            "transition.zip",
+        ])
+        .is_ok());
+    }
+
+    #[test]
+    fn scanner_handoff_verification_uses_a_positional_read_only_artifact() {
+        assert!(Cli::try_parse_from([
+            "automatestig",
+            "scanner",
+            "verify-handoff",
+            "selected-run.zip",
+        ])
+        .is_ok());
+        assert!(Cli::try_parse_from([
+            "automatestig",
+            "scanner",
+            "verify-handoff",
+            "selected-run.zip",
+            "--signature",
+            "selected-run.zip.signature.json",
+            "--trust-dir",
+            "/approved/handoff-keys",
+        ])
+        .is_ok());
+        assert!(Cli::try_parse_from([
+            "automatestig",
+            "scanner",
+            "verify-handoff",
+            "selected-run.zip",
+            "--trust-dir",
+            "/approved/handoff-keys",
+        ])
+        .is_err());
+        assert!(Cli::try_parse_from(["automatestig", "scanner", "verify-handoff"]).is_err());
+        assert!(Cli::try_parse_from([
+            "automatestig",
+            "scanner",
+            "sign-handoff",
+            "selected-run.zip",
+            "--signing-key",
+            "/protected/producer.key",
+            "--output",
+            "selected-run.zip.signature.json",
+        ])
+        .is_ok());
+        assert!(Cli::try_parse_from([
+            "automatestig",
+            "scanner",
+            "generate-signing-key",
+            "--output",
+            "/protected/producer.key",
+        ])
+        .is_ok());
     }
 }

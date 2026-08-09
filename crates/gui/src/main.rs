@@ -1,11 +1,13 @@
 //! AutomateSTIG Desktop GUI.
 //!
-//! Launches a local web server and opens the browser to the UI.
-//! All communication is localhost-only — no external network calls.
+//! Launches a web server and, in the default loopback desktop mode, opens the
+//! browser to the UI. Network exposure requires an explicit bind and token.
 
 mod api;
 pub mod disa;
 mod outbound;
+mod scanner_api;
+mod scanner_runs;
 pub mod secrets;
 pub mod ssh;
 mod state;
@@ -34,9 +36,7 @@ async fn main() {
 
     // Initialize application state.
     let state = AppState::init().expect("Failed to initialize application state");
-
-    // Clone for background tasks before moving into router.
-    let update_bg_state = state.clone();
+    scanner_api::start_evidence_retention_sweeper(state.clone());
 
     // Bind address: PORT may set the port for hosted platforms.
     // Network exposure must be explicit via AUTOMATESTIG_BIND.
@@ -147,28 +147,6 @@ async fn main() {
     eprintln!("  Press Ctrl+C to stop.");
     eprintln!();
 
-    // Start background STIG update checker (every 24 hours) only if
-    // the user has opted in. Air-gapped by default.
-    tokio::spawn(async move {
-        // Check if background updates are enabled in config.
-        let enabled = match update_bg_state.db().get_config("auto_update_enabled") {
-            Ok(value) => value.map(|value| value == "true").unwrap_or(false),
-            Err(error) => {
-                tracing::error!("Failed to read background-update setting: {error}");
-                false
-            }
-        };
-
-        if enabled {
-            tracing::info!("Background STIG update checker enabled");
-            disa::start_background_checker(update_bg_state, 24).await;
-        } else {
-            tracing::info!(
-                "Background update checker disabled (air-gapped mode). Enable in Settings."
-            );
-        }
-    });
-
     // Open browser for local desktop mode.
     if is_loopback {
         if let Err(e) = open::that(&url) {
@@ -202,6 +180,12 @@ fn resolve_auth_token(explicit_token: Option<String>, is_loopback: bool) -> Resu
     if let Some(token) = explicit_token {
         if token.len() < 16 {
             return Err("AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters".to_string());
+        }
+        if !token.bytes().all(|byte| (0x21..=0x7e).contains(&byte)) {
+            return Err(
+                "AUTOMATESTIG_AUTH_TOKEN must contain only visible ASCII characters without whitespace"
+                    .to_string(),
+            );
         }
         return Ok(token);
     }
@@ -267,6 +251,21 @@ fn serve_frontend_with_token(
             .into_bytes()
     };
 
+    let protect_token_bearing_html = |response: &mut axum::response::Response,
+                                      contains_token: bool| {
+        if !contains_token {
+            return;
+        }
+        response.headers_mut().insert(
+            axum::http::header::CACHE_CONTROL,
+            axum::http::HeaderValue::from_static("no-store"),
+        );
+        response.headers_mut().insert(
+            axum::http::header::PRAGMA,
+            axum::http::HeaderValue::from_static("no-cache"),
+        );
+    };
+
     match FrontendAssets::get(path) {
         Some(content) => {
             let mime = mime_guess::from_path(path)
@@ -278,16 +277,20 @@ fn serve_frontend_with_token(
             } else {
                 raw
             };
-            ([(axum::http::header::CONTENT_TYPE, mime)], body).into_response()
+            let mut response = ([(axum::http::header::CONTENT_TYPE, mime)], body).into_response();
+            protect_token_bearing_html(&mut response, path == "index.html" && token.is_some());
+            response
         }
         None => match FrontendAssets::get("index.html") {
             Some(content) => {
                 let body = inject_token(&content.data, token);
-                (
+                let mut response = (
                     [(axum::http::header::CONTENT_TYPE, "text/html".to_string())],
                     body,
                 )
-                    .into_response()
+                    .into_response();
+                protect_token_bearing_html(&mut response, token.is_some());
+                response
             }
             None => (axum::http::StatusCode::NOT_FOUND, "Frontend not found").into_response(),
         },
@@ -297,7 +300,7 @@ fn serve_frontend_with_token(
 use axum::response::IntoResponse;
 
 #[derive(rust_embed::Embed)]
-#[folder = "frontend/"]
+#[folder = "frontend/scanner/"]
 struct FrontendAssets;
 
 #[cfg(test)]
@@ -348,6 +351,32 @@ mod tests {
     }
 
     #[test]
+    fn explicit_tokens_with_whitespace_controls_or_non_ascii_are_rejected() {
+        for token in [
+            "0123456789abcdef ",
+            "0123456789abcdef\n",
+            "0123456789abcde\t",
+            "0123456789abcdeé",
+        ] {
+            let error = resolve_auth_token(Some(token.to_string()), false)
+                .expect_err("browser-incompatible tokens must be rejected at startup");
+            assert_eq!(
+                error,
+                "AUTOMATESTIG_AUTH_TOKEN must contain only visible ASCII characters without whitespace"
+            );
+        }
+    }
+
+    #[test]
+    fn explicit_visible_ascii_token_is_accepted() {
+        let token = "A-strong_token!2026";
+        assert_eq!(
+            resolve_auth_token(Some(token.to_string()), false).unwrap(),
+            token
+        );
+    }
+
+    #[test]
     fn loopback_host_guard_rejects_dns_rebinding_and_wrong_ports() {
         use axum::http::HeaderValue;
 
@@ -383,6 +412,45 @@ mod tests {
         let html = String::from_utf8(body.to_vec()).unwrap();
         assert!(!html.contains("</script><script>alert(1)"));
         assert!(html.contains("\\u003c/script\\u003e"));
+    }
+
+    #[tokio::test]
+    async fn root_serves_the_scanner_first_shell() {
+        let response =
+            serve_frontend_with_token("/".parse().unwrap(), Some("test-token-0123456789"));
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        let html = String::from_utf8(body.to_vec()).unwrap();
+
+        assert!(html.contains("AutomateSTIG Scanner"));
+        assert!(html.contains(">Deliveries<"));
+        assert!(html.contains(">Scanner Content<"));
+        assert!(!html.contains(">Assets<"));
+        assert!(!html.contains(">Findings<"));
+    }
+
+    #[test]
+    fn token_bearing_frontend_html_is_not_cacheable() {
+        for path in ["/", "/client-side-route"] {
+            let response =
+                serve_frontend_with_token(path.parse().unwrap(), Some("test-token-0123456789"));
+
+            assert_eq!(
+                response
+                    .headers()
+                    .get(axum::http::header::CACHE_CONTROL)
+                    .and_then(|value| value.to_str().ok()),
+                Some("no-store")
+            );
+            assert_eq!(
+                response
+                    .headers()
+                    .get(axum::http::header::PRAGMA)
+                    .and_then(|value| value.to_str().ok()),
+                Some("no-cache")
+            );
+        }
     }
 
     #[test]

@@ -55,6 +55,7 @@ pub enum OutputPolicy {
     OntapAdminNumericMinimum,
     OntapAdminBooleanAll,
     BsdAuditdStatus,
+    BsdPfStatus,
 }
 
 /// A transport-level outcome. Only `Success` may be considered for evaluation,
@@ -215,10 +216,18 @@ fn command(platform: CheckPlatform, command: &str, data_key: &str) -> Collection
             CheckPlatform::Ontap,
             "security login role config show -role admin -fields passwd-alphanum",
         ) => OutputPolicy::OntapAdminBooleanAll,
-        (CheckPlatform::Bsd, "service auditd onestatus") => OutputPolicy::BsdAuditdStatus,
+        (CheckPlatform::Bsd, crate::checks::freebsd::AUDITD_STATUS_COMMAND) => {
+            OutputPolicy::BsdAuditdStatus
+        }
+        (CheckPlatform::Bsd, crate::checks::freebsd::PF_STATUS_COMMAND) => {
+            OutputPolicy::BsdPfStatus
+        }
         _ => OutputPolicy::Any,
     };
-    let accepted_exit_codes = if matches!(output_policy, OutputPolicy::BsdAuditdStatus) {
+    let accepted_exit_codes = if matches!(
+        output_policy,
+        OutputPolicy::BsdAuditdStatus | OutputPolicy::BsdPfStatus
+    ) {
         vec![0, 1]
     } else {
         vec![0]
@@ -273,8 +282,21 @@ fn add_check_commands(
     let item = match check {
         Check::ConfigLine { .. }
         | Check::CiscoVtySessionLimit
+        | Check::CiscoLoginBlockFor
+        | Check::CiscoInterfaceAclDenyLogInput
+        | Check::CiscoPersistentAuditModificationProtection
+        | Check::CiscoPersistentAuditDeletionProtection
+        | Check::CiscoFileSystemPrivilege
+        | Check::CiscoSingleLocalFallbackAccount
+        | Check::CiscoPasswordMinimumLength
+        | Check::CiscoManagementIdleTimeout
         | Check::CiscoLoggingBufferCapacity
-        | Check::CiscoLoggingTrapSeverity => {
+        | Check::CiscoLoggingTrapSeverity
+        | Check::CiscoRedundantAuthoritativeNtpSources
+        | Check::CiscoNtpAuthentication
+        | Check::CiscoSshMacAlgorithms
+        | Check::CiscoSshEncryptionAlgorithms
+        | Check::CiscoSyslogServerCount => {
             return Err("Cisco IOS-XE checks consume an operator-supplied running config".into());
         }
         Check::Command { command: value, .. } => {
@@ -292,6 +314,27 @@ fn add_check_commands(
                 value.clone()
             };
             Some(command(platform, &executed, value))
+        }
+        Check::BsdAuditClassSelection { .. } => {
+            if platform != CheckPlatform::Bsd {
+                return Err("typed FreeBSD checks require the FreeBSD platform".into());
+            }
+            for value in [
+                crate::checks::freebsd::AUDITD_STATUS_COMMAND,
+                crate::checks::freebsd::AUDIT_CONTROL_COMMAND,
+                crate::checks::freebsd::AUDIT_USER_COMMAND,
+                crate::checks::freebsd::AUDIT_CLASS_SHA256_COMMAND,
+                crate::checks::freebsd::AUDIT_EVENT_SHA256_COMMAND,
+            ] {
+                crate::check_packs::validate_read_only_command(platform, value)?;
+                push_unique(commands, command(platform, value, value));
+            }
+            None
+        }
+        Check::BsdPfEnabled => {
+            let value = crate::checks::freebsd::PF_STATUS_COMMAND;
+            crate::check_packs::validate_read_only_command(platform, value)?;
+            Some(command(platform, value, value))
         }
         Check::All { checks } | Check::Any { checks } => {
             for nested in checks {
@@ -464,7 +507,7 @@ pub fn validate_command_output(
                 &["Vserver", "Interface", "Category", "Max-Active-Limit"],
                 "session-limit",
             )?;
-            let mut all_exactly_one = true;
+            let mut all_exactly_three = true;
             for row in rows {
                 if row.len() != 4 || !row[1].eq_ignore_ascii_case("cli") {
                     return Err("ONTAP session-limit output contains a malformed CLI row".into());
@@ -472,9 +515,9 @@ pub fn validate_command_output(
                 let value = row[3].parse::<u32>().map_err(|_| {
                     "ONTAP session-limit output contains a nonnumeric limit".to_string()
                 })?;
-                all_exactly_one &= value == 1;
+                all_exactly_three &= value == 3;
             }
-            Ok(all_exactly_one.to_string())
+            Ok(all_exactly_three.to_string())
         }
         OutputPolicy::OntapAuditGuarantee => {
             let rows =
@@ -557,6 +600,10 @@ pub fn validate_command_output(
             if !lower.contains("auditd") || !lower.contains("running") {
                 return Err("FreeBSD auditd status output is not recognized".into());
             }
+            Ok(stdout.to_string())
+        }
+        OutputPolicy::BsdPfStatus => {
+            crate::checks::freebsd::pf_enabled(stdout)?;
             Ok(stdout.to_string())
         }
     }
@@ -937,9 +984,8 @@ mod tests {
     fn only_reviewed_read_only_commands_reach_collection_plans() {
         for (platform, approved) in [
             (CheckPlatform::Ontap, "system timeout show"),
-            (CheckPlatform::Bsd, "cat /var/db/zoneinfo"),
             (CheckPlatform::Bsd, "service auditd onestatus"),
-            (CheckPlatform::Bsd, "sysctl kern.elf64.aslr.enable"),
+            (CheckPlatform::Bsd, "service pf onestatus"),
         ] {
             let checks = [definition(
                 platform,
@@ -957,6 +1003,9 @@ mod tests {
 
         for (platform, rejected) in [
             (CheckPlatform::Bsd, "freebsd-version -k"),
+            (CheckPlatform::Bsd, "cat /var/db/zoneinfo"),
+            (CheckPlatform::Bsd, "ntpq -pn"),
+            (CheckPlatform::Bsd, "sysctl kern.elf64.aslr.enable"),
             (CheckPlatform::Bsd, "cat /etc/motd.template /etc/motd"),
             (CheckPlatform::Bsd, "cat /etc/rc.conf"),
             (CheckPlatform::Bsd, "cat /etc/ssh/sshd_config"),
@@ -1386,7 +1435,7 @@ mod tests {
             &crate::checks::CheckPack {
                 stig_id: "NetApp_ONTAP_DSC_9-x_STIG".to_string(),
                 platform: CheckPlatform::Ontap,
-                version: "V2R2".to_string(),
+                version: "V2R4".to_string(),
                 priority: 0,
                 checks: definitions,
             },
@@ -1400,19 +1449,19 @@ mod tests {
     fn bsd_effective_state_diagnostics_fail_closed_and_stopped_auditd_is_observed() {
         let definitions = [
             command_definition(
-                "V-zone",
+                "V-audit-control",
                 CheckPlatform::Bsd,
-                "cat /var/db/zoneinfo",
+                "cat /etc/security/audit_control",
                 ExpectedResult::Matches {
-                    pattern: r"(?i)\A\s*(?:Etc/)?(?:UTC|GMT)\s*\z".to_string(),
+                    pattern: r"(?m)^flags:".to_string(),
                 },
             ),
             command_definition(
-                "V-aslr",
+                "V-audit-user",
                 CheckPlatform::Bsd,
-                "sysctl kern.elf64.aslr.enable",
+                "cat /etc/security/audit_user",
                 ExpectedResult::Matches {
-                    pattern: r"\A\s*kern\.elf64\.aslr\.enable:\s*1\s*\z".to_string(),
+                    pattern: r"(?m)^root:".to_string(),
                 },
             ),
             command_definition(
@@ -1431,8 +1480,10 @@ mod tests {
             .iter()
             .map(|item| {
                 let (stdout, code) = match item.data_key.as_str() {
-                    "cat /var/db/zoneinfo" => ("cat: /var/db/zoneinfo: Permission denied", 0),
-                    "sysctl kern.elf64.aslr.enable" => ("sh: sysctl: command not found", 0),
+                    "cat /etc/security/audit_control" => {
+                        ("cat: /etc/security/audit_control: Permission denied", 0)
+                    }
+                    "cat /etc/security/audit_user" => ("sh: cat: command not found", 0),
                     "service auditd onestatus" => ("auditd is not running.", 1),
                     _ => unreachable!(),
                 };
@@ -1447,10 +1498,12 @@ mod tests {
             })
             .collect();
         let data = assemble_evidence_system_data(&plan, &evidence);
-        assert!(data.collection_errors.contains_key("cat /var/db/zoneinfo"));
         assert!(data
             .collection_errors
-            .contains_key("sysctl kern.elf64.aslr.enable"));
+            .contains_key("cat /etc/security/audit_control"));
+        assert!(data
+            .collection_errors
+            .contains_key("cat /etc/security/audit_user"));
         for definition in &definitions[..2] {
             let result = crate::checks::executor::execute_check(definition, &data);
             assert_eq!(

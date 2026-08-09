@@ -49,7 +49,7 @@
     "rules": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["V-215807", "V-215836"],
+      "required": ["V-215807", "V-215836", "V-215838"],
       "properties": {
         "V-215807": {
           "type": "object",
@@ -72,6 +72,23 @@
               "type": "integer",
               "minimum": 4096,
               "maximum": 2147483647
+            }
+          }
+        },
+        "V-215838": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["approved_authoritative_ntp_sources"],
+          "properties": {
+            "approved_authoritative_ntp_sources": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 64,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,254}$"
+              }
             }
           }
         }

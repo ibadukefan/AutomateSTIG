@@ -1,6 +1,6 @@
 ! Synthetic IOS-XE semantic counterexamples. The organization-policy-bound
-! V-215807/V-215836 checks and typed V-215837 check must open; the other named
-! controls remain NotReviewed pending human review.
+! typed Cisco checks below must open. The remaining evidence-insufficient
+! controls stay NotReviewed pending human review.
 version 17.9
 hostname rtr-semantic-counterexamples
 !
@@ -14,6 +14,13 @@ ip http max-connections 999
 line vty 0 4
  access-class PUBLIC out
  exec-timeout 1 599
+!
+! V-215818: an interface-bound deny without log-input cannot establish where
+! the packet drop occurred.
+interface GigabitEthernet0/0
+ ip access-group EDGE_IN in
+ip access-list extended EDGE_IN
+ deny ip any any
 !
 ! V-215813: three attempts alone does not prove the required 15-minute lockout.
 login block-for 1 attempts 3 within 120
@@ -32,6 +39,11 @@ ip http server
 service config
 service pad
 service call-home
+!
+! V-215820 through V-215822: persistent logging is enabled, but a lower file
+! privilege permits unauthorized modification and deletion.
+logging persistent url disk0:/logfile size 134217728 filesize 16384
+file privilege 10
 !
 ! V-215833: 1 minute 599 seconds is greater than five minutes; console and
 ! conditional HTTP management timeout evidence are also absent.
@@ -73,6 +85,9 @@ ip ssh server algorithm encryption aes256-ctr 3des-cbc
 ! authentication servers are configured and used by every management path.
 aaa authentication login LOGIN_AUTHENTICATION local
 aaa authorization exec default group radius local
+!
+! V-220139: local logging settings are not two remote syslog destinations.
+logging console warnings
 !
 ! V-215856: a self-signed trustpoint does not establish a DoD-approved CA chain.
 crypto pki trustpoint TP-self-signed

@@ -21,6 +21,10 @@ security-sensitive work.
   if it may contain sensitive configuration.
 - Back up the database, library, trust store, and `secret.key` as one protected
   recovery set. Keep content-signing private keys outside this set.
+- Set `AUTOMATESTIG_EVIDENCE_RETENTION_DAYS` to the approved 1–365 day
+  replay-evidence period (default 30). The timer starts when evidence is sealed;
+  delivery does not postpone it. Protect any retained-evidence handoff and
+  backups under the same assessment-data policy.
 
 ## Network boundary
 
@@ -30,7 +34,7 @@ uses a generated, non-empty random token and rejects unexpected Host headers.
 
 If a controlled service deployment requires a non-loopback bind:
 
-- set a random `AUTOMATESTIG_AUTH_TOKEN` of at least 32 bytes;
+- set a random `AUTOMATESTIG_AUTH_TOKEN` of at least 32 visible ASCII characters with no whitespace;
 - place a managed TLS reverse proxy and source-IP allowlist in front of it;
 - restrict host firewall ingress and outbound SSH/STIG Manager/DISA destinations;
 - use split credentials and an environment-specific STIG Manager OAuth client;
@@ -42,8 +46,15 @@ and SSH trust-on-first-use overrides are prohibited in production launch
 configuration. Treat their presence as a deployment failure.
 
 Leave `AUTOMATESTIG_OFFLINE_SIGNING_KEY` unset on ordinary GUI/service hosts.
-GUI pack export is disabled without it. Prefer the explicit `build-pack`
+The scanner-first GUI exposes no signing workflow; legacy protected pack export
+is disabled without it. Prefer the explicit `build-pack`
 workflow on an offline signing workstation.
+
+Likewise, never place a selected-run handoff producer private key on an
+ordinary GUI/service host. Use the protected `scanner sign-handoff` CLI
+ceremony, distribute only its public key out of band, and keep those public
+keys in the dedicated handoff trust domain rather than the content or
+organization-policy trust stores.
 
 ## Device access
 

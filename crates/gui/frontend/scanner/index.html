@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>AutomateSTIG Scanner</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to scanner workspace</a>
+  <div class="app-shell" id="scanner-app">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">AS</div>
+        <div>
+          <div class="brand-name">Automate<span>STIG</span></div>
+          <div class="brand-subtitle">Evidence-first scanner</div>
+        </div>
+      </div>
+
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <a class="nav-link active" href="#scan" data-route="scan" aria-current="page">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h14v4H5zM7 11h10M7 15h6M5 7v14h14V7"/></svg>
+          <span>Scan</span>
+        </a>
+        <a class="nav-link" href="#deliveries" data-route="deliveries">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6M4 4h10M4 20h16"/></svg>
+          <span>Deliveries</span>
+        </a>
+        <a class="nav-link" href="#content" data-route="content">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 9h8M8 13h5"/></svg>
+          <span>Scanner Content</span>
+        </a>
+        <a class="nav-link" href="#connection" data-route="connection">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 12a4 4 0 0 1 4-4h3M16 12a4 4 0 0 1-4 4H9M14 5l3 3-3 3M10 19l-3-3 3-3"/></svg>
+          <span>Connection</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="connection-chip" id="global-connection-state" role="status" aria-live="polite">
+          <span class="connection-dot" aria-hidden="true"></span>
+          <span>Checking scanner API…</span>
+        </div>
+        <p>STIG Manager remains the system of record for assets, human review, and reporting.</p>
+      </div>
+    </aside>
+
+    <main id="main" tabindex="-1">
+      <div id="global-notice" class="global-notice" hidden></div>
+      <div id="route-outlet"></div>
+    </main>
+  </div>
+
+  <div id="route-announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="toasts" class="toast-stack" aria-label="Notifications" aria-live="polite" aria-atomic="false"></div>
+  <noscript><p class="noscript">AutomateSTIG Scanner requires JavaScript.</p></noscript>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

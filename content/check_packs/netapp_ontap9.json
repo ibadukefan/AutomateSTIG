@@ -1,7 +1,7 @@
 {
   "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
   "platform": "ontap",
-  "version": "V2R2",
+  "version": "V2R4",
   "checks": [
     {
       "vuln_id": "V-246922",
@@ -13,7 +13,7 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Every CLI session-limit row must have max-active-limit exactly 1"
+      "description": "Every CLI session-limit row must have max-active-limit exactly 3"
     },
     {
       "vuln_id": "V-246923",
@@ -67,19 +67,6 @@
         "min": 2
       },
       "description": "At least two canonical NTP server rows must be configured"
-    },
-    {
-      "vuln_id": "V-246940",
-      "platform": "ontap",
-      "check": {
-        "type": "command",
-        "command": "security login show -authentication-method domain"
-      },
-      "expected": {
-        "type": "matches",
-        "pattern": "[1-9]\\d* entr(y was|ies were) displayed"
-      },
-      "description": "An external authentication server (domain) must provide administrator authentication"
     },
     {
       "vuln_id": "V-246947",

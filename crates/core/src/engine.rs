@@ -74,8 +74,15 @@ impl EvaluationEngine {
         Ok(checklist)
     }
 
-    /// Apply an answer file to the checklist.
-    fn apply_answer_file(&self, checklist: &mut Checklist, answer_file: &AnswerFile) -> Result<()> {
+    /// Apply an answer file to an existing checklist. Collection adapters use
+    /// this after automated checks only for entries explicitly marked
+    /// `force_override`; ordinary entries remain lower priority than observed
+    /// device evidence.
+    pub fn apply_answer_file(
+        &self,
+        checklist: &mut Checklist,
+        answer_file: &AnswerFile,
+    ) -> Result<()> {
         // Check if this answer file applies to this STIG.
         if let Some(ref stig_id) = answer_file.stig_id {
             if *stig_id != checklist.stig_info.stig_id {
@@ -83,6 +90,8 @@ impl EvaluationEngine {
             }
         }
 
+        let evaluator = answer_file_evaluator(answer_file);
+        let mut applied = false;
         for entry in &answer_file.entries {
             if let Some(finding) = checklist.find_by_vuln_id_mut(&entry.vuln_id) {
                 // Only apply if the finding hasn't been set by a higher-priority source,
@@ -95,6 +104,9 @@ impl EvaluationEngine {
                 if should_apply {
                     finding.status = entry.status;
                     finding.source = FindingSource::AnswerFile;
+                    finding.evaluated_at = chrono::Utc::now();
+                    finding.evaluated_by = evaluator.clone();
+                    applied = true;
 
                     if let Some(ref details) = entry.finding_details {
                         finding.finding_details = details.clone();
@@ -109,6 +121,9 @@ impl EvaluationEngine {
                     }
                 }
             }
+        }
+        if applied {
+            checklist.touch();
         }
         Ok(())
     }
@@ -135,6 +150,22 @@ impl EvaluationEngine {
         }
         current.touch();
         Ok(())
+    }
+}
+
+/// Build a bounded, single-line evaluator label from answer-file content. The
+/// engine never receives or records the caller's host path.
+fn answer_file_evaluator(answer_file: &AnswerFile) -> String {
+    let normalized = answer_file
+        .name
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ");
+    let bounded: String = normalized.chars().take(128).collect();
+    if bounded.is_empty() {
+        "Answer file".to_string()
+    } else {
+        format!("Answer file: {bounded}")
     }
 }
 
@@ -234,6 +265,60 @@ mod tests {
         let f = checklist.find_by_vuln_id("V-100001").unwrap();
         assert_eq!(f.status, FindingStatus::NotApplicable);
         assert_eq!(f.finding_details, "This system does not use this feature.");
+        assert_eq!(f.source, FindingSource::AnswerFile);
+        assert_eq!(f.evaluated_by, "Answer file: Test Answers");
+    }
+
+    #[test]
+    fn ordinary_and_forced_answers_replace_stale_evaluator_metadata() {
+        let engine = EvaluationEngine::with_defaults();
+        let benchmark = make_benchmark();
+        let asset = Asset::new("testhost");
+        let mut checklist = engine.evaluate(&benchmark, &asset, &[]).unwrap();
+        let stale_time = chrono::Utc::now() - chrono::Duration::days(1);
+        for finding in &mut checklist.findings {
+            finding.evaluated_at = stale_time;
+            finding.evaluated_by = "AutomateSTIG stale evaluator".to_string();
+        }
+        checklist.findings[1].source = FindingSource::Automated;
+        checklist.findings[1].status = FindingStatus::NotAFinding;
+
+        let answer = AnswerFile {
+            name: "  Site\n baseline  ".to_string(),
+            description: None,
+            stig_id: Some(benchmark.id.clone()),
+            version: "1".to_string(),
+            entries: vec![
+                crate::answer::AnswerEntry {
+                    vuln_id: checklist.findings[0].vuln_id.clone(),
+                    status: FindingStatus::NotApplicable,
+                    finding_details: None,
+                    comments: None,
+                    severity_override: None,
+                    severity_override_justification: None,
+                    force_override: false,
+                },
+                crate::answer::AnswerEntry {
+                    vuln_id: checklist.findings[1].vuln_id.clone(),
+                    status: FindingStatus::Open,
+                    finding_details: None,
+                    comments: None,
+                    severity_override: None,
+                    severity_override_justification: None,
+                    force_override: true,
+                },
+            ],
+        };
+
+        engine.apply_answer_file(&mut checklist, &answer).unwrap();
+
+        for finding in &checklist.findings {
+            assert_eq!(finding.source, FindingSource::AnswerFile);
+            assert_eq!(finding.evaluated_by, "Answer file: Site baseline");
+            assert!(finding.evaluated_at > stale_time);
+        }
+        assert_eq!(checklist.findings[0].status, FindingStatus::NotApplicable);
+        assert_eq!(checklist.findings[1].status, FindingStatus::Open);
     }
 
     #[test]

@@ -1,21 +1,36 @@
 # Content Updates
 
-DISA updates STIGs several times per year (roughly quarterly). AutomateSTIG never updates content automatically unless you explicitly opt in — air-gapped first is a core design principle. This page covers how to keep a running installation current, what happens to existing work when a STIG revision changes, and how the project itself tracks DISA releases.
+DISA updates STIGs several times per year (roughly quarterly). AutomateSTIG
+never checks, downloads, or imports content on a schedule—air-gapped first is a
+core design principle. This page covers how to keep a running installation
+current, what happens to existing work when a STIG revision changes, and how
+the project itself tracks DISA releases.
 
 ## Updating a running installation
 
-### Connected environments (GUI)
+### Scanner releases
 
-The GUI can fetch content directly from DISA. Every initial URL and redirect is
+End-user scanner content is updated with a signed AutomateSTIG release that
+contains the exact immutable benchmark subset, check pack, adapter,
+compatibility matrix, coverage manifest, and hashes. **Scanner Content** reports
+update readiness; it does not browse or fetch the general DISA catalog.
+
+### Historical connected catalog behavior
+
+Earlier releases could fetch content directly from DISA. Every initial URL and redirect was
 parsed and validated against the exact HTTPS host allowlist
 (`public.cyber.mil`, `dl.dod.cyber.mil`, and `cyber.mil`); lookalike hosts,
 credentials, non-default ports, fragments, and non-ZIP paths are rejected.
 Downloaded bodies are counted while streaming and capped at 32 MiB rather than
 trusting `Content-Length`.
 
-- **Check for updates**: `GET /api/disa/check-updates` (or the Library page in the GUI) scrapes the DISA downloads catalog and reports new benchmarks and new revisions of benchmarks you already have installed. Nothing is downloaded.
-- **Fetch**: `POST /api/disa/fetch` downloads and imports a single STIG; `POST /api/disa/fetch-all` imports everything available.
-- **Background checker**: off by default. When enabled in Settings (the `auto_update_enabled` configuration key), the server re-checks the DISA catalog every 24 hours and logs when new or updated content is available. It never downloads automatically.
+The former unversioned `/api/disa/check-updates`, `/api/disa/fetch`, and
+`/api/disa/fetch-all` routes now return extraction-free HTTP `410 Gone` and do
+no work. Connected maintainers use the repository corpus pipeline described
+below; the retired routes are not a transition workflow.
+
+There is no scheduled/background catalog update in the scanner GUI. All
+maintainer catalog checks and downloads use the explicit repository pipeline.
 
 ### Air-gapped environments (the default posture)
 
@@ -23,23 +38,30 @@ Updates are manual by design:
 
 1. On a connected machine, download the STIG ZIPs from https://public.cyber.mil/stigs/downloads/.
 2. Transfer them across the boundary.
-3. Import the target benchmark, for example `automatestig disa-import --input U_NetApp_ONTAP_DSC_9-x_V2R2_STIG.zip` (accepts DISA ZIPs or raw XCCDF XML), or use the GUI import.
+3. Use the maintainer generator/release process to rebuild and validate the
+   exact scanner profile. Do not install raw XCCDF through the end-user GUI.
 
-All three import surfaces (CLI, GUI upload, and connected fetch) share the
+The protected transition import surfaces share the
 bounded parser and atomic batch commit described in [DISA Import](disa-import.md).
 
 For curated internal distribution, build signed `.stigpack` files (see [STIG Pack Files](stigpack.md)). Field systems refuse unsigned packs unless `AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1` is set explicitly for lab use; trusted Ed25519 public keys go in `AUTOMATESTIG_TRUSTED_KEYS_DIR`.
 
-Note: update checking is currently GUI-only; the CLI has no `check-updates` subcommand.
+Raw catalog checking is not an end-user scanner feature.
 
 ## What happens to existing work when a revision changes
 
-Importing a new revision replaces the benchmark in the STIG library. Existing checklists and answer files remain stored; new evidence can be evaluated against the new revision:
+A new DISA revision does not automatically replace a scanner profile. The
+maintainer classifies every changed rule, updates the exact benchmark subset,
+check pack, coverage, adapter bindings, and hashes, then repeats negative,
+live-device, delivery, and interchange gates. Until a signed release reports
+the new revision ready, the old exact profile remains visible and a mismatched
+STIG Manager assignment cannot run.
 
-- Answer files match on Vuln IDs, which persist across revisions.
-- The CLI `--merge <previous.ckl>` option preserves manual determinations and comments where Vuln IDs still match.
-
-After importing a new revision, collect fresh evidence and run `automatestig evaluate`, optionally merging a prior checklist. Review rules that are new or changed in the revision; rules without valid evidence remain `Not_Reviewed`.
+Legacy checklists and answer files remain stored during the migration window
+and may be exported, but they are not merged into a new scanner delivery.
+Reviewers preserve applicable human determinations in STIG Manager. Collect
+fresh evidence for the new exact profile; rules without defensible scanner
+evidence remain manual or out of scope.
 
 ## How the project tracks DISA releases (maintainers)
 

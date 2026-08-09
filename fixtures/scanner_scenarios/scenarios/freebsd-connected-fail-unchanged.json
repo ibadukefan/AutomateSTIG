@@ -1,0 +1,60 @@
+{
+  "schema": "automatestig-scanner-scenario/v1",
+  "id": "freebsd-connected-fail-unchanged",
+  "actors": ["cybersecurity_analyst", "cybersecurity_manager"],
+  "mode": "connected",
+  "target": {
+    "profile_id": "freebsd_gpos",
+    "stig_id": "General_Purpose_Operating_System",
+    "stig_release": "V3R3",
+    "hostname": "bsd-findings-01",
+    "software_version": "13.4-RELEASE-p9"
+  },
+  "input": {
+    "kind": "evidence_v2",
+    "path": "../bsd/bsd_evidence_findings.json",
+    "sha256": "009ada22b1f60b000e68aede3c79dc5d77dcfca460bc62a012c38fd41caf8597"
+  },
+  "destination": {
+    "inventory_path": "stig_manager/inventory.json",
+    "collection_id": 7001,
+    "asset_id": 7201,
+    "assignment_id": "assignment-freebsd-v3r3"
+  },
+  "remote_state": "stig_manager/freebsd-prior-scanner-open.json",
+  "delivery_attempts": [
+    {
+      "attempt": 1,
+      "outcome": "transient_error",
+      "http_status": 503,
+      "payload_sha256": "78a406265bd3c11232e2912e1ed6e23621690daba1c03362f8a72fd0867a7b41"
+    },
+    {
+      "attempt": 2,
+      "outcome": "delivered",
+      "http_status": 200,
+      "payload_sha256": "78a406265bd3c11232e2912e1ed6e23621690daba1c03362f8a72fd0867a7b41"
+    }
+  ],
+  "receipt": "stig_manager/receipts/freebsd-unchanged.json",
+  "expected": {
+    "evaluation": "fail",
+    "collection_complete": true,
+    "automated_results": 6,
+    "manual_untouched": 24,
+    "out_of_scope_untouched": 173,
+    "run_state": "delivered",
+    "delivery_state": "delivered",
+    "creates": 0,
+    "updates": 0,
+    "unchanged": 6,
+    "conflicts": 0,
+    "review_write_count": 0,
+    "handoff": true
+  },
+  "notes": [
+    "The identical sparse re-delivery is an idempotent no-op, so it is the only connected scenario permitted to complete direct delivery.",
+    "A transient 503 preserves the immutable no-op payload digest; the second attempt records a technical receipt without changing any remote review.",
+    "The complete selected-run handoff remains available after delivery."
+  ]
+}

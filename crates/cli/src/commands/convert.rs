@@ -5,7 +5,7 @@ use automatestig_parsers::{ckl, cklb};
 
 use crate::ui;
 
-pub fn run(input: &str, output: &str, format: Option<&str>) -> Result<()> {
+pub fn run(input: &str, output: &str, format: Option<&str>, cli: &crate::Cli) -> Result<()> {
     let in_path = Path::new(input);
     let out_path = Path::new(output);
 
@@ -34,17 +34,17 @@ pub fn run(input: &str, output: &str, format: Option<&str>) -> Result<()> {
         _ => anyhow::bail!("Unsupported input format: .{}", in_ext),
     };
 
-    // Write output.
+    // Serialize before committing so parse/serialization failures never
+    // truncate an existing artifact.
     super::ensure_external_export_allowed(&checklist)?;
-    match out_format {
-        "ckl" => ckl::write_ckl_file(&checklist, out_path)?,
-        "cklb" => cklb::write_cklb_file(&checklist, out_path)?,
-        "json" => {
-            let json = serde_json::to_string_pretty(&checklist)?;
-            std::fs::write(out_path, json)?;
-        }
+    let bytes = match out_format {
+        "ckl" => ckl::write_ckl(&checklist)?.into_bytes(),
+        "cklb" => cklb::write_cklb(&checklist)?.into_bytes(),
+        "json" => serde_json::to_vec_pretty(&checklist)?,
         _ => anyhow::bail!("Unsupported output format: {}", out_format),
-    }
+    };
+    super::ensure_safe_artifact_output(out_path, &[in_path], cli)?;
+    super::evaluate::write_evaluation_output_atomic(out_path, &bytes)?;
 
     println!();
     ui::success(&format!("Converted {} findings", checklist.findings.len()));

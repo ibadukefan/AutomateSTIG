@@ -4,7 +4,7 @@
   "platform": "bsd",
   "collector_version": "fixture",
   "collected_at": "2026-01-01T00:00:00Z",
-  "plan_sha256": "7df3f55b1aafb5664ab573251657ffe60c3af00da920b73482a7e8aaaeecca4f",
+  "plan_sha256": "1b9c5cc2d624f0b58c6fad2bd8d99a287457aacd151574246f9caf5f7d60cacd",
   "server_key_fingerprint": null,
   "complete": true,
   "commands": [
@@ -18,19 +18,46 @@
       "duration_ms": 0
     },
     {
-      "data_key": "cat /var/db/zoneinfo",
-      "command": "cat /var/db/zoneinfo",
+      "data_key": "cat /etc/security/audit_control",
+      "command": "cat /etc/security/audit_control",
       "status": "success",
-      "stdout": "Etc/UTC",
+      "stdout": "dir:/var/audit\ndist:off\nflags:lo,aa,ad,fr,fw,fa,fm,fc,fd\nminfree:20\nnaflags:lo,aa,ad,fr,fw,fa,fm,fc,fd\npolicy:cnt,argv\nfilesz:2M\nexpire-after:7d",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0
     },
     {
-      "data_key": "sysctl kern.elf64.aslr.enable",
-      "command": "sysctl kern.elf64.aslr.enable",
+      "data_key": "cat /etc/security/audit_user",
+      "command": "cat /etc/security/audit_user",
       "status": "success",
-      "stdout": "kern.elf64.aslr.enable: 1",
+      "stdout": "# No per-user audit exclusions",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "sha256 -q /etc/security/audit_class",
+      "command": "sha256 -q /etc/security/audit_class",
+      "status": "success",
+      "stdout": "834a1fde758a45269874a5c0655046ca7354a7afa3cf9aee8d29bbfe5d8ab2fd",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "sha256 -q /etc/security/audit_event",
+      "command": "sha256 -q /etc/security/audit_event",
+      "status": "success",
+      "stdout": "124c60b738ec9eb36e497213fded40a7ed9023dc7854258f9c17d5cbcfffcff2",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "service pf onestatus",
+      "command": "service pf onestatus",
+      "status": "success",
+      "stdout": "Status: Enabled for 12 days 03:14:15\nDebug: Urgent\nHostid: 0x12345678",
       "stderr": "",
       "exit_code": 0,
       "duration_ms": 0

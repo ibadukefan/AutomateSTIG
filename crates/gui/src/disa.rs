@@ -318,8 +318,6 @@ pub async fn download_and_import(url: &str, state: &AppState) -> Result<FetchRes
 
     let bytes = read_response_limited(response, disa::MAX_DISA_ARCHIVE_BYTES).await?;
 
-    let parsed = disa::parse_disa_zip_bytes(&bytes)
-        .map_err(|error| FetchError::RemoteContent(format!("DISA archive rejected: {error}")))?;
     let permit = state
         .inner
         .content_import_lock
@@ -329,7 +327,14 @@ pub async fn download_and_import(url: &str, state: &AppState) -> Result<FetchRes
         .map_err(|_| FetchError::Worker("Content import coordinator is unavailable".to_owned()))?;
     let task_state = state.clone();
     tokio::task::spawn_blocking(move || {
+        // ZIP decompression and XML parsing are CPU/blocking work even though
+        // the network body was read asynchronously. The import permit bounds
+        // both parsing and persistence, preventing concurrent requests from
+        // multiplying this resource-heavy work.
         let _permit = permit;
+        let parsed = disa::parse_disa_zip_bytes(&bytes).map_err(|error| {
+            FetchError::RemoteContent(format!("DISA archive rejected: {error}"))
+        })?;
         import_parsed(parsed, &task_state)
     })
     .await
@@ -418,35 +423,6 @@ fn import_parsed(
         details,
         errors: Vec::new(),
     })
-}
-
-/// Background update checker.
-/// Runs periodically to check for new STIG content from DISA.
-pub async fn start_background_checker(state: AppState, interval_hours: u64) {
-    let interval = Duration::from_secs(interval_hours * 3600);
-
-    loop {
-        tokio::time::sleep(interval).await;
-
-        tracing::info!("Background STIG update check starting...");
-
-        match check_for_updates(&state).await {
-            Ok(result) => {
-                if result.new_benchmarks > 0 || result.updated_benchmarks > 0 {
-                    tracing::info!(
-                        "STIG update check complete: {} new, {} updated",
-                        result.new_benchmarks,
-                        result.updated_benchmarks
-                    );
-                } else {
-                    tracing::info!("STIG update check: all content is current");
-                }
-            }
-            Err(e) => {
-                tracing::warn!("STIG update check failed: {}", e);
-            }
-        }
-    }
 }
 
 /// Check for updates without downloading everything — just see what's available.

@@ -1,6 +1,6 @@
-! Synthetic IOS-XE running-config: compliant against all 21 executable checks
+! Synthetic IOS-XE running-config: compliant against all 33 executable checks
 ! when evaluated with its signed organization policy.
-! The 13 manual controls remain NotReviewed even for this fixture.
+! The nine evidence-insufficient controls remain NotReviewed even for this fixture.
 version 17.9
 hostname rtr-compliant-01
 !
@@ -9,6 +9,7 @@ service password-encryption
 !
 logging userinfo
 logging buffered 4096000 informational
+logging persistent url disk0:/logfile size 134217728 filesize 16384
 logging trap critical
 logging host 10.10.5.14
 logging host 10.10.5.15
@@ -36,6 +37,9 @@ archive
 ip access-list extended MANAGEMENT_NET
  permit ip 10.10.0.0 0.0.255.255 any
  deny   ip any any log-input
+!
+interface GigabitEthernet0/0
+ ip access-group MANAGEMENT_NET in
 !
 snmp-server group V3GROUP v3 priv read V3READ write V3WRITE
 snmp-server host 10.10.5.20 version 3 auth V3USER

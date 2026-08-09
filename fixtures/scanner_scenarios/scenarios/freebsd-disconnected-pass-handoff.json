@@ -1,0 +1,41 @@
+{
+  "schema": "automatestig-scanner-scenario/v1",
+  "id": "freebsd-disconnected-pass-handoff",
+  "actors": ["cybersecurity_analyst"],
+  "mode": "disconnected",
+  "target": {
+    "profile_id": "freebsd_gpos",
+    "stig_id": "General_Purpose_Operating_System",
+    "stig_release": "V3R3",
+    "hostname": "bsd-compliant-01",
+    "software_version": "14.1-RELEASE-p3"
+  },
+  "input": {
+    "kind": "evidence_v2",
+    "path": "../bsd/bsd_evidence_compliant.json",
+    "sha256": "e85814c7507a17fcc9743f62ad6b4669ab3a5390bbfa1680465a0607c76019d9"
+  },
+  "destination": null,
+  "remote_state": null,
+  "delivery_attempts": [],
+  "receipt": null,
+  "expected": {
+    "evaluation": "pass",
+    "collection_complete": true,
+    "automated_results": 6,
+    "manual_untouched": 24,
+    "out_of_scope_untouched": 173,
+    "run_state": "preview_ready",
+    "delivery_state": "none",
+    "creates": 0,
+    "updates": 0,
+    "unchanged": 0,
+    "conflicts": 0,
+    "review_write_count": 0,
+    "handoff": true
+  },
+  "notes": [
+    "The selected-run handoff carries scanner evidence and provenance, not a local portfolio.",
+    "A receiving operator must bind it to the existing STIG Manager asset and V3R3 assignment."
+  ]
+}

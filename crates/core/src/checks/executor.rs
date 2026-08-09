@@ -11,6 +11,15 @@ pub fn execute_check(check_def: &CheckDefinition, data: &SystemData) -> CheckRes
         Ok(ref actual) => evaluate_expected(actual, &check_def.expected),
         Err(_) => false,
     };
+    let not_applicable = passed
+        && matches!(
+            &check_def.check,
+            Check::CiscoPersistentAuditModificationProtection
+                | Check::CiscoPersistentAuditDeletionProtection
+        )
+        && result
+            .as_ref()
+            .is_ok_and(|actual| actual.starts_with("not_applicable:"));
 
     let (actual_value, evidence, error) = match result {
         Ok(actual) => (actual.clone(), actual, None),
@@ -28,6 +37,7 @@ pub fn execute_check(check_def: &CheckDefinition, data: &SystemData) -> CheckRes
         expected_value: format!("{:?}", check_def.expected),
         evidence,
         error,
+        not_applicable,
     }
 }
 
@@ -92,6 +102,10 @@ fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
                 checks.iter().map(|check| run_check(check, data)).collect();
             Ok(results?.iter().any(|value| value == "true").to_string())
         }
+        Check::BsdAuditClassSelection { classes } => {
+            Ok(freebsd::audit_classes_selected(data, classes)?.to_string())
+        }
+        Check::BsdPfEnabled => Ok(freebsd::pf_enabled_from_system_data(data)?.to_string()),
         Check::CiscoVtySessionLimit => {
             let config = data
                 .network_config
@@ -134,6 +148,106 @@ fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
                 .as_deref()
                 .ok_or_else(|| "No network config data available".to_string())?;
             Ok(network::logging_trap_observation(config))
+        }
+        Check::CiscoLoginBlockFor => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::login_block_for_observation(config))
+        }
+        Check::CiscoInterfaceAclDenyLogInput => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::interface_acl_deny_log_input_observation(config))
+        }
+        Check::CiscoSingleLocalFallbackAccount => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::single_local_fallback_account_observation(config))
+        }
+        Check::CiscoPasswordMinimumLength => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::password_minimum_length_observation(config))
+        }
+        Check::CiscoPersistentAuditModificationProtection
+        | Check::CiscoPersistentAuditDeletionProtection => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::persistent_audit_file_protection_observation(
+                config,
+            ))
+        }
+        Check::CiscoFileSystemPrivilege => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::file_system_privilege_protection_observation(
+                config,
+            ))
+        }
+        Check::CiscoManagementIdleTimeout => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::management_idle_timeout_observation(config))
+        }
+        Check::CiscoRedundantAuthoritativeNtpSources => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            let policy = data
+                .organization_policy
+                .as_ref()
+                .ok_or_else(|| "V-215838 requires a verified organization policy".to_string())?;
+            Ok(network::redundant_authoritative_ntp_sources_observation(
+                config,
+                &policy
+                    .document()
+                    .rules
+                    .authoritative_ntp_sources
+                    .approved_authoritative_ntp_sources,
+            ))
+        }
+        Check::CiscoNtpAuthentication => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::ntp_authentication_observation(config))
+        }
+        Check::CiscoSshMacAlgorithms => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::ssh_mac_algorithms_observation(config))
+        }
+        Check::CiscoSshEncryptionAlgorithms => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::ssh_encryption_algorithms_observation(config))
+        }
+        Check::CiscoSyslogServerCount => {
+            let config = data
+                .network_config
+                .as_deref()
+                .ok_or_else(|| "No network config data available".to_string())?;
+            Ok(network::syslog_server_count_observation(config))
         }
     }
 }
