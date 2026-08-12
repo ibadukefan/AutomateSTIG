@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/supported-targets.schema.json",
+  "schema_version": 1,
+  "release_line": "0.3",
+  "targets": {
+    "netapp_ontap9": {
+      "display_name": "NetApp ONTAP 9.x",
+      "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
+      "stig_release": "V2R4",
+      "platform": "ontap",
+      "evidence_mode": "ssh_transcript",
+      "expected_benchmark_rules": 29,
+      "expected_automated_checks": 15,
+      "expected_reviewed_rules": 22,
+      "check_pack": "content/check_packs/netapp_ontap9.json",
+      "coverage_manifest": "content/coverage/current-checkpacks/netapp_ontap9.current.json",
+      "acceptance_gate": "ontap"
+    },
+    "freebsd_gpos": {
+      "display_name": "FreeBSD / DISA GPOS",
+      "stig_id": "General_Purpose_Operating_System",
+      "stig_release": "V3R3",
+      "platform": "bsd",
+      "evidence_mode": "ssh_transcript",
+      "expected_benchmark_rules": 203,
+      "expected_automated_checks": 6,
+      "expected_reviewed_rules": 30,
+      "check_pack": "content/check_packs/freebsd_gpos.json",
+      "coverage_manifest": "content/coverage/current-checkpacks/freebsd_gpos.current.json",
+      "acceptance_gate": "freebsd"
+    },
+    "cisco_ios_xe_router_ndm": {
+      "display_name": "Cisco IOS-XE Router NDM",
+      "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+      "stig_release": "V3R7",
+      "platform": "cisco_ios",
+      "evidence_mode": "running_configuration",
+      "expected_benchmark_rules": 42,
+      "expected_automated_checks": 33,
+      "expected_reviewed_rules": 42,
+      "check_pack": "content/check_packs/cisco_ios_xe_router_ndm.json",
+      "coverage_manifest": "content/coverage/current-checkpacks/cisco_ios_xe_router_ndm.current.json",
+      "acceptance_gate": "cisco_ios_xe"
+    }
+  }
+}

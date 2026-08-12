@@ -3,14 +3,17 @@ name = "automatestig-integrations"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "External integrations - STIG-Manager API, SCC, OpenSCAP"
+description = "Versioned STIG Manager scanner discovery and handoff integration"
 
 [dependencies]
 automatestig-core = { workspace = true }
+reqwest = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-chrono = { workspace = true }
-uuid = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+zeroize = "1"
 
 [dev-dependencies]
+axum = { workspace = true }
 tempfile = { workspace = true }

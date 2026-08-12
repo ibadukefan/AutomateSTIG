@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.example/schemas/first-use-ux-study.schema.json",
+  "title": "AutomateSTIG first-use UX study evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "passed",
+    "executed_at",
+    "source_commit",
+    "product_version",
+    "repository",
+    "workflow_run_id",
+    "protected_environment",
+    "automatestig_gui_sha256",
+    "scenario",
+    "representative_roles",
+    "study_team",
+    "participants",
+    "metrics"
+  ],
+  "properties": {
+    "schema": { "const": "automatestig-first-use-ux-study/v1" },
+    "passed": { "type": "boolean" },
+    "executed_at": { "type": "string", "format": "date-time" },
+    "source_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "product_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+    },
+    "workflow_run_id": { "type": "string", "pattern": "^[1-9][0-9]*$" },
+    "protected_environment": { "const": "first-use-ux-study" },
+    "automatestig_gui_sha256": { "$ref": "#/$defs/sha256" },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "target_profile",
+        "prepared_scan_fixture_sha256",
+        "task_definition_sha256"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "version": { "$ref": "#/$defs/identifier" },
+        "target_profile": { "$ref": "#/$defs/identifier" },
+        "prepared_scan_fixture_sha256": { "$ref": "#/$defs/sha256" },
+        "task_definition_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "representative_roles": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/participant_role" }
+    },
+    "study_team": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["facilitator", "independent_observer", "independent_approver"],
+      "properties": {
+        "facilitator": { "$ref": "#/$defs/attestor" },
+        "independent_observer": { "$ref": "#/$defs/attestor" },
+        "independent_approver": { "$ref": "#/$defs/attestor" }
+      }
+    },
+    "participants": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "participant_id",
+          "role",
+          "role_experience_band",
+          "first_time_user",
+          "completed_prepared_scan",
+          "external_documentation_used",
+          "assistance_received",
+          "outcome_notes"
+        ],
+        "properties": {
+          "participant_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,31}$"
+          },
+          "role": { "$ref": "#/$defs/participant_role" },
+          "role_experience_band": {
+            "enum": ["less_than_2_years", "2_to_5_years", "more_than_5_years"]
+          },
+          "first_time_user": { "const": true },
+          "completed_prepared_scan": { "type": "boolean" },
+          "external_documentation_used": { "type": "boolean" },
+          "assistance_received": { "type": "boolean" },
+          "outcome_notes": { "type": "string", "minLength": 1, "maxLength": 500 }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numerator", "denominator", "required_threshold_percent"],
+      "properties": {
+        "numerator": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "denominator": { "type": "integer", "minimum": 5, "maximum": 100 },
+        "required_threshold_percent": { "const": 80 }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "participant_role": {
+      "enum": ["cybersecurity_analyst", "cybersecurity_manager"]
+    },
+    "attestor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["github_login", "attested_at"],
+      "properties": {
+        "github_login": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$"
+        },
+        "attested_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

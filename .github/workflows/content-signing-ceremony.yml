@@ -1,0 +1,71 @@
+name: Content Signing Ceremony
+
+on:
+  workflow_dispatch:
+    inputs:
+      content_approver:
+        description: GitHub login of the protected-environment content approver
+        required: true
+        type: string
+      public_key_base64:
+        description: Base64 of the raw 32-byte Ed25519 public key (public material only)
+        required: true
+        type: string
+      signed_test_pack_base64:
+        description: Base64 of the small pack already signed on the offline workstation
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: content-signing-ceremony
+  cancel-in-progress: false
+
+jobs:
+  verify-content-key:
+    name: Verify offline content key
+    runs-on: [self-hosted, linux, automatestig-content-signing]
+    environment: content-signing-ceremony
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+      - name: Configure isolated build directory
+        shell: bash
+        run: echo "CARGO_TARGET_DIR=${RUNNER_TEMP:?}/automatestig-content-ceremony-${GITHUB_RUN_ID:?}" >> "$GITHUB_ENV"
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
+      - name: Build the reviewed verifier
+        run: cargo build --release --locked --bin automatestig
+      - name: Verify public ceremony material
+        env:
+          AUTOMATESTIG_CEREMONY_PUBLIC_KEY_BASE64: ${{ inputs.public_key_base64 }}
+          AUTOMATESTIG_CEREMONY_TEST_PACK_BASE64: ${{ inputs.signed_test_pack_base64 }}
+          AUTOMATESTIG_CEREMONY_CONTENT_APPROVER: ${{ inputs.content_approver }}
+          AUTOMATESTIG_CEREMONY_REPOSITORY: ${{ github.repository }}
+          AUTOMATESTIG_CEREMONY_SOURCE_COMMIT: ${{ github.sha }}
+          AUTOMATESTIG_CEREMONY_WORKFLOW_RUN_ID: ${{ github.run_id }}
+          AUTOMATESTIG_CEREMONY_KEY_CUSTODIAN: ${{ github.actor }}
+        run: >-
+          python3 scripts/run-content-signing-ceremony.py
+          --cli "$CARGO_TARGET_DIR/release/automatestig"
+          --output-dir content-signing-ceremony-output
+          --repository "$AUTOMATESTIG_CEREMONY_REPOSITORY"
+          --source-commit "$AUTOMATESTIG_CEREMONY_SOURCE_COMMIT"
+          --workflow-run-id "$AUTOMATESTIG_CEREMONY_WORKFLOW_RUN_ID"
+          --key-custodian "$AUTOMATESTIG_CEREMONY_KEY_CUSTODIAN"
+          --content-approver "$AUTOMATESTIG_CEREMONY_CONTENT_APPROVER"
+      - name: Upload the fixed public ceremony record
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: content-signing-ceremony
+          path: |
+            content-signing-ceremony-output/content-signing-ceremony.json
+            content-signing-ceremony-output/content-signing-public-key.pub
+            content-signing-ceremony-output/content-signing-test-pack.stigpack
+          retention-days: 90
+          if-no-files-found: error

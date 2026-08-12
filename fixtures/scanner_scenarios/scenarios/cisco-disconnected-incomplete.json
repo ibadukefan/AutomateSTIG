@@ -1,0 +1,46 @@
+{
+  "schema": "automatestig-scanner-scenario/v1",
+  "id": "cisco-disconnected-incomplete",
+  "actors": ["cybersecurity_analyst"],
+  "mode": "disconnected",
+  "target": {
+    "profile_id": "cisco_ios_xe_router_ndm",
+    "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+    "stig_release": "V3R7",
+    "hostname": "rtr-compliant-01",
+    "software_version": "17.9.4a"
+  },
+  "input": {
+    "kind": "running_configuration",
+    "path": "inputs/cisco-truncated.cfg",
+    "sha256": "c546a32eb2c3872978f08af806fd4928d54ca4278b875387c31b8c5b82f5ac30",
+    "organization_policy": {
+      "path": "inputs/cisco-compliant-policy.json",
+      "sha256": "8c6f16467f8aa360d5abc20595a463bdfd0fd788f3209c7b1ac4a18a0081d06b",
+      "signature": "ephemeral_test_signature_required"
+    }
+  },
+  "destination": null,
+  "remote_state": null,
+  "delivery_attempts": [],
+  "receipt": null,
+  "expected": {
+    "evaluation": "incomplete",
+    "collection_complete": false,
+    "automated_results": 0,
+    "manual_untouched": 9,
+    "out_of_scope_untouched": 0,
+    "run_state": "incomplete",
+    "delivery_state": "none",
+    "creates": 0,
+    "updates": 0,
+    "unchanged": 0,
+    "conflicts": 0,
+    "review_write_count": 0,
+    "handoff": false
+  },
+  "notes": [
+    "The configuration intentionally lacks the required final end marker.",
+    "A missing or truncated configuration cannot prove absence-based checks and produces no handoff."
+  ]
+}

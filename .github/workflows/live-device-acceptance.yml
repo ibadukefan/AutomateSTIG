@@ -1,0 +1,75 @@
+name: Live Device Acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Authorized lab target(s) reachable from the self-hosted runner
+        type: choice
+        options: [all, ontap, freebsd, cisco-ios-xe]
+        default: all
+
+permissions:
+  contents: read
+
+jobs:
+  live-device-acceptance:
+    name: ${{ inputs.target }} collection and evaluation
+    runs-on: [self-hosted, linux, x64, automatestig-live-devices]
+    environment: live-device-acceptance
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
+          targets: x86_64-unknown-linux-gnu
+      - run: >-
+          cargo build --release --locked
+          --target x86_64-unknown-linux-gnu
+          --bin automatestig
+      - name: Require complete collection and automated determinations
+        # Live credentials are intentionally scoped to this one step. Checkout,
+        # toolchain setup, compilation, and third-party actions never receive them.
+        env:
+          AUTOMATESTIG_PROTECTED_ENVIRONMENT: live-device-acceptance
+          AUTOMATESTIG_LIVE_ONTAP_HOST: ${{ secrets.AUTOMATESTIG_LIVE_ONTAP_HOST }}
+          AUTOMATESTIG_LIVE_ONTAP_PORT: ${{ secrets.AUTOMATESTIG_LIVE_ONTAP_PORT }}
+          AUTOMATESTIG_LIVE_ONTAP_USERNAME: ${{ secrets.AUTOMATESTIG_LIVE_ONTAP_USERNAME }}
+          AUTOMATESTIG_LIVE_ONTAP_KEY: ${{ secrets.AUTOMATESTIG_LIVE_ONTAP_KEY }}
+          AUTOMATESTIG_LIVE_ONTAP_KEY_PASSPHRASE: ${{ secrets.AUTOMATESTIG_LIVE_ONTAP_KEY_PASSPHRASE }}
+          AUTOMATESTIG_LIVE_ONTAP_PASSWORD: ${{ secrets.AUTOMATESTIG_LIVE_ONTAP_PASSWORD }}
+          AUTOMATESTIG_LIVE_ONTAP_ORACLE: ${{ vars.AUTOMATESTIG_LIVE_ONTAP_ORACLE }}
+          AUTOMATESTIG_LIVE_ONTAP_ORACLE_SHA256: ${{ vars.AUTOMATESTIG_LIVE_ONTAP_ORACLE_SHA256 }}
+          AUTOMATESTIG_LIVE_ONTAP_NEGATIVE_EVIDENCE: ${{ vars.AUTOMATESTIG_LIVE_ONTAP_NEGATIVE_EVIDENCE }}
+          AUTOMATESTIG_LIVE_FREEBSD_HOST: ${{ secrets.AUTOMATESTIG_LIVE_FREEBSD_HOST }}
+          AUTOMATESTIG_LIVE_FREEBSD_PORT: ${{ secrets.AUTOMATESTIG_LIVE_FREEBSD_PORT }}
+          AUTOMATESTIG_LIVE_FREEBSD_USERNAME: ${{ secrets.AUTOMATESTIG_LIVE_FREEBSD_USERNAME }}
+          AUTOMATESTIG_LIVE_FREEBSD_KEY: ${{ secrets.AUTOMATESTIG_LIVE_FREEBSD_KEY }}
+          AUTOMATESTIG_LIVE_FREEBSD_KEY_PASSPHRASE: ${{ secrets.AUTOMATESTIG_LIVE_FREEBSD_KEY_PASSPHRASE }}
+          AUTOMATESTIG_LIVE_FREEBSD_PASSWORD: ${{ secrets.AUTOMATESTIG_LIVE_FREEBSD_PASSWORD }}
+          AUTOMATESTIG_LIVE_FREEBSD_ORACLE: ${{ vars.AUTOMATESTIG_LIVE_FREEBSD_ORACLE }}
+          AUTOMATESTIG_LIVE_FREEBSD_ORACLE_SHA256: ${{ vars.AUTOMATESTIG_LIVE_FREEBSD_ORACLE_SHA256 }}
+          AUTOMATESTIG_LIVE_FREEBSD_NEGATIVE_EVIDENCE: ${{ vars.AUTOMATESTIG_LIVE_FREEBSD_NEGATIVE_EVIDENCE }}
+          # The protected runner path points to an operator-captured, authorized,
+          # unredacted `show running-config` file. The file itself is never uploaded.
+          AUTOMATESTIG_LIVE_CISCO_IOS_XE_CONFIG: ${{ vars.AUTOMATESTIG_LIVE_CISCO_IOS_XE_CONFIG }}
+          AUTOMATESTIG_LIVE_CISCO_IOS_XE_HOSTNAME: ${{ vars.AUTOMATESTIG_LIVE_CISCO_IOS_XE_HOSTNAME }}
+          AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORACLE: ${{ vars.AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORACLE }}
+          AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORACLE_SHA256: ${{ vars.AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORACLE_SHA256 }}
+          AUTOMATESTIG_LIVE_CISCO_IOS_XE_NEGATIVE_CONFIG: ${{ vars.AUTOMATESTIG_LIVE_CISCO_IOS_XE_NEGATIVE_CONFIG }}
+          AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY: ${{ vars.AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY }}
+          AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY_SIGNATURE: ${{ vars.AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY_SIGNATURE }}
+          AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY_SHA256: ${{ vars.AUTOMATESTIG_LIVE_CISCO_IOS_XE_ORGANIZATION_POLICY_SHA256 }}
+          AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR: ${{ vars.AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR }}
+        run: >-
+          python3 scripts/run-live-device-acceptance.py --repo-root . --require-live
+          --binary target/x86_64-unknown-linux-gnu/release/automatestig
+          --target "${{ inputs.target }}" --evidence-output live-device-acceptance.json
+      - name: Upload redacted acceptance evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: live-device-acceptance-${{ inputs.target }}-${{ github.run_id }}
+          path: live-device-acceptance.json
+          retention-days: 90
+          if-no-files-found: error

@@ -1,386 +1,346 @@
 {
   "stig_id": "General_Purpose_Operating_System",
   "version": "V3R3",
-  "source": "AutomateSTIG current check pack: content/check_packs/freebsd_gpos.json",
+  "source": "Reviewed AutomateSTIG FreeBSD GPOS V3R3 executable/manual boundary",
   "status": "experimental",
-  "generated_at": "2026-07-08T23:11:39Z",
+  "generated_at": "2026-07-13T20:17:04Z",
   "generated_from": "content/check_packs/freebsd_gpos.json",
   "total_rules": 30,
   "rules": [
     {
       "vuln_id": "V-278977",
       "rule_id": "V-278977_automatestig_check",
-      "classification": "automated",
-      "reason": "FreeBSD release must be a vendor-supported version (13.4+, 14.x, 15.x)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-278977",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203595",
       "rule_id": "V-203595_automatestig_check",
-      "classification": "automated",
-      "reason": "sshd must present a banner file before remote authentication",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203595",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203665",
       "rule_id": "V-203665_automatestig_check",
-      "classification": "automated",
-      "reason": "The Standard Mandatory DoD Notice and Consent Banner must be displayed",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203665",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203597",
       "rule_id": "V-203597_automatestig_check",
-      "classification": "automated",
-      "reason": "Concurrent sessions must be limited to 10 or fewer (sshd MaxSessions)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203597",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203683",
       "rule_id": "V-203683_automatestig_check",
-      "classification": "automated",
-      "reason": "Idle sessions must terminate automatically (ClientAliveInterval 1-600 seconds)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203683",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203594",
       "rule_id": "V-203594_automatestig_check",
-      "classification": "automated",
-      "reason": "Failed logon attempts must be limited (blacklistd enabled)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203594",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203625",
       "rule_id": "V-203625_automatestig_check",
-      "classification": "automated",
-      "reason": "Password complexity (uppercase) enforced via pam_passwdqc all-classes policy",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203625",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203626",
       "rule_id": "V-203626_automatestig_check",
-      "classification": "automated",
-      "reason": "Password complexity (lowercase) enforced via pam_passwdqc all-classes policy",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203626",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203627",
       "rule_id": "V-203627_automatestig_check",
-      "classification": "automated",
-      "reason": "Password complexity (numeric) enforced via pam_passwdqc all-classes policy",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203627",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203676",
       "rule_id": "V-203676_automatestig_check",
-      "classification": "automated",
-      "reason": "Password complexity (special character) enforced via pam_passwdqc all-classes policy",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203676",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203634",
       "rule_id": "V-203634_automatestig_check",
-      "classification": "automated",
-      "reason": "Minimum password length must be 15 characters (passwdqc min tuple)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203634",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203632",
       "rule_id": "V-203632_automatestig_check",
-      "classification": "automated",
-      "reason": "Maximum password lifetime must be 60 days or less (login.conf passwordtime)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203632",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203630",
       "rule_id": "V-203630_automatestig_check",
-      "classification": "automated",
-      "reason": "Plaintext credential services (telnetd) must not be enabled",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203630",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203669",
       "rule_id": "V-203669_automatestig_check",
-      "classification": "automated",
-      "reason": "Remote sessions must use approved AES ciphers only (sshd Ciphers allowlist)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203669",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203736",
       "rule_id": "V-203736_automatestig_check",
-      "classification": "automated",
-      "reason": "Nonlocal maintenance integrity: sshd MACs restricted to HMAC-SHA2",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203736",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203737",
       "rule_id": "V-203737_automatestig_check",
-      "classification": "automated",
-      "reason": "Nonlocal maintenance confidentiality: sshd Ciphers restricted to AES",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203737",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203645",
       "rule_id": "V-203645_automatestig_check",
-      "classification": "automated",
-      "reason": "Replay-resistant authentication for privileged access (SSHv2 only)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203645",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203646",
       "rule_id": "V-203646_automatestig_check",
-      "classification": "automated",
-      "reason": "Replay-resistant authentication for non-privileged access (SSHv2 only)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203646",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203767",
       "rule_id": "V-203767_automatestig_check",
       "classification": "automated",
-      "reason": "Logon/logout events must be audited (audit_control flags include lo)",
+      "reason": "Running OpenBSM must select both successful and failed lo events in attributable and non-attributable masks without per-user exclusions",
       "check_pack": "freebsd_gpos",
       "check_id": "V-203767",
       "evidence_required": true,
       "validated_by": [
         "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test -p automatestig-tests --test freebsd_pack_semantics"
       ]
     },
     {
       "vuln_id": "V-203621",
       "rule_id": "V-203621_automatestig_check",
       "classification": "automated",
-      "reason": "Privilege access attempts must be audited (audit_control flags include aa)",
+      "reason": "Running OpenBSM must select both successful and failed aa events in attributable and non-attributable masks without per-user exclusions",
       "check_pack": "freebsd_gpos",
       "check_id": "V-203621",
       "evidence_required": true,
       "validated_by": [
         "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test -p automatestig-tests --test freebsd_pack_semantics"
       ]
     },
     {
       "vuln_id": "V-203774",
       "rule_id": "V-203774_automatestig_check",
       "classification": "automated",
-      "reason": "Account administration events must be audited (audit_control flags include ad)",
+      "reason": "Running OpenBSM must select both successful and failed ad events in attributable and non-attributable masks without per-user exclusions",
       "check_pack": "freebsd_gpos",
       "check_id": "V-203774",
       "evidence_required": true,
       "validated_by": [
         "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test -p automatestig-tests --test freebsd_pack_semantics"
       ]
     },
     {
       "vuln_id": "V-203772",
       "rule_id": "V-203772_automatestig_check",
       "classification": "automated",
-      "reason": "Object access events must be audited (audit_control flags include fr/fw/fm)",
+      "reason": "Running OpenBSM must select successful and failed fr, fw, fa, fm, fc, and fd object events without per-user exclusions",
       "check_pack": "freebsd_gpos",
       "check_id": "V-203772",
       "evidence_required": true,
       "validated_by": [
         "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test -p automatestig-tests --test freebsd_pack_semantics"
       ]
     },
     {
       "vuln_id": "V-203700",
       "rule_id": "V-203700_automatestig_check",
-      "classification": "automated",
-      "reason": "Audit records must be retained at least one week (expire-after >= 7d)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203700",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203615",
       "rule_id": "V-203615_automatestig_check",
       "classification": "automated",
-      "reason": "auditd must be running so audit records use internal system clocks",
+      "reason": "auditd must be observed in the running state",
       "check_pack": "freebsd_gpos",
       "check_id": "V-203615",
       "evidence_required": true,
       "validated_by": [
         "content/check_packs/freebsd_gpos.json",
+        "crates/tests/tests/freebsd_pack_semantics.rs",
         "cargo test --workspace"
       ]
     },
     {
       "vuln_id": "V-203777",
       "rule_id": "V-203777_automatestig_check",
-      "classification": "automated",
-      "reason": "Audit records must be off-loaded to a remote system (auditdistd enabled)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203777",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203711",
       "rule_id": "V-203711_automatestig_check",
-      "classification": "automated",
-      "reason": "Clocks must be compared with an authoritative source (NTP daemon enabled)",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203711",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics: a selected reachable NTP peer and its reference identifier do not establish that the source is organization-approved and authoritative.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs",
         "cargo test --workspace"
       ]
     },
     {
       "vuln_id": "V-203712",
       "rule_id": "V-203712_automatestig_check",
-      "classification": "automated",
-      "reason": "An authoritative NTP time source must be configured",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203712",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics; manual review prevents a false NotAFinding.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs"
       ]
     },
     {
       "vuln_id": "V-203714",
       "rule_id": "V-203714_automatestig_check",
-      "classification": "automated",
-      "reason": "System time zone must map to UTC/GMT for audit timestamps",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203714",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics without falsely failing valid local timestamps that carry a verifiable UTC offset.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs",
         "cargo test --workspace"
       ]
     },
     {
       "vuln_id": "V-203754",
       "rule_id": "V-203754_automatestig_check",
-      "classification": "automated",
-      "reason": "Address space layout randomization must be enabled",
-      "check_pack": "freebsd_gpos",
-      "check_id": "V-203754",
+      "classification": "manual",
+      "reason": "Current read-only evidence cannot prove this rule's effective semantics because one 64-bit sysctl does not establish 32-bit, PIE, and stack ASLR state across supported FreeBSD versions.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/freebsd_gpos.json",
+        "docs/bsd-collection.md",
+        "crates/tests/tests/freebsd_pack_semantics.rs",
         "cargo test --workspace"
       ]
     },
@@ -388,13 +348,14 @@
       "vuln_id": "V-203784",
       "rule_id": "V-203784_automatestig_check",
       "classification": "automated",
-      "reason": "A host firewall (pf/ipfw/ipfilter) must be enabled",
+      "reason": "The live PF status must report the packet filter enabled",
       "check_pack": "freebsd_gpos",
       "check_id": "V-203784",
       "evidence_required": true,
       "validated_by": [
         "content/check_packs/freebsd_gpos.json",
-        "cargo test --workspace"
+        "crates/tests/tests/freebsd_pack_semantics.rs",
+        "cargo test -p automatestig-tests --test freebsd_pack_semantics"
       ]
     }
   ]

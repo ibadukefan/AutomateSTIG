@@ -1,8 +1,6 @@
-name: STIG Manager Staging Acceptance
+name: STIG Manager Scanner Handoff Acceptance
 
 on:
-  schedule:
-    - cron: "0 7 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -10,19 +8,43 @@ permissions:
 
 jobs:
   staging-acceptance:
-    name: AutomateSTIG -> STIG Manager round-trip
+    name: Disconnected scanner handoff -> operator reconcile
     runs-on: ubuntu-latest
+    environment: external-acceptance
+    env:
+      AUTOMATESTIG_PROTECTED_ENVIRONMENT: external-acceptance
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
-      - run: cargo build --release --bin automatestig-gui
+      - run: >-
+          cargo build --release --locked
+          --bin automatestig
+          --bin automatestig-gui
       - name: Start STIG Manager rig
         run: docker compose -f staging/stigman/docker-compose.yml up -d
       - name: Run staging acceptance
-        run: python3 staging/stigman/run-staging-acceptance.py
+        run: >-
+          python3 staging/stigman/run-staging-acceptance.py
+          --binary target/release/automatestig-gui
+          --cli-binary target/release/automatestig
+          --environment "GitHub Actions containerized staging"
+          --evidence-output stig-manager-acceptance.json
+          --handoff-output producer-handoff.zip
+      - name: Upload redacted acceptance evidence
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: stig-manager-acceptance-${{ github.run_id }}
+          path: |
+            stig-manager-acceptance.json
+            producer-handoff.zip
+          retention-days: 90
+          if-no-files-found: error
       - name: Rig logs on failure
         if: failure()
         run: docker compose -f staging/stigman/docker-compose.yml logs --tail 100

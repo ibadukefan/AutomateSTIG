@@ -6,11 +6,9 @@
 pub mod asset;
 pub mod checklist;
 pub mod finding;
-pub mod scan;
 pub mod stig;
 
 pub use asset::*;
 pub use checklist::*;
 pub use finding::*;
-pub use scan::*;
 pub use stig::*;

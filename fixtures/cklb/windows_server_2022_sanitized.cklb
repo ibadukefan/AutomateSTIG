@@ -1,11 +1,22 @@
 {
+  "title": "Windows Server 2022 STIG",
+  "cklb_version": "1.0",
+  "active": false,
+  "has_path": false,
   "target_data": {
+    "target_type": "Computing",
     "host_name": "sanitized-win2022",
     "ip_address": "192.0.2.10",
     "mac_address": "00:00:5E:00:53:01",
     "fqdn": "sanitized-win2022.example.test",
+    "comments": "Sanitized STIG Viewer interoperability fixture.",
     "role": "Member Server",
-    "is_web_database": false
+    "is_web_database": true,
+    "technology_area": "Web Review",
+    "web_db_site": "mission-portal",
+    "web_db_instance": "primary-db",
+    "os": "Windows Server 2022",
+    "classification": "CUI"
   },
   "stigs": [
     {
@@ -16,11 +27,21 @@
       "version": 1,
       "rules": [
         {
-          "vuln_num": "V-254239",
+          "group_id": "V-254239",
+          "group_id_v": "V-254239",
           "rule_id": "SV-254239r958388_rule",
+          "rule_id_src": "SV-254239r958388_rule",
+          "rule_version": "WN22-00-000001",
+          "group_title": "SRG-OS-000033-GPOS-00014",
           "rule_title": "Windows Server 2022 must use TLS 1.2",
           "severity": "high",
+          "weight": "10.0",
           "status": "Open",
+          "discussion": "TLS protects management traffic in transit.",
+          "check_content": "Review the device TLS configuration.",
+          "fix_text": "Enable the approved TLS protocol.",
+          "ccis": ["CCI-000068", "CCI-001084"],
+          "legacy_ids": ["WN22-00-000001", "WN22-TLS-000001"],
           "finding_details": "Sanitized evidence: TLS 1.2 registry setting missing.",
           "comments": "Fixture data only."
         }

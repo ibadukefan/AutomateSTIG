@@ -1,53 +1,71 @@
 # DISA Import
 
-AutomateSTIG can import DISA STIG content from XCCDF XML files or ZIP archives.
+> **Maintainer/transition tooling:** Normal scanner users receive the exact
+> release-bundled ONTAP V2R4, GPOS V3R3, and IOS-XE Router NDM V3R7 profiles.
+> Broad XCCDF import and catalog management are not in the scanner-first GUI.
+
+Protected content-maintainer tooling can import DISA STIG content from XCCDF
+XML files or ZIP archives. The installed analyst product cannot.
 
 ## CLI
 
 ```bash
-automatestig disa-import --input U_STIG.zip
-automatestig disa-import --input U_STIG-xccdf.xml
+cargo run --release --features maintainer --bin automatestig -- \
+  disa-import --input U_STIG.zip
+cargo run --release --features maintainer --bin automatestig -- \
+  disa-import --input U_STIG-xccdf.xml
 ```
 
-DISA import also generates and persists auto check packs to:
+A ZIP is treated as one import transaction: every selected XCCDF member is
+parsed and any eligible generated pack is serialized before the library is
+changed. A malformed member, duplicate benchmark ID, storage failure, or ZIP
+with no XCCDF members returns nonzero and leaves the batch uncommitted.
 
-```text
-<library>/auto_check_packs/<stig>.json
-```
+## Safety Limits
 
-The command reports the number of generated auto checks.
+Legacy CLI import, protected upload, and connected maintainer download use the same
+fail-closed archive reader:
 
-## GUI
+- 32 MiB maximum compressed ZIP input and 256 entries.
+- 16 MiB maximum actual output for one XCCDF member and 64 MiB across selected members.
+- 256 MiB maximum declared uncompressed archive size.
+- 100:1 declared compression-ratio screen after a 1 MiB grace threshold.
+- 16 MiB maximum for a raw XCCDF XML input.
 
-Use `Standards` or `Reports` to import a DISA XCCDF XML or ZIP.
+The reader also rejects unsafe or non-UTF-8 paths, duplicate/case-colliding
+names, encrypted entries, links and special files, unsupported compression,
+and overlapping member regions. Runtime decompression is capped independently
+of ZIP metadata using a limit-plus-one probe.
 
-`Standards` also includes connected content operations:
+## Retired GUI/API surface
 
-- Fetch from DISA.
-- Check updates.
-- Browse available.
+The former `Standards` workspace and its import, catalog browsing, update, and
+fetch actions are historical behavior only. The scanner GUI does not embed or
+link that workspace. Every former unversioned content route—including
+`/api/library/import-disa`, `/api/disa/available`, `/api/disa/fetch`,
+`/api/disa/fetch-all`, and `/api/disa/check-updates`—is an extraction-free
+HTTP `410 Gone` tombstone with migration guidance. There is no operational
+curl or browser workflow for these routes.
 
-Those operations are opt-in network features.
+Release maintainers use the protected content pipeline or the explicit
+maintainer source build described above. Normal users select an immutable bundled
+scanner profile; they do not import or refresh a general DISA catalog. Existing
+pre-scanner data can be inventoried and preserved with
+`automatestig-transition migration inventory` and
+`automatestig-transition migration export` from a protected
+transition build without re-enabling the retired
+HTTP surface.
 
-## API
+## Scanner Scope
 
-Upload DISA content with multipart form data:
+Importing a benchmark adds content to the local library; it does not create a
+new supported scanner. Automated evaluation is limited to the three curated
+packs in `content/supported-targets.json`. Other imported benchmarks remain
+useful to the separate transition conversion utility, but are not advertised
+as device scanning capability.
 
-```bash
-curl -H "X-Auth-Token: $AUTOMATESTIG_AUTH_TOKEN" \
-  -F "file=@U_STIG.zip" \
-  http://127.0.0.1:<PORT>/api/library/import-disa
-```
-
-Connected DISA operations:
-
-- `GET /api/disa/available`
-- `POST /api/disa/fetch`
-- `POST /api/disa/fetch-all`
-- `GET /api/disa/check-updates`
-
-## Auto Check Generation
-
-Auto-generation is deterministic and limited to structured check-content that can be mapped safely. Current supported extraction includes Windows registry blocks and Linux sysctl/systemd content.
-
-Manual-review controls remain manual review. Do not treat an imported benchmark as fully automated unless coverage evidence says so.
+Import-time generation is limited to demonstrable Cisco IOS-XE running-config
+`config_line` patterns. ONTAP, FreeBSD, and out-of-scope benchmarks generate no
+checks; importing a revision that no longer has eligible IOS-XE patterns removes
+its stale generated pack transactionally. Generated content does not add a
+platform to the supported-target contract.

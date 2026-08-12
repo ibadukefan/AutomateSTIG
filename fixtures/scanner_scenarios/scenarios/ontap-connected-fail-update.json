@@ -1,0 +1,47 @@
+{
+  "schema": "automatestig-scanner-scenario/v1",
+  "id": "ontap-connected-fail-update",
+  "actors": ["cybersecurity_analyst"],
+  "mode": "connected",
+  "target": {
+    "profile_id": "netapp_ontap9",
+    "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
+    "stig_release": "V2R4",
+    "hostname": "ontap-findings-01",
+    "software_version": "9.12.1P8"
+  },
+  "input": {
+    "kind": "evidence_v2",
+    "path": "../ontap/ontap_evidence_findings.json",
+    "sha256": "71958550a6bf785f42f10fad770a411f8b814d8afdac84405a6638a6232bb28c"
+  },
+  "destination": {
+    "inventory_path": "stig_manager/inventory.json",
+    "collection_id": 7001,
+    "asset_id": 7102,
+    "assignment_id": "assignment-ontap-v2r4-findings"
+  },
+  "remote_state": "stig_manager/ontap-prior-scanner-not-a-finding.json",
+  "delivery_attempts": [],
+  "receipt": null,
+  "expected": {
+    "evaluation": "fail",
+    "collection_complete": true,
+    "automated_results": 15,
+    "manual_untouched": 7,
+    "out_of_scope_untouched": 7,
+    "run_state": "preview_ready",
+    "delivery_state": "preview_ready",
+    "creates": 0,
+    "updates": 15,
+    "unchanged": 0,
+    "conflicts": 0,
+    "review_write_count": 0,
+    "handoff": true
+  },
+  "notes": [
+    "The synthetic remote state represents older AutomateSTIG-owned compliant reviews.",
+    "Fifteen changed scanner-owned reviews are previewed, but the safety gate blocks every direct write and provides a selected-run handoff instead.",
+    "Seven reviewed-manual and seven out-of-profile benchmark rules remain untouched."
+  ]
+}

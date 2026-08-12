@@ -1,9 +1,9 @@
 {
   "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
-  "version": "V2R2",
+  "version": "V2R4",
   "source": "AutomateSTIG current check pack: content/check_packs/netapp_ontap9.json",
   "status": "experimental",
-  "generated_at": "2026-07-08T21:30:17Z",
+  "generated_at": "2026-08-08T00:00:00Z",
   "generated_from": "content/check_packs/netapp_ontap9.json",
   "total_rules": 22,
   "rules": [
@@ -11,7 +11,7 @@
       "vuln_id": "V-246922",
       "rule_id": "V-246922_automatestig_check",
       "classification": "automated",
-      "reason": "Concurrent CLI sessions must be limited to 1 (max-active-limit column)",
+      "reason": "Every CLI session-limit row must have max-active-limit exactly 3",
       "check_pack": "netapp_ontap9",
       "check_id": "V-246922",
       "evidence_required": true,
@@ -36,14 +36,12 @@
     {
       "vuln_id": "V-246925",
       "rule_id": "V-246925_automatestig_check",
-      "classification": "automated",
-      "reason": "A remote syslog destination must be defined so account actions are audited centrally",
-      "check_pack": "netapp_ontap9",
-      "check_id": "V-246925",
+      "classification": "manual",
+      "reason": "A local forwarding destination does not prove the remote server received account-enabling audit events.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/netapp_ontap9.json",
-        "cargo test --workspace"
+        "docs/ontap-collection.md",
+        "crates/core/src/check_packs.rs"
       ]
     },
     {
@@ -62,27 +60,23 @@
     {
       "vuln_id": "V-246931",
       "rule_id": "V-246931_automatestig_check",
-      "classification": "automated",
-      "reason": "Maximum consecutive failed logon attempts must be 3",
-      "check_pack": "netapp_ontap9",
-      "check_id": "V-246931",
+      "classification": "manual",
+      "reason": "The former admin-only query could not prove the failed-attempt limit for every ONTAP role.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/netapp_ontap9.json",
-        "cargo test --workspace"
+        "docs/ontap-collection.md",
+        "crates/core/src/check_packs.rs"
       ]
     },
     {
       "vuln_id": "V-246932",
       "rule_id": "V-246932_automatestig_check",
-      "classification": "automated",
-      "reason": "Standard Mandatory DoD Notice and Consent Banner must be configured",
-      "check_pack": "netapp_ontap9",
-      "check_id": "V-246932",
+      "classification": "manual",
+      "reason": "Matching the opening sentence cannot prove the complete mandatory notice and consent banner.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/netapp_ontap9.json",
-        "cargo test --workspace"
+        "docs/ontap-collection.md",
+        "crates/core/src/check_packs.rs"
       ]
     },
     {
@@ -102,7 +96,7 @@
       "vuln_id": "V-246936",
       "rule_id": "V-246936_automatestig_check",
       "classification": "automated",
-      "reason": "At least two NTP servers must be configured (redundant authoritative time sources)",
+      "reason": "At least two canonical NTP server rows must be configured",
       "check_pack": "netapp_ontap9",
       "check_id": "V-246936",
       "evidence_required": true,
@@ -114,40 +108,34 @@
     {
       "vuln_id": "V-246938",
       "rule_id": "V-246938_automatestig_check",
-      "classification": "automated",
-      "reason": "Cluster time zone must map to UTC/GMT for audit record timestamps",
-      "check_pack": "netapp_ontap9",
-      "check_id": "V-246938",
+      "classification": "manual",
+      "reason": "An unstructured UTC/GMT token match could occur outside the effective timezone field.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/netapp_ontap9.json",
-        "cargo test --workspace"
+        "docs/ontap-collection.md",
+        "crates/core/src/check_packs.rs"
       ]
     },
     {
       "vuln_id": "V-246940",
       "rule_id": "V-246940_automatestig_check",
-      "classification": "automated",
-      "reason": "An external authentication server (domain) must provide administrator authentication",
-      "check_pack": "netapp_ontap9",
-      "check_id": "V-246940",
+      "classification": "manual",
+      "reason": "V2R4 permits domain, publickey, or SAML; the prior domain-only query could report a false finding when another approved MFA method is configured.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/netapp_ontap9.json",
-        "cargo test --workspace"
+        "docs/ontap-collection.md",
+        "crates/core/src/check_packs.rs"
       ]
     },
     {
       "vuln_id": "V-246944",
       "rule_id": "V-246944_automatestig_check",
-      "classification": "automated",
-      "reason": "System configuration backups must exist (advanced privilege: system configuration backup show)",
-      "check_pack": "netapp_ontap9",
-      "check_id": "V-246944",
+      "classification": "manual",
+      "reason": "A backup filename alone cannot prove timely backups occurred when system-level data changed.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/netapp_ontap9.json",
-        "cargo test --workspace"
+        "docs/ontap-collection.md",
+        "crates/core/src/check_packs.rs"
       ]
     },
     {
@@ -166,14 +154,12 @@
     {
       "vuln_id": "V-246948",
       "rule_id": "V-246948_automatestig_check",
-      "classification": "automated",
-      "reason": "Only the account of last resort may use non-replay-resistant (password) authentication",
-      "check_pack": "netapp_ontap9",
-      "check_id": "V-246948",
+      "classification": "manual",
+      "reason": "A password-filtered query cannot exclude every other non-domain administrator authentication method.",
       "evidence_required": true,
       "validated_by": [
-        "content/check_packs/netapp_ontap9.json",
-        "cargo test --workspace"
+        "docs/ontap-collection.md",
+        "crates/core/src/check_packs.rs"
       ]
     },
     {
@@ -206,7 +192,7 @@
       "vuln_id": "V-246952",
       "rule_id": "V-246952_automatestig_check",
       "classification": "automated",
-      "reason": "At least one uppercase character must be required in passwords",
+      "reason": "Every admin-role row must require at least one uppercase character",
       "check_pack": "netapp_ontap9",
       "check_id": "V-246952",
       "evidence_required": true,
@@ -219,7 +205,7 @@
       "vuln_id": "V-246953",
       "rule_id": "V-246953_automatestig_check",
       "classification": "automated",
-      "reason": "At least one lowercase character must be required in passwords",
+      "reason": "Every admin-role row must require at least one lowercase character",
       "check_pack": "netapp_ontap9",
       "check_id": "V-246953",
       "evidence_required": true,
@@ -232,7 +218,7 @@
       "vuln_id": "V-246954",
       "rule_id": "V-246954_automatestig_check",
       "classification": "automated",
-      "reason": "Alphanumeric requirement (at least one letter and one number) must be enabled",
+      "reason": "Every admin-role row must enable the alphanumeric password requirement",
       "check_pack": "netapp_ontap9",
       "check_id": "V-246954",
       "evidence_required": true,
@@ -245,7 +231,7 @@
       "vuln_id": "V-246955",
       "rule_id": "V-246955_automatestig_check",
       "classification": "automated",
-      "reason": "At least one special character must be required in passwords",
+      "reason": "Every admin-role row must require at least one special character",
       "check_pack": "netapp_ontap9",
       "check_id": "V-246955",
       "evidence_required": true,

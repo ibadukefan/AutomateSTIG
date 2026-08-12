@@ -2,7 +2,7 @@
 //!
 //! Answer files are JSON/YAML templates that pre-populate finding status,
 //! details, and comments for specific STIG rules. They replace the tedious
-//! XML answer files from Evaluate-STIG with a modern, version-controllable format.
+//! Review decisions in a modern, version-controllable format.
 
 use serde::{Deserialize, Serialize};
 use std::io;
@@ -68,7 +68,7 @@ pub struct AnswerEntry {
     /// Justification for severity override.
     pub severity_override_justification: Option<String>,
 
-    /// Whether to override even if a scan result already set the status.
+    /// Whether to override even if automated evidence already set the status.
     #[serde(default)]
     pub force_override: bool,
 }
@@ -102,6 +102,32 @@ impl AnswerFile {
         serde_norway::from_str(&content).map_err(|e| Error::AnswerFileError(e.to_string()))
     }
 
+    /// Parse a bounded answer-template snapshot without reopening the source
+    /// path. This lets callers bind parsed editor content to the exact bytes
+    /// whose digest they present as an optimistic-lock token.
+    pub fn from_bytes(bytes: &[u8], extension: &str) -> Result<Self> {
+        if bytes.len() as u64 > ANSWER_FILE_SIZE_LIMIT_BYTES {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "file exceeds 128 MB parse limit",
+            )
+            .into());
+        }
+        match extension {
+            "json" => serde_json::from_slice(bytes)
+                .map_err(|error| Error::AnswerFileError(error.to_string())),
+            "yaml" | "yml" => {
+                let content = std::str::from_utf8(bytes)
+                    .map_err(|error| Error::AnswerFileError(error.to_string()))?;
+                serde_norway::from_str(content)
+                    .map_err(|error| Error::AnswerFileError(error.to_string()))
+            }
+            _ => Err(Error::AnswerFileError(format!(
+                "Unsupported answer file format: {extension}"
+            ))),
+        }
+    }
+
     /// Load an answer file, auto-detecting format from extension.
     pub fn load(path: &Path) -> Result<Self> {
         match path.extension().and_then(|e| e.to_str()) {
@@ -133,21 +159,38 @@ impl AnswerFile {
     pub fn validate(&self) -> Vec<String> {
         let mut issues = Vec::new();
 
-        if self.name.is_empty() {
+        if self.name.trim().is_empty() {
             issues.push("Answer file name is empty".to_string());
+        }
+        if self.version.trim().is_empty() {
+            issues.push("Answer file version is empty".to_string());
+        }
+        if self
+            .stig_id
+            .as_deref()
+            .is_some_and(|stig_id| stig_id.trim().is_empty())
+        {
+            issues.push("Answer file STIG ID is blank".to_string());
         }
 
         // Check for duplicate Vuln IDs.
         let mut seen = std::collections::HashSet::new();
         for entry in &self.entries {
-            if !seen.insert(&entry.vuln_id) {
+            let vuln_id = entry.vuln_id.trim();
+            if vuln_id.is_empty() {
+                issues.push("Answer entry Vuln ID is blank".to_string());
+            } else if !seen.insert(vuln_id) {
                 issues.push(format!("Duplicate Vuln ID: {}", entry.vuln_id));
             }
         }
 
         // Severity override requires justification.
         for entry in &self.entries {
-            if entry.severity_override.is_some() && entry.severity_override_justification.is_none()
+            if entry.severity_override.is_some()
+                && entry
+                    .severity_override_justification
+                    .as_deref()
+                    .is_none_or(|justification| justification.trim().is_empty())
             {
                 issues.push(format!(
                     "{}: Severity override without justification",
@@ -291,6 +334,8 @@ mod tests {
     #[test]
     fn test_answer_file_validation() {
         let mut af = AnswerFile::new("", None);
+        af.version = "  ".to_string();
+        af.stig_id = Some("\t".to_string());
         af.add_entry(AnswerEntry {
             vuln_id: "V-1".to_string(),
             status: FindingStatus::Open,
@@ -309,10 +354,28 @@ mod tests {
             severity_override_justification: None,
             force_override: false,
         });
+        af.add_entry(AnswerEntry {
+            vuln_id: "  ".to_string(),
+            status: FindingStatus::Open,
+            finding_details: None,
+            comments: None,
+            severity_override: Some(Severity::Medium),
+            severity_override_justification: Some("  ".to_string()),
+            force_override: false,
+        });
 
         let issues = af.validate();
-        assert!(issues.iter().any(|i| i.contains("empty")));
+        assert!(issues.iter().any(|i| i.contains("name is empty")));
+        assert!(issues.iter().any(|i| i.contains("version is empty")));
+        assert!(issues.iter().any(|i| i.contains("STIG ID is blank")));
+        assert!(issues.iter().any(|i| i.contains("Vuln ID is blank")));
         assert!(issues.iter().any(|i| i.contains("Duplicate")));
-        assert!(issues.iter().any(|i| i.contains("justification")));
+        assert_eq!(
+            issues
+                .iter()
+                .filter(|issue| issue.contains("justification"))
+                .count(),
+            2
+        );
     }
 }

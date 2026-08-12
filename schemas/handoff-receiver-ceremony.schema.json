@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.example/schemas/handoff-receiver-ceremony.schema.json",
+  "title": "AutomateSTIG protected handoff receiver ceremony",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "passed",
+    "producer_signature_verified",
+    "trusted_cli_verification_succeeded",
+    "key_custody_ceremony_verified",
+    "completed_at",
+    "source_commit",
+    "repository",
+    "workflow_run_id",
+    "staging_workflow_run_id",
+    "protected_environment",
+    "automatestig_cli_sha256",
+    "verification_output_sha256",
+    "staging_evidence_sha256",
+    "handoff_filename",
+    "handoff_sha256",
+    "signature_filename",
+    "signature_sha256",
+    "public_key_filename",
+    "public_key_sha256",
+    "producer_key_fingerprint",
+    "key_custody_filename",
+    "key_custody_sha256",
+    "participants"
+  ],
+  "properties": {
+    "schema": { "const": "automatestig-handoff-receiver-ceremony/v1" },
+    "passed": { "const": true },
+    "producer_signature_verified": { "const": true },
+    "trusted_cli_verification_succeeded": { "const": true },
+    "key_custody_ceremony_verified": { "const": true },
+    "completed_at": { "type": "string", "format": "date-time" },
+    "source_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" },
+    "workflow_run_id": { "type": "string", "pattern": "^[0-9]+$" },
+    "staging_workflow_run_id": { "type": "string", "pattern": "^[0-9]+$" },
+    "protected_environment": { "const": "handoff-receiver-ceremony" },
+    "automatestig_cli_sha256": { "$ref": "#/$defs/sha256" },
+    "verification_output_sha256": { "$ref": "#/$defs/sha256" },
+    "staging_evidence_sha256": { "$ref": "#/$defs/sha256" },
+    "handoff_filename": { "const": "producer-handoff.zip" },
+    "handoff_sha256": { "$ref": "#/$defs/sha256" },
+    "signature_filename": { "const": "producer-handoff.zip.signature.json" },
+    "signature_sha256": { "$ref": "#/$defs/sha256" },
+    "public_key_filename": { "const": "handoff-producer-public-key.pub" },
+    "public_key_sha256": { "$ref": "#/$defs/sha256" },
+    "producer_key_fingerprint": { "type": "string", "pattern": "^SHA256:[0-9a-f]{64}$" },
+    "key_custody_filename": { "const": "handoff-key-custody-ceremony.json" },
+    "key_custody_sha256": { "$ref": "#/$defs/sha256" },
+    "participants": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "github_login"],
+        "properties": {
+          "role": { "enum": ["key_custodian", "receiver_approver"] },
+          "github_login": { "$ref": "#/$defs/login" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "login": { "type": "string", "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$" }
+  }
+}

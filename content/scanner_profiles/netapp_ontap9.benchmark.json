@@ -1,0 +1,449 @@
+{
+  "id": "NetApp_ONTAP_DSC_9-x_STIG",
+  "title": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide",
+  "description": "This Security Technical Implementation Guide is published as a tool to improve the security of Department of Defense (DOD) information systems. The requirements are derived from the National Institute of Standards and Technology (NIST) 800-53 and related documents. Comments or proposed revisions to this document should be sent via email to the following address: disa.stig_spt@mail.mil.",
+  "version": "2",
+  "release": "4",
+  "release_date": "2026-05-23",
+  "xccdf_id": "NetApp_ONTAP_DSC_9-x_STIG",
+  "platform": {
+    "family": "network",
+    "name": "NetApp ONTAP 9.x",
+    "cpe": []
+  },
+  "rules": [
+    {
+      "vuln_id": "V-246922",
+      "rule_id": "SV-246922r1156802_rule",
+      "group_id": "V-246922",
+      "group_title": "SRG-APP-000001-NDM-000200",
+      "title": "ONTAP must be configured to limit the number of concurrent sessions.",
+      "rule_version": "NAOT-AC-000001",
+      "discussion": "Device management includes the ability to control the number of administrators and management sessions that manage a device. Limiting the number of allowed administrators and sessions per administrator based on account type, role, or access type is helpful in limiting risks related to denial-of-service (DoS) attacks.",
+      "severity": "medium",
+      "check_content": "Use \"security session limit show -interface cli\" to check the concurrent session limit.\n\nIf the security session limit is not configured to limit the number of concurrent sessions to 3, this is a finding.",
+      "fix_text": "Configure session limits with the command, \"security session limit modify -max-active-limit 3 -interface cli -category application\".",
+      "cci_refs": [
+        "CCI-000054"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246923",
+      "rule_id": "SV-246923r1207671_rule",
+      "group_id": "V-246923",
+      "group_title": "SRG-APP-000003-NDM-000202",
+      "title": "ONTAP must be configured to create a session lock after 15 minutes.",
+      "rule_version": "NAOT-AC-000002",
+      "discussion": "A session lock is a temporary network device or administrator-initiated action taken when the administrator stops work but does not log out of the network device. Rather than relying on the user to manually lock their management session prior to vacating the vicinity, network devices need to be able to identify when a management session has idled and take action to initiate the session lock. Once invoked, the session lock must remain in place until the administrator re-authenticates. No other system activity aside from re-authentication must unlock the management session.\n\nNote that CCI-001133 requires that administrative network sessions be disconnected after 10 minutes of idle time. This requirement may only apply to local administrative sessions.",
+      "severity": "medium",
+      "check_content": "Use \"system timeout show\" to check the current CLI timeout.\n\nIf the system timeout is not set to 15 minute(s) or less, this is a finding.",
+      "fix_text": "Configure the CLI timeout value to 15 minutes with the command, \"system timeout modify -timeout 15\".",
+      "cci_refs": [
+        "CCI-000057"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246925",
+      "rule_id": "SV-246925r961290_rule",
+      "group_id": "V-246925",
+      "group_title": "SRG-APP-000319-NDM-000283",
+      "title": "ONTAP must automatically audit account-enabling actions.",
+      "rule_version": "NAOT-AC-000004",
+      "discussion": "Once an attacker establishes initial access to a system, the attacker often attempts to create a persistent method of reestablishing access. One way to accomplish this is for the attacker to simply enable a new or disabled account. Notification of account enabling is one method for mitigating this risk. A comprehensive account management process will ensure an audit trail, which documents the creation of application user accounts and notifies administrators and Information System Security Officer (ISSO). Such a process greatly reduces the risk that accounts will be surreptitiously created and provides logging that can be used for forensic purposes.",
+      "severity": "medium",
+      "check_content": "Use \"cluster log-forwarding show\" to see if a remote syslog destination is defined for ONTAP.\n\nUse commands available on the remote syslog server to check for new account creation or enabling a disabled account.\n\nIf ONTAP does not automatically audit account-enabling actions, this is a finding.",
+      "fix_text": "Use \"cluster log-forwarding show\" to identify defined ONTAP remote syslog servers. If no remote syslog servers are defined, use \"cluster log-forwarding create\" to define a syslog destination.\n\nOn the remote syslog server, use commands available to check for new account creation or enabling a disabled account.",
+      "cci_refs": [
+        "CCI-002130"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "manual"
+    },
+    {
+      "vuln_id": "V-246926",
+      "rule_id": "SV-246926r1051115_rule",
+      "group_id": "V-246926",
+      "group_title": "SRG-APP-000148-NDM-000346",
+      "title": "ONTAP must be configured with only one local account to be used as the account of last resort in the event the authentication server is unavailable.",
+      "rule_version": "NAOT-AC-000005",
+      "discussion": "Authentication for administrative (privileged-level) access to the device is required at all times. An account can be created on the device's local database for use when the authentication server is down or connectivity between the device and the authentication server is not operable. This account is referred to as the account of last resort since it is intended to be used as a last resort and when immediate administrative access is absolutely necessary.\n\nThe account of last resort logon credentials must be stored in a sealed envelope and kept in a safe. The safe must be periodically audited to verify the envelope remains sealed. The signature of the auditor and the date of the audit should be added to the envelope as a record. Administrators should secure the credentials and disable the root account (if possible) when not needed for system administration functions.",
+      "severity": "medium",
+      "check_content": "Use \"security login show -role admin -authentication-method password\" to see the local administrative account.\n\nIf ONTAP is not configured with only one local account to be used as the account of last resort in the event the authentication server is unavailable, this is a finding.",
+      "fix_text": "Configure a secure password for the local administrative account with \"security login password -username <user_name>\".",
+      "cci_refs": [
+        "CCI-001358",
+        "CCI-002111"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246931",
+      "rule_id": "SV-246931r960840_rule",
+      "group_id": "V-246931",
+      "group_title": "SRG-APP-000065-NDM-000214",
+      "title": "ONTAP must be configured to enforce the limit of three consecutive failed logon attempts.",
+      "rule_version": "NAOT-AC-000010",
+      "discussion": "By limiting the number of failed login attempts, the risk of unauthorized system access via user password guessing, otherwise known as brute-forcing, is reduced.",
+      "severity": "medium",
+      "check_content": "Use the command \"security login role config show\" to get a list of roles.\n\nFor each role, use the command \"security login role config show -vserver <vserver_name> -role <role_name>\" to view the password requirements for each role. \n\nIf any role has \"Maximum Number of Failed Attempts\" not set to \"3\", this is a finding.\n\nUse \"security login role config show -role admin -instance\" to see the settings for \"Maximum Number of Failed Attempts\" and “Lockout Duration\".\n\nNote: Lockout duration is set by default to lockout for one day or until unlocked by an administrator. It cannot be set to less than one day.\n\nIf ONTAP is not configured to enforce a limit of three consecutive invalid logon attempts, this is a finding.",
+      "fix_text": "Use the command \"security login role config show\" to get a list of roles.\n\nFor each role, use the command \"security login role config show -vserver <vserver_name> -role <role_name>\" to view the password requirements for each role. \n\nFor any role that does not have \"Maximum Number of Failed Attempts\" set to \"3\", use the command \"security login role config modify -role <role_name> -vserver <vserver_name>  -max-failed-login-attempts 3\".",
+      "cci_refs": [
+        "CCI-000044"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "manual"
+    },
+    {
+      "vuln_id": "V-246932",
+      "rule_id": "SV-246932r960843_rule",
+      "group_id": "V-246932",
+      "group_title": "SRG-APP-000068-NDM-000215",
+      "title": "ONTAP must be configured to display the Standard Mandatory DoD Notice and Consent Banner before granting access to the device.",
+      "rule_version": "NAOT-AC-000011",
+      "discussion": "Display of the DoD-approved use notification before granting access to the network device ensures privacy and security notification verbiage used is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nSystem use notifications are required only for access via logon interfaces with human users.",
+      "severity": "medium",
+      "check_content": "Use \"security login banner show\" to see the current login notice and consent banner.\n\nIf ONTAP is not configured to display the Standard Mandatory DoD Notice and Consent Banner before granting access to the device, this is a finding.",
+      "fix_text": "Configure the Standard Mandatory DoD Notice and Consent Banner with \"security login banner modify -message <Standard DoD Notice and Consent Banner>\".",
+      "cci_refs": [
+        "CCI-000048"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "manual"
+    },
+    {
+      "vuln_id": "V-246935",
+      "rule_id": "SV-246935r961401_rule",
+      "group_id": "V-246935",
+      "group_title": "SRG-APP-000360-NDM-000295",
+      "title": "ONTAP must have audit guarantee enabled.",
+      "rule_version": "NAOT-AU-000003",
+      "discussion": "It is critical for the appropriate personnel to be aware if a system is at risk of failing to process audit logs as required. With audit guarantee enabled, all SMB operations must generate an audit event before an ACK is returned to the client and the operation completed.  If the audit event cannot be written, then the client operation is delayed or denied.",
+      "severity": "medium",
+      "check_content": "Use \"vserver audit show -fields audit-guarantee\" to see if audit guarantee is enabled.\n\nIf audit-guarantee is set to false, this is a finding.",
+      "fix_text": "Use the command \"vserver audit modify -vserver <vserver_name> -destination <audit log location> -audit-guarantee true\" to set audit-guarantee to true.  \n\nAn example command for a vserver named svm01 with the audit logs at /audit_log would be \"vserver audit modify -vserver svm01 -destination /audit_log -audit-guarantee true\".\n\nUse the command \"vserver audit show -fields audit-guarantee\" to verify the change.",
+      "cci_refs": [
+        "CCI-001858"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246936",
+      "rule_id": "SV-246936r1015268_rule",
+      "group_id": "V-246936",
+      "group_title": "SRG-APP-000373-NDM-000298",
+      "title": "ONTAP must be configured to synchronize internal information system clocks using redundant authoritative time sources.",
+      "rule_version": "NAOT-AU-000004",
+      "discussion": "The loss of connectivity to a particular authoritative time source will result in the loss of time synchronization (free-run mode) and increasingly inaccurate time stamps on audit events and other functions.\n\nMultiple time sources provide redundancy by including a secondary source. Time synchronization is usually a hierarchy; clients synchronize time to a local source while that source synchronizes its time to a more accurate source. The network device must utilize an authoritative time server and/or be configured to use redundant authoritative time sources. This requirement is related to the comparison done in CCI-001891.\n\nDOD-approved solutions consist of a combination of a primary and secondary time source using a combination or multiple instances of the following: a time server designated for the appropriate DOD network (NIPRNet/SIPRNet); United States Naval Observatory (USNO) time servers; and/or the Global Positioning System (GPS). The secondary time source must be located in a different geographic region than the primary time source.",
+      "severity": "medium",
+      "check_content": "Use \"cluster time-service ntp server show\" to view the current network time protocol configuration for ONTAP and ensure at least two ntp servers are defined.\n\nIf ONTAP is not configured to synchronize internal information system clocks using redundant authoritative time sources, this is a finding.",
+      "fix_text": "Configure network time protocol for ONTAP with \"cluster time-service ntp server create -server <IP address>\" to add new ntp servers. Up to 10 servers can be defined.",
+      "cci_refs": [
+        "CCI-004928",
+        "CCI-001893"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246938",
+      "rule_id": "SV-246938r961443_rule",
+      "group_id": "V-246938",
+      "group_title": "SRG-APP-000374-NDM-000299",
+      "title": "ONTAP must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT).",
+      "rule_version": "NAOT-AU-000006",
+      "discussion": "If time stamps are not consistently applied and there is no common time reference, it is difficult to perform forensic analysis.\n\nTime stamps generated by the application include date and time. Time is commonly expressed in Coordinated Universal Time (UTC), a modern continuation of Greenwich Mean Time (GMT), or local time with an offset from UTC.",
+      "severity": "medium",
+      "check_content": "Use \"cluster date show\" to see the current time zone configured.\n\nIf ONTAP is not configured to record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT), this is a finding.",
+      "fix_text": "Configure the time zone to UTC with \"cluster date modify -timezone UTC\".",
+      "cci_refs": [
+        "CCI-001890"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "manual"
+    },
+    {
+      "vuln_id": "V-246940",
+      "rule_id": "SV-246940r1211037_rule",
+      "group_id": "V-246940",
+      "group_title": "SRG-APP-000516-NDM-000336",
+      "title": "ONTAP must be configured to use an authentication server to provide multifactor authentication.",
+      "rule_version": "NAOT-CM-000002",
+      "discussion": "Centralized management of authentication settings increases the security of remote and nonlocal access methods. This control is particularly important protection against the insider threat. With robust centralized management, audit records for administrator account access to the organization's network devices can be more readily analyzed for trends and anomalies. The alternative method of defining administrator accounts on each device exposes the device configuration to remote access authentication attacks and system administrators with multiple authenticators for each network device.\n\nSatisfies: SRG-APP-000516-NDM-000336, SRG-APP-000149-NDM-000247, SRG-APP-000175-NDM-000262, SRG-APP-000177-NDM-000263",
+      "severity": "high",
+      "check_content": "Use \"security login show -authentication-method domain\" to see users configured to authenticate with Active Directory.\n\nIf ONTAP is not configured to use an authentication server, this is a finding.\n\nNote: The authentication method \"domain\" is one example. Other authentication methods such as \"publickey\" and \"saml\" are also acceptable.",
+      "fix_text": "Configure ONTAP to use Active Directory to authenticate users and prohibit the use of cached authenticators with \"security login create -user-or-group-name <user or group name> -authentication-method domain -application ssh\".\n\nNote: The authentication method \"domain\" is one example. Other authentication methods such as \"publickey\" and \"saml\" are also acceptable.",
+      "cci_refs": [
+        "CCI-000370",
+        "CCI-000764",
+        "CCI-000765",
+        "CCI-000166",
+        "CCI-000185",
+        "CCI-000187"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "manual"
+    },
+    {
+      "vuln_id": "V-246944",
+      "rule_id": "SV-246944r961863_rule",
+      "group_id": "V-246944",
+      "group_title": "SRG-APP-000516-NDM-000340",
+      "title": "ONTAP must be configured to conduct backups of system level information.",
+      "rule_version": "NAOT-CM-000007",
+      "discussion": "System-level information includes default and customized settings and security attributes, including ACLs that relate to the network device configuration, as well as software required for the execution and operation of the device. Information system backup is a critical step in ensuring system integrity and availability. If the system fails and there is no backup of the system-level information, a denial of service condition is possible for all who utilize this critical network component.\n\nThis control requires the network device to support the organizational central backup process for system-level information associated with the network device. This function may be provided by the network device itself; however, the preferred best practice is a centralized backup rather than each network device performing discrete backups.",
+      "severity": "medium",
+      "check_content": "Use \"set -privilege advanced\" reply \"y\" to continue and \"system configuration backup show\" to see if ONTAP is configured for system backups.\n\nIf ONTAP is not configured to conduct backups of system-level data when changes occur, this is a finding.",
+      "fix_text": "Configure ONTAP to conduct backups of system level information with \"set -privilege advanced\" reply \"y\" to continue and \"system configuration backup create -node <node_name> -backup-type cluster -backup-name <name>\".",
+      "cci_refs": [
+        "CCI-000537"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "manual"
+    },
+    {
+      "vuln_id": "V-246947",
+      "rule_id": "SV-246947r1015269_rule",
+      "group_id": "V-246947",
+      "group_title": "SRG-APP-000153-NDM-000249",
+      "title": "ONTAP must be configured to authenticate each administrator prior to authorizing privileges based on assignment of group or role.",
+      "rule_version": "NAOT-IA-000001",
+      "discussion": "To assure individual accountability and prevent unauthorized access, administrators must be individually identified and authenticated.\n\nIndividual accountability mandates that each administrator is uniquely identified. A group authenticator is a shared account or some other form of authentication that allows multiple unique individuals to access the network device using a single account.\n\nIf a device allows or provides for group authenticators, it must first individually authenticate administrators prior to implementing group authenticator functionality.\n\nSome devices may not have the need to provide a group authenticator; this is considered a matter of device design. In those instances where the device design includes the use of a group authenticator, this requirement will apply. This requirement applies to accounts created and managed on or by the network device.",
+      "severity": "medium",
+      "check_content": "Use \"security login show -role admin -authentication-method domain\" to see all configured admin users and groups that authenticate using active directory.\n\nIf ONTAP is not configured to authenticate each administrator prior to authorizing privileges based on assignment of group or role, this is a finding.",
+      "fix_text": "Configure new administrator active directory users or groups with \"security login create -user-or-group-name <user_name> -role admin -authentication-method domain\".",
+      "cci_refs": [
+        "CCI-004045",
+        "CCI-000770"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246948",
+      "rule_id": "SV-246948r1211039_rule",
+      "group_id": "V-246948",
+      "group_title": "SRG-APP-000156-NDM-000250",
+      "title": "ONTAP must implement replay-resistant authentication mechanisms for network access to privileged accounts.",
+      "rule_version": "NAOT-IA-000002",
+      "discussion": "A replay attack may enable an unauthorized user to gain access to the application. Authentication sessions between the authenticator and the application validating the user credentials must not be vulnerable to a replay attack.\n\nAn authentication process resists replay attacks if it is impractical to achieve a successful authentication by recording and replaying a previous authentication message. \n\nTechniques used to address this include protocols using nonces (e.g., numbers generated for a specific one-time use) or challenges (e.g., TLS, WS_Security). Additional techniques include time-synchronous or challenge-response one-time authenticators.",
+      "severity": "medium",
+      "check_content": "Use \"security login show -role admin\" to see all configured admin users and groups. \n\nIf any account, other than the admin account used as the account of last resort, has an authentication method password, this is a finding.",
+      "fix_text": "Configure new administrator active directory users or groups with \"security login create -user-or-group-name <user_name> -role admin -authentication-method domain\".",
+      "cci_refs": [
+        "CCI-001941"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "manual"
+    },
+    {
+      "vuln_id": "V-246950",
+      "rule_id": "SV-246950r961506_rule",
+      "group_id": "V-246950",
+      "group_title": "SRG-APP-000395-NDM-000347",
+      "title": "ONTAP must authenticate NTP sources using authentication that is cryptographically based.",
+      "rule_version": "NAOT-IA-000004",
+      "discussion": "If Network Time Protocol (NTP) is not authenticated, an attacker can introduce a rogue NTP server. This rogue server can then be used to send incorrect time information to network devices, which will make log timestamps inaccurate and affect scheduled actions. NTP authentication is used to prevent this tampering by authenticating the time source.",
+      "severity": "medium",
+      "check_content": "Use \"cluster time-service ntp server show\" to see authenticated NTP sources using authentication that is cryptographically based.\n\nIf any of the NTP servers listed has the field \"Is Authentication Enabled\" set to false, this is a finding.",
+      "fix_text": "Configure an authenticated NTP source using authentication that is cryptographically based with \"cluster time-service ntp server create -server <ip_address> -key-id <NTP_Symmetric_Authentication_Key_ID>\".",
+      "cci_refs": [
+        "CCI-001967"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246951",
+      "rule_id": "SV-246951r1015270_rule",
+      "group_id": "V-246951",
+      "group_title": "SRG-APP-000164-NDM-000252",
+      "title": "ONTAP must enforce a minimum 15-character password length.",
+      "rule_version": "NAOT-IA-000005",
+      "discussion": "Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. Password length is one factor of several that helps to determine strength and how long it takes to crack a password.\n\nThe shorter the password, the lower the number of possible combinations that need to be tested before the password is compromised. Use of more characters in a password helps to exponentially increase the time and/or resources required to compromise the password.",
+      "severity": "medium",
+      "check_content": "Use \"security login role config show -role admin -fields passwd-minlength\" to see the minimum password length for the role admin.\n\nIf ONTAP is not configured to enforce a minimum 15-character password length, this is a finding.",
+      "fix_text": "Configure the minimum password length for the role admin to 15 with \"security login role config modify -vserver <vserver name> -role admin -passwd-minlength 15\".",
+      "cci_refs": [
+        "CCI-004066",
+        "CCI-000205"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246952",
+      "rule_id": "SV-246952r1015271_rule",
+      "group_id": "V-246952",
+      "group_title": "SRG-APP-000166-NDM-000254",
+      "title": "ONTAP must enforce password complexity by requiring that at least one uppercase character be used.",
+      "rule_version": "NAOT-IA-000006",
+      "discussion": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password is, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nMultifactor authentication (MFA) is required for all administrative and user accounts on network devices, except for an account of last resort and (where applicable) a root account. Passwords should only be used when MFA using PKI is not available, and for the account of last resort and root account.",
+      "severity": "medium",
+      "check_content": "Use \"security login role config show -role admin -fields passwd-min-uppercase-chars\" to see the minimum number of uppercase characters required in a password for the role admin.\n\nIf ONTAP is not configured to enforce password complexity by requiring that at least one uppercase character be used, this is a finding.",
+      "fix_text": "Configure ONTAP to enforce password complexity by requiring that at least one uppercase character be used for the role admin with \"security login role config modify  -role admin -passwd-min-uppercase-chars 1\".",
+      "cci_refs": [
+        "CCI-004066",
+        "CCI-000192"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246953",
+      "rule_id": "SV-246953r1015272_rule",
+      "group_id": "V-246953",
+      "group_title": "SRG-APP-000167-NDM-000255",
+      "title": "ONTAP must enforce password complexity by requiring that at least one lowercase character be used.",
+      "rule_version": "NAOT-IA-000007",
+      "discussion": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nMultifactor authentication (MFA) is required for all administrative and user accounts on network devices, except for an account of last resort and (where applicable) a root account. Passwords should only be used when MFA using PKI is not available, and for the account of last resort and root account.",
+      "severity": "medium",
+      "check_content": "Use \"security login role config show -role admin -fields passwd-min-lowercase-chars\" to see the minimum number of lowercase characters required in a password for the role admin.\n\nIf ONTAP is not configured to enforce password complexity by requiring that at least one lowercase character be used, this is a finding.",
+      "fix_text": "Configure ONTAP to enforce password complexity by requiring that at least one lowercase character be used for the role admin with \"security login role config modify  -role admin -passwd-min-lowercase-chars 1\".",
+      "cci_refs": [
+        "CCI-004066",
+        "CCI-000193"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246954",
+      "rule_id": "SV-246954r1015273_rule",
+      "group_id": "V-246954",
+      "group_title": "SRG-APP-000168-NDM-000256",
+      "title": "ONTAP must enforce password complexity by requiring that at least one numeric character be used.",
+      "rule_version": "NAOT-IA-000008",
+      "discussion": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nMultifactor authentication (MFA) is required for all administrative and user accounts on network devices, except for an account of last resort and (where applicable) a root account. Passwords should only be used when MFA using PKI is not available, and for the account of last resort and root account.",
+      "severity": "medium",
+      "check_content": "Use \"security login role config show -role admin -fields passwd-alphanum\" to see at least one letter and one number are required in a password for the role admin.\n\nIf ONTAP is not configured to enforce password complexity by requiring that at least one numeric character be used, this is a finding.",
+      "fix_text": "Configure ONTAP to enforce password complexity by requiring that at least one numeric character be used with \"security login role config modify -role admin -passwd-alphanum enabled\".",
+      "cci_refs": [
+        "CCI-004066",
+        "CCI-000194"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246955",
+      "rule_id": "SV-246955r1015274_rule",
+      "group_id": "V-246955",
+      "group_title": "SRG-APP-000169-NDM-000257",
+      "title": "ONTAP must enforce password complexity by requiring that at least one special character be used.",
+      "rule_version": "NAOT-IA-000009",
+      "discussion": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nMultifactor authentication (MFA) is required for all administrative and user accounts on network devices, except for an account of last resort and (where applicable) a root account. Passwords should only be used when MFA using PKI is not available, and for the account of last resort and root account.",
+      "severity": "medium",
+      "check_content": "Use \"security login role config show -role admin -fields passwd-min-special-chars\" to see the minimum number of special characters required in a password for the role admin.\n\nIf ONTAP is not configured to enforce password complexity by requiring that at least one special character be used, this is a finding.",
+      "fix_text": "Configure ONTAP to enforce password complexity by requiring that at least one special character be used with \"security login role config modify -role admin -passwd-min-special-chars 1\".",
+      "cci_refs": [
+        "CCI-004066",
+        "CCI-001619"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246958",
+      "rule_id": "SV-246958r961557_rule",
+      "group_id": "V-246958",
+      "group_title": "SRG-APP-000412-NDM-000331",
+      "title": "ONTAP must be configured to implement cryptographic mechanisms using FIPS 140-2.",
+      "rule_version": "NAOT-MA-000002",
+      "discussion": "Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied upon to provide confidentiality or integrity, and DoD data may be compromised.\n\nSatisfies: SRG-APP-000412-NDM-000331, SRG-APP-000411-NDM-000330, SRG-APP-000179-NDM-000265",
+      "severity": "high",
+      "check_content": "Use \"set -privilege advanced\" reply \"y\" to continue and \"security config show\" to see if cluster FIPS mode is true.\n\nIf ONTAP is not configured to implement cryptographic mechanisms using FIPS 140-2, this is a finding.",
+      "fix_text": "Configure ONTAP to use cryptographic mechanisms with \"set -privilege advanced\" reply \"y\" to continue and  \"security config modify -is-fips-enabled true -interface SSL\".",
+      "cci_refs": [
+        "CCI-000803",
+        "CCI-003123",
+        "CCI-002890"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246959",
+      "rule_id": "SV-246959r961068_rule",
+      "group_id": "V-246959",
+      "group_title": "SRG-APP-000190-NDM-000267",
+      "title": "ONTAP must terminate all network connections associated with a device management session at the end of the session, or the session must be terminated after 10 minutes of inactivity except to fulfill documented and validated mission requirements.",
+      "rule_version": "NAOT-SC-000001",
+      "discussion": "Terminating an idle session within a short time period reduces the window of opportunity for unauthorized personnel to take control of a management session enabled on the console or console port that has been left unattended. In addition, quickly terminating an idle session will also free up resources committed by the managed network element.\n\nTerminating network connections associated with communications sessions includes, for example, de-allocating associated TCP/IP address/port pairs at the operating system level, or de-allocating networking assignments at the application level if multiple application sessions are using a single, operating system-level network connection. This does not mean that the device terminates all sessions or network access; it only ends the inactive session and releases the resources associated with that session.",
+      "severity": "high",
+      "check_content": "Use \"system timeout show\" to see the session timeout in minutes.\n\nIf ONTAP does not terminate the connection associated with a device management session at the end of the session or after 10 minutes of inactivity, this is a finding.",
+      "fix_text": "Configure ONTAP to timeout idle sessions after 10 minutes with \"system timeout modify -timeout 10\".",
+      "cci_refs": [
+        "CCI-001133"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    },
+    {
+      "vuln_id": "V-246964",
+      "rule_id": "SV-246964r1137890_rule",
+      "group_id": "V-246964",
+      "group_title": "SRG-APP-000516-NDM-000350",
+      "title": "ONTAP must be configured to send audit log data to a central log server.",
+      "rule_version": "NAOT-SI-000001",
+      "discussion": "The aggregation of log data kept on a syslog server can be used to detect attacks and trigger an alert to the appropriate security personnel. The stored log data can used to detect weaknesses in security that enable the network IA team to find and address these weaknesses before breaches can occur. Reviewing these logs, whether before or after a security breach, are important in showing whether someone is an internal employee or an outside threat.",
+      "severity": "high",
+      "check_content": "Use \"cluster log-forwarding show\" to see if audit logs are being sent to a remote logging server.\n\nSample output from the command:\n\n                                                                                           Verify   Syslog\nDestination Host         Port   Protocol                   Server   Facility\n------------------------ ------ ----------------------- --------  --------\n192.168.0.1                     514    udp-unencrypted false       user\n\nIf no remote logging servers are listed, this is a finding.",
+      "fix_text": "Configure ONTAP for remote syslogging with \"cluster log-forwarding create -destination <hostname_or_ip_address>\".",
+      "cci_refs": [
+        "CCI-001851"
+      ],
+      "legacy_ids": [],
+      "stig_ref": "NetApp ONTAP DSC 9.x Security Technical Implementation Guide :: V2R4",
+      "weight": 10.0,
+      "automatable": "full"
+    }
+  ]
+}

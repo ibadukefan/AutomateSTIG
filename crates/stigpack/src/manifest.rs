@@ -1,6 +1,6 @@
 //! Stigpack manifest — metadata about pack contents.
 
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -29,34 +29,12 @@ pub struct PackManifest {
     /// Who created/signed this pack.
     pub author: String,
 
-    /// Minimum AutomateSTIG version required.
-    pub min_app_version: Option<String>,
-
-    /// Pack type.
-    pub pack_type: PackType,
+    /// SHA-256 fingerprint of the Ed25519 public key used to sign this pack.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub signing_key_fingerprint: Option<String>,
 
     /// Files included in this pack with their SHA-256 hashes.
-    pub files: HashMap<String, FileEntry>,
-}
-
-/// Type of content pack.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum PackType {
-    /// Full STIG content pack — benchmarks + templates + remediation.
-    #[serde(rename = "stig_content")]
-    StigContent,
-
-    /// Application update pack.
-    #[serde(rename = "app_update")]
-    AppUpdate,
-
-    /// Custom checks only.
-    #[serde(rename = "custom_checks")]
-    CustomChecks,
-
-    /// Remediation scripts only.
-    #[serde(rename = "remediation")]
-    Remediation,
+    pub files: BTreeMap<String, FileEntry>,
 }
 
 /// A file entry in the manifest.
@@ -86,9 +64,8 @@ impl PackManifest {
             version: version.to_string(),
             created_at: Utc::now(),
             author: String::new(),
-            min_app_version: None,
-            pack_type: PackType::StigContent,
-            files: HashMap::new(),
+            signing_key_fingerprint: None,
+            files: BTreeMap::new(),
         }
     }
 
@@ -113,6 +90,55 @@ impl PackManifest {
     /// Deserialize from JSON.
     pub fn from_json(json: &str) -> Result<Self, serde_json::Error> {
         serde_json::from_str(json)
+    }
+
+    pub(crate) fn validate(&self) -> Result<(), String> {
+        if self.format_version != "1" {
+            return Err(format!(
+                "unsupported .stigpack manifest format version: {}",
+                self.format_version
+            ));
+        }
+        for (label, value) in [
+            ("pack_id", &self.pack_id),
+            ("name", &self.name),
+            ("version", &self.version),
+        ] {
+            if value.trim().is_empty() {
+                return Err(format!("manifest {label} must not be empty"));
+            }
+        }
+        if self
+            .signing_key_fingerprint
+            .as_deref()
+            .is_some_and(|fingerprint| {
+                !fingerprint.starts_with("SHA256:")
+                    || fingerprint.len() != 71
+                    || !fingerprint[7..]
+                        .bytes()
+                        .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+            })
+        {
+            return Err("manifest signing_key_fingerprint is invalid".to_string());
+        }
+        for (path, entry) in &self.files {
+            crate::validate_member_path(path).map_err(|error| error.to_string())?;
+            if matches!(path.as_str(), "manifest.json" | "signature.sig") {
+                return Err(format!("manifest may not list reserved member {path}"));
+            }
+            if entry.path != *path {
+                return Err(format!(
+                    "manifest entry path mismatch: key {path:?}, value {:?}",
+                    entry.path
+                ));
+            }
+            if entry.sha256.len() != 64
+                || !entry.sha256.bytes().all(|byte| byte.is_ascii_hexdigit())
+            {
+                return Err(format!("invalid SHA-256 digest for {path}"));
+            }
+        }
+        Ok(())
     }
 }
 

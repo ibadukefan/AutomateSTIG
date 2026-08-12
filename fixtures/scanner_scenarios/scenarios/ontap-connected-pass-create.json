@@ -1,0 +1,47 @@
+{
+  "schema": "automatestig-scanner-scenario/v1",
+  "id": "ontap-connected-pass-create",
+  "actors": ["cybersecurity_analyst"],
+  "mode": "connected",
+  "target": {
+    "profile_id": "netapp_ontap9",
+    "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
+    "stig_release": "V2R4",
+    "hostname": "ontap-compliant-01",
+    "software_version": "9.15.1P2"
+  },
+  "input": {
+    "kind": "evidence_v2",
+    "path": "../ontap/ontap_evidence_compliant.json",
+    "sha256": "d1ebea7b40d581b32ec0f121ad71320023ab0f014f4dfa5a24d07b924837da44"
+  },
+  "destination": {
+    "inventory_path": "stig_manager/inventory.json",
+    "collection_id": 7001,
+    "asset_id": 7101,
+    "assignment_id": "assignment-ontap-v2r4"
+  },
+  "remote_state": "stig_manager/empty-reviews.json",
+  "delivery_attempts": [],
+  "receipt": null,
+  "expected": {
+    "evaluation": "pass",
+    "collection_complete": true,
+    "automated_results": 15,
+    "manual_untouched": 7,
+    "out_of_scope_untouched": 7,
+    "run_state": "preview_ready",
+    "delivery_state": "preview_ready",
+    "creates": 15,
+    "updates": 0,
+    "unchanged": 0,
+    "conflicts": 0,
+    "review_write_count": 0,
+    "handoff": true
+  },
+  "notes": [
+    "The asset and exact V2R4 assignment already exist in STIG Manager.",
+    "Fifteen scanner-owned creates are previewed, but no changed review is written without an atomic conditional-review API; the selected-run handoff carries the result into STIG Manager.",
+    "Seven reviewed-manual and seven out-of-profile benchmark rules remain untouched."
+  ]
+}

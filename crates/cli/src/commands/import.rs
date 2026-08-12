@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use automatestig_core::library::StigLibrary;
 use automatestig_stigpack::importer;
 
-use super::library_path;
+use super::{library_path, trusted_keys_dir};
 use crate::ui;
 
 pub fn run(pack_path: &str, cli: &crate::Cli) -> Result<()> {
@@ -33,19 +33,10 @@ pub fn run(pack_path: &str, cli: &crate::Cli) -> Result<()> {
              This content pack is UNTRUSTED and unverified — lab/testing use only. \
              Do not use unsigned content for production compliance evaluations.",
         );
-        importer::import_pack(path, &mut library).context("Failed to import pack")?
+        importer::import_pack_untrusted(path, &mut library).context("Failed to import pack")?
     } else {
         let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
-        let trust_dir = std::env::var("AUTOMATESTIG_TRUSTED_KEYS_DIR")
-            .map(std::path::PathBuf::from)
-            .unwrap_or_else(|_| {
-                std::env::var("HOME")
-                    .or_else(|_| std::env::var("USERPROFILE"))
-                    .map(std::path::PathBuf::from)
-                    .unwrap_or_else(|_| std::path::PathBuf::from("."))
-                    .join(".automatestig")
-                    .join("trusted_keys")
-            });
+        let trust_dir = trusted_keys_dir();
         trust_store
             .load_from_directory(&trust_dir)
             .context("Failed to load trusted .stigpack keys")?;
@@ -67,9 +58,10 @@ pub fn run(pack_path: &str, cli: &crate::Cli) -> Result<()> {
         "Answer templates",
         &result.answer_templates_imported.to_string(),
     );
+    ui::info("Custom checks", &result.custom_checks_imported.to_string());
     ui::info(
-        "Remediation scripts",
-        &result.remediation_scripts_imported.to_string(),
+        "Generated check packs",
+        &result.auto_check_packs_imported.to_string(),
     );
 
     if !result.warnings.is_empty() {

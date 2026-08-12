@@ -1,0 +1,585 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.dev/schemas/scanner-comparison-manifest.schema.json",
+  "title": "AutomateSTIG controlled scanner-comparison draft or completed manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "comparison_id",
+    "created_at",
+    "target",
+    "benchmark",
+    "oracle",
+    "randomization",
+    "tools",
+    "runs",
+    "deviations"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://automatestig.dev/schemas/scanner-comparison-manifest.schema.json"
+    },
+    "schema": {
+      "enum": [
+        "automatestig-scanner-comparison-draft/v1",
+        "automatestig-scanner-comparison/v2"
+      ]
+    },
+    "comparison_id": {
+      "$ref": "#/$defs/slug"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "family",
+        "model",
+        "software_version",
+        "context",
+        "hardware_identity_path",
+        "hardware_identity_sha256",
+        "privilege_profile_path",
+        "privilege_profile_sha256",
+        "network_path_artifact_path",
+        "network_path_sha256",
+        "site_policy_path",
+        "site_policy_sha256",
+        "representative_authorized_device",
+        "synthetic"
+      ],
+      "properties": {
+        "family": { "$ref": "#/$defs/shortText" },
+        "model": { "$ref": "#/$defs/shortText" },
+        "software_version": { "$ref": "#/$defs/shortText" },
+        "context": { "$ref": "#/$defs/shortText" },
+        "hardware_identity_path": { "$ref": "#/$defs/relativePath" },
+        "hardware_identity_sha256": { "$ref": "#/$defs/sha256" },
+        "privilege_profile_path": { "$ref": "#/$defs/relativePath" },
+        "privilege_profile_sha256": { "$ref": "#/$defs/sha256" },
+        "network_path_artifact_path": { "$ref": "#/$defs/relativePath" },
+        "network_path_sha256": { "$ref": "#/$defs/sha256" },
+        "site_policy_path": { "$ref": "#/$defs/relativePath" },
+        "site_policy_sha256": { "$ref": "#/$defs/sha256" },
+        "representative_authorized_device": { "const": true },
+        "synthetic": { "const": false }
+      }
+    },
+    "benchmark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "release",
+        "xccdf_benchmark_id",
+        "source_path",
+        "source_sha256",
+        "effective_model_path",
+        "effective_model_sha256"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/shortText" },
+        "release": {
+          "type": "string",
+          "pattern": "^V[0-9]+R[0-9]+$"
+        },
+        "xccdf_benchmark_id": { "$ref": "#/$defs/shortText" },
+        "source_path": { "$ref": "#/$defs/relativePath" },
+        "source_sha256": { "$ref": "#/$defs/sha256" },
+        "effective_model_path": { "$ref": "#/$defs/relativePath" },
+        "effective_model_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "oracle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adjudicated_at",
+        "adjudication_basis",
+        "independent_of_tool_outputs",
+        "adjudicators",
+        "cases"
+      ],
+      "properties": {
+        "adjudicated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "adjudication_basis": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "independent_of_tool_outputs": { "const": true },
+        "adjudicators": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "roles"],
+            "properties": {
+              "id": { "$ref": "#/$defs/slug" },
+              "roles": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "enum": ["cybersecurity_sme", "test_owner"]
+                }
+              }
+            }
+          },
+          "contains": {
+            "type": "object",
+            "required": ["roles"],
+            "properties": {
+              "roles": { "contains": { "const": "cybersecurity_sme" } }
+            }
+          },
+          "minContains": 2,
+          "allOf": [
+            {
+              "contains": {
+                "type": "object",
+                "required": ["roles"],
+                "properties": {
+                  "roles": { "contains": { "const": "test_owner" } }
+                }
+              },
+              "minContains": 1
+            }
+          ]
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 7,
+          "items": { "$ref": "#/$defs/case" },
+          "allOf": [
+            { "contains": { "$ref": "#/$defs/compliantCase" }, "minContains": 1 },
+            { "contains": { "$ref": "#/$defs/noncompliantCase" }, "minContains": 1 },
+            { "contains": { "$ref": "#/$defs/permissionDeniedCase" }, "minContains": 1 },
+            { "contains": { "$ref": "#/$defs/transportFailureCase" }, "minContains": 1 },
+            { "contains": { "$ref": "#/$defs/truncatedOutputCase" }, "minContains": 1 },
+            { "contains": { "$ref": "#/$defs/ambiguousOutputCase" }, "minContains": 1 },
+            { "contains": { "$ref": "#/$defs/unsupportedVersionCase" }, "minContains": 1 }
+          ]
+        }
+      }
+    },
+    "randomization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "seed_sha256", "repetitions"],
+      "properties": {
+        "algorithm": { "const": "sha256-order-v1" },
+        "seed_sha256": { "$ref": "#/$defs/sha256" },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 100
+        }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "$ref": "#/$defs/tool" },
+      "contains": {
+        "type": "object",
+        "required": ["id", "classification"],
+        "properties": {
+          "id": { "const": "automatestig" },
+          "classification": { "const": "sut" }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    },
+    "runs": {
+      "type": "array"
+    },
+    "deviations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description", "impact", "approved_by"],
+        "properties": {
+          "id": { "$ref": "#/$defs/slug" },
+          "description": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 2000
+          },
+          "impact": {
+            "enum": ["none", "limits_claim", "invalidates_claim"]
+          },
+          "approved_by": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/slug" }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema": { "const": "automatestig-scanner-comparison-draft/v1" }
+        },
+        "required": ["schema"]
+      },
+      "then": {
+        "properties": {
+          "runs": { "items": { "$ref": "#/$defs/draftRun" } }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema": { "const": "automatestig-scanner-comparison/v2" }
+        },
+        "required": ["schema"]
+      },
+      "then": {
+        "properties": {
+          "runs": {
+            "minItems": 42,
+            "items": { "$ref": "#/$defs/completedRun" }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+    },
+    "shortText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "statusMap": {
+      "type": "object",
+      "propertyNames": { "pattern": "^V-[0-9]+$" },
+      "additionalProperties": {
+        "enum": ["Finding", "NotAFinding", "NotApplicable"]
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "software_version",
+        "source_state_path",
+        "source_state_sha256",
+        "collection_expected",
+        "expected_status_by_vuln"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "kind": {
+          "enum": [
+            "compliant",
+            "noncompliant",
+            "permission_denied",
+            "transport_failure",
+            "truncated_output",
+            "ambiguous_output",
+            "unsupported_version"
+          ]
+        },
+        "software_version": { "$ref": "#/$defs/shortText" },
+        "source_state_path": { "$ref": "#/$defs/relativePath" },
+        "source_state_sha256": { "$ref": "#/$defs/sha256" },
+        "collection_expected": { "enum": ["complete", "incomplete"] },
+        "expected_status_by_vuln": { "$ref": "#/$defs/statusMap" }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "product",
+        "vendor",
+        "version",
+        "artifact_path",
+        "artifact_sha256",
+        "content_path",
+        "content_sha256",
+        "classification",
+        "setup_trials"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "product": { "$ref": "#/$defs/shortText" },
+        "vendor": { "$ref": "#/$defs/shortText" },
+        "version": { "$ref": "#/$defs/shortText" },
+        "artifact_path": { "$ref": "#/$defs/relativePath" },
+        "artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "content_path": { "$ref": "#/$defs/relativePath" },
+        "content_sha256": { "$ref": "#/$defs/sha256" },
+        "classification": { "enum": ["sut", "commercial", "government"] },
+        "setup_trials": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["duration_ms", "analyst_actions"],
+            "properties": {
+              "duration_ms": { "type": "integer", "minimum": 0 },
+              "analyst_actions": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "xccdfResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "path", "sha256", "test_result_id"],
+      "properties": {
+        "format": { "const": "xccdf" },
+        "path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "test_result_id": { "$ref": "#/$defs/shortText" },
+        "traceability": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/traceabilityReference" }
+          ]
+        }
+      }
+    },
+    "normalizedResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "path",
+        "sha256",
+        "source_export_path",
+        "source_export_sha256"
+      ],
+      "properties": {
+        "format": { "const": "normalized-json" },
+        "path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "source_export_path": { "$ref": "#/$defs/relativePath" },
+        "source_export_sha256": { "$ref": "#/$defs/sha256" },
+        "traceability": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/traceabilityReference" }
+          ]
+        }
+      }
+    },
+    "traceabilityReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.?(?:/|$)).+$"
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "code", "detail", "evidence_path", "evidence_sha256"],
+      "properties": {
+        "stage": {
+          "enum": ["setup", "preflight", "collection", "evaluation", "export", "normalization"]
+        },
+        "code": {
+          "enum": [
+            "permission_denied",
+            "transport_failure",
+            "truncated_output",
+            "ambiguous_output",
+            "unsupported_version",
+            "tool_error",
+            "no_usable_export",
+            "license_unavailable",
+            "operator_error",
+            "other"
+          ]
+        },
+        "detail": { "type": "string", "minLength": 10, "maxLength": 2000 },
+        "evidence_path": { "$ref": "#/$defs/relativePath" },
+        "evidence_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "completedRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "tool_id",
+        "case_id",
+        "repetition",
+        "sequence",
+        "source_state_sha256",
+        "collection_complete",
+        "result",
+        "failure",
+        "duration_ms",
+        "analyst_actions",
+        "external_script_lines"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "tool_id": { "$ref": "#/$defs/slug" },
+        "case_id": { "$ref": "#/$defs/slug" },
+        "repetition": { "type": "integer", "minimum": 1 },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "source_state_sha256": { "$ref": "#/$defs/sha256" },
+        "collection_complete": { "type": "boolean" },
+        "result": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/xccdfResult" },
+            { "$ref": "#/$defs/normalizedResult" }
+          ]
+        },
+        "failure": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/failure" }
+          ]
+        },
+        "duration_ms": { "type": "integer", "minimum": 0 },
+        "analyst_actions": { "type": "integer", "minimum": 0 },
+        "external_script_lines": { "type": "integer", "minimum": 0 }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "collection_complete": { "const": true } },
+            "required": ["collection_complete"]
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "oneOf": [
+                  { "$ref": "#/$defs/xccdfResult" },
+                  { "$ref": "#/$defs/normalizedResult" }
+                ]
+              },
+              "failure": { "type": "null" }
+            }
+          },
+          "else": {
+            "properties": { "failure": { "$ref": "#/$defs/failure" } }
+          }
+        }
+      ]
+    },
+    "draftRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "tool_id",
+        "case_id",
+        "repetition",
+        "sequence",
+        "source_state_sha256",
+        "collection_complete",
+        "result",
+        "failure",
+        "duration_ms",
+        "analyst_actions",
+        "external_script_lines"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "tool_id": { "$ref": "#/$defs/slug" },
+        "case_id": { "$ref": "#/$defs/slug" },
+        "repetition": { "type": "integer", "minimum": 1 },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "source_state_sha256": { "$ref": "#/$defs/sha256" },
+        "collection_complete": { "type": ["boolean", "null"] },
+        "result": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/xccdfResult" },
+            { "$ref": "#/$defs/normalizedResult" }
+          ]
+        },
+        "failure": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/failure" }
+          ]
+        },
+        "duration_ms": { "type": ["integer", "null"], "minimum": 0 },
+        "analyst_actions": { "type": ["integer", "null"], "minimum": 0 },
+        "external_script_lines": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "compliantCase": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": { "kind": { "const": "compliant" } }
+    },
+    "noncompliantCase": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": { "kind": { "const": "noncompliant" } }
+    },
+    "permissionDeniedCase": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": { "kind": { "const": "permission_denied" } }
+    },
+    "transportFailureCase": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": { "kind": { "const": "transport_failure" } }
+    },
+    "truncatedOutputCase": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": { "kind": { "const": "truncated_output" } }
+    },
+    "ambiguousOutputCase": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": { "kind": { "const": "ambiguous_output" } }
+    },
+    "unsupportedVersionCase": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": { "kind": { "const": "unsupported_version" } }
+    }
+  }
+}

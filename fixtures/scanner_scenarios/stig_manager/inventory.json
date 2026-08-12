@@ -1,0 +1,88 @@
+{
+  "schema": "automatestig-synthetic-stig-manager-inventory/v1",
+  "api_url": "https://stig-manager.synthetic.invalid/api",
+  "collection": {
+    "collection_id": 7001,
+    "name": "Synthetic Difficult Devices"
+  },
+  "assets": [
+    {
+      "asset_id": 7101,
+      "name": "ontap-compliant-01",
+      "fqdn": "ontap-compliant-01.synthetic.invalid",
+      "assignments": [
+        {
+          "assignment_id": "assignment-ontap-v2r4",
+          "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
+          "stig_release": "V2R4",
+          "rule_count": 29
+        }
+      ]
+    },
+    {
+      "asset_id": 7102,
+      "name": "ontap-findings-01",
+      "fqdn": "ontap-findings-01.synthetic.invalid",
+      "assignments": [
+        {
+          "assignment_id": "assignment-ontap-v2r4-findings",
+          "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
+          "stig_release": "V2R4",
+          "rule_count": 29
+        }
+      ]
+    },
+    {
+      "asset_id": 7103,
+      "name": "ontap-transport-failure",
+      "fqdn": "ontap-transport-failure.synthetic.invalid",
+      "assignments": [
+        {
+          "assignment_id": "assignment-ontap-v2r4-incomplete",
+          "stig_id": "NetApp_ONTAP_DSC_9-x_STIG",
+          "stig_release": "V2R4",
+          "rule_count": 29
+        }
+      ]
+    },
+    {
+      "asset_id": 7201,
+      "name": "bsd-findings-01",
+      "fqdn": "bsd-findings-01.synthetic.invalid",
+      "assignments": [
+        {
+          "assignment_id": "assignment-freebsd-v3r3",
+          "stig_id": "General_Purpose_Operating_System",
+          "stig_release": "V3R3",
+          "rule_count": 203
+        }
+      ]
+    },
+    {
+      "asset_id": 7301,
+      "name": "rtr-compliant-01",
+      "fqdn": "rtr-compliant-01.synthetic.invalid",
+      "assignments": [
+        {
+          "assignment_id": "assignment-cisco-v3r7-compliant",
+          "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+          "stig_release": "V3R7",
+          "rule_count": 42
+        }
+      ]
+    },
+    {
+      "asset_id": 7302,
+      "name": "rtr-findings-01",
+      "fqdn": "rtr-findings-01.synthetic.invalid",
+      "assignments": [
+        {
+          "assignment_id": "assignment-cisco-v3r7-findings",
+          "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+          "stig_release": "V3R7",
+          "rule_count": 42
+        }
+      ]
+    }
+  ]
+}

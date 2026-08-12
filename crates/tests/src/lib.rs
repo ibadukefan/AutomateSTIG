@@ -2,15 +2,14 @@
 //!
 //! These tests exercise the full pipeline end-to-end:
 //! - CKL/CKLB/XCCDF parsing and roundtripping
-//! - Evaluation engine with scan results + answer files
+//! - Evidence-driven evaluation and answer files
 //! - STIG library lifecycle (init → add → load → integrity check)
 //! - Stigpack build → verify → import pipeline
 //! - Format conversion (CKL ↔ CKLB ↔ JSON)
 //! - SQLite storage CRUD
-//! - STIG-Manager export
 //!
 //! All tests use temporary directories and are safe to run in parallel.
-//! They cover Windows, macOS, and Linux (no platform-specific features used).
+//! They are platform-independent and use only temporary files.
 
 #[cfg(test)]
 mod integration {
@@ -21,9 +20,7 @@ mod integration {
     use automatestig_core::models::asset::Asset;
     use automatestig_core::models::checklist::{Checklist, ChecklistStigInfo};
     use automatestig_core::models::finding::{FindingSource, FindingStatus};
-    use automatestig_core::models::scan::{ScanResult, ScanResultSet, ScanSource, ScannerType};
     use automatestig_core::models::stig::*;
-    use automatestig_integrations::stig_manager;
     use automatestig_parsers::{ckl, cklb, xccdf};
     use automatestig_stigpack::builder::PackBuilder;
     use automatestig_stigpack::importer;
@@ -48,7 +45,9 @@ mod integration {
                     vuln_id: format!("V-{}", 100000 + i),
                     rule_id: format!("SV-{}r1_rule", 100000 + i),
                     group_id: format!("V-{}", 100000 + i),
+                    group_title: format!("SRG-TEST-{i}"),
                     title: format!("Test Rule {} for {}", i, id),
+                    rule_version: format!("TEST-{i}"),
                     discussion: format!("Discussion for rule {}", i),
                     severity,
                     check_content: format!("Check content for rule {}", i),
@@ -58,8 +57,6 @@ mod integration {
                     stig_ref: Some(format!("{} :: V1R1", id)),
                     weight: severity.default_weight(),
                     automatable: CheckAutomation::Manual,
-                    automated_check: None,
-                    remediation_ids: vec![],
                 }
             })
             .collect();
@@ -81,45 +78,21 @@ mod integration {
         }
     }
 
-    fn make_scan_results(benchmark: &StigBenchmark, pass_ratio: f64) -> ScanResultSet {
-        let results: Vec<ScanResult> = benchmark
-            .rules
-            .iter()
-            .enumerate()
-            .map(|(i, rule)| {
-                let passed = (i as f64 / benchmark.rules.len() as f64) < pass_ratio;
-                ScanResult {
-                    rule_ref: rule.vuln_id.clone(),
-                    passed: Some(passed),
-                    raw_result: if passed { "pass" } else { "fail" }.to_string(),
-                    evidence: Some(format!("Automated check result for {}", rule.vuln_id)),
-                    benchmark_ref: Some(benchmark.id.clone()),
-                }
-            })
-            .collect();
-
-        ScanResultSet {
-            source: ScanSource {
-                scanner: ScannerType::Scc,
-                scanner_version: Some("5.7".to_string()),
-                scan_date: None,
-                source_file: Some("test_scan.xml".to_string()),
-                target: Some("testhost.example.mil".to_string()),
-                profile: Some("MAC-1_Classified".to_string()),
-            },
-            results,
-        }
-    }
-
     fn make_checklist_with_findings() -> Checklist {
         let benchmark = make_benchmark("Test_STIG", 10);
         let asset = Asset::new("webserver01");
-        let scan = make_scan_results(&benchmark, 0.7); // 70% pass
-
         let engine = EvaluationEngine::with_defaults();
-        engine
-            .evaluate(&benchmark, &asset, Some(&scan), &[])
-            .unwrap()
+        let mut checklist = engine.evaluate(&benchmark, &asset, &[]).unwrap();
+        for (index, finding) in checklist.findings.iter_mut().enumerate() {
+            finding.status = if index % 3 == 0 {
+                FindingStatus::Open
+            } else {
+                FindingStatus::NotAFinding
+            };
+            finding.source = FindingSource::Automated;
+            finding.finding_details = format!("Collected evidence for {}", finding.vuln_id);
+        }
+        checklist
     }
 
     // ---------------------------------------------------------------------------
@@ -128,11 +101,10 @@ mod integration {
 
     #[test]
     fn test_full_evaluation_pipeline() {
-        let benchmark = make_benchmark("Windows_Server_2022_STIG", 50);
+        let benchmark = make_benchmark("RHEL_9_STIG", 50);
         let asset = Asset::new("dc01.navy.mil");
-        let scan = make_scan_results(&benchmark, 0.9); // 90% pass
 
-        let mut answer = AnswerFile::new("Site Answers", Some("Windows_Server_2022_STIG"));
+        let mut answer = AnswerFile::new("Site Answers", Some("RHEL_9_STIG"));
         // Mark some findings as N/A via answer file.
         answer.add_entry(AnswerEntry {
             vuln_id: "V-100001".to_string(),
@@ -145,9 +117,7 @@ mod integration {
         });
 
         let engine = EvaluationEngine::with_defaults();
-        let checklist = engine
-            .evaluate(&benchmark, &asset, Some(&scan), &[answer])
-            .unwrap();
+        let checklist = engine.evaluate(&benchmark, &asset, &[answer]).unwrap();
 
         // Verify results.
         assert_eq!(checklist.findings.len(), 50);
@@ -160,70 +130,7 @@ mod integration {
 
         // Summary should be reasonable.
         let summary = checklist.summary();
-        assert!(summary.not_a_finding > 0);
-        assert!(summary.open > 0 || summary.not_reviewed > 0);
-        assert!(summary.compliance_pct() > 0.0);
-    }
-
-    #[test]
-    fn test_xccdf_scanner_evidence_survives_evaluation_and_ckl_cklb_export() {
-        let benchmark_xml =
-            include_str!("../../../fixtures/disa-xccdf/windows_server_2022_sanitized_xccdf.xml");
-        let benchmark = xccdf::parse_xccdf_benchmark_str(benchmark_xml).unwrap();
-        let scan_xml = r#"<?xml version="1.0" encoding="UTF-8"?>
-<Benchmark xmlns="http://checklists.nist.gov/xccdf/1.2">
-  <TestResult id="scc_result_1" test-system="cpe:/a:disa:scc:5.7">
-    <target>sanitized-win2022.example.test</target>
-    <profile>MAC-2_Sensitive</profile>
-    <rule-result idref="SV-254239r958388_rule">
-      <result>fail</result>
-      <message severity="info">Registry value HKLM\Example\Tls12 was missing.</message>
-      <check system="urn:xccdf:check:system:script">
-        <check-content-ref href="scc-results.xml" name="SV-254239r958388_rule" />
-        <check-content>reg query HKLM\Example\Tls12 returned not found</check-content>
-      </check>
-    </rule-result>
-  </TestResult>
-</Benchmark>"#;
-        let scan = xccdf::parse_xccdf_results_str(scan_xml).unwrap();
-        let asset = Asset::new("sanitized-win2022.example.test");
-        let engine = EvaluationEngine::with_defaults();
-        let checklist = engine
-            .evaluate(&benchmark, &asset, Some(&scan), &[])
-            .unwrap();
-
-        let finding = checklist.find_by_vuln_id("V-254239").unwrap();
-        assert_eq!(finding.status, FindingStatus::Open);
-        assert_eq!(finding.source, FindingSource::SccScan);
-        assert!(finding
-            .finding_details
-            .contains("Registry value HKLM\\Example\\Tls12 was missing"));
-        assert!(finding
-            .finding_details
-            .contains("check-content-ref: href=scc-results.xml name=SV-254239r958388_rule"));
-        assert!(finding
-            .finding_details
-            .contains("check-content: reg query HKLM\\Example\\Tls12 returned not found"));
-        assert!(finding.comments.contains("Scanner: SCC"));
-        assert!(finding
-            .comments
-            .contains("Target: sanitized-win2022.example.test"));
-        assert!(finding.comments.contains("Profile: MAC-2_Sensitive"));
-        assert!(finding.comments.contains("Raw result: fail"));
-
-        let ckl = ckl::parse_ckl(&ckl::write_ckl(&checklist).unwrap()).unwrap();
-        let ckl_finding = ckl.find_by_vuln_id("V-254239").unwrap();
-        assert!(ckl_finding
-            .finding_details
-            .contains("Registry value HKLM\\Example\\Tls12 was missing"));
-        assert!(ckl_finding.comments.contains("Scanner: SCC"));
-
-        let cklb = cklb::parse_cklb(&cklb::write_cklb(&checklist).unwrap()).unwrap();
-        let cklb_finding = cklb.find_by_vuln_id("V-254239").unwrap();
-        assert!(cklb_finding
-            .finding_details
-            .contains("Registry value HKLM\\Example\\Tls12 was missing"));
-        assert!(cklb_finding.comments.contains("Scanner: SCC"));
+        assert_eq!(summary.not_reviewed, 49);
     }
 
     #[test]
@@ -232,7 +139,7 @@ mod integration {
         let asset = Asset::new("linuxbox");
 
         let engine = EvaluationEngine::with_defaults();
-        let checklist = engine.evaluate(&benchmark, &asset, None, &[]).unwrap();
+        let checklist = engine.evaluate(&benchmark, &asset, &[]).unwrap();
 
         assert_eq!(checklist.findings.len(), 20);
         assert!(checklist
@@ -249,13 +156,13 @@ mod integration {
         let engine = EvaluationEngine::with_defaults();
 
         // Create a "previous" checklist with manual entries.
-        let mut prev = engine.evaluate(&benchmark, &asset, None, &[]).unwrap();
+        let mut prev = engine.evaluate(&benchmark, &asset, &[]).unwrap();
         prev.findings[0].status = FindingStatus::NotApplicable;
         prev.findings[0].source = FindingSource::Manual;
         prev.findings[0].finding_details = "Manually verified N/A".to_string();
 
         // Create a new checklist (all Not_Reviewed).
-        let mut current = engine.evaluate(&benchmark, &asset, None, &[]).unwrap();
+        let mut current = engine.evaluate(&benchmark, &asset, &[]).unwrap();
 
         // Merge — manual entries should carry forward.
         engine.merge_previous(&mut current, &prev).unwrap();
@@ -422,7 +329,7 @@ mod integration {
 
         // Import into a fresh library.
         let mut library = StigLibrary::init(&lib_path).unwrap();
-        let result = importer::import_pack(&pack_path, &mut library).unwrap();
+        let result = importer::import_pack_untrusted(&pack_path, &mut library).unwrap();
 
         assert_eq!(result.pack_id, "disa-stigs-2024q4");
         assert_eq!(result.benchmarks_imported, 2);
@@ -453,16 +360,16 @@ mod integration {
         let cl2 = {
             let b = make_benchmark("RHEL9", 5);
             let engine = EvaluationEngine::with_defaults();
-            engine
-                .evaluate(&b, &Asset::new("linuxbox"), None, &[])
-                .unwrap()
+            engine.evaluate(&b, &Asset::new("linuxbox"), &[]).unwrap()
         };
 
         let id1 = cl1.id.to_string();
         let _id2 = cl2.id.to_string();
 
-        db.save_checklist(&cl1).unwrap();
-        db.save_checklist(&cl2).unwrap();
+        db.save_checklist_with_audit(&cl1, "checklist.saved", "integration-test", None)
+            .unwrap();
+        db.save_checklist_with_audit(&cl2, "checklist.saved", "integration-test", None)
+            .unwrap();
 
         // List.
         let list = db.list_checklists().unwrap();
@@ -474,7 +381,7 @@ mod integration {
         assert_eq!(loaded.findings.len(), 10);
 
         // Log evaluation on cl2 (not cl1, since we'll delete cl1).
-        db.log_evaluation(&cl2, "integration-test", Some("test run"))
+        db.save_evaluation(&cl2, "integration-test", Some("test run"))
             .unwrap();
 
         // Delete cl1 (has no evaluation log entries, so no FK conflict).
@@ -548,34 +455,6 @@ mod integration {
     }
 
     // ---------------------------------------------------------------------------
-    // Integrations: STIG-Manager export
-    // ---------------------------------------------------------------------------
-
-    #[test]
-    fn test_stig_manager_export() {
-        let checklist = make_checklist_with_findings();
-
-        let json =
-            stig_manager::export_to_stig_manager_json(&[checklist], "Test Collection").unwrap();
-        let import: stig_manager::StigManagerImport = serde_json::from_str(&json).unwrap();
-
-        assert_eq!(import.collection, "Test Collection");
-        assert_eq!(import.assets.len(), 1);
-        assert_eq!(import.assets[0].name, "webserver01");
-        assert_eq!(import.assets[0].stigs.len(), 1);
-        assert_eq!(import.assets[0].stigs[0].reviews.len(), 10);
-
-        // All automated results should have result_engine.
-        for review in &import.assets[0].stigs[0].reviews {
-            if review.auto_result {
-                assert!(review.result_engine.is_some());
-                let re = review.result_engine.as_ref().unwrap();
-                assert_eq!(re.product, "AutomateSTIG");
-            }
-        }
-    }
-
-    // ---------------------------------------------------------------------------
     // XCCDF parsing
     // ---------------------------------------------------------------------------
 
@@ -626,12 +505,13 @@ mod integration {
     }
 
     // ---------------------------------------------------------------------------
-    // Config dump evaluation
+    // Network configuration evaluation
     // ---------------------------------------------------------------------------
 
     #[test]
     fn test_cisco_config_evaluation() {
-        use automatestig_parsers::config_dump::*;
+        use automatestig_core::checks::executor::execute_check;
+        use automatestig_core::checks::*;
 
         let config_text = r#"!
 hostname CORE-SW-01
@@ -651,36 +531,24 @@ ntp server 10.0.0.100
 !
 end"#;
 
-        let config = parse_cisco_config(config_text, ConfigType::CiscoIos).unwrap();
-        assert_eq!(config.hostname.as_deref(), Some("CORE-SW-01"));
-
-        // Check: SSH v2 must be present.
-        let r1 = evaluate_config_check(&config, "V-NET-001", &["ip ssh version 2"], &[], None);
-        assert_eq!(r1.passed, Some(true));
-
-        // Check: Telnet must be absent from VTY lines.
-        let r2 = evaluate_config_check(
-            &config,
-            "V-NET-002",
-            &["transport input ssh"],
-            &["transport input telnet"],
-            Some("line vty"),
-        );
-        assert_eq!(r2.passed, Some(true));
-
-        // Check: NTP must be configured.
-        let r3 = evaluate_config_check(&config, "V-NET-003", &["ntp server"], &[], None);
-        assert_eq!(r3.passed, Some(true));
-
-        // Check: Should fail — looking for something that doesn't exist.
-        let r4 = evaluate_config_check(
-            &config,
-            "V-NET-004",
-            &["ip access-list extended"],
-            &[],
-            None,
-        );
-        assert_eq!(r4.passed, Some(false));
+        let data = SystemData {
+            network_config: Some(config_text.to_string()),
+            ..Default::default()
+        };
+        let check = CheckDefinition {
+            vuln_id: "V-NET-001".to_string(),
+            platform: CheckPlatform::CiscoIos,
+            check: Check::ConfigLine {
+                pattern: "ip ssh version 2".to_string(),
+                context: None,
+                should_exist: true,
+            },
+            expected: ExpectedResult::IsTrue,
+            description: None,
+            implementation_class: ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
+        };
+        assert!(execute_check(&check, &data).passed);
     }
 
     // ---------------------------------------------------------------------------
@@ -691,12 +559,15 @@ end"#;
     fn test_finding_summary_accuracy() {
         let benchmark = make_benchmark("Test", 100);
         let asset = Asset::new("testhost");
-        let scan = make_scan_results(&benchmark, 0.85); // 85% pass
-
         let engine = EvaluationEngine::with_defaults();
-        let checklist = engine
-            .evaluate(&benchmark, &asset, Some(&scan), &[])
-            .unwrap();
+        let mut checklist = engine.evaluate(&benchmark, &asset, &[]).unwrap();
+        for (index, finding) in checklist.findings.iter_mut().enumerate() {
+            finding.status = if index < 85 {
+                FindingStatus::NotAFinding
+            } else {
+                FindingStatus::Open
+            };
+        }
 
         let summary = checklist.summary();
 
@@ -746,7 +617,8 @@ end"#;
 
         let db = Database::open(&db_path).unwrap();
         let cl = make_checklist_with_findings();
-        db.save_checklist(&cl).unwrap();
+        db.save_checklist_with_audit(&cl, "checklist.saved", "integration-test", None)
+            .unwrap();
 
         let loaded = db.load_checklist(&cl.id.to_string()).unwrap();
         assert_eq!(loaded.findings.len(), cl.findings.len());
@@ -782,7 +654,7 @@ end"#;
         let benchmark = make_benchmark("Test", 5);
         let asset = Asset::new("testhost");
         let engine = EvaluationEngine::with_defaults();
-        let mut cl = engine.evaluate(&benchmark, &asset, None, &[]).unwrap();
+        let mut cl = engine.evaluate(&benchmark, &asset, &[]).unwrap();
 
         // Set one finding to Open with severity override.
         cl.findings[0].status = FindingStatus::Open;
@@ -799,13 +671,9 @@ end"#;
         // Ensure evaluation scales reasonably.
         let benchmark = make_benchmark("Large_STIG", 500);
         let asset = Asset::new("bigserver");
-        let scan = make_scan_results(&benchmark, 0.95);
-
         let engine = EvaluationEngine::with_defaults();
         let start = std::time::Instant::now();
-        let checklist = engine
-            .evaluate(&benchmark, &asset, Some(&scan), &[])
-            .unwrap();
+        let checklist = engine.evaluate(&benchmark, &asset, &[]).unwrap();
         let elapsed = start.elapsed();
 
         assert_eq!(checklist.findings.len(), 500);
@@ -822,66 +690,39 @@ end"#;
     // ---------------------------------------------------------------------------
 
     #[test]
-    fn test_check_executor_windows_registry() {
+    fn test_check_executor_freebsd_compound() {
         use automatestig_core::checks::executor::execute_check;
         use automatestig_core::checks::*;
 
         let mut data = SystemData::default();
-        data.registry.insert(
-            r"HKLM\SYSTEM\CurrentControlSet\Control\Lsa\LmCompatibilityLevel".to_string(),
-            serde_json::json!(5),
-        );
-
-        let check = CheckDefinition {
-            vuln_id: "V-254270".to_string(),
-            platform: CheckPlatform::Windows,
-            check: Check::Registry {
-                path: r"HKLM\SYSTEM\CurrentControlSet\Control\Lsa".to_string(),
-                value_name: "LmCompatibilityLevel".to_string(),
-                value_type: None,
-            },
-            expected: ExpectedResult::Equals {
-                value: serde_json::json!(5),
-            },
-            description: Some("NTLMv2 only".to_string()),
-        };
-
-        let result = execute_check(&check, &data);
-        assert!(result.passed);
-        assert!(result.error.is_none());
-    }
-
-    #[test]
-    fn test_check_executor_linux_compound() {
-        use automatestig_core::checks::executor::execute_check;
-        use automatestig_core::checks::*;
-
-        let mut data = SystemData::default();
-        data.file_contents.insert(
-            "/etc/ssh/sshd_config".to_string(),
+        data.command_outputs.insert(
+            "cat /etc/ssh/sshd_config".to_string(),
             "PermitRootLogin no\nMaxAuthTries 3\n".to_string(),
         );
-        data.services
-            .insert("sshd".to_string(), "active".to_string());
+        data.command_outputs
+            .insert("freebsd-version -k".to_string(), "14.0-RELEASE".to_string());
 
         let check = CheckDefinition {
             vuln_id: "V-COMPOUND".to_string(),
-            platform: CheckPlatform::Linux,
+            platform: CheckPlatform::Bsd,
             check: Check::All {
                 checks: vec![
-                    Check::FileContent {
-                        path: "/etc/ssh/sshd_config".to_string(),
-                        pattern: "PermitRootLogin no".to_string(),
+                    Check::Command {
+                        command: "cat /etc/ssh/sshd_config".to_string(),
+                        pattern: Some("PermitRootLogin no".to_string()),
                         is_regex: false,
                     },
-                    Check::Service {
-                        name: "sshd".to_string(),
-                        expected_status: ServiceStatus::Running,
+                    Check::Command {
+                        command: "freebsd-version -k".to_string(),
+                        pattern: Some("14.".to_string()),
+                        is_regex: false,
                     },
                 ],
             },
-            expected: ExpectedResult::AllPass,
+            expected: ExpectedResult::IsTrue,
             description: None,
+            implementation_class: ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
         };
 
         let result = execute_check(&check, &data);
@@ -889,90 +730,7 @@ end"#;
     }
 
     // ---------------------------------------------------------------------------
-    // XCCDF converter E2E
-    // ---------------------------------------------------------------------------
-
-    #[test]
-    fn test_xccdf_converter_auto_generates_checks() {
-        use automatestig_core::converter;
-
-        let benchmark = StigBenchmark {
-            id: "Test_Converter_STIG".to_string(),
-            title: "Test Linux STIG for Converter".to_string(),
-            description: "Test".to_string(),
-            version: "1".to_string(),
-            release: "1".to_string(),
-            release_date: None,
-            xccdf_id: None,
-            platform: Platform::default(),
-            rules: vec![
-                StigRule {
-                    vuln_id: "V-1".to_string(),
-                    rule_id: "SV-1".to_string(),
-                    group_id: "V-1".to_string(),
-                    title: "IP forwarding".to_string(),
-                    discussion: "".to_string(),
-                    severity: Severity::Medium,
-                    check_content: "Verify sysctl net.ipv4.ip_forward is not 0.".to_string(),
-                    fix_text: "".to_string(),
-                    cci_refs: vec![],
-                    legacy_ids: vec![],
-                    stig_ref: None,
-                    weight: 8.0,
-                    automatable: CheckAutomation::Full,
-                    automated_check: None,
-                    remediation_ids: vec![],
-                },
-                StigRule {
-                    vuln_id: "V-2".to_string(),
-                    rule_id: "SV-2".to_string(),
-                    group_id: "V-2".to_string(),
-                    title: "Manual check".to_string(),
-                    discussion: "".to_string(),
-                    severity: Severity::Low,
-                    check_content: "Interview the ISSO and verify policy exists.".to_string(),
-                    fix_text: "".to_string(),
-                    cci_refs: vec![],
-                    legacy_ids: vec![],
-                    stig_ref: None,
-                    weight: 2.0,
-                    automatable: CheckAutomation::Manual,
-                    automated_check: None,
-                    remediation_ids: vec![],
-                },
-                StigRule {
-                    vuln_id: "V-3".to_string(),
-                    rule_id: "SV-3".to_string(),
-                    group_id: "V-3".to_string(),
-                    title: "Package check".to_string(),
-                    discussion: "".to_string(),
-                    severity: Severity::Medium,
-                    check_content: "Verify the package telnet-server must not be installed."
-                        .to_string(),
-                    fix_text: "".to_string(),
-                    cci_refs: vec![],
-                    legacy_ids: vec![],
-                    stig_ref: None,
-                    weight: 8.0,
-                    automatable: CheckAutomation::Full,
-                    automated_check: None,
-                    remediation_ids: vec![],
-                },
-            ],
-        };
-
-        let result = converter::convert_benchmark(&benchmark);
-        assert_eq!(result.automated, 2); // sysctl + package
-        assert_eq!(result.manual, 1); // interview
-        assert_eq!(result.check_pack.checks.len(), 2);
-        assert_eq!(
-            result.check_pack.platform,
-            automatestig_core::checks::CheckPlatform::Linux
-        );
-    }
-
-    // ---------------------------------------------------------------------------
-    // Inventory and credentials E2E
+    // Inventory E2E
     // ---------------------------------------------------------------------------
 
     #[test]
@@ -980,55 +738,16 @@ end"#;
         use automatestig_core::checks::CheckPlatform;
         use automatestig_core::inventory::assets::*;
 
-        let mut asset = ManagedAsset::new(
-            "web01",
-            "10.0.1.50",
-            CheckPlatform::Linux,
-            ScanProtocol::Ssh,
-        );
-        asset.assigned_stigs = vec!["RHEL_9_STIG".to_string(), "Apache_2.4_STIG".to_string()];
+        let mut asset = ManagedAsset::new("freebsd01", "10.0.1.50", CheckPlatform::Bsd);
+        asset.assigned_stigs = vec!["General_Purpose_Operating_System".to_string()];
         asset.tags = vec!["production".to_string(), "web-tier".to_string()];
 
         let json = serde_json::to_string(&asset).unwrap();
         let loaded: ManagedAsset = serde_json::from_str(&json).unwrap();
 
-        assert_eq!(loaded.name, "web01");
-        assert_eq!(loaded.assigned_stigs.len(), 2);
+        assert_eq!(loaded.name, "freebsd01");
+        assert_eq!(loaded.assigned_stigs.len(), 1);
         assert_eq!(loaded.tags.len(), 2);
-        assert_eq!(loaded.effective_port(), 22);
-    }
-
-    #[test]
-    fn test_credential_vault_lifecycle() {
-        use automatestig_core::inventory::credentials::*;
-
-        let mut vault = CredentialVault::new();
-
-        let cred1 = StoredCredential::new_password("Admin", "admin", "P@ssw0rd");
-        let cred2 = StoredCredential::new_ssh_key("Deploy", "deploy", "-----BEGIN KEY-----", None);
-        let cred3 =
-            StoredCredential::new_kerberos("Domain SA", "svc_stig", "NAVY.MIL", "DomainPass");
-        let cred4 = StoredCredential::new_token("API Key", "sk-abc123", Some("bearer"));
-
-        let id1 = cred1.id.clone();
-
-        vault.add(cred1);
-        vault.add(cred2);
-        vault.add(cred3);
-        vault.add(cred4);
-
-        assert_eq!(vault.credentials.len(), 4);
-
-        // Summaries should not expose secrets.
-        let summaries = vault.list_summary();
-        assert_eq!(summaries[0].credential_type, "password");
-        assert_eq!(summaries[1].credential_type, "ssh_key");
-        assert_eq!(summaries[2].credential_type, "kerberos");
-        assert_eq!(summaries[3].credential_type, "token");
-
-        // Remove and verify.
-        assert!(vault.remove(&id1));
-        assert_eq!(vault.credentials.len(), 3);
     }
 
     // ---------------------------------------------------------------------------
@@ -1037,23 +756,44 @@ end"#;
 
     #[test]
     fn test_signed_stigpack_pipeline() {
-        use automatestig_stigpack::builder::PackBuilder;
+        use automatestig_core::checks::{CheckPack, CheckPlatform};
         use automatestig_stigpack::signing;
-        use automatestig_stigpack::verifier;
 
         let dir = TempDir::new().unwrap();
         let pack_path = dir.path().join("signed.stigpack");
+        let lib_path = dir.path().join("library");
 
         // Generate keypair.
-        let (private_key, public_key) = signing::generate_keypair();
+        let (private_key, public_key) = signing::generate_keypair().unwrap();
 
         // Build a signed pack.
-        let benchmark = make_benchmark("Signed_Test", 5);
+        let mut benchmark = make_benchmark("General_Purpose_Operating_System", 5);
+        benchmark.version = "3".to_string();
+        benchmark.release = "3".to_string();
         let json = serde_json::to_string(&benchmark).unwrap();
+        let check_pack = serde_json::to_vec(&CheckPack {
+            stig_id: benchmark.id.clone(),
+            platform: CheckPlatform::Bsd,
+            version: "V3R3".to_string(),
+            priority: 100,
+            checks: vec![],
+        })
+        .unwrap();
 
         PackBuilder::new("signed-pack", "Signed Pack", "1.0.0")
             .signing_key(private_key)
-            .add_file_bytes("benchmarks/Signed_Test.json", json.as_bytes())
+            .add_file_bytes(
+                "benchmarks/General_Purpose_Operating_System.json",
+                json.as_bytes(),
+            )
+            .add_file_bytes(
+                "custom_checks/General_Purpose_Operating_System.json",
+                &check_pack,
+            )
+            .add_file_bytes(
+                "auto_check_packs/General_Purpose_Operating_System.json",
+                &check_pack,
+            )
             .build(&pack_path)
             .unwrap();
 
@@ -1066,8 +806,21 @@ end"#;
         assert!(result.integrity_valid);
         assert_eq!(result.signature_valid, Some(true));
 
+        let mut library = StigLibrary::init(&lib_path).unwrap();
+        let imported = importer::import_pack_trusted(&pack_path, &mut library, &trust_store)
+            .expect("trusted signed pack should import");
+        assert_eq!(imported.benchmarks_imported, 1);
+        assert_eq!(imported.custom_checks_imported, 1);
+        assert_eq!(imported.auto_check_packs_imported, 1);
+        assert!(lib_path
+            .join("custom_checks/General_Purpose_Operating_System.json")
+            .exists());
+        assert!(lib_path
+            .join("reviewed_check_packs/General_Purpose_Operating_System.json")
+            .exists());
+
         // Verify with wrong key — should fail signature.
-        let (_, other_pub) = signing::generate_keypair();
+        let (_, other_pub) = signing::generate_keypair().unwrap();
         let mut bad_store = signing::TrustStore::new();
         bad_store.add_key("wrong", other_pub);
 
@@ -1075,42 +828,21 @@ end"#;
         assert!(result2.manifest_valid);
         assert!(result2.integrity_valid);
         assert_eq!(result2.signature_valid, Some(false));
+        assert!(importer::import_pack_trusted(&pack_path, &mut library, &bad_store).is_err());
     }
 
     // ---------------------------------------------------------------------------
-    // Replacement-readiness fixture scaffolding
+    // Checklist and benchmark format fixtures
     // ---------------------------------------------------------------------------
 
     #[test]
-    fn test_sanitized_xccdf_and_scan_result_fixtures_parse() {
+    fn test_sanitized_xccdf_benchmark_fixture_parses() {
         let benchmark_xml =
             include_str!("../../../fixtures/disa-xccdf/windows_server_2022_sanitized_xccdf.xml");
         let benchmark = xccdf::parse_xccdf_benchmark_str(benchmark_xml).unwrap();
         assert_eq!(benchmark.id, "Windows_Server_2022_STIG");
         assert_eq!(benchmark.rules.len(), 2);
         assert!(benchmark.rules.iter().any(|r| r.vuln_id == "V-254239"));
-
-        let scc_xml =
-            include_str!("../../../fixtures/scc-results/windows_server_2022_scc_results.xml");
-        let scc_results = xccdf::parse_xccdf_results_str(scc_xml).unwrap();
-        assert_eq!(
-            scc_results.source.target.as_deref(),
-            Some("sanitized-win2022.example.test")
-        );
-        assert_eq!(scc_results.results.len(), 2);
-        assert_eq!(scc_results.results[0].passed, Some(false));
-        assert_eq!(scc_results.results[1].passed, Some(true));
-
-        let openscap_xml =
-            include_str!("../../../fixtures/openscap-results/rhel8_openscap_results.xml");
-        let openscap_results = xccdf::parse_xccdf_results_str(openscap_xml).unwrap();
-        assert_eq!(
-            openscap_results.source.target.as_deref(),
-            Some("sanitized-rhel8.example.test")
-        );
-        assert_eq!(openscap_results.results.len(), 2);
-        assert_eq!(openscap_results.results[0].passed, Some(true));
-        assert_eq!(openscap_results.results[1].passed, Some(false));
     }
 
     #[test]
@@ -1126,21 +858,5 @@ end"#;
         assert_eq!(cklb_checklist.asset.hostname, "sanitized-win2022");
         assert_eq!(cklb_checklist.findings.len(), 1);
         assert_eq!(cklb_checklist.findings[0].status, FindingStatus::Open);
-    }
-
-    #[test]
-    fn test_example_coverage_manifests_are_internally_consistent() {
-        let manifest_json = include_str!("../../../content/coverage/rhel8.example.json");
-        let manifest: serde_json::Value = serde_json::from_str(manifest_json).unwrap();
-        assert_eq!(manifest["status"], "experimental");
-        let total_rules = manifest["total_rules"].as_u64().unwrap();
-        let rules = manifest["rules"].as_array().unwrap();
-        assert_eq!(total_rules as usize, rules.len());
-        assert!(rules
-            .iter()
-            .all(|rule| rule["vuln_id"].as_str().unwrap().starts_with("V-")));
-        assert!(rules
-            .iter()
-            .all(|rule| rule["reason"].as_str().unwrap().len() > 10));
     }
 } // mod integration

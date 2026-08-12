@@ -1,48 +1,82 @@
 # Release Hardening
 
-AutomateSTIG release artifacts are not production-trustworthy until release integrity and provenance controls are in place and verified in CI.
+AutomateSTIG publishes only the artifacts produced by the fully gated CI run;
+there is no independent rebuild-and-publish workflow.
 
-## Current CI controls
+## Enforced controls
 
-The CI release build job now:
+- Feature freeze and protected review boundaries are defined in
+  `.github/release-freeze.json`, `CODEOWNERS`, and the pull-request template.
+- Every external GitHub Action reference is pinned to a full commit SHA and
+  `scripts/validate-workflow-pins.py` prevents a mutable tag from returning.
+- Required branch checks are bound to the GitHub Actions App ID, and release
+  validation rejects same-named checks from any other integration.
+- Formatting, clippy with warnings denied, cross-platform tests, end-to-end
+  acceptance, frontend syntax, exact supported-target/content validation, 100,000 fuzz
+  mutations, RustSec audit, and dependency review are required gates.
+- Linux and macOS archives contain the exact gated product CLI, GUI, and
+  backup/restore utility. Their closed member contract rejects the protected
+  `automatestig-transition` executable. Windows remains a required
+  portability-test runner, but the release workflow, required release
+  contexts, closed manifest, and publisher intentionally exclude Windows
+  artifacts.
+- Each archive has a SHA-256 checksum, CycloneDX SBOM, locked Cargo dependency
+  inventory, source/run provenance, GitHub OIDC build attestation, and keyless
+  Sigstore bundle. The SBOM byte-binds both product executables and the recovery
+  utility and declares that protected transition tooling is absent.
+- A tag additionally requires GitHub-bound independent human review, live
+  ONTAP, FreeBSD, Cisco IOS-XE, STIG Viewer, and STIG Manager acceptance, a
+  recovery drill, and signing-ceremony evidence. The ceremony's JSON, raw
+  public key, and signed test pack are byte-bound to a successful protected
+  workflow and independently re-hashed; skips do not pass.
+- Security-extended CodeQL analyzes Actions, JavaScript/TypeScript, Python, and
+  Rust on pull requests, `main`, and a weekly schedule.
+- Publication verifies every companion and emits a hash-complete
+  signed `release-manifest.json` tied to repository, tag, commit, and workflow
+  run. The generator rejects missing, nested, symlinked, or undeclared assets;
+  the manifest's own checksum and signature bundle are the only bootstrap
+  companions not recursively listed in that manifest. The release is assembled
+  as a draft and becomes immutable only after every asset is attached.
 
-- runs only after formatting, clippy, tests, frontend syntax checks, coverage manifest validation, and dependency audit gates pass;
-- uses least-privilege default workflow permissions (`contents: read`);
-- builds Linux, Windows, and macOS CLI artifacts;
-- emits a SHA-256 checksum beside each uploaded artifact;
-- uploads a dependency inventory (`cargo metadata --locked`) as a lightweight audit artifact;
-- uploads a CycloneDX SBOM for each target artifact;
-- uploads a provenance scaffold that ties each artifact to repository, ref, commit SHA, workflow, run ID, run attempt, target triple, and SBOM artifact;
-- generates GitHub artifact attestations through OIDC;
-- generates keyless Sigstore signature bundles for release binaries with cosign;
+See [Release Process](release-process.md), [Key Management](key-management.md),
+and [Live External Acceptance](live-external-acceptance.md).
 
-- limits transient CI artifact retention to 14 days.
+## Connected verification
 
-## Not yet sufficient for production release claims
-
-Before AutomateSTIG claims production-ready replacement releases, add and validate:
-
-1. signed release artifacts using a documented signing identity;
-2. SLSA/in-toto provenance or an equivalent attestation mechanism;
-3. publication and operator validation of the generated SBOM for each release artifact;
-4. SHA-pinned third-party GitHub Actions or an approved dependency-pinning policy;
-5. release workflow permissions scoped per job rather than only top-level read-only defaults;
-6. documented release verification instructions for operators in disconnected or DoD/STIG-adjacent environments;
-7. a release checklist tying each artifact to the exact commit, CI run, checksum, signature, SBOM, and provenance bundle.
-
-## Operator verification baseline
-
-Until full signing/provenance is implemented, operators should at minimum verify the uploaded SHA-256 checksum before testing a CI artifact:
+Verify the GitHub attestation against the repository identity, then verify the
+Sigstore bundle and checksum before extraction:
 
 ```bash
-sha256sum -c automatestig.sha256
+gh attestation verify automatestig-v0.3.0-<target>.tar.gz \
+  --repo ibadukefan/AutomateSTIG \
+  --cert-identity \
+    'https://github.com/ibadukefan/AutomateSTIG/.github/workflows/ci.yml@refs/tags/v0.3.0' \
+  --source-ref refs/tags/v0.3.0 \
+  --source-digest <full-release-commit-sha>
+cosign verify-blob \
+  --bundle automatestig-v0.3.0-<target>.tar.gz.sigstore.bundle \
+  --certificate-identity \
+    'https://github.com/ibadukefan/AutomateSTIG/.github/workflows/ci.yml@refs/tags/v0.3.0' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  automatestig-v0.3.0-<target>.tar.gz
+sha256sum -c automatestig-v0.3.0-<target>.tar.gz.sha256
+gh release verify v0.3.0 --repo ibadukefan/AutomateSTIG
 ```
 
-For Windows PowerShell:
+Windows release archives are not published. A Windows source build passing CI
+does not change that support boundary.
 
-```powershell
-Get-FileHash .\automatestig.exe -Algorithm SHA256
-Get-Content .\automatestig.exe.sha256
-```
+## Disconnected verification
 
-The checksum alone proves artifact integrity relative to the CI upload, not publisher identity or supply-chain provenance.
+On the connected transfer station, verify the attestation and Sigstore identity,
+then copy the archive, checksum, Sigstore bundle, SBOM, provenance, dependency
+inventory, release manifest, and its checksum to approved media. Record all
+hashes on the media manifest. On the disconnected side, independently verify
+every checksum before import/extraction. Sigstore identity validation requiring
+transparency-log/certificate material must be completed on the connected side
+and preserved in the transfer record; a bare checksum does not authenticate the
+publisher.
+
+No release is described as accredited solely because these controls pass. The
+deploying organization owns authorization, configuration, and system-of-record
+decisions.

@@ -1,0 +1,72 @@
+{
+  "schema": "automatestig-evidence/v2",
+  "hostname": "bsd-truncated",
+  "platform": "bsd",
+  "collector_version": "fixture",
+  "collected_at": "2026-01-01T00:00:00Z",
+  "plan_sha256": "01ef14506a65ec1bfc7b6e508acb6e501d9af0c65731e4525d1c6b586ad963c0",
+  "server_key_fingerprint": null,
+  "complete": false,
+  "commands": [
+    {
+      "data_key": "service auditd onestatus",
+      "command": "service auditd onestatus",
+      "status": "output_limit",
+      "stdout": "auditd is running",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 1,
+      "error": "stdout exceeded the collection limit"
+    },
+    {
+      "data_key": "cat /etc/security/audit_control",
+      "command": "cat /etc/security/audit_control",
+      "status": "output_limit",
+      "stdout": "flags:all",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 1,
+      "error": "stdout exceeded the collection limit"
+    },
+    {
+      "data_key": "cat /etc/security/audit_user",
+      "command": "cat /etc/security/audit_user",
+      "status": "output_limit",
+      "stdout": "",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 1,
+      "error": "stdout exceeded the collection limit"
+    },
+    {
+      "data_key": "sha256 -q /etc/security/audit_class",
+      "command": "sha256 -q /etc/security/audit_class",
+      "status": "output_limit",
+      "stdout": "834a1fde758a45269874a5c0655046ca7",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 1,
+      "error": "stdout exceeded the collection limit"
+    },
+    {
+      "data_key": "sha256 -q /etc/security/audit_event",
+      "command": "sha256 -q /etc/security/audit_event",
+      "status": "output_limit",
+      "stdout": "124c60b738ec9eb36e497213fded40a7",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 1,
+      "error": "stdout exceeded the collection limit"
+    },
+    {
+      "data_key": "service pf onestatus",
+      "command": "service pf onestatus",
+      "status": "output_limit",
+      "stdout": "Status: Enabled",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 1,
+      "error": "stdout exceeded the collection limit"
+    }
+  ]
+}

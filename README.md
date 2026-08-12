@@ -1,115 +1,148 @@
 # AutomateSTIG
 
-AutomateSTIG is a cross-platform, offline-capable STIG evidence collection and evaluation platform. It is a Rust workspace with 8 crates and two binaries:
+[![CI](https://github.com/ibadukefan/AutomateSTIG/actions/workflows/ci.yml/badge.svg)](https://github.com/ibadukefan/AutomateSTIG/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/ibadukefan/AutomateSTIG/actions/workflows/codeql.yml/badge.svg)](https://github.com/ibadukefan/AutomateSTIG/actions/workflows/codeql.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Status: experimental pilot](https://img.shields.io/badge/status-experimental_pilot-orange.svg)
 
-- `automatestig` - command-line interface
-- `automatestig-gui` - local web GUI
+AutomateSTIG is an offline-capable scanner and evidence producer for selected
+difficult-to-scan devices. It supplements STIG Manager; it does not replace
+STIG Manager or create a second compliance-management system.
 
-AutomateSTIG focuses on collecting evidence from devices that scripted scanners cannot reach, including network devices through configuration files, Linux/UNIX systems through SSH, and NetApp ONTAP filers through CLI evidence transcripts and GUI SSH scan. Evaluation is deterministic. There is no AI or ML in the evaluation path. The default workflow makes no network calls; DISA fetching, STIG-Manager integration, and remote SSH collection are opt-in connected features.
+> **Release status:** the scanner-first `v0.3.x` line is an unreleased pilot
+> candidate. The public `v0.2.x` release is a legacy application and does not
+> implement the workflow documented here. Do not install `v0.2.x` expecting
+> the scanner-first product.
 
-## Features
+## Start here
 
-- Import DISA XCCDF XML or ZIP benchmark content.
-- Evaluate benchmarks from scan results, network device configuration evidence, Linux/UNIX SSH collection, answer files, and installed check packs.
-- Evaluate NetApp ONTAP filers from read-only CLI evidence transcripts (DISA ONTAP DSC 9.x STIG).
-- Evaluate FreeBSD hosts against the DISA GPOS SRG from read-only evidence transcripts.
-- Generate and persist deterministic auto check packs from structured DISA check content where possible.
-- Manage assets, assessments, findings, credentials, and STIG-Manager settings in the local GUI.
-- Deliver results through STIG-Manager API push, STIG-Manager JSON export, and CKL/CKLB file import.
-- Transfer content with signed offline `.stigpack` packs.
-- Run local, batch, and remote SSH-backed evaluations when the needed live infrastructure is available.
-- Keep air-gapped workflows first-class through local storage, signed `.stigpack` import, and offline pack generation.
-
-## Quick Start
-
-### Desktop app (double-click installers)
-
-Launching the desktop app starts the local AutomateSTIG GUI and opens it in your browser at a localhost address. The CLI (`automatestig`) is included in every archive and installed on `PATH` by the command-line installers.
-
-- macOS: download `AutomateSTIG-<tag>-macos-<arch>.dmg` (`arm64` for Apple Silicon, `x86_64` for Intel), open it, drag **AutomateSTIG** to Applications, then launch it. On first launch, right-click **AutomateSTIG** and choose Open because the app is not notarized.
-- Windows: download `AutomateSTIG-<tag>-windows-x64-setup.exe`, run it, click through the wizard, then launch from the Start Menu or Desktop shortcut. On first run, SmartScreen may require More info, then Run anyway because the installer is not signed.
-- Linux: download `AutomateSTIG-<tag>-linux-x86_64.AppImage`, run `chmod +x AutomateSTIG-<tag>-linux-x86_64.AppImage`, then double-click it or run it from a terminal.
-
-### Command-line installers
-
-Install the prebuilt binaries with one command for your OS:
+The [Quickstart](docs/quickstart.md) is the canonical installation, first-open,
+training, scan, and handoff guide. For an approved `v0.3.x` release, macOS and
+GNU/Linux use the same noninteractive installer:
 
 ```bash
-# macOS
-curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-macos.sh | sh
-
-# Linux
-curl -fsSL https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-linux.sh | sh
+version=v0.3.0
+gh release verify "$version" --repo ibadukefan/AutomateSTIG
+gh release download "$version" --repo ibadukefan/AutomateSTIG \
+  --pattern install.sh --output automatestig-install.sh
+sh ./automatestig-install.sh --version "$version"
 ```
 
-```powershell
-# Windows (PowerShell)
-irm https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-windows.ps1 | iex
-```
+The installer detects the operating system and CPU, verifies the archive
+checksum and exact tagged-workflow Sigstore identity, installs atomically to
+`~/.local/bin`, and opens the local GUI. It asks no questions, uses no `sudo`,
+and does not edit shell profiles. Until a gated `v0.3.x` release exists, this
+sequence stops without changing the machine.
 
-See [installation](docs/installation.md) for manual release downloads, checksums, and build-from-source instructions. See [security model](docs/security-model.md) and [connected-mode threat model](docs/connected-mode-threat-model.md) before enabling DISA fetch, STIG Manager, SSH scan, or webhook integrations.
+Windows deployment is unsupported. The Windows build remains a CI portability
+check only. Linux release compatibility still needs a published distro/glibc
+qualification matrix; before installation the installer executes the verified
+staged CLI and leaves the existing installation untouched if it cannot run.
 
-Build from source requires the Rust stable toolchain.
+## The analyst flow
+
+1. Collect read-only evidence from an authorized ONTAP or FreeBSD target, or
+   evaluate a complete authorized IOS-XE running configuration.
+2. Review the deterministic result and download the complete run's verified,
+   sparse handoff.
+3. Reconcile only scanner-owned reviews with the existing STIG Manager asset
+   and assignment, then continue manual review, findings, approvals, and
+   reporting in STIG Manager.
+
+On first open, **Open sample result** teaches the result screen without
+contacting a device, calling STIG Manager, or saving assessment data.
+
+## Exact pilot scope
+
+| Target | Bundled STIG | Input | Automated | Manual | Full benchmark |
+| --- | --- | --- | ---: | ---: | ---: |
+| NetApp ONTAP 9.x | ONTAP DSC STIG V2R4 | Plan-bound read-only SSH evidence | 15 | 7 | 29 |
+| FreeBSD 13–14 | GPOS V3R3 | Plan-bound read-only SSH evidence | 6 | 24 | 203 |
+| Cisco IOS-XE 17 | Router NDM STIG V3R7 | Complete config + signed organization policy | 33 | 9 | 42 |
+
+These are curated evidence boundaries, not claims of full benchmark
+automation or production support. The profiles remain experimental until their
+declared live-device, receiver, signing, and first-use gates pass. General
+Linux, AIX, Solaris, Windows, Cisco NX-OS, and Cisco ASA scanning are not
+`v0.3.x` targets. Importing another benchmark does not add scanner support.
+See [Supported Targets](docs/supported-targets.md) for the exact contract.
+
+## What AutomateSTIG owns
+
+- Version-checked, read-only collection plans for the supported SSH targets.
+- A complete-config evaluation path for the supported IOS-XE target.
+- Strict evidence identity, freshness, completeness, and integrity checks.
+- Deterministic evaluation with content, policy, evidence, and build
+  provenance; no AI or ML is used in the decision path.
+- Fail-closed handling of denied, missing, timed-out, truncated, malformed,
+  ambiguous, stale, or unsupported evidence.
+- A selected-run handoff with sparse JSON, XCCDF 1.2 and CKLB projections,
+  source result, evidence/provenance, and integrity manifests.
+- Read-only handoff verification and exact remote no-op confirmation.
+
+## What stays in STIG Manager
+
+- Collections, assets, STIG assignments, and review ownership.
+- Manual findings, comments, adjudication, approvals, and risk decisions.
+- Dashboards, reports, portfolio views, and long-term history.
+- Changed-review writes. AutomateSTIG produces a verified sparse handoff; an
+  approved receiver performs destination revalidation and semantic readback.
+
+Connected mode is opt-in and currently accepts only the exact retained tested
+STIG Manager build `1.6.13+1`. Disconnected scanning remains the default.
+
+## Interfaces and exports
+
+Release archives contain:
+
+- `automatestig-gui` — localhost browser GUI with **Scan**, **Deliveries**,
+  **Scanner Content**, and **Connection** workspaces;
+- `automatestig` — collection, evaluation, status, and read-only handoff
+  verification; and
+- `automatestig-backup-restore` — verified protected-state recovery utility.
+
+The normal product surface intentionally excludes asset management, checklist
+editing, broad DISA catalog management, answer files, remediation, dashboards,
+and portfolio reporting. Maintainer and one-time transition operations are
+feature-gated and are not shipped in analyst release archives.
+
+## Security and operations
+
+The GUI binds to `127.0.0.1` on a random port and stores sensitive local state
+under `~/.automatestig`. Remote SSH collection and STIG Manager integration are
+explicit connected operations; normal evaluation and verification make no
+network calls. Review the [Security Model](docs/security-model.md),
+[Deployment Hardening](docs/deployment-hardening.md), and
+[Handoff Verification](docs/handoff-verification.md) before operational use.
+
+Never attach credentials, device configurations, evidence, private keys,
+tokens, or controlled data to a public issue. See [Security](SECURITY.md) and
+[Support](SUPPORT.md) for private reporting and safe support paths.
+
+## Develop from source
+
+Builds require the repository-pinned Rust toolchain. Python 3.10 or newer is
+needed for recovery and validation tooling, not for ordinary installation or
+scanning.
 
 ```bash
 cargo build --release --workspace
-```
-
-Run the GUI:
-
-```bash
+cargo test --workspace
 cargo run --release --bin automatestig-gui
 ```
 
-The GUI binds to `127.0.0.1` on a random port unless `PORT` is set, opens the browser automatically, and stores data in `~/.automatestig` (`data.db` plus `library/`).
+Start with the [Documentation Index](docs/README.md) for user, target,
+security, architecture, integration, and release-governance references. See
+[Contributing](CONTRIBUTING.md), the [Changelog](CHANGELOG.md), and the
+[controlled comparison protocol](docs/commercial-scanner-comparison.md) before
+making product or competitor claims.
 
-Run the CLI:
+## Project status and affiliation
 
-```bash
-cargo run --release --bin automatestig -- --help
-cargo run --release --bin automatestig -- status
-```
+AutomateSTIG is an independent open-source project. It is not affiliated with
+or endorsed by DISA, the U.S. Department of Defense, NAVSEA, Evaluate-STIG, or
+the STIG Manager maintainers. It makes no global or unmeasured claim to be
+“better than Evaluate-STIG.” Comparative claims require the documented
+representative-device A/B evidence.
 
-## GUI
-
-The GUI navigation pages are:
-
-- Assessments
-- Assets
-- Standards
-- Findings
-- Settings
-
-Checklist detail opens from assessment or finding rows. It is not a separate navigation item.
-
-## CLI Examples
-
-```bash
-cargo run --release --bin automatestig -- disa-import --input U_STIG.zip
-cargo run --release --bin automatestig -- library list
-cargo run --release --bin automatestig -- evaluate --stig <STIG_ID> --scan results.xml --host server01 --output server01.ckl --format ckl
-cargo run --release --bin automatestig -- summary --input server01.ckl --open-only
-cargo run --release --bin automatestig -- export --input server01.ckl --output stigman.json --format stig-manager --collection "Production"
-```
-
-## Workspace
-
-```text
-crates/
-  core/          Data models, deterministic evaluation engine, answer files, and checks
-  parsers/       CKL, CKLB, XCCDF, and scan/config parsers
-  storage/       SQLite persistence
-  stigpack/      .stigpack build, verify, import, manifest, hashes, and Ed25519 signing support
-  integrations/  STIG-Manager export/push
-  cli/           automatestig binary
-  gui/           automatestig-gui local web GUI and HTTP API
-  tests/         Workspace integration tests
-```
-
-## Documentation
-
-Start with [docs/README.md](docs/README.md) for installation, quickstart, CLI, GUI, API, security, architecture, integrations, and governance documentation.
-
-## License
-
-MIT
+Licensed under the [MIT License](LICENSE).

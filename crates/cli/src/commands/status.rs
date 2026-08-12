@@ -1,64 +1,59 @@
-use anyhow::Result;
-use automatestig_core::library::StigLibrary;
-use automatestig_storage::Database;
+use anyhow::{Context, Result};
+use automatestig_core::scanner_profiles::{
+    bundled_scanner_profile_catalog, ScannerEvidenceMode, ScannerProfileReadiness,
+};
 use console::style;
 
-use super::{db_path, library_path};
 use crate::ui;
 
-pub fn run(cli: &crate::Cli) -> Result<()> {
+/// Report the immutable scanner contract compiled into this executable.
+///
+/// This intentionally does not open or initialize the retired mutable STIG
+/// library and does not summarize legacy checklist portfolio state. Those
+/// belong to release-maintainer and one-time migration tooling respectively.
+pub fn run(_cli: &crate::Cli) -> Result<()> {
     ui::print_banner();
 
-    // Library status.
-    let lib_path = library_path(cli);
-    ui::section("STIG Library");
-    match StigLibrary::open(&lib_path) {
-        Ok(library) => {
-            let benchmarks = library.list_benchmarks();
-            ui::detail("Location", &lib_path.display().to_string());
-            ui::detail("Benchmarks", &benchmarks.len().to_string());
-            if !benchmarks.is_empty() {
-                println!();
-                for b in &benchmarks {
-                    println!(
-                        "    {} {} {} {}",
-                        style("•").dim(),
-                        style(&b.id).cyan(),
-                        style(&b.version).dim(),
-                        style(format!("({} rules)", b.rule_count)).dim(),
-                    );
-                }
-            }
-        }
-        Err(_) => {
-            ui::warn("Not initialized — run 'automatestig library init'");
-        }
+    let catalog = bundled_scanner_profile_catalog()
+        .context("Release-bundled scanner content failed its integrity checks")?;
+    ui::section("Scanner Content");
+    ui::detail("Release line", catalog.release_line());
+    ui::detail("Profiles", &catalog.profiles().len().to_string());
+    ui::detail("Catalog SHA-256", catalog.supported_targets_sha256());
+    println!();
+
+    for profile in catalog.profiles() {
+        let coverage = profile.coverage();
+        let readiness = match profile.readiness() {
+            ScannerProfileReadiness::Experimental => "experimental",
+            ScannerProfileReadiness::Supported => "supported",
+            ScannerProfileReadiness::Production => "production",
+        };
+        let collection = match profile.evidence_mode() {
+            ScannerEvidenceMode::SshTranscript => "SSH evidence",
+            ScannerEvidenceMode::RunningConfiguration => "running configuration",
+        };
+        println!(
+            "    {} {} {} — {} — {}/{} automated — {}",
+            style("•").dim(),
+            style(profile.display_name()).cyan(),
+            style(profile.stig_release()).dim(),
+            collection,
+            coverage.automated_checks(),
+            coverage.benchmark_rules(),
+            readiness,
+        );
     }
 
     println!();
-
-    // Database status.
-    ui::section("Database");
-    let db = db_path(cli);
-    match Database::open(&db) {
-        Ok(database) => {
-            let checklists = database.list_checklists().unwrap_or_default();
-            ui::detail("Location", &db.display().to_string());
-            ui::detail("Checklists", &checklists.len().to_string());
-        }
-        Err(_) => {
-            ui::detail("Status", "Not yet created");
-        }
-    }
-
-    println!();
-    ui::section("Configuration");
+    ui::section("Operating Boundary");
+    ui::detail("Role", "Difficult-device scanner and evidence producer");
+    ui::detail("System of record", "STIG Manager");
+    ui::detail("Evaluation", "Deterministic; no AI/ML");
     ui::detail(
         "Data directory",
         &super::default_data_dir().display().to_string(),
     );
-    ui::detail("Mode", "Air-gapped (offline only)");
-    ui::detail("Determinism", "100% — zero AI/ML");
     println!();
 
     Ok(())

@@ -1,0 +1,132 @@
+{
+  "schema": "automatestig-evidence/v2",
+  "hostname": "ontap-transport-failure",
+  "platform": "ontap",
+  "collector_version": "fixture",
+  "collected_at": "2026-01-01T00:00:00Z",
+  "plan_sha256": "14fa2cb82c7534800d921cbf6a2eb158fd70a4326e7b00be6022ab8c4776c5a1",
+  "server_key_fingerprint": null,
+  "complete": false,
+  "commands": [
+    {
+      "data_key": "security session limit show -interface cli",
+      "command": "security session limit show -interface cli",
+      "status": "success",
+      "stdout": "Vserver   Interface Category      Max-Active-Limit\n--------- --------- ------------- ----------------\ncluster1  cli       default       3\n1 entry was displayed.",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "system timeout show",
+      "command": "system timeout show",
+      "status": "success",
+      "stdout": "Session Timeout (Minutes): 10",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "cluster log-forwarding show",
+      "command": "cluster log-forwarding show",
+      "status": "success",
+      "stdout": "                                                 Verify Syslog\nDestination Host                    Port   Protocol        Server Facility\n----------------------------------- ------ --------------- ------ --------\n10.10.5.14                          514    udp-unencrypted false  user\n1 entries were displayed.",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "security login show -role admin -authentication-method password",
+      "command": "security login show -role admin -authentication-method password",
+      "status": "success",
+      "stdout": "Vserver: cluster1\n                                                                 Second\nUser/Group                 Authentication                 Acct   Authentication\nName           Application Method        Role Name        Locked Method\n-------------- ----------- ------------- ---------------- ------ --------------\nadmin          console     password      admin            no     none\n1 entry was displayed.",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "vserver audit show -fields audit-guarantee",
+      "command": "vserver audit show -fields audit-guarantee",
+      "status": "transport_error",
+      "stdout": "ssh: connect to host target port 22: Connection refused",
+      "stderr": "Connection refused",
+      "exit_code": 255,
+      "duration_ms": 0,
+      "error": "SSH transport failed"
+    },
+    {
+      "data_key": "cluster time-service ntp server show",
+      "command": "cluster time-service ntp server show",
+      "status": "transport_error",
+      "stdout": "ssh: connect to host target port 22: Connection refused",
+      "stderr": "Connection refused",
+      "exit_code": 255,
+      "duration_ms": 0,
+      "error": "SSH transport failed"
+    },
+    {
+      "data_key": "security login show -role admin -authentication-method domain",
+      "command": "security login show -role admin -authentication-method domain",
+      "status": "success",
+      "stdout": "Vserver: cluster1\nUser/Group                 Authentication                 Acct\nName           Application Method        Role Name        Locked\n-------------- ----------- ------------- ---------------- ------\nDOMAIN\\storage-admins ssh  domain        admin            no\n1 entry was displayed.",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "security login role config show -role admin -fields passwd-minlength",
+      "command": "security login role config show -role admin -fields passwd-minlength",
+      "status": "transport_error",
+      "stdout": "ssh: connect to host target port 22: Connection refused",
+      "stderr": "Connection refused",
+      "exit_code": 255,
+      "duration_ms": 0,
+      "error": "SSH transport failed"
+    },
+    {
+      "data_key": "security login role config show -role admin -fields passwd-min-uppercase-chars",
+      "command": "security login role config show -role admin -fields passwd-min-uppercase-chars",
+      "status": "success",
+      "stdout": "vserver  role  passwd-min-uppercase-chars\n-------- ----- --------------------------\ncluster1 admin 1\n1 entry was displayed.",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "security login role config show -role admin -fields passwd-min-lowercase-chars",
+      "command": "security login role config show -role admin -fields passwd-min-lowercase-chars",
+      "status": "success",
+      "stdout": "vserver  role  passwd-min-lowercase-chars\n-------- ----- --------------------------\ncluster1 admin 1\n1 entry was displayed.",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "security login role config show -role admin -fields passwd-alphanum",
+      "command": "security login role config show -role admin -fields passwd-alphanum",
+      "status": "success",
+      "stdout": "vserver  role  passwd-alphanum\n-------- ----- ---------------\ncluster1 admin enabled\n1 entry was displayed.",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "security login role config show -role admin -fields passwd-min-special-chars",
+      "command": "security login role config show -role admin -fields passwd-min-special-chars",
+      "status": "success",
+      "stdout": "vserver  role  passwd-min-special-chars\n-------- ----- ------------------------\ncluster1 admin 1\n1 entry was displayed.",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    },
+    {
+      "data_key": "security config show",
+      "command": "set -privilege advanced -confirmations off -stop-on-error true; security config show",
+      "status": "success",
+      "stdout": "                                          Cluster                    Cluster\nInterface    FIPS Mode  Supported Protocols        Supported Ciphers Security\n------------ ---------- -------------------------- ----------------- --------\nSSL          true       TLSv1.3, TLSv1.2           ALL:!LOW          true",
+      "stderr": "",
+      "exit_code": 0,
+      "duration_ms": 0
+    }
+  ]
+}

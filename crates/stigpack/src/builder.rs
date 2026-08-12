@@ -1,5 +1,6 @@
 //! Stigpack builder — creates .stigpack archives from source files.
 
+use std::collections::HashSet;
 use std::io::Write;
 use std::path::Path;
 
@@ -8,7 +9,7 @@ use walkdir::WalkDir;
 use zip::write::SimpleFileOptions;
 use zip::ZipWriter;
 
-use crate::manifest::{PackManifest, PackType};
+use crate::manifest::PackManifest;
 use crate::{StigpackError, StigpackResult};
 
 /// Builder for creating .stigpack archives.
@@ -40,21 +41,14 @@ impl PackBuilder {
         self
     }
 
-    /// Set the pack type.
-    pub fn pack_type(mut self, pack_type: PackType) -> Self {
-        self.manifest.pack_type = pack_type;
-        self
-    }
-
     /// Set an Ed25519 signing key for this pack.
     pub fn signing_key(mut self, key: [u8; 32]) -> Self {
+        let public_key = ed25519_dalek::SigningKey::from_bytes(&key)
+            .verifying_key()
+            .to_bytes();
+        self.manifest.signing_key_fingerprint =
+            Some(crate::signing::public_key_fingerprint(&public_key));
         self.signing_key = Some(key);
-        self
-    }
-
-    /// Set the minimum app version.
-    pub fn min_app_version(mut self, version: &str) -> Self {
-        self.manifest.min_app_version = Some(version.to_string());
         self
     }
 
@@ -68,11 +62,16 @@ impl PackBuilder {
 
     /// Add all files from a directory, preserving relative paths.
     pub fn add_directory(mut self, pack_prefix: &str, dir_path: &Path) -> StigpackResult<Self> {
-        for entry in WalkDir::new(dir_path)
+        let mut entries = WalkDir::new(dir_path)
             .into_iter()
-            .filter_map(|e| e.ok())
-            .filter(|e| e.file_type().is_file())
-        {
+            .filter_map(|entry| match entry {
+                Ok(entry) if entry.file_type().is_file() => Some(Ok(entry)),
+                Ok(_) => None,
+                Err(error) => Some(Err(StigpackError::InvalidPack(error.to_string()))),
+            })
+            .collect::<StigpackResult<Vec<_>>>()?;
+        entries.sort_by(|left, right| left.path().cmp(right.path()));
+        for entry in entries {
             let relative = entry
                 .path()
                 .strip_prefix(dir_path)
@@ -91,7 +90,25 @@ impl PackBuilder {
     }
 
     /// Build the .stigpack archive and write it to the given path.
-    pub fn build(self, output_path: &Path) -> StigpackResult<()> {
+    pub fn build(mut self, output_path: &Path) -> StigpackResult<()> {
+        self.files.sort_by(|left, right| left.0.cmp(&right.0));
+        let mut seen = HashSet::new();
+        for (path, _) in &self.files {
+            crate::validate_member_path(path)?;
+            if matches!(path.as_str(), "manifest.json" | "signature.sig") {
+                return Err(StigpackError::InvalidPack(format!(
+                    "reserved .stigpack member name: {path}"
+                )));
+            }
+            if !seen.insert(path) {
+                return Err(StigpackError::InvalidPack(format!(
+                    "duplicate .stigpack member: {path}"
+                )));
+            }
+        }
+        self.manifest
+            .validate()
+            .map_err(StigpackError::ManifestError)?;
         let file = std::fs::File::create(output_path)?;
         let mut zip = ZipWriter::new(file);
         let options =
@@ -155,5 +172,24 @@ mod tests {
         let mut archive = zip::ZipArchive::new(file).unwrap();
         assert!(archive.by_name("manifest.json").is_ok());
         assert!(archive.by_name("benchmarks/test.json").is_ok());
+    }
+
+    #[test]
+    fn rejects_duplicate_unsafe_and_reserved_members() {
+        let dir = tempfile::TempDir::new().unwrap();
+        let output = dir.path().join("bad.stigpack");
+
+        let duplicate = PackBuilder::new("test", "Test", "1")
+            .add_file_bytes("benchmarks/test.json", b"one")
+            .add_file_bytes("benchmarks/test.json", b"two");
+        assert!(duplicate.build(&output).is_err());
+
+        let unsafe_path =
+            PackBuilder::new("test", "Test", "1").add_file_bytes("../test.json", b"content");
+        assert!(unsafe_path.build(&output).is_err());
+
+        let reserved =
+            PackBuilder::new("test", "Test", "1").add_file_bytes("manifest.json", b"content");
+        assert!(reserved.build(&output).is_err());
     }
 }

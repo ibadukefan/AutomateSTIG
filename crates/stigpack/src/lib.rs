@@ -1,11 +1,10 @@
 //! STIG Content Pack (.stigpack) format.
 //!
 //! A .stigpack is a signed ZIP archive containing STIG benchmarks, answer file
-//! templates, custom checks, and remediation scripts. The format supports:
+//! templates, curated checks, and generated check packs. The format supports:
 //! - SHA-256 integrity verification
 //! - Ed25519 digital signatures
-//! - Version metadata and dependency tracking
-//! - Incremental updates (delta packs)
+//! - Version metadata
 //!
 //! ## Pack Structure
 //! ```text
@@ -13,16 +12,16 @@
 //! ├── manifest.json          # Pack metadata, file list, hashes
 //! ├── signature.sig          # Ed25519 signature of manifest.json
 //! ├── benchmarks/            # STIG benchmark data files (JSON)
-//! │   ├── Windows_Server_2022_STIG.json
 //! │   └── RHEL_9_STIG.json
 //! ├── answer_templates/      # Pre-built answer files
-//! │   └── Windows_Server_2022_answers.yaml
-//! ├── custom_checks/         # Custom check definitions
-//! └── remediation/           # Remediation scripts
-//!     ├── ansible/
-//!     ├── powershell/
-//!     └── bash/
+//! │   └── RHEL_9_answers.yaml
+//! ├── custom_checks/         # Curated check definitions
+//! └── auto_check_packs/      # Signed reviewed generated definitions on the wire
 //! ```
+//!
+//! Trusted import promotes `auto_check_packs/` members into the local
+//! `reviewed_check_packs/` directory. Runtime evaluation never loads the legacy
+//! local `auto_check_packs/` directory.
 
 pub mod builder;
 pub mod importer;
@@ -30,10 +29,14 @@ pub mod manifest;
 pub mod signing;
 pub mod verifier;
 
+use std::path::{Component, Path};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum StigpackError {
+    #[error("Unsafe archive: {0}")]
+    Archive(#[from] automatestig_archive_safety::ArchiveError),
+
     #[error("Invalid stigpack: {0}")]
     InvalidPack(String),
 
@@ -53,6 +56,9 @@ pub enum StigpackError {
     #[error("Missing file in pack: {0}")]
     MissingFile(String),
 
+    #[error("STIG library transaction failed: {0}")]
+    Library(String),
+
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 
@@ -64,3 +70,28 @@ pub enum StigpackError {
 }
 
 pub type StigpackResult<T> = std::result::Result<T, StigpackError>;
+
+pub(crate) fn validate_member_path(relative: &str) -> StigpackResult<()> {
+    if relative.trim().is_empty() || relative.contains('\\') || relative.contains('\0') {
+        return Err(StigpackError::ManifestError(format!(
+            "unsafe .stigpack member path: {relative}"
+        )));
+    }
+    let path = Path::new(relative);
+    if path.is_absolute() {
+        return Err(StigpackError::ManifestError(format!(
+            "absolute .stigpack member paths are not allowed: {relative}"
+        )));
+    }
+    for component in path.components() {
+        match component {
+            Component::Normal(part) if !part.is_empty() => {}
+            _ => {
+                return Err(StigpackError::ManifestError(format!(
+                    "unsafe .stigpack member path: {relative}"
+                )))
+            }
+        }
+    }
+    Ok(())
+}

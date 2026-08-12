@@ -1,0 +1,23 @@
+[package]
+name = "automatestig-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+automatestig-archive-safety = { path = "../crates/archive-safety" }
+libfuzzer-sys = "0.4"
+
+[[bin]]
+name = "safe_zip_archive"
+path = "fuzz_targets/safe_zip_archive.rs"
+test = false
+doc = false
+bench = false
+
+# Keep fuzz-only dependencies and profiles out of the application workspace.
+[workspace]
+members = ["."]

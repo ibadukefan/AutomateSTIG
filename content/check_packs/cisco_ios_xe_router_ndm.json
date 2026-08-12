@@ -7,15 +7,15 @@
       "vuln_id": "V-215807",
       "platform": "cisco_ios",
       "check": {
-        "type": "config_line",
-        "pattern": "session-limit",
-        "context": "line vty",
-        "should_exist": true
+        "type": "cisco_vty_session_limit"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "Concurrent management sessions limited (session-limit under line vty)"
+      "description": "Every VTY and enabled HTTP(S) management path is limited to the signed organization-policy maximum",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215808",
@@ -29,7 +29,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Account creation audited via archive config change logging"
+      "description": "Account creation audited via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215809",
@@ -43,7 +45,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Account modification audited via archive config change logging"
+      "description": "Account modification audited via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215810",
@@ -57,7 +61,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Account disabling audited via archive config change logging"
+      "description": "Account disabling audited via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215811",
@@ -71,49 +77,23 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Account removal audited via archive config change logging"
-    },
-    {
-      "vuln_id": "V-215812",
-      "platform": "cisco_ios",
-      "check": {
-        "type": "config_line",
-        "pattern": "access-class",
-        "context": "line vty",
-        "should_exist": true
-      },
-      "expected": {
-        "type": "is_true"
-      },
-      "description": "Management access restricted by inbound ACL on vty lines (ACL content still requires review)"
+      "description": "Account removal audited via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215813",
       "platform": "cisco_ios",
       "check": {
-        "type": "config_line",
-        "pattern": "attempts 3 within",
-        "context": null,
-        "should_exist": true
+        "type": "cisco_login_block_for"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "Three consecutive invalid logon attempts enforced (login block-for ... attempts 3 within ...)"
-    },
-    {
-      "vuln_id": "V-215814",
-      "platform": "cisco_ios",
-      "check": {
-        "type": "config_line",
-        "pattern": "You are accessing a U.S. Government (USG) Information System",
-        "context": null,
-        "should_exist": true
-      },
-      "expected": {
-        "type": "is_true"
-      },
-      "description": "Standard Mandatory DoD Notice and Consent Banner configured (banner login)"
+      "description": "Numeric login throttling allows no more than three attempts and locks access for at least 15 minutes",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215815",
@@ -138,7 +118,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "All administrator activity audited (logging userinfo + archive config logging)"
+      "description": "All administrator activity audited (logging userinfo + archive config logging)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215817",
@@ -152,7 +134,23 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Audit records carry date and time (service timestamps log datetime)"
+      "description": "Audit records carry date and time (service timestamps log datetime)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
+    },
+    {
+      "vuln_id": "V-215818",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_interface_acl_deny_log_input"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^compliant:"
+      },
+      "description": "Every deny entry in every IPv4 or IPv6 ACL bound to an interface includes log-input",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215819",
@@ -166,108 +164,79 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Full-text logging of configuration changes (archive log config)"
+      "description": "Full-text logging of configuration changes (archive log config)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
+    },
+    {
+      "vuln_id": "V-215820",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_persistent_audit_modification_protection"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^(compliant|not_applicable):"
+      },
+      "description": "When persistent logging is enabled, effective file-system privilege is the default or explicit level 15; otherwise the rule is NotApplicable",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
+    },
+    {
+      "vuln_id": "V-215821",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "cisco_persistent_audit_deletion_protection"
+      },
+      "expected": {
+        "type": "matches",
+        "pattern": "^(compliant|not_applicable):"
+      },
+      "description": "When persistent logging is enabled, effective file-system privilege is the default or explicit level 15; otherwise the rule is NotApplicable",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215822",
       "platform": "cisco_ios",
       "check": {
-        "type": "config_line",
-        "pattern": "file privilege",
-        "context": null,
-        "should_exist": false
+        "type": "cisco_file_system_privilege"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "File system privilege must remain at default 15 (no 'file privilege' override present)"
+      "description": "Effective file-system privilege is the IOS default or an explicit level 15; malformed, ambiguous, or lower levels fail",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
-      "vuln_id": "V-215823",
+      "vuln_id": "V-215824",
       "platform": "cisco_ios",
       "check": {
-        "type": "all",
-        "checks": [
-          {
-            "type": "config_line",
-            "pattern": "ip bootp server",
-            "context": null,
-            "should_exist": false
-          },
-          {
-            "type": "config_line",
-            "pattern": "ip identd",
-            "context": null,
-            "should_exist": false
-          },
-          {
-            "type": "config_line",
-            "pattern": "ip finger",
-            "context": null,
-            "should_exist": false
-          },
-          {
-            "type": "config_line",
-            "pattern": "service tcp-small-servers",
-            "context": null,
-            "should_exist": false
-          },
-          {
-            "type": "config_line",
-            "pattern": "service udp-small-servers",
-            "context": null,
-            "should_exist": false
-          },
-          {
-            "type": "config_line",
-            "pattern": "service finger",
-            "context": null,
-            "should_exist": false
-          },
-          {
-            "type": "config_line",
-            "pattern": "ip rcmd rcp-enable",
-            "context": null,
-            "should_exist": false
-          },
-          {
-            "type": "config_line",
-            "pattern": "ip rcmd rsh-enable",
-            "context": null,
-            "should_exist": false
-          },
-          {
-            "type": "config_line",
-            "pattern": "boot network",
-            "context": null,
-            "should_exist": false
-          },
-          {
-            "type": "config_line",
-            "pattern": "ip boot server",
-            "context": null,
-            "should_exist": false
-          }
-        ]
+        "type": "cisco_single_local_fallback_account"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "Unnecessary/nonsecure services disabled (bootp, identd, finger, small-servers, rcmd, boot network)"
+      "description": "Exactly one Common-Criteria-bound local account is configured and every AAA login list uses it only after RADIUS or TACACS",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215826",
       "platform": "cisco_ios",
       "check": {
-        "type": "config_line",
-        "pattern": "min-length 15",
-        "context": null,
-        "should_exist": true
+        "type": "cisco_password_minimum_length"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "Common-criteria policy minimum password length 15 (canonical 'min-length 15'; longer minima need an answer file)"
+      "description": "Every configured Common Criteria password policy has one numeric minimum length of at least 15 characters",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215827",
@@ -281,7 +250,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Password policy requires an uppercase character (upper-case 1)"
+      "description": "Password policy requires an uppercase character (upper-case 1)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215828",
@@ -295,7 +266,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Password policy requires a lowercase character (lower-case 1)"
+      "description": "Password policy requires a lowercase character (lower-case 1)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215829",
@@ -309,7 +282,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Password policy requires a numeric character (numeric-count 1)"
+      "description": "Password policy requires a numeric character (numeric-count 1)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215830",
@@ -323,7 +298,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Password policy requires a special character (special-case 1)"
+      "description": "Password policy requires a special character (special-case 1)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215831",
@@ -337,7 +314,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Password changes must alter at least 8 character positions (char-changes 8)"
+      "description": "Password changes must alter at least 8 character positions (char-changes 8)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215832",
@@ -351,50 +330,23 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Passwords stored only as cryptographic representations (service password-encryption)"
+      "description": "Passwords stored only as cryptographic representations (service password-encryption)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215833",
       "platform": "cisco_ios",
       "check": {
-        "type": "any",
-        "checks": [
-          {
-            "type": "config_line",
-            "pattern": "exec-timeout 1",
-            "context": "line vty",
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "exec-timeout 2",
-            "context": "line vty",
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "exec-timeout 3",
-            "context": "line vty",
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "exec-timeout 4",
-            "context": "line vty",
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "exec-timeout 5 0",
-            "context": "line vty",
-            "should_exist": true
-          }
-        ]
+        "type": "cisco_management_idle_timeout"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "Management sessions terminate at 5 minutes idle or less (vty exec-timeout)"
+      "description": "Every console, VTY, auxiliary, and enabled HTTP(S) management path terminates inactivity within five minutes",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215834",
@@ -408,167 +360,93 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Account enabling audited via archive config change logging"
+      "description": "Account enabling audited via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215836",
       "platform": "cisco_ios",
       "check": {
-        "type": "config_line",
-        "pattern": "logging buffered",
-        "context": null,
-        "should_exist": true
+        "type": "cisco_logging_buffer_capacity"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "Audit record storage capacity allocated (logging buffered)"
+      "description": "Numeric logging buffer capacity meets the signed organization-policy minimum",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215837",
       "platform": "cisco_ios",
       "check": {
-        "type": "config_line",
-        "pattern": "logging trap",
-        "context": null,
-        "should_exist": true
+        "type": "cisco_logging_trap_severity"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "Alerts generated for audit failure events (logging trap)"
+      "description": "Effective logging trap severity includes critical audit failure events",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
-      "vuln_id": "V-215841",
+      "vuln_id": "V-215838",
       "platform": "cisco_ios",
       "check": {
-        "type": "any",
-        "checks": [
-          {
-            "type": "config_line",
-            "pattern": "v3 auth",
-            "context": null,
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "v3 priv",
-            "context": null,
-            "should_exist": true
-          }
-        ]
+        "type": "cisco_redundant_authoritative_ntp_sources"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "SNMP messages authenticated with SNMPv3 auth or priv (authPriv implies authentication)"
-    },
-    {
-      "vuln_id": "V-215842",
-      "platform": "cisco_ios",
-      "check": {
-        "type": "config_line",
-        "pattern": "v3 priv",
-        "context": null,
-        "should_exist": true
-      },
-      "expected": {
-        "type": "is_true"
-      },
-      "description": "SNMP messages encrypted with SNMPv3 priv (FIPS 140-2 algorithm)"
+      "description": "At least two distinct configured NTP servers are present in the signed organization-policy authoritative-source allowlist",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215843",
       "platform": "cisco_ios",
       "check": {
-        "type": "all",
-        "checks": [
-          {
-            "type": "config_line",
-            "pattern": "ntp authenticate",
-            "context": null,
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "ntp authentication-key",
-            "context": null,
-            "should_exist": true
-          }
-        ]
+        "type": "cisco_ntp_authentication"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "NTP sources authenticated cryptographically (ntp authenticate + authentication-key)"
+      "description": "NTP authentication is enabled and every server key links to a trusted hmac-sha2-256 definition",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215844",
       "platform": "cisco_ios",
       "check": {
-        "type": "any",
-        "checks": [
-          {
-            "type": "config_line",
-            "pattern": "hmac-sha2-256",
-            "context": null,
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "hmac-sha2-512",
-            "context": null,
-            "should_exist": true
-          }
-        ]
+        "type": "cisco_ssh_mac_algorithms"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "Remote maintenance integrity via FIPS-validated HMAC (ip ssh server algorithm mac hmac-sha2-*)"
+      "description": "SSH version 2 uses a complete allowlist containing only hmac-sha2-256 or hmac-sha2-512",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215845",
       "platform": "cisco_ios",
       "check": {
-        "type": "any",
-        "checks": [
-          {
-            "type": "config_line",
-            "pattern": "algorithm encryption aes256-ctr",
-            "context": null,
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "algorithm encryption aes256-gcm",
-            "context": null,
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "algorithm encryption aes192-ctr",
-            "context": null,
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "algorithm encryption aes128-ctr",
-            "context": null,
-            "should_exist": true
-          },
-          {
-            "type": "config_line",
-            "pattern": "algorithm encryption aes128-gcm",
-            "context": null,
-            "should_exist": true
-          }
-        ]
+        "type": "cisco_ssh_encryption_algorithms"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "Remote maintenance confidentiality via FIPS 140-2 AES (verify no legacy ciphers also listed)"
+      "description": "SSH version 2 uses a complete allowlist containing only reviewed AES CTR ciphers",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215848",
@@ -582,7 +460,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Privilege deletion logged via archive config change logging"
+      "description": "Privilege deletion logged via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215849",
@@ -607,7 +487,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Successful and unsuccessful logon attempts audited (login on-failure/on-success log)"
+      "description": "Successful and unsuccessful logon attempts audited (login on-failure/on-success log)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215850",
@@ -621,57 +503,23 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Privileged activities logged via archive config change logging"
+      "description": "Privileged activities logged via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
-      "vuln_id": "V-215854",
+      "vuln_id": "V-220139",
       "platform": "cisco_ios",
       "check": {
-        "type": "all",
-        "checks": [
-          {
-            "type": "config_line",
-            "pattern": "aaa authentication login",
-            "context": null,
-            "should_exist": true
-          },
-          {
-            "type": "any",
-            "checks": [
-              {
-                "type": "config_line",
-                "pattern": "group radius",
-                "context": null,
-                "should_exist": true
-              },
-              {
-                "type": "config_line",
-                "pattern": "group tacacs",
-                "context": null,
-                "should_exist": true
-              }
-            ]
-          }
-        ]
+        "type": "cisco_syslog_server_count"
       },
       "expected": {
-        "type": "is_true"
+        "type": "matches",
+        "pattern": "^compliant:"
       },
-      "description": "AAA authentication via external servers (radius/tacacs group; server redundancy still requires review)"
-    },
-    {
-      "vuln_id": "V-215856",
-      "platform": "cisco_ios",
-      "check": {
-        "type": "config_line",
-        "pattern": "crypto pki trustpoint",
-        "context": null,
-        "should_exist": true
-      },
-      "expected": {
-        "type": "is_true"
-      },
-      "description": "PKI certificates from a CA trust point (DOD-approved CA still requires review)"
+      "description": "At least two distinct modern or legacy remote syslog destinations are configured",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     }
   ]
 }

@@ -1,0 +1,96 @@
+! Synthetic IOS-XE semantic counterexamples. The organization-policy-bound
+! typed Cisco checks below must open. The remaining evidence-insufficient
+! controls stay NotReviewed pending human review.
+version 17.9
+hostname rtr-semantic-counterexamples
+!
+! V-215807: directive presence does not prove the organization-defined limit,
+! and an HTTP management path may use a separate maximum.
+line vty 0 4
+ session-limit 999
+ip http max-connections 999
+!
+! V-215812: outbound ACL presence does not prove an approved inbound management ACL.
+line vty 0 4
+ access-class PUBLIC out
+ exec-timeout 1 599
+!
+! V-215818: an interface-bound deny without log-input cannot establish where
+! the packet drop occurred.
+interface GigabitEthernet0/0
+ ip access-group EDGE_IN in
+ip access-list extended EDGE_IN
+ deny ip any any
+!
+! V-215813: three attempts alone does not prove the required 15-minute lockout.
+login block-for 1 attempts 3 within 120
+!
+! V-215814 and V-215826: partial banner prose and command-like banner payload
+! are not configuration evidence.
+banner login ^C
+You are accessing a U.S. Government (USG) Information System.
+min-length 15
+^C
+!
+! V-215823: these prohibited services were absent from the former incomplete list;
+! call-home also needs an approved Smart Licensing exception when enabled.
+ip dns server
+ip http server
+service config
+service pad
+service call-home
+!
+! V-215820 through V-215822: persistent logging is enabled, but a lower file
+! privilege permits unauthorized modification and deletion.
+logging persistent url disk0:/logfile size 134217728 filesize 16384
+file privilege 10
+!
+! V-215833: 1 minute 599 seconds is greater than five minutes; console and
+! conditional HTTP management timeout evidence are also absent.
+line con 0
+ exec-timeout 30 0
+line vty 0 4
+ exec-timeout 1 599
+ip http secure-server
+!
+! V-215836: a one-byte buffer is present but cannot satisfy a meaningful,
+! organization-defined audit retention capacity.
+logging buffered 1
+!
+! V-215837: emergencies-only traps omit critical audit-failure events even
+! though the logging trap directive is present.
+logging trap emergencies
+!
+! V-215841 and V-215842: group security levels do not prove that active users
+! use approved authentication and privacy algorithms.
+snmp-server group V3AUTH v3 auth read V3READ
+snmp-server user BAD_AUTH V3AUTH v3 auth md5 XXXXXX
+snmp-server group V3PRIV v3 priv read V3READ
+snmp-server user BAD_PRIV V3PRIV v3 auth md5 XXXXXX priv des XXXXXX
+!
+! V-215843: authentication is enabled, but the only key is MD5 and no trusted
+! key or NTP server is bound to it.
+ntp authenticate
+ntp authentication-key 1 md5 XXXXXX
+!
+! V-215844: one approved token does not make a mixed MAC allowlist compliant;
+! an explicitly negated approved command is not positive evidence either.
+ip ssh server algorithm mac hmac-sha2-256 hmac-md5
+no ip ssh server algorithm mac hmac-sha2-512
+!
+! V-215845: one AES token does not make a mixed cipher allowlist compliant.
+ip ssh server algorithm encryption aes256-ctr 3des-cbc
+!
+! V-215854: local login plus unrelated RADIUS authorization does not prove two
+! authentication servers are configured and used by every management path.
+aaa authentication login LOGIN_AUTHENTICATION local
+aaa authorization exec default group radius local
+!
+! V-220139: local logging settings are not two remote syslog destinations.
+logging console warnings
+!
+! V-215856: a self-signed trustpoint does not establish a DoD-approved CA chain.
+crypto pki trustpoint TP-self-signed
+ enrollment selfsigned
+!
+end

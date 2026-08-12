@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.dev/schemas/live-decision-oracle.schema.json",
+  "title": "AutomateSTIG independently adjudicated live decision-oracle bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "target",
+    "stig_id",
+    "stig_release",
+    "benchmark_sha256",
+    "evaluated_benchmark_sha256",
+    "check_pack_sha256",
+    "organization_policy_sha256",
+    "organization_policy_signature_sha256",
+    "organization_policy_signer_fingerprint",
+    "ssh_server_key_fingerprint",
+    "adjudicated_at",
+    "adjudicator",
+    "adjudication_basis",
+    "independent_of_automatestig_output",
+    "scenarios"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://automatestig.dev/schemas/live-decision-oracle.schema.json"
+    },
+    "schema": {
+      "const": "automatestig-live-decision-oracle/v2"
+    },
+    "target": {
+      "enum": ["ontap", "freebsd", "cisco_ios_xe"]
+    },
+    "stig_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stig_release": {
+      "type": "string",
+      "pattern": "^V[0-9]+R[0-9]+$"
+    },
+    "benchmark_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the exact authorized DISA source artifact."
+    },
+    "evaluated_benchmark_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Canonical JSON SHA-256 of the effective imported benchmark evaluation model."
+    },
+    "check_pack_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Canonical JSON SHA-256 of the effective embedded runtime check-pack set, including source-tier priority and serde defaults."
+    },
+    "organization_policy_sha256": {
+      "type": ["string", "null"],
+      "description": "Exact signed organization-policy JSON digest for Cisco IOS-XE; null for targets without organization-defined executable thresholds."
+    },
+    "organization_policy_signature_sha256": {
+      "type": ["string", "null"],
+      "description": "Exact detached-signature digest for the Cisco organization policy; null for other targets."
+    },
+    "organization_policy_signer_fingerprint": {
+      "type": ["string", "null"],
+      "description": "Trusted Ed25519 signer fingerprint expected for the Cisco organization policy; null for other targets."
+    },
+    "ssh_server_key_fingerprint": {
+      "type": ["string", "null"],
+      "minLength": 50,
+      "maxLength": 50,
+      "pattern": "^SHA256:[A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]$",
+      "description": "Exact independently pinned SSH server-key fingerprint for ONTAP and FreeBSD; null for Cisco configuration evaluation."
+    },
+    "adjudicated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "adjudicator": {
+      "type": "string",
+      "maxLength": 39,
+      "pattern": "^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
+      "description": "GitHub login of the independent adjudicator and sole protected-environment reviewer."
+    },
+    "adjudication_basis": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 2000
+    },
+    "independent_of_automatestig_output": {
+      "const": true
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/scenario"
+      },
+      "contains": {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": {
+            "const": "baseline"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "target": {
+            "const": "cisco_ios_xe"
+          }
+        },
+        "required": ["target"]
+      },
+      "then": {
+        "properties": {
+          "organization_policy_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "organization_policy_signature_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "organization_policy_signer_fingerprint": {
+            "type": "string",
+            "pattern": "^SHA256:[0-9a-f]{64}$"
+          },
+          "ssh_server_key_fingerprint": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "organization_policy_sha256": {
+            "type": "null"
+          },
+          "organization_policy_signature_sha256": {
+            "type": "null"
+          },
+          "organization_policy_signer_fingerprint": {
+            "type": "null"
+          },
+          "ssh_server_key_fingerprint": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 50,
+            "pattern": "^SHA256:[A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]$"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "asset_hostname",
+        "source_state_sha256",
+        "expected_status_by_vuln"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+        },
+        "kind": {
+          "enum": ["baseline", "negative_control"]
+        },
+        "asset_hostname": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "source_state_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Independently captured state/configuration digest; the live runner requires an exact match."
+        },
+        "expected_status_by_vuln": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "enum": ["Finding", "NotAFinding", "NotApplicable"]
+          },
+          "propertyNames": {
+            "pattern": "^V-[0-9]+$"
+          }
+        }
+      }
+    }
+  }
+}

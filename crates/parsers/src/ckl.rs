@@ -1,8 +1,8 @@
 //! CKL (Checklist) file parser and writer.
 //!
 //! CKL files are XML documents used by DISA STIG Viewer to store
-//! evaluation results. This module reads and writes the CKL format
-//! with full fidelity, supporting all standard elements.
+//! evaluation results. This module reads and writes the modeled CKL fields and
+//! retains unmodeled rule attributes to reduce round-trip loss.
 //!
 //! CKL Structure:
 //! ```xml
@@ -40,7 +40,7 @@ use quick_xml::events::{BytesEnd, BytesPI, BytesStart, BytesText, Event};
 use quick_xml::reader::Reader;
 use quick_xml::writer::Writer;
 
-use automatestig_core::models::asset::{Asset, AssetRole, AssetType};
+use automatestig_core::models::asset::{Asset, AssetRole, AssetType, TechnologyArea};
 use automatestig_core::models::checklist::{Checklist, ChecklistStigInfo, Classification};
 use automatestig_core::models::finding::{Finding, FindingSource, FindingStatus};
 use automatestig_core::models::stig::Severity;
@@ -57,7 +57,10 @@ pub fn parse_ckl_file(path: &Path) -> ParseResult<Checklist> {
 /// Parse CKL XML content into a Checklist.
 pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
     let mut reader = Reader::from_str(xml);
-    reader.config_mut().trim_text(true);
+    // Preserve whitespace across adjacent text/entity/CDATA events. Trimming
+    // each event independently turns `A &amp; B` into `A&B` and can silently
+    // corrupt check, fix, finding-detail, and comment text.
+    reader.config_mut().trim_text(false);
 
     let mut asset = Asset::default();
     let mut stig_info = ChecklistStigInfo {
@@ -72,9 +75,11 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
     };
     let mut findings: Vec<Finding> = Vec::new();
     let mut classification = Classification::Unclassified;
+    let mut istig_count = 0usize;
 
     // Parser state tracking.
     let mut in_asset = false;
+    let mut in_stigs = false;
     let mut in_stig_info = false;
     let mut in_vuln = false;
     let mut in_si_data = false;
@@ -86,6 +91,7 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
     let mut vuln_attrs: std::collections::HashMap<String, String> =
         std::collections::HashMap::new();
     let mut vuln_cci_refs: Vec<String> = Vec::new();
+    let mut vuln_legacy_ids: Vec<String> = Vec::new();
     let mut vuln_attr_name = String::new();
     let mut vuln_attr_data = String::new();
     let mut vuln_status = String::new();
@@ -102,13 +108,31 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                 let tag = String::from_utf8_lossy(e.name().as_ref()).to_string();
                 current_tag = tag.clone();
 
+                // `Asset::default()` uses a user-facing "Unknown" hostname.
+                // Parsing is an accumulation operation because XML text can be
+                // split across events, so discard that placeholder when the
+                // actual HOST_NAME element begins.
+                if in_asset && tag == "HOST_NAME" {
+                    asset.hostname.clear();
+                }
+
                 match tag.as_str() {
                     "ASSET" => in_asset = true,
+                    "STIGS" => in_stigs = true,
+                    "iSTIG" => {
+                        if !in_stigs {
+                            return Err(ParseError::XmlError(
+                                "iSTIG must occur within STIGS".to_string(),
+                            ));
+                        }
+                        istig_count += 1;
+                    }
                     "STIG_INFO" => in_stig_info = true,
                     "VULN" => {
                         in_vuln = true;
                         vuln_attrs.clear();
                         vuln_cci_refs.clear();
+                        vuln_legacy_ids.clear();
                         vuln_status.clear();
                         vuln_finding_details.clear();
                         vuln_comments.clear();
@@ -134,6 +158,7 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
 
                 match tag.as_str() {
                     "ASSET" => in_asset = false,
+                    "STIGS" => in_stigs = false,
                     "STIG_INFO" => in_stig_info = false,
                     "VULN" => {
                         in_vuln = false;
@@ -141,12 +166,15 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                         let finding = build_finding_from_attrs(
                             &vuln_attrs,
                             &vuln_cci_refs,
-                            &vuln_status,
-                            &vuln_finding_details,
-                            &vuln_comments,
-                            &vuln_severity_override,
-                            &vuln_severity_justification,
-                        );
+                            &vuln_legacy_ids,
+                            FindingResultFields {
+                                status: &vuln_status,
+                                finding_details: &vuln_finding_details,
+                                comments: &vuln_comments,
+                                severity_override: &vuln_severity_override,
+                                severity_justification: &vuln_severity_justification,
+                            },
+                        )?;
                         findings.push(finding);
                     }
                     "SI_DATA" => {
@@ -158,13 +186,19 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                     "STIG_DATA" => {
                         in_stig_data = false;
                         if !vuln_attr_name.is_empty() {
-                            // Accumulate CCI_REF values separately (there can be multiple).
-                            if vuln_attr_name == "CCI_REF" {
-                                if !vuln_attr_data.is_empty() {
+                            // These attributes are repeatable in real Viewer output.
+                            match vuln_attr_name.as_str() {
+                                "CCI_REF" if !vuln_attr_data.is_empty() => {
                                     vuln_cci_refs.push(vuln_attr_data.clone());
                                 }
-                            } else {
-                                vuln_attrs.insert(vuln_attr_name.clone(), vuln_attr_data.clone());
+                                "LEGACY_ID" if !vuln_attr_data.is_empty() => {
+                                    vuln_legacy_ids.push(vuln_attr_data.clone());
+                                }
+                                "CCI_REF" | "LEGACY_ID" => {}
+                                _ => {
+                                    vuln_attrs
+                                        .insert(vuln_attr_name.clone(), vuln_attr_data.clone());
+                                }
                             }
                         }
                     }
@@ -173,25 +207,44 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                 current_tag.clear();
             }
 
-            Ok(Event::Text(ref e)) => {
-                let text = e
-                    .decode()
-                    .map(|d| {
-                        quick_xml::escape::unescape(&d)
-                            .map(|u| u.into_owned())
-                            .unwrap_or_else(|_| d.into_owned())
-                    })
-                    .unwrap_or_default();
+            Ok(event)
+                if matches!(
+                    event,
+                    Event::Text(_) | Event::CData(_) | Event::GeneralRef(_)
+                ) =>
+            {
+                let text = decode_xml_text_event(event)?;
 
                 if in_asset {
                     match current_tag.as_str() {
                         "ROLE" => asset.role = AssetRole::from_ckl_str(&text),
                         "ASSET_TYPE" => asset.asset_type = AssetType::from_ckl_str(&text),
-                        "HOST_NAME" => asset.hostname = text,
-                        "HOST_IP" => asset.ip_address = Some(text),
-                        "HOST_MAC" => asset.mac_address = Some(text),
-                        "HOST_FQDN" => asset.fqdn = Some(text),
-                        "TARGET_COMMENT" => asset.target_comment = Some(text),
+                        "HOST_NAME" => asset.hostname.push_str(&text),
+                        "HOST_IP" => append_optional_text(&mut asset.ip_address, &text),
+                        "HOST_MAC" => append_optional_text(&mut asset.mac_address, &text),
+                        "HOST_FQDN" => append_optional_text(&mut asset.fqdn, &text),
+                        "TARGET_COMMENT" => append_optional_text(&mut asset.target_comment, &text),
+                        "TECH_AREA" => {
+                            asset.technology_area =
+                                Some(TechnologyArea::from_ckl_str(&text).ok_or_else(|| {
+                                    ParseError::XmlError(format!(
+                                        "unsupported STIG Viewer TECH_AREA value {text:?}"
+                                    ))
+                                })?);
+                        }
+                        "WEB_OR_DATABASE" => {
+                            let value = text.trim().to_ascii_lowercase();
+                            if !matches!(value.as_str(), "true" | "false") {
+                                return Err(ParseError::XmlError(format!(
+                                    "invalid WEB_OR_DATABASE boolean {text:?}"
+                                )));
+                            }
+                            asset.web_or_database = Some(value);
+                        }
+                        "WEB_DB_SITE" => append_optional_text(&mut asset.web_db_site, &text),
+                        "WEB_DB_INSTANCE" => {
+                            append_optional_text(&mut asset.web_db_instance, &text)
+                        }
                         "MARKING" => {
                             classification = match text.as_str() {
                                 "CUI" => Classification::Cui,
@@ -205,23 +258,23 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                     }
                 } else if in_si_data {
                     match current_tag.as_str() {
-                        "SID_NAME" => si_name = text,
-                        "SID_DATA" => si_data = text,
+                        "SID_NAME" => si_name.push_str(&text),
+                        "SID_DATA" => si_data.push_str(&text),
                         _ => {}
                     }
                 } else if in_stig_data && in_vuln {
                     match current_tag.as_str() {
-                        "VULN_ATTRIBUTE" => vuln_attr_name = text,
-                        "ATTRIBUTE_DATA" => vuln_attr_data = text,
+                        "VULN_ATTRIBUTE" => vuln_attr_name.push_str(&text),
+                        "ATTRIBUTE_DATA" => vuln_attr_data.push_str(&text),
                         _ => {}
                     }
                 } else if in_vuln {
                     match current_tag.as_str() {
-                        "STATUS" => vuln_status = text,
-                        "FINDING_DETAILS" => vuln_finding_details = text,
-                        "COMMENTS" => vuln_comments = text,
-                        "SEVERITY_OVERRIDE" => vuln_severity_override = text,
-                        "SEVERITY_JUSTIFICATION" => vuln_severity_justification = text,
+                        "STATUS" => vuln_status.push_str(&text),
+                        "FINDING_DETAILS" => vuln_finding_details.push_str(&text),
+                        "COMMENTS" => vuln_comments.push_str(&text),
+                        "SEVERITY_OVERRIDE" => vuln_severity_override.push_str(&text),
+                        "SEVERITY_JUSTIFICATION" => vuln_severity_justification.push_str(&text),
                         _ => {}
                     }
                 }
@@ -234,11 +287,50 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
         buf.clear();
     }
 
+    if istig_count != 1 {
+        return Err(ParseError::XmlError(format!(
+            "A checklist must contain exactly one iSTIG; found {istig_count}"
+        )));
+    }
+
     let mut checklist = Checklist::new(asset, stig_info);
     checklist.findings = findings;
     checklist.classification = classification;
 
     Ok(checklist)
+}
+
+fn append_optional_text(target: &mut Option<String>, text: &str) {
+    target.get_or_insert_with(String::new).push_str(text);
+}
+
+fn decode_xml_text_event(event: Event<'_>) -> ParseResult<String> {
+    match event {
+        Event::Text(text) => {
+            let decoded = text
+                .decode()
+                .map_err(|error| ParseError::XmlError(error.to_string()))?;
+            quick_xml::escape::unescape(&decoded)
+                .map(|text| text.into_owned())
+                .map_err(|error| ParseError::XmlError(error.to_string()))
+        }
+        Event::CData(text) => text
+            .decode()
+            .map(|text| text.into_owned())
+            .map_err(|error| ParseError::XmlError(error.to_string())),
+        Event::GeneralRef(reference) => {
+            let reference = reference
+                .decode()
+                .map_err(|error| ParseError::XmlError(error.to_string()))?;
+            let encoded = format!("&{reference};");
+            quick_xml::escape::unescape(&encoded)
+                .map(|text| text.into_owned())
+                .map_err(|error| ParseError::XmlError(error.to_string()))
+        }
+        _ => Err(ParseError::XmlError(
+            "internal CKL parser error: expected XML text content".to_string(),
+        )),
+    }
 }
 
 /// Write a Checklist to CKL XML format.
@@ -353,18 +445,23 @@ fn extract_release_date(release_info: &str) -> Option<String> {
         .map(|pos| release_info[pos + 15..].trim().to_string())
 }
 
+struct FindingResultFields<'a> {
+    status: &'a str,
+    finding_details: &'a str,
+    comments: &'a str,
+    severity_override: &'a str,
+    severity_justification: &'a str,
+}
+
 fn build_finding_from_attrs(
     attrs: &std::collections::HashMap<String, String>,
     cci_refs_vec: &[String],
-    status: &str,
-    finding_details: &str,
-    comments: &str,
-    severity_override: &str,
-    severity_justification: &str,
-) -> Finding {
+    legacy_ids_vec: &[String],
+    result: FindingResultFields<'_>,
+) -> ParseResult<Finding> {
     let vuln_id = attrs.get("Vuln_Num").cloned().unwrap_or_default();
     let rule_id = attrs.get("Rule_ID").cloned().unwrap_or_default();
-    // Group ID should be the Vuln_Num, not the Group_Title (which is the SRG reference).
+    // CKL uses Vuln_Num as the grouping key and stores the display/SRG title separately.
     let group_id = attrs.get("Vuln_Num").cloned().unwrap_or_default();
     let title = attrs.get("Rule_Title").cloned().unwrap_or_default();
 
@@ -376,29 +473,43 @@ fn build_finding_from_attrs(
     // CCI refs are accumulated separately since CKL has multiple STIG_DATA blocks for them.
     let cci_refs: Vec<String> = cci_refs_vec.to_vec();
 
-    let legacy_ids: Vec<String> = ["LEGACY_ID", "STIGRef"]
-        .iter()
-        .filter_map(|key| attrs.get(*key))
-        .filter(|v| !v.is_empty())
-        .map(|v| v.to_string())
-        .collect();
-
     let mut finding = Finding::new_not_reviewed(&vuln_id, &rule_id, &group_id, &title, severity);
-    finding.status = FindingStatus::from_ckl_str(status).unwrap_or(FindingStatus::NotReviewed);
-    finding.finding_details = finding_details.to_string();
-    finding.comments = comments.to_string();
+    finding.status =
+        FindingStatus::from_ckl_str(result.status).unwrap_or(FindingStatus::NotReviewed);
+    finding.finding_details = result.finding_details.to_string();
+    finding.comments = result.comments.to_string();
     finding.cci_refs = cci_refs;
-    finding.legacy_ids = legacy_ids;
+    finding.legacy_ids = legacy_ids_vec.to_vec();
+    finding.group_title = attrs.get("Group_Title").cloned().unwrap_or_default();
+    finding.rule_version = attrs.get("Rule_Ver").cloned().unwrap_or_default();
+    finding.weight = match attrs.get("Weight").filter(|value| !value.trim().is_empty()) {
+        Some(value) => value.parse().map_err(|error| {
+            ParseError::XmlError(format!("invalid Weight for rule {rule_id}: {error}"))
+        })?,
+        None => severity.default_weight(),
+    };
+    finding.discussion = attrs.get("Vuln_Discuss").cloned().unwrap_or_default();
+    finding.check_content = attrs.get("Check_Content").cloned().unwrap_or_default();
+    finding.fix_text = attrs.get("Fix_Text").cloned().unwrap_or_default();
+    finding.stig_ref = attrs
+        .get("STIGRef")
+        .cloned()
+        .filter(|value| !value.is_empty());
+    finding.format_metadata = Some(serde_json::json!({
+        "format": "ckl",
+        "attributes": attrs,
+    }));
     finding.source = FindingSource::Imported;
 
-    if !severity_override.is_empty() {
-        finding.severity_override = Severity::from_cat_str(severity_override);
-        if !severity_justification.is_empty() {
-            finding.severity_override_justification = Some(severity_justification.to_string());
+    if !result.severity_override.is_empty() {
+        finding.severity_override = Severity::from_cat_str(result.severity_override);
+        if !result.severity_justification.is_empty() {
+            finding.severity_override_justification =
+                Some(result.severity_justification.to_string());
         }
     }
 
-    finding
+    Ok(finding)
 }
 
 fn write_simple_element<W: Write>(
@@ -423,6 +534,23 @@ fn write_asset_element<W: Write>(
     asset: &Asset,
     classification: &Classification,
 ) -> ParseResult<()> {
+    let web_or_database = match asset
+        .web_or_database
+        .as_deref()
+        .unwrap_or("false")
+        .trim()
+        .to_ascii_lowercase()
+        .as_str()
+    {
+        "" | "false" => "false",
+        "true" => "true",
+        other => {
+            return Err(ParseError::XmlError(format!(
+                "invalid WEB_OR_DATABASE boolean {other:?}"
+            )))
+        }
+    };
+
     writer
         .write_event(Event::Start(BytesStart::new("ASSET")))
         .map_err(|e| ParseError::XmlError(e.to_string()))?;
@@ -443,11 +571,26 @@ fn write_asset_element<W: Write>(
         "TARGET_COMMENT",
         asset.target_comment.as_deref().unwrap_or(""),
     )?;
-    write_simple_element(writer, "TECH_AREA", "")?;
+    write_simple_element(
+        writer,
+        "TECH_AREA",
+        asset
+            .technology_area
+            .map(TechnologyArea::as_ckl_str)
+            .unwrap_or(""),
+    )?;
     write_simple_element(writer, "TARGET_KEY", "")?;
-    write_simple_element(writer, "WEB_OR_DATABASE", "false")?;
-    write_simple_element(writer, "WEB_DB_SITE", "")?;
-    write_simple_element(writer, "WEB_DB_INSTANCE", "")?;
+    write_simple_element(writer, "WEB_OR_DATABASE", web_or_database)?;
+    write_simple_element(
+        writer,
+        "WEB_DB_SITE",
+        asset.web_db_site.as_deref().unwrap_or(""),
+    )?;
+    write_simple_element(
+        writer,
+        "WEB_DB_INSTANCE",
+        asset.web_db_instance.as_deref().unwrap_or(""),
+    )?;
 
     writer
         .write_event(Event::End(BytesEnd::new("ASSET")))
@@ -526,15 +669,66 @@ fn write_vuln_element<W: Write>(writer: &mut Writer<W>, finding: &Finding) -> Pa
     // Write STIG_DATA attributes.
     write_stig_data(writer, "Vuln_Num", &finding.vuln_id)?;
     write_stig_data(writer, "Severity", finding.severity.as_xccdf_str())?;
-    write_stig_data(writer, "Group_Title", &finding.group_id)?;
+    write_stig_data(
+        writer,
+        "Group_Title",
+        if finding.group_title.is_empty() {
+            &finding.group_id
+        } else {
+            &finding.group_title
+        },
+    )?;
     write_stig_data(writer, "Rule_ID", &finding.rule_id)?;
     write_stig_data(writer, "Rule_Title", &finding.rule_title)?;
-    write_stig_data(writer, "Rule_Ver", "")?;
+    write_stig_data(writer, "Rule_Ver", &finding.rule_version)?;
     write_stig_data(
         writer,
         "Weight",
-        &finding.severity.default_weight().to_string(),
+        &if finding.weight > 0.0 {
+            finding.weight
+        } else {
+            finding.severity.default_weight()
+        }
+        .to_string(),
     )?;
+    write_stig_data(writer, "Vuln_Discuss", &finding.discussion)?;
+    write_stig_data(writer, "Check_Content", &finding.check_content)?;
+    write_stig_data(writer, "Fix_Text", &finding.fix_text)?;
+    write_stig_data(writer, "STIGRef", finding.stig_ref.as_deref().unwrap_or(""))?;
+    for legacy_id in &finding.legacy_ids {
+        write_stig_data(writer, "LEGACY_ID", legacy_id)?;
+    }
+
+    if let Some(attributes) = finding
+        .format_metadata
+        .as_ref()
+        .filter(|value| value.get("format").and_then(|v| v.as_str()) == Some("ckl"))
+        .and_then(|value| value.get("attributes"))
+        .and_then(|value| value.as_object())
+    {
+        const MODELED: &[&str] = &[
+            "Vuln_Num",
+            "Severity",
+            "Group_Title",
+            "Rule_ID",
+            "Rule_Title",
+            "Rule_Ver",
+            "Weight",
+            "Vuln_Discuss",
+            "Check_Content",
+            "Fix_Text",
+            "STIGRef",
+            "LEGACY_ID",
+            "CCI_REF",
+        ];
+        for (name, value) in attributes {
+            if !MODELED.contains(&name.as_str()) {
+                if let Some(value) = value.as_str() {
+                    write_stig_data(writer, name, value)?;
+                }
+            }
+        }
+    }
 
     for cci in &finding.cci_refs {
         write_stig_data(writer, "CCI_REF", cci)?;
@@ -584,11 +778,11 @@ mod tests {
     <HOST_MAC>00:11:22:33:44:55</HOST_MAC>
     <HOST_FQDN>webserver01.example.mil</HOST_FQDN>
     <TARGET_COMMENT>Production web server</TARGET_COMMENT>
-    <TECH_AREA></TECH_AREA>
+    <TECH_AREA>Web Review</TECH_AREA>
     <TARGET_KEY></TARGET_KEY>
-    <WEB_OR_DATABASE>false</WEB_OR_DATABASE>
-    <WEB_DB_SITE></WEB_DB_SITE>
-    <WEB_DB_INSTANCE></WEB_DB_INSTANCE>
+    <WEB_OR_DATABASE>true</WEB_OR_DATABASE>
+    <WEB_DB_SITE>mission-portal</WEB_DB_SITE>
+    <WEB_DB_INSTANCE>primary-db</WEB_DB_INSTANCE>
   </ASSET>
   <STIGS>
     <iSTIG>
@@ -639,6 +833,18 @@ mod tests {
           <VULN_ATTRIBUTE>CCI_REF</VULN_ATTRIBUTE>
           <ATTRIBUTE_DATA>CCI-000068</ATTRIBUTE_DATA>
         </STIG_DATA>
+        <STIG_DATA>
+          <VULN_ATTRIBUTE>CCI_REF</VULN_ATTRIBUTE>
+          <ATTRIBUTE_DATA>CCI-001084</ATTRIBUTE_DATA>
+        </STIG_DATA>
+        <STIG_DATA>
+          <VULN_ATTRIBUTE>LEGACY_ID</VULN_ATTRIBUTE>
+          <ATTRIBUTE_DATA>WN22-00-000001</ATTRIBUTE_DATA>
+        </STIG_DATA>
+        <STIG_DATA>
+          <VULN_ATTRIBUTE>LEGACY_ID</VULN_ATTRIBUTE>
+          <ATTRIBUTE_DATA>WN22-TLS-000001</ATTRIBUTE_DATA>
+        </STIG_DATA>
         <STATUS>Open</STATUS>
         <FINDING_DETAILS>TLS 1.2 is not enabled in registry.</FINDING_DETAILS>
         <COMMENTS>Needs remediation</COMMENTS>
@@ -684,6 +890,19 @@ mod tests {
         assert_eq!(checklist.asset.hostname, "webserver01");
         assert_eq!(checklist.asset.ip_address.as_deref(), Some("10.0.1.50"));
         assert_eq!(checklist.asset.role, AssetRole::MemberServer);
+        assert_eq!(
+            checklist.asset.technology_area,
+            Some(TechnologyArea::WebReview)
+        );
+        assert_eq!(checklist.asset.web_or_database.as_deref(), Some("true"));
+        assert_eq!(
+            checklist.asset.web_db_site.as_deref(),
+            Some("mission-portal")
+        );
+        assert_eq!(
+            checklist.asset.web_db_instance.as_deref(),
+            Some("primary-db")
+        );
         assert_eq!(checklist.classification, Classification::Cui);
 
         assert_eq!(checklist.stig_info.stig_id, "Windows_Server_2022_STIG");
@@ -700,6 +919,10 @@ mod tests {
         assert_eq!(f1.status, FindingStatus::Open);
         assert_eq!(f1.severity, Severity::High);
         assert_eq!(f1.rule_id, "SV-254239r958388_rule");
+        assert_eq!(f1.group_id, "V-254239");
+        assert_eq!(f1.group_title, "SRG-OS-000033-GPOS-00014");
+        assert_eq!(f1.cci_refs, ["CCI-000068", "CCI-001084"]);
+        assert_eq!(f1.legacy_ids, ["WN22-00-000001", "WN22-TLS-000001"]);
         assert!(f1.finding_details.contains("TLS 1.2"));
 
         let f2 = checklist.find_by_vuln_id("V-254240").unwrap();
@@ -724,6 +947,22 @@ mod tests {
             parsed_back.find_by_vuln_id("V-254240").unwrap().status,
             FindingStatus::NotAFinding,
         );
+        assert_eq!(
+            parsed_back.find_by_vuln_id("V-254239").unwrap().group_title,
+            "SRG-OS-000033-GPOS-00014"
+        );
+        assert_eq!(
+            parsed_back.asset.technology_area,
+            Some(TechnologyArea::WebReview)
+        );
+        assert_eq!(
+            parsed_back.asset.web_db_site.as_deref(),
+            Some("mission-portal")
+        );
+        assert_eq!(
+            parsed_back.find_by_vuln_id("V-254239").unwrap().legacy_ids,
+            ["WN22-00-000001", "WN22-TLS-000001"]
+        );
     }
 
     #[test]
@@ -737,5 +976,81 @@ mod tests {
         let loaded = parse_ckl_file(&path).unwrap();
         assert_eq!(loaded.asset.hostname, "webserver01");
         assert_eq!(loaded.findings.len(), 2);
+    }
+
+    #[test]
+    fn entity_cdata_and_unicode_text_round_trip_without_truncation() {
+        let mut checklist = parse_ckl(sample_ckl()).unwrap();
+        checklist.asset.target_comment = Some("Operations & Security <Tier 1>".to_string());
+        checklist.stig_info.description = Some(
+            "Preserve “quoted” text, apostrophes, ampersands & line breaks.\nSecond line."
+                .to_string(),
+        );
+        {
+            let finding = checklist.find_by_vuln_id_mut("V-254239").unwrap();
+            finding.discussion =
+                "A & B must remain distinct; compare x < y and y > x.\nUnicode: café “quote”."
+                    .to_string();
+            finding.check_content =
+                "Review A & B.\nThen verify <enabled> and the operator’s entry.".to_string();
+            finding.fix_text =
+                "Set value to \"A&B\"; track under POA&M TEST-ONTAP-001.".to_string();
+            finding.finding_details = "Observed A & B\nwith <unexpected> state.".to_string();
+            finding.comments = "Analyst’s note: \"retain & verify\".".to_string();
+            finding.severity_override = Some(Severity::Medium);
+            finding.severity_override_justification =
+                Some("Mission impact & compensating control <documented>.".to_string());
+        }
+
+        let expected_finding = checklist.find_by_vuln_id("V-254239").unwrap().clone();
+
+        let xml = write_ckl(&checklist).unwrap();
+        assert!(xml.contains("A &amp; B"));
+        let parsed = parse_ckl(&xml).unwrap();
+        let round_trip = parsed.find_by_vuln_id("V-254239").unwrap();
+
+        assert_eq!(parsed.asset.target_comment, checklist.asset.target_comment);
+        assert_eq!(
+            parsed.stig_info.description,
+            checklist.stig_info.description
+        );
+        assert_eq!(round_trip.discussion, expected_finding.discussion);
+        assert_eq!(round_trip.check_content, expected_finding.check_content);
+        assert_eq!(round_trip.fix_text, expected_finding.fix_text);
+        assert_eq!(round_trip.finding_details, expected_finding.finding_details);
+        assert_eq!(round_trip.comments, expected_finding.comments);
+        assert_eq!(
+            round_trip.severity_override_justification,
+            expected_finding.severity_override_justification
+        );
+    }
+
+    #[test]
+    fn parser_accumulates_adjacent_entity_cdata_and_numeric_reference_events() {
+        let xml = sample_ckl()
+            .replace(
+                "TLS 1.2 is not enabled in registry.",
+                "TLS &amp; PKI <![CDATA[remain <distinct>]]> &#x2014; verified",
+            )
+            .replace("Needs remediation", "Track under POA&amp;M TEST-ONTAP-001.");
+
+        let parsed = parse_ckl(&xml).unwrap();
+        let finding = parsed.find_by_vuln_id("V-254239").unwrap();
+        assert_eq!(
+            finding.finding_details,
+            "TLS & PKI remain <distinct> — verified"
+        );
+        assert_eq!(finding.comments, "Track under POA&M TEST-ONTAP-001.");
+    }
+
+    #[test]
+    fn rejects_zero_or_multiple_istigs() {
+        let without_istig = sample_ckl().replace("<iSTIG>", "").replace("</iSTIG>", "");
+        let error = parse_ckl(&without_istig).unwrap_err().to_string();
+        assert!(error.contains("exactly one iSTIG; found 0"));
+
+        let with_second = sample_ckl().replace("</STIGS>", "<iSTIG></iSTIG></STIGS>");
+        let error = parse_ckl(&with_second).unwrap_err().to_string();
+        assert!(error.contains("exactly one iSTIG; found 2"));
     }
 }

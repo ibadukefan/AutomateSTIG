@@ -7,12 +7,11 @@
 //!   1. Download STIG ZIP from https://cyber.mil/stigs/downloads/
 //!   2. Run: automatestig disa-import --input <path-to-zip-or-xccdf>
 
-use std::io::Read;
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use automatestig_core::library::StigLibrary;
-use automatestig_parsers::xccdf;
+use automatestig_core::library::{BenchmarkImport, GeneratedCheckPackIntent, StigLibrary};
+use automatestig_parsers::disa::{self, ParsedBenchmark};
 
 use super::library_path;
 use crate::ui;
@@ -34,168 +33,122 @@ pub fn run(input: &str, cli: &crate::Cli) -> Result<()> {
     ui::detail("Library", &lib_path.display().to_string());
     println!();
 
-    let ext = in_path.extension().and_then(|e| e.to_str()).unwrap_or("");
+    let ext = in_path
+        .extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or("")
+        .to_ascii_lowercase();
 
-    match ext {
-        "zip" => import_zip(in_path, &mut library)?,
-        "xml" => import_xccdf_file(in_path, &mut library)?,
+    let parsed = match ext.as_str() {
+        "zip" => disa::parse_disa_zip_path(in_path).context("DISA ZIP import rejected")?,
+        "xml" => vec![disa::parse_xccdf_path(in_path).context("XCCDF import rejected")?],
         _ => anyhow::bail!(
             "Unsupported format: .{}\n  Expected .zip (DISA STIG archive) or .xml (XCCDF benchmark)",
             ext
         ),
-    }
+    };
+
+    import_parsed(parsed, &mut library)?;
 
     println!();
     Ok(())
 }
 
-/// Import a DISA STIG ZIP archive (as downloaded from cyber.mil).
-///
-/// DISA ZIP structure typically contains:
-///   U_<STIG_Name>_V<X>R<Y>_Manual-xccdf.xml
-///   (and sometimes OVAL, CPE, readme files)
-fn import_zip(zip_path: &Path, library: &mut StigLibrary) -> Result<()> {
-    let file = std::fs::File::open(zip_path)?;
-    let mut archive = zip::ZipArchive::new(file).context("Failed to open ZIP archive")?;
-
-    let mut imported = 0;
-    let mut skipped = 0;
-
-    // Scan all files in the ZIP for XCCDF benchmarks.
-    let xccdf_files: Vec<String> = (0..archive.len())
-        .filter_map(|i| {
-            let file = archive.by_index(i).ok()?;
-            let name = file.name().to_string();
-            if is_xccdf_benchmark(&name) {
-                Some(name)
-            } else {
-                None
-            }
-        })
+fn import_parsed(parsed: Vec<ParsedBenchmark>, library: &mut StigLibrary) -> Result<()> {
+    let imports: Vec<_> = parsed
+        .iter()
+        // Raw XCCDF is benchmark/reference content, never executable scanner
+        // content. Purge any pre-v0.2 prose-generated pack while importing it.
+        .map(|item| BenchmarkImport::new(&item.benchmark, GeneratedCheckPackIntent::Remove))
         .collect();
 
-    if xccdf_files.is_empty() {
-        ui::warn("No XCCDF benchmark files found in ZIP archive");
-        ui::detail(
-            "Hint",
-            "DISA XCCDF files typically end in '-xccdf.xml' or '_Manual-xccdf.xml'",
-        );
-        return Ok(());
+    let outcome = library
+        .import_benchmarks(&imports)
+        .context("Failed to commit DISA benchmark batch")?;
+
+    for item in &parsed {
+        ui::success(&format!(
+            "{} {} — {} rules (reference content only; source {})",
+            item.benchmark.id,
+            item.benchmark.version_string(),
+            item.benchmark.rules.len(),
+            item.source_name
+        ));
     }
-
-    for xccdf_name in &xccdf_files {
-        let mut file = archive
-            .by_name(xccdf_name)
-            .context(format!("Failed to read {} from ZIP", xccdf_name))?;
-
-        let mut xml = String::new();
-        file.read_to_string(&mut xml)?;
-
-        match xccdf::parse_xccdf_benchmark_str(&xml) {
-            Ok(benchmark) => {
-                let id = benchmark.id.clone();
-                let ver = benchmark.version_string();
-                let rules = benchmark.rules.len();
-
-                match library.add_benchmark(&benchmark) {
-                    Ok(()) => {
-                        let conv = automatestig_core::converter::convert_benchmark(&benchmark);
-                        if conv.automated > 0 {
-                            let packs_dir = library.root().join("auto_check_packs");
-                            let _ = std::fs::create_dir_all(&packs_dir);
-                            if let Ok(json) =
-                                automatestig_core::converter::check_pack_to_json(&conv.check_pack)
-                            {
-                                if let Ok(dest) = automatestig_core::path_safety::safe_join_under(
-                                    &packs_dir,
-                                    &format!("{}.json", benchmark.id),
-                                ) {
-                                    let _ = std::fs::write(dest, &json);
-                                }
-                            }
-                        }
-                        ui::success(&format!(
-                            "{} {} — {} rules ({} auto-checks)",
-                            id, ver, rules, conv.automated
-                        ));
-                        imported += 1;
-                    }
-                    Err(e) => {
-                        ui::warn(&format!("Failed to add {}: {}", id, e));
-                        skipped += 1;
-                    }
-                }
-            }
-            Err(e) => {
-                ui::warn(&format!("Failed to parse {}: {}", xccdf_name, e));
-                skipped += 1;
-            }
-        }
-    }
-
     ui::hr();
     ui::success(&format!(
-        "{} benchmark(s) imported, {} skipped",
-        imported, skipped
+        "{} benchmark(s) committed atomically ({} new, {} updated)",
+        parsed.len(),
+        outcome.added_count(),
+        outcome.updated_count()
     ));
-
     Ok(())
-}
-
-/// Import a single XCCDF benchmark XML file.
-fn import_xccdf_file(xml_path: &Path, library: &mut StigLibrary) -> Result<()> {
-    let benchmark =
-        xccdf::parse_xccdf_benchmark(xml_path).context("Failed to parse XCCDF benchmark")?;
-
-    let id = benchmark.id.clone();
-    let ver = benchmark.version_string();
-    let rules = benchmark.rules.len();
-
-    library
-        .add_benchmark(&benchmark)
-        .context(format!("Failed to add benchmark {}", id))?;
-
-    let conv = automatestig_core::converter::convert_benchmark(&benchmark);
-    if conv.automated > 0 {
-        let packs_dir = library.root().join("auto_check_packs");
-        let _ = std::fs::create_dir_all(&packs_dir);
-        if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
-            if let Ok(dest) = automatestig_core::path_safety::safe_join_under(
-                &packs_dir,
-                &format!("{}.json", benchmark.id),
-            ) {
-                let _ = std::fs::write(dest, &json);
-            }
-        }
-    }
-
-    ui::success(&format!(
-        "{} {} — {} rules ({} auto-checks)",
-        id, ver, rules, conv.automated
-    ));
-
-    Ok(())
-}
-
-/// Check if a filename looks like an XCCDF benchmark file.
-fn is_xccdf_benchmark(name: &str) -> bool {
-    let lower = name.to_lowercase();
-    lower.ends_with("-xccdf.xml") || lower.ends_with("_xccdf.xml")
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use automatestig_core::checks::{CheckPack, CheckPlatform};
+    use automatestig_core::models::stig::{Platform, StigBenchmark};
 
     #[test]
     fn test_is_xccdf_benchmark() {
-        assert!(is_xccdf_benchmark(
+        assert!(disa::is_xccdf_benchmark(
             "U_MS_Windows_Server_2022_V1R4_Manual-xccdf.xml"
         ));
-        assert!(is_xccdf_benchmark("U_RHEL_9_V1R2_Manual-xccdf.xml"));
-        assert!(is_xccdf_benchmark("some_stig_xccdf.xml"));
-        assert!(!is_xccdf_benchmark("readme.txt"));
-        assert!(!is_xccdf_benchmark("results-xccdf-results.xml"));
-        assert!(!is_xccdf_benchmark("oval.xml"));
+        assert!(disa::is_xccdf_benchmark("U_RHEL_9_V1R2_Manual-xccdf.xml"));
+        assert!(disa::is_xccdf_benchmark("some_stig_xccdf.xml"));
+        assert!(!disa::is_xccdf_benchmark("readme.txt"));
+        assert!(!disa::is_xccdf_benchmark("results-xccdf-results.xml"));
+        assert!(!disa::is_xccdf_benchmark("oval.xml"));
+    }
+
+    #[test]
+    fn disa_reimport_removes_a_stale_prose_generated_pack() {
+        let temporary = tempfile::TempDir::new().unwrap();
+        let library_root = temporary.path().join("library");
+        let mut library = StigLibrary::init(&library_root).unwrap();
+        let benchmark = StigBenchmark {
+            id: "General_Purpose_Operating_System".to_string(),
+            title: "General Purpose Operating System".to_string(),
+            description: "No safely generated checks".to_string(),
+            version: "3".to_string(),
+            release: "3".to_string(),
+            release_date: None,
+            xccdf_id: None,
+            platform: Platform {
+                family: "network".to_string(),
+                name: "Unsupported device".to_string(),
+                cpe: vec![],
+            },
+            rules: vec![],
+        };
+        let stale_pack = CheckPack {
+            stig_id: benchmark.id.clone(),
+            platform: CheckPlatform::Bsd,
+            version: "V3R3".to_string(),
+            priority: 100,
+            checks: vec![],
+        };
+        library
+            .import_benchmarks(&[BenchmarkImport::new(
+                &benchmark,
+                GeneratedCheckPackIntent::Replace(&stale_pack),
+            )])
+            .unwrap();
+        let stale_path =
+            library_root.join("auto_check_packs/General_Purpose_Operating_System.json");
+        assert!(stale_path.exists());
+
+        import_parsed(
+            vec![ParsedBenchmark {
+                source_name: "manual-only-xccdf.xml".to_string(),
+                benchmark,
+            }],
+            &mut library,
+        )
+        .unwrap();
+
+        assert!(!stale_path.exists());
     }
 }

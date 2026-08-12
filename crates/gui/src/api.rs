@@ -1,2433 +1,795 @@
-//! REST API endpoints for the GUI.
+//! Public HTTP surface for the scanner-first GUI.
+//!
+//! STIG Manager owns inventory, assignments, review workflow, reporting, and
+//! long-term portfolio state. The GUI therefore exposes only the versioned
+//! scanner API, two small service endpoints, and explicit tombstones for the
+//! retired pre-scanner routes. Preserved legacy data is available through the
+//! separate transition CLI, never through hidden HTTP handlers.
 
-use std::collections::HashSet;
-use std::io::Read;
 use std::path::Path;
 
-use axum::extract::{Multipart, State};
-use axum::routing::{get, post};
+use automatestig_integrations::stig_manager::StigManagerConfig;
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
+use axum::routing::{any, get};
 use axum::{Json, Router};
-use serde::{Deserialize, Serialize};
-
-use automatestig_core::engine::EvaluationEngine;
-use automatestig_core::models::asset::Asset;
-use automatestig_core::models::checklist::Checklist;
-use automatestig_core::models::finding::FindingStatus;
-use automatestig_core::models::stig::Severity;
-use automatestig_parsers::{ckl, cklb, xccdf};
+use serde::Serialize;
 
 use crate::state::AppState;
 
-/// Build the API router.
+/// Build the scanner-first API router.
 pub fn routes() -> Router<AppState> {
     Router::new()
-        // Status & info
+        .nest("/v1", crate::scanner_api::routes())
         .route("/status", get(get_status))
-        // Library
-        .route("/library/benchmarks", get(list_benchmarks))
-        .route("/library/benchmarks/{id}", get(get_benchmark))
-        .route("/library/import-disa", post(import_disa))
-        .route("/library/import-stigpack", post(import_stigpack))
-        // Checklists
-        .route("/checklists", get(list_checklists))
-        .route("/checklists/{id}", get(get_checklist))
-        .route("/checklists/{id}", axum::routing::delete(delete_checklist))
-        .route("/checklists/import", post(import_checklist))
-        // Evaluate
-        .route("/evaluate", post(evaluate))
-        // Auto-generate check packs from imported benchmarks
-        .route("/library/generate-checks/{id}", post(generate_checks))
-        // DISA content fetching
-        .route("/disa/available", get(disa_list_available))
-        .route("/disa/fetch", post(disa_fetch))
-        .route("/disa/fetch-all", post(disa_fetch_all))
-        .route("/disa/check-updates", get(disa_check_updates))
-        // Offline pack for air-gapped transfer
-        .route("/offline-pack", get(generate_offline_pack))
-        // STIG-Manager integration
-        .route("/stigman/config", get(stigman_get_config))
-        .route("/stigman/config", post(stigman_set_config))
-        .route("/stigman/test", post(stigman_test_connection))
-        .route("/stigman/collections", get(stigman_list_collections))
+        .route("/auth/check", get(auth_check))
+        .merge(retired_legacy_surface_routes())
+}
+
+/// Extraction-free tombstones for every known pre-scanner GUI API path.
+///
+/// These routes deliberately use `any`: an obsolete client receives the same
+/// migration contract even if its body or method no longer matches the former
+/// handler. Unknown paths, including unknown `/v1` paths, remain ordinary 404s.
+fn retired_legacy_surface_routes() -> Router<AppState> {
+    Router::new()
+        // Broad content/library management is owned by scanner releases.
+        .route("/library/benchmarks", any(retired_broad_content_management))
         .route(
-            "/stigman/collections/{cid}/assets",
-            get(stigman_list_assets),
+            "/library/benchmarks/{id}",
+            any(retired_broad_content_management),
         )
-        .route("/stigman/sync/{cid}", post(stigman_sync_assets))
-        .route("/stigman/diff/{cid}", get(stigman_diff_assets))
-        .route("/stigman/push/{checklist_id}", post(stigman_push_checklist))
-        // Batch evaluation
-        .route("/evaluate/batch", post(evaluate_batch))
-        // Finding editing
+        .route(
+            "/library/import-disa",
+            any(retired_broad_content_management),
+        )
+        .route(
+            "/library/import-stigpack",
+            any(retired_broad_content_management),
+        )
+        .route("/disa/available", any(retired_broad_content_management))
+        .route("/disa/fetch", any(retired_broad_content_management))
+        .route("/disa/fetch-all", any(retired_broad_content_management))
+        .route("/disa/check-updates", any(retired_broad_content_management))
+        .route("/offline-pack", any(retired_broad_content_management))
+        .route(
+            "/offline-pack/trust-key",
+            any(retired_broad_content_management),
+        )
+        // STIG Manager owns portfolio, review, and inventory state.
+        .route("/checklists", any(retired_stig_manager_portfolio_mutation))
+        .route(
+            "/checklists/import",
+            any(retired_stig_manager_portfolio_mutation),
+        )
+        .route(
+            "/checklists/{id}",
+            any(retired_stig_manager_portfolio_mutation),
+        )
         .route(
             "/checklists/{id}/findings/{vuln_id}",
-            axum::routing::patch(update_finding),
+            any(retired_stig_manager_review_mutation),
         )
-        // Scan import (file upload -> evaluate)
-        .route("/evaluate/with-scan", post(evaluate_with_scan))
-        // Remote scanning
-        .route("/scan/ssh", post(scan_ssh))
-        // Asset inventory
-        .route("/assets", get(list_assets_inv))
-        .route("/assets", post(create_asset_inv))
-        .route("/assets/{id}", get(get_asset_inv))
-        .route("/assets/{id}", axum::routing::put(update_asset_inv))
-        .route("/assets/{id}", axum::routing::delete(delete_asset_inv))
-        // Credential vault
-        .route("/credentials", get(list_credentials))
-        .route("/credentials", post(create_credential))
+        .route("/assets", any(retired_stig_manager_inventory_mutation))
         .route(
-            "/credentials/{id}",
-            axum::routing::delete(delete_credential),
+            "/assets/bulk-assign-stig",
+            any(retired_stig_manager_inventory_mutation),
         )
-        // Bulk operations
-        .route("/assets/bulk-assign-stig", post(bulk_assign_stig))
-        .route("/assets/bulk-update", post(bulk_update_assets))
-        .route("/checklists/{id}/re-evaluate", post(re_evaluate))
-        // Answer file management
-        .route("/answer-files", get(list_answer_files))
-        .route("/answer-files", post(save_answer_file))
-        // Export
-        .route("/export/ckl/{id}", get(export_ckl))
-        .route("/export/cklb/{id}", get(export_cklb))
-        .route("/export/all-zip", get(export_all_zip))
+        .route(
+            "/assets/bulk-update",
+            any(retired_stig_manager_inventory_mutation),
+        )
+        .route("/assets/{id}", any(retired_stig_manager_inventory_mutation))
+        .route("/answer-files", any(retired_stig_manager_review_mutation))
+        .route(
+            "/answer-files/{id}",
+            any(retired_stig_manager_review_mutation),
+        )
+        .route("/audit-log", any(retired_stig_manager_portfolio_mutation))
+        .route(
+            "/export/ckl/{id}",
+            any(retired_stig_manager_portfolio_mutation),
+        )
+        .route(
+            "/export/cklb/{id}",
+            any(retired_stig_manager_portfolio_mutation),
+        )
+        .route(
+            "/export/all-zip",
+            any(retired_stig_manager_portfolio_mutation),
+        )
+        // The old connection and scan paths bypassed the versioned contract.
+        .route("/stigman/config", any(retired_scanner_v1_bypass))
+        .route("/stigman/test", any(retired_scanner_v1_bypass))
+        .route("/stigman/collections", any(retired_scanner_v1_bypass))
+        .route(
+            "/stigman/collections/{cid}/assets",
+            any(retired_scanner_v1_bypass),
+        )
+        .route(
+            "/stigman/sync/{cid}",
+            any(retired_stig_manager_inventory_mutation),
+        )
+        .route(
+            "/stigman/diff/{cid}",
+            any(retired_stig_manager_inventory_mutation),
+        )
+        .route(
+            "/stigman/push/{checklist_id}",
+            any(retired_scanner_v1_bypass),
+        )
+        .route("/evaluate/with-evidence", any(retired_scanner_v1_bypass))
+        .route("/scan/ssh", any(retired_scanner_v1_bypass))
 }
-
-// ---------------------------------------------------------------------------
-// Response types
-// ---------------------------------------------------------------------------
-
-/// Sanitize a filename for Content-Disposition headers.
-fn sanitize_filename(s: &str) -> String {
-    let sanitized: String = s
-        .chars()
-        .map(|c| {
-            if c.is_alphanumeric() || c == '_' || c == '-' || c == '.' {
-                c
-            } else {
-                '_'
-            }
-        })
-        .collect();
-
-    if sanitized.is_empty() || sanitized == "." || sanitized == ".." {
-        "_".to_string()
-    } else {
-        sanitized
-    }
-}
-
-fn api_ok(data: impl Serialize) -> Json<serde_json::Value> {
-    Json(serde_json::json!({
-        "success": true,
-        "data": data,
-        "error": null
-    }))
-}
-
-fn api_error(msg: &str) -> Json<serde_json::Value> {
-    Json(serde_json::json!({
-        "success": false,
-        "data": null,
-        "error": msg
-    }))
-}
-
-// ---------------------------------------------------------------------------
-// Status
-// ---------------------------------------------------------------------------
 
 #[derive(Serialize)]
-struct StatusResponse {
-    version: String,
-    benchmark_count: usize,
-    checklist_count: usize,
+struct ServiceStatus {
+    version: &'static str,
+    api_version: &'static str,
+    alive: bool,
+    role: &'static str,
 }
 
-async fn get_status(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let benchmark_count = state
-        .library()
-        .map(|l| l.list_benchmarks().len())
-        .unwrap_or(0);
-    let checklist_count = state.db().list_checklists().map(|c| c.len()).unwrap_or(0);
-
-    api_ok(StatusResponse {
-        version: env!("CARGO_PKG_VERSION").to_string(),
-        benchmark_count,
-        checklist_count,
+async fn get_status() -> Response {
+    api_response_ok(ServiceStatus {
+        version: env!("CARGO_PKG_VERSION"),
+        api_version: "v1",
+        alive: true,
+        role: "difficult-device scanner and STIG Manager supplement",
     })
 }
 
-// ---------------------------------------------------------------------------
-// Library
-// ---------------------------------------------------------------------------
-
-#[derive(Serialize)]
-struct BenchmarkInfo {
-    id: String,
-    title: String,
-    version: String,
-    platform: String,
-    rule_count: usize,
-    cat_i: usize,
-    cat_ii: usize,
-    cat_iii: usize,
+async fn auth_check() -> Response {
+    api_response_ok(serde_json::json!({ "authenticated": true }))
 }
 
-async fn list_benchmarks(State(state): State<AppState>) -> Json<serde_json::Value> {
-    match state.library() {
-        Ok(library) => {
-            let benchmarks: Vec<BenchmarkInfo> = library
-                .list_benchmarks()
-                .iter()
-                .map(|b| {
-                    let (cat_i, cat_ii, cat_iii) = library
-                        .load_benchmark(&b.id)
-                        .map(|full| {
-                            (
-                                full.rules_by_severity(Severity::High).len(),
-                                full.rules_by_severity(Severity::Medium).len(),
-                                full.rules_by_severity(Severity::Low).len(),
-                            )
-                        })
-                        .unwrap_or((0, 0, 0));
-
-                    BenchmarkInfo {
-                        id: b.id.clone(),
-                        title: b.title.clone(),
-                        version: b.version.clone(),
-                        platform: b.platform_family.clone(),
-                        rule_count: b.rule_count,
-                        cat_i,
-                        cat_ii,
-                        cat_iii,
-                    }
-                })
-                .collect();
-            api_ok(benchmarks)
-        }
-        Err(e) => api_error(&e.to_string()),
-    }
+fn api_response(
+    status: StatusCode,
+    data: Option<serde_json::Value>,
+    error: Option<&str>,
+) -> Response {
+    (
+        status,
+        Json(serde_json::json!({
+            "success": status.is_success(),
+            "data": data,
+            "error": error,
+        })),
+    )
+        .into_response()
 }
 
-#[derive(Serialize)]
-struct BenchmarkDetail {
-    id: String,
-    title: String,
-    description: String,
-    version: String,
-    release: String,
-    platform: String,
-    rule_count: usize,
-    cat_i: usize,
-    cat_ii: usize,
-    cat_iii: usize,
-    rules: Vec<RuleSummary>,
-}
-
-#[derive(Serialize)]
-struct RuleSummary {
-    vuln_id: String,
-    title: String,
-    severity: String,
-    check_content: String,
-}
-
-async fn get_benchmark(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    match state
-        .library()
-        .and_then(|l| l.load_benchmark(&id).map_err(|e| anyhow::anyhow!("{}", e)))
-    {
-        Ok(b) => {
-            let cat_i = b.rules_by_severity(Severity::High).len();
-            let cat_ii = b.rules_by_severity(Severity::Medium).len();
-            let cat_iii = b.rules_by_severity(Severity::Low).len();
-
-            let rules: Vec<RuleSummary> = b
-                .rules
-                .iter()
-                .map(|r| RuleSummary {
-                    vuln_id: r.vuln_id.clone(),
-                    title: r.title.clone(),
-                    severity: r.severity.as_cat_str().to_string(),
-                    check_content: r.check_content.chars().take(200).collect(),
-                })
-                .collect();
-
-            api_ok(BenchmarkDetail {
-                id: b.id,
-                title: b.title,
-                description: b.description,
-                version: b.version,
-                release: b.release,
-                platform: b.platform.name,
-                rule_count: b.rules.len(),
-                cat_i,
-                cat_ii,
-                cat_iii,
-                rules,
-            })
-        }
-        Err(e) => api_error(&e.to_string()),
-    }
-}
-
-#[derive(Serialize)]
-struct ImportResult {
-    imported: usize,
-    skipped: usize,
-    details: Vec<String>,
-}
-
-async fn import_disa(
-    State(state): State<AppState>,
-    mut multipart: Multipart,
-) -> Json<serde_json::Value> {
-    let mut imported = 0;
-    let mut skipped = 0;
-    let mut details = Vec::new();
-
-    while let Ok(Some(field)) = multipart.next_field().await {
-        let filename = field.file_name().unwrap_or("upload").to_string();
-        let data = match field.bytes().await {
-            Ok(d) => d,
-            Err(e) => {
-                return api_error(&format!("Failed to read upload: {}", e));
-            }
-        };
-
-        let mut library = match state.library() {
-            Ok(l) => l,
-            Err(e) => return api_error(&e.to_string()),
-        };
-
-        if filename.ends_with(".zip") {
-            if data.len() > crate::disa::MAX_XCCDF_ZIP_BYTES {
-                return api_error(&format!(
-                    "ZIP file too large: {} > {} bytes",
-                    data.len(),
-                    crate::disa::MAX_XCCDF_ZIP_BYTES
-                ));
-            }
-            // Parse ZIP for XCCDF files.
-            let cursor = std::io::Cursor::new(&data);
-            match zip::ZipArchive::new(cursor) {
-                Ok(mut archive) => {
-                    if let Err(e) = crate::disa::validate_xccdf_zip_limits(&mut archive) {
-                        return api_error(&format!("Unsafe ZIP file: {}", e));
-                    }
-                    for i in 0..archive.len() {
-                        let mut file = match archive.by_index(i) {
-                            Ok(f) => f,
-                            Err(_) => continue,
-                        };
-                        let name = file.name().to_string();
-                        let lower = name.to_lowercase();
-                        if lower.ends_with("-xccdf.xml") || lower.ends_with("_xccdf.xml") {
-                            let mut xml = String::new();
-                            if file.read_to_string(&mut xml).is_ok() {
-                                match xccdf::parse_xccdf_benchmark_str(&xml) {
-                                    Ok(benchmark) => {
-                                        let info = format!(
-                                            "{} {} ({} rules)",
-                                            benchmark.id,
-                                            benchmark.version_string(),
-                                            benchmark.rules.len()
-                                        );
-                                        match library.add_benchmark(&benchmark) {
-                                            Ok(()) => {
-                                                // Auto-generate check pack from check-content text.
-                                                let conv =
-                                                    automatestig_core::converter::convert_benchmark(
-                                                        &benchmark,
-                                                    );
-                                                if conv.automated > 0 {
-                                                    let packs_dir =
-                                                        library.root().join("auto_check_packs");
-                                                    let _ = std::fs::create_dir_all(&packs_dir);
-                                                    if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
-                                                        if let Ok(dest) = automatestig_core::path_safety::safe_join_under(&packs_dir, &format!("{}.json", benchmark.id)) {
-                                                            let _ = std::fs::write(dest, &json);
-                                                        }
-                                                    }
-                                                    details.push(format!(
-                                                        "Imported: {} (auto-generated {} checks)",
-                                                        info, conv.automated
-                                                    ));
-                                                } else {
-                                                    details.push(format!("Imported: {}", info));
-                                                }
-                                                imported += 1;
-                                            }
-                                            Err(e) => {
-                                                details.push(format!("Failed: {} - {}", info, e));
-                                                skipped += 1;
-                                            }
-                                        }
-                                    }
-                                    Err(e) => {
-                                        details.push(format!("Parse error in {}: {}", name, e));
-                                        skipped += 1;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                Err(e) => {
-                    return api_error(&format!("Invalid ZIP file: {}", e));
-                }
-            }
-        } else if filename.ends_with(".xml") {
-            let xml = String::from_utf8_lossy(&data);
-            match xccdf::parse_xccdf_benchmark_str(&xml) {
-                Ok(benchmark) => {
-                    let info = format!(
-                        "{} {} ({} rules)",
-                        benchmark.id,
-                        benchmark.version_string(),
-                        benchmark.rules.len()
-                    );
-                    match library.add_benchmark(&benchmark) {
-                        Ok(()) => {
-                            let conv = automatestig_core::converter::convert_benchmark(&benchmark);
-                            if conv.automated > 0 {
-                                let packs_dir = library.root().join("auto_check_packs");
-                                let _ = std::fs::create_dir_all(&packs_dir);
-                                if let Ok(json) = automatestig_core::converter::check_pack_to_json(
-                                    &conv.check_pack,
-                                ) {
-                                    if let Ok(dest) =
-                                        automatestig_core::path_safety::safe_join_under(
-                                            &packs_dir,
-                                            &format!("{}.json", benchmark.id),
-                                        )
-                                    {
-                                        let _ = std::fs::write(dest, &json);
-                                    }
-                                }
-                                details.push(format!(
-                                    "Imported: {} (auto-generated {} checks)",
-                                    info, conv.automated
-                                ));
-                            } else {
-                                details.push(format!("Imported: {}", info));
-                            }
-                            imported += 1;
-                        }
-                        Err(e) => {
-                            details.push(format!("Failed: {} - {}", info, e));
-                            skipped += 1;
-                        }
-                    }
-                }
-                Err(e) => {
-                    return api_error(&format!("Failed to parse XCCDF: {}", e));
-                }
-            }
-        }
-    }
-
-    api_ok(ImportResult {
-        imported,
-        skipped,
-        details,
-    })
-}
-
-async fn import_stigpack(
-    State(state): State<AppState>,
-    mut multipart: Multipart,
-) -> Json<serde_json::Value> {
-    let field = match multipart.next_field().await {
-        Ok(Some(f)) => f,
-        Ok(None) => return api_error("No file uploaded"),
-        Err(e) => return api_error(&format!("Upload error: {}", e)),
-    };
-    {
-        let data = match field.bytes().await {
-            Ok(d) => d,
-            Err(e) => return api_error(&format!("Failed to read upload: {}", e)),
-        };
-
-        // Write to temp file for the importer.
-        let tmp = match tempfile::NamedTempFile::new() {
-            Ok(f) => f,
-            Err(e) => return api_error(&format!("Failed to create temp file: {}", e)),
-        };
-        if let Err(e) = std::fs::write(tmp.path(), &data) {
-            return api_error(&format!("Failed to write temp file: {}", e));
-        }
-
-        let mut library = match state.library() {
-            Ok(l) => l,
-            Err(e) => return api_error(&e.to_string()),
-        };
-
-        let allow_unsigned = std::env::var("AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK")
-            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
-            .unwrap_or(false);
-        let import_result = if allow_unsigned {
-            automatestig_stigpack::importer::import_pack(tmp.path(), &mut library)
-        } else {
-            let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
-            let trust_dir = std::env::var("AUTOMATESTIG_TRUSTED_KEYS_DIR")
-                .map(std::path::PathBuf::from)
-                .unwrap_or_else(|_| {
-                    std::env::var("HOME")
-                        .or_else(|_| std::env::var("USERPROFILE"))
-                        .map(std::path::PathBuf::from)
-                        .unwrap_or_else(|_| std::path::PathBuf::from("."))
-                        .join(".automatestig")
-                        .join("trusted_keys")
-                });
-            if let Err(e) = trust_store.load_from_directory(&trust_dir) {
-                return api_error(&format!("Failed to load trusted .stigpack keys: {}", e));
-            }
-            if trust_store.is_empty() {
-                return api_error(
-                    "Trusted .stigpack signature required, but no trusted keys are configured. Add Ed25519 .pub files to AUTOMATESTIG_TRUSTED_KEYS_DIR or set AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1 for explicit lab-only import.",
-                );
-            }
-            automatestig_stigpack::importer::import_pack_trusted(
-                tmp.path(),
-                &mut library,
-                &trust_store,
-            )
-        };
-
-        match import_result {
-            Ok(result) => api_ok(ImportResult {
-                imported: result.benchmarks_imported,
-                skipped: 0,
-                details: vec![format!(
-                    "Pack {} v{}: {} benchmarks, {} templates",
-                    result.pack_id,
-                    result.pack_version,
-                    result.benchmarks_imported,
-                    result.answer_templates_imported
-                )],
-            }),
-            Err(e) => api_error(&format!("Import failed: {}", e)),
-        }
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Checklists
-// ---------------------------------------------------------------------------
-
-#[derive(Serialize)]
-struct ChecklistInfo {
-    id: String,
-    hostname: String,
-    stig_id: String,
-    stig_title: String,
-    stig_version: String,
-    created_at: String,
-    modified_at: String,
-    total: usize,
-    open: usize,
-    not_a_finding: usize,
-    not_applicable: usize,
-    not_reviewed: usize,
-    compliance_pct: f64,
-    cat_i_open: usize,
-    cat_ii_open: usize,
-    cat_iii_open: usize,
-}
-
-async fn list_checklists(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let db = state.db();
-    match db.list_checklists() {
-        Ok(rows) => {
-            let mut infos = Vec::new();
-            for row in &rows {
-                // Load full checklist for summary stats.
-                if let Ok(cl) = db.load_checklist(&row.id) {
-                    let s = cl.summary();
-                    infos.push(ChecklistInfo {
-                        id: row.id.clone(),
-                        hostname: row.asset_hostname.clone(),
-                        stig_id: row.stig_id.clone(),
-                        stig_title: row.stig_title.clone(),
-                        stig_version: row.stig_version.clone(),
-                        created_at: row.created_at.clone(),
-                        modified_at: row.modified_at.clone(),
-                        total: s.total,
-                        open: s.open,
-                        not_a_finding: s.not_a_finding,
-                        not_applicable: s.not_applicable,
-                        not_reviewed: s.not_reviewed,
-                        compliance_pct: s.compliance_pct(),
-                        cat_i_open: s.cat_i_open,
-                        cat_ii_open: s.cat_ii_open,
-                        cat_iii_open: s.cat_iii_open,
-                    });
-                }
-            }
-            api_ok(infos)
-        }
-        Err(e) => api_error(&e.to_string()),
-    }
-}
-
-#[derive(Serialize)]
-struct ChecklistDetail {
-    id: String,
-    hostname: String,
-    stig_id: String,
-    stig_title: String,
-    stig_version: String,
-    total: usize,
-    open: usize,
-    not_a_finding: usize,
-    not_applicable: usize,
-    not_reviewed: usize,
-    compliance_pct: f64,
-    cat_i_open: usize,
-    cat_ii_open: usize,
-    cat_iii_open: usize,
-    findings: Vec<FindingInfo>,
-}
-
-#[derive(Serialize)]
-struct FindingInfo {
-    vuln_id: String,
-    rule_id: String,
-    title: String,
-    severity: String,
-    status: String,
-    finding_details: String,
-    comments: String,
-    source: String,
-}
-
-async fn get_checklist(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    match db.load_checklist(&id) {
-        Ok(cl) => {
-            let s = cl.summary();
-            let findings: Vec<FindingInfo> = cl
-                .findings
-                .iter()
-                .map(|f| FindingInfo {
-                    vuln_id: f.vuln_id.clone(),
-                    rule_id: f.rule_id.clone(),
-                    title: f.rule_title.clone(),
-                    severity: f
-                        .severity_override
-                        .unwrap_or(f.severity)
-                        .as_cat_str()
-                        .to_string(),
-                    status: f.status.to_string(),
-                    finding_details: f.finding_details.clone(),
-                    comments: f.comments.clone(),
-                    source: format!("{:?}", f.source),
-                })
-                .collect();
-
-            api_ok(ChecklistDetail {
-                id: cl.id.to_string(),
-                hostname: cl.asset.hostname,
-                stig_id: cl.stig_info.stig_id,
-                stig_title: cl.stig_info.title,
-                stig_version: format!("V{}R{}", cl.stig_info.version, cl.stig_info.release),
-                total: s.total,
-                open: s.open,
-                not_a_finding: s.not_a_finding,
-                not_applicable: s.not_applicable,
-                not_reviewed: s.not_reviewed,
-                compliance_pct: s.compliance_pct(),
-                cat_i_open: s.cat_i_open,
-                cat_ii_open: s.cat_ii_open,
-                cat_iii_open: s.cat_iii_open,
-                findings,
-            })
-        }
-        Err(e) => api_error(&e.to_string()),
-    }
-}
-
-async fn delete_checklist(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    match db.delete_checklist(&id) {
-        Ok(deleted) => api_ok(deleted),
-        Err(e) => api_error(&e.to_string()),
-    }
-}
-
-async fn import_checklist(
-    State(state): State<AppState>,
-    mut multipart: Multipart,
-) -> Json<serde_json::Value> {
-    let field = match multipart.next_field().await {
-        Ok(Some(f)) => f,
-        Ok(None) => return api_error("No file uploaded"),
-        Err(e) => return api_error(&format!("Upload error: {}", e)),
-    };
-    {
-        let filename = field.file_name().unwrap_or("upload").to_string();
-        let data = match field.bytes().await {
-            Ok(d) => d,
-            Err(e) => return api_error(&format!("Failed to read upload: {}", e)),
-        };
-
-        let text = String::from_utf8_lossy(&data);
-        let ext = Path::new(&filename)
-            .extension()
-            .and_then(|e| e.to_str())
-            .unwrap_or("");
-
-        let checklist = match ext {
-            "ckl" => match ckl::parse_ckl(&text) {
-                Ok(c) => c,
-                Err(e) => return api_error(&format!("CKL parse error: {}", e)),
-            },
-            "cklb" | "json" => match serde_json::from_str(&text) {
-                Ok(c) => c,
-                Err(_) => match cklb::parse_cklb(&text) {
-                    Ok(c) => c,
-                    Err(e) => return api_error(&format!("Parse error: {}", e)),
-                },
-            },
-            _ => return api_error(&format!("Unsupported format: .{}", ext)),
-        };
-
-        let s = checklist.summary();
-        let info = ChecklistInfo {
-            id: checklist.id.to_string(),
-            hostname: checklist.asset.hostname.clone(),
-            stig_id: checklist.stig_info.stig_id.clone(),
-            stig_title: checklist.stig_info.title.clone(),
-            stig_version: format!(
-                "V{}R{}",
-                checklist.stig_info.version, checklist.stig_info.release
-            ),
-            created_at: checklist.created_at.to_rfc3339(),
-            modified_at: checklist.modified_at.to_rfc3339(),
-            total: s.total,
-            open: s.open,
-            not_a_finding: s.not_a_finding,
-            not_applicable: s.not_applicable,
-            not_reviewed: s.not_reviewed,
-            compliance_pct: s.compliance_pct(),
-            cat_i_open: s.cat_i_open,
-            cat_ii_open: s.cat_ii_open,
-            cat_iii_open: s.cat_iii_open,
-        };
-
-        let db = state.db();
-        if let Err(e) = db.save_checklist(&checklist) {
-            return api_error(&format!("Failed to save: {}", e));
-        }
-
-        api_ok(info)
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Evaluate
-// ---------------------------------------------------------------------------
-
-#[derive(Deserialize)]
-struct EvaluateRequest {
-    stig_id: String,
-    hostname: String,
-    #[serde(default)]
-    asset_id: Option<String>,
-}
-
-async fn evaluate(
-    State(state): State<AppState>,
-    Json(req): Json<EvaluateRequest>,
-) -> Json<serde_json::Value> {
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
-    };
-
-    let benchmark = match library.load_benchmark(&req.stig_id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
-
-    let asset = Asset::new(&req.hostname);
-    let engine = EvaluationEngine::with_defaults();
-
-    match engine.evaluate(&benchmark, &asset, None, &[]) {
-        Ok(checklist) => {
-            let s = checklist.summary();
-            let info = ChecklistInfo {
-                id: checklist.id.to_string(),
-                hostname: checklist.asset.hostname.clone(),
-                stig_id: checklist.stig_info.stig_id.clone(),
-                stig_title: checklist.stig_info.title.clone(),
-                stig_version: format!(
-                    "V{}R{}",
-                    checklist.stig_info.version, checklist.stig_info.release
-                ),
-                created_at: checklist.created_at.to_rfc3339(),
-                modified_at: checklist.modified_at.to_rfc3339(),
-                total: s.total,
-                open: s.open,
-                not_a_finding: s.not_a_finding,
-                not_applicable: s.not_applicable,
-                not_reviewed: s.not_reviewed,
-                compliance_pct: s.compliance_pct(),
-                cat_i_open: s.cat_i_open,
-                cat_ii_open: s.cat_ii_open,
-                cat_iii_open: s.cat_iii_open,
-            };
-
-            let db = state.db();
-            let _ = db.save_checklist(&checklist);
-            let _ = db.log_evaluation(&checklist, "gui", None);
-            if let Some(ref aid) = req.asset_id {
-                update_asset_after_eval(
-                    &db,
-                    aid,
-                    &req.stig_id,
-                    s.compliance_pct(),
-                    &checklist.id.to_string(),
-                );
-            }
-
-            api_ok(info)
-        }
-        Err(e) => api_error(&format!("Evaluation failed: {}", e)),
-    }
-}
-
-// ---------------------------------------------------------------------------
-// DISA Content Fetching
-// ---------------------------------------------------------------------------
-
-/// List available STIGs from DISA's public download page.
-async fn disa_list_available() -> Json<serde_json::Value> {
-    match crate::disa::list_available_stigs().await {
-        Ok(stigs) => api_ok(stigs),
-        Err(e) => api_error(&e),
-    }
-}
-
-/// Fetch and import a specific STIG from DISA by URL.
-#[derive(Deserialize)]
-struct DisaFetchRequest {
-    url: String,
-}
-
-async fn disa_fetch(
-    State(state): State<AppState>,
-    Json(req): Json<DisaFetchRequest>,
-) -> Json<serde_json::Value> {
-    match crate::disa::download_and_import(&req.url, &state).await {
-        Ok(result) => api_ok(result),
-        Err(e) => api_error(&e),
-    }
-}
-
-/// Fetch all available STIGs from DISA.
-async fn disa_fetch_all(State(state): State<AppState>) -> Json<serde_json::Value> {
-    match crate::disa::fetch_all_content(&state).await {
-        Ok(result) => api_ok(result),
-        Err(e) => api_error(&e),
-    }
-}
-
-/// Check for updates without downloading.
-async fn disa_check_updates(State(state): State<AppState>) -> Json<serde_json::Value> {
-    match crate::disa::check_for_updates(&state).await {
-        Ok(result) => api_ok(result),
-        Err(e) => api_error(&e),
-    }
-}
-
-/// Generate an offline update package (.stigpack) from the current library
-/// for transfer to air-gapped systems.
-async fn generate_offline_pack(State(state): State<AppState>) -> impl IntoResponse {
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => {
-            return (
-                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Library error: {}", e),
-            )
-                .into_response();
-        }
-    };
-
-    let benchmarks = library.list_benchmarks();
-    if benchmarks.is_empty() {
-        return (
-            axum::http::StatusCode::BAD_REQUEST,
-            "No benchmarks in library to package",
-        )
-            .into_response();
-    }
-
-    // Build a stigpack with all current library content.
-    let mut builder = automatestig_stigpack::builder::PackBuilder::new(
-        &format!(
-            "automatestig-offline-{}",
-            chrono::Utc::now().format("%Y%m%d")
+fn api_response_ok(data: impl Serialize) -> Response {
+    match serde_json::to_value(data) {
+        Ok(value) => api_response(StatusCode::OK, Some(value), None),
+        Err(error) => api_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            None,
+            Some(&format!("Failed to serialize response: {error}")),
         ),
-        "AutomateSTIG Offline Update",
-        &chrono::Utc::now().format("%Y.%m.%d").to_string(),
-    )
-    .author("AutomateSTIG")
-    .description("Offline update package for air-gapped AutomateSTIG installations");
+    }
+}
 
-    for entry in &benchmarks {
-        match library.load_benchmark(&entry.id) {
-            Ok(benchmark) => {
-                if let Ok(json) = serde_json::to_string_pretty(&benchmark) {
-                    let pack_path = format!("benchmarks/{}.json", entry.id);
-                    builder = builder.add_file_bytes(&pack_path, json.as_bytes());
-                }
-            }
-            Err(_) => continue,
-        }
+fn retired_surface_response(owner: &str, surface: &str, guidance: &str) -> Response {
+    api_response(
+        StatusCode::GONE,
+        Some(serde_json::json!({
+            "code": "legacy_surface_retired",
+            "retired": true,
+            "surface": surface,
+            "owner": owner,
+            "read_only_migration_access": false,
+            "guidance": guidance,
+        })),
+        Some(guidance),
+    )
+}
+
+async fn retired_stig_manager_inventory_mutation() -> Response {
+    retired_surface_response(
+        "STIG Manager",
+        "asset inventory and assignment management",
+        "This legacy AutomateSTIG operation is retired. STIG Manager owns assets, assignments, labels, and inventory comparison. Select an existing STIG Manager asset with its exact assigned revision through /api/v1; AutomateSTIG will scan it without creating or synchronizing a local shadow inventory.",
+    )
+}
+
+async fn retired_stig_manager_review_mutation() -> Response {
+    retired_surface_response(
+        "STIG Manager",
+        "human review and answer management",
+        "This legacy AutomateSTIG operation is retired. STIG Manager owns human findings, answers, comments, and review workflow. AutomateSTIG only delivers scanner-owned sparse results through /api/v1 and never overwrites human review content.",
+    )
+}
+
+async fn retired_stig_manager_portfolio_mutation() -> Response {
+    retired_surface_response(
+        "STIG Manager",
+        "checklist portfolio and reporting",
+        "This legacy AutomateSTIG operation is retired. STIG Manager owns checklist portfolio lifecycle, history, dashboards, exports, and reporting. Use /api/v1/runs for scanner results and download a scanner handoff when remote state must be reconciled.",
+    )
+}
+
+async fn retired_broad_content_management() -> Response {
+    retired_surface_response(
+        "AutomateSTIG scanner release process",
+        "broad DISA catalog import and update",
+        "This broad DISA catalog operation is retired. Scanner content is limited to pinned, reviewed target profiles exposed by /api/v1/profiles; use the signed scanner-content release process instead of importing or updating an unrestricted DISA portfolio in the GUI.",
+    )
+}
+
+async fn retired_scanner_v1_bypass() -> Response {
+    retired_surface_response(
+        "AutomateSTIG scanner run service",
+        "legacy connection, collection, evaluation, or STIG Manager push",
+        "This legacy operation bypassed the versioned scanner contract, immutable runs, exact destination bindings, sparse ownership checks, or the durable delivery outbox, so it is retired. Use Scan or the /api/v1 connection, preflight, run, handoff, and delivery endpoints.",
+    )
+}
+
+fn organization_policy_keys_dir(state: &AppState) -> std::path::PathBuf {
+    std::env::var("AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR")
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|_| state.inner.data_dir.join("organization_policy_keys"))
+}
+
+/// Verify a signed organization-policy document against locally installed
+/// trust anchors and bind it to the exact STIG revision and target hostname.
+pub(crate) fn verify_organization_policy(
+    state: &AppState,
+    raw: &[u8],
+    signature: &[u8],
+    stig_id: &str,
+    stig_release: &str,
+    hostname: &str,
+) -> Result<automatestig_core::organization_policy::VerifiedOrganizationPolicy, String> {
+    verify_organization_policy_with_trust_dir(
+        &organization_policy_keys_dir(state),
+        raw,
+        signature,
+        stig_id,
+        stig_release,
+        hostname,
+    )
+}
+
+fn verify_organization_policy_with_trust_dir(
+    trust_dir: &Path,
+    raw: &[u8],
+    signature: &[u8],
+    stig_id: &str,
+    stig_release: &str,
+    hostname: &str,
+) -> Result<automatestig_core::organization_policy::VerifiedOrganizationPolicy, String> {
+    const MAX_POLICY_BYTES: usize = 64 * 1024;
+    if raw.is_empty() || raw.len() > MAX_POLICY_BYTES {
+        return Err(format!(
+            "organization policy must be 1..={MAX_POLICY_BYTES} bytes"
+        ));
+    }
+    if signature.len() != 64 {
+        return Err("organization policy signature must contain exactly 64 bytes".to_string());
     }
 
-    let tmp = match tempfile::NamedTempFile::new() {
-        Ok(f) => f,
-        Err(e) => {
-            return (
-                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Failed to create temp file: {}", e),
+    let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
+    let loaded = trust_store
+        .load_from_directory(trust_dir)
+        .map_err(|error| {
+            format!(
+                "Failed to load organization-policy trust anchors from {}: {error}",
+                trust_dir.display()
             )
-                .into_response();
-        }
-    };
-    if let Err(e) = builder.build(tmp.path()) {
-        return (
-            axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Failed to build pack: {}", e),
-        )
-            .into_response();
+        })?;
+    if loaded == 0 {
+        return Err(format!(
+            "no organization-policy trust anchors are installed in {}",
+            trust_dir.display()
+        ));
     }
 
-    let data = match std::fs::read(tmp.path()) {
-        Ok(d) => d,
-        Err(e) => {
-            return (
-                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Failed to read pack: {}", e),
-            )
-                .into_response();
-        }
-    };
-    let filename = format!(
-        "automatestig-offline-{}.stigpack",
-        chrono::Utc::now().format("%Y%m%d")
-    );
-
-    (
-        [
-            (
-                axum::http::header::CONTENT_TYPE,
-                "application/octet-stream".to_string(),
-            ),
-            (
-                axum::http::header::CONTENT_DISPOSITION,
-                format!("attachment; filename=\"{}\"", filename),
-            ),
-        ],
-        data,
+    automatestig_core::organization_policy::VerifiedOrganizationPolicy::verify_and_parse(
+        raw,
+        signature,
+        &trust_store.public_keys(),
+        stig_id,
+        stig_release,
+        hostname,
+        chrono::Utc::now(),
     )
-        .into_response()
 }
 
-// ---------------------------------------------------------------------------
-// STIG-Manager Integration
-// ---------------------------------------------------------------------------
-
-/// Get current STIG-Manager configuration.
-async fn stigman_get_config(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let db = state.db();
-    let config = load_stigman_config(&db, &state.inner.data_dir);
-    api_ok(serde_json::json!({
-        "configured": config.is_configured(),
-        "api_url": config.api_url,
-        "token_url": config.token_url,
-        "client_id": config.client_id,
-        "has_secret": !config.client_secret.is_empty(),
-        "default_collection_id": config.default_collection_id,
-        "verify_tls": config.verify_tls,
-    }))
+/// Normalize fields whose surrounding whitespace has no semantic meaning.
+pub(crate) fn normalize_stigman_config(config: &mut StigManagerConfig) {
+    config.api_url = config.api_url.trim().to_owned();
+    config.token_url = config.token_url.trim().to_owned();
+    config.client_id = config.client_id.trim().to_owned();
+    config.default_collection_id = config
+        .default_collection_id
+        .take()
+        .map(|value| value.trim().to_owned())
+        .filter(|value| !value.is_empty());
 }
 
-/// Save STIG-Manager configuration.
-async fn stigman_set_config(
-    State(state): State<AppState>,
-    Json(mut body): Json<crate::stigman::StigManagerConfig>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-
-    if let Err(e) = body.validate_urls() {
-        return api_error(&e);
-    }
-
-    // Encrypt the client secret before storing.
-    if !body.client_secret.is_empty() {
-        let key_material = match crate::secrets::load_or_create_key_material(&state.inner.data_dir)
-        {
-            Ok(k) => k,
-            Err(e) => return api_error(&format!("Key material error: {}", e)),
-        };
-
-        match crate::secrets::encrypt_secret(&body.client_secret, &key_material) {
-            Ok(encrypted) => {
-                body.client_secret = format!("enc:{}", encrypted);
-            }
-            Err(e) => return api_error(&format!("Encryption failed: {}", e)),
-        }
-    }
-
-    match serde_json::to_string(&body) {
-        Ok(json) => {
-            if let Err(e) = db.set_config("stigman_config", &json) {
-                return api_error(&format!("Failed to save config: {}", e));
-            }
-            api_ok("Configuration saved")
-        }
-        Err(e) => api_error(&format!("Serialization error: {}", e)),
-    }
-}
-
-/// Test STIG-Manager connection.
-async fn stigman_test_connection(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let config = {
-        let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
-    };
-    if !config.is_configured() {
-        return api_error("STIG-Manager is not configured");
-    }
-
-    let client = match crate::stigman::StigManagerClient::new(config) {
-        Ok(c) => c,
-        Err(e) => return api_error(&e),
-    };
-
-    match client.test_connection().await {
-        Ok(msg) => api_ok(msg),
-        Err(e) => api_error(&e),
-    }
-}
-
-/// List collections from STIG-Manager.
-async fn stigman_list_collections(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let config = {
-        let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
-    };
-    if !config.is_configured() {
-        return api_error("STIG-Manager is not configured");
-    }
-
-    let client = match crate::stigman::StigManagerClient::new(config) {
-        Ok(c) => c,
-        Err(e) => return api_error(&e),
-    };
-
-    match client.list_collections().await {
-        Ok(collections) => api_ok(collections),
-        Err(e) => api_error(&e),
-    }
-}
-
-/// List assets in a STIG-Manager collection.
-async fn stigman_list_assets(
-    State(state): State<AppState>,
-    axum::extract::Path(cid): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let config = {
-        let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
-    };
-    if !config.is_configured() {
-        return api_error("STIG-Manager is not configured");
-    }
-
-    let client = match crate::stigman::StigManagerClient::new(config) {
-        Ok(c) => c,
-        Err(e) => return api_error(&e),
-    };
-
-    match client.list_assets(&cid).await {
-        Ok(assets) => api_ok(assets),
-        Err(e) => api_error(&e),
-    }
-}
-
-/// Sync assets from a STIG-Manager collection into local inventory.
-async fn stigman_sync_assets(
-    State(state): State<AppState>,
-    axum::extract::Path(cid): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let config = {
-        let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
-    };
-    if !config.is_configured() {
-        return api_error("STIG-Manager is not configured");
-    }
-
-    let client = match crate::stigman::StigManagerClient::new(config) {
-        Ok(c) => c,
-        Err(e) => return api_error(&e),
-    };
-
-    // Fetch assets from STIG-Manager.
-    let sm_assets = match client.list_assets(&cid).await {
-        Ok(a) => a,
-        Err(e) => return api_error(&format!("Failed to fetch assets: {}", e)),
-    };
-
-    // Load local assets, then drop the DB lock before async work.
-    let mut local_assets = {
-        let db = state.db();
-        load_assets(&db)
-    };
-    let mut synced = 0;
-    let mut details = Vec::new();
-
-    for sm_asset in &sm_assets {
-        // Check if asset already exists locally (by name).
-        let existing = local_assets.iter().position(|a| a.name == sm_asset.name);
-
-        // Fetch STIGs assigned to this asset in STIG-Manager.
-        let stig_ids: Vec<String> = match client.list_asset_stigs(&cid, &sm_asset.asset_id).await {
-            Ok(stigs) => stigs.iter().map(|s| s.benchmark_id.clone()).collect(),
-            Err(_) => Vec::new(),
-        };
-
-        if let Some(idx) = existing {
-            // Update existing asset with STIG-Manager data.
-            local_assets[idx].assigned_stigs = stig_ids.clone();
-            if let Some(ref ip) = sm_asset.ip {
-                if !ip.is_empty() {
-                    local_assets[idx].address = ip.clone();
-                }
-            }
-            details.push(format!(
-                "Updated: {} ({} STIGs)",
-                sm_asset.name,
-                stig_ids.len()
-            ));
-        } else {
-            // Create new local asset from STIG-Manager data.
-            let mut asset = automatestig_core::inventory::assets::ManagedAsset::new(
-                &sm_asset.name,
-                sm_asset.ip.as_deref().unwrap_or(&sm_asset.name),
-                automatestig_core::checks::CheckPlatform::Generic,
-                automatestig_core::inventory::assets::ScanProtocol::Ssh,
-            );
-            asset.assigned_stigs = stig_ids.clone();
-            if let Some(ref fqdn) = sm_asset.fqdn {
-                if !fqdn.is_empty() {
-                    asset.address = fqdn.clone();
-                }
-            }
-            asset.notes = sm_asset.description.clone();
-            asset.tags = vec!["stigman-sync".to_string()];
-            details.push(format!(
-                "Created: {} ({} STIGs)",
-                sm_asset.name,
-                stig_ids.len()
-            ));
-            local_assets.push(asset);
-        }
-        synced += 1;
-    }
-
-    {
-        let db = state.db();
-        save_assets(&db, &local_assets);
-    }
-
-    api_ok(serde_json::json!({
-        "synced": synced,
-        "total_assets": local_assets.len(),
-        "details": details,
-    }))
-}
-
-/// Check for differences between STIG-Manager and local inventory.
-async fn stigman_diff_assets(
-    State(state): State<AppState>,
-    axum::extract::Path(cid): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let config = {
-        let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
-    };
-    if !config.is_configured() {
-        return api_error("STIG-Manager is not configured");
-    }
-
-    let client = match crate::stigman::StigManagerClient::new(config) {
-        Ok(c) => c,
-        Err(e) => return api_error(&e),
-    };
-
-    let sm_assets = match client.list_assets(&cid).await {
-        Ok(a) => a,
-        Err(e) => return api_error(&format!("Failed to fetch: {}", e)),
-    };
-
-    let local_assets = {
-        let db = state.db();
-        load_assets(&db)
-    };
-
-    let local_names: std::collections::HashSet<String> =
-        local_assets.iter().map(|a| a.name.clone()).collect();
-    let sm_names: std::collections::HashSet<String> =
-        sm_assets.iter().map(|a| a.name.clone()).collect();
-
-    // Assets in SM but not local.
-    let new_in_sm: Vec<&str> = sm_names
-        .difference(&local_names)
-        .map(|s| s.as_str())
-        .collect();
-
-    // Assets local but not in SM.
-    let removed_from_sm: Vec<&str> = local_names
-        .iter()
-        .filter(|n| {
-            !sm_names.contains(*n)
-                && local_assets
-                    .iter()
-                    .any(|a| a.name == **n && a.tags.contains(&"stigman-sync".to_string()))
-        })
-        .map(|s| s.as_str())
-        .collect();
-
-    // Assets in both — check for STIG assignment changes.
-    let mut stig_changes = Vec::new();
-    for sm_asset in &sm_assets {
-        if let Some(local) = local_assets.iter().find(|a| a.name == sm_asset.name) {
-            let sm_stigs: Vec<String> =
-                match client.list_asset_stigs(&cid, &sm_asset.asset_id).await {
-                    Ok(stigs) => stigs.iter().map(|s| s.benchmark_id.clone()).collect(),
-                    Err(_) => continue,
-                };
-
-            let local_set: std::collections::HashSet<&String> =
-                local.assigned_stigs.iter().collect();
-            let sm_set: std::collections::HashSet<&String> = sm_stigs.iter().collect();
-
-            let added: Vec<&String> = sm_set.difference(&local_set).copied().collect();
-            let removed: Vec<&String> = local_set.difference(&sm_set).copied().collect();
-
-            if !added.is_empty() || !removed.is_empty() {
-                stig_changes.push(serde_json::json!({
-                    "asset": sm_asset.name,
-                    "stigs_added": added,
-                    "stigs_removed": removed,
-                }));
-            }
-        }
-    }
-
-    let has_changes =
-        !new_in_sm.is_empty() || !removed_from_sm.is_empty() || !stig_changes.is_empty();
-
-    api_ok(serde_json::json!({
-        "has_changes": has_changes,
-        "new_assets_in_stigman": new_in_sm,
-        "removed_from_stigman": removed_from_sm,
-        "stig_assignment_changes": stig_changes,
-        "local_count": local_assets.len(),
-        "stigman_count": sm_assets.len(),
-    }))
-}
-
-/// Push a checklist's results to STIG-Manager.
-#[derive(Deserialize)]
-struct PushRequest {
-    collection_id: String,
-    asset_id: Option<String>,
-}
-
-async fn stigman_push_checklist(
-    State(state): State<AppState>,
-    axum::extract::Path(checklist_id): axum::extract::Path<String>,
-    Json(req): Json<PushRequest>,
-) -> Json<serde_json::Value> {
-    // Load the checklist.
-    let checklist = {
-        let db = state.db();
-        match db.load_checklist(&checklist_id) {
-            Ok(cl) => cl,
-            Err(e) => return api_error(&format!("Checklist not found: {}", e)),
-        }
-    };
-
-    let config = {
-        let db = state.db();
-        load_stigman_config(&db, &state.inner.data_dir)
-    };
-
-    match push_checklist_to_stigman(
-        config,
-        &checklist,
-        &req.collection_id,
-        req.asset_id.as_deref(),
-    )
-    .await
-    {
-        Ok(result) => api_ok(result),
-        Err(e) => api_error(&e),
-    }
-}
-
-async fn push_checklist_to_stigman(
-    config: crate::stigman::StigManagerConfig,
-    checklist: &Checklist,
-    collection_id: &str,
-    asset_id: Option<&str>,
-) -> Result<serde_json::Value, String> {
-    if !config.is_configured() {
-        return Err("STIG-Manager is not configured".to_string());
-    }
-
-    let client = crate::stigman::StigManagerClient::new(config)?;
-
-    // If no asset_id provided, try to find the asset by hostname before creating it.
-    let asset_id = match asset_id {
-        Some(id) => id.to_string(),
-        None => match client
-            .list_assets(collection_id)
-            .await
-            .ok()
-            .and_then(|assets| {
-                assets
-                    .into_iter()
-                    .find(|asset| asset.name.eq_ignore_ascii_case(&checklist.asset.hostname))
-            }) {
-            Some(asset) => {
-                // Reviews still require the STIG to be assigned to a found asset.
-                asset.asset_id
-            }
-            None => {
-                client
-                    .create_asset(
-                        collection_id,
-                        &checklist.asset.hostname,
-                        checklist.asset.fqdn.as_deref(),
-                        checklist.asset.ip_address.as_deref(),
-                        &checklist.stig_info.stig_id,
-                    )
-                    .await
-                    .map_err(|e| format!("Failed to create asset: {}", e))?
-                    .asset_id
-            }
-        },
-    };
-
-    // Convert findings to STIG-Manager reviews.
-    let reviews = crate::stigman::StigManagerClient::checklist_to_reviews(checklist);
-    let review_count = reviews.len();
-
-    // Push to STIG-Manager.
-    let result = client
-        .push_reviews(collection_id, &asset_id, reviews)
-        .await
-        .map_err(|e| format!("Push failed: {}", e))?;
-
-    Ok(serde_json::json!({
-        "pushed": review_count,
-        "asset_id": asset_id,
-        "collection_id": collection_id,
-        "result": result,
-    }))
-}
-
-/// Load STIG-Manager config from the database, decrypting the client secret.
-fn load_stigman_config(
+/// Load STIG Manager configuration and decrypt its client secret in memory.
+pub(crate) fn load_stigman_config(
     db: &automatestig_storage::Database,
-    data_dir: &std::path::Path,
-) -> crate::stigman::StigManagerConfig {
-    let mut config: crate::stigman::StigManagerConfig = db
+    data_dir: &Path,
+) -> Result<StigManagerConfig, String> {
+    let mut config: StigManagerConfig = match db
         .get_config("stigman_config")
-        .ok()
-        .flatten()
-        .and_then(|json| serde_json::from_str(&json).ok())
-        .unwrap_or_default();
-
-    // Decrypt client secret if it's encrypted.
-    if config.client_secret.starts_with("enc:") {
-        let encrypted = &config.client_secret[4..];
-        let decrypted = crate::secrets::load_or_create_key_material(data_dir)
-            .and_then(|key_material| crate::secrets::decrypt_secret(encrypted, &key_material));
-
-        match decrypted {
-            Ok(decrypted) => config.client_secret = decrypted,
-            Err(_) => {
-                tracing::warn!("Failed to decrypt STIG-Manager client secret");
-                config.client_secret.clear();
-            }
-        }
-    }
-
-    config
-}
-
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// Auto-generate Check Packs from Benchmarks
-// ---------------------------------------------------------------------------
-
-async fn generate_checks(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
-    };
-
-    let benchmark = match library.load_benchmark(&id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
-
-    let result = automatestig_core::converter::convert_benchmark(&benchmark);
-
-    // Save the generated check pack to disk.
-    let packs_dir = state.inner.library_path.join("auto_check_packs");
-    let _ = std::fs::create_dir_all(&packs_dir);
-
-    let filename = format!("{}.json", id);
-    let pack_path = packs_dir.join(&filename);
-
-    match automatestig_core::converter::check_pack_to_json(&result.check_pack) {
-        Ok(json) => {
-            if let Err(e) = std::fs::write(&pack_path, &json) {
-                return api_error(&format!("Failed to save check pack: {}", e));
-            }
-        }
-        Err(e) => return api_error(&format!("Serialization error: {}", e)),
-    }
-
-    api_ok(serde_json::json!({
-        "stig_id": id,
-        "automated": result.automated,
-        "manual": result.manual,
-        "total_rules": result.automated + result.manual,
-        "automation_rate": format!("{:.0}%", if result.automated + result.manual > 0 {
-            result.automated as f64 / (result.automated + result.manual) as f64 * 100.0
-        } else { 0.0 }),
-        "pack_path": pack_path.display().to_string(),
-        "log": result.log,
-    }))
-}
-
-// ---------------------------------------------------------------------------
-// Batch Evaluation
-// ---------------------------------------------------------------------------
-
-#[derive(Deserialize)]
-struct BatchEvaluateRequest {
-    stig_id: String,
-    hostnames: Vec<String>,
-}
-
-async fn evaluate_batch(
-    State(state): State<AppState>,
-    Json(req): Json<BatchEvaluateRequest>,
-) -> Json<serde_json::Value> {
-    if req.hostnames.len() > 100 {
-        return api_error("Batch limit exceeded: maximum 100 hostnames per request");
-    }
-    if req.hostnames.iter().any(|h| h.len() > 255) {
-        return api_error("Hostname exceeds maximum length of 255 characters");
-    }
-
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
-    };
-
-    let benchmark = match library.load_benchmark(&req.stig_id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
-
-    let engine = std::sync::Arc::new(automatestig_core::engine::EvaluationEngine::with_defaults());
-    let benchmark = std::sync::Arc::new(benchmark);
-
-    // Parallel evaluation with semaphore (max 10 concurrent).
-    let sem = std::sync::Arc::new(tokio::sync::Semaphore::new(10));
-    let mut handles = Vec::new();
-
-    for hostname in req.hostnames.clone() {
-        let sem = sem.clone();
-        let engine = engine.clone();
-        let benchmark = benchmark.clone();
-        let state = state.clone();
-
-        handles.push(tokio::spawn(async move {
-            let _permit = sem.acquire().await;
-            let asset = Asset::new(&hostname);
-            match engine.evaluate(&benchmark, &asset, None, &[]) {
-                Ok(checklist) => {
-                    let s = checklist.summary();
-                    let db = state.db();
-                    let _ = db.save_checklist(&checklist);
-                    let _ = db.log_evaluation(&checklist, "gui-batch", None);
-                    serde_json::json!({
-                        "hostname": hostname,
-                        "id": checklist.id.to_string(),
-                        "total": s.total,
-                        "open": s.open,
-                        "compliance_pct": s.compliance_pct(),
-                        "success": true,
-                    })
-                }
-                Err(e) => {
-                    serde_json::json!({
-                        "hostname": hostname,
-                        "error": e.to_string(),
-                        "success": false,
-                    })
-                }
-            }
-        }));
-    }
-
-    // Collect results from all tasks.
-    let mut results = Vec::new();
-    for handle in handles {
-        if let Ok(result) = handle.await {
-            results.push(result);
-        }
-    }
-
-    api_ok(serde_json::json!({
-        "evaluated": results.len(),
-        "results": results,
-    }))
-}
-
-// ---------------------------------------------------------------------------
-// Evaluate with Scan Upload
-// ---------------------------------------------------------------------------
-
-async fn evaluate_with_scan(
-    State(state): State<AppState>,
-    mut multipart: Multipart,
-) -> Json<serde_json::Value> {
-    let mut stig_id = String::new();
-    let mut hostname = String::new();
-    let mut asset_id: Option<String> = None;
-    let mut scan_data: Option<Vec<u8>> = None;
-    let mut scan_filename = String::new();
-
-    // Parse multipart fields.
-    while let Ok(Some(field)) = multipart.next_field().await {
-        let name = field.name().unwrap_or("").to_string();
-        match name.as_str() {
-            "stig_id" => {
-                stig_id = field.text().await.unwrap_or_default();
-            }
-            "hostname" => {
-                hostname = field.text().await.unwrap_or_default();
-            }
-            "asset_id" => {
-                asset_id = Some(field.text().await.unwrap_or_default());
-            }
-            "scan" => {
-                scan_filename = field.file_name().unwrap_or("scan").to_string();
-                scan_data = field.bytes().await.ok().map(|b| b.to_vec());
-            }
-            _ => {}
-        }
-    }
-
-    if stig_id.is_empty() {
-        return api_error("stig_id is required");
-    }
-
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
-    };
-
-    let benchmark = match library.load_benchmark(&stig_id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
-
-    // Parse scan results if uploaded.
-    let scan_results = if let Some(data) = scan_data {
-        let text = String::from_utf8_lossy(&data);
-        let ext = std::path::Path::new(&scan_filename)
-            .extension()
-            .and_then(|e| e.to_str())
-            .unwrap_or("");
-        match ext {
-            "xml" => xccdf::parse_xccdf_results_str(&text).ok(),
-            _ => None,
-        }
-    } else {
-        None
-    };
-
-    // Detect hostname from scan if not provided.
-    if hostname.is_empty() {
-        hostname = scan_results
-            .as_ref()
-            .and_then(|s| s.source.target.clone())
-            .unwrap_or_else(|| "Unknown".to_string());
-    }
-
-    let asset = Asset::new(&hostname);
-    let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
-
-    match engine.evaluate(&benchmark, &asset, scan_results.as_ref(), &[]) {
-        Ok(checklist) => {
-            let s = checklist.summary();
-            let db = state.db();
-            let _ = db.save_checklist(&checklist);
-            let _ = db.log_evaluation(&checklist, "gui-scan-import", None);
-            if let Some(ref aid) = asset_id {
-                update_asset_after_eval(
-                    &db,
-                    aid,
-                    &stig_id,
-                    s.compliance_pct(),
-                    &checklist.id.to_string(),
-                );
-            }
-
-            api_ok(serde_json::json!({
-                "id": checklist.id.to_string(),
-                "hostname": hostname,
-                "stig_id": stig_id,
-                "total": s.total,
-                "open": s.open,
-                "not_a_finding": s.not_a_finding,
-                "compliance_pct": s.compliance_pct(),
-            }))
-        }
-        Err(e) => api_error(&format!("Evaluation failed: {}", e)),
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Finding Editing
-// ---------------------------------------------------------------------------
-
-#[derive(Deserialize)]
-struct UpdateFindingRequest {
-    status: Option<String>,
-    finding_details: Option<String>,
-    comments: Option<String>,
-}
-
-async fn update_finding(
-    State(state): State<AppState>,
-    axum::extract::Path((id, vuln_id)): axum::extract::Path<(String, String)>,
-    Json(req): Json<UpdateFindingRequest>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-
-    let mut checklist = match db.load_checklist(&id) {
-        Ok(cl) => cl,
-        Err(e) => return api_error(&format!("Checklist not found: {}", e)),
-    };
-
+        .map_err(|error| format!("Failed to load STIG-Manager config: {error}"))?
     {
-        let finding = match checklist.find_by_vuln_id_mut(&vuln_id) {
-            Some(f) => f,
-            None => return api_error(&format!("Finding not found: {}", vuln_id)),
-        };
+        Some(json) => serde_json::from_str(&json)
+            .map_err(|error| format!("Failed to parse STIG-Manager config: {error}"))?,
+        None => StigManagerConfig::default(),
+    };
 
-        if let Some(ref status_str) = req.status {
-            if let Some(status) =
-                automatestig_core::models::finding::FindingStatus::from_ckl_str(status_str)
-            {
-                finding.status = status;
-                finding.source = automatestig_core::models::finding::FindingSource::Manual;
-                finding.evaluated_at = chrono::Utc::now();
-            }
-        }
-        if let Some(ref details) = req.finding_details {
-            finding.finding_details = details.clone();
-        }
-        if let Some(ref comments) = req.comments {
-            finding.comments = comments.clone();
-        }
+    if let Some(encrypted) = config.client_secret.strip_prefix("enc:") {
+        config.client_secret = crate::secrets::load_or_create_key_material(data_dir)
+            .and_then(|key_material| crate::secrets::decrypt_secret(encrypted, &key_material))
+            .map_err(|error| format!("Failed to decrypt STIG-Manager client secret: {error}"))?;
     }
 
-    checklist.touch();
-
-    let result_status = checklist
-        .find_by_vuln_id(&vuln_id)
-        .map(|f| f.status.to_string())
-        .unwrap_or_default();
-
-    if let Err(e) = db.save_checklist(&checklist) {
-        return api_error(&format!("Failed to save: {}", e));
-    }
-
-    api_ok(serde_json::json!({
-        "vuln_id": vuln_id,
-        "status": result_status,
-        "updated": true,
-    }))
+    Ok(config)
 }
 
-// ---------------------------------------------------------------------------
-// Asset Inventory
-// ---------------------------------------------------------------------------
-
-fn load_assets(
-    db: &automatestig_storage::Database,
-) -> Vec<automatestig_core::inventory::assets::ManagedAsset> {
-    db.get_config("asset_inventory")
-        .ok()
-        .flatten()
-        .and_then(|json| serde_json::from_str(&json).ok())
-        .unwrap_or_default()
-}
-
-fn save_assets(
-    db: &automatestig_storage::Database,
-    assets: &[automatestig_core::inventory::assets::ManagedAsset],
-) {
-    if let Ok(json) = serde_json::to_string(assets) {
-        let _ = db.set_config("asset_inventory", &json);
-    }
-}
-
-/// After an evaluation, reflect the result on the linked asset (if any).
-fn update_asset_after_eval(
-    db: &automatestig_storage::Database,
-    asset_id: &str,
-    stig_id: &str,
-    compliance_pct: f64,
-    checklist_id: &str,
-) {
-    let mut assets = load_assets(db);
-    if let Some(asset) = assets.iter_mut().find(|a| a.id == asset_id) {
-        asset.last_evaluated = Some(chrono::Utc::now());
-        asset.last_compliance_pct = Some(compliance_pct);
-        if !asset.assigned_stigs.iter().any(|s| s == stig_id) {
-            asset.assigned_stigs.push(stig_id.to_string());
-        }
-        if !asset.last_checklist_ids.iter().any(|c| c == checklist_id) {
-            asset.last_checklist_ids.push(checklist_id.to_string());
-        }
-        save_assets(db, &assets);
-    }
-}
-
-async fn list_assets_inv(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let db = state.db();
-    api_ok(load_assets(&db))
-}
-
-async fn create_asset_inv(
-    State(state): State<AppState>,
-    Json(asset): Json<automatestig_core::inventory::assets::ManagedAsset>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    let mut assets = load_assets(&db);
-    assets.push(asset.clone());
-    save_assets(&db, &assets);
-    api_ok(asset)
-}
-
-async fn get_asset_inv(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    let assets = load_assets(&db);
-    match assets.into_iter().find(|a| a.id == id) {
-        Some(asset) => api_ok(asset),
-        None => api_error("Asset not found"),
-    }
-}
-
-async fn update_asset_inv(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-    Json(updated): Json<automatestig_core::inventory::assets::ManagedAsset>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    let mut assets = load_assets(&db);
-    if let Some(asset) = assets.iter_mut().find(|a| a.id == id) {
-        *asset = updated.clone();
-        save_assets(&db, &assets);
-        api_ok(updated)
-    } else {
-        api_error("Asset not found")
-    }
-}
-
-async fn delete_asset_inv(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    let mut assets = load_assets(&db);
-    let len = assets.len();
-    assets.retain(|a| a.id != id);
-    save_assets(&db, &assets);
-    api_ok(assets.len() < len)
-}
-
-// ---------------------------------------------------------------------------
-// Credential Vault
-// ---------------------------------------------------------------------------
-
-fn save_vault(
-    db: &automatestig_storage::Database,
-    data_dir: &std::path::Path,
-    vault: &automatestig_core::inventory::credentials::CredentialVault,
+/// Validate and encrypt a STIG Manager connection before persistence.
+///
+/// A blank submitted secret means "keep the saved secret" only when the API,
+/// token endpoint, and OAuth client identity are unchanged. That prevents a
+/// form edit from silently forwarding an existing secret to a new endpoint.
+pub(crate) fn persist_stigman_config(
+    state: &AppState,
+    mut config: StigManagerConfig,
 ) -> Result<(), String> {
-    let key_material = crate::secrets::load_or_create_key_material(data_dir)?;
+    normalize_stigman_config(&mut config);
 
-    let json = serde_json::to_string(vault).map_err(|e| e.to_string())?;
-    let encrypted = crate::secrets::encrypt_secret(&json, &key_material)?;
-    db.set_config("credential_vault", &format!("enc:{}", encrypted))
-        .map_err(|e| e.to_string())?;
-    db.set_config("credential_vault_format", "encrypted-v1")
-        .map_err(|e| e.to_string())?;
-    Ok(())
-}
-
-fn load_vault(
-    db: &automatestig_storage::Database,
-    data_dir: &std::path::Path,
-) -> Result<automatestig_core::inventory::credentials::CredentialVault, String> {
-    let raw = db
-        .get_config("credential_vault")
-        .map_err(|e| e.to_string())?
-        .unwrap_or_default();
-    if raw.is_empty() {
-        return Ok(automatestig_core::inventory::credentials::CredentialVault::default());
-    }
-
-    let encrypted = raw.strip_prefix("enc:").ok_or_else(|| {
-        "Credential vault is plaintext/legacy and must be migrated before use".to_string()
-    })?;
-    let key_material = crate::secrets::load_or_create_key_material(data_dir)?;
-    let json = crate::secrets::decrypt_secret(encrypted, &key_material)?;
-    serde_json::from_str(&json).map_err(|e| e.to_string())
-}
-
-async fn list_credentials(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let db = state.db();
-    let vault = match load_vault(&db, &state.inner.data_dir) {
-        Ok(vault) => vault,
-        Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
-    };
-    api_ok(vault.list_summary())
-}
-
-async fn create_credential(
-    State(state): State<AppState>,
-    Json(cred): Json<automatestig_core::inventory::credentials::StoredCredential>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    let mut vault = match load_vault(&db, &state.inner.data_dir) {
-        Ok(vault) => vault,
-        Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
-    };
-    let summary = automatestig_core::inventory::credentials::CredentialSummary {
-        id: cred.id.clone(),
-        label: cred.label.clone(),
-        credential_type: match &cred.credential {
-            automatestig_core::inventory::credentials::CredentialType::Password { .. } => {
-                "password".to_string()
-            }
-            automatestig_core::inventory::credentials::CredentialType::SshKey { .. } => {
-                "ssh_key".to_string()
-            }
-            automatestig_core::inventory::credentials::CredentialType::SshCertificate {
-                ..
-            } => "ssh_certificate".to_string(),
-            automatestig_core::inventory::credentials::CredentialType::Kerberos { .. } => {
-                "kerberos".to_string()
-            }
-            automatestig_core::inventory::credentials::CredentialType::Token { .. } => {
-                "token".to_string()
-            }
-        },
-        username: cred.username().map(|s| s.to_string()),
-        is_expired: cred.is_expired(),
-        last_used: cred.last_used,
-    };
-    vault.add(cred);
-    if let Err(e) = save_vault(&db, &state.inner.data_dir, &vault) {
-        return api_error(&format!("Failed to save credential vault: {}", e));
-    }
-    api_ok(summary)
-}
-
-async fn delete_credential(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    let mut vault = match load_vault(&db, &state.inner.data_dir) {
-        Ok(vault) => vault,
-        Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
-    };
-    let removed = vault.remove(&id);
-    if let Err(e) = save_vault(&db, &state.inner.data_dir, &vault) {
-        return api_error(&format!("Failed to save credential vault: {}", e));
-    }
-    api_ok(removed)
-}
-
-// ---------------------------------------------------------------------------
-// Bulk Asset Update
-// ---------------------------------------------------------------------------
-
-#[derive(Deserialize)]
-struct BulkUpdateRequest {
-    asset_ids: Vec<String>,
-    credential_id: Option<String>,
-    enabled: Option<bool>,
-    add_tag: Option<String>,
-    remove_tag: Option<String>,
-}
-
-async fn bulk_update_assets(
-    State(state): State<AppState>,
-    Json(req): Json<BulkUpdateRequest>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    let mut assets = load_assets(&db);
-    let mut count = 0;
-
-    for asset in assets.iter_mut() {
-        if req.asset_ids.contains(&asset.id) {
-            if let Some(ref cid) = req.credential_id {
-                asset.credential_id = Some(cid.clone());
-            }
-            if let Some(enabled) = req.enabled {
-                asset.enabled = enabled;
-            }
-            if let Some(ref tag) = req.add_tag {
-                if !asset.tags.contains(tag) {
-                    asset.tags.push(tag.clone());
-                }
-            }
-            if let Some(ref tag) = req.remove_tag {
-                asset.tags.retain(|t| t != tag);
-            }
-            count += 1;
+    if config.client_secret.is_empty() {
+        let mut saved = load_stigman_config(&state.db(), &state.inner.data_dir)?;
+        normalize_stigman_config(&mut saved);
+        if config.api_url != saved.api_url
+            || config.token_url != saved.token_url
+            || config.client_id != saved.client_id
+        {
+            return Err(
+                "client_secret must be re-entered when an endpoint or client ID changes"
+                    .to_string(),
+            );
         }
+        config.client_secret = saved.client_secret;
     }
 
-    save_assets(&db, &assets);
-    api_ok(serde_json::json!({ "updated": count }))
-}
-
-// ---------------------------------------------------------------------------
-// Answer File Management
-// ---------------------------------------------------------------------------
-
-async fn list_answer_files(State(state): State<AppState>) -> Json<serde_json::Value> {
-    let lib_path = &state.inner.library_path;
-    let templates_dir = lib_path.join("answer_templates");
-    let mut files = Vec::new();
-
-    if templates_dir.exists() {
-        if let Ok(entries) = std::fs::read_dir(&templates_dir) {
-            for entry in entries.flatten() {
-                let path = entry.path();
-                let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
-                if ext == "json" || ext == "yaml" || ext == "yml" {
-                    if let Ok(af) = automatestig_core::answer::AnswerFile::load(&path) {
-                        files.push(serde_json::json!({
-                            "name": af.name,
-                            "stig_id": af.stig_id,
-                            "version": af.version,
-                            "entries": af.entries.len(),
-                            "path": path.display().to_string(),
-                        }));
-                    }
-                }
-            }
-        }
+    config.validate_urls()?;
+    if !config.client_secret.is_empty() {
+        let key_material = crate::secrets::load_or_create_key_material(&state.inner.data_dir)
+            .map_err(|error| format!("Key material error: {error}"))?;
+        let encrypted = crate::secrets::encrypt_secret(&config.client_secret, &key_material)
+            .map_err(|error| format!("Encryption failed: {error}"))?;
+        config.client_secret = format!("enc:{encrypted}");
     }
 
-    api_ok(files)
+    let json =
+        serde_json::to_string(&config).map_err(|error| format!("Serialization error: {error}"))?;
+    state
+        .db()
+        .set_config("stigman_config", &json)
+        .map_err(|error| format!("Failed to save config: {error}"))
 }
 
-async fn save_answer_file(
-    State(state): State<AppState>,
-    Json(af): Json<automatestig_core::answer::AnswerFile>,
-) -> Json<serde_json::Value> {
-    let lib_path = &state.inner.library_path;
-    let templates_dir = lib_path.join("answer_templates");
-    let _ = std::fs::create_dir_all(&templates_dir);
-
-    let filename_base = match automatestig_core::path_safety::safe_filename(&af.name) {
-        Ok(name) => name.to_lowercase(),
-        Err(e) => return api_error(&format!("Unsafe answer file name: {}", e)),
-    };
-    let filename = format!("{}.json", filename_base);
-    let path = match automatestig_core::path_safety::safe_join_under(&templates_dir, &filename) {
-        Ok(path) => path,
-        Err(e) => return api_error(&format!("Unsafe answer file path: {}", e)),
-    };
-
-    match af.save_json(&path) {
-        Ok(()) => {
-            let issues = af.validate();
-            api_ok(serde_json::json!({
-                "saved": true,
-                "path": path.display().to_string(),
-                "entries": af.entries.len(),
-                "validation_issues": issues,
-            }))
-        }
-        Err(e) => api_error(&format!("Failed to save: {}", e)),
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Remote Scanning
-// ---------------------------------------------------------------------------
-
-#[derive(Deserialize)]
-struct SshScanRequest {
-    host: String,
-    port: Option<u16>,
-    username: String,
-    auth: crate::ssh::SshAuth,
-    stig_id: String,
-    #[serde(default)]
-    platform: Option<String>,
-}
-
-async fn scan_ssh(
-    State(state): State<AppState>,
-    Json(req): Json<SshScanRequest>,
-) -> Json<serde_json::Value> {
-    if let Err(e) = crate::ssh::validate_scan_target(&req.host) {
-        return api_error(&e);
-    }
-
-    let ssh_config = crate::ssh::SshConfig {
-        host: req.host.clone(),
-        port: req.port.unwrap_or(22),
-        username: req.username,
-        auth: req.auth,
-        timeout_secs: 30,
-    };
-
-    let requested_collection_platform = req.platform.as_deref().and_then(|platform| match platform
-        .to_ascii_lowercase()
-        .as_str()
-    {
-        "ontap" => Some(automatestig_core::checks::CheckPlatform::Ontap),
-        "bsd" => Some(automatestig_core::checks::CheckPlatform::Bsd),
-        _ => None,
-    });
-
-    let (check_platform, raw_outputs) =
-        if let Some(collection_platform) = requested_collection_platform {
-            let plan = automatestig_core::remote::generate_collection_plan(collection_platform);
-            let commands: Vec<(&str, &str)> = plan
-                .commands
-                .iter()
-                .map(|command| (command.data_key.as_str(), command.command.as_str()))
-                .collect();
-            let raw_outputs = match crate::ssh::execute_commands(&ssh_config, &commands).await {
-                Ok(data) => data,
-                Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
-            };
-            (collection_platform, raw_outputs)
-        } else {
-            let raw_outputs = match crate::ssh::collect_linux_data(&ssh_config).await {
-                Ok(data) => data,
-                Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
-            };
-            (automatestig_core::checks::CheckPlatform::Linux, raw_outputs)
-        };
-
-    let hostname = raw_outputs
-        .get("hostname")
-        .map(|h| h.trim().to_string())
-        .unwrap_or_else(|| req.host.clone());
-
-    // Assemble into SystemData.
-    let system_data =
-        automatestig_core::remote::assemble_system_data(check_platform, &hostname, &raw_outputs);
-
-    // Load check pack and evaluate.
-    evaluate_with_system_data(&state, &req.stig_id, &hostname, &system_data)
-}
-
-fn evaluate_system_data_core(
+/// Resolve a saved configuration or an ephemeral form value for a connection
+/// test. Submitted values are never persisted by this function.
+pub(crate) fn resolve_stigman_test_config(
     state: &AppState,
-    stig_id: &str,
-    hostname: &str,
-    system_data: &automatestig_core::checks::SystemData,
-) -> Result<Checklist, String> {
-    // Load benchmark.
-    let library = state.library().map_err(|e| e.to_string())?;
-
-    let benchmark = library
-        .load_benchmark(stig_id)
-        .map_err(|e| format!("Benchmark not found: {}", e))?;
-
-    // Load check packs from all sources: plugins, hand-written packs, and auto-generated.
-    let mut plugin_registry = automatestig_core::plugins::PluginRegistry::new();
-    let plugins_dir = state.inner.data_dir.join("plugins");
-    let _ = plugin_registry.load_from_directory_with_priority(&plugins_dir, 5);
-
-    let content_dir = std::path::Path::new("content/check_packs");
-    let _ = plugin_registry.load_from_directory_with_priority(content_dir, 10);
-
-    // Load auto-generated check packs from the converter.
-    let auto_dir = state.inner.library_path.join("auto_check_packs");
-    let _ = plugin_registry.load_from_directory_with_priority(&auto_dir, 900);
-    let _ = plugin_registry.load_embedded();
-
-    // Execute checks.
-    let mut check_results: Vec<automatestig_core::checks::CheckResult> = plugin_registry
-        .checks_for_stig(stig_id)
-        .iter()
-        .map(|check_def| automatestig_core::checks::executor::execute_check(check_def, system_data))
-        .collect();
-    let mut seen_vuln_ids: HashSet<String> = HashSet::new();
-    // Curated packs load before auto-generated ones; first result per vuln wins.
-    check_results.retain(|cr| seen_vuln_ids.insert(cr.vuln_id.clone()));
-
-    // Create checklist from benchmark + check results.
-    let asset = Asset::new(hostname);
-    let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
-    let mut checklist = engine
-        .evaluate(&benchmark, &asset, None, &[])
-        .map_err(|e| format!("Evaluation failed: {}", e))?;
-
-    // Apply check results to findings.
-    for cr in &check_results {
-        if let Some(finding) = checklist.find_by_vuln_id_mut(&cr.vuln_id) {
-            finding.status = cr.to_finding_status();
-            finding.source = automatestig_core::models::finding::FindingSource::Automated;
-            finding.finding_details = cr.evidence.clone();
-            finding.evaluated_at = chrono::Utc::now();
-            finding.evaluated_by = format!("AutomateSTIG {}", env!("CARGO_PKG_VERSION"));
-        }
-    }
-
-    checklist.touch();
-
-    let db = state.db();
-    db.save_checklist(&checklist)
-        .map_err(|e| format!("Failed to save checklist: {}", e))?;
-    db.log_evaluation(&checklist, "remote-scan", Some(hostname))
-        .map_err(|e| format!("Failed to log evaluation: {}", e))?;
-
-    Ok(checklist)
-}
-
-/// Evaluate collected SystemData against check packs and STIG benchmark.
-fn evaluate_with_system_data(
-    state: &AppState,
-    stig_id: &str,
-    hostname: &str,
-    system_data: &automatestig_core::checks::SystemData,
-) -> Json<serde_json::Value> {
-    let checklist = match evaluate_system_data_core(state, stig_id, hostname, system_data) {
-        Ok(checklist) => checklist,
-        Err(e) => return api_error(&e),
+    submitted: Option<StigManagerConfig>,
+) -> Result<StigManagerConfig, String> {
+    let saved = || load_stigman_config(&state.db(), &state.inner.data_dir);
+    let Some(mut config) = submitted else {
+        return saved();
     };
 
-    let s = checklist.summary();
-    let automated_findings: Vec<_> = checklist
-        .findings
-        .iter()
-        .filter(|finding| {
-            matches!(
-                finding.source,
-                automatestig_core::models::finding::FindingSource::Automated
-            )
-        })
-        .collect();
-    api_ok(serde_json::json!({
-        "id": checklist.id.to_string(),
-        "hostname": hostname,
-        "stig_id": stig_id,
-        "total": s.total,
-        "open": s.open,
-        "not_a_finding": s.not_a_finding,
-        "not_reviewed": s.not_reviewed,
-        "compliance_pct": s.compliance_pct(),
-        "checks_executed": automated_findings.len(),
-        "checks_passed": automated_findings
-            .iter()
-            .filter(|finding| finding.status != FindingStatus::Open)
-            .count(),
-    }))
-}
-
-// ---------------------------------------------------------------------------
-// Bulk STIG Assignment
-// ---------------------------------------------------------------------------
-
-#[derive(Deserialize)]
-struct BulkAssignRequest {
-    asset_ids: Vec<String>,
-    stig_id: String,
-}
-
-async fn bulk_assign_stig(
-    State(state): State<AppState>,
-    Json(req): Json<BulkAssignRequest>,
-) -> Json<serde_json::Value> {
-    let db = state.db();
-    let mut assets = load_assets(&db);
-    let mut count = 0;
-    for asset in assets.iter_mut() {
-        if req.asset_ids.contains(&asset.id) && !asset.assigned_stigs.contains(&req.stig_id) {
-            asset.assigned_stigs.push(req.stig_id.clone());
-            count += 1;
+    normalize_stigman_config(&mut config);
+    if config.client_secret.is_empty() {
+        let saved = saved()?;
+        let same_identity = config.api_url == saved.api_url.trim()
+            && config.token_url == saved.token_url.trim()
+            && config.client_id == saved.client_id.trim();
+        if !same_identity || saved.client_secret.is_empty() {
+            return Err(
+                "client_secret is required to test unsaved endpoint or client-ID changes"
+                    .to_string(),
+            );
         }
-    }
-    save_assets(&db, &assets);
-    api_ok(serde_json::json!({ "assigned": count, "stig_id": req.stig_id }))
-}
-
-// ---------------------------------------------------------------------------
-// Quick Re-evaluate
-// ---------------------------------------------------------------------------
-
-async fn re_evaluate(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> Json<serde_json::Value> {
-    let (hostname, stig_id) = {
-        let db = state.db();
-        match db.load_checklist(&id) {
-            Ok(cl) => (cl.asset.hostname.clone(), cl.stig_info.stig_id.clone()),
-            Err(e) => return api_error(&format!("Checklist not found: {}", e)),
-        }
-    };
-
-    let library = match state.library() {
-        Ok(l) => l,
-        Err(e) => return api_error(&e.to_string()),
-    };
-
-    let benchmark = match library.load_benchmark(&stig_id) {
-        Ok(b) => b,
-        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
-    };
-
-    let asset = Asset::new(&hostname);
-    let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
-
-    // Load previous checklist for merging manual findings.
-    let previous = {
-        let db = state.db();
-        db.load_checklist(&id).ok()
-    };
-
-    match engine.evaluate(&benchmark, &asset, None, &[]) {
-        Ok(mut checklist) => {
-            // Merge manual findings from the previous checklist.
-            if let Some(ref prev) = previous {
-                let _ = engine.merge_previous(&mut checklist, prev);
-            }
-
-            let s = checklist.summary();
-            let new_id = checklist.id.to_string();
-            let db = state.db();
-            let _ = db.save_checklist(&checklist);
-            let _ = db.log_evaluation(&checklist, "re-evaluate", Some(&hostname));
-
-            api_ok(serde_json::json!({
-                "id": new_id,
-                "hostname": hostname,
-                "stig_id": stig_id,
-                "total": s.total,
-                "open": s.open,
-                "compliance_pct": s.compliance_pct(),
-            }))
-        }
-        Err(e) => api_error(&format!("Re-evaluation failed: {}", e)),
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Export
-// ---------------------------------------------------------------------------
-
-async fn export_ckl(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> impl IntoResponse {
-    let db = state.db();
-    match db.load_checklist(&id) {
-        Ok(cl) => {
-            let filename = sanitize_filename(&format!(
-                "{}_{}.ckl",
-                cl.asset.hostname, cl.stig_info.stig_id
-            ));
-            match ckl::write_ckl(&cl) {
-                Ok(xml) => (
-                    [
-                        (
-                            axum::http::header::CONTENT_TYPE,
-                            "application/xml".to_string(),
-                        ),
-                        (
-                            axum::http::header::CONTENT_DISPOSITION,
-                            format!("attachment; filename=\"{}\"", filename),
-                        ),
-                    ],
-                    xml,
-                )
-                    .into_response(),
-                Err(e) => (
-                    axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                    format!("Export failed: {}", e),
-                )
-                    .into_response(),
-            }
-        }
-        Err(e) => (
-            axum::http::StatusCode::NOT_FOUND,
-            format!("Checklist not found: {}", e),
-        )
-            .into_response(),
-    }
-}
-
-async fn export_cklb(
-    State(state): State<AppState>,
-    axum::extract::Path(id): axum::extract::Path<String>,
-) -> impl IntoResponse {
-    let db = state.db();
-    match db.load_checklist(&id) {
-        Ok(cl) => {
-            let filename = sanitize_filename(&format!(
-                "{}_{}.cklb",
-                cl.asset.hostname, cl.stig_info.stig_id
-            ));
-            match cklb::write_cklb(&cl) {
-                Ok(json) => (
-                    [
-                        (
-                            axum::http::header::CONTENT_TYPE,
-                            "application/json".to_string(),
-                        ),
-                        (
-                            axum::http::header::CONTENT_DISPOSITION,
-                            format!("attachment; filename=\"{}\"", filename),
-                        ),
-                    ],
-                    json,
-                )
-                    .into_response(),
-                Err(e) => (
-                    axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                    format!("Export failed: {}", e),
-                )
-                    .into_response(),
-            }
-        }
-        Err(e) => (
-            axum::http::StatusCode::NOT_FOUND,
-            format!("Checklist not found: {}", e),
-        )
-            .into_response(),
-    }
-}
-
-async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
-    let db = state.db();
-    let rows = db.list_checklists().unwrap_or_else(|e| {
-        tracing::warn!("list_checklists failed: {e}");
-        Vec::new()
-    });
-
-    if rows.is_empty() {
-        return (
-            axum::http::StatusCode::BAD_REQUEST,
-            "No checklists to export",
-        )
-            .into_response();
+        config.client_secret = saved.client_secret;
     }
 
-    let mut zip_buffer = std::io::Cursor::new(Vec::new());
-    {
-        let mut zip = zip::ZipWriter::new(&mut zip_buffer);
-        let options = zip::write::SimpleFileOptions::default()
-            .compression_method(zip::CompressionMethod::Deflated);
-
-        for row in &rows {
-            if let Ok(cl) = db.load_checklist(&row.id) {
-                let filename = sanitize_filename(&format!(
-                    "{}_{}.ckl",
-                    cl.asset.hostname, cl.stig_info.stig_id
-                ));
-                if let Ok(xml) = ckl::write_ckl(&cl) {
-                    let _ = zip.start_file(&filename, options);
-                    let _ = std::io::Write::write_all(&mut zip, xml.as_bytes());
-                }
-            }
-        }
-        let _ = zip.finish();
-    }
-
-    let data = zip_buffer.into_inner();
-    let filename = format!(
-        "automatestig-export-{}.zip",
-        chrono::Utc::now().format("%Y%m%d-%H%M")
-    );
-
-    (
-        [
-            (
-                axum::http::header::CONTENT_TYPE,
-                "application/zip".to_string(),
-            ),
-            (
-                axum::http::header::CONTENT_DISPOSITION,
-                format!("attachment; filename=\"{}\"", filename),
-            ),
-        ],
-        data,
-    )
-        .into_response()
+    config.validate_endpoints()?;
+    Ok(config)
 }
-
-use axum::response::IntoResponse;
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
+    use std::sync::{Arc, Mutex};
+
+    use axum::body::Body;
+    use axum::http::{header, Method, Request};
+    use tower::ServiceExt;
+
     use super::*;
 
+    fn test_state() -> (tempfile::TempDir, AppState) {
+        let temporary = tempfile::tempdir().unwrap();
+        let state = AppState {
+            inner: Arc::new(crate::state::AppStateInner {
+                db: Mutex::new(automatestig_storage::Database::in_memory().unwrap()),
+                data_dir: temporary.path().to_path_buf(),
+                scanner_preflights: Mutex::new(HashMap::new()),
+            }),
+        };
+        (temporary, state)
+    }
+
+    #[tokio::test]
+    async fn service_endpoints_remain_available() {
+        let (_temporary, state) = test_state();
+        let app = routes().with_state(state);
+
+        for uri in ["/status", "/auth/check"] {
+            let response = app
+                .clone()
+                .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
+                .await
+                .unwrap();
+            assert_eq!(response.status(), StatusCode::OK, "{uri}");
+        }
+    }
+
+    #[tokio::test]
+    async fn every_retired_route_is_an_extraction_free_tombstone() {
+        let (_temporary, state) = test_state();
+        let app = routes().with_state(state);
+        let cases = [
+            (
+                Method::GET,
+                "/library/benchmarks",
+                "AutomateSTIG scanner release process",
+            ),
+            (
+                Method::GET,
+                "/library/benchmarks/legacy",
+                "AutomateSTIG scanner release process",
+            ),
+            (
+                Method::POST,
+                "/library/import-disa",
+                "AutomateSTIG scanner release process",
+            ),
+            (
+                Method::POST,
+                "/library/import-stigpack",
+                "AutomateSTIG scanner release process",
+            ),
+            (
+                Method::GET,
+                "/disa/available",
+                "AutomateSTIG scanner release process",
+            ),
+            (
+                Method::POST,
+                "/disa/fetch",
+                "AutomateSTIG scanner release process",
+            ),
+            (
+                Method::POST,
+                "/disa/fetch-all",
+                "AutomateSTIG scanner release process",
+            ),
+            (
+                Method::GET,
+                "/disa/check-updates",
+                "AutomateSTIG scanner release process",
+            ),
+            (
+                Method::GET,
+                "/offline-pack",
+                "AutomateSTIG scanner release process",
+            ),
+            (
+                Method::GET,
+                "/offline-pack/trust-key",
+                "AutomateSTIG scanner release process",
+            ),
+            (Method::GET, "/checklists", "STIG Manager"),
+            (Method::POST, "/checklists/import", "STIG Manager"),
+            (Method::DELETE, "/checklists/legacy", "STIG Manager"),
+            (
+                Method::PATCH,
+                "/checklists/legacy/findings/V-1",
+                "STIG Manager",
+            ),
+            (Method::GET, "/assets", "STIG Manager"),
+            (Method::POST, "/assets", "STIG Manager"),
+            (Method::PUT, "/assets/legacy", "STIG Manager"),
+            (Method::POST, "/assets/bulk-assign-stig", "STIG Manager"),
+            (Method::POST, "/assets/bulk-update", "STIG Manager"),
+            (Method::GET, "/answer-files", "STIG Manager"),
+            (Method::PUT, "/answer-files/legacy.json", "STIG Manager"),
+            (Method::GET, "/audit-log", "STIG Manager"),
+            (Method::GET, "/export/ckl/legacy", "STIG Manager"),
+            (Method::GET, "/export/cklb/legacy", "STIG Manager"),
+            (Method::GET, "/export/all-zip", "STIG Manager"),
+            (
+                Method::GET,
+                "/stigman/config",
+                "AutomateSTIG scanner run service",
+            ),
+            (
+                Method::POST,
+                "/stigman/test",
+                "AutomateSTIG scanner run service",
+            ),
+            (
+                Method::GET,
+                "/stigman/collections",
+                "AutomateSTIG scanner run service",
+            ),
+            (
+                Method::GET,
+                "/stigman/collections/7/assets",
+                "AutomateSTIG scanner run service",
+            ),
+            (Method::POST, "/stigman/sync/7", "STIG Manager"),
+            (Method::GET, "/stigman/diff/7", "STIG Manager"),
+            (
+                Method::POST,
+                "/stigman/push/legacy",
+                "AutomateSTIG scanner run service",
+            ),
+            (
+                Method::POST,
+                "/evaluate/with-evidence",
+                "AutomateSTIG scanner run service",
+            ),
+            (
+                Method::POST,
+                "/scan/ssh",
+                "AutomateSTIG scanner run service",
+            ),
+        ];
+
+        for (method, uri, owner) in cases {
+            let response = app
+                .clone()
+                .oneshot(
+                    Request::builder()
+                        .method(method)
+                        .uri(uri)
+                        .header(header::CONTENT_TYPE, "application/json")
+                        .body(Body::from("{not-valid-json"))
+                        .unwrap(),
+                )
+                .await
+                .unwrap();
+            assert_eq!(response.status(), StatusCode::GONE, "{uri}");
+            let body = axum::body::to_bytes(response.into_body(), 64 * 1024)
+                .await
+                .unwrap();
+            let payload: serde_json::Value = serde_json::from_slice(&body).unwrap();
+            assert_eq!(payload["data"]["code"], "legacy_surface_retired", "{uri}");
+            assert_eq!(payload["data"]["owner"], owner, "{uri}");
+            assert_eq!(
+                payload["data"]["read_only_migration_access"], false,
+                "{uri}"
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn unknown_routes_remain_404_not_legacy_tombstones() {
+        let (_temporary, state) = test_state();
+        let app = routes().with_state(state);
+
+        for uri in ["/not-a-retired-route", "/v1/not-a-scanner-route"] {
+            let response = app
+                .clone()
+                .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
+                .await
+                .unwrap();
+            assert_eq!(response.status(), StatusCode::NOT_FOUND, "{uri}");
+        }
+    }
+
+    fn connection(api_url: &str, secret: &str) -> StigManagerConfig {
+        StigManagerConfig {
+            api_url: api_url.to_string(),
+            gui_url: Some("https://stigman.example.mil/".to_string()),
+            token_url: "https://idp.example.mil/token".to_string(),
+            client_id: "automatestig".to_string(),
+            client_secret: secret.to_string(),
+            default_collection_id: Some(" 7 ".to_string()),
+            verify_tls: true,
+        }
+    }
+
     #[test]
-    fn test_sanitize_rejects_dot_components() {
-        assert_ne!(sanitize_filename("."), ".");
-        assert_ne!(sanitize_filename(".."), "..");
-        assert_eq!(sanitize_filename("host.ckl"), "host.ckl");
+    fn persisted_connection_encrypts_and_round_trips_secret() {
+        let (_temporary, state) = test_state();
+        let submitted = connection("https://stigman.example.mil/api", "saved-secret");
+
+        persist_stigman_config(&state, submitted.clone()).unwrap();
+
+        let stored = state.db().get_config("stigman_config").unwrap().unwrap();
+        assert!(!stored.contains("saved-secret"));
+        let stored_json: serde_json::Value = serde_json::from_str(&stored).unwrap();
+        assert!(stored_json["client_secret"]
+            .as_str()
+            .unwrap()
+            .starts_with("enc:"));
+
+        let loaded = load_stigman_config(&state.db(), &state.inner.data_dir).unwrap();
+        assert_eq!(loaded.client_secret, "saved-secret");
+        assert_eq!(loaded.default_collection_id.as_deref(), Some("7"));
+        assert_eq!(loaded.api_url, submitted.api_url);
+    }
+
+    #[tokio::test]
+    async fn connection_delete_removes_the_saved_secret_and_is_idempotent() {
+        let (_temporary, state) = test_state();
+        persist_stigman_config(
+            &state,
+            connection("https://stigman.example.mil/api", "saved-secret"),
+        )
+        .unwrap();
+        let app = routes().with_state(state.clone());
+
+        for expected_deleted in [true, false] {
+            let response = app
+                .clone()
+                .oneshot(
+                    Request::builder()
+                        .method(Method::DELETE)
+                        .uri("/v1/stig-manager/connection")
+                        .body(Body::empty())
+                        .unwrap(),
+                )
+                .await
+                .unwrap();
+            assert_eq!(response.status(), StatusCode::OK);
+            let body = axum::body::to_bytes(response.into_body(), 64 * 1024)
+                .await
+                .unwrap();
+            let payload: serde_json::Value = serde_json::from_slice(&body).unwrap();
+            assert_eq!(payload["data"]["configured"], false);
+            assert_eq!(payload["data"]["deleted"], expected_deleted);
+            assert!(state.db().get_config("stigman_config").unwrap().is_none());
+        }
+    }
+
+    #[test]
+    fn blank_secret_is_reused_only_for_an_unchanged_connection_identity() {
+        let (_temporary, state) = test_state();
+        let saved = connection("https://stigman.example.mil/api", "saved-secret");
+        persist_stigman_config(&state, saved.clone()).unwrap();
+
+        let mut same_identity = saved.clone();
+        same_identity.api_url = format!("  {}  ", same_identity.api_url);
+        same_identity.token_url = format!("\t{}\n", same_identity.token_url);
+        same_identity.client_id = format!(" {} ", same_identity.client_id);
+        same_identity.client_secret.clear();
+        persist_stigman_config(&state, same_identity).unwrap();
+        let stored_before_rejected_change = state.db().get_config("stigman_config").unwrap();
+
+        let mut changed_identity = saved;
+        changed_identity.api_url = "https://other.example.mil/api".to_string();
+        changed_identity.client_secret.clear();
+        let error = persist_stigman_config(&state, changed_identity).unwrap_err();
+        assert!(error.contains("must be re-entered"), "{error}");
+        assert_eq!(
+            state.db().get_config("stigman_config").unwrap(),
+            stored_before_rejected_change
+        );
+
+        let loaded = load_stigman_config(&state.db(), &state.inner.data_dir).unwrap();
+        assert_eq!(loaded.client_secret, "saved-secret");
+    }
+
+    #[test]
+    fn unsaved_test_connection_is_ephemeral_and_secret_safe() {
+        let (_temporary, state) = test_state();
+        let saved = connection("https://stigman.example.mil/api", "saved-secret");
+        persist_stigman_config(&state, saved.clone()).unwrap();
+        let stored_before_test = state.db().get_config("stigman_config").unwrap();
+
+        let mut same_identity = saved.clone();
+        same_identity.client_secret.clear();
+        same_identity.default_collection_id = Some(" 9 ".to_string());
+        let resolved = resolve_stigman_test_config(&state, Some(same_identity)).unwrap();
+        assert_eq!(resolved.client_secret, "saved-secret");
+        assert_eq!(resolved.default_collection_id.as_deref(), Some("9"));
+
+        let mut changed_identity = saved;
+        changed_identity.client_id = "different-client".to_string();
+        changed_identity.client_secret.clear();
+        assert!(resolve_stigman_test_config(&state, Some(changed_identity)).is_err());
+        assert_eq!(
+            state.db().get_config("stigman_config").unwrap(),
+            stored_before_test
+        );
+    }
+
+    #[test]
+    fn organization_policy_is_signature_revision_and_asset_bound() {
+        let temporary = tempfile::tempdir().unwrap();
+        let offline = temporary.path().join("offline");
+        let trust = temporary.path().join("trust");
+        std::fs::create_dir(&offline).unwrap();
+        std::fs::create_dir(&trust).unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(&offline, std::fs::Permissions::from_mode(0o700)).unwrap();
+            std::fs::set_permissions(&trust, std::fs::Permissions::from_mode(0o700)).unwrap();
+        }
+
+        let private = offline.join("policy.key");
+        let public = offline.join("policy.pub");
+        let (private_key, _) =
+            automatestig_stigpack::signing::create_signing_key_pair(&private, &public).unwrap();
+        std::fs::copy(&public, trust.join("approver.pub")).unwrap();
+
+        let now = chrono::Utc::now();
+        let policy = serde_json::to_vec(&serde_json::json!({
+            "schema": "automatestig-organization-policy/v1",
+            "policy_id": "gui-test",
+            "policy_version": "1",
+            "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+            "stig_release": "V3R7",
+            "asset_hostname": "router-01",
+            "effective_from": (now - chrono::Duration::days(1)).to_rfc3339(),
+            "expires_at": (now + chrono::Duration::days(1)).to_rfc3339(),
+            "rules": {
+                "V-215807": {"max_concurrent_management_sessions": 2},
+                "V-215836": {"minimum_logging_buffer_bytes": 4096000},
+                "V-215838": {
+                    "approved_authoritative_ntp_sources": ["192.0.2.10", "192.0.2.11"]
+                }
+            }
+        }))
+        .unwrap();
+        let signature =
+            automatestig_stigpack::signing::sign_manifest(&policy, &private_key).unwrap();
+
+        let verified = verify_organization_policy_with_trust_dir(
+            &trust,
+            &policy,
+            &signature,
+            "Cisco_IOS-XE_Router_NDM_STIG",
+            "V3R7",
+            "ROUTER-01",
+        )
+        .unwrap();
+        assert_eq!(verified.document().policy_id, "gui-test");
+
+        for (stig_release, hostname) in [("V3R8", "router-01"), ("V3R7", "router-02")] {
+            assert!(verify_organization_policy_with_trust_dir(
+                &trust,
+                &policy,
+                &signature,
+                "Cisco_IOS-XE_Router_NDM_STIG",
+                stig_release,
+                hostname,
+            )
+            .is_err());
+        }
+
+        let mut mutated = policy;
+        mutated.push(b' ');
+        assert!(verify_organization_policy_with_trust_dir(
+            &trust,
+            &mutated,
+            &signature,
+            "Cisco_IOS-XE_Router_NDM_STIG",
+            "V3R7",
+            "router-01",
+        )
+        .is_err());
     }
 }

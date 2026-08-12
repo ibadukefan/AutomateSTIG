@@ -1,0 +1,52 @@
+{
+  "schema": "automatestig-scanner-scenario/v1",
+  "id": "cisco-connected-pass-preview",
+  "actors": ["cybersecurity_analyst", "cybersecurity_manager"],
+  "mode": "connected",
+  "target": {
+    "profile_id": "cisco_ios_xe_router_ndm",
+    "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
+    "stig_release": "V3R7",
+    "hostname": "rtr-compliant-01",
+    "software_version": "17.9.4a"
+  },
+  "input": {
+    "kind": "running_configuration",
+    "path": "../network/ios_xe_router_compliant.txt",
+    "sha256": "626ef46d868686ecebedfb1ecd402158b5ea489f4adae966d1d7bf8dc794eccd",
+    "organization_policy": {
+      "path": "inputs/cisco-compliant-policy.json",
+      "sha256": "8c6f16467f8aa360d5abc20595a463bdfd0fd788f3209c7b1ac4a18a0081d06b",
+      "signature": "ephemeral_test_signature_required"
+    }
+  },
+  "destination": {
+    "inventory_path": "stig_manager/inventory.json",
+    "collection_id": 7001,
+    "asset_id": 7301,
+    "assignment_id": "assignment-cisco-v3r7-compliant"
+  },
+  "remote_state": "stig_manager/empty-reviews.json",
+  "delivery_attempts": [],
+  "receipt": null,
+  "expected": {
+    "evaluation": "pass",
+    "collection_complete": true,
+    "automated_results": 33,
+    "manual_untouched": 9,
+    "out_of_scope_untouched": 0,
+    "run_state": "preview_ready",
+    "delivery_state": "preview_ready",
+    "creates": 33,
+    "updates": 0,
+    "unchanged": 0,
+    "conflicts": 0,
+    "review_write_count": 0,
+    "handoff": true
+  },
+  "notes": [
+    "Thirty-three scanner-owned creates are previewed against the exact existing V3R7 assignment.",
+    "Because STIG Manager does not expose an atomic conditional-review write, AutomateSTIG makes no direct changed review request.",
+    "The analyst or manager receives a selected-run handoff; all nine evidence-insufficient benchmark rules remain untouched."
+  ]
+}

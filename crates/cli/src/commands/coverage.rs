@@ -30,7 +30,6 @@ pub fn validate(manifest_path: &str) -> Result<()> {
     ui::info("Status", &format!("{:?}", manifest.status));
     ui::info("Rules", &report.total_rules.to_string());
     ui::info("Automated", &report.automated.to_string());
-    ui::info("Scanner import", &report.scanner_import.to_string());
     ui::info("Manual", &report.manual.to_string());
     ui::info("Not applicable", &report.not_applicable.to_string());
     ui::info("Unsupported", &report.unsupported.to_string());

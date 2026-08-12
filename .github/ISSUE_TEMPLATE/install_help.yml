@@ -1,0 +1,59 @@
+name: Installation or first-run help
+description: Get help installing, launching, or completing the first training flow.
+title: "[install] "
+labels:
+  - support
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Start with the [Quickstart](https://github.com/ibadukefan/AutomateSTIG/blob/main/docs/quickstart.md). Do not attach credentials, device configurations, evidence, private keys, tokens, or controlled data.
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Linux x86_64
+        - Linux arm64
+        - macOS Intel
+        - macOS Apple Silicon
+        - Windows (unsupported deployment)
+        - Source checkout
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Release, commit, or installer version
+      placeholder: v0.3.0 or full commit SHA
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Where did setup stop?
+      options:
+        - Downloading or verifying the release
+        - Installing prerequisites
+        - Installing or upgrading binaries
+        - Finding the command on PATH
+        - Launching the GUI
+        - Opening localhost in the browser
+        - Completing the training walkthrough
+        - Starting the first real scan
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Sanitized error and steps
+      description: Paste only non-sensitive installer output and the commands you ran. Remove usernames, paths, hostnames, addresses, tokens, and evidence.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I removed credentials, device configurations, evidence, private keys, tokens, and controlled data.
+          required: true

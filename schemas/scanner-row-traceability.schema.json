@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.dev/schemas/scanner-row-traceability.schema.json",
+  "title": "Validated per-row scanner evidence traceability",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "rows"],
+  "properties": {
+    "$schema": {
+      "const": "https://automatestig.dev/schemas/scanner-row-traceability.schema.json"
+    },
+    "schema": {
+      "const": "automatestig-scanner-row-traceability/v1"
+    },
+    "rows": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 100000,
+      "propertyNames": { "pattern": "^V-[0-9]+$" },
+      "additionalProperties": { "$ref": "#/$defs/row" }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.?(?:/|$)).+$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "artifact_path", "artifact_sha256"],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "artifact_path": { "$ref": "#/$defs/relativePath" },
+        "artifact_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "artifact_path",
+        "artifact_sha256",
+        "request_sha256",
+        "raw_evidence_sha256"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "artifact_path": { "$ref": "#/$defs/relativePath" },
+        "artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "request_sha256": { "$ref": "#/$defs/sha256" },
+        "raw_evidence_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result_sha256",
+        "source_state_sha256",
+        "tool_artifact_sha256",
+        "tool_content_sha256",
+        "effective_model_sha256"
+      ],
+      "properties": {
+        "result_sha256": { "$ref": "#/$defs/sha256" },
+        "source_state_sha256": { "$ref": "#/$defs/sha256" },
+        "tool_artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "tool_content_sha256": { "$ref": "#/$defs/sha256" },
+        "effective_model_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "raw_evidence",
+        "operation",
+        "parser",
+        "predicate",
+        "provenance"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["Finding", "NotAFinding", "NotApplicable"]
+        },
+        "raw_evidence": { "$ref": "#/$defs/artifact" },
+        "operation": { "$ref": "#/$defs/operation" },
+        "parser": { "$ref": "#/$defs/component" },
+        "predicate": { "$ref": "#/$defs/component" },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    }
+  }
+}

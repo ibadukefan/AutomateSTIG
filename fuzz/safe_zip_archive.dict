@@ -1,0 +1,13 @@
+# ZIP record signatures.
+local_file_header="PK\x03\x04"
+central_directory_header="PK\x01\x02"
+end_of_central_directory="PK\x05\x06"
+zip64_end_of_central_directory="PK\x06\x06"
+zip64_locator="PK\x06\x07"
+
+# Hostile or ambiguous member names.
+parent_traversal="../"
+windows_parent_traversal="..\\"
+absolute_path="/etc/passwd"
+windows_drive="C:\\"
+embedded_nul="\x00"
