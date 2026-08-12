@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Validate external workflow acceptance fixtures without external credentials.
 
-This is an offline contract harness for CKL, CKLB, STIG Manager JSON, and DISA
-XCCDF artifacts. CI uses the offline mode to prevent payload/schema drift.
+This is an offline contract harness for CKL, CKLB, and DISA XCCDF artifacts.
+CI uses the offline mode to prevent payload/schema drift. STIG Manager scanner
+handoff is covered by the selected-run verifier and staging acceptance gate,
+not by a duplicate portfolio-import format.
 """
 from __future__ import annotations
 
@@ -47,25 +49,6 @@ def validate_cklb(path: Path) -> None:
         fail(f"{path} does not include Vuln/Rule identifiers")
 
 
-def validate_stig_manager(path: Path) -> None:
-    data = json.loads(path.read_text())
-    for key in ["collection", "assets"]:
-        if key not in data:
-            fail(f"{path} missing STIG Manager key: {key}")
-    if not isinstance(data["assets"], list) or not data["assets"]:
-        fail(f"{path} contains no STIG Manager assets")
-    stigs = data["assets"][0].get("stigs") or []
-    if not stigs:
-        fail(f"{path} contains no asset STIG assignments")
-    reviews = stigs[0].get("reviews") or []
-    if not reviews:
-        fail(f"{path} contains no STIG Manager reviews")
-    required_review_keys = {"ruleId", "result", "detail", "comment"}
-    missing = required_review_keys - set(reviews[0])
-    if missing:
-        fail(f"{path} STIG Manager review missing keys: {sorted(missing)}")
-
-
 def validate_disa_zip(path: Path) -> None:
     try:
         with BoundedXccdfArchive(path) as archive:
@@ -87,7 +70,6 @@ def main() -> None:
     checks = [
         (validate_ckl, root / "fixtures/ckl/windows_server_2022_sanitized.ckl"),
         (validate_cklb, root / "fixtures/cklb/windows_server_2022_sanitized.cklb"),
-        (validate_stig_manager, root / "fixtures/exports/stig_manager_golden.json"),
         (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-07/U_Cisco_IOS-XE_Router_Y26M04_STIG.zip"),
         (validate_disa_zip, root / "fixtures/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R4_STIG.zip"),
     ]

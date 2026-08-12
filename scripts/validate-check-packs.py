@@ -9,6 +9,7 @@ Dependency-free by design.
 from __future__ import annotations
 
 import json
+import math
 import os
 import sys
 from pathlib import Path
@@ -88,6 +89,7 @@ TYPED_BSD_AUDIT_CLASSES = {
     "V-203772": ["fr", "fw", "fa", "fm", "fc", "fd"],
 }
 KNOWN_CHECK_TYPES = {
+    "predicate",
     "command",
     "config_line",
     "all",
@@ -97,6 +99,13 @@ KNOWN_CHECK_TYPES = {
     *TYPED_CISCO_CHECKS,
 }
 KNOWN_EXPECTED_TYPES = {"matches", "not_contains", "is_true", "match_count_at_least"}
+IMPLEMENTATION_CLASSES = {
+    "declarative_predicate",
+    "legacy_declarative",
+    "reviewed_imperative",
+}
+LEGACY_DECLARATIVE_TYPES = {"command", "config_line", "all", "any"}
+MAX_SAFE_NUMBER = 9_007_199_254_740_991
 
 
 def _rel(path: Path, repo: Path) -> str:
@@ -134,7 +143,11 @@ def _validate_check(
     if check_type not in KNOWN_CHECK_TYPES:
         errors.append(f"{pack}: {vuln_id}: unsupported v0.3 check type {check_type!r}")
         return
-    if check_type == "config_line":
+    if check_type == "predicate":
+        if set(check) != {"type", "program"}:
+            errors.append(f"{pack}: {vuln_id}: predicate accepts only type and program")
+        _validate_predicate_program(pack, vuln_id, check.get("program"), errors)
+    elif check_type == "config_line":
         pattern = check.get("pattern")
         if not isinstance(pattern, str) or not pattern.strip():
             errors.append(f"{pack}: {vuln_id}: config_line needs a non-empty pattern")
@@ -195,6 +208,242 @@ def _validate_check(
                 f"{pack}: {vuln_id}: {check_type} is reserved for "
                 f"{expected_vuln_id}"
             )
+
+
+def _bounded_string(value: Any, maximum: int = 1024) -> bool:
+    return (
+        isinstance(value, str)
+        and bool(value)
+        and len(value.encode("utf-8")) <= maximum
+        and not any(ord(character) < 32 for character in value)
+    )
+
+
+def _validate_value_ref(
+    pack: str, vuln_id: str, value: Any, errors: list[str], *, in_row: bool
+) -> None:
+    if not isinstance(value, dict) or set(value) - {"scope", "pointer"}:
+        errors.append(f"{pack}: {vuln_id}: predicate value reference is invalid")
+        return
+    scope = value.get("scope", "root")
+    if scope not in {"root", "current_row"} or (scope == "current_row" and not in_row):
+        errors.append(f"{pack}: {vuln_id}: predicate value scope is invalid here")
+    pointer = value.get("pointer", "")
+    if not isinstance(pointer, str) or len(pointer.encode("utf-8")) > 512:
+        errors.append(f"{pack}: {vuln_id}: predicate JSON pointer is invalid")
+    elif pointer and (
+        not pointer.startswith("/") or len(pointer[1:].split("/")) > 16
+    ):
+        errors.append(f"{pack}: {vuln_id}: predicate JSON pointer is not bounded")
+
+
+def _validate_operand(
+    pack: str, vuln_id: str, value: Any, errors: list[str], *, in_row: bool
+) -> None:
+    if not isinstance(value, dict) or value.get("type") not in {"value", "literal"}:
+        errors.append(f"{pack}: {vuln_id}: predicate operand is invalid")
+        return
+    if value["type"] == "value":
+        if set(value) != {"type", "value"}:
+            errors.append(f"{pack}: {vuln_id}: value operand fields are invalid")
+        _validate_value_ref(pack, vuln_id, value.get("value"), errors, in_row=in_row)
+    else:
+        if set(value) != {"type", "value"} or isinstance(
+            value.get("value"), (dict, list)
+        ):
+            errors.append(f"{pack}: {vuln_id}: literal operand must be scalar")
+        if isinstance(value.get("value"), str) and not _bounded_string(value["value"]):
+            errors.append(f"{pack}: {vuln_id}: predicate literal is not bounded")
+
+
+def _validate_predicate_input(
+    pack: str, vuln_id: str, value: Any, errors: list[str]
+) -> None:
+    if not isinstance(value, dict):
+        errors.append(f"{pack}: {vuln_id}: predicate input parser is invalid")
+        return
+    input_type = value.get("type")
+    allowed_fields = {
+        "text": {"type"},
+        "json": {"type"},
+        "key_value": {"type", "separator", "comment_prefixes"},
+        "delimited_table": {"type", "delimiter", "comment_prefixes"},
+        "structured_config": {"type", "comment_prefixes", "block_separators"},
+    }
+    if input_type not in allowed_fields or set(value) - allowed_fields[input_type]:
+        errors.append(f"{pack}: {vuln_id}: predicate input parser fields are invalid")
+        return
+    separator_name = (
+        "separator" if input_type == "key_value" else "delimiter"
+        if input_type == "delimited_table"
+        else None
+    )
+    if separator_name is not None:
+        separator = value.get(separator_name)
+        if (
+            not isinstance(separator, str)
+            or not separator
+            or len(separator.encode("utf-8")) > 8
+            or any(ord(character) < 32 for character in separator)
+        ):
+            errors.append(f"{pack}: {vuln_id}: predicate input separator is invalid")
+    for field in ("comment_prefixes", "block_separators"):
+        if field in value:
+            tokens = value[field]
+            if (
+                not isinstance(tokens, list)
+                or len(tokens) > 16
+                or any(not _bounded_string(token) for token in tokens)
+            ):
+                errors.append(f"{pack}: {vuln_id}: predicate input {field} is invalid")
+
+
+def _validate_predicate_ast(
+    pack: str,
+    vuln_id: str,
+    predicate: Any,
+    errors: list[str],
+    *,
+    depth: int,
+    nodes: list[int],
+    in_row: bool,
+) -> None:
+    if depth > 16:
+        errors.append(f"{pack}: {vuln_id}: predicate AST exceeds depth 16")
+        return
+    nodes[0] += 1
+    if nodes[0] > 256:
+        errors.append(f"{pack}: {vuln_id}: predicate AST exceeds 256 nodes")
+        return
+    if not isinstance(predicate, dict):
+        errors.append(f"{pack}: {vuln_id}: predicate AST node must be an object")
+        return
+    operation = predicate.get("op")
+    if operation in {"all", "any"}:
+        children = predicate.get("predicates")
+        if set(predicate) != {"op", "predicates"} or not isinstance(children, list) or not 1 <= len(children) <= 64:
+            errors.append(f"{pack}: {vuln_id}: {operation} requires 1-64 predicates")
+            return
+        for child in children:
+            _validate_predicate_ast(
+                pack, vuln_id, child, errors, depth=depth + 1, nodes=nodes, in_row=in_row
+            )
+    elif operation == "not":
+        if set(predicate) != {"op", "predicate"}:
+            errors.append(f"{pack}: {vuln_id}: not predicate fields are invalid")
+            return
+        _validate_predicate_ast(
+            pack,
+            vuln_id,
+            predicate.get("predicate"),
+            errors,
+            depth=depth + 1,
+            nodes=nodes,
+            in_row=in_row,
+        )
+    elif operation == "present":
+        if set(predicate) != {"op", "value"}:
+            errors.append(f"{pack}: {vuln_id}: present predicate fields are invalid")
+        _validate_value_ref(pack, vuln_id, predicate.get("value"), errors, in_row=in_row)
+    elif operation == "equal":
+        if set(predicate) - {"op", "left", "right", "case_sensitive"}:
+            errors.append(f"{pack}: {vuln_id}: equal predicate fields are invalid")
+        _validate_operand(pack, vuln_id, predicate.get("left"), errors, in_row=in_row)
+        _validate_operand(pack, vuln_id, predicate.get("right"), errors, in_row=in_row)
+        if "case_sensitive" in predicate and not isinstance(predicate["case_sensitive"], bool):
+            errors.append(f"{pack}: {vuln_id}: case_sensitive must be boolean")
+    elif operation == "in_set":
+        if set(predicate) - {"op", "value", "values", "case_sensitive"}:
+            errors.append(f"{pack}: {vuln_id}: in_set predicate fields are invalid")
+        _validate_operand(pack, vuln_id, predicate.get("value"), errors, in_row=in_row)
+        values = predicate.get("values")
+        if not isinstance(values, list) or not 1 <= len(values) <= 128 or any(
+            isinstance(value, (dict, list)) for value in values
+        ):
+            errors.append(f"{pack}: {vuln_id}: in_set requires 1-128 scalar values")
+        elif any(isinstance(value, str) and not _bounded_string(value) for value in values):
+            errors.append(f"{pack}: {vuln_id}: in_set contains an unbounded string")
+        if "case_sensitive" in predicate and not isinstance(predicate["case_sensitive"], bool):
+            errors.append(f"{pack}: {vuln_id}: case_sensitive must be boolean")
+    elif operation == "numeric_range":
+        if set(predicate) - {"op", "value", "min", "max", "include_min", "include_max"}:
+            errors.append(f"{pack}: {vuln_id}: numeric_range fields are invalid")
+        _validate_operand(pack, vuln_id, predicate.get("value"), errors, in_row=in_row)
+        bounds = [predicate.get(name) for name in ("min", "max") if name in predicate]
+        if not bounds or any(
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+            or abs(value) > MAX_SAFE_NUMBER
+            for value in bounds
+        ):
+            errors.append(f"{pack}: {vuln_id}: numeric_range needs finite bounds")
+        for field in ("include_min", "include_max"):
+            if field in predicate and not isinstance(predicate[field], bool):
+                errors.append(f"{pack}: {vuln_id}: {field} must be boolean")
+    elif operation == "ordered":
+        if set(predicate) != {"op", "left", "relation", "right", "value_type"}:
+            errors.append(f"{pack}: {vuln_id}: ordered predicate fields are invalid")
+        _validate_operand(pack, vuln_id, predicate.get("left"), errors, in_row=in_row)
+        _validate_operand(pack, vuln_id, predicate.get("right"), errors, in_row=in_row)
+        if predicate.get("relation") not in {
+            "less_than", "less_than_or_equal", "greater_than", "greater_than_or_equal"
+        } or predicate.get("value_type") not in {"number", "string"}:
+            errors.append(f"{pack}: {vuln_id}: ordered relation/type is invalid")
+    elif operation == "table_rows":
+        if set(predicate) - {"op", "rows", "quantifier", "predicate", "require_nonempty"}:
+            errors.append(f"{pack}: {vuln_id}: table_rows fields are invalid")
+        _validate_value_ref(pack, vuln_id, predicate.get("rows"), errors, in_row=in_row)
+        if predicate.get("quantifier") not in {"every", "any", "none"}:
+            errors.append(f"{pack}: {vuln_id}: table_rows quantifier is invalid")
+        if "require_nonempty" in predicate and not isinstance(
+            predicate["require_nonempty"], bool
+        ):
+            errors.append(f"{pack}: {vuln_id}: require_nonempty must be boolean")
+        _validate_predicate_ast(
+            pack,
+            vuln_id,
+            predicate.get("predicate"),
+            errors,
+            depth=depth + 1,
+            nodes=nodes,
+            in_row=True,
+        )
+    else:
+        errors.append(f"{pack}: {vuln_id}: unsupported predicate operation {operation!r}")
+
+
+def _validate_predicate_program(
+    pack: str, vuln_id: str, program: Any, errors: list[str]
+) -> None:
+    if not isinstance(program, dict) or set(program) != {
+        "schema_version", "source", "input", "predicate"
+    }:
+        errors.append(f"{pack}: {vuln_id}: predicate program fields are invalid")
+        return
+    if program.get("schema_version") != 1:
+        errors.append(f"{pack}: {vuln_id}: predicate schema_version must be 1")
+    source = program.get("source")
+    if not isinstance(source, dict) or source.get("type") not in {
+        "network_config", "observation"
+    }:
+        errors.append(f"{pack}: {vuln_id}: predicate source is invalid")
+    elif source["type"] == "network_config" and set(source) != {"type"}:
+        errors.append(f"{pack}: {vuln_id}: network_config source accepts no fields")
+    elif source["type"] == "observation" and (
+        set(source) != {"type", "key"} or not _bounded_string(source.get("key"))
+    ):
+        errors.append(f"{pack}: {vuln_id}: observation source key is invalid")
+    _validate_predicate_input(pack, vuln_id, program.get("input"), errors)
+    _validate_predicate_ast(
+        pack,
+        vuln_id,
+        program.get("predicate"),
+        errors,
+        depth=1,
+        nodes=[0],
+        in_row=False,
+    )
 
 
 def _validate_expected(pack: str, vuln_id: str, expected: Any, errors: list[str]) -> None:
@@ -263,7 +512,38 @@ def _validate_pack(
             errors.append(
                 f"{name}: {vuln_id}: platform must be {expected['platform']!r}"
             )
-        _validate_check(name, vuln_id, check_definition.get("check"), errors)
+        check_value = check_definition.get("check")
+        check_type = check_value.get("type") if isinstance(check_value, dict) else None
+        required_class = (
+            "declarative_predicate"
+            if check_type == "predicate"
+            else "legacy_declarative"
+            if check_type in LEGACY_DECLARATIVE_TYPES
+            else "reviewed_imperative"
+        )
+        implementation_class = check_definition.get("implementation_class")
+        if implementation_class not in IMPLEMENTATION_CLASSES:
+            errors.append(
+                f"{name}: {vuln_id}: implementation_class must be explicitly classified"
+            )
+        elif implementation_class != required_class:
+            errors.append(
+                f"{name}: {vuln_id}: implementation_class must be {required_class!r}"
+            )
+        introduction_release = check_definition.get("introduction_release")
+        parts = introduction_release.split(".") if isinstance(introduction_release, str) else []
+        if len(parts) not in (2, 3) or any(
+            not part.isdigit() or (len(part) > 1 and part.startswith("0"))
+            for part in parts
+        ):
+            errors.append(
+                f"{name}: {vuln_id}: introduction_release must be numeric MAJOR.MINOR[.PATCH]"
+            )
+        if check_type == "predicate" and check_definition.get("expected") != {"type": "is_true"}:
+            errors.append(
+                f"{name}: {vuln_id}: predicate checks must use expected.type=is_true"
+            )
+        _validate_check(name, vuln_id, check_value, errors)
         _validate_expected(name, vuln_id, check_definition.get("expected"), errors)
     return seen
 

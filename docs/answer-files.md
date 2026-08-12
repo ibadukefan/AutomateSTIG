@@ -54,11 +54,11 @@ the former unversioned answer-file and assessment HTTP routes return `410 Gone`.
 They must not be used to create new reviewer decisions.
 
 Existing answer-file bytes and their source attribution remain preservable for
-the non-destructive migration window through `automatestig migration inventory`
-and `automatestig migration export`. Human determinations, overrides, comments,
+the non-destructive migration window through `automatestig-transition migration
+inventory` and `automatestig-transition migration export`. Human determinations, overrides, comments,
 and manual-rule completion continue in STIG Manager. The format material below
-is retained only to interpret preserved files and hidden transition-CLI output;
-it is not an operational GUI procedure.
+is retained only to interpret preserved files; it is not an operational GUI or
+product-CLI procedure.
 
 ## JSON Example
 
@@ -111,37 +111,10 @@ entries:
     force_override: true
 ```
 
-## Generate A Template
+## Preservation only
 
-Generate a template from a checklist:
-
-```bash
-automatestig gen-answer --input server01.ckl --output answers.yaml
-```
-
-Include `Not_Reviewed` findings:
-
-```bash
-automatestig gen-answer --input server01.ckl --output answers.yaml --include-unreviewed
-```
-
-Use the answer file during evaluation:
-
-```bash
-automatestig evaluate --stig <STIG_ID> --evidence device01-evidence.json --answer answers.yaml --output device01.ckl --format ckl
-```
-
-Repeat `--answer` to apply more than one file. Files are validated, bound into
-the evaluation plan, recorded in provenance, and applied in the order written
-on the command line:
-
-```bash
-automatestig evaluate --stig <STIG_ID> --evidence device01-evidence.json \
-  --answer baseline.yaml --answer site-overrides.yaml \
-  --output device01.ckl --format ckl
-```
-
-Normal source-priority rules still apply at each step; ordering does not let an
-ordinary answer replace device evidence or a collection error. A later entry
-can replace an earlier decision only where its normal eligibility permits it
-or it carries an explicitly approved `force_override`.
+The former `gen-answer` command and `evaluate --answer` option are retired and
+are not compiled into the scanner product. Use `automatestig-transition migration export`
+to preserve historical answer-file bytes and attribution. Create and complete
+human determinations in STIG Manager; they are never converted into
+AutomateSTIG scanner results.

@@ -26,6 +26,36 @@ security-sensitive work.
   delivery does not postpone it. Protect any retained-evidence handoff and
   backups under the same assessment-data policy.
 
+Use the repository's bounded backup tool instead of copying a live SQLite file:
+
+```bash
+automatestig-backup-restore backup \
+  --data-dir ~/.automatestig --output /protected/automatestig-2026-08-11.zip
+automatestig-backup-restore restore \
+  --input /protected/automatestig-2026-08-11.zip \
+  --data-dir /new/private/path/.automatestig
+```
+
+The recovery entrypoint requires Python 3.10 or newer. Data, archive, output,
+and restore paths must be real paths: the utility rejects a symlink, junction,
+or other reparse point in the target or any existing ancestor. Choose an
+owner-controlled real directory rather than relying on a filesystem alias.
+
+Stop GUI and transition-CLI writers while creating the recovery unit so any
+preserved legacy library and trust/key files represent the same operational
+point. SQLite's online backup
+API still handles committed WAL frames safely and avoids a raw live-file copy.
+
+The backup uses SQLite's online backup API, so committed WAL frames are part of
+the database snapshot. It includes `secret.key`, any preserved transition
+library, SSH host
+trust, and the three public-key trust domains; it excludes logs and transient
+SQLite sidecars. The archive is create-new and owner-only, but it is not
+encrypted—put it only on approved encrypted media. Restore verifies the exact
+manifest and every SHA-256 digest, refuses an existing destination, checkpoints
+the database, and deletes `stigman_config` so the OAuth secret must be re-entered
+and tested. Device passwords and key passphrases are never backup inputs.
+
 ## Network boundary
 
 Loopback (`127.0.0.1`) is the default and preferred bind. The API accepts the
@@ -39,19 +69,24 @@ If a controlled service deployment requires a non-loopback bind:
 - restrict host firewall ingress and outbound SSH/STIG Manager/DISA destinations;
 - use split credentials and an environment-specific STIG Manager OAuth client;
 - terminate the process if the proxy/auth boundary is unavailable;
+- monitor authentication-failure and temporary-rate-limit warnings;
 - do not expose it directly to the internet or a shared user network.
 
-The lab-only unsigned-pack, invalid-STIG-Manager-certificate, legacy-evidence,
-and SSH trust-on-first-use overrides are prohibited in production launch
-configuration. Treat their presence as a deployment failure.
+Collect the daily JSON-lines files from `<data_dir>/logs` with the site's
+approved log shipper. The local writer retains at most 14 files; downstream
+retention and access control remain an operator responsibility.
 
-Leave `AUTOMATESTIG_OFFLINE_SIGNING_KEY` unset on ordinary GUI/service hosts.
-The scanner-first GUI exposes no signing workflow; legacy protected pack export
-is disabled without it. Prefer the explicit `build-pack`
-workflow on an offline signing workstation.
+The lab-only unsigned-pack and SSH trust-on-first-use overrides are prohibited
+in production launch configuration. Treat their presence as a deployment
+failure. STIG Manager TLS verification has no bypass.
+
+The scanner-first GUI exposes no signing workflow. Run the explicit protected
+CLI command with its `--signing-key` argument only on an offline signing
+workstation; never place that private key on an ordinary GUI/service host.
 
 Likewise, never place a selected-run handoff producer private key on an
-ordinary GUI/service host. Use the protected `scanner sign-handoff` CLI
+ordinary GUI/service host. Use the protected
+`automatestig-transition scanner sign-handoff` CLI
 ceremony, distribute only its public key out of band, and keep those public
 keys in the dedicated handoff trust domain rather than the content or
 organization-policy trust stores.

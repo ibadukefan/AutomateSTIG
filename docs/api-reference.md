@@ -27,7 +27,7 @@ query-string tokens are intentionally not accepted.
 
 Loopback desktop mode auto-generates a random per-session token and injects it
 into the served frontend, so the local browser is authenticated automatically.
-Non-loopback binds require `AUTOMATESTIG_AUTH_TOKEN` with at least 16 visible
+Non-loopback binds require `AUTOMATESTIG_AUTH_TOKEN` with at least 32 visible
 ASCII characters and no whitespace or the server refuses to start.
 
 ## Scanner-first v1
@@ -43,6 +43,8 @@ ASCII characters and no whitespace or the server refuses to start.
 | GET | `/v1/stig-manager/collections/{collection_id}/assets` | Read live existing assets. |
 | GET | `/v1/stig-manager/collections/{collection_id}/assets/{asset_id}/assignments` | Read exact assignments and scanner readiness reasons. |
 | GET | `/v1/scanner/profiles` | List exact release-bundled profiles, hashes, compatibility, coverage, and readiness. |
+| GET/POST | `/v1/scanner/connection-profiles` | List or create thin scanner-only SSH target profiles (endpoint, port, adapter, optional opaque provider reference; never credentials). |
+| PUT/DELETE | `/v1/scanner/connection-profiles/{profile_id}` | Update or remove one thin target profile. |
 | POST | `/v1/runs/preflight` | Bind destination, target fingerprint, exact profile, privilege, and read-only operation plan. |
 | POST | `/v1/runs/ssh` | Enqueue an authorized ONTAP/FreeBSD live collection from a valid preflight; returns `202` before device I/O. |
 | POST | `/v1/runs/evidence` | Start strict evidence or IOS-XE configuration evaluation from a valid preflight. |
@@ -52,6 +54,9 @@ ASCII characters and no whitespace or the server refuses to start.
 | GET | `/v1/runs/{run_id}` | Read run steps, immutable result/provenance, sparse preview, attempts, and receipt. |
 | POST | `/v1/runs/{run_id}/deliver` | Recheck remote ownership/state; confirm an exact no-op or return an actionable handoff/conflict result. |
 | GET | `/v1/runs/{run_id}/handoff` | Download the selected-run handoff for any complete run. |
+| POST | `/v1/runs/{run_id}/evidence/purge` | Irreversibly remove retained replay evidence after exact run-ID confirmation; provenance metadata remains. |
+| GET/POST | `/v1/runs/{run_id}/reconciliation-receipts` | Page strict receiver readback receipts or import one digest- and destination-bound receipt. |
+| POST | `/v1/runs/jobs/{job_id}/resume` | Resume a failed SSH job only with fresh credentials, a fresh preflight, and a retained authenticated checkpoint. |
 
 Connected preflight requires a live existing collection, asset, assignment, and
 exact STIG revision; the API has no asset-create or assignment mutation.
@@ -69,8 +74,8 @@ remotely; a conflict remains blocked. Long-running SSH collection returns a
 job identifier and is observed through the job endpoints.
 
 The handoff endpoint emits
-`automatestig.selected-run-handoff.v3`. Its required payloads are
-`manifest.json`, `scanner-run.json`, `sparse-reviews.json`, `fallback.cklb`,
+`automatestig.selected-run-handoff.v4`. Its required payloads are
+`manifest.json`, `run-request.json`, `scanner-run.json`, `sparse-reviews.json`, `fallback.cklb`,
 `results.xccdf.xml`, and `integrity.json`; retained bundles also contain
 `evidence-envelope.json`. The staged STIG Manager transport maps
 `sparse-reviews.json` to the Review API for the existing exact assignment.

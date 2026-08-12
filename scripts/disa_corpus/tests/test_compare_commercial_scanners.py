@@ -147,6 +147,29 @@ class CommercialComparisonTests(unittest.TestCase):
                 ],
             },
         ]
+        benchmark_source_path, benchmark_source_sha = bound_file(
+            root, "bindings/benchmark/disa-source.zip", b"disa-source"
+        )
+        effective_model_path, effective_model_sha = bound_file(
+            root, "bindings/benchmark/effective-model.json", b"effective-benchmark"
+        )
+        trace_components = {}
+        for tool in tools:
+            parser_path, parser_sha = bound_file(
+                root,
+                pathlib.Path("bindings") / "trace-components" / f"{tool['id']}-parser.bin",
+                f"{tool['id']}-exact-parser".encode(),
+            )
+            predicate_path, predicate_sha = bound_file(
+                root,
+                pathlib.Path("bindings") / "trace-components" / f"{tool['id']}-predicate.bin",
+                f"{tool['id']}-exact-predicate".encode(),
+            )
+            trace_components[tool["id"]] = {
+                "parser": (parser_path, parser_sha),
+                "predicate": (predicate_path, predicate_sha),
+            }
+        tool_by_id = {tool["id"]: tool for tool in tools}
         repetitions = 3
         seed = digest("schedule-seed")
         by_case = {case["id"]: case for case in cases}
@@ -177,6 +200,78 @@ class CommercialComparisonTests(unittest.TestCase):
                     "path": str(result_path.relative_to(root)),
                     "sha256": hashlib.sha256(result_raw).hexdigest(),
                     "test_result_id": test_result_id,
+                }
+                evidence_path, evidence_sha = bound_file(
+                    root,
+                    pathlib.Path("trace") / f"{sequence:03}-raw-evidence.txt",
+                    f"exact raw evidence for {tool_id} {case_id} {repetition}".encode(),
+                )
+                request_sha = digest(
+                    f"exact-request-{tool_id}-{case_id}-{repetition}"
+                )
+                operation_path, operation_sha = bound_file(
+                    root,
+                    pathlib.Path("trace") / f"{sequence:03}-operation.json",
+                    json.dumps(
+                        {
+                            "schema": COMPARE.OPERATION_BINDING_SCHEMA,
+                            "id": f"collect-{case_id}",
+                            "request_sha256": request_sha,
+                            "raw_evidence_sha256": evidence_sha,
+                        },
+                        sort_keys=True,
+                    ).encode(),
+                )
+                tool = tool_by_id[tool_id]
+                parser_path, parser_sha = trace_components[tool_id]["parser"]
+                predicate_path, predicate_sha = trace_components[tool_id]["predicate"]
+                trace_rows = {}
+                for vuln, status in case["expected_status_by_vuln"].items():
+                    trace_rows[vuln] = {
+                        "status": status,
+                        "raw_evidence": {
+                            "path": evidence_path,
+                            "sha256": evidence_sha,
+                        },
+                        "operation": {
+                            "id": f"collect-{case_id}",
+                            "artifact_path": operation_path,
+                            "artifact_sha256": operation_sha,
+                            "request_sha256": request_sha,
+                            "raw_evidence_sha256": evidence_sha,
+                        },
+                        "parser": {
+                            "id": f"{tool_id}-parser",
+                            "artifact_path": parser_path,
+                            "artifact_sha256": parser_sha,
+                        },
+                        "predicate": {
+                            "id": f"{tool_id}-{vuln.lower()}",
+                            "artifact_path": predicate_path,
+                            "artifact_sha256": predicate_sha,
+                        },
+                        "provenance": {
+                            "result_sha256": result["sha256"],
+                            "source_state_sha256": case["source_state_sha256"],
+                            "tool_artifact_sha256": tool["artifact_sha256"],
+                            "tool_content_sha256": tool["content_sha256"],
+                            "effective_model_sha256": effective_model_sha,
+                        },
+                    }
+                trace_document = {
+                    "$schema": COMPARE.TRACEABILITY_SCHEMA_URI,
+                    "schema": COMPARE.TRACEABILITY_SCHEMA,
+                    "rows": trace_rows,
+                }
+                trace_raw = json.dumps(trace_document, sort_keys=True).encode()
+                trace_path, trace_sha = bound_file(
+                    root,
+                    pathlib.Path("trace") / f"{sequence:03}-rows.json",
+                    trace_raw,
+                )
+                result["traceability"] = {
+                    "path": trace_path,
+                    "sha256": trace_sha,
                 }
             else:
                 failure_raw = (
@@ -223,12 +318,6 @@ class CommercialComparisonTests(unittest.TestCase):
                 pathlib.Path("bindings") / "target" / f"{member}.json",
                 f"verified-{member}".encode(),
             )
-        benchmark_source_path, benchmark_source_sha = bound_file(
-            root, "bindings/benchmark/disa-source.zip", b"disa-source"
-        )
-        effective_model_path, effective_model_sha = bound_file(
-            root, "bindings/benchmark/effective-model.json", b"effective-benchmark"
-        )
         manifest = {
             "$schema": COMPARE.MANIFEST_SCHEMA_URI,
             "schema": COMPARE.MANIFEST_SCHEMA,
@@ -306,14 +395,29 @@ class CommercialComparisonTests(unittest.TestCase):
             "evidence_sha256": sha256,
         }
 
+    def read_trace(self, root, run):
+        return json.loads(
+            (root / run["result"]["traceability"]["path"]).read_text(
+                encoding="utf-8"
+            )
+        )
+
+    def rewrite_trace(self, root, run, document):
+        raw = json.dumps(document, sort_keys=True).encode()
+        (root / run["result"]["traceability"]["path"]).write_bytes(raw)
+        run["result"]["traceability"]["sha256"] = hashlib.sha256(raw).hexdigest()
+
     def test_accepts_randomized_repeated_native_xccdf_and_reports_denominators(self):
         with tempfile.TemporaryDirectory() as temporary:
             path, _ = self.build_manifest(pathlib.Path(temporary))
             report = COMPARE.build_report(COMPARE.load_manifest(path))
         automated = report["tools"]["automatestig"]["metrics"]
+        self.assertEqual(report["schema"], "automatestig-scanner-comparison-report/v3")
         self.assertTrue(report["gates"]["protocol_gate_passed"])
         self.assertTrue(report["gates"]["automatestig_safety_gate_passed"])
         self.assertTrue(report["gates"]["comparison_results_gate_passed"])
+        self.assertTrue(report["gates"]["traceability_results_gate_passed"])
+        self.assertTrue(report["gates"]["claim_evidence_complete"])
         self.assertTrue(report["gates"]["technical_report_complete"])
         self.assertTrue(
             report["observed_advantage_automatestig_over_comparator"]["tenable"][
@@ -335,6 +439,24 @@ class CommercialComparisonTests(unittest.TestCase):
         self.assertEqual(automated["collection_success"], {"numerator": 6, "denominator": 6, "rate": 1.0})
         self.assertEqual(automated["automation_depth"], {"numerator": 12, "denominator": 12, "rate": 1.0})
         self.assertEqual(automated["native_xccdf_runs"], 6)
+        self.assertEqual(
+            automated["evidence_traceability"],
+            {
+                "numerator": 12,
+                "denominator": 12,
+                "rate": 1.0,
+                "validated_rows": 12,
+                "not_supplied_rows": 0,
+                "validation_status": "validated_complete",
+            },
+        )
+        self.assertTrue(
+            all(
+                row["validation"] == "validated"
+                and len(row["traceability_record_sha256"]) == 64
+                for row in report["tools"]["automatestig"]["row_traceability"]
+            )
+        )
         self.assertEqual(automated["median_setup_duration_ms"], 900)
         self.assertEqual(
             report["tools"]["automatestig"]["cases"]["truncated_output"][
@@ -366,6 +488,136 @@ class CommercialComparisonTests(unittest.TestCase):
         self.assertTrue(all(run["collection_complete"] is None for run in prepared["runs"]))
         self.assertTrue(all(run["failure"] is None for run in prepared["runs"]))
         self.assertEqual(prepared["schema"], COMPARE.DRAFT_MANIFEST_SCHEMA)
+
+    def test_native_results_without_row_traces_report_not_supplied_and_block_claim_gate(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            path, manifest = self.build_manifest(root)
+            for run in manifest["runs"]:
+                if run["result"] is not None:
+                    run["result"].pop("traceability")
+            self.rewrite(path, manifest)
+            report = COMPARE.build_report(COMPARE.load_manifest(path))
+            markdown = COMPARE.render_markdown(report)
+            with contextlib.redirect_stderr(io.StringIO()):
+                exit_code = COMPARE.main(
+                    [
+                        str(path),
+                        "--json-out",
+                        str(root / "untraced-report.json"),
+                        "--require-comparison-gate",
+                    ]
+                )
+        traceability = report["tools"]["automatestig"]["metrics"][
+            "evidence_traceability"
+        ]
+        self.assertEqual(
+            traceability,
+            {
+                "numerator": 0,
+                "denominator": 12,
+                "rate": None,
+                "validated_rows": 0,
+                "not_supplied_rows": 12,
+                "validation_status": "not_supplied",
+            },
+        )
+        self.assertIn("not supplied (0/12 validated)", markdown)
+        self.assertTrue(
+            all(
+                row["validation"] == "not_supplied"
+                and row["traceability_record_sha256"] is None
+                for row in report["tools"]["automatestig"]["row_traceability"]
+            )
+        )
+        self.assertTrue(report["gates"]["comparison_results_gate_passed"])
+        self.assertFalse(report["gates"]["traceability_results_gate_passed"])
+        self.assertFalse(report["gates"]["claim_evidence_complete"])
+        self.assertEqual(
+            report["gates"]["superiority_claim_status"],
+            "validated_traceability_required",
+        )
+        self.assertEqual(exit_code, 2)
+
+    def test_partial_row_traceability_counts_only_validated_rows(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            path, manifest = self.build_manifest(root)
+            run = next(
+                run
+                for run in manifest["runs"]
+                if run["tool_id"] == "automatestig"
+                and run["case_id"] == "compliant"
+            )
+            trace = self.read_trace(root, run)
+            trace["rows"].pop("V-2")
+            self.rewrite_trace(root, run, trace)
+            self.rewrite(path, manifest)
+            report = COMPARE.build_report(COMPARE.load_manifest(path))
+        traceability = report["tools"]["automatestig"]["metrics"][
+            "evidence_traceability"
+        ]
+        self.assertEqual(traceability["numerator"], 11)
+        self.assertEqual(traceability["denominator"], 12)
+        self.assertEqual(traceability["not_supplied_rows"], 1)
+        self.assertEqual(traceability["validation_status"], "validated_partial")
+        self.assertAlmostEqual(traceability["rate"], 11 / 12)
+        self.assertFalse(report["gates"]["sut_traceability_gate_passed"])
+
+    def test_rejects_invalid_raw_operation_parser_predicate_and_provenance_bindings(self):
+        mutations = {
+            "raw evidence": "raw",
+            "operation artifact": "operation",
+            "operation is not bound": "operation_evidence",
+            "operation artifact request_sha256": "operation_request",
+            "parser artifact": "parser",
+            "predicate artifact": "predicate",
+            "provenance tool_content_sha256": "content",
+            "provenance tool_artifact_sha256": "build",
+            "traceability status": "status",
+        }
+        for expected_error, mutation in mutations.items():
+            with self.subTest(dimension=mutation), tempfile.TemporaryDirectory() as temporary:
+                root = pathlib.Path(temporary)
+                path, manifest = self.build_manifest(root)
+                run = next(run for run in manifest["runs"] if run["result"] is not None)
+                trace = self.read_trace(root, run)
+                row = trace["rows"]["V-1"]
+                if mutation == "raw":
+                    (root / row["raw_evidence"]["path"]).write_bytes(
+                        b"tampered raw evidence"
+                    )
+                elif mutation in {"operation", "parser", "predicate"}:
+                    row[mutation]["artifact_sha256"] = digest(f"wrong-{mutation}")
+                    self.rewrite_trace(root, run, trace)
+                elif mutation == "operation_evidence":
+                    row["operation"]["raw_evidence_sha256"] = digest(
+                        "wrong-operation-evidence"
+                    )
+                    self.rewrite_trace(root, run, trace)
+                elif mutation == "operation_request":
+                    row["operation"]["request_sha256"] = digest(
+                        "wrong-operation-request"
+                    )
+                    self.rewrite_trace(root, run, trace)
+                elif mutation == "content":
+                    row["provenance"]["tool_content_sha256"] = digest(
+                        "wrong-content"
+                    )
+                    self.rewrite_trace(root, run, trace)
+                elif mutation == "build":
+                    row["provenance"]["tool_artifact_sha256"] = digest(
+                        "wrong-build"
+                    )
+                    self.rewrite_trace(root, run, trace)
+                else:
+                    row["status"] = (
+                        "Finding" if row["status"] != "Finding" else "NotAFinding"
+                    )
+                    self.rewrite_trace(root, run, trace)
+                self.rewrite(path, manifest)
+                with self.assertRaisesRegex(COMPARE.ComparisonError, expected_error):
+                    COMPARE.load_manifest(path)
 
     def test_rejects_a_tampered_result_export(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -683,6 +935,7 @@ class CommercialComparisonTests(unittest.TestCase):
                     )
                     (root / run["result"]["path"]).write_bytes(raw)
                     run["result"]["sha256"] = hashlib.sha256(raw).hexdigest()
+                    run["result"].pop("traceability")
             self.rewrite(path, manifest)
             report = COMPARE.build_report(COMPARE.load_manifest(path))
             with contextlib.redirect_stderr(io.StringIO()):
@@ -720,6 +973,8 @@ class CommercialComparisonTests(unittest.TestCase):
         )
         self.assertIn("draftRun", schema["$defs"])
         self.assertIn("completedRun", schema["$defs"])
+        self.assertIn("traceabilityReference", schema["$defs"])
+        self.assertIn("traceability", schema["$defs"]["xccdfResult"]["properties"])
 
     def test_legacy_unbound_manifest_is_rejected_with_migration_guidance(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -741,6 +996,7 @@ class CommercialComparisonTests(unittest.TestCase):
         for relative in (
             "schemas/scanner-comparison-manifest.schema.json",
             "schemas/normalized-scanner-decisions.schema.json",
+            "schemas/scanner-row-traceability.schema.json",
         ):
             with (REPO / relative).open(encoding="utf-8") as stream:
                 self.assertIsInstance(json.load(stream), dict)

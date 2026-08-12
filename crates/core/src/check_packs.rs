@@ -7,7 +7,10 @@ use std::collections::HashSet;
 #[cfg(test)]
 use std::path::Path;
 
-use crate::checks::{Check, CheckDefinition, CheckPack, CheckPlatform};
+use crate::checks::{
+    predicate::PredicateSource, Check, CheckDefinition, CheckPack, CheckPlatform,
+    ImplementationClass,
+};
 use crate::library::{StigLibrary, TrustedExecutableFile};
 use crate::models::stig::StigBenchmark;
 
@@ -419,6 +422,12 @@ pub fn validate_pack(pack: &CheckPack) -> crate::Result<()> {
                 pack.stig_id, definition.vuln_id
             )));
         }
+        validate_automation_metadata(definition).map_err(|error| {
+            crate::Error::Other(format!(
+                "check pack {} rule {} has invalid automation metadata: {error}",
+                pack.stig_id, definition.vuln_id
+            ))
+        })?;
         validate_typed_check_identity(&definition.vuln_id, &definition.check, true).map_err(
             |error| {
                 crate::Error::Other(format!(
@@ -441,6 +450,86 @@ pub fn validate_pack(pack: &CheckPack) -> crate::Result<()> {
         })?;
     }
     Ok(())
+}
+
+fn validate_automation_metadata(definition: &CheckDefinition) -> Result<(), String> {
+    if let Some(release) = definition.introduction_release.as_deref() {
+        let parts: Vec<&str> = release.split('.').collect();
+        if !(2..=3).contains(&parts.len())
+            || parts.iter().any(|part| {
+                part.is_empty()
+                    || !part.bytes().all(|byte| byte.is_ascii_digit())
+                    || (part.len() > 1 && part.starts_with('0'))
+            })
+        {
+            return Err(
+                "introduction_release must be a numeric MAJOR.MINOR[.PATCH] value".to_string(),
+            );
+        }
+    } else if definition.implementation_class != ImplementationClass::Unknown {
+        return Err("introduction_release is required for a classified implementation".to_string());
+    }
+
+    let class_matches = match definition.implementation_class {
+        ImplementationClass::DeclarativePredicate => {
+            matches!(definition.check, Check::Predicate { .. })
+        }
+        ImplementationClass::LegacyDeclarative => legacy_declarative(&definition.check),
+        ImplementationClass::ReviewedImperative => reviewed_imperative(&definition.check),
+        // Backward-compatible trusted legacy content stays executable, while
+        // release scorecards preserve both values as unknown. Shipped content
+        // has a stricter static gate and is explicitly migrated.
+        ImplementationClass::Unknown => true,
+    };
+    if !class_matches {
+        return Err(format!(
+            "implementation_class {:?} does not match the executable check variant",
+            definition.implementation_class
+        ));
+    }
+    if matches!(definition.check, Check::Predicate { .. })
+        && !matches!(definition.expected, crate::checks::ExpectedResult::IsTrue)
+    {
+        return Err(
+            "predicate checks must use expected.type=is_true; negation belongs in the AST"
+                .to_string(),
+        );
+    }
+    Ok(())
+}
+
+fn legacy_declarative(check: &Check) -> bool {
+    match check {
+        Check::Command { .. } | Check::ConfigLine { .. } => true,
+        Check::All { checks } | Check::Any { checks } => {
+            !checks.is_empty() && checks.iter().all(legacy_declarative)
+        }
+        _ => false,
+    }
+}
+
+fn reviewed_imperative(check: &Check) -> bool {
+    matches!(
+        check,
+        Check::BsdAuditClassSelection { .. }
+            | Check::BsdPfEnabled
+            | Check::CiscoVtySessionLimit
+            | Check::CiscoLoginBlockFor
+            | Check::CiscoInterfaceAclDenyLogInput
+            | Check::CiscoPersistentAuditModificationProtection
+            | Check::CiscoPersistentAuditDeletionProtection
+            | Check::CiscoFileSystemPrivilege
+            | Check::CiscoSingleLocalFallbackAccount
+            | Check::CiscoPasswordMinimumLength
+            | Check::CiscoManagementIdleTimeout
+            | Check::CiscoLoggingBufferCapacity
+            | Check::CiscoLoggingTrapSeverity
+            | Check::CiscoRedundantAuthoritativeNtpSources
+            | Check::CiscoNtpAuthentication
+            | Check::CiscoSshMacAlgorithms
+            | Check::CiscoSshEncryptionAlgorithms
+            | Check::CiscoSyslogServerCount
+    )
 }
 
 fn validate_typed_check_identity(
@@ -567,6 +656,24 @@ fn validate_nonempty_regex(pattern: &str) -> Result<(), String> {
 
 fn validate_check_capabilities(platform: CheckPlatform, check: &Check) -> Result<(), String> {
     match check {
+        Check::Predicate { program } => {
+            program.validate()?;
+            match (&program.source, platform) {
+                (PredicateSource::NetworkConfig, CheckPlatform::CiscoIos)
+                | (
+                    PredicateSource::Observation { .. },
+                    CheckPlatform::Ontap | CheckPlatform::Bsd,
+                ) => Ok(()),
+                (PredicateSource::NetworkConfig, _) => Err(
+                    "network_config predicate sources are supported only for Cisco IOS-XE"
+                        .to_string(),
+                ),
+                (PredicateSource::Observation { .. }, _) => Err(
+                    "observation predicate sources are supported only for ONTAP and FreeBSD"
+                        .to_string(),
+                ),
+            }
+        }
         Check::Command {
             command,
             pattern,
@@ -778,6 +885,8 @@ mod tests {
                     pattern: r"(?i)\bauditd\s+is\s+running\b".to_string(),
                 },
                 description: None,
+                implementation_class: ImplementationClass::LegacyDeclarative,
+                introduction_release: Some("0.3".to_string()),
             }],
         };
         std::fs::write(
@@ -815,6 +924,8 @@ mod tests {
                     pattern: "^malicious-timeout$".to_string(),
                 },
                 description: None,
+                implementation_class: ImplementationClass::LegacyDeclarative,
+                introduction_release: Some("0.3".to_string()),
             }],
         };
         std::fs::write(
@@ -862,6 +973,8 @@ mod tests {
                 },
                 expected: ExpectedResult::IsTrue,
                 description: None,
+                implementation_class: ImplementationClass::LegacyDeclarative,
+                introduction_release: Some("0.3".to_string()),
             }],
         };
         std::fs::write(
@@ -1001,6 +1114,8 @@ mod tests {
                     pattern: r"(?i)\bauditd\s+is\s+running\b".to_string(),
                 },
                 description: None,
+                implementation_class: ImplementationClass::LegacyDeclarative,
+                introduction_release: Some("0.3".to_string()),
             }],
         };
         assert!(validate_pack(&pack).is_err());
@@ -1024,6 +1139,8 @@ mod tests {
                 pattern: r"(?i)\bauditd\s+is\s+running\b".to_string(),
             },
             description: None,
+            implementation_class: ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
         };
         let mut pack = CheckPack {
             stig_id: "General_Purpose_Operating_System".to_string(),
@@ -1032,6 +1149,19 @@ mod tests {
             priority: -100,
             checks: vec![definition],
         };
+        assert!(validate_pack(&pack).is_ok());
+
+        pack.checks[0].implementation_class = ImplementationClass::Unknown;
+        pack.checks[0].introduction_release = None;
+        assert!(validate_pack(&pack).is_ok());
+        pack.checks[0].implementation_class = ImplementationClass::ReviewedImperative;
+        assert!(validate_pack(&pack).is_err());
+        pack.checks[0].implementation_class = ImplementationClass::LegacyDeclarative;
+        pack.checks[0].introduction_release = None;
+        assert!(validate_pack(&pack).is_err());
+        pack.checks[0].introduction_release = Some("v0.3".to_string());
+        assert!(validate_pack(&pack).is_err());
+        pack.checks[0].introduction_release = Some("0.3".to_string());
         assert!(validate_pack(&pack).is_ok());
 
         pack.stig_id = "Unsupported_STIG".to_string();
@@ -1079,6 +1209,8 @@ mod tests {
                 },
                 expected: ExpectedResult::IsTrue,
                 description: None,
+                implementation_class: ImplementationClass::LegacyDeclarative,
+                introduction_release: Some("0.3".to_string()),
             }],
         };
         assert!(validate_pack(&cisco).is_err());
@@ -1094,6 +1226,8 @@ mod tests {
                 pattern: "^compliant:".to_string(),
             },
             description: None,
+            implementation_class: ImplementationClass::ReviewedImperative,
+            introduction_release: Some("0.3".to_string()),
         };
         let mut pack = CheckPack {
             stig_id: "Cisco_IOS-XE_Router_NDM_STIG".to_string(),
@@ -1111,6 +1245,54 @@ mod tests {
         pack.checks[0].check = Check::All {
             checks: vec![Check::CiscoVtySessionLimit],
         };
+        assert!(validate_pack(&pack).is_err());
+    }
+
+    #[test]
+    fn predicate_pack_boundary_binds_schema_class_and_boolean_expectation() {
+        let definition = CheckDefinition {
+            vuln_id: "V-PREDICATE".to_string(),
+            platform: CheckPlatform::Bsd,
+            check: Check::Predicate {
+                program: crate::checks::predicate::PredicateProgram {
+                    schema_version: 1,
+                    source: crate::checks::predicate::PredicateSource::Observation {
+                        key: "service auditd onestatus".to_string(),
+                    },
+                    input: crate::checks::predicate::PredicateInput::Text,
+                    predicate: crate::checks::predicate::Predicate::Present {
+                        value: crate::checks::predicate::ValueRef {
+                            scope: crate::checks::predicate::ValueScope::Root,
+                            pointer: String::new(),
+                        },
+                    },
+                },
+            },
+            expected: ExpectedResult::IsTrue,
+            description: None,
+            implementation_class: ImplementationClass::DeclarativePredicate,
+            introduction_release: Some("0.4".to_string()),
+        };
+        let mut pack = CheckPack {
+            stig_id: "General_Purpose_Operating_System".to_string(),
+            platform: CheckPlatform::Bsd,
+            version: "V3R3".to_string(),
+            priority: 100,
+            checks: vec![definition],
+        };
+        assert!(validate_pack(&pack).is_ok());
+
+        pack.checks[0].implementation_class = ImplementationClass::LegacyDeclarative;
+        assert!(validate_pack(&pack).is_err());
+        pack.checks[0].implementation_class = ImplementationClass::DeclarativePredicate;
+        pack.checks[0].expected = ExpectedResult::NotContains {
+            substring: "x".to_string(),
+        };
+        assert!(validate_pack(&pack).is_err());
+        pack.checks[0].expected = ExpectedResult::IsTrue;
+        if let Check::Predicate { program } = &mut pack.checks[0].check {
+            program.schema_version = 2;
+        }
         assert!(validate_pack(&pack).is_err());
     }
 

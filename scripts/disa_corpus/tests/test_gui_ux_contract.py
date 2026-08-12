@@ -155,9 +155,9 @@ class GuiUxContractTests(unittest.TestCase):
         for contract in (
             "fullBenchmarkRules",
             "reviewedRules",
-            "Full benchmark denominator",
+            "Full benchmark",
             "Outside profile",
-            "Not a compliance grade",
+            "Not a compliance score",
         ):
             self.assertIn(contract, self.deliveries + self.content)
 

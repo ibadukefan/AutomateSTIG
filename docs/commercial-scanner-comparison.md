@@ -21,10 +21,12 @@ The directory contains:
 - the independently adjudicated compliant, noncompliant, permission-denied,
   transport-failure, truncated-output, ambiguous-output, and
   unsupported-version cases;
-- each tool's exact retained result export; and
+- each tool's exact retained result export;
 - when a product has no usable XCCDF export, its original proprietary report
   plus a decision record conforming to
-  `schemas/normalized-scanner-decisions.schema.json`.
+  `schemas/normalized-scanner-decisions.schema.json`; and
+- for every row claimed as evidence-traceable, a separate record conforming to
+  `schemas/scanner-row-traceability.schema.json`.
 
 Prefer native XCCDF 1.2. AutomateSTIG's selected-run handoff includes
 `results.xccdf.xml`; every complete AutomateSTIG run must use that exact member
@@ -34,6 +36,30 @@ proprietary result must retain its original bytes and SHA-256 and be normalized
 by two people who did not adjudicate the ground truth and could not see the
 oracle. The normalized record binds the original export and the reviewed
 mapping procedure by SHA-256.
+
+A result export proves that a tool emitted a status; it does not, by itself,
+prove how that status was derived. Native XCCDF therefore receives no automatic
+traceability credit. Each credited V-ID needs a retained row trace that binds:
+
+- the exact result status and result SHA-256;
+- the exact raw-evidence regular file and SHA-256;
+- a distinct retained collection-operation descriptor whose
+  schema is `automatestig-scanner-operation-binding/v1`, whose ID and request
+  digest match the row, and whose `raw_evidence_sha256` matches those evidence
+  bytes;
+- distinct retained parser and predicate artifacts, with stable IDs and
+  verified SHA-256 digests;
+- the run's oracle source-state SHA-256;
+- the declared tool build/package and content SHA-256 digests; and
+- the effective benchmark-model SHA-256.
+
+The trace document itself is retained by relative path and SHA-256 in the run's
+`result.traceability` member. Supporting evidence may serve multiple rules in
+one run, but raw-evidence files cannot be reused across runs. Every supplied
+path must stay below the manifest directory and every byte digest is verified.
+A malformed, tampered, mismatched, or extra trace row rejects the comparison.
+A trace document may cover a strict subset of result rows; uncovered rows are
+reported as not supplied and receive no credit.
 
 The parser accepts only an XCCDF 1.2 `Benchmark` in the exact
 `http://checklists.nist.gov/xccdf/1.2` namespace. The manifest declares the
@@ -105,6 +131,9 @@ record:
 - whether collection was complete;
 - the relative result path and exact digest, or `null` when there was no result;
 - for XCCDF, the exact retained TestResult ID;
+- the optional traceability-record path and digest for rows with a validated
+  evidence-to-decision chain (omit it or use `null` when the tool did not
+  supply that data);
 - for every incomplete run, a structured failure stage, code, detail, and the
   relative path and digest of retained diagnostic evidence;
 - wall-clock milliseconds;
@@ -144,6 +173,15 @@ failed comparator run remains a failed or
 incomplete attempt with its reason visible; it is never silently removed or
 converted into a fabricated rule score.
 
+Evidence traceability is validation coverage, not an inference from result
+format. The report counts only V-IDs with a valid row-trace chain. It labels
+partial coverage as `validated_partial`; when no trace was supplied it reports
+`not_supplied`, a `null` rate, and the exact number of unvalidated rows instead
+of manufacturing 100%. Runs with no determined rows are `not_applicable`. Each
+tool's JSON `row_traceability` array identifies the run, case, repetition, and
+V-ID separately; a validated row carries the retained trace-record digest and
+an unsubstantiated row carries `null`.
+
 `--require-technical-gate` exits with status 2 if AutomateSTIG reports a false
 pass, produces any status mismatch, emits a determined row from
 incomplete/unobservable evidence, claims a complete collection for an expected
@@ -153,7 +191,10 @@ reordered, duplicated, or tampered inputs exit with status 1.
 `--require-comparison-gate` applies that safety gate and also exits with status
 2 when an approved deviation invalidates the protocol or any declared tool
 lacks a usable determined result covering at least one oracle-adjudicated rule
-for any compliant/noncompliant repetition.
+for any compliant/noncompliant repetition. It also requires complete validated
+row traceability for the SUT and every comparator. Missing trace data does not
+invalidate accuracy measurements, but it fails the claim-evidence gate and
+sets the claim status to `validated_traceability_required`.
 Thus a licensed comparator that was never run, failed export, or returned only
 undetermined rows cannot produce a passing comparison gate. Its failed runs
 remain in the JSON and Markdown with their structured reasons and diagnostic
@@ -161,6 +202,12 @@ digests, and the report suppresses advantage deltas for that comparator rather
 than treating missing output as a score. Use the combined gate for retained
 release or claim evidence; the narrower technical gate is useful while
 diagnosing AutomateSTIG itself.
+
+Completed v2 manifests remain readable when their result objects omit
+`traceability`; those legacy observations are reported honestly as not
+supplied. Reports generated by the corrected harness use
+`automatestig-scanner-comparison-report/v3` because the old report calculation
+incorrectly treated every determined result row as traceable.
 
 ## Interpreting the result
 

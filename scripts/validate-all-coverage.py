@@ -20,7 +20,22 @@ def main() -> None:
     for manifest in manifests:
         rel = manifest.relative_to(repo)
         result = subprocess.run(
-            ['cargo', 'run', '-q', '-p', 'automatestig', '--', 'coverage', 'validate', '--manifest', str(rel)],
+            [
+                'cargo',
+                'run',
+                '-q',
+                '-p',
+                'automatestig',
+                '--bin',
+                'automatestig',
+                '--features',
+                'maintainer',
+                '--',
+                'coverage',
+                'validate',
+                '--manifest',
+                str(rel),
+            ],
             cwd=repo,
             text=True,
             stdout=subprocess.PIPE,

@@ -1,18 +1,16 @@
 //! AutomateSTIG CLI — difficult-device STIG scanning and evidence handoff.
 //!
 //! Usage:
-//!   automatestig collect --stig <STIG_ID> --host <HOST> --username <USER> --output <EVIDENCE_JSON>
+//!   automatestig collect --stig <STIG_ID> --host <HOST> --username <USER> --output <ADAPTER_EVIDENCE_JSON>
 //!   automatestig evaluate --stig <STIG_ID> (--evidence <FILE> | --config <FILE>) [--output <OUTPUT>]
 //!   automatestig scanner verify-handoff <HANDOFF_ZIP>
-//!   automatestig migration inventory [--output <REPORT_JSON>]
-//!   automatestig migration export --output <TRANSITION_ZIP>
 
 mod commands;
 mod ui;
 
 use clap::{Parser, Subcommand};
 
-#[derive(Parser)]
+#[derive(Debug, Parser)]
 #[command(
     name = "automatestig",
     version,
@@ -29,22 +27,38 @@ struct Cli {
     verbose: bool,
 
     /// Database path (default: ~/.automatestig/data.db).
-    #[arg(long, global = true)]
+    // Retained only so artifact-output safety can recognize an explicitly
+    // relocated managed database. It is not part of the scanner user flow.
+    #[arg(long, global = true, hide = true)]
     db: Option<String>,
 
     /// STIG library path (default: ~/.automatestig/library).
-    #[arg(long, global = true)]
+    // Retained only as a managed-path exclusion boundary. Normal scanner
+    // content is immutable and release-bundled, not selected from this path.
+    #[arg(long, global = true, hide = true)]
     library: Option<String>,
 
     #[command(subcommand)]
     command: Commands,
 }
 
-#[derive(Subcommand)]
+#[cfg(test)]
+impl Cli {
+    fn command_test_fixture(library: String, db: String) -> Self {
+        Self {
+            verbose: false,
+            library: Some(library),
+            db: Some(db),
+            command: Commands::Status,
+        }
+    }
+}
+
+#[derive(Debug, Subcommand)]
 enum Commands {
-    /// Collect versioned evidence from a remote device over SSH.
+    /// Collect native, replayable adapter evidence from a remote device over SSH.
     Collect {
-        /// STIG benchmark ID whose check pack defines the collection plan.
+        /// Release-bundled scanner profile ID or exact STIG ID.
         #[arg(short, long)]
         stig: String,
 
@@ -52,7 +66,7 @@ enum Commands {
         #[arg(long)]
         host: String,
 
-        /// Corroborating endpoint identity; when supplied, must equal --host.
+        /// Corroborating device hostname; when supplied, must equal the observed device identity.
         #[arg(long)]
         hostname: Option<String>,
 
@@ -80,7 +94,7 @@ enum Commands {
         #[arg(long, default_value_t = 30)]
         timeout_secs: u64,
 
-        /// Evidence JSON path, or '-' for stdout.
+        /// Native adapter-evidence JSON path, or '-' for stdout.
         #[arg(short, long)]
         output: String,
 
@@ -89,21 +103,17 @@ enum Commands {
         trust_on_first_use: bool,
     },
 
-    /// Evaluate a STIG against a device evidence transcript or running configuration.
+    /// Evaluate a bundled profile against native adapter evidence or a running configuration.
     Evaluate {
-        /// STIG benchmark ID to evaluate.
+        /// Release-bundled scanner profile ID or exact STIG ID.
         #[arg(short, long)]
         stig: String,
 
-        /// Evidence v2 JSON file collected from the target device.
+        /// Native adapter-evidence JSON produced by `automatestig collect`.
         #[arg(long, required_unless_present = "config", conflicts_with = "config")]
         evidence: Option<String>,
 
-        /// Transition-only: unsafely assume marker-based v1 evidence commands succeeded.
-        #[arg(long, requires = "evidence", conflicts_with = "config", hide = true)]
-        allow_legacy_evidence: bool,
-
-        /// Device running-config file (e.g. show running-config output) evaluated via config_line check packs.
+        /// Authorized IOS-XE complete running configuration.
         #[arg(
             long,
             required_unless_present = "evidence",
@@ -119,28 +129,21 @@ enum Commands {
         #[arg(long, requires = "organization_policy")]
         organization_policy_signature: Option<String>,
 
-        /// Transition-only path(s) to legacy answer files.
-        #[arg(short, long, hide = true)]
-        answer: Vec<String>,
-
-        /// Target hostname (auto-detected from evidence if not specified).
+        /// Corroborating hostname; must match the identity inside the input.
         #[arg(long)]
         host: Option<String>,
 
-        /// Output file path (.ckl, .cklb, or .json).
+        /// Output file path (.json native result, or supplemental .cklb).
         #[arg(short, long)]
         output: Option<String>,
 
-        /// Output format override (ckl, cklb, json).
+        /// Output format override (json or cklb).
         #[arg(short, long)]
         format: Option<String>,
-
-        /// Transition-only merge with a previous local checklist.
-        #[arg(long, hide = true)]
-        merge: Option<String>,
     },
 
     /// Import a .stigpack content pack into the STIG library.
+    #[cfg(feature = "maintainer")]
     #[command(hide = true)]
     Import {
         /// Path to the .stigpack file.
@@ -149,6 +152,7 @@ enum Commands {
     },
 
     /// Verify a .stigpack file without importing.
+    #[cfg(feature = "maintainer")]
     #[command(hide = true)]
     Verify {
         /// Path to the .stigpack file.
@@ -157,81 +161,15 @@ enum Commands {
     },
 
     /// Manage the STIG library.
+    #[cfg(feature = "maintainer")]
     #[command(hide = true)]
     Library {
         #[command(subcommand)]
         action: LibraryAction,
     },
 
-    /// Convert between checklist formats.
-    #[command(hide = true)]
-    Convert {
-        /// Input file path.
-        #[arg(short, long)]
-        input: String,
-
-        /// Output file path.
-        #[arg(short, long)]
-        output: String,
-
-        /// Output format (ckl, cklb, json, stig-manager).
-        #[arg(short, long)]
-        format: Option<String>,
-    },
-
-    /// Show summary of a checklist.
-    #[command(hide = true)]
-    Summary {
-        /// Input file path (.ckl, .cklb, or .json).
-        #[arg(short, long)]
-        input: String,
-
-        /// Show only open findings.
-        #[arg(long)]
-        open_only: bool,
-
-        /// Filter by severity (high, medium, low).
-        #[arg(long)]
-        severity: Option<String>,
-    },
-
-    /// Generate an answer file template from an existing checklist.
-    #[command(name = "gen-answer", hide = true)]
-    GenAnswer {
-        /// Input checklist file.
-        #[arg(short, long)]
-        input: String,
-
-        /// Output answer file path (.json or .yaml).
-        #[arg(short, long)]
-        output: String,
-
-        /// Include Not_Reviewed findings in template.
-        #[arg(long)]
-        include_unreviewed: bool,
-    },
-
-    /// Export checklist to external formats.
-    #[command(hide = true)]
-    Export {
-        /// Input checklist file.
-        #[arg(short, long)]
-        input: String,
-
-        /// Output file path.
-        #[arg(short, long)]
-        output: String,
-
-        /// Export format (stig-manager).
-        #[arg(short, long)]
-        format: String,
-
-        /// Collection name (for STIG-Manager export).
-        #[arg(long)]
-        collection: Option<String>,
-    },
-
     /// Explicitly create a new external content-signing key pair.
+    #[cfg(feature = "maintainer")]
     #[command(name = "generate-signing-key", hide = true)]
     GenerateSigningKey {
         /// Output path for the private key; the public key uses `.pub`.
@@ -240,6 +178,7 @@ enum Commands {
     },
 
     /// Sign an organization-policy artifact on an isolated signing host.
+    #[cfg(feature = "maintainer")]
     #[command(name = "sign-organization-policy", hide = true)]
     SignOrganizationPolicy {
         /// Exact organization-policy JSON bytes to sign.
@@ -256,6 +195,7 @@ enum Commands {
     },
 
     /// Build a .stigpack content pack.
+    #[cfg(feature = "maintainer")]
     #[command(name = "build-pack", hide = true)]
     BuildPack {
         /// Pack ID.
@@ -287,6 +227,7 @@ enum Commands {
     },
 
     /// Import DISA STIG content directly from XCCDF files or ZIP archives.
+    #[cfg(feature = "maintainer")]
     #[command(name = "disa-import", hide = true)]
     DisaImport {
         /// Path to DISA STIG ZIP archive or XCCDF XML file.
@@ -295,16 +236,11 @@ enum Commands {
     },
 
     /// Validate rule-by-rule coverage manifests.
+    #[cfg(feature = "maintainer")]
     #[command(hide = true)]
     Coverage {
         #[command(subcommand)]
         action: CoverageAction,
-    },
-
-    /// Inspect or export preserved local data during the scanner-first transition.
-    Migration {
-        #[command(subcommand)]
-        action: MigrationAction,
     },
 
     /// Inspect scanner artifacts exchanged with an existing STIG Manager workflow.
@@ -313,11 +249,12 @@ enum Commands {
         action: ScannerAction,
     },
 
-    /// Show application version and library status.
+    /// Verify and show the release-bundled scanner contract.
     Status,
 }
 
-#[derive(Subcommand)]
+#[cfg(feature = "maintainer")]
+#[derive(Debug, Subcommand)]
 enum CoverageAction {
     /// Validate a coverage manifest JSON file.
     Validate {
@@ -327,24 +264,7 @@ enum CoverageAction {
     },
 }
 
-#[derive(Subcommand)]
-enum MigrationAction {
-    /// Produce a read-only attribution and migration inventory as JSON.
-    Inventory {
-        /// Report path, or '-' for stdout (default: stdout).
-        #[arg(short, long)]
-        output: Option<String>,
-    },
-
-    /// Create a new, private transition ZIP without changing local state.
-    Export {
-        /// Create-new ZIP path outside AutomateSTIG-managed state.
-        #[arg(short, long)]
-        output: String,
-    },
-}
-
-#[derive(Subcommand)]
+#[derive(Debug, Subcommand)]
 enum ScannerAction {
     /// Verify a selected-run handoff ZIP without importing or changing local state.
     #[command(name = "verify-handoff")]
@@ -360,32 +280,10 @@ enum ScannerAction {
         #[arg(long, requires = "signature")]
         trust_dir: Option<String>,
     },
-
-    /// Sign a semantically verified handoff on a protected CLI host.
-    #[command(name = "sign-handoff")]
-    SignHandoff {
-        /// Selected-run handoff ZIP downloaded from AutomateSTIG.
-        zip: String,
-
-        /// Existing external raw 32-byte Ed25519 private key.
-        #[arg(long)]
-        signing_key: String,
-
-        /// Create-new detached signature sidecar path.
-        #[arg(short, long)]
-        output: String,
-    },
-
-    /// Explicitly create a dedicated external handoff-signing key pair.
-    #[command(name = "generate-signing-key")]
-    GenerateSigningKey {
-        /// Create-new private key path; the public key uses `.pub`.
-        #[arg(long)]
-        output: String,
-    },
 }
 
-#[derive(Subcommand)]
+#[cfg(feature = "maintainer")]
+#[derive(Debug, Subcommand)]
 enum LibraryAction {
     /// List all available STIG benchmarks.
     List,
@@ -445,67 +343,46 @@ fn main() {
         Commands::Evaluate {
             ref stig,
             ref evidence,
-            allow_legacy_evidence,
             ref config,
             ref organization_policy,
             ref organization_policy_signature,
-            ref answer,
             ref host,
             ref output,
             ref format,
-            ref merge,
         } => commands::evaluate::run(
             commands::evaluate::EvaluateArgs {
                 stig_id: stig.clone(),
                 evidence: evidence.clone(),
-                allow_legacy_evidence: *allow_legacy_evidence,
                 config: config.clone(),
                 organization_policy: organization_policy.clone(),
                 organization_policy_signature: organization_policy_signature.clone(),
-                answer_paths: answer.clone(),
                 host: host.clone(),
                 output: output.clone(),
                 format: format.clone(),
-                merge: merge.clone(),
             },
             &cli,
         ),
+        #[cfg(feature = "maintainer")]
         Commands::Import { ref pack } => commands::import::run(pack, &cli),
+        #[cfg(feature = "maintainer")]
         Commands::Verify { ref pack } => commands::verify::run(pack),
+        #[cfg(feature = "maintainer")]
         Commands::Library { ref action } => match action {
             LibraryAction::List => commands::library::list(&cli),
             LibraryAction::Show { ref id } => commands::library::show(id, &cli),
             LibraryAction::Init => commands::library::init(&cli),
         },
-        Commands::Convert {
-            ref input,
-            ref output,
-            ref format,
-        } => commands::convert::run(input, output, format.as_deref(), &cli),
-        Commands::Summary {
-            ref input,
-            open_only,
-            ref severity,
-        } => commands::summary::run(input, *open_only, severity.as_deref()),
-        Commands::GenAnswer {
-            ref input,
-            ref output,
-            include_unreviewed,
-        } => commands::gen_answer::run(input, output, *include_unreviewed, &cli),
-        Commands::Export {
-            ref input,
-            ref output,
-            ref format,
-            ref collection,
-        } => commands::export::run(input, output, format, collection.as_deref(), &cli),
+        #[cfg(feature = "maintainer")]
         Commands::GenerateSigningKey { ref output } => {
             commands::build_pack::generate_signing_key(output)
         }
+        #[cfg(feature = "maintainer")]
         Commands::SignOrganizationPolicy {
             ref policy,
             ref signing_key,
             ref output,
         } => commands::evaluate::sign_organization_policy(policy, signing_key, output),
+        #[cfg(feature = "maintainer")]
         Commands::BuildPack {
             ref id,
             ref name,
@@ -514,15 +391,11 @@ fn main() {
             ref output,
             ref signing_key,
         } => commands::build_pack::run(id, name, version, source, output, signing_key),
+        #[cfg(feature = "maintainer")]
         Commands::DisaImport { ref input } => commands::disa_import::run(input, &cli),
+        #[cfg(feature = "maintainer")]
         Commands::Coverage { ref action } => match action {
             CoverageAction::Validate { ref manifest } => commands::coverage::validate(manifest),
-        },
-        Commands::Migration { ref action } => match action {
-            MigrationAction::Inventory { ref output } => {
-                commands::migration::inventory(output.as_deref(), &cli)
-            }
-            MigrationAction::Export { ref output } => commands::migration::export(output, &cli),
         },
         Commands::Scanner { ref action } => match action {
             ScannerAction::VerifyHandoff {
@@ -530,14 +403,6 @@ fn main() {
                 ref signature,
                 ref trust_dir,
             } => commands::handoff::run(zip, signature.as_deref(), trust_dir.as_deref()),
-            ScannerAction::SignHandoff {
-                ref zip,
-                ref signing_key,
-                ref output,
-            } => commands::handoff::sign_handoff(zip, signing_key, output, &cli),
-            ScannerAction::GenerateSigningKey { ref output } => {
-                commands::handoff::generate_signing_key(output, &cli)
-            }
         },
         Commands::Status => commands::status::run(&cli),
     };
@@ -554,9 +419,9 @@ mod tests {
     use clap::{error::ErrorKind, CommandFactory, Parser};
 
     #[test]
-    fn product_help_exposes_scanning_handoff_and_migration_not_manager_duplicates() {
+    fn product_help_exposes_only_scanning_and_read_only_handoff() {
         let help = Cli::command().render_long_help().to_string();
-        for command in ["collect", "evaluate", "scanner", "migration", "status"] {
+        for command in ["collect", "evaluate", "scanner", "status"] {
             assert!(help.contains(command), "missing scanner command {command}");
         }
         for retired in [
@@ -566,6 +431,9 @@ mod tests {
             "disa-import",
             "library",
             "export",
+            "migration",
+            "sign-handoff",
+            "generate-signing-key",
         ] {
             let command_is_listed = help.lines().any(|line| {
                 line.trim_start()
@@ -576,6 +444,34 @@ mod tests {
                 !command_is_listed,
                 "manager-duplicate command leaked: {retired}"
             );
+        }
+    }
+
+    #[test]
+    fn manager_duplicate_commands_are_not_compiled_into_the_product_cli() {
+        for retired in ["convert", "summary", "gen-answer", "export"] {
+            let error = Cli::try_parse_from(["automatestig", retired])
+                .expect_err("retired manager command unexpectedly parsed");
+            assert_eq!(error.kind(), ErrorKind::InvalidSubcommand, "{retired}");
+        }
+    }
+
+    #[cfg(not(feature = "maintainer"))]
+    #[test]
+    fn protected_maintainer_commands_are_absent_from_the_product_build() {
+        for command in [
+            "import",
+            "verify",
+            "library",
+            "build-pack",
+            "disa-import",
+            "coverage",
+            "generate-signing-key",
+            "sign-organization-policy",
+        ] {
+            let error = Cli::try_parse_from(["automatestig", command])
+                .expect_err("maintainer command unexpectedly parsed in product build");
+            assert_eq!(error.kind(), ErrorKind::InvalidSubcommand, "{command}");
         }
     }
 
@@ -623,39 +519,24 @@ mod tests {
     }
 
     #[test]
-    fn legacy_override_is_valid_only_with_evidence() {
-        let result = Cli::try_parse_from([
-            "automatestig",
-            "evaluate",
-            "--stig",
-            "example",
-            "--config",
-            "running-config.txt",
-            "--allow-legacy-evidence",
-        ]);
-        assert!(result.is_err());
-    }
-
-    #[test]
-    fn migration_cli_separates_inventory_from_create_new_export() {
-        assert!(Cli::try_parse_from(["automatestig", "migration", "inventory"]).is_ok());
-        assert!(Cli::try_parse_from([
-            "automatestig",
-            "migration",
-            "inventory",
-            "--output",
-            "inventory.json",
-        ])
-        .is_ok());
-        assert!(Cli::try_parse_from(["automatestig", "migration", "export"]).is_err());
-        assert!(Cli::try_parse_from([
-            "automatestig",
-            "migration",
-            "export",
-            "--output",
-            "transition.zip",
-        ])
-        .is_ok());
+    fn legacy_evaluation_mutations_are_not_compiled_into_the_product_cli() {
+        for option in ["--allow-legacy-evidence", "--answer", "--merge"] {
+            let mut arguments = vec![
+                "automatestig",
+                "evaluate",
+                "--stig",
+                "example",
+                "--evidence",
+                "evidence.json",
+                option,
+            ];
+            if matches!(option, "--answer" | "--merge") {
+                arguments.push("legacy.json");
+            }
+            let error = Cli::try_parse_from(arguments)
+                .expect_err("legacy evaluation mutation unexpectedly parsed");
+            assert_eq!(error.kind(), ErrorKind::UnknownArgument, "{option}");
+        }
     }
 
     #[test]
@@ -688,24 +569,13 @@ mod tests {
         ])
         .is_err());
         assert!(Cli::try_parse_from(["automatestig", "scanner", "verify-handoff"]).is_err());
-        assert!(Cli::try_parse_from([
-            "automatestig",
-            "scanner",
-            "sign-handoff",
-            "selected-run.zip",
-            "--signing-key",
-            "/protected/producer.key",
-            "--output",
-            "selected-run.zip.signature.json",
-        ])
-        .is_ok());
-        assert!(Cli::try_parse_from([
-            "automatestig",
-            "scanner",
-            "generate-signing-key",
-            "--output",
-            "/protected/producer.key",
-        ])
-        .is_ok());
+        for protected in ["sign-handoff", "generate-signing-key"] {
+            let error = Cli::try_parse_from(["automatestig", "scanner", protected])
+                .expect_err("protected handoff mutation leaked into product CLI");
+            assert_eq!(error.kind(), ErrorKind::InvalidSubcommand);
+        }
+        let migration = Cli::try_parse_from(["automatestig", "migration"])
+            .expect_err("transition migration leaked into product CLI");
+        assert_eq!(migration.kind(), ErrorKind::InvalidSubcommand);
     }
 }

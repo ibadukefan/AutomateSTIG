@@ -164,6 +164,10 @@ pub struct VerifiedOrganizationPolicy {
     document: OrganizationPolicyDocument,
     sha256: String,
     signer_fingerprint: String,
+    raw_policy: Vec<u8>,
+    signature: [u8; 64],
+    signer_public_key: [u8; 32],
+    verified_at: String,
 }
 
 impl VerifiedOrganizationPolicy {
@@ -185,8 +189,10 @@ impl VerifiedOrganizationPolicy {
         if signature.len() != 64 {
             return Err("organization policy signature must contain exactly 64 bytes".to_string());
         }
-        let signature = Signature::from_slice(signature)
-            .map_err(|error| format!("organization policy signature is invalid: {error}"))?;
+        let signature_bytes: [u8; 64] = signature
+            .try_into()
+            .map_err(|_| "organization policy signature must contain exactly 64 bytes")?;
+        let signature = Signature::from_bytes(&signature_bytes);
         let digest = Sha256::digest(raw);
         let signer_public_key = trusted_public_keys
             .iter()
@@ -207,6 +213,10 @@ impl VerifiedOrganizationPolicy {
             document,
             sha256: format!("{digest:x}"),
             signer_fingerprint: format!("SHA256:{:x}", Sha256::digest(signer_public_key)),
+            raw_policy: raw.to_vec(),
+            signature: signature_bytes,
+            signer_public_key: *signer_public_key,
+            verified_at: now.to_rfc3339(),
         })
     }
 
@@ -220,6 +230,23 @@ impl VerifiedOrganizationPolicy {
 
     pub fn signer_fingerprint(&self) -> &str {
         &self.signer_fingerprint
+    }
+
+    /// Exact public replay material. No private signing key is ever retained.
+    pub fn raw_policy(&self) -> &[u8] {
+        &self.raw_policy
+    }
+
+    pub fn signature(&self) -> &[u8; 64] {
+        &self.signature
+    }
+
+    pub fn signer_public_key(&self) -> &[u8; 32] {
+        &self.signer_public_key
+    }
+
+    pub fn verified_at(&self) -> &str {
+        &self.verified_at
     }
 }
 
@@ -421,6 +448,10 @@ mod tests {
             verified.signer_fingerprint(),
             format!("SHA256:{:x}", Sha256::digest(public_key))
         );
+        assert_eq!(verified.raw_policy(), raw);
+        assert_eq!(verified.signature().as_slice(), signature);
+        assert_eq!(verified.signer_public_key(), &public_key);
+        assert_eq!(verified.verified_at(), now.to_rfc3339());
         for (hostname, expires, buffer) in [
             ("other-router", "2027-01-01T00:00:00Z", 4_096_000),
             ("router-01", "2026-01-01T00:00:01Z", 4_096_000),

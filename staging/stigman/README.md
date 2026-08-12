@@ -40,8 +40,10 @@ The acceptance explicitly asserts that:
 - the supplemental XCCDF matched the sparse result/detail/comment set but was
   not used as a native import;
 - statuses round-trip through STIG Manager; and
-- the redacted evidence artifact contains hashes, counts, and boundary facts,
-  but no token, client secret, raw configuration, policy contents, or handoff.
+- the redacted evidence JSON contains hashes, counts, and boundary facts, but
+  no token, client secret, raw configuration, policy contents, or handoff
+  payload. The protected workflow artifact separately carries the exact
+  sensitive handoff ZIP for the authenticated receiver ceremony.
 
 ## Usage
 
@@ -51,13 +53,21 @@ docker compose -f staging/stigman/docker-compose.yml up -d
 python3 staging/stigman/run-staging-acceptance.py \
   --binary target/release/automatestig-gui \
   --cli-binary target/release/automatestig \
-  --evidence-output stig-manager-acceptance.json
+  --evidence-output stig-manager-acceptance.json \
+  --handoff-output producer-handoff.zip
 docker compose -f staging/stigman/docker-compose.yml down -v
 ```
 
 The one-run Ed25519 private seed is deleted immediately after signing. The
 remaining policy, detached signature, public trust anchor, GUI database, and
 downloaded handoff are removed when the run ends.
+
+`--handoff-output` is create-new and writes the exact unsigned ZIP already
+verified and reconciled by this run. The protected release-qualification
+workflow uploads it beside the acceptance JSON so a custodian can sign those
+approved-commit bytes and a distinct protected receiver can authenticate the
+detached sidecar. This staging program never handles a producer private key;
+its unsigned verification alone is not producer-authentication proof.
 
 No HTTPS bridge or invalid-certificate product exception is involved. The GUI
 runs disconnected and never needs to trust the rig's HTTP-only STIG Manager

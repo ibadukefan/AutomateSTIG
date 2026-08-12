@@ -289,6 +289,12 @@ fn verify_synthesis(
 
 fn populate_boolean(check: &Check, desired: bool, data: &mut SystemData) -> Result<(), String> {
     match check {
+        Check::Predicate { .. } => {
+            return Err(
+                "predicate checks require definition-specific structured fixtures; covered by the predicate contract suite"
+                    .to_string(),
+            );
+        }
         Check::ConfigLine {
             pattern,
             context,

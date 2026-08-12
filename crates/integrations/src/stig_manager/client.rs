@@ -24,6 +24,11 @@ const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
 const TOKEN_EXPIRY_SKEW: Duration = Duration::from_secs(30);
 const MAX_COMMENTARY_CHARS: usize = 32_767;
 const MAX_RULE_ID_CHARS: usize = 45;
+/// Exact STIG Manager builds whose scanner lookup/readback contract has passed
+/// the retained staging acceptance workflow. A nearby semantic version is not
+/// silently treated as equivalent.
+pub const TESTED_STIG_MANAGER_VERSIONS: &[&str] = &["1.6.13+1"];
+pub const STIG_MANAGER_API_ADAPTER_ID: &str = "stig-manager-1.6-scanner-read-v1";
 
 /// Non-secret connection settings safe to serialize, log, and return to a GUI.
 ///
@@ -274,6 +279,20 @@ pub struct StigManagerCapabilities {
     pub sparse_review_writes: bool,
     /// Atomic review ownership protection for human-safe delivery.
     pub conditional_review_writes: ConditionalReviewWriteSupport,
+}
+
+fn require_tested_stig_manager_version(version: &str) -> Result<(), StigManagerError> {
+    let version = version.trim();
+    if TESTED_STIG_MANAGER_VERSIONS.contains(&version) {
+        return Ok(());
+    }
+    Err(StigManagerError::contract(
+        "capability discovery",
+        format!(
+            "STIG Manager version {version:?} has no tested AutomateSTIG API adapter. Adapter {STIG_MANAGER_API_ADAPTER_ID} is limited to: {}. Use disconnected scanning and a verified selected-run handoff until this server version passes staging acceptance",
+            TESTED_STIG_MANAGER_VERSIONS.join(", ")
+        ),
+    ))
 }
 
 /// A collection selectable as a scanner destination.
@@ -823,6 +842,7 @@ pub struct StigManagerClient {
     api_http: reqwest::Client,
     token_http: reqwest::Client,
     token: Mutex<Option<TokenCache>>,
+    capabilities: Mutex<Option<StigManagerCapabilities>>,
     // There is intentionally no production setter. This remains false until a
     // future, verified server contract supplies a real atomic precondition.
     conditional_review_writes: bool,
@@ -878,14 +898,19 @@ impl StigManagerClient {
             resolve_endpoint("OAuth token", &connection.token_url, &allowlist).await?;
         let api_http = build_http_client(&api_endpoint)?;
         let token_http = build_http_client(&token_endpoint)?;
-        Ok(Self {
+        let client = Self {
             connection,
             client_secret,
             api_http,
             token_http,
             token: Mutex::new(None),
+            capabilities: Mutex::new(None),
             conditional_review_writes: false,
-        })
+        };
+        // Every production client selects a tested API adapter before any
+        // authenticated asset/review operation can occur.
+        client.discover_capabilities().await?;
+        Ok(client)
     }
 
     #[cfg(test)]
@@ -905,6 +930,7 @@ impl StigManagerClient {
             api_http: client.clone(),
             token_http: client,
             token: Mutex::new(None),
+            capabilities: Mutex::new(None),
             conditional_review_writes: false,
         }
     }
@@ -926,6 +952,9 @@ impl StigManagerClient {
     /// Discover the unauthenticated server version and scanner delivery
     /// capabilities through the official `/op/configuration` endpoint.
     pub async fn discover_capabilities(&self) -> Result<StigManagerCapabilities, StigManagerError> {
+        if let Some(capabilities) = self.capabilities.lock().await.clone() {
+            return Ok(capabilities);
+        }
         let url = self.api_url("op/configuration")?;
         let response = self
             .api_http
@@ -944,7 +973,8 @@ impl StigManagerClient {
                     "server response omitted its API version",
                 )
             })?;
-        Ok(StigManagerCapabilities {
+        require_tested_stig_manager_version(&version)?;
+        let capabilities = StigManagerCapabilities {
             server: StigManagerServerConfiguration {
                 version,
                 classification: wire.classification,
@@ -955,7 +985,9 @@ impl StigManagerClient {
             mapped_review_reads: true,
             sparse_review_writes: true,
             conditional_review_writes: ConditionalReviewWriteSupport::Unsupported,
-        })
+        };
+        *self.capabilities.lock().await = Some(capabilities.clone());
+        Ok(capabilities)
     }
 
     /// List collections visible to the OAuth principal.
@@ -1289,10 +1321,25 @@ pub fn exact_assignment(
             "benchmark ID and revision must not be empty",
         ));
     }
-    if let Some(assignment) = asset.stigs.iter().find(|assignment| {
-        assignment.benchmark_id == benchmark_id && assignment.revision == revision
-    }) {
-        return Ok(assignment.clone());
+    let exact: Vec<&StigManagerAssignment> = asset
+        .stigs
+        .iter()
+        .filter(|assignment| {
+            assignment.benchmark_id == benchmark_id && assignment.revision == revision
+        })
+        .collect();
+    if exact.len() == 1 {
+        return Ok(exact[0].clone());
+    }
+    if exact.len() > 1 {
+        return Err(StigManagerError::contract(
+            "exact assignment match",
+            format!(
+                "asset {} returned {} indistinguishable assignments for {benchmark_id} {revision}; refuse an ambiguous destination",
+                asset.asset_id,
+                exact.len()
+            ),
+        ));
     }
     let assigned_revisions: Vec<&str> = asset
         .stigs
@@ -1382,7 +1429,7 @@ fn numeric_id(label: &str, value: &str) -> Result<String, StigManagerError> {
     Ok(value.to_string())
 }
 
-fn validate_endpoint_url(label: &str, raw: &str) -> Result<Url, StigManagerError> {
+pub(super) fn validate_endpoint_url(label: &str, raw: &str) -> Result<Url, StigManagerError> {
     let url = Url::parse(raw).map_err(|error| {
         StigManagerError::contract(
             "connection validation",
@@ -1810,6 +1857,18 @@ mod tests {
 
     use super::*;
 
+    #[test]
+    fn api_adapter_accepts_only_retained_tested_server_versions() {
+        assert!(require_tested_stig_manager_version("1.6.13+1").is_ok());
+        for unsupported in ["", "1.6.13", "1.6.15", "1.5.2", "2.0.0"] {
+            let error = require_tested_stig_manager_version(unsupported).unwrap_err();
+            assert_eq!(error.kind(), StigManagerErrorKind::Contract);
+            let message = error.to_string();
+            assert!(message.contains("no tested AutomateSTIG API adapter"));
+            assert!(message.contains("disconnected scanning"));
+        }
+    }
+
     #[derive(Clone)]
     struct MockState {
         inner: Arc<Mutex<MockInner>>,
@@ -1852,10 +1911,10 @@ mod tests {
 
     async fn configuration() -> Json<Value> {
         Json(json!({
-            "version": "1.5.2",
+            "version": "1.6.13+1",
             "classification": "CUI",
             "lastMigration": 54,
-            "commit": {"sha": "abc123", "tag": "1.5.2"}
+            "commit": {"sha": "abc123", "tag": "1.6.13+1"}
         }))
     }
 
@@ -1912,6 +1971,17 @@ mod tests {
                 "ruleCount": 34
             }]
         })
+    }
+
+    #[test]
+    fn exact_assignment_rejects_indistinguishable_remote_duplicates() {
+        let mut asset: StigManagerAssetProjection = serde_json::from_value(asset_json()).unwrap();
+        asset.stigs.push(asset.stigs[0].clone());
+
+        let error = exact_assignment(&asset, "CISCO_IOS_XE_ROUTER_NDM_STIG", "V3R7").unwrap_err();
+
+        assert_eq!(error.kind(), StigManagerErrorKind::Contract);
+        assert!(error.to_string().contains("ambiguous destination"));
     }
 
     async fn reviews(
@@ -2190,7 +2260,7 @@ mod tests {
         let (client, state) = spawn_mock(MockState::default()).await;
 
         let capabilities = client.discover_capabilities().await.unwrap();
-        assert_eq!(capabilities.server.version, "1.5.2");
+        assert_eq!(capabilities.server.version, "1.6.13+1");
         assert!(capabilities.projected_asset_assignments);
         assert_eq!(
             capabilities.conditional_review_writes,

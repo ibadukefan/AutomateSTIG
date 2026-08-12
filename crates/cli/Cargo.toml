@@ -9,11 +9,27 @@ description = "AutomateSTIG difficult-device scanner and evidence handoff CLI"
 name = "automatestig"
 path = "src/main.rs"
 
+[[bin]]
+name = "automatestig-transition"
+path = "src/bin/automatestig-transition.rs"
+required-features = ["transition"]
+
+[features]
+default = []
+# Protected release-engineering utilities. Official analyst binaries are
+# built without this feature and therefore do not contain mutable catalog or
+# broad content-import commands.
+maintainer = []
+# Deliberately separate transition/custody executable. Product builds do not
+# contain migration export or signing-key operations.
+transition = []
+
 [dependencies]
 automatestig-core = { workspace = true }
 automatestig-archive-safety = { workspace = true }
 automatestig-collector = { workspace = true }
 automatestig-parsers = { workspace = true }
+automatestig-scanner = { workspace = true }
 automatestig-storage = { workspace = true }
 automatestig-stigpack = { workspace = true }
 automatestig-integrations = { workspace = true }

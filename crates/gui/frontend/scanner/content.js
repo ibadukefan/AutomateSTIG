@@ -1,39 +1,6 @@
 import { apiUnavailableMessage, endpoints, request } from './api.js';
 import { badge, button, definitionList, emptyState, h, loadingState, notice, pageHeader, replace } from './ui.js';
 
-const BASELINE_HINTS = Object.freeze([
-  {
-    id: 'NetApp_ONTAP_DSC_9-x_STIG',
-    target: 'NetApp ONTAP 9.x',
-    revision: 'V2R4',
-    adapter: 'ONTAP SSH',
-    automatedRules: 15,
-    manualRules: 7,
-    reviewedRules: 22,
-    fullBenchmarkRules: 29,
-  },
-  {
-    id: 'General_Purpose_Operating_System',
-    target: 'FreeBSD / GPOS',
-    revision: 'V3R3',
-    adapter: 'FreeBSD SSH',
-    automatedRules: 6,
-    manualRules: 24,
-    reviewedRules: 30,
-    fullBenchmarkRules: 203,
-  },
-  {
-    id: 'Cisco_IOS-XE_Router_NDM_STIG',
-    target: 'Cisco IOS-XE Router NDM',
-    revision: 'V3R7',
-    adapter: 'IOS-XE configuration',
-    automatedRules: 33,
-    manualRules: 9,
-    reviewedRules: 42,
-    fullBenchmarkRules: 42,
-  },
-]);
-
 export function normalizeProfiles(payload) {
   const values = Array.isArray(payload) ? payload : Array.isArray(payload?.profiles) ? payload.profiles : [];
   return values.map(profile => {
@@ -52,6 +19,7 @@ export function normalizeProfiles(payload) {
       title: String(profile.title || profile.stig_title || profile.target_name || profile.stig_id || 'Scanner profile'),
       revision: String(profile.stig_revision || profile.revision || profile.release || profile.version || 'Unknown revision'),
       adapter: String(profile.adapter_name || profile.adapter || profile.platform || 'Scanner adapter'),
+      adapterId: String(profile.adapter_id || profile.adapter_name || profile.adapter || ''),
       state,
       // Kept as the run-selector compatibility field. A pilot-runnable
       // profile still requires an explicit acknowledgement at preflight.
@@ -69,6 +37,8 @@ export function normalizeProfiles(payload) {
       checkPackSha256: profile.check_pack_sha256 || profile.hashes?.check_pack || null,
       trust: profile.trust_state || profile.signature?.state || profile.trust || null,
       acceptance: profile.acceptance_state || profile.live_acceptance || null,
+      protectedLiveAcceptance: profile.validation?.protected_live_device || profile.protected_live_acceptance || null,
+      syntheticFixtureRequirements: profile.validation?.synthetic_fixture_requirements || null,
       updatedAt: profile.updated_at || profile.built_at || null,
     };
   }).filter(profile => profile.id);
@@ -119,15 +89,9 @@ export function createContentPage({ notify = () => {} } = {}) {
       notify(apiUnavailableMessage(error), 'warning');
       replace(body,
         notice(apiUnavailableMessage(error), 'warning', [button('Retry', { onClick: () => render(outlet) })]),
-        h('section', { className: 'section-block' },
-          h('div', { className: 'section-heading' },
-            h('div', {},
-              h('h2', {}, 'Planned baseline profiles'),
-              h('p', {}, 'Informational only while the scanner API is unavailable. These cards cannot start a run.'),
-            ),
-            badge('API required', 'warning'),
-          ),
-          h('div', { className: 'profile-grid muted-grid' }, BASELINE_HINTS.map(hintProfileCard)),
+        emptyState(
+          'Scanner content cannot be verified',
+          'Profile identity, revisions, methods, coverage, hashes, and readiness come only from this running scanner release. Restore the API before making a scan decision.',
         ),
       );
     }
@@ -146,6 +110,22 @@ function profileCard(profile) {
   const outsideProfile = profile.fullBenchmarkRules != null && profile.reviewedRules != null
     ? Math.max(0, profile.fullBenchmarkRules - profile.reviewedRules)
     : null;
+  const testedVersions = profile.testedVersions.length
+    ? profile.testedVersions.join(', ')
+    : profile.releaseSupported ? 'Release contract did not return a version grammar' : 'No compatible-version grammar declared';
+  const trust = profile.trust === 'release_bundled'
+    ? 'Release-bundled profile'
+    : profile.trust || 'No trust state returned';
+  const acceptance = profile.acceptance === 'experimental_live_acceptance_required'
+    ? 'Live-device acceptance required'
+    : profile.acceptance || 'No acceptance state returned';
+  const live = profile.protectedLiveAcceptance || {};
+  const synthetic = profile.syntheticFixtureRequirements || {};
+  const liveStatus = live.status === 'passed'
+    ? `Accepted · false passes ${live.measured_false_passes ?? 'not returned'} (${live.measured_false_pass_rate ?? 'rate not returned'})`
+    : live.status === 'not_run'
+      ? `Not run · ${live.reason || 'Protected-device acceptance has not been attached.'}`
+      : live.status || 'Not reported';
   return h('article', { className: 'profile-card' },
     h('div', { className: 'profile-card-top' },
       h('div', {},
@@ -163,9 +143,16 @@ function profileCard(profile) {
     ),
     definitionList([
       ['Collection', profile.methods.length ? profile.methods.join(', ') : 'Declared by adapter'],
-      ['Tested versions', profile.testedVersions.length ? profile.testedVersions.join(', ') : 'No tested-version data returned'],
-      ['Trust', profile.trust || 'No trust state returned'],
-      ['Live acceptance', profile.acceptance || 'No acceptance state returned'],
+      ['Version compatibility grammar', testedVersions],
+      ['Trust', trust],
+      ['Live acceptance', acceptance],
+      ['Protected-device false-pass status', liveStatus],
+      ['Required synthetic inventory', synthetic.status === 'required_inventory'
+        ? `${synthetic.required_rule_contract_count ?? 'Unknown'} rule contracts · ${arrayOfText(synthetic.required_case_classes).join(', ') || 'case classes not returned'} · ${synthetic.required_fixture_case_count ?? 'unknown'} required cases`
+        : 'Not reported'],
+      ['Synthetic execution status', synthetic.status === 'required_inventory'
+        ? 'Required inventory only; measured completion and false-pass results are not returned by this runtime profile.'
+        : 'Not reported'],
       ['Reviewed profile', profile.reviewedRules == null ? 'Not returned' : `${profile.reviewedRules} of ${profile.fullBenchmarkRules ?? 'unknown'} benchmark rules`],
       ['Outside profile', outsideProfile == null ? 'Not returned' : `${outsideProfile} rules`],
       ['Manual scope', unresolved],
@@ -175,24 +162,6 @@ function profileCard(profile) {
       profile.contentSha256 ? h('p', {}, h('strong', {}, 'Profile SHA-256 '), h('code', {}, profile.contentSha256)) : null,
       profile.checkPackSha256 ? h('p', {}, h('strong', {}, 'Check pack SHA-256 '), h('code', {}, profile.checkPackSha256)) : null,
     ) : null,
-  );
-}
-
-function hintProfileCard(profile) {
-  return h('article', { className: 'profile-card' },
-    h('div', { className: 'profile-card-top' },
-      h('div', {},
-        h('p', { className: 'card-kicker' }, profile.adapter),
-        h('h2', {}, profile.target),
-        h('p', { className: 'profile-id' }, `${profile.id} · ${profile.revision}`),
-      ),
-      badge('Not verified', 'neutral'),
-    ),
-    h('div', { className: 'profile-counts' },
-      countBlock('Automated', profile.automatedRules),
-      countBlock('Reviewed manual', profile.manualRules),
-      countBlock('Full benchmark', profile.fullBenchmarkRules),
-    ),
   );
 }
 

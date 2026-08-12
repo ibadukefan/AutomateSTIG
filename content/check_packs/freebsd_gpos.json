@@ -11,7 +11,9 @@
         "classes": ["lo"]
       },
       "expected": { "type": "is_true" },
-      "description": "OpenBSM must audit successful and failed attributable and non-attributable logon events without per-user exclusions"
+      "description": "OpenBSM must audit successful and failed attributable and non-attributable logon events without per-user exclusions",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-203621",
@@ -21,7 +23,9 @@
         "classes": ["aa"]
       },
       "expected": { "type": "is_true" },
-      "description": "OpenBSM must audit successful and failed authentication and authorization events without per-user exclusions"
+      "description": "OpenBSM must audit successful and failed authentication and authorization events without per-user exclusions",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-203774",
@@ -31,7 +35,9 @@
         "classes": ["ad"]
       },
       "expected": { "type": "is_true" },
-      "description": "OpenBSM must audit successful and failed administrative account events without per-user exclusions"
+      "description": "OpenBSM must audit successful and failed administrative account events without per-user exclusions",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-203772",
@@ -41,7 +47,9 @@
         "classes": ["fr", "fw", "fa", "fm", "fc", "fd"]
       },
       "expected": { "type": "is_true" },
-      "description": "OpenBSM must audit successful and failed file read, write, attribute access, attribute modification, creation, and deletion events"
+      "description": "OpenBSM must audit successful and failed file read, write, attribute access, attribute modification, creation, and deletion events",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-203615",
@@ -51,14 +59,18 @@
         "type": "matches",
         "pattern": "(?i)\\A\\s*auditd\\s+is\\s+running(?:\\s+as\\s+pid\\s+[1-9]\\d*)?\\.?\\s*\\z"
       },
-      "description": "auditd must be observed in the running state"
+      "description": "auditd must be observed in the running state",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-203784",
       "platform": "bsd",
       "check": { "type": "bsd_pf_enabled" },
       "expected": { "type": "is_true" },
-      "description": "The effective PF packet-filter status must be enabled"
+      "description": "The effective PF packet-filter status must be enabled",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     }
   ]
 }

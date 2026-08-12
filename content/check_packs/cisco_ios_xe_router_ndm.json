@@ -13,7 +13,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "Every VTY and enabled HTTP(S) management path is limited to the signed organization-policy maximum"
+      "description": "Every VTY and enabled HTTP(S) management path is limited to the signed organization-policy maximum",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215808",
@@ -27,7 +29,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Account creation audited via archive config change logging"
+      "description": "Account creation audited via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215809",
@@ -41,7 +45,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Account modification audited via archive config change logging"
+      "description": "Account modification audited via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215810",
@@ -55,7 +61,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Account disabling audited via archive config change logging"
+      "description": "Account disabling audited via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215811",
@@ -69,7 +77,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Account removal audited via archive config change logging"
+      "description": "Account removal audited via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215813",
@@ -81,7 +91,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "Numeric login throttling allows no more than three attempts and locks access for at least 15 minutes"
+      "description": "Numeric login throttling allows no more than three attempts and locks access for at least 15 minutes",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215815",
@@ -106,7 +118,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "All administrator activity audited (logging userinfo + archive config logging)"
+      "description": "All administrator activity audited (logging userinfo + archive config logging)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215817",
@@ -120,7 +134,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Audit records carry date and time (service timestamps log datetime)"
+      "description": "Audit records carry date and time (service timestamps log datetime)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215818",
@@ -132,7 +148,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "Every deny entry in every IPv4 or IPv6 ACL bound to an interface includes log-input"
+      "description": "Every deny entry in every IPv4 or IPv6 ACL bound to an interface includes log-input",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215819",
@@ -146,7 +164,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Full-text logging of configuration changes (archive log config)"
+      "description": "Full-text logging of configuration changes (archive log config)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215820",
@@ -158,7 +178,9 @@
         "type": "matches",
         "pattern": "^(compliant|not_applicable):"
       },
-      "description": "When persistent logging is enabled, effective file-system privilege is the default or explicit level 15; otherwise the rule is NotApplicable"
+      "description": "When persistent logging is enabled, effective file-system privilege is the default or explicit level 15; otherwise the rule is NotApplicable",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215821",
@@ -170,7 +192,9 @@
         "type": "matches",
         "pattern": "^(compliant|not_applicable):"
       },
-      "description": "When persistent logging is enabled, effective file-system privilege is the default or explicit level 15; otherwise the rule is NotApplicable"
+      "description": "When persistent logging is enabled, effective file-system privilege is the default or explicit level 15; otherwise the rule is NotApplicable",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215822",
@@ -182,7 +206,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "Effective file-system privilege is the IOS default or an explicit level 15; malformed, ambiguous, or lower levels fail"
+      "description": "Effective file-system privilege is the IOS default or an explicit level 15; malformed, ambiguous, or lower levels fail",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215824",
@@ -194,7 +220,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "Exactly one Common-Criteria-bound local account is configured and every AAA login list uses it only after RADIUS or TACACS"
+      "description": "Exactly one Common-Criteria-bound local account is configured and every AAA login list uses it only after RADIUS or TACACS",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215826",
@@ -206,7 +234,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "Every configured Common Criteria password policy has one numeric minimum length of at least 15 characters"
+      "description": "Every configured Common Criteria password policy has one numeric minimum length of at least 15 characters",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215827",
@@ -220,7 +250,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Password policy requires an uppercase character (upper-case 1)"
+      "description": "Password policy requires an uppercase character (upper-case 1)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215828",
@@ -234,7 +266,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Password policy requires a lowercase character (lower-case 1)"
+      "description": "Password policy requires a lowercase character (lower-case 1)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215829",
@@ -248,7 +282,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Password policy requires a numeric character (numeric-count 1)"
+      "description": "Password policy requires a numeric character (numeric-count 1)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215830",
@@ -262,7 +298,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Password policy requires a special character (special-case 1)"
+      "description": "Password policy requires a special character (special-case 1)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215831",
@@ -276,7 +314,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Password changes must alter at least 8 character positions (char-changes 8)"
+      "description": "Password changes must alter at least 8 character positions (char-changes 8)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215832",
@@ -290,7 +330,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Passwords stored only as cryptographic representations (service password-encryption)"
+      "description": "Passwords stored only as cryptographic representations (service password-encryption)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215833",
@@ -302,7 +344,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "Every console, VTY, auxiliary, and enabled HTTP(S) management path terminates inactivity within five minutes"
+      "description": "Every console, VTY, auxiliary, and enabled HTTP(S) management path terminates inactivity within five minutes",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215834",
@@ -316,7 +360,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Account enabling audited via archive config change logging"
+      "description": "Account enabling audited via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215836",
@@ -328,7 +374,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "Numeric logging buffer capacity meets the signed organization-policy minimum"
+      "description": "Numeric logging buffer capacity meets the signed organization-policy minimum",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215837",
@@ -340,7 +388,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "Effective logging trap severity includes critical audit failure events"
+      "description": "Effective logging trap severity includes critical audit failure events",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215838",
@@ -352,7 +402,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "At least two distinct configured NTP servers are present in the signed organization-policy authoritative-source allowlist"
+      "description": "At least two distinct configured NTP servers are present in the signed organization-policy authoritative-source allowlist",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215843",
@@ -364,7 +416,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "NTP authentication is enabled and every server key links to a trusted hmac-sha2-256 definition"
+      "description": "NTP authentication is enabled and every server key links to a trusted hmac-sha2-256 definition",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215844",
@@ -376,7 +430,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "SSH version 2 uses a complete allowlist containing only hmac-sha2-256 or hmac-sha2-512"
+      "description": "SSH version 2 uses a complete allowlist containing only hmac-sha2-256 or hmac-sha2-512",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215845",
@@ -388,7 +444,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "SSH version 2 uses a complete allowlist containing only reviewed AES CTR ciphers"
+      "description": "SSH version 2 uses a complete allowlist containing only reviewed AES CTR ciphers",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215848",
@@ -402,7 +460,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Privilege deletion logged via archive config change logging"
+      "description": "Privilege deletion logged via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215849",
@@ -427,7 +487,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Successful and unsuccessful logon attempts audited (login on-failure/on-success log)"
+      "description": "Successful and unsuccessful logon attempts audited (login on-failure/on-success log)",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-215850",
@@ -441,7 +503,9 @@
       "expected": {
         "type": "is_true"
       },
-      "description": "Privileged activities logged via archive config change logging"
+      "description": "Privileged activities logged via archive config change logging",
+      "implementation_class": "legacy_declarative",
+      "introduction_release": "0.3"
     },
     {
       "vuln_id": "V-220139",
@@ -453,7 +517,9 @@
         "type": "matches",
         "pattern": "^compliant:"
       },
-      "description": "At least two distinct modern or legacy remote syslog destinations are configured"
+      "description": "At least two distinct modern or legacy remote syslog destinations are configured",
+      "implementation_class": "reviewed_imperative",
+      "introduction_release": "0.3"
     }
   ]
 }

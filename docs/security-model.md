@@ -9,6 +9,20 @@ will not build, attest, manifest, or publish a Windows archive until Windows
 ACL, ownership, reparse-point, and same-file custody checks protect the same
 trust-bearing state as the Unix implementation.
 
+The shared filesystem-custody layer now opens sensitive Windows paths without
+following reparse points, rejects reparse/junction ancestors, validates the
+current-user owner SID, and rejects effective write/delete/DACL/owner rights
+for `Everyone`, `Authenticated Users`, and `BUILTIN\Users`. Validation and I/O
+use the same open handle, with stable volume/file identities available for
+same-file comparisons. SSH private keys and the data-root-scoped SSH
+`known_hosts`/lock files, the GUI data directory and `secret.key`, managed
+SQLite databases, every signing trust-store directory/key, organization-policy
+inputs/signing keys, CLI migration library inputs, and CLI artifact staging use
+this layer. This is necessary but not sufficient to publish Windows: mutable
+library transaction paths beyond the read-only migration boundary still need
+equivalent ACL custody, and the ACL/reparse/race suite must pass on a native
+Windows runner before Windows packaging can be enabled.
+
 ## Bind And Auth
 
 The GUI defaults to localhost-only bind. API auth is enforced on all `/api/*` routes except `/api/status`.
@@ -27,7 +41,9 @@ validate the Host header to prevent a hostile website from using DNS rebinding
 to reach the local API.
 
 For non-loopback binds, `AUTOMATESTIG_AUTH_TOKEN` must be set and must contain
-at least 16 visible ASCII characters with no whitespace. Without it, the server refuses to start. The public HTML
+at least 32 visible ASCII characters with no whitespace. Repeated failures
+from one network peer are bounded and temporarily rate limited. Without a
+token, the server refuses to start. The public HTML
 does not contain that configured server secret. Instead, the browser presents
 a required token prompt and validates the value against a protected endpoint.
 The value is retained only in that tab's JavaScript memory; it is not written
@@ -35,7 +51,17 @@ to local or session storage. Because the built-in listener is HTTP, put any
 non-loopback deployment behind a trusted TLS-terminating reverse proxy and do
 not enter or transmit the token over an untrusted plaintext network. HTML that
 contains the auto-generated loopback session token is served with
-`Cache-Control: no-store`.
+`Cache-Control: no-store`. The token is inert metadata rather than executable
+inline script, allowing a self-only script Content Security Policy. All
+responses deny framing and MIME sniffing, suppress referrers and unnecessary
+browser permissions, and isolate same-origin resources. Every authenticated
+API response is `no-store`, varies on `X-Auth-Token`, and carries legacy
+`Pragma: no-cache` protection for intermediaries.
+
+The GUI writes newline-delimited structured logs to the private
+`<data_dir>/logs` directory as well as its operator console. Logs rotate daily
+and retain at most 14 files. Authentication failures and background-task root
+causes are recorded without tokens, device passwords, or client secrets.
 
 ## Secret Storage
 
@@ -91,36 +117,29 @@ those stores separately.
 
 ## Legacy assessment and import boundaries
 
-The following behavior remains relevant to the one-release read-only/export
-migration window; it is not the scanner-first GUI workflow.
+Legacy assessments, imported CKL/CKLB/checklist JSON, answer files, and local
+asset records are preserved only for the documented migration inventory and
+create-new-export workflow. The scanner-first GUI cannot create, edit, rerun,
+merge, or promote them, and the product CLI does not expose the former
+assessment, answer-file, conversion, or portfolio commands.
 
-`Run New Assessment` and `Import Existing Results` are separate trust paths.
-A new assessment consumes uploaded or freshly collected device input and binds
-the completed checklist to its input, benchmark, check pack, evaluation plan,
-and any selected policy or answer files. An imported CKL, CKLB, or checklist
-JSON is retained as an imported result; import does not rerun collection or
-upgrade its provenance into a new scan.
+Migration keeps the original source classification and attribution. An
+imported or answer-derived determination is never relabeled as an automated
+scanner result, and exporting preserved data does not rerun collection or
+upgrade its provenance. Historical answer files remain reviewer-decision
+inputs rather than device evidence; their presence cannot satisfy a native
+adapter-evidence requirement or replace a collection error.
 
-Answer files are reviewer-decision inputs, not evidence transcripts. An
-ordinary entry fills a `Not_Reviewed` or manual result but remains lower
-priority than observed device evidence. Only an explicit `force_override` may
-replace an automated/evidence status, and no answer replaces a collection
-error. When evaluation applies selected answer templates, each stable
-identifier and SHA-256 is included in user-specified order in evaluation
-provenance and in the effective evaluation-plan digest.
+Some legacy parser and model code remains for lossless migration, backwards
+compatibility tests, and the separately feature-gated content-maintainer
+binary. Its presence does not expand the supported scanner surface.
 
 ## Remote Transport Hardening
 
-STIG Manager integration accepts HTTPS URLs only and rejects embedded credentials, localhost, cloud metadata hostnames, and non-global special-use/private/local/link-local literal IP addresses by default. Invalid, reserved, multicast, and documentation addresses are always rejected. API and OAuth hostnames are each resolved once when the client is created, every answer is authorized, and separate HTTP clients pin those numeric addresses while retaining the original hostname for Host/SNI and TLS verification. Redirects are disabled. If a target allowlist is configured, unlisted public destinations are also rejected. A non-global special-use/private/local/link-local result requires a matching IP/CIDR entry or an explicit isolated-lab override; an exact hostname entry alone cannot authorize such a DNS answer. Prefer a narrow comma-separated host/IP/CIDR allowlist:
+STIG Manager integration accepts HTTPS URLs only and rejects embedded credentials, localhost, cloud metadata hostnames, and non-global special-use/private/local/link-local literal IP addresses by default. Invalid, reserved, multicast, and documentation addresses are always rejected. API and OAuth hostnames are each resolved once when the client is created, every answer is authorized, and separate HTTP clients pin those numeric addresses while retaining the original hostname for Host/SNI and TLS verification. Redirects are disabled. If a target allowlist is configured, unlisted public destinations are also rejected. A non-global special-use/private/local/link-local result requires a matching IP/CIDR entry; an exact hostname entry alone cannot authorize such a DNS answer. Prefer a narrow comma-separated host/IP/CIDR allowlist:
 
 ```bash
 AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST=stigman.example.mil,keycloak.example.mil,10.20.0.0/16
-```
-
-The legacy broad private-destination override remains for isolated labs only:
-
-```bash
-AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS=1
 ```
 
 Remote SSH collection applies the same outbound policy in the shared collector used by both the GUI and CLI. Set `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` to a comma-separated list of exact hostnames/IPs or CIDRs to restrict scan destinations; when it is set, unlisted public targets are rejected too. Non-global special-use/private/local/link-local literal IP scans and DNS results require a matching IP/CIDR entry or this explicit isolated-lab override:
@@ -156,7 +175,7 @@ negotiation.
 
 SSH collection keeps stdout, stderr, exit status, timeout, and protocol states separate. Output is bounded to 50 MiB per command and 256 MiB per collection. A failed, missing-status, timed-out, oversized, malformed, or semantically invalid command remains a typed collection error; its diagnostic stdout is never evaluation input. Unaffected rules may evaluate, affected rules become `Not_Reviewed`, and the incomplete operation returns nonzero from the CLI or HTTP 207 from the API.
 
-Evidence v2 is strict JSON bound to the target platform and current collection-plan digest. Duplicate keys, unexpected commands, stale plans, and marker-like target output are rejected. Marker-based v1 evidence is rejected by default; `--allow-legacy-evidence` is an explicitly unsafe CLI-only migration aid.
+Evidence v2 is strict JSON bound to the target platform and current collection-plan digest. Duplicate keys, unexpected commands, stale plans, and marker-like target output are rejected. Marker-based v1 evidence is rejected by the product CLI, GUI, and API with no unsafe override.
 
 STIG-Manager API and OAuth endpoints must use HTTPS; there is no HTTP exception.
 Redirects are disabled so bearer tokens and client credentials are never
@@ -164,10 +183,9 @@ forwarded to a second endpoint. `Save` persists validated settings but does not
 test connectivity. `Test These Values` exercises the unsaved values currently
 shown and does not persist them. A blank secret may reuse the stored secret only
 when the API URL, token URL, and client ID are unchanged; changing any of those
-requires re-entering the secret. TLS verification is enabled by default.
-Disabling it requires both the form setting and
-`AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS=1`; that combination is a lab-only
-override.
+requires re-entering the secret. TLS verification is mandatory. The scanner
+has no invalid-certificate override; install the correct CA trust before
+configuring the connection.
 
 ## STIG Pack Trust
 
@@ -243,7 +261,7 @@ private signing key does not belong on the evaluation host.
 
 ## Selected-Run Handoff Producer Trust
 
-The GUI emits an unsigned handoff v2 ZIP and has no producer-signing key or
+The GUI emits an unsigned handoff v4 ZIP and has no producer-signing key or
 signing endpoint. A protected CLI host may first fully verify that ZIP and then
 create a detached signature sidecar with a dedicated external Ed25519 key. The
 domain-separated signed statement binds the exact compressed ZIP SHA-256,
@@ -265,11 +283,11 @@ producer assignment, rotation, and revocation remain operational controls.
 | --- | --- |
 | `PORT` | GUI port override. |
 | `AUTOMATESTIG_BIND` | Explicit GUI bind IP; defaults to `127.0.0.1`. |
-| `AUTOMATESTIG_AUTH_TOKEN` | Required for non-loopback API auth; must contain at least 16 visible ASCII characters with no whitespace. |
+| `AUTOMATESTIG_DATA_DIR` | Explicit shared state root for GUI, CLI, collector SSH host trust, database, secret key, and default trust stores. Defaults to `~/.automatestig`. |
+| `AUTOMATESTIG_AUTH_TOKEN` | Required for non-loopback API auth; must contain at least 32 visible ASCII characters with no whitespace. Loopback-only explicit tokens retain a 16-character minimum. |
 | `AUTOMATESTIG_TRUSTED_KEYS_DIR` | Directory containing trusted Ed25519 public keys for `.stigpack` import. |
 | `AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR` | Dedicated directory containing trusted Ed25519 public keys for signed Cisco organization policies. It is intentionally separate from executable-content trust. |
 | `AUTOMATESTIG_HANDOFF_TRUSTED_KEYS_DIR` | Dedicated directory containing trusted Ed25519 public keys for detached selected-run handoff producer signatures. Defaults to `~/.automatestig/handoff_trusted_keys`; never place private keys here. |
-| `AUTOMATESTIG_OFFLINE_SIGNING_KEY` | Legacy/protected maintainer export only. The scanner-first GUI has no signing workflow. Keep any configured key outside application data; unset disables the old endpoints. Prefer offline CLI signing. |
 | `AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK` | Set to `1` to allow unsigned non-executable `.stigpack` content for explicit lab workflows; executable checks still require trust. |
 | `AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE` | GUI/service-only explicit enrollment of an unknown SSH host key; CLI users should prefer `collect --trust-on-first-use`. |
 | `AUTOMATESTIG_SSH_ALLOW_LINK_LOCAL` | Set to `1` only to scan an explicitly scoped link-local SSH address. |
@@ -277,18 +295,17 @@ producer assignment, rotation, and revocation remain operational controls.
 | `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` | Comma-separated exact host/IP/CIDR allowlist for SSH scan targets. Every non-global special-use, private, local, or link-local answer requires an IP/CIDR entry; hostname-only entries authorize ordinary global-unicast answers only. |
 | `AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN` | Set to `1` to allow non-global special-use/private/local/link-local SSH targets outside the allowlist only in an isolated lab. |
 | `AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST` | Comma-separated exact host/IP/CIDR allowlist for STIG Manager API and token endpoints. Every non-global special-use, private, local, or link-local answer requires an IP/CIDR entry; hostname-only entries authorize ordinary global-unicast answers only. |
-| `AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS` | Set to `1` to allow non-global special-use/private/local/link-local STIG Manager DNS results only in an isolated lab. Invalid addresses remain denied. |
-| `AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS` | Legacy broad override for non-global special-use/private/local literal IP STIG Manager URLs and resolved destinations; prefer `AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST`. Invalid addresses remain denied. |
-| `AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS` | Disable STIG-Manager TLS certificate validation for explicit lab use. |
 
 ## SSH host-key verification (trust-on-first-use)
 
 Remote SSH collection verifies the target's host key against a pin file at
-`~/.automatestig/known_hosts`. With the explicit trust-on-first-use setting, the first key is recorded; on any
+`<data_dir>/known_hosts` (`~/.automatestig/known_hosts` by default). The GUI,
+CLI, and collector all honor `AUTOMATESTIG_DATA_DIR` for this state root. With
+the explicit trust-on-first-use setting, the first key is recorded; on any
 later connection a changed key is rejected as a possible man-in-the-middle
 (logged at error level). This is trust-on-first-use: the first connection is
 unauthenticated, so for high-assurance environments pre-populate
-`~/.automatestig/known_hosts` with the expected `host:port fingerprint`
+`<data_dir>/known_hosts` with the expected `host:port fingerprint`
 entries out of band before the first scan.
 
 ## Concurrency model

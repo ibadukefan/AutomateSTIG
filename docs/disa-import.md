@@ -48,8 +48,10 @@ curl or browser workflow for these routes.
 Release maintainers use the protected content pipeline or the hidden,
 transition-only CLI described above. Normal users select an immutable bundled
 scanner profile; they do not import or refresh a general DISA catalog. Existing
-pre-scanner data can be inventoried and preserved with `automatestig migration
-inventory` and `automatestig migration export` without re-enabling the retired
+pre-scanner data can be inventoried and preserved with
+`automatestig-transition migration inventory` and
+`automatestig-transition migration export` from a protected
+transition build without re-enabling the retired
 HTTP surface.
 
 ## Scanner Scope

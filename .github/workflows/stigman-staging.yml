@@ -34,12 +34,15 @@ jobs:
           --cli-binary target/release/automatestig
           --environment "GitHub Actions containerized staging"
           --evidence-output stig-manager-acceptance.json
+          --handoff-output producer-handoff.zip
       - name: Upload redacted acceptance evidence
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: stig-manager-acceptance-${{ github.run_id }}
-          path: stig-manager-acceptance.json
+          path: |
+            stig-manager-acceptance.json
+            producer-handoff.zip
           retention-days: 90
           if-no-files-found: error
       - name: Rig logs on failure

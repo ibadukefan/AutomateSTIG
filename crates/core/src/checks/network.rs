@@ -1633,6 +1633,8 @@ end
                 pattern: "^(compliant|not_applicable):".to_string(),
             },
             description: None,
+            implementation_class: crate::checks::ImplementationClass::ReviewedImperative,
+            introduction_release: Some("0.3".to_string()),
         };
         let data = crate::checks::SystemData {
             network_config: Some("end\n".to_string()),
@@ -1655,6 +1657,8 @@ end
                 pattern: "^not_applicable:".to_string(),
             },
             description: None,
+            implementation_class: crate::checks::ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
         };
         let mut generic_data = crate::checks::SystemData::default();
         generic_data.command_outputs.insert(

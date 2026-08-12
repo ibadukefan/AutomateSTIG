@@ -140,7 +140,10 @@ fn parse_bundled_benchmark(
             benchmark.rules.len()
         ));
     }
-    let actual_sha256 = format!("{:x}", Sha256::digest(benchmark_bytes));
+    // Git may materialize repository text with CRLF on Windows. Bind the
+    // benchmark's canonical LF representation so provenance is identical on
+    // every supported checkout while semantic JSON changes still fail closed.
+    let actual_sha256 = canonical_text_sha256(benchmark_bytes);
     if actual_sha256 != source.benchmark_model_sha256 {
         return Err(format!(
             "{expected_target_key}: benchmark digest {actual_sha256} does not match {}",
@@ -194,6 +197,23 @@ fn is_sha256(value: &str) -> bool {
     value.len() == 64 && value.bytes().all(|byte| byte.is_ascii_hexdigit())
 }
 
+fn canonical_text_sha256(value: &[u8]) -> String {
+    let mut canonical = Vec::with_capacity(value.len());
+    let mut index = 0;
+    while index < value.len() {
+        if value[index] == b'\r' {
+            if value.get(index + 1) == Some(&b'\n') {
+                index += 1;
+            }
+            canonical.push(b'\n');
+        } else {
+            canonical.push(value[index]);
+        }
+        index += 1;
+    }
+    format!("{:x}", Sha256::digest(&canonical))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -226,5 +246,51 @@ mod tests {
         assert!(bundled_scanner_benchmark("Windows_Server_2022_STIG")
             .unwrap()
             .is_none());
+    }
+
+    #[test]
+    fn bundled_benchmark_digests_are_stable_across_crlf_checkouts() {
+        for (target_key, benchmark, source) in [
+            ("netapp_ontap9", ONTAP_BENCHMARK, ONTAP_SOURCE),
+            ("freebsd_gpos", FREEBSD_BENCHMARK, FREEBSD_SOURCE),
+            ("cisco_ios_xe_router_ndm", CISCO_BENCHMARK, CISCO_SOURCE),
+        ] {
+            let benchmark_crlf = benchmark
+                .iter()
+                .flat_map(|byte| {
+                    if *byte == b'\n' {
+                        [Some(b'\r'), Some(b'\n')]
+                    } else {
+                        [Some(*byte), None]
+                    }
+                })
+                .flatten()
+                .collect::<Vec<_>>();
+            let source_crlf = source
+                .iter()
+                .flat_map(|byte| {
+                    if *byte == b'\n' {
+                        [Some(b'\r'), Some(b'\n')]
+                    } else {
+                        [Some(*byte), None]
+                    }
+                })
+                .flatten()
+                .collect::<Vec<_>>();
+
+            let parsed = parse_bundled_benchmark(target_key, &benchmark_crlf, &source_crlf)
+                .unwrap_or_else(|error| panic!("{target_key}: {error}"));
+            assert_eq!(parsed.target_key(), target_key);
+        }
+    }
+
+    #[test]
+    fn canonical_newlines_do_not_hide_benchmark_semantic_drift() {
+        let mut benchmark: serde_json::Value = serde_json::from_slice(ONTAP_BENCHMARK).unwrap();
+        benchmark["title"] = serde_json::json!("tampered title");
+        let tampered = serde_json::to_vec_pretty(&benchmark).unwrap();
+
+        let error = parse_bundled_benchmark("netapp_ontap9", &tampered, ONTAP_SOURCE).unwrap_err();
+        assert!(error.contains("benchmark digest"), "{error}");
     }
 }

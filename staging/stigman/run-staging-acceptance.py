@@ -77,6 +77,7 @@ AS_TOKEN = "staging-acceptance-token-0123456789"
 
 RESULTS = []
 EVIDENCE_OUTPUT = None
+HANDOFF_OUTPUT = None
 EVIDENCE_ENVIRONMENT = "local containerized staging"
 EVIDENCE_DETAILS = {}
 
@@ -594,9 +595,6 @@ def staging_process_environment(home, policy_trust_dir):
     # integration escape hatch so the GUI cannot contact the HTTP rig at all.
     for name in (
         "AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST",
-        "AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS",
-        "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS",
-        "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS",
         "AUTOMATESTIG_DEMO",
     ):
         env.pop(name, None)
@@ -1202,6 +1200,7 @@ def main():
                 "full_ckl_rule_count": full_ckl_count,
                 "benchmark_id": benchmark_id,
                 "assignment_revision": assignment.get("revisionStr"),
+                "producer_handoff_filename": "producer-handoff.zip",
                 "handoff_sha256": file_sha256(handoff_copy),
                 "handoff_manifest_sha256": manifest_sha256,
                 "rule_set_sha256": bytes_sha256(
@@ -1212,6 +1211,13 @@ def main():
                 ),
             }
         )
+        if HANDOFF_OUTPUT:
+            destination = os.path.abspath(HANDOFF_OUTPUT)
+            os.makedirs(os.path.dirname(destination), exist_ok=True)
+            with open(handoff_copy, "rb") as source, open(destination, "xb") as output:
+                shutil.copyfileobj(source, output, 1024 * 1024)
+            if file_sha256(destination) != EVIDENCE_DETAILS["handoff_sha256"]:
+                raise RuntimeError("published handoff differs from the verified staging ZIP")
     finally:
         if handoff_copy and os.path.exists(handoff_copy):
             os.remove(handoff_copy)
@@ -1317,6 +1323,13 @@ if __name__ == "__main__":
         ),
     )
     parser.add_argument("--evidence-output")
+    parser.add_argument(
+        "--handoff-output",
+        help=(
+            "create-new output for the exact verified unsigned handoff used by "
+            "the protected producer-signing/receiver ceremony"
+        ),
+    )
     parser.add_argument("--environment", default=EVIDENCE_ENVIRONMENT)
     arguments = parser.parse_args()
     if arguments.binary:
@@ -1328,5 +1341,6 @@ if __name__ == "__main__":
     if not os.path.isabs(CLI_BIN):
         CLI_BIN = os.path.abspath(os.path.join(REPO, CLI_BIN))
     EVIDENCE_OUTPUT = arguments.evidence_output
+    HANDOFF_OUTPUT = arguments.handoff_output
     EVIDENCE_ENVIRONMENT = arguments.environment
     main()

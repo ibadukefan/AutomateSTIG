@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.example/schemas/handoff-key-custody-ceremony.schema.json",
+  "title": "AutomateSTIG selected-run handoff key-custody ceremony",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "source_commit",
+    "signed_at",
+    "producer_key_fingerprint",
+    "public_key_sha256",
+    "handoff_sha256",
+    "signature_sidecar_sha256",
+    "key_custodian",
+    "receiver_approver",
+    "signing_host_reference",
+    "primary_key_media_reference",
+    "backup_key_media_reference",
+    "private_key_entered_ci",
+    "private_key_entered_scanner_runtime",
+    "private_key_material_recorded",
+    "revocation_status_checked"
+  ],
+  "properties": {
+    "schema": { "const": "automatestig-handoff-key-custody-ceremony/v1" },
+    "source_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "signed_at": { "type": "string", "format": "date-time" },
+    "producer_key_fingerprint": { "type": "string", "pattern": "^SHA256:[0-9a-f]{64}$" },
+    "public_key_sha256": { "$ref": "#/$defs/sha256" },
+    "handoff_sha256": { "$ref": "#/$defs/sha256" },
+    "signature_sidecar_sha256": { "$ref": "#/$defs/sha256" },
+    "key_custodian": { "$ref": "#/$defs/login" },
+    "receiver_approver": { "$ref": "#/$defs/login" },
+    "signing_host_reference": { "$ref": "#/$defs/reference" },
+    "primary_key_media_reference": { "$ref": "#/$defs/reference" },
+    "backup_key_media_reference": { "$ref": "#/$defs/reference" },
+    "private_key_entered_ci": { "const": false },
+    "private_key_entered_scanner_runtime": { "const": false },
+    "private_key_material_recorded": { "const": false },
+    "revocation_status_checked": { "const": true }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "login": { "type": "string", "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$" },
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/ -]{0,127}$"
+    }
+  }
+}

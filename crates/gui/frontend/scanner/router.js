@@ -5,11 +5,46 @@ const ROUTES = Object.freeze({
   connection: 'Connection',
 });
 
+const LEGACY_ROUTES = Object.freeze({
+  assessments: ['STIG Manager', 'Historical assessment portfolios and human review remain in STIG Manager.', 'scan'],
+  assets: ['STIG Manager', 'Asset inventory and STIG assignments remain in STIG Manager.', 'scan'],
+  checklists: ['STIG Manager', 'Historical checklist import and editing remain in STIG Manager.', 'scan'],
+  findings: ['STIG Manager', 'Finding analysis, overrides, acceptance, and reporting remain in STIG Manager.', 'scan'],
+  'answer-files': ['Transition tooling', 'Answer files are preserved only through the read-only migration export.', 'scan'],
+  export: ['STIG Manager', 'Portfolio reports and bulk exports remain in STIG Manager.', 'deliveries'],
+  library: ['Release content', 'Broad library management moved out of the scanner product.', 'content'],
+  standards: ['Scanner Content', 'The scanner now shows only exact release-bundled profiles.', 'content'],
+  settings: ['Connection', 'Scanner and STIG Manager connection settings moved to Connection.', 'connection'],
+});
+
 export function parseHash(hash = '') {
   const raw = String(hash).replace(/^#/, '').replace(/^\//, '');
   const [path] = raw.split('?');
   const segments = path.split('/').filter(Boolean).map(decodeSafe);
-  const page = Object.hasOwn(ROUTES, segments[0]) ? segments[0] : 'scan';
+  if (!segments.length) {
+    return { page: 'scan', id: null, title: ROUTES.scan };
+  }
+  const page = segments[0];
+  if (!Object.hasOwn(ROUTES, page)) {
+    const legacy = LEGACY_ROUTES[page];
+    if (legacy) {
+      return {
+        page: 'legacy',
+        id: null,
+        title: 'Workflow moved',
+        requested: path,
+        owner: legacy[0],
+        guidance: legacy[1],
+        destination: legacy[2],
+      };
+    }
+    return {
+      page: 'not-found',
+      id: null,
+      title: 'Page not found',
+      requested: path,
+    };
+  }
   return {
     page,
     id: page === 'deliveries' && segments[1] ? segments[1] : null,
@@ -34,7 +69,7 @@ export function navigate(page, id = null, { replace = false } = {}) {
 }
 
 export function createRouter({ outlet, render, onRoute = () => {} }) {
-  const route = async () => {
+  const route = async ({ focusHeading = false } = {}) => {
     const current = parseHash(window.location.hash);
     document.querySelectorAll('[data-route]').forEach(link => {
       const active = link.dataset.route === current.page;
@@ -44,16 +79,20 @@ export function createRouter({ outlet, render, onRoute = () => {} }) {
     });
     document.title = `AutomateSTIG Scanner — ${current.title}`;
     onRoute(current);
-    const rendering = render(current, outlet);
-    const heading = outlet.querySelector('h1');
-    heading?.focus();
+    await render(current, outlet);
+    if (focusHeading) {
+      const heading = outlet.querySelector('h1');
+      heading?.focus();
+    }
     const announcer = document.getElementById('route-announcer');
     if (announcer) announcer.textContent = `${current.title} workspace`;
-    await rendering;
   };
-  window.addEventListener('hashchange', route);
+  window.addEventListener('hashchange', () => { void route({ focusHeading: true }); });
   if (!window.location.hash) history.replaceState(null, '', '#scan');
-  return { start: route, refresh: route };
+  return {
+    start: () => route({ focusHeading: false }),
+    refresh: () => route({ focusHeading: false }),
+  };
 }
 
 export { ROUTES };

@@ -1,0 +1,54 @@
+name: Difficult-device target request
+description: Propose a target using real collection pain, an exact STIG, and available validation resources.
+title: "[target] "
+labels:
+  - target-adapter
+body:
+  - type: markdown
+    attributes:
+      value: |
+        New targets are selected from demonstrated Evaluate-STIG or scripting failures, not catalog breadth. A request needs an exact current STIG, a read-only collection path, representative lab access, and an authorized SME before it can become supported.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Current collection problem and analyst cost
+      description: Describe the failed workflow, frequency, scripting burden, and manual transcription effort without including sensitive device data.
+    validations:
+      required: true
+  - type: input
+    id: benchmark
+    attributes:
+      label: Exact DISA STIG ID and revision
+      placeholder: Vendor_Product_STIG / V1R2
+    validations:
+      required: true
+  - type: textarea
+    id: matrix
+    attributes:
+      label: Device, firmware, HA or virtual contexts
+      description: List representative models and versions that can be authorized for positive and negative validation.
+    validations:
+      required: true
+  - type: textarea
+    id: transport
+    attributes:
+      label: Read-only collection interface
+      description: Identify SSH CLI, NETCONF/RESTCONF, HTTPS/vendor API, or offline configuration access and required privilege.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Lab and SME availability
+      description: Identify whether representative hardware/simulation, negative states, an SME, and a lab owner are available. Do not name people or systems if that is sensitive.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope confirmation
+      options:
+        - label: The request is for scanner evidence and safe handoff, not a replacement for STIG Manager inventory, review, reporting, or governance.
+          required: true
+        - label: I understand the target remains experimental until the compatibility, false-pass, live-device, interchange, and signing gates are complete.
+          required: true

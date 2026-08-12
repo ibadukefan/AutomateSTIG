@@ -9,6 +9,7 @@ same production adapter code that validates the upload.
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import ipaddress
 import json
@@ -34,6 +35,7 @@ SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 EXPECTED_HANDOFF_FILES = {
     "manifest.json",
     "integrity.json",
+    "run-request.json",
     "scanner-run.json",
     "sparse-reviews.json",
     "fallback.cklb",
@@ -58,7 +60,19 @@ EXPECTED_PROFILES = {
         "reviewed_rules": 30,
         "full_benchmark_rules": 203,
     },
+    "cisco_ios_xe_router_ndm": {
+        "stig_revision": "V3R7",
+        "automated_rules": 33,
+        "manual_rules": 9,
+        "reviewed_rules": 42,
+        "full_benchmark_rules": 42,
+    },
 }
+POLICY_INPUTS = REPO / "fixtures" / "scanner_scenarios" / "inputs"
+CISCO_CONFIG = REPO / "fixtures" / "network" / "ios_xe_router_compliant.txt"
+CISCO_POLICY = POLICY_INPUTS / "cisco-compliant-policy.json"
+CISCO_POLICY_SIGNATURE_B64 = POLICY_INPUTS / "e2e-organization-policy.sig.b64"
+CISCO_POLICY_SHA256 = "8c6f16467f8aa360d5abc20595a463bdfd0fd788f3209c7b1ac4a18a0081d06b"
 
 
 class ScenarioFailure(RuntimeError):
@@ -217,7 +231,8 @@ class LocalApi:
 
 
 def multipart_body(
-    text_fields: dict[str, str], file_field: tuple[str, str, str, bytes]
+    text_fields: dict[str, str],
+    file_fields: list[tuple[str, str, str, bytes]],
 ) -> tuple[str, bytes]:
     boundary = f"automatestig-scenario-{uuid.uuid4().hex}"
     chunks: list[bytes] = []
@@ -230,18 +245,31 @@ def multipart_body(
         add_line(f'Content-Disposition: form-data; name="{name}"')
         add_line()
         add_line(value)
-    name, filename, media_type, contents = file_field
-    safe_filename = filename.replace('"', "_").replace("\r", "_").replace("\n", "_")
-    add_line(f"--{boundary}")
-    add_line(
-        f'Content-Disposition: form-data; name="{name}"; filename="{safe_filename}"'
-    )
-    add_line(f"Content-Type: {media_type}")
-    add_line()
-    chunks.append(contents)
-    chunks.append(b"\r\n")
+    for name, filename, media_type, contents in file_fields:
+        safe_filename = filename.replace('"', "_").replace("\r", "_").replace("\n", "_")
+        add_line(f"--{boundary}")
+        add_line(
+            f'Content-Disposition: form-data; name="{name}"; filename="{safe_filename}"'
+        )
+        add_line(f"Content-Type: {media_type}")
+        add_line()
+        chunks.append(contents)
+        chunks.append(b"\r\n")
     add_line(f"--{boundary}--")
     return f"multipart/form-data; boundary={boundary}", b"".join(chunks)
+
+
+def decode_base64_fixture(path: Path, expected_bytes: int) -> bytes:
+    try:
+        encoded = path.read_text(encoding="ascii").strip()
+        decoded = base64.b64decode(encoded, validate=True)
+    except (OSError, ValueError) as error:
+        raise ScenarioFailure(f"invalid base64 fixture {path}") from error
+    require(
+        len(decoded) == expected_bytes,
+        f"{path.name} must decode to exactly {expected_bytes} bytes",
+    )
+    return decoded
 
 
 def generate_native_evidence(output_dir: Path) -> dict[str, Any]:
@@ -296,7 +324,7 @@ def generate_native_evidence(output_dir: Path) -> dict[str, Any]:
         require(sha256_bytes(contents) == item.get("sha256"), f"generated digest mismatch for {path.name}")
         envelope = object_value(json.loads(contents), path.name)
         require(
-            envelope.get("schema") == "automatestig-adapter-evidence/v1",
+            envelope.get("schema") == "automatestig-adapter-evidence/v2",
             f"{path.name} is not a native adapter envelope",
         )
         require(
@@ -383,7 +411,7 @@ def upload_disconnected_evidence(api: LocalApi, profile_id: str, path: Path) -> 
             "profile_id": profile_id,
             "input_type": "evidence",
         },
-        ("evidence", path.name, "application/json", contents),
+        [("evidence", path.name, "application/json", contents)],
     )
     response = api.request(
         "POST",
@@ -402,6 +430,93 @@ def upload_disconnected_evidence(api: LocalApi, profile_id: str, path: Path) -> 
         raise ScenarioFailure("run response was not JSON") from error
     require(api_envelope.get("success") is True, f"run failed: {api_envelope}")
     return object_value(api_envelope.get("data"), "run response data")
+
+
+def upload_disconnected_configuration(api: LocalApi) -> dict[str, Any]:
+    configuration = CISCO_CONFIG.read_bytes()
+    policy = CISCO_POLICY.read_bytes()
+    signature = decode_base64_fixture(CISCO_POLICY_SIGNATURE_B64, 64)
+    require(
+        sha256_bytes(policy) == CISCO_POLICY_SHA256,
+        "Cisco synthetic policy bytes changed without regenerating its detached signature",
+    )
+    preflight = object_value(
+        api.json_request(
+            "POST",
+            "/api/v1/runs/preflight",
+            document={
+                "mode": "disconnected",
+                "profile_id": "cisco_ios_xe_router_ndm",
+                "collection_method": "configuration",
+                "pilot_acknowledged": True,
+                "input": {
+                    "name": CISCO_CONFIG.name,
+                    "size": len(configuration),
+                    "type": "text/plain",
+                    "sha256": sha256_bytes(configuration),
+                },
+                "organization_policy": {
+                    "name": CISCO_POLICY.name,
+                    "size": len(policy),
+                    "type": "application/json",
+                    "sha256": sha256_bytes(policy),
+                },
+                "organization_policy_signature": {
+                    "name": "cisco-compliant-policy.sig",
+                    "size": len(signature),
+                    "type": "application/octet-stream",
+                    "sha256": sha256_bytes(signature),
+                },
+            },
+        ),
+        "configuration preflight response",
+    )
+    require(preflight.get("ready") is True, "configuration preflight was not ready")
+    require(preflight.get("errors") == [], "configuration preflight returned errors")
+    token = preflight.get("preflight_token")
+    require(isinstance(token, str) and token, "configuration preflight token is missing")
+    operations = list_value(preflight.get("operations"), "configuration preflight operations")
+    require(operations, "configuration preflight disclosed no operations")
+    require(
+        all(item.get("read_only") is True for item in operations),
+        "configuration preflight exposed a non-read-only operation",
+    )
+
+    media_type, body = multipart_body(
+        {
+            "preflight_token": token,
+            "mode": "disconnected",
+            "profile_id": "cisco_ios_xe_router_ndm",
+            "input_type": "configuration",
+        },
+        [
+            ("evidence", CISCO_CONFIG.name, "text/plain", configuration),
+            ("organization_policy", CISCO_POLICY.name, "application/json", policy),
+            (
+                "organization_policy_signature",
+                "cisco-compliant-policy.sig",
+                "application/octet-stream",
+                signature,
+            ),
+        ],
+    )
+    response = api.request(
+        "POST",
+        "/api/v1/runs/evidence",
+        body=body,
+        headers={"Content-Type": media_type},
+    )
+    require(
+        response.status == 202,
+        f"configuration upload returned HTTP {response.status}: "
+        f"{response.body[:1000].decode('utf-8', errors='replace')}",
+    )
+    try:
+        api_envelope = object_value(json.loads(response.body), "configuration run response")
+    except json.JSONDecodeError as error:
+        raise ScenarioFailure("configuration run response was not JSON") from error
+    require(api_envelope.get("success") is True, f"configuration run failed: {api_envelope}")
+    return object_value(api_envelope.get("data"), "configuration run response data")
 
 
 def assert_digest_map(value: dict[str, Any], label: str) -> None:
@@ -485,7 +600,7 @@ def verify_handoff(api: LocalApi, run: dict[str, Any], output_dir: Path) -> dict
     reviews = list_value(json.loads(members["sparse-reviews.json"]), "sparse-reviews.json")
     fallback = object_value(json.loads(members["fallback.cklb"]), "fallback.cklb")
 
-    require(manifest.get("schema") == "automatestig.selected-run-handoff.v3", "handoff schema is wrong")
+    require(manifest.get("schema") == "automatestig.selected-run-handoff.v4", "handoff schema is wrong")
     require(manifest.get("run_id") == run_id, "handoff manifest is bound to another run")
     require(integrity.get("algorithm") == "sha256", "handoff integrity algorithm is not SHA-256")
     require(
@@ -496,17 +611,26 @@ def verify_handoff(api: LocalApi, run: dict[str, Any], output_dir: Path) -> dict
     require(
         set(file_digests)
         == {
+            "run-request.json",
             "scanner-run.json",
             "sparse-reviews.json",
             "fallback.cklb",
             "results.xccdf.xml",
             "evidence-envelope.json",
         },
-        "retained-evidence handoff does not bind exactly its five payload files",
+        "retained-evidence handoff does not bind exactly its six payload files",
     )
     for name, expected in file_digests.items():
         require(SHA256_RE.fullmatch(str(expected)) is not None, f"manifest digest for {name} is invalid")
         require(sha256_bytes(members[name]) == expected, f"handoff payload digest mismatch for {name}")
+
+    run_request = object_value(json.loads(members["run-request.json"]), "run-request.json")
+    require(
+        sha256_bytes(members["run-request.json"]) == manifest["bindings"]["request_sha256"],
+        "canonical scanner request does not match its immutable request digest",
+    )
+    require(run_request.get("schema") == "automatestig.scanner-run-request.v1", "run request schema is wrong")
+    require(run_request.get("credential_persisted") is False, "run request claims a persisted credential")
 
     bindings = object_value(manifest.get("bindings"), "handoff bindings")
     assert_digest_map(bindings, "handoff bindings")
@@ -532,7 +656,7 @@ def verify_handoff(api: LocalApi, run: dict[str, Any], output_dir: Path) -> dict
     require(evidence_metadata.get("purged_at") is None, "new run evidence claims to be purged")
     require(evidence_metadata.get("purge_reason") is None, "new run evidence has a purge reason")
 
-    require(scanner_run.get("schema") == "automatestig.scanner-run.v2", "scanner artifact schema is wrong")
+    require(scanner_run.get("schema") == "automatestig.scanner-run.v3", "scanner artifact schema is wrong")
     require(scanner_run.get("mode") == "disconnected", "handoff contains a connected run")
     require(scanner_run.get("collection_complete") is True, "handoff contains incomplete evidence")
     require("evidence_envelope" not in scanner_run, "scanner artifact duplicated plaintext evidence")
@@ -545,7 +669,7 @@ def verify_handoff(api: LocalApi, run: dict[str, Any], output_dir: Path) -> dict
         json.loads(members["evidence-envelope.json"]), "handoff evidence envelope"
     )
     require(
-        envelope.get("schema") == "automatestig-adapter-evidence/v1",
+        envelope.get("schema") == "automatestig-adapter-evidence/v2",
         "replay evidence envelope schema is wrong",
     )
     require(envelope.get("complete") is True, "handoff evidence envelope is incomplete")
@@ -729,19 +853,30 @@ def verify_handoff(api: LocalApi, run: dict[str, Any], output_dir: Path) -> dict
 def verify_complete_run(
     api: LocalApi,
     profile_id: str,
-    evidence: Path,
+    evidence: Path | None,
     automated_count: int,
     manual_untouched: int,
     reviewed_rules: int,
     full_benchmark_rules: int,
     stig_revision: str,
     output_dir: Path,
+    collection_method: str = "evidence",
 ) -> dict[str, Any]:
-    submitted = upload_disconnected_evidence(api, profile_id, evidence)
+    if collection_method == "evidence":
+        require(evidence is not None, "evidence run is missing its native envelope")
+        submitted = upload_disconnected_evidence(api, profile_id, evidence)
+    elif collection_method == "configuration":
+        require(
+            profile_id == "cisco_ios_xe_router_ndm" and evidence is None,
+            "configuration fixture is bound to the Cisco IOS-XE profile",
+        )
+        submitted = upload_disconnected_configuration(api)
+    else:
+        raise ScenarioFailure(f"unsupported complete-run collection method {collection_method!r}")
     run = verify_immutable_run(api, submitted)
     require(run.get("mode") == "disconnected", "complete run mode changed")
     require(run.get("state") == "preview_ready", "complete disconnected run is not preview-ready")
-    require(run.get("collection_method") == "evidence", "collection method changed")
+    require(run.get("collection_method") == collection_method, "collection method changed")
     require(run.get("profile", {}).get("id") == profile_id, "profile binding changed")
     require(run.get("profile", {}).get("stig_revision") == stig_revision, "STIG revision changed")
     result = object_value(run.get("result"), "complete run result")
@@ -765,6 +900,20 @@ def verify_complete_run(
     proposed = list_value(result.get("proposed_reviews"), "proposed reviews")
     require(len(proposed) == automated_count, "complete run omitted sparse proposed reviews")
     require(all(row.get("change") == "handoff" for row in proposed), "disconnected reviews are not marked for handoff")
+    provenance = object_value(result.get("provenance"), "complete result provenance")
+    require(
+        provenance.get("origin")
+        == ("config_file" if collection_method == "configuration" else "evidence_file"),
+        "evaluation origin differs from the uploaded scanner artifact",
+    )
+    if collection_method == "configuration":
+        policy = object_value(
+            provenance.get("organization_policy"),
+            "configuration organization-policy provenance",
+        )
+        require(policy.get("signature_verified") is True, "policy signature was not retained as verified")
+        require(policy.get("policy_sha256") == CISCO_POLICY_SHA256, "policy digest binding changed")
+        require(policy.get("policy_id") == "synthetic-cisco-compliant", "policy identity changed")
     preview = object_value(run.get("delivery_preview"), "complete delivery preview")
     require(
         object_value(preview.get("counts"), "complete preview counts")
@@ -783,7 +932,12 @@ def verify_complete_run(
     handoff = verify_handoff(api, run, output_dir)
     snapshot = output_dir / f"{run['id']}.response.json"
     snapshot.write_text(json.dumps(run, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return {"run_id": run["id"], "profile_id": profile_id, "handoff": handoff}
+    return {
+        "run_id": run["id"],
+        "profile_id": profile_id,
+        "collection_method": collection_method,
+        "handoff": handoff,
+    }
 
 
 def verify_incomplete_run(
@@ -907,6 +1061,18 @@ def run(args: argparse.Namespace, work_dir: Path) -> dict[str, Any]:
         ),
         verify_complete_run(
             api,
+            "cisco_ios_xe_router_ndm",
+            None,
+            automated_count=33,
+            manual_untouched=9,
+            reviewed_rules=42,
+            full_benchmark_rules=42,
+            stig_revision="V3R7",
+            output_dir=work_dir,
+            collection_method="configuration",
+        ),
+        verify_complete_run(
+            api,
             "netapp_ontap9",
             paths[("netapp_ontap9", "compliant")],
             automated_count=15,
@@ -935,6 +1101,8 @@ def run(args: argparse.Namespace, work_dir: Path) -> dict[str, Any]:
         "incomplete_fail_closed_run": incomplete,
         "checks": {
             "preflight_and_upload": True,
+            "native_evidence_and_configuration": True,
+            "signed_policy_provenance": True,
             "immutable_api_projection": True,
             "handoff_zip_member_hashes": True,
             "handoff_manifest_binding": True,

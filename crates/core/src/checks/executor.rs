@@ -6,7 +6,13 @@ use super::*;
 
 /// Execute a single check against collected system data.
 pub fn execute_check(check_def: &CheckDefinition, data: &SystemData) -> CheckResult {
-    let result = run_check(&check_def.check, data);
+    let result = if matches!(check_def.check, Check::Predicate { .. })
+        && !matches!(check_def.expected, ExpectedResult::IsTrue)
+    {
+        Err("predicate checks require expected.type=is_true".to_string())
+    } else {
+        run_check(&check_def.check, data)
+    };
     let passed = match result {
         Ok(ref actual) => evaluate_expected(actual, &check_def.expected),
         Err(_) => false,
@@ -51,6 +57,7 @@ pub fn execute_check_pack(pack: &CheckPack, data: &SystemData) -> Vec<CheckResul
 
 fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
     match check {
+        Check::Predicate { program } => Ok(program.evaluate(data)?.to_string()),
         Check::ConfigLine {
             pattern,
             context,
@@ -268,6 +275,9 @@ fn evaluate_expected(actual: &str, expected: &ExpectedResult) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::checks::predicate::{
+        Operand, Predicate, PredicateInput, PredicateProgram, PredicateSource, ValueRef, ValueScope,
+    };
 
     const IPV4_LINE_PATTERN: &str = r"(?m)^\d{1,3}(\.\d{1,3}){3}";
 
@@ -282,6 +292,8 @@ mod tests {
             },
             expected: ExpectedResult::IsTrue,
             description: None,
+            implementation_class: ImplementationClass::Unknown,
+            introduction_release: None,
         }
     }
 
@@ -343,6 +355,8 @@ mod tests {
             },
             expected: ExpectedResult::IsTrue,
             description: None,
+            implementation_class: ImplementationClass::Unknown,
+            introduction_release: None,
         };
         let mut data = SystemData::default();
         data.command_outputs.insert(
@@ -369,6 +383,8 @@ mod tests {
             },
             expected: ExpectedResult::IsTrue,
             description: None,
+            implementation_class: ImplementationClass::Unknown,
+            introduction_release: None,
         };
         let pack = CheckPack {
             stig_id: "Cisco_IOS-XE_Router_NDM_STIG".to_string(),
@@ -385,5 +401,64 @@ mod tests {
         let results = execute_check_pack(&pack, &data);
         assert_eq!(results.len(), 1);
         assert!(results[0].passed);
+    }
+
+    #[test]
+    fn versioned_predicate_check_integrates_and_fails_closed() {
+        let definition = CheckDefinition {
+            vuln_id: "V-PREDICATE".to_string(),
+            platform: CheckPlatform::Bsd,
+            check: Check::Predicate {
+                program: PredicateProgram {
+                    schema_version: 1,
+                    source: PredicateSource::Observation {
+                        key: "normalized-setting".to_string(),
+                    },
+                    input: PredicateInput::Json,
+                    predicate: Predicate::Equal {
+                        left: Operand::Value {
+                            value: ValueRef {
+                                scope: ValueScope::Root,
+                                pointer: "/enabled".to_string(),
+                            },
+                        },
+                        right: Operand::Literal {
+                            value: serde_json::Value::Bool(true),
+                        },
+                        case_sensitive: true,
+                    },
+                },
+            },
+            expected: ExpectedResult::IsTrue,
+            description: Some("normalized setting must be enabled".to_string()),
+            implementation_class: ImplementationClass::DeclarativePredicate,
+            introduction_release: Some("0.4".to_string()),
+        };
+        let mut data = SystemData::default();
+        data.command_outputs
+            .insert("normalized-setting".into(), r#"{"enabled":true}"#.into());
+        assert_eq!(
+            execute_check(&definition, &data).to_finding_status(),
+            FindingStatus::NotAFinding
+        );
+        data.command_outputs
+            .insert("normalized-setting".into(), r#"{"enabled":false}"#.into());
+        assert_eq!(
+            execute_check(&definition, &data).to_finding_status(),
+            FindingStatus::Open
+        );
+        data.collection_errors
+            .insert("normalized-setting".into(), "truncated".into());
+        let error = execute_check(&definition, &data);
+        assert!(error.error.is_some());
+        assert_eq!(error.to_finding_status(), FindingStatus::NotReviewed);
+
+        let mut invalid_expectation = definition;
+        invalid_expectation.expected = ExpectedResult::NotContains {
+            substring: "false".to_string(),
+        };
+        let invalid = execute_check(&invalid_expectation, &data);
+        assert!(invalid.error.is_some());
+        assert_eq!(invalid.to_finding_status(), FindingStatus::NotReviewed);
     }
 }

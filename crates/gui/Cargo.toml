@@ -14,6 +14,7 @@ automatestig-core = { workspace = true }
 automatestig-collector = { workspace = true }
 automatestig-integrations = { workspace = true }
 automatestig-parsers = { workspace = true }
+automatestig-scanner = { workspace = true }
 automatestig-storage = { workspace = true }
 automatestig-stigpack = { workspace = true }
 axum = { workspace = true }
@@ -27,19 +28,18 @@ serde_json = { workspace = true }
 anyhow = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
+tracing-appender = { workspace = true }
 chrono = { workspace = true }
 zip = { workspace = true }
 tempfile = { workspace = true }
-reqwest = { workspace = true }
 ring = { workspace = true }
 sha2 = { workspace = true }
 uuid = { workspace = true }
 hostname = "0.4"
-russh = { workspace = true }
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
 
 [dev-dependencies]
-rand = "0.10"
 tower = { workspace = true }
+ed25519-dalek = { workspace = true }

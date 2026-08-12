@@ -27,6 +27,7 @@ pub mod path_safety;
 pub mod remote;
 pub mod scanner_benchmarks;
 pub mod scanner_profiles;
+pub mod selected_run_handoff;
 pub mod target_adapters;
 pub mod xccdf_results;
 

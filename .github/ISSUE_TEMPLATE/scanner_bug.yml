@@ -1,0 +1,58 @@
+name: Scanner bug
+description: Report a collection, evaluation, evidence, handoff, migration, or scanner-workflow defect.
+title: "[scanner] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        AutomateSTIG is a difficult-device scanner and evidence producer. STIG Manager remains the system of record for assets, assignments, human review, reporting, and long-term compliance history. Do not attach operational evidence, credentials, private keys, or controlled data.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Scanner-owned area
+      options:
+        - Collection or preflight
+        - Evidence parsing or redaction
+        - Deterministic evaluation
+        - Selected-run handoff or verification
+        - STIG Manager discovery or exact no-op verification
+        - Migration or recovery
+        - Scanner GUI accessibility or workflow
+        - Packaging or release integrity
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Exact AutomateSTIG version or commit
+      placeholder: v0.3.0 or full commit SHA
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: Exact target profile, STIG revision, and device version
+      placeholder: netapp_ontap9 / V2R4 / ONTAP 9.15.1
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Observed and expected behavior
+      description: Include sanitized error codes, steps, and whether the run failed closed. Use hashes instead of sensitive artifact contents.
+    validations:
+      required: true
+  - type: textarea
+    id: bindings
+    attributes:
+      label: Non-sensitive integrity bindings
+      description: Optional run ID, plan/profile/check-pack hashes, handoff digest, and STIG Manager version. Never include tokens or credentials.
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Product boundary confirmation
+      options:
+        - label: This request does not ask AutomateSTIG to manage assets, assignments, human findings, risk acceptance, reports, or portfolio state owned by STIG Manager.
+          required: true
+        - label: I removed operational evidence, credentials, private keys, and controlled data from this report.
+          required: true

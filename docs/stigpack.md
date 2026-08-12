@@ -32,10 +32,10 @@ Each file entry is keyed by path and includes:
 ## Build
 
 ```bash
-automatestig generate-signing-key \
+cargo run --release --features maintainer --bin automatestig -- generate-signing-key \
   --output /secure-media/site-content.key
 
-automatestig build-pack \
+cargo run --release --features maintainer --bin automatestig -- build-pack \
   --id site-content \
   --name "Site Content" \
   --version 1.0.0 \
@@ -52,7 +52,8 @@ and prints its `SHA256:<hex>` fingerprint.
 ## Verify
 
 ```bash
-automatestig verify --pack site-content.stigpack
+cargo run --release --features maintainer --bin automatestig -- \
+  verify --pack site-content.stigpack
 ```
 
 ## Import
@@ -60,7 +61,8 @@ automatestig verify --pack site-content.stigpack
 CLI:
 
 ```bash
-automatestig import --pack site-content.stigpack
+cargo run --release --features maintainer --bin automatestig -- \
+  import --pack site-content.stigpack
 ```
 
 The scanner-first GUI has no pack-import action. Use the protected
@@ -124,10 +126,8 @@ Offline signing workstation:
 3. Authenticate the public-key fingerprint over an independent channel.
 4. Transfer only the `.stigpack` and public key by approved media.
 
-The scanner-first GUI exposes no pack-signing workflow. Legacy protected
-offline-pack endpoints are disabled unless
-`AUTOMATESTIG_OFFLINE_SIGNING_KEY` explicitly names an existing key outside the
-application data directory. Prefer the offline CLI workflow so an online GUI
+The scanner-first GUI exposes no pack-signing workflow. Use the protected
+offline CLI workflow with an explicit `--signing-key` path so an online GUI
 process never handles private signing material.
 
 Air-gapped side:

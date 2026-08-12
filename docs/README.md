@@ -8,7 +8,7 @@ Start here:
 
 - [Installation](installation.md) - prerequisites, build, GUI, CLI, and data directory.
 - [Quickstart](quickstart.md) - a short GUI path and equivalent CLI path.
-- [Supported Targets](supported-targets.md) - the exact v0.3 scanner boundary and evidence modes.
+- [Declared Scanner Targets](supported-targets.md) - the exact experimental v0.3 scanner boundary and evidence modes.
 - [Scanner Operations](scanner-operations.md) - connected/disconnected analyst and manager flows, sparse reviews, migration, retention, and limitations.
 - [Handoff Verification](handoff-verification.md) - offline integrity, sparse-ownership, retained-evidence replay, and protected detached producer signatures.
 - [Scanner-First Product Plan](scanner-product-plan.md) - product ownership, feature removals, migration, UX, and target-specific release gates.
@@ -49,6 +49,7 @@ Start here:
 - [Audit Exceptions](audit-exceptions.md)
 - [Live External Acceptance](live-external-acceptance.md)
 - [Controlled Scanner Comparison](commercial-scanner-comparison.md)
+- [First-Use UX Release Study](first-use-ux-study.md)
 - [2026-08-08 Scanner Validation](scanner-validation-2026-08-08.md)
 - [Release Hardening](release-hardening.md)
 - [Release Process And Feature Freeze](release-process.md)

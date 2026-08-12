@@ -4,6 +4,7 @@ import importlib.util
 import json
 import os
 import pathlib
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -42,6 +43,354 @@ def write_json_artifact(path, value):
 
 
 class ReleaseGovernanceTests(unittest.TestCase):
+    @staticmethod
+    def first_use_study(*, completed=4, assisted=frozenset(), documented=frozenset()):
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat().replace(
+            "+00:00", "Z"
+        )
+        participants = []
+        for index in range(5):
+            participants.append(
+                {
+                    "participant_id": f"P{index + 1:02d}",
+                    "role": (
+                        "cybersecurity_analyst"
+                        if index < 3
+                        else "cybersecurity_manager"
+                    ),
+                    "role_experience_band": (
+                        "less_than_2_years"
+                        if index < 2
+                        else "more_than_5_years"
+                    ),
+                    "first_time_user": True,
+                    "completed_prepared_scan": index < completed,
+                    "external_documentation_used": index in documented,
+                    "assistance_received": index in assisted,
+                    "outcome_notes": "Observed task outcome.",
+                }
+            )
+        numerator = sum(
+            item["completed_prepared_scan"]
+            and not item["external_documentation_used"]
+            and not item["assistance_received"]
+            for item in participants
+        )
+        return {
+            "schema": "automatestig-first-use-ux-study/v1",
+            "passed": numerator * 100 >= len(participants) * 80,
+            "executed_at": now,
+            "source_commit": "a" * 40,
+            "product_version": "v1.2.3",
+            "repository": "ibadukefan/AutomateSTIG",
+            "workflow_run_id": "1234",
+            "protected_environment": "first-use-ux-study",
+            "automatestig_gui_sha256": "b" * 64,
+            "scenario": {
+                "id": "prepared-cisco-scan",
+                "version": "1",
+                "target_profile": "cisco-ios-xe-router-ndm",
+                "prepared_scan_fixture_sha256": "c" * 64,
+                "task_definition_sha256": "d" * 64,
+            },
+            "representative_roles": [
+                "cybersecurity_analyst",
+                "cybersecurity_manager",
+            ],
+            "study_team": {
+                role: {"github_login": login, "attested_at": now}
+                for role, login in (
+                    ("facilitator", "study-facilitator"),
+                    ("independent_observer", "study-observer"),
+                    ("independent_approver", "study-approver"),
+                )
+            },
+            "participants": participants,
+            "metrics": {
+                "numerator": numerator,
+                "denominator": len(participants),
+                "required_threshold_percent": 80,
+            },
+        }
+
+    def test_first_use_study_recomputes_full_cohort_and_fails_honestly(self):
+        script = REPO / "scripts/validate-release-evidence.py"
+        spec = importlib.util.spec_from_file_location(
+            "validate_release_first_use", script
+        )
+        validator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(validator)
+        passing = self.first_use_study()
+        now = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
+            seconds=1
+        )
+        team = validator.validate_first_use_study(
+            passing,
+            "study",
+            "a" * 40,
+            "v1.2.3",
+            now,
+            True,
+        )
+        self.assertEqual(team["independent_observer"], "study-observer")
+
+        failed = self.first_use_study(completed=3)
+        validator.validate_first_use_study(
+            failed,
+            "study",
+            "a" * 40,
+            "v1.2.3",
+            now,
+            False,
+        )
+        with self.assertRaises(SystemExit):
+            validator.validate_first_use_study(
+                failed,
+                "study",
+                "a" * 40,
+                "v1.2.3",
+                now,
+                True,
+            )
+
+        dishonest = self.first_use_study(completed=5, assisted=frozenset({0}))
+        dishonest["metrics"]["numerator"] = 5
+        dishonest["passed"] = True
+        with self.assertRaises(SystemExit):
+            validator.validate_first_use_study(
+                dishonest,
+                "study",
+                "a" * 40,
+                "v1.2.3",
+                now,
+                False,
+            )
+
+    def test_first_use_study_rejects_unrepresentative_or_mutable_identity(self):
+        script = REPO / "scripts/validate-release-evidence.py"
+        spec = importlib.util.spec_from_file_location(
+            "validate_release_first_use_identity", script
+        )
+        validator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(validator)
+        now = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
+            seconds=1
+        )
+        mutations = (
+            lambda value: value["participants"].__setitem__(
+                4, {**value["participants"][4], "role": "cybersecurity_analyst"}
+            ),
+            lambda value: value["participants"][0].__setitem__(
+                "first_time_user", False
+            ),
+            lambda value: value["participants"][1].__setitem__(
+                "participant_id", "P01"
+            ),
+            lambda value: value["study_team"]["independent_approver"].__setitem__(
+                "github_login", "study-observer"
+            ),
+            lambda value: value.__setitem__("product_version", "v1.2.4"),
+        )
+        for mutate in mutations:
+            with self.subTest(mutation=mutate):
+                study = self.first_use_study()
+                mutate(study)
+                with self.assertRaises(SystemExit):
+                    validator.validate_first_use_study(
+                        study,
+                        "study",
+                        "a" * 40,
+                        "v1.2.3",
+                        now,
+                        False,
+                    )
+
+    def test_first_use_workflow_preserves_external_human_gate(self):
+        workflow = (
+            REPO / ".github/workflows/first-use-ux-study.yml"
+        ).read_text(encoding="utf-8")
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertIn("environment: first-use-ux-study", workflow)
+        self.assertIn("automatestig-first-use-study", workflow)
+        self.assertIn("--gui-binary target/release/automatestig-gui", workflow)
+        self.assertIn("--require-passed", workflow)
+        self.assertLess(
+            workflow.index("Upload the honest pass or failure record"),
+            workflow.index("Require at least 80 percent"),
+        )
+        self.assertNotIn("pull_request:", workflow)
+        self.assertNotIn("schedule:", workflow)
+        release_schema = json.loads(
+            (REPO / "schemas/release-evidence.schema.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertIn("first_use_ux", release_schema["required"])
+
+    def test_first_use_environment_binds_observer_and_distinct_approver(self):
+        import io
+        from contextlib import redirect_stderr
+        from unittest import mock
+
+        spec = importlib.util.spec_from_file_location(
+            "validate_release_first_use_environment",
+            REPO / "scripts/validate-release-evidence.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        environment = {
+            "can_admins_bypass": False,
+            "protection_rules": [
+                {
+                    "type": "required_reviewers",
+                    "prevent_self_review": True,
+                    "reviewers": [
+                        {
+                            "type": "User",
+                            "reviewer": {"login": "study-approver"},
+                        }
+                    ],
+                }
+            ],
+            "deployment_branch_policy": {
+                "protected_branches": True,
+                "custom_branch_policies": False,
+            },
+        }
+        approvals = [
+            {
+                "state": "approved",
+                "user": {"login": "study-approver"},
+                "environments": [{"name": "first-use-ux-study"}],
+            }
+        ]
+        jobs = {
+            "total_count": 1,
+            "jobs": [
+                {
+                    "name": "Independent first-use study attestation",
+                    "conclusion": "success",
+                    "labels": [
+                        "self-hosted",
+                        "Linux",
+                        "X64",
+                        "automatestig-first-use-study",
+                    ],
+                    "runner_id": 7,
+                    "runner_name": "ux-lab-runner",
+                }
+            ],
+        }
+        run_record = {
+            "id": 1234,
+            "actor": {"login": "study-observer"},
+            "triggering_actor": {"login": "study-observer"},
+            "run_attempt": 1,
+        }
+
+        def response(endpoint):
+            if endpoint.endswith("/environments/first-use-ux-study"):
+                return environment
+            if endpoint.endswith("/approvals"):
+                return approvals
+            if "/jobs?" in endpoint:
+                return jobs
+            raise AssertionError(endpoint)
+
+        with mock.patch.object(module, "github_json", side_effect=response):
+            module.validate_first_use_study_environment(
+                "ibadukefan/AutomateSTIG",
+                "study-observer",
+                "study-approver",
+                run_record,
+                "first_use_ux",
+            )
+            with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                module.validate_first_use_study_environment(
+                    "ibadukefan/AutomateSTIG",
+                    "study-observer",
+                    "study-observer",
+                    run_record,
+                    "first_use_ux",
+                )
+
+    def test_first_use_cli_binds_exact_gui_and_protected_run(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            (root / "schemas").mkdir()
+            for name in (
+                "release-evidence.schema.json",
+                "first-use-ux-study.schema.json",
+                "handoff-key-custody-ceremony.schema.json",
+                "handoff-receiver-ceremony.schema.json",
+            ):
+                shutil.copyfile(REPO / "schemas" / name, root / "schemas" / name)
+            gui = root / "automatestig-gui"
+            gui.write_bytes(b"exact-tested-gui")
+            study = self.first_use_study()
+            study["automatestig_gui_sha256"] = hashlib.sha256(
+                gui.read_bytes()
+            ).hexdigest()
+            source = root / "study.json"
+            source.write_text(json.dumps(study), encoding="utf-8")
+            output = root / "normalized.json"
+            result = run(
+                [
+                    "python3",
+                    REPO / "scripts/validate-release-evidence.py",
+                    "--repo-root",
+                    root,
+                    "--first-use-study",
+                    source,
+                    "--source-commit",
+                    "a" * 40,
+                    "--product-version",
+                    "v1.2.3",
+                    "--gui-binary",
+                    gui,
+                    "--output",
+                    output,
+                ],
+                root,
+                {
+                    "GITHUB_REPOSITORY": "ibadukefan/AutomateSTIG",
+                    "GITHUB_RUN_ID": "9876",
+                },
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            normalized = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(normalized["workflow_run_id"], "9876")
+            self.assertEqual(
+                normalized["automatestig_gui_sha256"],
+                hashlib.sha256(gui.read_bytes()).hexdigest(),
+            )
+
+            gui.write_bytes(b"different-gui")
+            mismatch = run(
+                [
+                    "python3",
+                    REPO / "scripts/validate-release-evidence.py",
+                    "--repo-root",
+                    root,
+                    "--first-use-study",
+                    output,
+                    "--source-commit",
+                    "a" * 40,
+                    "--product-version",
+                    "v1.2.3",
+                    "--gui-binary",
+                    gui,
+                    "--require-passed",
+                ],
+                root,
+                {
+                    "GITHUB_REPOSITORY": "ibadukefan/AutomateSTIG",
+                    "GITHUB_RUN_ID": "9876",
+                },
+            )
+            self.assertNotEqual(mismatch.returncode, 0)
+            self.assertIn("exact tested binary", mismatch.stderr)
+
     def test_release_ssh_fingerprint_regex_requires_canonical_base64(self):
         script = REPO / "scripts/validate-release-evidence.py"
         spec = importlib.util.spec_from_file_location(
@@ -99,6 +448,16 @@ class ReleaseGovernanceTests(unittest.TestCase):
         self.assertIn("source-portability testing only", windows)
         self.assertNotIn("Invoke-WebRequest", windows)
 
+        for documentation in (REPO / "README.md", REPO / "docs/installation.md"):
+            with self.subTest(documentation=documentation.name):
+                text = documentation.read_text(encoding="utf-8")
+                self.assertNotIn(
+                    "raw.githubusercontent.com/ibadukefan/AutomateSTIG/main/install-",
+                    text,
+                )
+                self.assertIn("gh release verify", text)
+                self.assertIn("AutomateSTIG/$version/install-", text)
+
     def test_posix_installers_verify_before_installing(self):
         cases = (
             ("install-linux.sh", "Linux", "x86_64-unknown-linux-gnu"),
@@ -113,14 +472,36 @@ class ReleaseGovernanceTests(unittest.TestCase):
                 install_dir = root / "install"
                 for directory in (fixture, payload, fake_bin):
                     directory.mkdir()
-                for binary in ("automatestig", "automatestig-gui"):
+                for binary in (
+                    "automatestig",
+                    "automatestig-gui",
+                    "automatestig-backup-restore",
+                ):
                     path = payload / binary
                     path.write_text("#!/bin/sh\nexit 0\n")
                     path.chmod(0o755)
+                for document in (
+                    "README.md",
+                    "LICENSE",
+                    "quickstart.md",
+                    "installation.md",
+                ):
+                    (payload / document).write_text(f"test {document}\n")
 
                 archive_name = f"automatestig-v0.3.0-{target}.tar.gz"
                 archive = fixture / archive_name
-                packed = run(["tar", "-czf", archive, "-C", payload, "."], root)
+                members = [
+                    "automatestig",
+                    "automatestig-gui",
+                    "automatestig-backup-restore",
+                    "README.md",
+                    "LICENSE",
+                    "quickstart.md",
+                    "installation.md",
+                ]
+                packed = run(
+                    ["tar", "-czf", archive, "-C", payload, *members], root
+                )
                 self.assertEqual(packed.returncode, 0, packed.stderr)
                 archive_hash = hashlib.sha256(archive.read_bytes()).hexdigest()
                 (fixture / f"{archive_name}.sha256").write_text(
@@ -173,6 +554,9 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                 self.assertEqual(installed.returncode, 0, installed.stderr)
                 self.assertTrue((install_dir / "automatestig").is_file())
                 self.assertTrue((install_dir / "automatestig-gui").is_file())
+                self.assertTrue(
+                    (install_dir / "automatestig-backup-restore").is_file()
+                )
                 invocation = log.read_text()
                 self.assertIn(f"--bundle ", invocation)
                 self.assertIn(f"{archive_name}.sigstore.bundle", invocation)
@@ -180,6 +564,81 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                     "https://github.com/ibadukefan/AutomateSTIG/"
                     ".github/workflows/ci.yml@refs/tags/v0.3.0",
                     invocation,
+                )
+
+                # A failure while publishing the final tool must restore the
+                # complete prior toolset instead of leaving old/new entry points.
+                old_cli = b"old-cli-version\n"
+                old_gui = b"old-gui-version\n"
+                old_backup_tool = b"old-backup-tool-version\n"
+                (install_dir / "automatestig").write_bytes(old_cli)
+                (install_dir / "automatestig-gui").write_bytes(old_gui)
+                (install_dir / "automatestig-backup-restore").write_bytes(
+                    old_backup_tool
+                )
+                real_mv = shutil.which("mv", path=os.environ["PATH"])
+                self.assertIsNotNone(real_mv)
+                mv_wrapper = fake_bin / "mv"
+                mv_wrapper.write_text("""#!/bin/sh
+if [ "${FAKE_MV_FAIL_DEST:-}" = "${2:-}" ] && [ ! -e "$FAKE_MV_FAILURE_MARKER" ]; then
+  : > "$FAKE_MV_FAILURE_MARKER"
+  if [ "${FAKE_MV_SIGNAL_PARENT:-0}" -eq 1 ]; then
+    kill -TERM "$PPID"
+  fi
+  exit 73
+fi
+exec "$REAL_MV" "$@"
+""")
+                mv_wrapper.chmod(0o755)
+                marker = root / "mv-failed-once"
+                interrupted = run(
+                    ["sh", REPO / installer],
+                    root,
+                    {
+                        **env,
+                        "FAKE_MV_FAIL_DEST": str(
+                            install_dir / "automatestig-backup-restore"
+                        ),
+                        "FAKE_MV_FAILURE_MARKER": str(marker),
+                        "REAL_MV": real_mv,
+                    },
+                )
+                self.assertNotEqual(interrupted.returncode, 0)
+                self.assertEqual((install_dir / "automatestig").read_bytes(), old_cli)
+                self.assertEqual((install_dir / "automatestig-gui").read_bytes(), old_gui)
+                self.assertEqual(
+                    (install_dir / "automatestig-backup-restore").read_bytes(),
+                    old_backup_tool,
+                )
+                self.assertEqual(
+                    list(install_dir.glob(".automatestig-install.*")),
+                    [],
+                    interrupted.stderr,
+                )
+
+                signal_marker = root / "mv-signaled-once"
+                signaled = run(
+                    ["sh", REPO / installer],
+                    root,
+                    {
+                        **env,
+                        "FAKE_MV_FAIL_DEST": str(install_dir / "automatestig-gui"),
+                        "FAKE_MV_FAILURE_MARKER": str(signal_marker),
+                        "FAKE_MV_SIGNAL_PARENT": "1",
+                        "REAL_MV": real_mv,
+                    },
+                )
+                self.assertNotEqual(signaled.returncode, 0)
+                self.assertEqual((install_dir / "automatestig").read_bytes(), old_cli)
+                self.assertEqual((install_dir / "automatestig-gui").read_bytes(), old_gui)
+                self.assertEqual(
+                    (install_dir / "automatestig-backup-restore").read_bytes(),
+                    old_backup_tool,
+                )
+                self.assertEqual(
+                    list(install_dir.glob(".automatestig-install.*")),
+                    [],
+                    signaled.stderr,
                 )
 
                 rejected_dir = root / "rejected"
@@ -194,6 +653,55 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                 )
                 self.assertNotEqual(rejected.returncode, 0)
                 self.assertFalse(rejected_dir.exists())
+
+                # Even a correctly hashed and signed archive is rejected before
+                # extraction if its closed member set changes.
+                (payload / "unexpected-helper").write_text("not shipped\n")
+                malicious = run(
+                    [
+                        "tar",
+                        "-czf",
+                        archive,
+                        "-C",
+                        payload,
+                        *members,
+                        "unexpected-helper",
+                    ],
+                    root,
+                )
+                self.assertEqual(malicious.returncode, 0, malicious.stderr)
+                archive_hash = hashlib.sha256(archive.read_bytes()).hexdigest()
+                (fixture / f"{archive_name}.sha256").write_text(
+                    f"{archive_hash}  {archive_name}\n"
+                )
+                unsafe_dir = root / "unsafe-archive-install"
+                unsafe = run(
+                    ["sh", REPO / installer],
+                    root,
+                    {**env, "AUTOMATESTIG_INSTALL_DIR": str(unsafe_dir)},
+                )
+                self.assertNotEqual(unsafe.returncode, 0)
+                self.assertIn("unsafe or unexpected members", unsafe.stderr)
+                self.assertFalse(unsafe_dir.exists())
+
+                python_wrapper = fake_bin / "python3"
+                python_wrapper.write_text("#!/bin/sh\nexit 1\n")
+                python_wrapper.chmod(0o755)
+                unsupported_dir = root / "unsupported-python"
+                unsupported = run(
+                    ["sh", REPO / installer],
+                    root,
+                    {
+                        **env,
+                        "AUTOMATESTIG_INSTALL_DIR": str(unsupported_dir),
+                    },
+                )
+                self.assertNotEqual(unsupported.returncode, 0)
+                self.assertIn(
+                    "Python 3.10 or newer is required",
+                    unsupported.stderr,
+                )
+                self.assertFalse(unsupported_dir.exists())
 
     def test_workflow_evidence_must_match_the_uploaded_artifact(self):
         import importlib.util
@@ -239,6 +747,68 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                     "stig_viewer",
                     "0" * 64,
                 )
+
+    def test_first_use_workflow_artifact_is_exact_and_bounded(self):
+        import io
+        import zipfile
+        from contextlib import redirect_stderr
+        from unittest import mock
+
+        spec = importlib.util.spec_from_file_location(
+            "validate_release_first_use_artifact",
+            REPO / "scripts/validate-release-evidence.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        evidence = json.dumps(self.first_use_study()).encode() + b"\n"
+
+        def archive(files):
+            output = io.BytesIO()
+            with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as bundle:
+                for name, value in files.items():
+                    bundle.writestr(name, value)
+            return output.getvalue()
+
+        archive_bytes = archive({"first-use-ux-study.json": evidence})
+        metadata = {
+            "total_count": 1,
+            "artifacts": [
+                {
+                    "id": 99,
+                    "name": "first-use-ux-study-1234",
+                    "expired": False,
+                    "size_in_bytes": len(archive_bytes),
+                }
+            ],
+        }
+        with (
+            mock.patch.object(module, "github_json", return_value=metadata),
+            mock.patch.object(module, "github_bytes", return_value=archive_bytes),
+        ):
+            module.validate_workflow_artifact(
+                "ibadukefan/AutomateSTIG",
+                "1234",
+                "first_use_ux",
+                hashlib.sha256(evidence).hexdigest(),
+            )
+        extra = archive(
+            {
+                "first-use-ux-study.json": evidence,
+                "participant-identities.csv": b"must not be uploaded",
+            }
+        )
+        with (
+            mock.patch.object(module, "github_json", return_value=metadata),
+            mock.patch.object(module, "github_bytes", return_value=extra),
+            redirect_stderr(io.StringIO()),
+            self.assertRaises(SystemExit),
+        ):
+            module.validate_workflow_artifact(
+                "ibadukefan/AutomateSTIG",
+                "1234",
+                "first_use_ux",
+                hashlib.sha256(evidence).hexdigest(),
+            )
 
     def test_content_ceremony_binds_exactly_three_fixed_workflow_files(self):
         import importlib.util
@@ -573,6 +1143,29 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             ):
                 module.validate_required_status_bindings(value)
 
+    def test_required_frontend_status_context_matches_ci_and_documentation(self):
+        spec = importlib.util.spec_from_file_location(
+            "validate_release_evidence_frontend_context",
+            REPO / "scripts/validate-release-evidence.py",
+        )
+        validator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(validator)
+
+        expected = "Scanner frontend contracts"
+        self.assertIn(expected, validator.REQUIRED_STATUS_CONTEXTS)
+        self.assertNotIn("Frontend syntax", validator.REQUIRED_STATUS_CONTEXTS)
+
+        workflow = (REPO / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        frontend_job = workflow.split("  frontend-syntax:", 1)[1].split(
+            "  archive-fuzz-smoke:", 1
+        )[0]
+        self.assertIn(f"name: {expected}", frontend_job)
+
+        release_process = (REPO / "docs/release-process.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(f"exactly `{expected}`", release_process)
+
     def test_release_tag_ruleset_requires_exact_singleton_authority(self):
         import importlib.util
         import io
@@ -630,50 +1223,188 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
         self.assertFalse(module.is_closed_release_tag_ruleset(excluded))
 
     def test_release_security_json_rejects_duplicate_members_recursively(self):
-        import importlib.util
-
-        spec = importlib.util.spec_from_file_location(
-            "validate_release_evidence_unique_json",
-            REPO / "scripts/validate-release-evidence.py",
-        )
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        for raw in (
-            '{"schema":"one","schema":"two"}',
-            '{"outer":{"value":1,"value":2}}',
+        for filename in (
+            "validate-release-evidence.py",
+            "generate-cyclonedx-sbom.py",
+            "generate-release-manifest.py",
+            "generate-release-provenance.py",
         ):
-            with self.assertRaisesRegex(ValueError, "duplicate JSON member"):
-                module.strict_json_loads(raw)
+            with self.subTest(script=filename):
+                spec = importlib.util.spec_from_file_location(
+                    f"unique_json_{filename.replace('-', '_').replace('.', '_')}",
+                    REPO / "scripts" / filename,
+                )
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                for raw in (
+                    '{"schema":"one","schema":"two"}',
+                    '{"outer":{"value":1,"value":2}}',
+                ):
+                    with self.assertRaisesRegex(
+                        ValueError, "duplicate JSON member"
+                    ):
+                        module.strict_json_loads(raw)
 
     def test_sbom_uses_workspace_version_and_target_bound_serial(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = pathlib.Path(temporary)
             metadata = root / "metadata.json"
             output = root / "sbom.json"
+            application_id = "automatestig 0.3.0 (path+file:///test)"
+            dependency_id = "registry+https://github.com/rust-lang/crates.io-index#serde@1.0.0"
             metadata.write_text(json.dumps({
-                "workspace_members": ["automatestig 0.3.0 (path+file:///test)"],
-                "packages": [{
-                    "id": "automatestig 0.3.0 (path+file:///test)",
-                    "name": "automatestig",
-                    "version": "0.3.0",
-                }],
+                "workspace_root": str(root),
+                "workspace_members": [application_id],
+                "packages": [
+                    {
+                        "id": application_id,
+                        "name": "automatestig",
+                        "version": "0.3.0",
+                        "repository": "https://github.com/ibadukefan/AutomateSTIG",
+                    },
+                    {
+                        "id": dependency_id,
+                        "name": "serde",
+                        "version": "1.0.0",
+                        "source": "registry+https://github.com/rust-lang/crates.io-index",
+                    },
+                ],
+                "resolve": {
+                    "nodes": [
+                        {
+                            "id": application_id,
+                            "dependencies": [dependency_id],
+                            "deps": [{"name": "serde", "pkg": dependency_id}],
+                        },
+                        {"id": dependency_id, "dependencies": [], "deps": []},
+                    ]
+                },
+            }))
+            (root / "Cargo.lock").write_text("""version = 4
+
+[[package]]
+name = "serde"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "abababababababababababababababababababababababababababababababab"
+""")
+            archive = root / "automatestig-v0.3.0-x86_64-unknown-linux-gnu.tar.gz"
+            archive.write_bytes(b"release archive")
+            archive_sha = hashlib.sha256(archive.read_bytes()).hexdigest()
+            cli_sha = hashlib.sha256(b"cli").hexdigest()
+            gui_sha = hashlib.sha256(b"gui").hexdigest()
+            backup_sha = hashlib.sha256(b"backup").hexdigest()
+            equivalence = root / "release-equivalence-x86_64-unknown-linux-gnu.json"
+            equivalence.write_text(json.dumps({
+                "schema": "automatestig-release-artifact-equivalence/v1",
+                "target": "x86_64-unknown-linux-gnu",
+                "version": "0.3.0",
+                "source_commit": "a" * 40,
+                "archive": {
+                    "name": archive.name,
+                    "sha256": archive_sha,
+                    "size": archive.stat().st_size,
+                    "format": "tar.gz",
+                },
+                "binaries": {
+                    "cli": {
+                        "name": "automatestig",
+                        "pre_package_sha256": cli_sha,
+                        "archive_member_sha256": cli_sha,
+                        "size": 3,
+                    },
+                    "gui": {
+                        "name": "automatestig-gui",
+                        "pre_package_sha256": gui_sha,
+                        "archive_member_sha256": gui_sha,
+                        "size": 3,
+                    },
+                },
+                "operational_tools": {
+                    "backup_restore": {
+                        "name": "automatestig-backup-restore",
+                        "pre_package_sha256": backup_sha,
+                        "archive_member_sha256": backup_sha,
+                        "size": 6,
+                    }
+                },
             }))
             result = run([
                 "python3", REPO / "scripts/generate-cyclonedx-sbom.py",
                 "--metadata", metadata,
                 "--output", output,
                 "--target", "x86_64-unknown-linux-gnu",
+                "--equivalence-manifest", equivalence,
+                "--archive", archive,
             ], root)
             self.assertEqual(result.returncode, 0, result.stderr)
             document = json.loads(output.read_text())
             self.assertEqual(document["metadata"]["component"]["version"], "0.3.0")
-            self.assertEqual(
+            self.assertIn(
+                {"name": "target", "value": "x86_64-unknown-linux-gnu"},
                 document["metadata"]["component"]["properties"],
-                [{"name": "target", "value": "x86_64-unknown-linux-gnu"}],
+            )
+            self.assertIn(
+                {
+                    "name": "automatestig:transition-cli-included",
+                    "value": "false",
+                },
+                document["metadata"]["component"]["properties"],
+            )
+            self.assertIn(
+                {
+                    "name": "automatestig:release-archive-sha256",
+                    "value": archive_sha,
+                },
+                document["metadata"]["component"]["properties"],
             )
             self.assertNotEqual(
                 document["serialNumber"],
                 "urn:uuid:00000000-0000-0000-0000-000000000000",
+            )
+            components = {item["name"]: item for item in document["components"]}
+            self.assertEqual(
+                components["serde"]["hashes"],
+                [{"alg": "SHA-256", "content": "ab" * 32}],
+            )
+            self.assertIn(
+                {
+                    "type": "distribution",
+                    "url": "https://github.com/rust-lang/crates.io-index",
+                },
+                components["serde"]["externalReferences"],
+            )
+            self.assertIn(
+                {
+                    "name": "cargo:source",
+                    "value": "registry+https://github.com/rust-lang/crates.io-index",
+                },
+                components["serde"]["properties"],
+            )
+            application_ref = document["metadata"]["component"]["bom-ref"]
+            self.assertNotIn(application_ref, {
+                component["bom-ref"] for component in document["components"]
+            })
+            dependency_graph = {
+                item["ref"]: item["dependsOn"] for item in document["dependencies"]
+            }
+            self.assertEqual(
+                set(dependency_graph[application_ref]),
+                {
+                    components["serde"]["bom-ref"],
+                    "urn:automatestig:release-binary:x86_64-unknown-linux-gnu:cli",
+                    "urn:automatestig:release-binary:x86_64-unknown-linux-gnu:gui",
+                    "urn:automatestig:release-tool:x86_64-unknown-linux-gnu:backup_restore",
+                },
+            )
+            self.assertEqual(dependency_graph[components["serde"]["bom-ref"]], [])
+            self.assertEqual(
+                components["automatestig-gui"]["hashes"],
+                [{"alg": "SHA-256", "content": gui_sha}],
+            )
+            self.assertEqual(
+                components["automatestig-backup-restore"]["hashes"],
+                [{"alg": "SHA-256", "content": backup_sha}],
             )
 
     def test_freeze_requires_label_for_product_path(self):
@@ -915,13 +1646,13 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             validator.REQUIRED_STATUS_CONTEXTS,
         )
 
-    def test_tag_publication_requires_exact_live_tested_linux_cli(self):
+    def test_tag_publication_requires_exact_cli_gui_archives_for_every_target(self):
         workflow = (REPO / ".github/workflows/ci.yml").read_text()
         release = workflow.split("  build-release:", 1)[1].split(
-            "  live-binary-equivalence:", 1
+            "  release-artifact-equivalence:", 1
         )[0]
         equivalence = workflow.split(
-            "  live-binary-equivalence:", 1
+            "  release-artifact-equivalence:", 1
         )[1].split("  publish-release:", 1)[0]
         publication = workflow.split("  publish-release:", 1)[1]
         self.assertIn("toolchain: 1.94.0", release)
@@ -930,6 +1661,7 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
         for member in (
             '"${{ matrix.cli }}"',
             '"${{ matrix.gui }}"',
+            "automatestig-backup-restore",
             "README.md",
             "LICENSE",
             "quickstart.md",
@@ -938,17 +1670,127 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
             with self.subTest(member=member):
                 self.assertIn(member, release)
         self.assertIn("needs: build-release", equivalence)
+        for target in (
+            "x86_64-unknown-linux-gnu",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-apple-darwin",
+            "aarch64-apple-darwin",
+        ):
+            with self.subTest(target=target):
+                self.assertIn(f"target: {target}", equivalence)
+        self.assertIn("--execute", equivalence)
+        self.assertIn("--require-live-cli", equivalence)
+        self.assertIn("release-equivalence-${target}.json", equivalence)
+        self.assertIn("ubuntu-24.04-arm", equivalence)
+        self.assertIn("macos-15-intel", equivalence)
         self.assertIn(
-            "name: automatestig-x86_64-unknown-linux-gnu",
-            equivalence,
-        )
-        self.assertIn(
-            "scripts/validate-release-binary-equivalence.py",
-            equivalence,
-        )
-        self.assertIn(
-            "needs: [build-release, live-binary-equivalence]",
+            "needs: [build-release, release-artifact-equivalence]",
             publication,
+        )
+
+    def test_ci_isolates_maintainer_cli_from_product_and_release_binaries(self):
+        workflow = (REPO / ".github/workflows/ci.yml").read_text()
+        maintainer = workflow.split("  maintainer-tooling:", 1)[1].split(
+            "  test:", 1
+        )[0]
+        e2e = workflow.split("  e2e:", 1)[1].split("  fmt:", 1)[0]
+        release = workflow.split("  build-release:", 1)[1].split(
+            "  release-artifact-equivalence:", 1
+        )[0]
+        self.assertIn(
+            "cargo test -p automatestig --all-targets --no-default-features\n"
+            "          --features maintainer",
+            maintainer,
+        )
+        self.assertIn(
+            "cargo test -p automatestig --all-targets --no-default-features\n"
+            "          --features transition",
+            maintainer,
+        )
+        self.assertIn(
+            "cargo clippy -p automatestig --all-targets --no-default-features\n"
+            "          --features maintainer -- -D warnings",
+            maintainer,
+        )
+        self.assertIn(
+            "cargo clippy -p automatestig --all-targets --no-default-features\n"
+            "          --features transition -- -D warnings",
+            maintainer,
+        )
+        self.assertIn("--no-default-features", e2e)
+        self.assertNotIn("--features maintainer", e2e)
+        self.assertIn("--features transition --bin automatestig-transition", e2e)
+        self.assertIn("--no-default-features", release)
+        self.assertNotIn("--features maintainer", release)
+        self.assertNotIn("--features transition", release)
+        self.assertNotIn("automatestig-transition", release)
+
+    def test_product_e2e_exercises_only_the_current_default_surface(self):
+        workflow = (REPO / ".github/workflows/ci.yml").read_text()
+        e2e_job = workflow.split("  e2e:", 1)[1].split("  fmt:", 1)[0]
+        self.assertIn("scripts/e2e-acceptance.py", e2e_job)
+        self.assertIn("--no-default-features", e2e_job)
+
+        acceptance = (REPO / "scripts/e2e-acceptance.py").read_text()
+        for invocation in (
+            'run_cli("status")',
+            'run_cli(\n        "evaluate"',
+            'run_cli("scanner", "verify-handoff"',
+            'run_transition_cli("migration", "inventory"',
+            'run_transition_cli("migration", "export"',
+            'scripts" / "scanner_scenarios" / "run_localhost.py"',
+        ):
+            with self.subTest(invocation=invocation):
+                self.assertIn(invocation, acceptance)
+        for retired in (
+            "disa-import",
+            "library",
+            "build-pack",
+            "convert",
+            "summary",
+            "gen-answer",
+            "export",
+            "coverage",
+        ):
+            with self.subTest(retired=retired):
+                self.assertNotIn(f'run_cli("{retired}"', acceptance)
+        self.assertIn('"maintainer_commands_exercised": False', acceptance)
+        self.assertIn('"protected_transition_binary_exercised": True', acceptance)
+        for transition_actions in (
+            '("inventory", "export", "bind-run")',
+            '("generate-signing-key", "sign-handoff")',
+        ):
+            with self.subTest(transition_actions=transition_actions):
+                self.assertIn(transition_actions, acceptance)
+
+        equivalence = (
+            REPO / "scripts/validate-release-binary-equivalence.py"
+        ).read_text()
+        self.assertIn('PROHIBITED_ARCHIVE_MEMBERS = {"automatestig-transition"}', equivalence)
+
+        for script in (
+            "scripts/e2e-acceptance.py",
+            "scripts/scanner_scenarios/run_localhost.py",
+            "scripts/adapter_tooling.py",
+            "scripts/scaffold-target-adapter.py",
+            "scripts/validate-adapter-contract.py",
+            "scripts/generate-target-scorecards.py",
+        ):
+            with self.subTest(py_compile=script):
+                self.assertIn(script, workflow)
+
+    def test_transition_runbook_uses_only_the_separate_protected_binary(self):
+        runbook = (REPO / "docs/migration-transition.md").read_text()
+        self.assertIn(
+            "--features transition --bin automatestig-transition",
+            runbook,
+        )
+        self.assertIn("migration bind-run", runbook)
+        self.assertIn("AUTOMATESTIG_STIGMAN_CLIENT_SECRET", runbook)
+        self.assertNotRegex(runbook, r"(?m)^automatestig --db\b")
+        self.assertIn(
+            "protected executable is deliberately absent from normal product release",
+            runbook,
         )
 
     def test_ssh_dependency_and_audit_have_no_rsa_exception(self):
@@ -1050,9 +1892,15 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                 root = pathlib.Path(temporary)
                 init_repo(root)
                 (root / "schemas").mkdir()
-                (root / "schemas/release-evidence.schema.json").write_bytes(
-                    (REPO / "schemas/release-evidence.schema.json").read_bytes()
-                )
+                for schema_name in (
+                    "release-evidence.schema.json",
+                    "first-use-ux-study.schema.json",
+                    "handoff-key-custody-ceremony.schema.json",
+                    "handoff-receiver-ceremony.schema.json",
+                ):
+                    (root / "schemas" / schema_name).write_bytes(
+                        (REPO / "schemas" / schema_name).read_bytes()
+                    )
                 (root / "product.rs").write_text("reviewed")
                 git(root, "add", ".")
                 git(root, "commit", "-qm", "reviewed code")
@@ -1223,6 +2071,8 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                         for kind in ("ckl", "cklb")
                     ],
                 })
+                handoff_raw = b"bounded producer-authenticated handoff fixture"
+                handoff_sha = hashlib.sha256(handoff_raw).hexdigest()
                 manager_path = artifact_root / "stig-manager.json"
                 manager_sha = write_json_artifact(manager_path, {
                     "schema": "automatestig-stig-manager-acceptance/v1",
@@ -1298,10 +2148,11 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                         "automatestig_direct_review_writes": 0,
                         "receiving_operator_review_writes": 2,
                         "boundary": "disconnected-selected-run-handoff",
+                        "producer_handoff_filename": "producer-handoff.zip",
                         "assignment_revision": "V3R7",
                         "full_assignment_rule_count": 42,
                         "full_ckl_rule_count": 42,
-                        "handoff_sha256": "c" * 64,
+                        "handoff_sha256": handoff_sha,
                         "handoff_manifest_sha256": "d" * 64,
                         "rule_set_sha256": "8" * 64,
                         "benchmark_id": "Cisco_IOS-XE_Router_NDM_STIG",
@@ -1351,6 +2202,183 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                         {"role": "content_approver", "github_login": "content-approver"},
                     ],
                 })
+                handoff_key_path = (
+                    artifact_root / "handoff-producer-public-key.pub"
+                )
+                handoff_key_path.write_bytes(b"H" * 32)
+                handoff_key_sha = hashlib.sha256(
+                    handoff_key_path.read_bytes()
+                ).hexdigest()
+                handoff_path = artifact_root / "producer-handoff.zip"
+                handoff_path.write_bytes(handoff_raw)
+                handoff_signature_path = (
+                    artifact_root / "producer-handoff.zip.signature.json"
+                )
+                handoff_signature_sha = write_json_artifact(
+                    handoff_signature_path,
+                    {
+                        "schema": (
+                            "automatestig.selected-run-handoff-signature.v1"
+                        ),
+                        "algorithm": "ed25519-sha256",
+                        "handoff_schema": (
+                            "automatestig.selected-run-handoff.v4"
+                        ),
+                        "run_id": "123e4567-e89b-42d3-a456-426614174000",
+                        "handoff_sha256": handoff_sha,
+                        "signing_key_fingerprint": (
+                            f"SHA256:{handoff_key_sha}"
+                        ),
+                        "signature": "1" * 128,
+                    },
+                )
+                handoff_custody_path = (
+                    artifact_root / "handoff-key-custody-ceremony.json"
+                )
+                handoff_custody_sha = write_json_artifact(
+                    handoff_custody_path,
+                    {
+                        "schema": (
+                            "automatestig-handoff-key-custody-ceremony/v1"
+                        ),
+                        "source_commit": approved,
+                        "signed_at": now,
+                        "producer_key_fingerprint": (
+                            f"SHA256:{handoff_key_sha}"
+                        ),
+                        "public_key_sha256": handoff_key_sha,
+                        "handoff_sha256": handoff_sha,
+                        "signature_sidecar_sha256": handoff_signature_sha,
+                        "key_custodian": "handoff-custodian",
+                        "receiver_approver": "handoff-receiver",
+                        "signing_host_reference": "host:signing-17",
+                        "primary_key_media_reference": "media:primary-17",
+                        "backup_key_media_reference": "media:backup-17",
+                        "private_key_entered_ci": False,
+                        "private_key_entered_scanner_runtime": False,
+                        "private_key_material_recorded": False,
+                        "revocation_status_checked": True,
+                    },
+                )
+                handoff_ceremony_path = (
+                    artifact_root / "handoff-receiver-ceremony.json"
+                )
+                handoff_ceremony_sha = write_json_artifact(
+                    handoff_ceremony_path,
+                    {
+                        "schema": "automatestig-handoff-receiver-ceremony/v1",
+                        "passed": True,
+                        "producer_signature_verified": True,
+                        "trusted_cli_verification_succeeded": True,
+                        "key_custody_ceremony_verified": True,
+                        "completed_at": now,
+                        "source_commit": approved,
+                        "repository": "ibadukefan/AutomateSTIG",
+                        "workflow_run_id": "1006",
+                        "staging_workflow_run_id": "1003",
+                        "protected_environment": "handoff-receiver-ceremony",
+                        "automatestig_cli_sha256": "d" * 64,
+                        "verification_output_sha256": "e" * 64,
+                        "staging_evidence_sha256": manager_sha,
+                        "handoff_filename": "producer-handoff.zip",
+                        "handoff_sha256": handoff_sha,
+                        "signature_filename": (
+                            "producer-handoff.zip.signature.json"
+                        ),
+                        "signature_sha256": handoff_signature_sha,
+                        "public_key_filename": (
+                            "handoff-producer-public-key.pub"
+                        ),
+                        "public_key_sha256": handoff_key_sha,
+                        "producer_key_fingerprint": (
+                            f"SHA256:{handoff_key_sha}"
+                        ),
+                        "key_custody_filename": (
+                            "handoff-key-custody-ceremony.json"
+                        ),
+                        "key_custody_sha256": handoff_custody_sha,
+                        "participants": [
+                            {
+                                "role": "key_custodian",
+                                "github_login": "handoff-custodian",
+                            },
+                            {
+                                "role": "receiver_approver",
+                                "github_login": "handoff-receiver",
+                            },
+                        ],
+                    },
+                )
+                first_use_path = artifact_root / "first-use-ux-study.json"
+                first_use_sha = write_json_artifact(
+                    first_use_path,
+                    {
+                        "schema": "automatestig-first-use-ux-study/v1",
+                        "passed": True,
+                        "executed_at": now,
+                        "source_commit": approved,
+                        "product_version": "v1.2.3",
+                        "repository": "ibadukefan/AutomateSTIG",
+                        "workflow_run_id": "1007",
+                        "protected_environment": "first-use-ux-study",
+                        "automatestig_gui_sha256": "f" * 64,
+                        "scenario": {
+                            "id": "prepared-cisco-scan",
+                            "version": "1",
+                            "target_profile": "cisco-ios-xe-router-ndm",
+                            "prepared_scan_fixture_sha256": "a" * 64,
+                            "task_definition_sha256": "b" * 64,
+                        },
+                        "representative_roles": [
+                            "cybersecurity_analyst",
+                            "cybersecurity_manager",
+                        ],
+                        "study_team": {
+                            "facilitator": {
+                                "github_login": "study-facilitator",
+                                "attested_at": now,
+                            },
+                            "independent_observer": {
+                                "github_login": "study-observer",
+                                "attested_at": now,
+                            },
+                            "independent_approver": {
+                                "github_login": "study-approver",
+                                "attested_at": now,
+                            },
+                        },
+                        "participants": [
+                            {
+                                "participant_id": f"P{index + 1:02d}",
+                                "role": (
+                                    "cybersecurity_analyst"
+                                    if index < 3
+                                    else "cybersecurity_manager"
+                                ),
+                                "role_experience_band": (
+                                    "less_than_2_years"
+                                    if index < 2
+                                    else "more_than_5_years"
+                                ),
+                                "first_time_user": True,
+                                "completed_prepared_scan": index < 4,
+                                "external_documentation_used": False,
+                                "assistance_received": False,
+                                "outcome_notes": (
+                                    "Completed unaided."
+                                    if index < 4
+                                    else "Did not complete before the time limit."
+                                ),
+                            }
+                            for index in range(5)
+                        ],
+                        "metrics": {
+                            "numerator": 4,
+                            "denominator": 5,
+                            "required_threshold_percent": 80,
+                        },
+                    },
+                )
 
                 def gate(path, digest, version):
                     return {
@@ -1379,6 +2407,10 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                         "stig_viewer": gate(viewer_path, viewer_sha, "3.5"),
                         "stig_manager": gate(manager_path, manager_sha, "1.6.13+1"),
                     },
+                    "first_use_ux": {
+                        **gate(first_use_path, first_use_sha, "v1.2.3"),
+                        "environment": "first-use-ux-study",
+                    },
                     "recovery_drill": gate(recovery_path, recovery_sha, "v1"),
                     "content_signing_key": {
                         "fingerprint_sha256": public_key_sha,
@@ -1388,6 +2420,29 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                         "public_key_sha256": public_key_sha,
                         "test_pack_reference": test_pack_path.relative_to(root).as_posix(),
                         "test_pack_sha256": test_pack_sha,
+                    },
+                    "producer_authenticated_handoff": {
+                        "fingerprint_sha256": handoff_key_sha,
+                        "ceremony_reference": (
+                            handoff_ceremony_path.relative_to(root).as_posix()
+                        ),
+                        "ceremony_sha256": handoff_ceremony_sha,
+                        "public_key_reference": (
+                            handoff_key_path.relative_to(root).as_posix()
+                        ),
+                        "public_key_sha256": handoff_key_sha,
+                        "handoff_reference": (
+                            handoff_path.relative_to(root).as_posix()
+                        ),
+                        "handoff_sha256": handoff_sha,
+                        "signature_reference": (
+                            handoff_signature_path.relative_to(root).as_posix()
+                        ),
+                        "signature_sha256": handoff_signature_sha,
+                        "key_custody_reference": (
+                            handoff_custody_path.relative_to(root).as_posix()
+                        ),
+                        "key_custody_sha256": handoff_custody_sha,
                     },
                     "risk_acceptances": [],
                 }
@@ -1460,26 +2515,146 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                 archive_hash = hashlib.sha256(package.read_bytes()).hexdigest()
                 pathlib.Path(f"{package}.sha256").write_text(f"{archive_hash}  {package.name}\n")
                 pathlib.Path(f"{package}.sigstore.bundle").write_text("{}\n")
-                (root / f"cargo-metadata-{target}.json").write_text(json.dumps(inventory))
-                (root / f"automatestig-{target}.cdx.json").write_text(json.dumps({
+                inventory_path = root / f"cargo-metadata-{target}.json"
+                inventory_path.write_text(json.dumps(inventory))
+                cli_sha = hashlib.sha256(f"cli:{target}".encode()).hexdigest()
+                gui_sha = hashlib.sha256(f"gui:{target}".encode()).hexdigest()
+                backup_sha = hashlib.sha256(
+                    f"backup:{target}".encode()
+                ).hexdigest()
+                equivalence_path = root / f"release-equivalence-{target}.json"
+                equivalence = {
+                    "schema": "automatestig-release-artifact-equivalence/v1",
+                    "target": target,
+                    "version": "0.3.0",
+                    "source_commit": commit,
+                    "archive": {
+                        "name": package.name,
+                        "sha256": archive_hash,
+                        "size": package.stat().st_size,
+                        "format": "tar.gz",
+                    },
+                    "binaries": {
+                        "cli": {
+                            "name": "automatestig",
+                            "pre_package_sha256": cli_sha,
+                            "archive_member_sha256": cli_sha,
+                            "size": 11,
+                        },
+                        "gui": {
+                            "name": "automatestig-gui",
+                            "pre_package_sha256": gui_sha,
+                            "archive_member_sha256": gui_sha,
+                            "size": 12,
+                        },
+                    },
+                    "operational_tools": {
+                        "backup_restore": {
+                            "name": "automatestig-backup-restore",
+                            "pre_package_sha256": backup_sha,
+                            "archive_member_sha256": backup_sha,
+                            "size": 13,
+                        }
+                    },
+                }
+                equivalence_path.write_text(json.dumps(equivalence))
+                sbom_path = root / f"automatestig-{target}.cdx.json"
+                sbom_path.write_text(json.dumps({
                     "bomFormat": "CycloneDX",
                     "specVersion": "1.5",
                     "metadata": {"component": {
                         "name": "automatestig",
                         "version": "0.3.0",
-                        "properties": [{"name": "target", "value": target}],
+                        "properties": [
+                            {"name": "target", "value": target},
+                            {
+                                "name": "automatestig:release-archive",
+                                "value": package.name,
+                            },
+                            {
+                                "name": "automatestig:release-archive-sha256",
+                                "value": archive_hash,
+                            },
+                            {
+                                "name": "automatestig:binary-equivalence-manifest",
+                                "value": equivalence_path.name,
+                            },
+                            {
+                                "name": "automatestig:binary-equivalence-manifest-sha256",
+                                "value": hashlib.sha256(equivalence_path.read_bytes()).hexdigest(),
+                            },
+                            {
+                                "name": "automatestig:release-scope",
+                                "value": "analyst-product",
+                            },
+                            {
+                                "name": "automatestig:transition-cli-included",
+                                "value": "false",
+                            },
+                        ],
                     }},
-                    "components": [{"name": "serde", "version": "1"}],
+                    "components": [
+                        {"name": "serde", "version": "1"},
+                        {
+                            "bom-ref": f"urn:automatestig:release-binary:{target}:cli",
+                            "name": "automatestig",
+                            "version": "0.3.0",
+                            "hashes": [{"alg": "SHA-256", "content": cli_sha}],
+                        },
+                        {
+                            "bom-ref": f"urn:automatestig:release-binary:{target}:gui",
+                            "name": "automatestig-gui",
+                            "version": "0.3.0",
+                            "hashes": [{"alg": "SHA-256", "content": gui_sha}],
+                        },
+                        {
+                            "bom-ref": f"urn:automatestig:release-tool:{target}:backup_restore",
+                            "name": "automatestig-backup-restore",
+                            "version": "0.3.0",
+                            "hashes": [
+                                {"alg": "SHA-256", "content": backup_sha}
+                            ],
+                        },
+                    ],
                 }))
                 (root / f"provenance-{target}.json").write_text(json.dumps({
-                    "artifact": package.name,
+                    "schema": "automatestig-release-provenance/v1",
                     "target": target,
+                    "version": "0.3.0",
                     "repository": "ibadukefan/AutomateSTIG",
                     "ref": "refs/tags/v0.3.0",
                     "sha": commit,
                     "workflow": "CI",
                     "run_id": run_id,
-                    "sbom": f"automatestig-{target}.cdx.json",
+                    "run_attempt": "1",
+                    "artifact": {
+                        "name": package.name,
+                        "sha256": archive_hash,
+                        "size": package.stat().st_size,
+                    },
+                    "binary_equivalence_manifest": {
+                        "name": equivalence_path.name,
+                        "sha256": hashlib.sha256(equivalence_path.read_bytes()).hexdigest(),
+                    },
+                    "binaries": {
+                        "cli": {"name": "automatestig", "sha256": cli_sha, "size": 11},
+                        "gui": {"name": "automatestig-gui", "sha256": gui_sha, "size": 12},
+                    },
+                    "operational_tools": {
+                        "backup_restore": {
+                            "name": "automatestig-backup-restore",
+                            "sha256": backup_sha,
+                            "size": 13,
+                        }
+                    },
+                    "sbom": {
+                        "name": sbom_path.name,
+                        "sha256": hashlib.sha256(sbom_path.read_bytes()).hexdigest(),
+                    },
+                    "dependency_inventory": {
+                        "name": inventory_path.name,
+                        "sha256": hashlib.sha256(inventory_path.read_bytes()).hexdigest(),
+                    },
                 }))
 
             command = [

@@ -1,0 +1,18 @@
+[package]
+name = "automatestig-scanner"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Release-bundled AutomateSTIG scanner application and evaluation layer"
+
+[dependencies]
+automatestig-collector = { workspace = true }
+automatestig-core = { workspace = true }
+automatestig-integrations = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+
+[dev-dependencies]
+ed25519-dalek = { workspace = true }

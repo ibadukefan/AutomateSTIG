@@ -59,12 +59,12 @@ Then rerun evaluation with the installed benchmark ID.
 
 ## Non-Loopback Server Refuses To Start
 
-Cause: non-loopback binds require `AUTOMATESTIG_AUTH_TOKEN` with at least 16 visible ASCII characters and no whitespace. Spaces, tabs, line breaks, and non-ASCII characters are rejected so the configured value can be represented reliably in the browser request header.
+Cause: non-loopback binds require `AUTOMATESTIG_AUTH_TOKEN` with at least 32 visible ASCII characters and no whitespace. Spaces, tabs, line breaks, and non-ASCII characters are rejected so the configured value can be represented reliably in the browser request header.
 
 Fix:
 
 ```bash
-AUTOMATESTIG_AUTH_TOKEN=replace-with-16-plus-chars cargo run --release --bin automatestig-gui
+AUTOMATESTIG_AUTH_TOKEN=replace-with-a-random-32-plus-character-token cargo run --release --bin automatestig-gui
 ```
 
 `/api/status` is unauthenticated. All other `/api/*` routes require the token.
@@ -159,8 +159,9 @@ manual determinations in STIG Manager. The retired `Settings`, `Assessments`,
 answer-file, and finding-edit routes return `410 Gone`; there is no legacy GUI
 procedure to restore a missing template or apply it to a new scanner run.
 
-To preserve or diagnose pre-scanner data, run `automatestig migration inventory`
-and `automatestig migration export`, then inspect the preserved attribution and
+To preserve or diagnose pre-scanner data, use a protected `transition` build
+and run `automatestig-transition migration inventory` and
+`automatestig-transition migration export`, then inspect the preserved attribution and
 answer-file bytes offline. Do not relabel an `AnswerFile`, `Manual`, or
 `Imported` result as scanner automation. If a current scanner result needs a
 human determination, open the existing exact assignment in STIG Manager.
@@ -195,13 +196,10 @@ If the client-secret field is blank, either action may reuse the saved secret
 only while the API URL, token URL, and client ID are unchanged. Re-enter the
 secret after changing any of those identity fields.
 
-Both endpoints must use `https://`. TLS certificate verification is on by
-default. Unchecking `Verify TLS certificates` is not sufficient by itself: the
-GUI process must also be started with
-`AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS=1`, and that combination is for an
-explicit isolated lab only. Prefer installing the correct CA trust. Private or
-other non-global API/OAuth endpoints also require the STIG Manager destination
-allowlist or the appropriate isolated-lab destination override.
+Both endpoints must use `https://`, and TLS certificate verification cannot be
+disabled. Install the correct CA trust instead of bypassing validation. Private
+or other non-global API/OAuth endpoints require an exact matching IP or CIDR in
+`AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST`.
 
 ## Remote Scan Does Not Produce Expected Results
 

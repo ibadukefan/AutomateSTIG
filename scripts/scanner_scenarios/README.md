@@ -10,12 +10,20 @@ itself supplies the operation plan, profile/check-pack bindings, response
 digests, evidence digest, and replay result. Six envelopes are generated:
 compliant, findings, and incomplete for each target.
 
+The live suite also uploads the complete synthetic Cisco IOS-XE running
+configuration with its detached test-policy signature. The corresponding
+public test key in `fixtures/scanner_scenarios/inputs/` must be decoded to a
+32-byte `.pub` file in the GUI's dedicated organization-policy trust directory.
+These public/signature fixtures are acceptance material only, not production
+trust anchors or private signing material.
+
 The live run then performs:
 
 1. disconnected preflight and upload of complete FreeBSD evidence;
 2. immutable run reads plus selected-run handoff download and hash checks;
-3. the same complete handoff path for ONTAP; and
-4. an incomplete ONTAP transport-failure upload that must contain no sparse
+3. the same complete handoff path for ONTAP and signed Cisco configuration;
+4. signed-policy provenance for the Cisco result; and
+5. an incomplete ONTAP transport-failure upload that must contain no sparse
    reviews, delivery record, delivery action, or handoff.
 
 ## Run
@@ -27,6 +35,7 @@ throwaway local session token:
 PORT=8787 \
   AUTOMATESTIG_AUTH_TOKEN=local-scanner-scenario-token-2026 \
   AUTOMATESTIG_DATA_DIR=/tmp/automatestig-scanner-live \
+  AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR=/path/to/test-policy-keys \
   cargo run -p automatestig-gui
 ```
 
@@ -87,6 +96,6 @@ connected sparse delivery, ownership conflicts, transient retry behavior,
 Cisco policy signatures, or Evaluate-STIG parity. Those require separate
 authorized environments.
 
-The three created scan runs are immutable and remain in the GUI data directory.
+The four created scan runs are immutable and remain in the GUI data directory.
 Use a dedicated `AUTOMATESTIG_DATA_DIR`, as shown above, when isolation is
 required. The harness never deletes existing user data or its own run records.

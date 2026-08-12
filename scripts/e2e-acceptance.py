@@ -1,534 +1,472 @@
 #!/usr/bin/env python3
-"""Black-box acceptance tests for the hard-to-scan-device product scope."""
+"""Black-box acceptance for the release-bundled scanner product surface.
 
-import json
+This gate deliberately runs the default CLI and GUI binaries. Content import,
+pack construction, catalog maintenance, broad checklist conversion/export,
+and every other maintainer-only or STIG Manager-duplicate command are outside
+this product acceptance path.
+"""
+
+from __future__ import annotations
+
+import base64
 import hashlib
+import ipaddress
+import json
 import os
 import re
-import shutil
-import sqlite3
 import subprocess
 import sys
 import tempfile
 import time
 import urllib.error
 import urllib.request
-import xml.etree.ElementTree as ET
 import zipfile
+from pathlib import Path, PurePosixPath
+from typing import Any
 
-REPO = os.environ.get("E2E_REPO_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+REPO = Path(
+    os.environ.get("E2E_REPO_ROOT", Path(__file__).resolve().parents[1])
+).resolve()
 EXE = ".exe" if sys.platform == "win32" else ""
-BIN = os.environ.get("AUTOMATESTIG_BIN", f"{REPO}/target/release/automatestig{EXE}")
-GUI_BIN = os.environ.get("AUTOMATESTIG_GUI_BIN", f"{REPO}/target/release/automatestig-gui{EXE}")
-WORK = os.environ.get("E2E_WORK") or tempfile.mkdtemp(prefix="automatestig-e2e-")
-FIX = f"{REPO}/fixtures"
-CHECK_PACKS = f"{REPO}/content/check_packs"
-ONTAP_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_NetApp_ONTAP_DSC_9-x_V2R4_STIG.zip"
-ONTAP_FINDINGS = f"{FIX}/ontap/ontap_evidence_findings.json"
-ONTAP_COMPLIANT = f"{FIX}/ontap/ontap_evidence_compliant.json"
-ONTAP_MANUAL = {
-    "V-246925", "V-246927", "V-246930", "V-246931", "V-246932", "V-246933",
-    "V-246938", "V-246939", "V-246940", "V-246944", "V-246945", "V-246946",
-    "V-246948", "V-246949",
-}
-GPOS_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_GPOS_V3R3_SRG.zip"
-BSD_FINDINGS = f"{FIX}/bsd/bsd_evidence_findings.json"
-BSD_COMPLIANT = f"{FIX}/bsd/bsd_evidence_compliant.json"
-ONTAP_TRANSPORT_FAILURE = f"{FIX}/ontap/ontap_evidence_transport_failure.json"
-BSD_TRANSPORT_FAILURE = f"{FIX}/bsd/bsd_evidence_transport_failure.json"
-BSD_TOTAL = 203
-CISCO_ZIP = f"{FIX}/authorized/disa-public-2026-07/U_Cisco_IOS-XE_Router_Y26M04_STIG.zip"
-IOS_COMPLIANT = f"{FIX}/network/ios_xe_router_compliant.txt"
-IOS_FINDINGS = f"{FIX}/network/ios_xe_router_findings.txt"
-IOS_TOTAL = 42
-
-
-def shipped_vuln_ids(filename):
-    path = f"{CHECK_PACKS}/{filename}"
-    with open(path, encoding="utf-8") as stream:
-        document = json.load(stream)
-    checks = document.get("checks")
-    if not isinstance(checks, list) or not checks:
-        raise RuntimeError(f"shipped check pack has no checks: {path}")
-    vuln_ids = [check.get("vuln_id") for check in checks if isinstance(check, dict)]
-    if len(vuln_ids) != len(checks) or any(
-        not isinstance(vuln_id, str) or not vuln_id for vuln_id in vuln_ids
-    ):
-        raise RuntimeError(f"shipped check pack has an invalid vulnerability ID: {path}")
-    if len(set(vuln_ids)) != len(vuln_ids):
-        raise RuntimeError(f"shipped check pack has duplicate vulnerability IDs: {path}")
-    return frozenset(vuln_ids)
-
-
-ONTAP_OPEN = shipped_vuln_ids("netapp_ontap9.json")
-BSD_OPEN = shipped_vuln_ids("freebsd_gpos.json")
-IOS_OPEN = shipped_vuln_ids("cisco_ios_xe_router_ndm.json")
-AUTOMATED_OPEN_SETS = (ONTAP_OPEN, BSD_OPEN, IOS_OPEN)
-AUTOMATED_OPEN_UNION = set().union(*AUTOMATED_OPEN_SETS)
-if sum(map(len, AUTOMATED_OPEN_SETS)) != len(AUTOMATED_OPEN_UNION):
-    raise RuntimeError("shipped check-pack vulnerability IDs are not disjoint")
-if len(AUTOMATED_OPEN_UNION) != 54:
-    raise RuntimeError(
-        f"expected exactly 54 shipped automated rules, found {len(AUTOMATED_OPEN_UNION)}"
+BIN = Path(os.environ.get("AUTOMATESTIG_BIN", REPO / "target" / "release" / f"automatestig{EXE}"))
+TRANSITION_BIN = Path(
+    os.environ.get(
+        "AUTOMATESTIG_TRANSITION_BIN",
+        REPO / "target" / "release" / f"automatestig-transition{EXE}",
     )
-ONTAP_AUTOMATED = len(ONTAP_OPEN)
-BSD_AUTOMATED = len(BSD_OPEN)
-IOS_AUTOMATED = len(IOS_OPEN)
+)
+GUI_BIN = Path(
+    os.environ.get(
+        "AUTOMATESTIG_GUI_BIN",
+        REPO / "target" / "release" / f"automatestig-gui{EXE}",
+    )
+)
+GUI_PORT = int(os.environ.get("AUTOMATESTIG_E2E_PORT", "18321"))
+TOKEN = "automatestig-e2e-loopback-token-2026"
+SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 
-DB = f"{WORK}/data.db"
-LIB = f"{WORK}/library"
-OUT = f"{WORK}/out"
-HOME = f"{WORK}/home"
-RESULTS = []
+PRODUCT_TOP_LEVEL_COMMANDS = frozenset(
+    {"collect", "evaluate", "scanner", "status"}
+)
+RETIRED_OR_MAINTAINER_TOP_LEVEL_COMMANDS = (
+    "import",
+    "verify",
+    "library",
+    "generate-signing-key",
+    "sign-organization-policy",
+    "build-pack",
+    "disa-import",
+    "coverage",
+    "migration",
+    "convert",
+    "summary",
+    "gen-answer",
+    "export",
+)
+
+FIXTURE_INPUTS = REPO / "fixtures" / "scanner_scenarios" / "inputs"
+CISCO_CONFIG = REPO / "fixtures" / "network" / "ios_xe_router_compliant.txt"
+CISCO_TRUNCATED_CONFIG = FIXTURE_INPUTS / "cisco-truncated.cfg"
+CISCO_POLICY = FIXTURE_INPUTS / "cisco-compliant-policy.json"
+CISCO_POLICY_PUBLIC_B64 = FIXTURE_INPUTS / "e2e-organization-policy.pub.b64"
+CISCO_POLICY_SIGNATURE_B64 = FIXTURE_INPUTS / "e2e-organization-policy.sig.b64"
+CISCO_POLICY_SHA256 = "8c6f16467f8aa360d5abc20595a463bdfd0fd788f3209c7b1ac4a18a0081d06b"
 
 
-def check(section, name, ok, detail=""):
-    RESULTS.append((section, name, bool(ok), detail))
-    print(f"[{'PASS' if ok else 'FAIL'}] {section} :: {name}" + (f" — {detail}" if detail and not ok else ""))
+class AcceptanceFailure(RuntimeError):
+    pass
 
 
-def run_cli(*args, cwd=REPO, expect_ok=True, env_extra=None):
-    env = dict(os.environ)
-    env.update({"HOME": HOME, "USERPROFILE": HOME})
-    env.update(env_extra or {})
-    command = [BIN, "--db", DB, "--library", LIB, *args]
-    result = subprocess.run(command, capture_output=True, text=True, cwd=cwd, env=env)
-    result.combined = result.stdout + result.stderr
-    if expect_ok and result.returncode:
-        print(f"  command failed: {' '.join(args)}\n  {result.combined[:600]}")
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        raise AcceptanceFailure(message)
+
+
+def sha256_bytes(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
+def sha256_file(path: Path) -> str:
+    return sha256_bytes(path.read_bytes())
+
+
+def json_object(path: Path, label: str) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_bytes())
+    except (OSError, json.JSONDecodeError) as error:
+        raise AcceptanceFailure(f"{label} is not valid JSON: {path}") from error
+    require(isinstance(value, dict), f"{label} must be a JSON object")
+    return value
+
+
+def decode_base64_fixture(path: Path, expected_bytes: int) -> bytes:
+    try:
+        value = base64.b64decode(path.read_text(encoding="ascii").strip(), validate=True)
+    except (OSError, ValueError) as error:
+        raise AcceptanceFailure(f"invalid base64 fixture: {path}") from error
+    require(len(value) == expected_bytes, f"{path.name} must decode to {expected_bytes} bytes")
+    return value
+
+
+def prepare_work_directory() -> Path:
+    configured = os.environ.get("E2E_WORK")
+    if configured:
+        work = Path(configured).resolve()
+        if work.exists():
+            require(work.is_dir(), "E2E_WORK must name a directory")
+            require(not any(work.iterdir()), "E2E_WORK must be empty; acceptance never deletes it")
+        else:
+            work.mkdir(parents=True, mode=0o700)
+    else:
+        work = Path(tempfile.mkdtemp(prefix="automatestig-product-e2e-"))
+    if os.name != "nt":
+        work.chmod(0o700)
+    return work
+
+
+WORK = prepare_work_directory()
+HOME = WORK / "home"
+DATA_DIR = WORK / "gui-data"
+LIBRARY = WORK / "legacy-library"
+OUT = WORK / "out"
+ARTIFACTS = WORK / "scanner-artifacts"
+POLICY_TRUST = WORK / "organization-policy-keys"
+POLICY_SIGNATURE = WORK / "cisco-compliant-policy.sig"
+DB = DATA_DIR / "data.db"
+
+
+def prepare_directories_and_policy() -> None:
+    for directory in (HOME, DATA_DIR, OUT, ARTIFACTS, POLICY_TRUST):
+        directory.mkdir(parents=True, exist_ok=False)
+        if os.name != "nt":
+            directory.chmod(0o700)
+    policy_bytes = CISCO_POLICY.read_bytes()
+    require(
+        sha256_bytes(policy_bytes) == CISCO_POLICY_SHA256,
+        "synthetic Cisco policy changed without regenerating its public test signature",
+    )
+    public_key = decode_base64_fixture(CISCO_POLICY_PUBLIC_B64, 32)
+    signature = decode_base64_fixture(CISCO_POLICY_SIGNATURE_B64, 64)
+    public_path = POLICY_TRUST / "e2e-organization-policy.pub"
+    public_path.write_bytes(public_key)
+    POLICY_SIGNATURE.write_bytes(signature)
+    if os.name != "nt":
+        public_path.chmod(0o644)
+        POLICY_SIGNATURE.chmod(0o600)
+
+
+def product_environment() -> dict[str, str]:
+    environment = dict(os.environ)
+    environment.update(
+        {
+            "HOME": str(HOME),
+            "USERPROFILE": str(HOME),
+            "AUTOMATESTIG_DATA_DIR": str(DATA_DIR),
+            "AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR": str(POLICY_TRUST),
+        }
+    )
+    return environment
+
+
+def run_cli(*arguments: str, expect_ok: bool = True) -> subprocess.CompletedProcess[str]:
+    command = [
+        str(BIN),
+        "--db",
+        str(DB),
+        "--library",
+        str(LIBRARY),
+        *arguments,
+    ]
+    result = subprocess.run(
+        command,
+        cwd=REPO,
+        env=product_environment(),
+        capture_output=True,
+        text=True,
+        timeout=180,
+    )
+    if expect_ok and result.returncode != 0:
+        detail = (result.stdout + result.stderr)[-2000:]
+        raise AcceptanceFailure(f"command failed ({' '.join(arguments)}):\n{detail}")
     return result
 
 
-def norm_status(value):
-    return re.sub(r"[^a-z]", "", (value or "").lower())
-
-
-def parse_ckl(path):
-    tree = ET.parse(path)
-    output = {}
-    for vuln in tree.iter("VULN"):
-        attrs = {item.findtext("VULN_ATTRIBUTE"): item.findtext("ATTRIBUTE_DATA") or ""
-                 for item in vuln.findall("STIG_DATA")}
-        vuln_id = attrs.get("Vuln_Num", "")
-        output[vuln_id] = {
-            "status": vuln.findtext("STATUS") or "",
-            "details": vuln.findtext("FINDING_DETAILS") or "",
-            "comments": vuln.findtext("COMMENTS") or "",
-            "group_title": attrs.get("Group_Title", ""),
-        }
-    return output
-
-
-def status_counts(findings):
-    counts = {}
-    for finding in findings.values():
-        status = norm_status(finding["status"])
-        counts[status] = counts.get(status, 0) + 1
-    return counts
-
-
-def snapshot_tree(root):
-    snapshot = {}
-    if not os.path.isdir(root):
-        return snapshot
-    for path, directories, files in os.walk(root):
-        directories.sort()
-        for name in sorted(files):
-            full = os.path.join(path, name)
-            relative = os.path.relpath(full, root)
-            with open(full, "rb") as stream:
-                snapshot[relative] = hashlib.sha256(stream.read()).hexdigest()
-    return snapshot
-
-
-def create_hostile_archives():
-    root = f"{WORK}/hostile"
-    os.makedirs(root, exist_ok=True)
-    paths = {
-        "no_xccdf": f"{root}/no-xccdf.zip",
-        "mixed": f"{root}/mixed.zip",
-        "bomb": f"{root}/bomb.zip",
-        "collision": f"{root}/collision.zip",
-        "malformed": f"{root}/malformed.zip",
-        "unsupported": f"{root}/unsupported.txt",
-    }
-    with zipfile.ZipFile(paths["no_xccdf"], "w", zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr("README.txt", "not a benchmark")
-    valid = b'''<Benchmark xmlns="http://checklists.nist.gov/xccdf/1.2" id="Atomic_E2E_STIG">
-      <title>Atomic E2E STIG</title><version>1</version>
-      <Group id="V-900001"><title>Group</title>
-        <Rule id="SV-900001" severity="medium"><version>R-1</version><title>Rule</title></Rule>
-      </Group></Benchmark>'''
-    with zipfile.ZipFile(paths["mixed"], "w", zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr("valid-xccdf.xml", valid)
-        archive.writestr("invalid-xccdf.xml", b"<Benchmark")
-    with zipfile.ZipFile(paths["bomb"], "w", zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr("bomb-xccdf.xml", b"A" * (16 * 1024 * 1024 + 1))
-    with zipfile.ZipFile(paths["collision"], "w", zipfile.ZIP_STORED) as archive:
-        archive.writestr("A/one-xccdf.xml", valid)
-        archive.writestr("a/ONE-xccdf.xml", valid.replace(b"Atomic_E2E_STIG", b"Other_E2E_STIG"))
-    with open(paths["malformed"], "wb") as stream:
-        stream.write(b"PK\x03\x04truncated")
-    with open(paths["unsupported"], "w", encoding="utf-8") as stream:
-        stream.write("unsupported")
-    return paths
-
-
-def hostile_disa_flow(paths):
-    section = "bounded-disa-import"
-    baseline = snapshot_tree(LIB)
-    cases = [
-        ("ZIP without XCCDF is rejected", paths["no_xccdf"]),
-        ("mixed valid/invalid batch is rejected", paths["mixed"]),
-        ("decompression bomb is rejected", paths["bomb"]),
-        ("case-colliding member paths are rejected", paths["collision"]),
-        ("malformed ZIP is rejected", paths["malformed"]),
-        ("unsupported extension is rejected", paths["unsupported"]),
+def run_transition_cli(
+    *arguments: str, expect_ok: bool = True
+) -> subprocess.CompletedProcess[str]:
+    command = [
+        str(TRANSITION_BIN),
+        "--db",
+        str(DB),
+        "--library",
+        str(LIBRARY),
+        *arguments,
     ]
-    for name, path in cases:
-        result = run_cli("disa-import", "--input", path, expect_ok=False)
-        check(section, name, result.returncode != 0, result.combined[:300])
-        check(section, f"{name} leaves library unchanged", snapshot_tree(LIB) == baseline)
-
-
-def cli_basics():
-    section = "cli-basics"
-    check(section, "version", "0.3.0" in run_cli("--version").stdout)
-    check(section, "library init", run_cli("library", "init").returncode == 0)
-    check(section, "empty library", run_cli("library", "list").returncode == 0)
-    empty = run_cli("evaluate", "--stig", "missing", expect_ok=False)
-    check(section, "evidence is mandatory", empty.returncode != 0)
-
-
-def evaluate_ontap():
-    section = "ontap-evidence"
-    result = run_cli("disa-import", "--input", ONTAP_ZIP)
-    check(section, "import ONTAP V2R4", result.returncode == 0, result.combined[:300])
-
-    legacy = f"{WORK}/legacy-evidence.txt"
-    with open(legacy, "w", encoding="utf-8") as stream:
-        stream.write("### automatestig:hostname legacy\n### automatestig:command hostname\nlegacy\n")
-    legacy_result = run_cli(
-        "evaluate", "--stig", "NetApp_ONTAP_DSC_9-x_STIG",
-        "--evidence", legacy, "--output", f"{OUT}/legacy.ckl",
-        expect_ok=False,
+    result = subprocess.run(
+        command,
+        cwd=REPO,
+        env=product_environment(),
+        capture_output=True,
+        text=True,
+        timeout=180,
     )
-    check(section, "legacy marker evidence is rejected by default", legacy_result.returncode != 0)
-
-    with open(ONTAP_COMPLIANT, encoding="utf-8") as stream:
-        stale_document = json.load(stream)
-    stale_document["plan_sha256"] = "0" * 64
-    stale = f"{WORK}/stale-plan-evidence.json"
-    with open(stale, "w", encoding="utf-8") as stream:
-        json.dump(stale_document, stream)
-    stale_result = run_cli(
-        "evaluate", "--stig", "NetApp_ONTAP_DSC_9-x_STIG",
-        "--evidence", stale, "--output", f"{OUT}/stale.ckl",
-        expect_ok=False,
-    )
-    check(section, "stale plan-bound evidence is rejected", stale_result.returncode != 0)
-
-    outputs = {}
-    for label, evidence in (("findings", ONTAP_FINDINGS), ("compliant", ONTAP_COMPLIANT)):
-        dest = f"{OUT}/ontap_{label}.ckl"
-        result = run_cli("evaluate", "--stig", "NetApp_ONTAP_DSC_9-x_STIG",
-                         "--evidence", evidence,
-                         "--output", dest, "--format", "ckl")
-        check(section, f"evaluate {label}", result.returncode == 0 and os.path.exists(dest), result.combined[:300])
-        outputs[label] = dest
-
-    findings = parse_ckl(outputs["findings"])
-    opens = {v for v, f in findings.items() if norm_status(f["status"]) == "open"}
-    check(section, "findings fixture opens every shipped automated rule", opens == ONTAP_OPEN,
-          f"extra={sorted(opens - ONTAP_OPEN)} missing={sorted(ONTAP_OPEN - opens)}")
-    manual = {v for v, f in findings.items() if norm_status(f["status"]) == "notreviewed"}
-    check(section, "manual findings remain unreviewed", manual == ONTAP_MANUAL)
-    counts = status_counts(parse_ckl(outputs["compliant"]))
-    check(section, "compliant oracle", counts.get("notafinding") == ONTAP_AUTOMATED
-          and counts.get("notreviewed") == len(ONTAP_MANUAL)
-          and not counts.get("open"), str(counts))
-
-    partial = f"{OUT}/ontap_transport_failure.ckl"
-    sentinel = b"existing checklist must remain untouched"
-    with open(partial, "wb") as stream:
-        stream.write(sentinel)
-    result = run_cli("evaluate", "--stig", "NetApp_ONTAP_DSC_9-x_STIG",
-                     "--evidence", ONTAP_TRANSPORT_FAILURE, "--output", partial,
-                     "--format", "ckl", expect_ok=False)
-    with open(partial, "rb") as stream:
-        after = stream.read()
-    check(section, "transport failures exit nonzero without writing a checklist",
-          result.returncode != 0 and after == sentinel
-          and "no checklist was written or saved" in result.combined,
-          result.combined[:300])
-    with sqlite3.connect(DB) as database:
-        event_types = [row[0] for row in database.execute(
-            "SELECT event_type FROM audit_log ORDER BY id"
-        )]
-        saved_partial = database.execute(
-            "SELECT COUNT(*) FROM checklists WHERE asset_hostname = ?",
-            ("ontap-transport-failure",),
-        ).fetchone()[0]
-    check(section, "failed CLI evaluation is logged only as incomplete",
-          event_types[-1:] == ["evaluation.incomplete"]
-          and event_types.count("evaluation.completed") == 2
-          and saved_partial == 0, str(event_types))
-
-    with sqlite3.connect(DB) as database:
-        saved_json = database.execute(
-            "SELECT data_json FROM checklists WHERE asset_hostname = ? LIMIT 1",
-            ("ontap-findings-01",),
-        ).fetchone()[0]
-    incomplete_json = json.loads(saved_json)
-    incomplete_json["evaluation_provenance"]["collection_complete"] = False
-    incomplete_json["evaluation_provenance"]["collection_errors"] = ["injected timeout"]
-    incomplete_path = f"{WORK}/incomplete-saved-checklist.json"
-    with open(incomplete_path, "w", encoding="utf-8") as stream:
-        json.dump(incomplete_json, stream)
-    stigman_output = f"{OUT}/incomplete-stigman.json"
-    with open(stigman_output, "wb") as stream:
-        stream.write(sentinel)
-    export_result = run_cli(
-        "export", "--input", incomplete_path, "--output", stigman_output,
-        "--format", "stig-manager", expect_ok=False,
-    )
-    with open(stigman_output, "rb") as stream:
-        stigman_after = stream.read()
-    check(section, "CLI external export rejects incomplete durable provenance",
-          export_result.returncode != 0 and stigman_after == sentinel,
-          export_result.combined[:300])
-    return outputs
-
-
-def evaluate_bsd():
-    section = "bsd-evidence"
-    check(section, "import GPOS", run_cli("disa-import", "--input", GPOS_ZIP).returncode == 0)
-    for label, evidence in (("findings", BSD_FINDINGS), ("compliant", BSD_COMPLIANT)):
-        dest = f"{OUT}/bsd_{label}.ckl"
-        result = run_cli("evaluate", "--stig", "General_Purpose_Operating_System",
-                         "--evidence", evidence,
-                         "--output", dest, "--format", "ckl")
-        check(section, f"evaluate {label}", result.returncode == 0, result.combined[:300])
-        findings = parse_ckl(dest)
-        if label == "findings":
-            opens = {v for v, f in findings.items() if norm_status(f["status"]) == "open"}
-            check(section, "findings fixture opens every shipped automated rule",
-                  opens == BSD_OPEN,
-                  f"extra={sorted(opens - BSD_OPEN)} missing={sorted(BSD_OPEN - opens)}")
-            counts = status_counts(findings)
-            check(section, "unproved FreeBSD rules remain unreviewed",
-                  counts.get("notreviewed") == BSD_TOTAL - BSD_AUTOMATED,
-                  str(counts))
-        else:
-            counts = status_counts(findings)
-            check(section, "compliant oracle", counts.get("notafinding") == BSD_AUTOMATED
-                  and counts.get("notreviewed") == BSD_TOTAL - BSD_AUTOMATED
-                  and not counts.get("open"), str(counts))
-
-    partial = f"{OUT}/bsd_transport_failure.ckl"
-    result = run_cli("evaluate", "--stig", "General_Purpose_Operating_System",
-                     "--evidence", BSD_TRANSPORT_FAILURE, "--output", partial,
-                     "--format", "ckl", expect_ok=False)
-    check(section, "transport failures exit nonzero without writing a checklist",
-          result.returncode != 0 and not os.path.exists(partial)
-          and "no checklist was written or saved" in result.combined,
-          result.combined[:300])
-
-
-def evaluate_network():
-    section = "network-config"
-    check(section, "import Cisco IOS-XE", run_cli("disa-import", "--input", CISCO_ZIP).returncode == 0)
-    check(section, "DISA import does not create prose-derived executable checks",
-          not os.path.exists(f"{LIB}/auto_check_packs/Cisco_IOS-XE_Router_NDM_STIG.json"))
-
-    policy_key = f"{WORK}/offline-signing/organization-policy.key"
-    generated = run_cli("generate-signing-key", "--output", policy_key)
-    policy_trust = f"{HOME}/.automatestig/organization_policy_keys"
-    os.makedirs(policy_trust, mode=0o700, exist_ok=True)
-    if generated.returncode == 0:
-        shutil.copy(
-            f"{WORK}/offline-signing/organization-policy.pub",
-            f"{policy_trust}/e2e-organization-policy.pub",
+    if expect_ok and result.returncode != 0:
+        detail = (result.stdout + result.stderr)[-2000:]
+        raise AcceptanceFailure(
+            f"transition command failed ({' '.join(arguments)}):\n{detail}"
         )
-    check(
-        section,
-        "dedicated offline organization-policy key is explicitly provisioned",
-        generated.returncode == 0 and os.path.exists(policy_key),
-        generated.combined[:300],
-    )
+    return result
 
-    compliant_policy = None
-    compliant_policy_signature = None
-    for label, config, hostname in (
-        ("findings", IOS_FINDINGS, "rtr-findings-01"),
-        ("compliant", IOS_COMPLIANT, "rtr-compliant-01"),
+
+def verify_default_cli_boundary() -> None:
+    version = subprocess.run(
+        [str(BIN), "--version"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    require(version.returncode == 0 and "0.3.0" in version.stdout, "release CLI version failed")
+    help_result = subprocess.run(
+        [str(BIN), "--help"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    require(help_result.returncode == 0, "release CLI help failed")
+    help_text = help_result.stdout
+    for command in PRODUCT_TOP_LEVEL_COMMANDS:
+        require(re.search(rf"(?m)^  {re.escape(command)}\b", help_text) is not None, f"missing {command}")
+    for command in RETIRED_OR_MAINTAINER_TOP_LEVEL_COMMANDS:
+        require(
+            re.search(rf"(?m)^  {re.escape(command)}\b", help_text) is None,
+            f"non-product command leaked into default help: {command}",
+        )
+        rejected = run_cli(command, expect_ok=False)
+        require(rejected.returncode != 0, f"default release binary accepted non-product command {command}")
+
+    status = run_cli("status")
+    combined = status.stdout + status.stderr
+    for expected in (
+        "Scanner Content",
+        "NetApp ONTAP",
+        "FreeBSD",
+        "Cisco IOS-XE",
+        "System of record",
+        "STIG Manager",
+        "Deterministic; no AI/ML",
     ):
-        policy = f"{WORK}/ios-{label}-policy.json"
-        signature = f"{WORK}/ios-{label}-policy.sig"
-        with open(policy, "w", encoding="utf-8") as stream:
-            json.dump(
-                {
-                    "schema": "automatestig-organization-policy/v1",
-                    "policy_id": f"e2e-{label}",
-                    "policy_version": "1",
-                    "stig_id": "Cisco_IOS-XE_Router_NDM_STIG",
-                    "stig_release": "V3R7",
-                    "asset_hostname": hostname,
-                    "effective_from": "2026-01-01T00:00:00Z",
-                    "expires_at": "2099-01-01T00:00:00Z",
-                    "rules": {
-                        "V-215807": {"max_concurrent_management_sessions": 2},
-                        "V-215836": {"minimum_logging_buffer_bytes": 4096000},
-                        "V-215838": {
-                            "approved_authoritative_ntp_sources": [
-                                "10.10.1.10",
-                                "10.10.1.11",
-                            ]
-                        },
-                    },
-                },
-                stream,
-                separators=(",", ":"),
-            )
-        signed = run_cli(
-            "sign-organization-policy",
-            "--policy", policy,
-            "--signing-key", policy_key,
-            "--output", signature,
+        require(expected in combined, f"status omitted release contract text {expected!r}")
+
+
+def verify_transition_cli_boundary() -> None:
+    help_result = subprocess.run(
+        [str(TRANSITION_BIN), "--help"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    require(help_result.returncode == 0, "protected transition CLI help failed")
+    for command in ("migration", "scanner"):
+        require(
+            re.search(rf"(?m)^  {re.escape(command)}\b", help_result.stdout) is not None,
+            f"protected transition CLI omitted {command}",
         )
-        check(
-            section,
-            f"sign {label} organization policy offline",
-            signed.returncode == 0 and os.path.getsize(signature) == 64,
-            signed.combined[:300],
+    migration_help = subprocess.run(
+        [str(TRANSITION_BIN), "migration", "--help"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    require(migration_help.returncode == 0, "protected migration help failed")
+    for action in ("inventory", "export", "bind-run"):
+        require(
+            re.search(rf"(?m)^  {re.escape(action)}\b", migration_help.stdout)
+            is not None,
+            f"protected migration CLI omitted {action}",
         )
-        dest = f"{OUT}/ios_{label}.ckl"
-        result = run_cli("evaluate", "--stig", "Cisco_IOS-XE_Router_NDM_STIG",
-                         "--config", config, "--host", hostname,
-                         "--organization-policy", policy,
-                         "--organization-policy-signature", signature,
-                         "--output", dest, "--format", "ckl")
-        check(section, f"evaluate {label}", result.returncode == 0, result.combined[:300])
-        findings = parse_ckl(dest)
-        if label == "findings":
-            opens = {v for v, f in findings.items() if norm_status(f["status"]) == "open"}
-            check(section, "findings fixture opens every shipped automated rule",
-                  opens == IOS_OPEN,
-                  f"extra={sorted(opens - IOS_OPEN)} missing={sorted(IOS_OPEN - opens)}")
-        else:
-            counts = status_counts(findings)
-            check(section, "compliant oracle", len(findings) == IOS_TOTAL
-                  and counts.get("notafinding") == IOS_AUTOMATED
-                  and counts.get("notreviewed") == IOS_TOTAL - IOS_AUTOMATED
-                  and not counts.get("open"), str(counts))
-
-        if label == "compliant":
-            compliant_policy = policy
-            compliant_policy_signature = signature
-            mutated = json.loads(open(policy, encoding="utf-8").read())
-            mutated["rules"]["V-215807"]["max_concurrent_management_sessions"] = 3
-            tampered_policy = f"{WORK}/ios-tampered-policy.json"
-            with open(tampered_policy, "w", encoding="utf-8") as stream:
-                json.dump(mutated, stream, separators=(",", ":"))
-            tampered_dest = f"{OUT}/ios-tampered-policy.ckl"
-            tampered = run_cli(
-                "evaluate",
-                "--stig", "Cisco_IOS-XE_Router_NDM_STIG",
-                "--config", config,
-                "--host", hostname,
-                "--organization-policy", tampered_policy,
-                "--organization-policy-signature", signature,
-                "--output", tampered_dest,
-                "--format", "ckl",
-                expect_ok=False,
-            )
-            check(
-                section,
-                "policy mutation is rejected before checklist output",
-                tampered.returncode != 0 and not os.path.exists(tampered_dest)
-                and "signature" in tampered.combined.lower(),
-                tampered.combined[:300],
-            )
-
-    truncated = f"{WORK}/ios-truncated.cfg"
-    with open(truncated, "w", encoding="utf-8") as stream:
-        stream.write("version 17.9\nhostname rtr-compliant-01\ninterface Gi1\nend\n")
-    destination = f"{OUT}/ios-truncated.ckl"
-    result = run_cli("evaluate", "--stig", "Cisco_IOS-XE_Router_NDM_STIG",
-                     "--config", truncated, "--host", "rtr-compliant-01",
-                     "--organization-policy", compliant_policy,
-                     "--organization-policy-signature", compliant_policy_signature,
-                     "--output", destination, "--format", "ckl", expect_ok=False)
-    check(section, "truncated config cannot produce a checklist or absence pass",
-          result.returncode != 0 and not os.path.exists(destination)
-          and "line/context structure" in result.combined,
-          result.combined[:300])
+    scanner_help = subprocess.run(
+        [str(TRANSITION_BIN), "scanner", "--help"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    require(scanner_help.returncode == 0, "protected signing help failed")
+    for action in ("generate-signing-key", "sign-handoff"):
+        require(
+            re.search(rf"(?m)^  {re.escape(action)}\b", scanner_help.stdout)
+            is not None,
+            f"protected transition CLI omitted {action}",
+        )
+    for product_command in PRODUCT_TOP_LEVEL_COMMANDS - {"scanner"}:
+        require(
+            re.search(rf"(?m)^  {re.escape(product_command)}\b", help_result.stdout)
+            is None,
+            f"product command leaked into protected transition CLI: {product_command}",
+        )
 
 
-def format_roundtrip(source):
-    section = "format-roundtrip"
-    cklb, native, final = f"{OUT}/roundtrip.cklb", f"{OUT}/roundtrip.json", f"{OUT}/roundtrip.ckl"
-    results = [
-        run_cli("convert", "--input", source, "--output", cklb, "--format", "cklb"),
-        run_cli("convert", "--input", cklb, "--output", native, "--format", "json"),
-        run_cli("convert", "--input", native, "--output", final, "--format", "ckl"),
-    ]
-    check(section, "CKL to CKLB to JSON to CKL", all(r.returncode == 0 for r in results))
-    before, after = parse_ckl(source), parse_ckl(final)
-    check(section, "statuses preserved", {v: norm_status(f["status"]) for v, f in before.items()}
-          == {v: norm_status(f["status"]) for v, f in after.items()})
-    check(section, "group titles preserved", {v: f["group_title"] for v, f in before.items()}
-          == {v: f["group_title"] for v, f in after.items()})
+def generated_evidence_index() -> dict[tuple[str, str], Path]:
+    manifest_path = ARTIFACTS / "native-evidence" / "manifest.json"
+    manifest = json_object(manifest_path, "native evidence manifest")
+    require(
+        manifest.get("schema") == "automatestig.localhost-native-evidence/v1",
+        "native evidence manifest schema changed",
+    )
+    result: dict[tuple[str, str], Path] = {}
+    files = manifest.get("files")
+    require(isinstance(files, list) and len(files) == 6, "native evidence matrix must contain six cases")
+    for raw in files:
+        require(isinstance(raw, dict), "native evidence manifest item must be an object")
+        path = (manifest_path.parent / str(raw.get("path", ""))).resolve()
+        require(path.parent == manifest_path.parent.resolve(), "native evidence path escaped its directory")
+        require(path.is_file(), f"native evidence file is missing: {path}")
+        require(sha256_file(path) == raw.get("sha256"), f"native evidence digest changed: {path.name}")
+        key = (str(raw.get("profile_id")), str(raw.get("case")))
+        require(key not in result, f"duplicate native evidence case {key}")
+        result[key] = path
+    return result
 
 
-def stigpack_flow():
-    section = "signed-stigpack"
-    source = f"{WORK}/pack-source"
-    os.makedirs(f"{source}/benchmarks", exist_ok=True)
-    os.makedirs(f"{source}/auto_check_packs", exist_ok=True)
-    shutil.copy(f"{LIB}/benchmarks/NetApp_ONTAP_DSC_9-x_STIG.json", f"{source}/benchmarks/")
-    reviewed = f"{LIB}/reviewed_check_packs"
-    if os.path.isdir(reviewed):
-        for name in os.listdir(reviewed):
-            shutil.copy(os.path.join(reviewed, name), f"{source}/auto_check_packs/{name}")
-    signing_key = f"{WORK}/offline-signing/content.key"
-    generated = run_cli("generate-signing-key", "--output", signing_key)
-    trust_dir = f"{HOME}/.automatestig/trusted_keys"
-    os.makedirs(trust_dir, mode=0o700, exist_ok=True)
-    shutil.copy(f"{WORK}/offline-signing/content.pub", f"{trust_dir}/e2e-content.pub")
-    check(section, "offline key generation is explicit",
-          generated.returncode == 0 and os.path.exists(signing_key), generated.combined[:300])
-    pack = f"{WORK}/content.stigpack"
-    built = run_cli("build-pack", "--id", "e2e-content", "--name", "E2E Content",
-                    "--version", "1.0.0", "--source", source, "--output", pack,
-                    "--signing-key", signing_key)
-    check(section, "builder requires the explicit offline signing key",
-          built.returncode == 0 and os.path.exists(pack), built.combined[:300])
-    verified = run_cli("verify", "--pack", pack)
-    check(section, "trusted verification succeeds", verified.returncode == 0 and "verified" in verified.combined.lower())
-    imported = run_cli("import", "--pack", pack)
-    check(section, "default trusted import succeeds", imported.returncode == 0, imported.combined[:300])
-    data = bytearray(open(pack, "rb").read())
-    data[len(data) // 2] ^= 0xFF
-    tampered = f"{WORK}/tampered.stigpack"
-    open(tampered, "wb").write(data)
-    check(section, "tampering is rejected", run_cli("verify", "--pack", tampered, expect_ok=False).returncode != 0)
+def assert_scanner_result(
+    document: dict[str, Any], *, complete: bool, reviews: int, planned: int
+) -> None:
+    require(document.get("collection_complete") is complete, "scanner completion state changed")
+    sparse_reviews = document.get("sparse_reviews")
+    require(isinstance(sparse_reviews, list), "scanner result has no sparse review array")
+    require(len(sparse_reviews) == reviews, "scanner-owned sparse review count changed")
+    summary = document.get("summary")
+    require(isinstance(summary, dict), "scanner result has no summary")
+    require(summary.get("checks_planned") == planned, "planned executable check count changed")
+    require(summary.get("sparse_review_count") == reviews, "summary sparse count changed")
+    digests = document.get("digests")
+    require(isinstance(digests, dict), "scanner result has no digest bindings")
+    for name, value in digests.items():
+        require(
+            isinstance(value, str) and SHA256_RE.fullmatch(value) is not None,
+            f"scanner digest {name} is not lowercase SHA-256",
+        )
 
 
-def coverage_flow():
-    section = "coverage"
-    manifest = f"{REPO}/content/coverage/current-checkpacks/netapp_ontap9.current.json"
-    result = run_cli("coverage", "validate", "--manifest", manifest)
-    check(section, "supported-target manifest validates", result.returncode == 0, result.combined[:300])
+def verify_cli_evaluation() -> None:
+    evidence = generated_evidence_index()
+
+    complete_output = OUT / "cli-netapp-compliant.scanner-result.json"
+    run_cli(
+        "evaluate",
+        "--stig",
+        "netapp_ontap9",
+        "--evidence",
+        str(evidence[("netapp_ontap9", "compliant")]),
+        "--output",
+        str(complete_output),
+        "--format",
+        "json",
+    )
+    assert_scanner_result(
+        json_object(complete_output, "complete native scanner result"),
+        complete=True,
+        reviews=15,
+        planned=15,
+    )
+
+    incomplete_output = OUT / "cli-netapp-incomplete.scanner-result.json"
+    incomplete = run_cli(
+        "evaluate",
+        "--stig",
+        "netapp_ontap9",
+        "--evidence",
+        str(evidence[("netapp_ontap9", "incomplete")]),
+        "--output",
+        str(incomplete_output),
+        "--format",
+        "json",
+        expect_ok=False,
+    )
+    require(incomplete.returncode != 0, "incomplete evidence returned success")
+    assert_scanner_result(
+        json_object(incomplete_output, "incomplete diagnostic scanner result"),
+        complete=False,
+        reviews=0,
+        planned=15,
+    )
+
+    tampered_path = OUT / "tampered-native-evidence.json"
+    tampered = json_object(evidence[("netapp_ontap9", "compliant")], "native evidence")
+    tampered["evidence_sha256"] = "0" * 64
+    tampered_path.write_text(json.dumps(tampered, separators=(",", ":")), encoding="utf-8")
+    tampered_output = OUT / "tampered-native-result.json"
+    rejected = run_cli(
+        "evaluate",
+        "--stig",
+        "netapp_ontap9",
+        "--evidence",
+        str(tampered_path),
+        "--output",
+        str(tampered_output),
+        expect_ok=False,
+    )
+    require(rejected.returncode != 0 and not tampered_output.exists(), "tampered evidence produced output")
+
+    config_output = OUT / "cli-cisco-compliant.scanner-result.json"
+    run_cli(
+        "evaluate",
+        "--stig",
+        "cisco_ios_xe_router_ndm",
+        "--config",
+        str(CISCO_CONFIG),
+        "--host",
+        "rtr-compliant-01",
+        "--organization-policy",
+        str(CISCO_POLICY),
+        "--organization-policy-signature",
+        str(POLICY_SIGNATURE),
+        "--output",
+        str(config_output),
+        "--format",
+        "json",
+    )
+    config_result = json_object(config_output, "Cisco configuration scanner result")
+    assert_scanner_result(config_result, complete=True, reviews=33, planned=33)
+    provenance = config_result.get("checklist", {}).get("evaluation_provenance", {})
+    policy = provenance.get("organization_policy", {})
+    require(provenance.get("origin") == "config_file", "Cisco result origin is not config_file")
+    require(policy.get("signature_verified") is True, "Cisco policy is not signature-verified")
+    require(policy.get("policy_sha256") == CISCO_POLICY_SHA256, "Cisco policy digest changed")
+
+    truncated_output = OUT / "cli-cisco-truncated.scanner-result.json"
+    truncated = run_cli(
+        "evaluate",
+        "--stig",
+        "cisco_ios_xe_router_ndm",
+        "--config",
+        str(CISCO_TRUNCATED_CONFIG),
+        "--organization-policy",
+        str(CISCO_POLICY),
+        "--organization-policy-signature",
+        str(POLICY_SIGNATURE),
+        "--output",
+        str(truncated_output),
+        expect_ok=False,
+    )
+    require(
+        truncated.returncode != 0 and not truncated_output.exists(),
+        "truncated running configuration produced a deliverable result",
+    )
 
 
-GUI_PORT = 18321
-TOKEN = "e2e-test-token-0123456789abcdef"
-
-
-def gui_request(path, method="GET", token=True):
-    request = urllib.request.Request(f"http://127.0.0.1:{GUI_PORT}{path}", method=method)
-    if token:
+def gui_request(path: str, *, method: str = "GET", authenticated: bool = True) -> tuple[int, bytes]:
+    request = urllib.request.Request(
+        f"http://127.0.0.1:{GUI_PORT}{path}",
+        method=method,
+    )
+    if authenticated:
         request.add_header("X-Auth-Token", TOKEN)
     try:
         with urllib.request.urlopen(request, timeout=30) as response:
@@ -539,153 +477,258 @@ def gui_request(path, method="GET", token=True):
         return 0, b""
 
 
-def scanner_gui_flow():
-    """Exercise only the scanner-first GUI/API and read-only handoff verifier.
-
-    Legacy GUI import, local checklist, asset, finding, and portfolio mutations
-    are intentionally not acceptance targets; STIG Manager owns those product
-    surfaces. Their retired routes are checked separately below.
-    """
-    section = "scanner-gui"
-    data_dir = f"{WORK}/scanner-gui-data"
-    artifacts_dir = f"{WORK}/scanner-scenario-artifacts"
-    os.makedirs(data_dir, exist_ok=True)
-    os.makedirs(artifacts_dir, exist_ok=True)
-    env = dict(os.environ)
-    env.update({
-        "PORT": str(GUI_PORT),
-        "AUTOMATESTIG_AUTH_TOKEN": TOKEN,
-        "AUTOMATESTIG_DATA_DIR": data_dir,
-    })
-    log_path = f"{data_dir}/gui.log"
-    log = open(log_path, "w", encoding="utf-8")
-    process = subprocess.Popen(
-        [GUI_BIN], cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT
+def run_gui_scenarios() -> dict[str, Any]:
+    environment = product_environment()
+    environment.update(
+        {
+            "PORT": str(GUI_PORT),
+            "AUTOMATESTIG_AUTH_TOKEN": TOKEN,
+        }
     )
-    try:
-        for _ in range(60):
-            if gui_request("/api/v1/status")[0] == 200:
-                break
-            time.sleep(0.5)
-        else:
-            log.flush()
-            detail = open(log_path, encoding="utf-8").read()[:800]
-            check(section, "scanner API starts", False, detail)
-            return
-
-        check(
-            section,
-            "API requires authentication",
-            gui_request("/api/v1/runs", token=False)[0] in (401, 403),
-        )
-        harness = subprocess.run(
-            [
-                sys.executable,
-                f"{REPO}/scripts/scanner_scenarios/run_localhost.py",
-                "--base-url",
-                f"http://127.0.0.1:{GUI_PORT}",
-                "--auth-token",
-                TOKEN,
-                "--artifacts-dir",
-                artifacts_dir,
-            ],
+    log_path = DATA_DIR / "acceptance-gui.log"
+    with log_path.open("w", encoding="utf-8") as log:
+        process = subprocess.Popen(
+            [str(GUI_BIN)],
             cwd=REPO,
-            capture_output=True,
+            env=environment,
+            stdout=log,
+            stderr=subprocess.STDOUT,
             text=True,
-            timeout=180,
         )
-        check(
-            section,
-            "scanner-first localhost scenarios pass",
-            harness.returncode == 0,
-            (harness.stdout + harness.stderr)[-1200:],
-        )
+        try:
+            for _ in range(120):
+                if gui_request("/api/v1/status")[0] == 200:
+                    break
+                if process.poll() is not None:
+                    break
+                time.sleep(0.25)
+            else:
+                raise AcceptanceFailure("GUI scanner API did not become ready")
+            if process.poll() is not None:
+                log.flush()
+                raise AcceptanceFailure(f"GUI exited during startup:\n{log_path.read_text()[-2000:]}")
+            unauthenticated, _ = gui_request("/api/v1/runs", authenticated=False)
+            require(unauthenticated in (401, 403), "scanner run API did not require authentication")
 
-        summary_path = f"{artifacts_dir}/summary.json"
-        summary = (
-            json.load(open(summary_path, encoding="utf-8"))
-            if os.path.exists(summary_path)
-            else {}
-        )
-        check(
-            section,
-            "complete and incomplete scanner outcomes are exercised",
-            len(summary.get("complete_handoff_runs") or []) == 2
-            and bool(summary.get("incomplete_fail_closed_run")),
-            str(summary)[:500],
-        )
-
-        handoffs = sorted(
-            os.path.join(artifacts_dir, name)
-            for name in os.listdir(artifacts_dir)
-            if name.endswith(".handoff.zip")
-        )
-        verifier_results = [
-            subprocess.run(
-                [BIN, "scanner", "verify-handoff", handoff],
+            harness = subprocess.run(
+                [
+                    sys.executable,
+                    str(REPO / "scripts" / "scanner_scenarios" / "run_localhost.py"),
+                    "--base-url",
+                    f"http://127.0.0.1:{GUI_PORT}",
+                    "--auth-token",
+                    TOKEN,
+                    "--artifacts-dir",
+                    str(ARTIFACTS),
+                ],
                 cwd=REPO,
+                env=environment,
                 capture_output=True,
                 text=True,
-                timeout=60,
+                timeout=300,
             )
-            for handoff in handoffs
-        ]
-        check(
-            section,
-            "every selected-run handoff passes the offline verifier",
-            len(handoffs) == 2
-            and all(result.returncode == 0 for result in verifier_results),
-            "\n".join(
-                (result.stdout + result.stderr)[-500:]
-                for result in verifier_results
-            ),
+            require(
+                harness.returncode == 0,
+                "scanner localhost scenarios failed:\n" + (harness.stdout + harness.stderr)[-3000:],
+            )
+            summary = json_object(ARTIFACTS / "summary.json", "scanner scenario summary")
+            complete = summary.get("complete_handoff_runs")
+            require(isinstance(complete, list) and len(complete) == 3, "three complete handoffs were not exercised")
+            methods = {item.get("collection_method") for item in complete if isinstance(item, dict)}
+            require(methods == {"evidence", "configuration"}, "API did not exercise both input modes")
+            require(bool(summary.get("incomplete_fail_closed_run")), "fail-closed API case was omitted")
+
+            for path in (
+                "/api/assets",
+                "/api/stigman/push/retired-checklist",
+                "/api/evaluate/with-evidence",
+                "/api/library/import-disa",
+            ):
+                status, body = gui_request(path, method="POST")
+                require(status == 410, f"retired manager-duplicate route {path} returned {status}: {body[:300]!r}")
+            return summary
+        finally:
+            if process.poll() is None:
+                process.terminate()
+                try:
+                    process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=10)
+
+
+def verify_handoffs(summary: dict[str, Any]) -> None:
+    complete = summary.get("complete_handoff_runs")
+    require(isinstance(complete, list), "scanner summary has no complete runs")
+    handoffs: list[Path] = []
+    for item in complete:
+        require(isinstance(item, dict), "complete run summary must be an object")
+        handoff = item.get("handoff")
+        require(isinstance(handoff, dict), "complete run has no handoff summary")
+        path = Path(str(handoff.get("zip", ""))).resolve()
+        require(path.parent == ARTIFACTS.resolve(), "handoff path escaped the acceptance artifact directory")
+        require(path.is_file() and sha256_file(path) == handoff.get("zip_sha256"), "handoff digest changed")
+        run_cli("scanner", "verify-handoff", str(path))
+        handoffs.append(path)
+    require(len(handoffs) == 3, "expected three verified selected-run handoffs")
+
+    original = handoffs[0].read_bytes()
+    require(len(original) > 32, "handoff is unexpectedly small")
+    corrupted = bytearray(original)
+    corrupted[len(corrupted) // 2] ^= 0x01
+    tampered = OUT / "tampered-selected-run.handoff.zip"
+    tampered.write_bytes(corrupted)
+    rejected = run_cli("scanner", "verify-handoff", str(tampered), expect_ok=False)
+    require(rejected.returncode != 0, "offline verifier accepted a tampered selected-run handoff")
+
+
+def safe_zip_members(archive: zipfile.ZipFile) -> list[str]:
+    names = archive.namelist()
+    require(len(names) == len(set(names)), "migration ZIP contains duplicate members")
+    for name in names:
+        path = PurePosixPath(name)
+        require(not path.is_absolute() and ".." not in path.parts, f"unsafe migration member {name!r}")
+        require(not archive.getinfo(name).flag_bits & 0x1, f"encrypted migration member {name!r}")
+    return names
+
+
+def verify_migration() -> None:
+    require(DB.is_file(), "GUI scanner database was not created")
+    before = sha256_file(DB)
+    inventory_path = OUT / "migration-inventory.json"
+    run_transition_cli("migration", "inventory", "--output", str(inventory_path))
+    require(sha256_file(DB) == before, "read-only migration inventory changed the scanner database")
+    inventory = json_object(inventory_path, "migration inventory")
+    require(inventory.get("schema") == "automatestig.migration-inventory.v1", "inventory schema changed")
+    require(inventory.get("read_only") is True, "migration inventory is not marked read-only")
+    summary = inventory.get("summary")
+    require(isinstance(summary, dict), "migration inventory has no summary")
+    require(summary.get("immutable_scanner_runs") == 4, "migration missed scanner runs")
+    require(summary.get("completed_scanner_output_records") == 3, "completed scanner classification changed")
+    require(summary.get("incomplete_audit_only_records") >= 1, "incomplete run was not audit-only")
+
+    bundle_path = OUT / "scanner-transition.zip"
+    run_transition_cli("migration", "export", "--output", str(bundle_path))
+    require(sha256_file(DB) == before, "read-only migration export changed the scanner database")
+    original_bundle = bundle_path.read_bytes()
+    refused = run_transition_cli(
+        "migration", "export", "--output", str(bundle_path), expect_ok=False
+    )
+    require(
+        refused.returncode != 0 and bundle_path.read_bytes() == original_bundle,
+        "migration export replaced an existing artifact",
+    )
+
+    try:
+        with zipfile.ZipFile(bundle_path) as archive:
+            names = safe_zip_members(archive)
+            members = {name: archive.read(name) for name in names}
+    except zipfile.BadZipFile as error:
+        raise AcceptanceFailure("migration export is not a valid ZIP") from error
+    require({"manifest.json", "checksums.sha256", "inventory-report.json"} <= set(names), "migration bundle is incomplete")
+    manifest = json.loads(members["manifest.json"])
+    require(manifest.get("schema") == "automatestig.migration-bundle.v2", "migration bundle schema changed")
+    require(manifest.get("read_only_export") is True, "migration bundle is not read-only")
+    require(manifest.get("sensitive_data") is True, "migration bundle lost its sensitivity marker")
+    require(manifest.get("retention_cleanup_performed") is False, "migration export claimed cleanup")
+    declared = manifest.get("members")
+    require(isinstance(declared, list), "migration bundle has no member manifest")
+    declared_paths = {item.get("path") for item in declared if isinstance(item, dict)}
+    require(declared_paths == set(names) - {"manifest.json", "checksums.sha256"}, "migration member manifest differs")
+    for item in declared:
+        require(isinstance(item, dict), "migration member declaration must be an object")
+        path = str(item.get("path"))
+        require(sha256_bytes(members[path]) == item.get("sha256"), f"migration member digest mismatch: {path}")
+        require(len(members[path]) == item.get("size_bytes"), f"migration member size mismatch: {path}")
+    checksum_rows = {}
+    for line in members["checksums.sha256"].decode("ascii").splitlines():
+        digest, separator, path = line.partition("  ")
+        require(separator == "  " and SHA256_RE.fullmatch(digest) is not None, "invalid checksum row")
+        require(path not in checksum_rows, f"duplicate checksum path {path}")
+        checksum_rows[path] = digest
+    require(set(checksum_rows) == set(names) - {"checksums.sha256"}, "checksum coverage differs")
+    for path, digest in checksum_rows.items():
+        require(sha256_bytes(members[path]) == digest, f"checksum mismatch for {path}")
+    require(
+        any(name.startswith("verified-scanner-evidence/") for name in names),
+        "migration bundle omitted verified scanner evidence",
+    )
+    require(
+        any(name.startswith("audit-only/scanner-runs/") for name in names),
+        "migration bundle omitted the incomplete audit-only run",
+    )
+    required_scanner_state = {
+        "scanner/jobs.json",
+        "scanner/job-transitions.json",
+        "scanner/target-connection-profiles.json",
+        "scanner/operational-purge-tombstones.json",
+        "scanner/retention-config.json",
+        "stig-manager/delivery-records.json",
+        "stig-manager/delivery-receipts.json",
+        "stig-manager/destination-bindings.json",
+        "stig-manager/retained-run-bindings.json",
+    }
+    require(required_scanner_state <= set(names), "migration bundle omitted scanner custody state")
+    retention = json.loads(members["scanner/retention-config.json"])
+    require(
+        retention.get("schema") == "automatestig.scanner-retention-config.v1",
+        "migration retention contract changed",
+    )
+    custody_names = [
+        name for name in names if name.startswith("scanner/replay-evidence/") and name.endswith("/custody.json")
+    ]
+    require(len(custody_names) == 4, "migration bundle omitted replay-evidence custody")
+    for custody_name in custody_names:
+        custody = json.loads(members[custody_name])
+        require(
+            custody.get("schema") == "automatestig.encrypted-custody.v1"
+            and custody.get("object_kind") == "scan_replay_evidence"
+            and custody.get("stored_bindings_verified") is True
+            and custody.get("plaintext_exported") is False,
+            f"migration replay-evidence custody is invalid: {custody_name}",
         )
-
-        for path in (
-            "/api/assets",
-            "/api/stigman/push/retired-checklist",
-            "/api/evaluate/with-evidence",
-            "/api/library/import-disa",
+        for member_field, digest_field, size_field in (
+            ("ciphertext_member", "ciphertext_sha256", "ciphertext_size_bytes"),
+            ("wrapped_dek_member", "wrapped_dek_sha256", "wrapped_dek_size_bytes"),
         ):
-            status, body = gui_request(path, method="POST")
-            check(
-                section,
-                f"retired manager-duplicate mutation returns 410: {path}",
-                status == 410,
-                body[:300].decode("utf-8", "replace"),
+            member_name = custody.get(member_field)
+            require(isinstance(member_name, str) and member_name in members, f"missing {member_field}: {custody_name}")
+            require(
+                sha256_bytes(members[member_name]) == custody.get(digest_field)
+                and len(members[member_name]) == custody.get(size_field),
+                f"migration encrypted custody binding changed: {member_name}",
             )
-    finally:
-        process.kill()
-        process.wait()
-        log.close()
 
 
-def main():
-    for binary in (BIN, GUI_BIN):
-        if not os.path.exists(binary):
-            sys.exit(f"binary not found: {binary}; run cargo build --release")
-    if os.path.exists(WORK):
-        shutil.rmtree(WORK)
-    os.makedirs(OUT, exist_ok=True)
-    os.makedirs(HOME, exist_ok=True)
-
-    cli_basics()
-    hostile = create_hostile_archives()
-    hostile_disa_flow(hostile)
-    ontap = evaluate_ontap()
-    evaluate_bsd()
-    evaluate_network()
-    format_roundtrip(ontap["findings"])
-    stigpack_flow()
-    coverage_flow()
-    scanner_gui_flow()
-
-    failures = [result for result in RESULTS if not result[2]]
-    print(f"\nE2E RESULT: {len(RESULTS) - len(failures)}/{len(RESULTS)} checks passed")
-    for section, name, _, detail in failures:
-        print(f"  FAIL {section} :: {name} — {detail[:300]}")
-    sys.exit(1 if failures else 0)
+def main() -> int:
+    try:
+        for binary in (BIN, GUI_BIN, TRANSITION_BIN):
+            require(binary.is_file(), f"binary not found: {binary}; build the acceptance binaries")
+        prepare_directories_and_policy()
+        verify_default_cli_boundary()
+        verify_transition_cli_boundary()
+        gui_summary = run_gui_scenarios()
+        verify_cli_evaluation()
+        verify_handoffs(gui_summary)
+        verify_migration()
+        result = {
+            "schema": "automatestig.product-acceptance.v2",
+            "default_release_binary_only": True,
+            "maintainer_commands_exercised": False,
+            "protected_transition_binary_exercised": True,
+            "native_adapter_evidence": "complete-and-incomplete",
+            "running_configuration": "signed-policy-complete-and-truncated-rejected",
+            "selected_run_handoffs_verified": 3,
+            "migration_read_only": True,
+            "artifacts": str(WORK),
+        }
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0
+    except (AcceptanceFailure, OSError, subprocess.SubprocessError, ValueError, KeyError) as error:
+        print(f"product acceptance failed: {error}", file=sys.stderr)
+        print(f"retained diagnostic workspace: {WORK}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

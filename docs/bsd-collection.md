@@ -64,9 +64,8 @@ collected. Because `audit_user` may contain account names,
 the evidence artifact is still sensitive operational data. Evidence v2 keeps
 stdout, stderr, exit status, duration, and typed errors separate and binds the
 platform and exact plan digest. Marker-based transcripts cannot establish
-command success and are rejected by default. The CLI-only
-`--allow-legacy-evidence` switch is an unsafe fixture-migration aid, not a
-collection workflow.
+command success and are rejected by the product CLI, GUI, and API with no
+unsafe override.
 
 ## Evaluating
 
@@ -83,7 +82,7 @@ Then evaluate the evidence document:
 ```bash
 automatestig evaluate --stig General_Purpose_Operating_System \
   --evidence bsdhost-evidence.json \
-  --output bsdhost01.ckl --format ckl
+  --output bsdhost01.scanner-result.json
 ```
 
 The scanner-first delivery path does not merge answer files or prior

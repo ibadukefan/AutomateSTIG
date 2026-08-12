@@ -80,6 +80,34 @@ jobs:
           cache-bin: false
       - run: cargo check --workspace --all-targets
 
+  maintainer-tooling:
+    name: Protected CLI tooling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
+        with:
+          cache-bin: false
+      - name: Test the explicitly feature-gated maintainer CLI surface
+        run: >-
+          cargo test -p automatestig --all-targets --no-default-features
+          --features maintainer
+      - name: Lint the explicitly feature-gated maintainer CLI surface
+        run: >-
+          cargo clippy -p automatestig --all-targets --no-default-features
+          --features maintainer -- -D warnings
+      - name: Test the separately named transition CLI surface
+        run: >-
+          cargo test -p automatestig --all-targets --no-default-features
+          --features transition
+      - name: Lint the separately named transition CLI surface
+        run: >-
+          cargo clippy -p automatestig --all-targets --no-default-features
+          --features transition -- -D warnings
+
   test:
     name: Test
     runs-on: ${{ matrix.os }}
@@ -125,7 +153,14 @@ jobs:
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
-      - run: cargo build --release --bin automatestig --bin automatestig-gui
+      - name: Build the default release product without maintainer features
+        run: >-
+          cargo build --release --locked --no-default-features
+          --bin automatestig --bin automatestig-gui
+      - name: Build the separately gated transition acceptance binary
+        run: >-
+          cargo build --release --locked --no-default-features
+          --features transition --bin automatestig-transition
       - name: Run E2E acceptance suite
         run: python3 scripts/e2e-acceptance.py
 
@@ -162,11 +197,15 @@ jobs:
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: '24'
+          cache: npm
+          cache-dependency-path: crates/gui/frontend/scanner/package-lock.json
       - name: Check and test the served scanner-first frontend
         working-directory: crates/gui/frontend/scanner
         run: |
+          npm ci
           npm run check
           npm test
+          npm audit --audit-level=high
 
   archive-fuzz-smoke:
     name: Archive fuzz smoke
@@ -196,7 +235,23 @@ jobs:
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
         with:
           cache-bin: false
-      - run: python3 -m py_compile scripts/disa_corpus/*.py scripts/validate-check-packs.py scripts/compare-commercial-scanners.py
+      - name: Compile release, recovery, adapter, acceptance, and corpus Python utilities
+        run: >-
+          python3 -m py_compile
+          scripts/disa_corpus/*.py
+          scripts/e2e-acceptance.py
+          scripts/scanner_scenarios/run_localhost.py
+          scripts/adapter_tooling.py
+          scripts/scaffold-target-adapter.py
+          scripts/validate-adapter-contract.py
+          scripts/generate-target-scorecards.py
+          scripts/validate-check-packs.py
+          scripts/compare-commercial-scanners.py
+          scripts/backup-restore.py
+          scripts/generate-cyclonedx-sbom.py
+          scripts/generate-release-manifest.py
+          scripts/generate-release-provenance.py
+          scripts/validate-release-binary-equivalence.py
       - run: python3 scripts/validate-check-packs.py
       - run: python3 -m unittest discover -s scripts/disa_corpus/tests -v
       - run: python3 scripts/disa_corpus/index_disa_downloads.py --seed-only --output /tmp/disa-download-index.json
@@ -224,7 +279,7 @@ jobs:
 
   build-release:
     name: Build Release (${{ matrix.target }})
-    needs: [governance, check, test, e2e, fmt, clippy, frontend-syntax, archive-fuzz-smoke, coverage-validation, dependency-audit]
+    needs: [governance, check, maintainer-tooling, test, e2e, fmt, clippy, frontend-syntax, archive-fuzz-smoke, coverage-validation, dependency-audit]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -267,14 +322,33 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-aarch64-linux-gnu
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> "$GITHUB_ENV"
-      - run: cargo build --release --locked --target ${{ matrix.target }} --bin automatestig --bin automatestig-gui
+      - run: >-
+          cargo build --release --locked --no-default-features
+          --target ${{ matrix.target }} --bin automatestig --bin automatestig-gui
+      - name: Snapshot the exact release binaries before packaging
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/release/provenance
+          python3 scripts/validate-release-binary-equivalence.py snapshot \
+            --repo-root . \
+            --target "${{ matrix.target }}" \
+            --source-commit "$GITHUB_SHA" \
+            --cli "target/${{ matrix.target }}/release/${{ matrix.cli }}" \
+            --gui "target/${{ matrix.target }}/release/${{ matrix.gui }}" \
+            --backup-restore scripts/backup-restore.py \
+            --output "target/release/provenance/binary-snapshot-${{ matrix.target }}.json"
       - name: Package the tested release binaries
         shell: bash
         run: |
+          set -euo pipefail
           package="automatestig-${GITHUB_REF_NAME}-${{ matrix.target }}"
+          rm -rf "dist/$package" "dist/$package.${{ matrix.extension }}"
           mkdir -p "dist/$package"
           cp "target/${{ matrix.target }}/release/${{ matrix.cli }}" "dist/$package/"
           cp "target/${{ matrix.target }}/release/${{ matrix.gui }}" "dist/$package/"
+          cp scripts/backup-restore.py "dist/$package/automatestig-backup-restore"
+          chmod 0755 "dist/$package/automatestig-backup-restore"
           cp README.md LICENSE docs/quickstart.md docs/installation.md "dist/$package/"
           if [[ "${{ matrix.extension }}" == "zip" ]]; then
             powershell -NoProfile -Command "Compress-Archive -Path 'dist/$package/*' -DestinationPath 'dist/$package.zip'"
@@ -282,6 +356,7 @@ jobs:
             tar -C "dist/$package" -czf "dist/$package.tar.gz" \
               "${{ matrix.cli }}" \
               "${{ matrix.gui }}" \
+              automatestig-backup-restore \
               README.md \
               LICENSE \
               quickstart.md \
@@ -289,31 +364,15 @@ jobs:
           fi
           rm -rf "dist/$package"
           echo "PACKAGE=dist/$package.${{ matrix.extension }}" >> "$GITHUB_ENV"
-      - name: Generate formal SBOM, dependency inventory, and provenance scaffold
+      - name: Prove pre-package and archived binary byte equivalence
         shell: bash
         run: |
-          mkdir -p target/release/provenance
-          cargo metadata --locked --format-version 1 > target/release/provenance/cargo-metadata-${{ matrix.target }}.json
-          python3 scripts/generate-cyclonedx-sbom.py \
-            --metadata target/release/provenance/cargo-metadata-${{ matrix.target }}.json \
-            --output target/release/provenance/automatestig-${{ matrix.target }}.cdx.json \
-            --target ${{ matrix.target }}
-          cat > target/release/provenance/provenance-${{ matrix.target }}.json <<EOF
-          {
-            "artifact": "$(basename "$PACKAGE")",
-            "target": "${{ matrix.target }}",
-            "repository": "${{ github.repository }}",
-            "ref": "${{ github.ref }}",
-            "sha": "${{ github.sha }}",
-            "workflow": "${{ github.workflow }}",
-            "run_id": "${{ github.run_id }}",
-            "run_attempt": "${{ github.run_attempt }}",
-            "sbom": "automatestig-${{ matrix.target }}.cdx.json"
-          }
-          EOF
-      - name: Generate SHA-256 checksum
-        shell: bash
-        run: |
+          set -euo pipefail
+          equivalence="target/release/provenance/release-equivalence-${{ matrix.target }}.json"
+          python3 scripts/validate-release-binary-equivalence.py finalize \
+            --snapshot "target/release/provenance/binary-snapshot-${{ matrix.target }}.json" \
+            --archive "$PACKAGE" \
+            --output "$equivalence"
           package_dir="$(dirname "$PACKAGE")"
           package_name="$(basename "$PACKAGE")"
           if command -v sha256sum >/dev/null 2>&1; then
@@ -321,18 +380,57 @@ jobs:
           else
             (cd "$package_dir" && shasum -a 256 "$package_name" > "$package_name.sha256")
           fi
+          python3 scripts/validate-release-binary-equivalence.py verify \
+            --manifest "$equivalence" \
+            --archive "$PACKAGE" \
+            --checksum "$PACKAGE.sha256" \
+            --target "${{ matrix.target }}" \
+            --source-commit "$GITHUB_SHA"
+          rm "target/release/provenance/binary-snapshot-${{ matrix.target }}.json"
+      - name: Generate byte-bound SBOM, dependency inventory, and provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          equivalence="target/release/provenance/release-equivalence-${{ matrix.target }}.json"
+          inventory="target/release/provenance/cargo-metadata-${{ matrix.target }}.json"
+          sbom="target/release/provenance/automatestig-${{ matrix.target }}.cdx.json"
+          provenance="target/release/provenance/provenance-${{ matrix.target }}.json"
+          mkdir -p target/release/provenance
+          cargo metadata --locked --format-version 1 > "$inventory"
+          python3 scripts/generate-cyclonedx-sbom.py \
+            --metadata "$inventory" \
+            --output "$sbom" \
+            --target "${{ matrix.target }}" \
+            --lockfile Cargo.lock \
+            --equivalence-manifest "$equivalence" \
+            --archive "$PACKAGE"
+          python3 scripts/generate-release-provenance.py \
+            --archive "$PACKAGE" \
+            --equivalence-manifest "$equivalence" \
+            --sbom "$sbom" \
+            --inventory "$inventory" \
+            --target "${{ matrix.target }}" \
+            --repository "${{ github.repository }}" \
+            --ref "${{ github.ref }}" \
+            --commit "${{ github.sha }}" \
+            --workflow "${{ github.workflow }}" \
+            --run-id "${{ github.run_id }}" \
+            --run-attempt "${{ github.run_attempt }}" \
+            --output "$provenance"
       - name: Stage one flat, closed release-artifact set
         shell: bash
         run: |
+          set -euo pipefail
           rm -rf release-upload
           mkdir release-upload
           cp "$PACKAGE" "$PACKAGE.sha256" release-upload/
           cp \
             "target/release/provenance/cargo-metadata-${{ matrix.target }}.json" \
             "target/release/provenance/automatestig-${{ matrix.target }}.cdx.json" \
+            "target/release/provenance/release-equivalence-${{ matrix.target }}.json" \
             "target/release/provenance/provenance-${{ matrix.target }}.json" \
             release-upload/
-          [[ "$(find release-upload -type f | wc -l | tr -d ' ')" == 5 ]]
+          [[ "$(find release-upload -type f | wc -l | tr -d ' ')" == 6 ]]
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: automatestig-${{ matrix.target }}
@@ -340,11 +438,23 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
-  live-binary-equivalence:
-    name: Live-tested release binary
+  release-artifact-equivalence:
+    name: Release artifact equivalence (${{ matrix.target }})
     if: startsWith(github.ref, 'refs/tags/v')
     needs: build-release
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+          - os: macos-15-intel
+            target: x86_64-apple-darwin
+          - os: macos-15
+            target: aarch64-apple-darwin
     permissions:
       actions: read
       contents: read
@@ -352,19 +462,32 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: automatestig-x86_64-unknown-linux-gnu
+          name: automatestig-${{ matrix.target }}
           path: release-artifacts
-      - name: Match the exact protected live-tested CLI bytes
-        run: >-
-          python3 scripts/validate-release-binary-equivalence.py
-          --repo-root .
-          --tag "$GITHUB_REF_NAME"
-          --artifact-dir release-artifacts
+      - name: Extract and execute the exact archived CLI and GUI bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          target="${{ matrix.target }}"
+          archive="release-artifacts/automatestig-${GITHUB_REF_NAME}-${target}.tar.gz"
+          live_args=()
+          if [[ "$target" == "x86_64-unknown-linux-gnu" ]]; then
+            live_args+=(--repo-root . --require-live-cli)
+          fi
+          python3 scripts/validate-release-binary-equivalence.py verify \
+            --manifest "release-artifacts/release-equivalence-${target}.json" \
+            --archive "$archive" \
+            --checksum "$archive.sha256" \
+            --target "$target" \
+            --source-commit "$GITHUB_SHA" \
+            --tag "$GITHUB_REF_NAME" \
+            --execute \
+            "${live_args[@]}"
 
   publish-release:
     name: Publish attested release artifacts
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build-release, live-binary-equivalence]
+    needs: [build-release, release-artifact-equivalence]
     runs-on: ubuntu-latest
     permissions:
       artifact-metadata: write
@@ -415,6 +538,22 @@ jobs:
       - name: Verify companions and generate release manifest
         shell: bash
         run: |
+          set -euo pipefail
+          for target in \
+            x86_64-unknown-linux-gnu \
+            aarch64-unknown-linux-gnu \
+            x86_64-apple-darwin \
+            aarch64-apple-darwin
+          do
+            archive="release-artifacts/automatestig-${GITHUB_REF_NAME}-${target}.tar.gz"
+            python3 scripts/validate-release-binary-equivalence.py verify \
+              --manifest "release-artifacts/release-equivalence-${target}.json" \
+              --archive "$archive" \
+              --checksum "$archive.sha256" \
+              --target "$target" \
+              --source-commit "$GITHUB_SHA" \
+              --tag "$GITHUB_REF_NAME"
+          done
           python3 scripts/generate-release-manifest.py \
             --artifact-dir release-artifacts \
             --tag "$GITHUB_REF_NAME" \

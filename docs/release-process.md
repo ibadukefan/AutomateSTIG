@@ -25,7 +25,9 @@ Branch protection must require:
 The exact required-context set is enforced by
 `scripts/validate-release-evidence.py`. Keep `Test (windows-latest)` required
 for portability, but do not configure a Windows `Build Release` context:
-Windows artifacts are intentionally outside the supported release set.
+Windows artifacts are intentionally outside the supported release set. The
+frontend job's required context is exactly `Scanner frontend contracts`, which
+must stay aligned with the job name in `.github/workflows/ci.yml`.
 
 Tag governance also requires the repository Actions secret
 `AUTOMATESTIG_GOVERNANCE_TOKEN`. It must be a fine-grained token or GitHub App
@@ -72,8 +74,8 @@ the definition exists on the default branch:
 
 1. merge the independently approved product/hardening pull request; its final
    commit on `main` becomes `approved_commit`;
-2. dispatch every protected acceptance, recovery, and signing workflow at that
-   exact `approved_commit`;
+2. dispatch every protected technical-acceptance, first-use-study, recovery,
+   and signing workflow at that exact `approved_commit`;
 3. commit only the resulting bound files under
    `release-evidence/artifacts/<tag>/` and `release-evidence/<tag>.json` through
    a separately reviewed evidence pull request;
@@ -101,21 +103,57 @@ A `v*` tag cannot publish unless `release-evidence/<tag>.json` passes
   independent oracle, and verified checklist provenance to carry the same
   SHA-256 values and trusted signer identity;
 - a passing transaction-recovery drill;
+- a passing first-use UX study no older than 90 days, bound to the exact
+  approved commit, intended product version, GUI bytes, prepared scenario and
+  complete 5-to-100-person cohort; at least two analysts, two managers, and two
+  experience bands must be represented, the exact full-cohort denominator is
+  retained, and assisted or documentation-aided completions never enter the
+  numerator;
 - an approved content-signing fingerprint plus the fixed ceremony JSON, raw
   public key, and signed test pack, all byte-bound to a successful protected
   workflow at `approved_commit` with distinct custodian and approver identities;
+- a producer-authenticated selected-run round trip: the exact bounded ZIP from
+  approved-commit STIG Manager staging, a strict detached sidecar and
+  independently conveyed public trust anchor, a non-secret protected-key
+  custody record, and a successful trusted product-CLI verification on an
+  identified protected receiver. The signing custodian and receiver approver
+  must be distinct, the workflow artifact is byte-bound to every committed
+  release-evidence file, and the private key never enters CI or scanner runtime;
 - a merged, GitHub-verified code pull request with distinct software/security
   approvals on its final head, and no subsequent change except its bound
   release-evidence document and artifacts;
 - non-expired, named risk acceptances (or an empty list).
 
-The release workflow builds without privileged credentials. Before
-publication, a tag-only equivalence job extracts the Linux x86_64 CLI from the
-candidate archive and requires its SHA-256 to equal the exact binary recorded
-by protected live-device acceptance; any toolchain or runner-dependent drift
-stops the release. The publication job then attests those exact archives, verifies every
+The release workflow builds without privileged credentials. Each release build
+hashes the CLI, GUI, and backup/restore utility before packaging, extracts the
+completed archive, and refuses to finalize its target-specific
+`release-equivalence-*.json` unless all three extracted SHA-256 values and sizes
+exactly match the pre-package snapshot. CLI and GUI are runtime-tested
+application binaries; the recovery utility is a separately identified,
+byte-bound operational tool that is also executed through a backup/restore
+round trip. The archive member set is closed and explicitly rejects
+`automatestig-transition`: migration and producer-signing tooling remains a
+source-built protected-host executable, not an analyst release payload.
+A tag-only matrix then downloads each advertised Linux/macOS archive onto a
+native runner for that operating system and architecture, rechecks the archive
+checksum and manifest, and executes those exact extracted bytes. The CLI must
+report the tagged version through `--version`; the GUI must start and report the
+same version through `/api/status`. The Linux x86_64 CLI additionally must equal
+the exact binary recorded by protected live-device acceptance. That live-device
+binding is intentionally additive; it is not used as a substitute for proving
+the GUI or the other three release targets. On every native target, the exact
+archived recovery entrypoint must create and restore a SQLite-backed state set,
+preserve recovery key material, and remove stored STIG Manager credentials.
+
+The per-target SBOM records hashes for both application executables, the
+recovery utility, the archive, and the equivalence-manifest identities. It also
+states the analyst-product scope and that the transition CLI is absent.
+Provenance independently binds the same archive, both application executable
+digests, the recovery utility digest, SBOM, Cargo inventory, source commit, and
+workflow run. The publication job
+re-extracts all four archives, verifies every
 checksum/signature/SBOM/provenance companion, and signs a hash-complete
 `release-manifest.json`. It creates a draft, attaches every asset, and only then
 publishes it. Repository-level immutable releases lock the published assets and
-tag; reruns refuse to replace an existing release. A skipped live gate is a
-stopped release, not a pass.
+tag; reruns refuse to replace an existing release. A skipped platform or live
+gate is a stopped release, not a pass.

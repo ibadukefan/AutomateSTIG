@@ -12,8 +12,10 @@
     "pull_request",
     "reviewers",
     "acceptance",
+    "first_use_ux",
     "recovery_drill",
     "content_signing_key",
+    "producer_authenticated_handoff",
     "risk_acceptances"
   ],
   "properties": {
@@ -50,6 +52,7 @@
         "stig_manager": { "$ref": "#/$defs/gate" }
       }
     },
+    "first_use_ux": { "$ref": "#/$defs/gate" },
     "recovery_drill": { "$ref": "#/$defs/gate" },
     "content_signing_key": {
       "type": "object",
@@ -80,6 +83,51 @@
           "pattern": "^release-evidence/artifacts/[^/]+/content-signing-test-pack\\.stigpack$"
         },
         "test_pack_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "producer_authenticated_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fingerprint_sha256",
+        "ceremony_reference",
+        "ceremony_sha256",
+        "public_key_reference",
+        "public_key_sha256",
+        "handoff_reference",
+        "handoff_sha256",
+        "signature_reference",
+        "signature_sha256",
+        "key_custody_reference",
+        "key_custody_sha256"
+      ],
+      "properties": {
+        "fingerprint_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "ceremony_reference": {
+          "type": "string",
+          "pattern": "^release-evidence/artifacts/[^/]+/handoff-receiver-ceremony\\.json$"
+        },
+        "ceremony_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "public_key_reference": {
+          "type": "string",
+          "pattern": "^release-evidence/artifacts/[^/]+/handoff-producer-public-key\\.pub$"
+        },
+        "public_key_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "handoff_reference": {
+          "type": "string",
+          "pattern": "^release-evidence/artifacts/[^/]+/producer-handoff\\.zip$"
+        },
+        "handoff_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "signature_reference": {
+          "type": "string",
+          "pattern": "^release-evidence/artifacts/[^/]+/producer-handoff\\.zip\\.signature\\.json$"
+        },
+        "signature_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "key_custody_reference": {
+          "type": "string",
+          "pattern": "^release-evidence/artifacts/[^/]+/handoff-key-custody-ceremony\\.json$"
+        },
+        "key_custody_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
       }
     },
     "risk_acceptances": {

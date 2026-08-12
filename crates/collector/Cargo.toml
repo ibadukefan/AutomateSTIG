@@ -8,9 +8,9 @@ description = "Shared fail-closed SSH evidence collection for AutomateSTIG"
 [dependencies]
 automatestig-core = { workspace = true }
 russh = { workspace = true }
-serde = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
+zeroize = "1"
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"

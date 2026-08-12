@@ -60,7 +60,7 @@ set -privilege advanced -confirmations off -stop-on-error true
 
 Evidence is strict JSON with schema identifier `automatestig-evidence/v2`; see `schemas/evidence-v2.schema.json`. It separates stdout, stderr, exit status, duration, and typed error for every command and records the platform, exact collection-plan digest, collector version, and observed SSH server-key fingerprint. Target-controlled output cannot create command records.
 
-The evaluator rejects duplicate records, incomplete JSON, missing statuses, an unexpected command, a different platform, and a stale plan digest. Marker-based plain-text evidence is rejected by default. CLI `--allow-legacy-evidence` exists only to migrate old controlled fixtures by assuming every marker section succeeded; do not use it for compliance decisions. The GUI/API has no legacy override.
+The evaluator rejects duplicate records, incomplete JSON, missing statuses, an unexpected command, a different platform, and a stale plan digest. Marker-based plain-text evidence is rejected by the product CLI, GUI, and API with no unsafe override.
 
 If automated collection is unavailable, record the needed evidence for manual review rather than manufacturing a successful v2 transport record.
 
@@ -80,14 +80,14 @@ Then evaluate the evidence document:
 automatestig evaluate \
   --stig NetApp_ONTAP_DSC_9-x_STIG \
   --evidence filer-evidence.json \
-  --output filer.ckl \
-  --format ckl
+  --output filer.scanner-result.json
 ```
 
 The scanner-first delivery path does not merge answer files or prior checklists.
-Human determinations and manual-rule completion occur in STIG Manager. Legacy
-CLI conversion/export preserves its original attribution during the migration
-window.
+Human determinations and manual-rule completion occur in STIG Manager. The
+native scanner-result JSON retains the exact evaluation and provenance. A
+complete result may also be projected to CKLB explicitly; incomplete evidence
+cannot produce a checklist projection.
 
 If any required record failed collection or semantic validation, AutomateSTIG appends an `evaluation.incomplete` audit event, writes no checklist, and exits nonzero. Answer files and prior-checklist merges cannot override affected `Not_Reviewed` collection errors; failed stdout is diagnostic only and cannot satisfy `not_contains` or a broad regex.
 

@@ -47,7 +47,7 @@ Encrypted replay-evidence retention and the receiver-side handoff verifier are
 now implemented. Replay evidence is separately sealed with per-artifact keys,
 expires under a configurable 1–365 day policy (30 days by default), and can be
 purged only in one direction while result hashes and purge metadata remain.
-Handoff v3 supports retained replay evidence and a results-only post-purge
+Handoff v4 supports a canonical request binding, retained replay evidence, and a results-only post-purge
 state; `automatestig scanner verify-handoff` validates its bounded ZIP shape,
 hashes, bindings, sparse review transport, supplemental standards-based XCCDF
 1.2 and CKLB projections, and retained evidence replay. The verifier keeps the exact legacy v2
@@ -97,7 +97,7 @@ The GUI should have four primary workspaces: **Scan**, **Deliveries**, **Scanner
 4. **Collect and evaluate.** The scanner retrieves reusable observations once, rejects incomplete or ambiguous collection, and deterministically evaluates scanner-owned rules.
 5. **Review the delivery preview.** A read-only view shows coverage, automated results, collection errors, raw-evidence references, and exactly which remote reviews will change. It states how many manual or out-of-scope rules will remain untouched.
 6. **Handoff safely.** AutomateSTIG confirms an exact remote no-op directly. A create/update preview remains safety-gated and produces a verifiable selected-run handoff; it is not written through an API that cannot atomically protect human work.
-7. **Continue in STIG Manager.** The result screen provides the handoff and a deep link to the asset review workspace for reconciliation, manual completion, submission, validation, reporting, and governance.
+7. **Continue in STIG Manager.** The result screen provides the handoff, the credential-free STIG Manager GUI base link, and exact collection/asset/assignment IDs for reconciliation, manual completion, submission, validation, reporting, and governance. The tested STIG Manager build exposes no supported asset/review deep-link contract.
 
 ### Disconnected workflow
 
@@ -137,7 +137,7 @@ reporting feature.
 | Export All ZIP and portfolio reporting | Remove | Use STIG Manager exports and reports. |
 | Native evidence/result bundle | Retain and strengthen | Make it the authoritative offline scanner artifact with evidence, plan, result, content, policy, and software hashes. |
 | STIG Manager JSON output | Retain only as approved offline handoff | Include only scanner-owned evaluations and use the same ownership rules as the connected preview. |
-| Legacy STIG Manager direct push | Retire changed-review writes | Retain preview, conflict handling, exact no-op verification, reconciliation receipts, version compatibility, a deep link, and the verified selected-run handoff. A future changed-write adapter would require a real atomic precondition and a new release gate. |
+| Legacy STIG Manager direct push | Retire changed-review writes | Retain preview, conflict handling, exact no-op verification, reconciliation receipts, version compatibility, a credential-free GUI base link plus exact IDs, and the verified selected-run handoff. A future changed-write adapter would require a real atomic precondition and a new release gate. |
 | Push of all checklist findings | Removed | Hand off only rules evaluated from AutomateSTIG evidence. Never blank or overwrite manual and out-of-scope reviews. |
 | STIG Manager configuration/test/collection picker | Retain and strengthen | Add API capability discovery, privilege checks, live asset/assignment selection, and supported-version messaging. |
 | Broad Standards page and general catalog | Remove or delegate | Replace with **Scanner Content**, limited to supported adapters, exact STIG revisions, pack trust, coverage, firmware validation, and update readiness. |
@@ -313,7 +313,7 @@ The evaluator must never turn missing evidence into `Not a Finding`. Unsupported
 - Use an immutable request digest so a handoff or retry cannot silently change.
 - Confirm exact no-ops directly, but safety-gate creates and updates whenever
   the destination lacks an atomic conditional-write primitive.
-- Persist remote responses, IDs, timestamps, partial acceptance, and deep links
+- Persist remote responses, IDs, timestamps, partial acceptance, and supported GUI base links
   as technical or reconciliation receipts.
 - Keep the queue operational and short lived; it must not become a second
   compliance database.
@@ -415,7 +415,7 @@ Deliverables:
   placeholders.
 - Add create/update/unchanged/conflict preview and human-review protection.
 - Add interruption recovery, immutable request digests, reconciliation
-  receipts, remote deep links, and a receiver-side verification command.
+  receipts, credential-free destination links with exact IDs, and a receiver-side verification command.
 - Use sparse JSON review mapping as the tested STIG Manager Review API
   interchange. Retain ownership-equivalent XCCDF 1.2 and CKLB as supplemental
   artifacts; claim native GUI file import only after its entity/text semantic
@@ -462,7 +462,7 @@ Deliverables:
 - Implement reusable SSH CLI, offline configuration, NETCONF/RESTCONF, and HTTPS/vendor-API transport contracts as target demand requires.
 - Add plan preview, pagination/truncation detection, redaction manifests, resumable collection, and replay tooling.
 - Expand the predicate library and signed pack format without allowing arbitrary commands from untrusted content.
-- Add an adapter scaffolder, contract tests, fixture generators, and a per-target scorecard generator.
+- Add an adapter scaffolder, contract tests, fixture generators, and a per-target scorecard generator. The deterministic, non-claiming development tools are documented in [Target Adapter Development Tooling](adapter-tooling.md).
 
 Exit criteria:
 

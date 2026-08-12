@@ -273,6 +273,7 @@ pub fn load_or_create_key_material(data_dir: &std::path::Path) -> Result<String,
 
     let mut options = std::fs::OpenOptions::new();
     options.write(true).create_new(true);
+    automatestig_core::path_safety::configure_no_follow(&mut options);
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt;
@@ -286,6 +287,13 @@ pub fn load_or_create_key_material(data_dir: &std::path::Path) -> Result<String,
         }
         Err(error) => return Err(format!("Failed to create {}: {error}", key_path.display())),
     };
+    automatestig_core::path_safety::validate_open_sensitive_file(
+        &file,
+        &key_path,
+        "secret key",
+        automatestig_core::path_safety::SensitiveFilePolicy::Private,
+    )
+    .map_err(|error| error.to_string())?;
     file.write_all(key_material.as_bytes())
         .and_then(|_| file.sync_all())
         .map_err(|e| format!("Failed to write {}: {e}", key_path.display()))?;
@@ -336,7 +344,9 @@ fn secure_private_directory(path: &std::path::Path) -> Result<(), String> {
         }
         Err(error) => return Err(format!("Failed to inspect {}: {error}", path.display())),
     }
-    Ok(())
+    automatestig_core::path_safety::validate_sensitive_directory(path, "secret directory")
+        .map(|_| ())
+        .map_err(|error| error.to_string())
 }
 
 fn read_private_key_material(path: &std::path::Path) -> Result<String, String> {
@@ -350,7 +360,7 @@ fn read_private_key_material(path: &std::path::Path) -> Result<String, String> {
     }
     #[cfg(unix)]
     {
-        use std::os::unix::fs::{MetadataExt, OpenOptionsExt, PermissionsExt};
+        use std::os::unix::fs::{MetadataExt, PermissionsExt};
         if metadata.uid() != unsafe { libc::geteuid() }
             || metadata.permissions().mode() & 0o077 != 0
         {
@@ -359,25 +369,18 @@ fn read_private_key_material(path: &std::path::Path) -> Result<String, String> {
                 path.display()
             ));
         }
-        let mut options = std::fs::OpenOptions::new();
-        options.read(true).custom_flags(libc::O_NOFOLLOW);
-        let file = options
-            .open(path)
-            .map_err(|error| format!("Failed to open {}: {error}", path.display()))?;
-        let mut key = String::new();
-        file.take(129)
-            .read_to_string(&mut key)
-            .map_err(|error| format!("Failed to read {}: {error}", path.display()))?;
-        validate_key_material(path, key)
     }
-    #[cfg(not(unix))]
-    {
-        let mut key = String::new();
-        std::fs::File::open(path)
-            .and_then(|mut file| file.take(129).read_to_string(&mut key))
-            .map_err(|error| format!("Failed to read {}: {error}", path.display()))?;
-        validate_key_material(path, key)
-    }
+    let file = automatestig_core::path_safety::open_sensitive_file(
+        path,
+        "secret key",
+        automatestig_core::path_safety::SensitiveFilePolicy::Private,
+    )
+    .map_err(|error| error.to_string())?;
+    let mut key = String::new();
+    file.take(129)
+        .read_to_string(&mut key)
+        .map_err(|error| format!("Failed to read {}: {error}", path.display()))?;
+    validate_key_material(path, key)
 }
 
 fn validate_key_material(path: &std::path::Path, key: String) -> Result<String, String> {

@@ -5,5 +5,8 @@
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "check": "node --check app.js && node --check api.js && node --check router.js && node --check scan.js && node --check deliveries.js && node --check content.js && node --check connection.js && node --check ui.js"
+  },
+  "devDependencies": {
+    "linkedom": "0.18.13"
   }
 }

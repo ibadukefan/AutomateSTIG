@@ -1,60 +1,60 @@
 # Evaluation Workflow
 
-AutomateSTIG evaluation is deterministic. The same benchmark, evidence/config input, answer files, check packs, and merge input produce the same evaluation outcome.
+AutomateSTIG evaluation is deterministic. The same release-bundled scanner
+profile and accepted evidence or configuration produce the same evaluation
+outcome.
 
 > The scanner-first workflow uses an immutable release-bundled profile,
-> accepted target-adapter evidence, and no answer-file or prior-checklist merge.
-> It persists a short-lived scanner run and verified sparse handoff. Changed
-> scanner reviews use that handoff; human and manual work remains in STIG
-> Manager. The answer/merge/checklist paths below are retained for transition
-> compatibility and reproducibility, not as the normal scanner GUI. See
-> [Scanner Operations](scanner-operations.md).
+> native target-adapter evidence, and no legacy evidence, answer-file, or
+> prior-checklist merge path.
+> The GUI persists a short-lived scanner run and verified sparse handoff; the
+> CLI writes a standalone native result without legacy database state. Changed
+> scanner reviews use the handoff, while human and manual work remains in STIG
+> Manager. See [Scanner Operations](scanner-operations.md).
 
 ## Data Flow
 
-1. Benchmarks define the STIG rules.
-2. Check packs define structured checks for rules that can be evaluated automatically.
-3. Plan-bound evidence v2 documents or running configurations provide collected device state; answer files provide reviewer decisions.
-4. The engine initializes findings, applies structured check results, applies answer files, and optionally merges prior checklist entries.
-5. Results are exported as CKL, CKLB, JSON, or STIG-Manager payloads.
+1. A release-bundled profile binds the exact benchmark, check pack, coverage,
+   adapter, and compatibility contract.
+2. A native `AdapterEvidenceEnvelope` or an authorized IOS-XE running
+   configuration provides collected device state and observed identity.
+3. The scanner application service shared by the CLI and GUI validates the
+   exact profile/adapter/plan bindings, initializes every benchmark rule, and
+   applies only evidence-backed scanner checks.
+4. Missing or incomplete evidence stays `Not_Reviewed` and blocks handoff.
+5. The service returns a native scanner result. A complete GUI/API run can
+   produce a sparse selected-run handoff; supplemental XCCDF and CKLB
+   projections remain bound to that same scanner-owned result.
 
 ## Benchmarks
 
-Benchmarks are installed in the local library. They can be imported from DISA XCCDF XML or ZIP content, imported through `.stigpack`, fetched from DISA as an opt-in connected feature, or transferred in an offline pack.
+Runnable benchmarks are compiled into the signed application release as exact
+scanner profiles. A normal installation does not initialize or manage a local
+STIG catalog. Broad DISA content administration remains outside the end-user
+scanner workflow.
 
 ## Check Packs
 
-Check packs are JSON definitions for automated checks. They can be installed from:
-
-- `<library>/custom_checks`
-- `<library>/reviewed_check_packs` (trusted signed imports only)
-
-Reviewed curated packs are compiled into the executable. The process working
-directory is never searched for executable check content. Raw command checks
-are limited to the product's read-only inspection capability set; shell
-control, mutation, and network-capable commands are rejected during pack load.
-
-DISA/XCCDF import installs reference benchmarks only and removes stale legacy
-prose-generated packs. It never creates executable decisions. Reviewed curated
-packs are embedded; additional custom/generated definitions must be explicitly
-imported in a trusted signed `.stigpack`.
-
-Signed import is not a one-time trust shortcut. Executable library files retain
-their signed-manifest proof and content hash in the same journaled transaction,
-and every evaluation re-verifies that proof against the current trust anchors.
-Bare files, post-import changes, and content signed by a removed key fail closed.
+Reviewed check packs are compiled into the executable and validated against the
+profile's exact benchmark, coverage counts, and digests before use. The process
+working directory and mutable legacy library are never searched for runtime
+scanner content. Raw command checks are limited to the product's reviewed
+read-only capability set; shell control, mutation, and network-capable commands
+are rejected.
 
 ## Inputs
 
-Evaluation can use:
+The shared scanner service accepts these target-appropriate sources:
 
-- Evidence v2 JSON from `collect`, GUI SSH scan, or the GUI Run assessment form.
-- Answer files with `evaluate --answer <FILE>`.
-- Previous checklist merge input with `evaluate --merge <FILE>`.
-- Cisco IOS-XE running-configuration files.
-- Remote SSH collection for ONTAP and FreeBSD through the CLI, GUI, or API.
+- A native `automatestig-adapter-evidence/v2` envelope from `collect` or a
+  scanner run for ONTAP or FreeBSD.
+- Live remote SSH collection for ONTAP and FreeBSD through the CLI, GUI, or
+  API; it produces that same native envelope before evaluation.
 - Operator-supplied IOS-XE running configurations used by curated `ConfigLine`
   checks; AutomateSTIG does not SSH to IOS-XE in v0.3.
+
+CLI `evaluate` requires exactly one of `--evidence` or `--config` and rejects a
+source that does not match the selected profile.
 
 ## Statuses
 
@@ -69,15 +69,32 @@ Automated check execution maps a successfully observed compliant state to `NotAF
 
 ## Local Evaluation
 
-Local evaluation uses installed library content, local files, and answer files.
+Local evaluation uses release-bundled scanner content and one evidence source.
+Native scanner-result JSON is the default artifact:
 
 ```bash
-automatestig evaluate --stig NetApp_ONTAP_DSC_9-x_STIG --evidence filer01-evidence.json --answer answers.yaml --output filer01.ckl --format ckl
+automatestig evaluate --stig NetApp_ONTAP_DSC_9-x_STIG \
+  --evidence filer01-evidence.json
 ```
+
+The default path is
+`<hostname>_<STIG-ID>.scanner-result.json`. The JSON retains the checklist
+projection, completeness/errors, content and evidence digests, coverage
+summary, complete-only sparse reviews, and one sanitized versioned decision
+trace for every automated check (including fail-closed errors). Traces bind the
+raw artifact/envelope by digest and retain typed operation, parser, predicate,
+device, policy, content, and build provenance without copying raw output or
+secrets. A supplemental CKLB may be requested
+with `--output filer01.cklb --format cklb`, but only a complete evaluation can
+produce it. CKL, answer-file, and prior-checklist merge output paths do not
+exist in the product CLI.
 
 ## Remote Collection
 
-Remote SSH collection is an opt-in connected feature. The CLI derives the smallest command plan from the installed check pack and records the exact plan digest in evidence:
+Remote SSH collection is an opt-in connected feature. The CLI resolves the
+exact release-bundled profile before reading credentials, observes and
+validates device identity during a read-only preflight, and records the exact
+adapter operation plan in native evidence:
 
 ```bash
 AUTOMATESTIG_SSH_PASSWORD='...' automatestig collect \
@@ -87,27 +104,42 @@ AUTOMATESTIG_SSH_PASSWORD='...' automatestig collect \
 
 Use `--key <PRIVATE_KEY>` instead of the password environment variable for key authentication. Unknown SSH server keys are rejected by default. `--trust-on-first-use` performs explicit enrollment; later key changes are rejected.
 
-Evidence v2 is strict JSON (`schemas/evidence-v2.schema.json`). It separates stdout and stderr, retains the remote exit status and duration, identifies the target platform and collector version, and binds the document to the current plan. Duplicate keys, truncated JSON, foreign platforms, stale plans, unexpected commands, and marker-like target output cannot alter the command structure.
+`collect` emits strict `automatestig-adapter-evidence/v2` JSON. Its
+`DeviceFingerprint` uses `automatestig.device-fingerprint.v2` and explicitly
+records hostname, vendor, product family, software version, operating context,
+and typed HA role. Unknown context/role is serialized as
+`unknown_or_unsupported`; an adapter that requires either value fails before
+evaluation rather than guessing. The envelope binds that identity to the adapter, profile,
+check pack, operation plan, SSH transport identity, collection time, typed
+per-operation status/duration/response, completeness, and evidence digest.
+Duplicate keys, truncated JSON, foreign targets, stale plans, unexpected
+operations, and marker-like target output cannot alter the operation structure.
 
-The plan digest also binds the evaluation predicates and output-validation
+The verifier retains exact legacy v1 envelope, operation-plan, and schema-less
+fingerprint DTOs. It recomputes their historical canonical hashes without
+injecting v2 defaults and rejects any v1/v2 cross-version rebinding.
+
+Each preflight operation declares expected and maximum duration, and the plan
+declares its total expected duration. Those values are shown in the GUI and
+covered by the plan digest. The plan digest also binds the evaluation predicates and output-validation
 policy, not only command strings. A supplied evidence/config file is retained
-as `evidence` provenance rather than claimed as a live AutomateSTIG observation;
-only an SSH session collected by the running process is marked `automated` for
-STIG Manager `autoResult`. Uploaded checklist JSON is normalized to `imported`,
-and any GUI finding edit is normalized to `manual`.
+as evidence provenance rather than claimed as a live observation; only a live
+SSH session collected within the scanner run can be marked `automated` for a
+STIG Manager `autoResult`. The scanner workflow has no checklist-upload or
+finding-edit path.
 
-Collection is per command. Successfully collected observations can still be
-diagnosed when another command fails, while every dependent rule remains
-`Not_Reviewed`. `collect` retains the typed evidence document and returns
-nonzero. `evaluate` records an append-only `evaluation.incomplete` event but
-does not write or save a checklist. The HTTP API returns `207 Multi-Status`
-with `collection_complete=false`, `persisted=false`, a null checklist ID and
-compliance score, and keyed `collection_errors`.
+Collection is per operation. Successfully collected observations can still be
+diagnosed when another operation fails, while every dependent rule remains
+`Not_Reviewed`. `collect` writes the incomplete native envelope and returns
+nonzero. CLI `evaluate` can write diagnostic native scanner-result JSON and
+then returns nonzero; it does not save a checklist, finding, or evaluation to
+the legacy database. An incomplete GUI/API run remains diagnostic and cannot
+create a handoff or deliverable sparse review set.
 
-Collection provenance is stored with every completed evaluation checklist.
-Incomplete or unsafe evaluations cannot be changed by answer files or merge
-input, exported, or handed to STIG Manager. Recollect the target before making
-a compliance decision.
+Collection provenance is bound to every completed native scanner result and
+persisted GUI scanner run. Incomplete evaluations cannot be projected as CKLB
+or handed to STIG Manager. Recollect the target before making a compliance
+decision.
 
 ONTAP collection rejects an anchored CLI `Error:` even when SSH reports exit
 status zero. Its structured table checks require canonical headers and terminal
@@ -123,17 +155,16 @@ Cisco running configurations must be nonempty, unpaginated, free of recognized
 CLI errors, and terminate with the platform's `end` marker. Empty or truncated
 configuration text therefore cannot satisfy a forbidden-line absence check.
 
-Marker-based v1 transcripts cannot prove command success and are rejected by default. The CLI-only `--allow-legacy-evidence` option can parse controlled legacy fixtures for migration diagnostics, but the resulting attempt is unsafe and cannot produce or save a checklist. The GUI/API has no legacy override.
+Legacy transcripts cannot prove the native adapter, observed identity, and
+operation-plan bindings and are rejected. The product CLI, GUI, and API provide
+no unsafe override.
 
 Validating the success path requires reachable hosts, credentials, network access, and working SSH collectors.
 
-## Legacy conversion and export
+## Preserving previous local data
 
-During the migration window, use the separate CLI conversion/export commands:
-
-```bash
-automatestig convert --input server01.ckl --output server01.cklb --format cklb
-automatestig export --input server01.ckl --output stigman.json --format stig-manager --collection "Production"
-```
-
-CKL/CKLB conversion preserves the modeled checklist fields and retained rule-level extensions, but it is not advertised as byte-for-byte or universally lossless conversion. A CKLB containing multiple STIGs is rejected instead of silently dropping all but the first. Validate generated files with the exact STIG Viewer/STIG Manager versions used by the deployment.
+The retired conversion, summary, answer-generation, and general export commands
+are not compiled into the product CLI. Use `automatestig-transition migration
+inventory` and `automatestig-transition migration export` from an explicit
+`transition` build to preserve prior local data without
+relabeling it, then continue human review and reporting in STIG Manager.

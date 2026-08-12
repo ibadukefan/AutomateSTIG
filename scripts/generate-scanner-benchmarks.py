@@ -62,6 +62,11 @@ def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def canonical_text_sha256(data: bytes) -> str:
+    """Hash repository text with platform-independent LF line endings."""
+    return sha256(data.replace(b"\r\n", b"\n").replace(b"\r", b"\n"))
+
+
 def text(element: ET.Element | None) -> str:
     if element is None:
         return ""
@@ -178,7 +183,9 @@ def generate(profile: dict[str, str]) -> tuple[dict, dict]:
         "source_member": profile["member"],
         "source_xccdf_sha256": sha256(xccdf),
         "coverage_manifest": profile["coverage"],
-        "coverage_manifest_sha256": sha256(coverage_path.read_bytes()),
+        "coverage_manifest_sha256": canonical_text_sha256(
+            coverage_path.read_bytes()
+        ),
         "rule_count": len(benchmark["rules"]),
     }
     return benchmark, source
@@ -190,7 +197,7 @@ def main() -> None:
         benchmark, source = generate(profile)
         target_key = profile["target_key"]
         benchmark_bytes = (json.dumps(benchmark, ensure_ascii=False, indent=2) + "\n").encode()
-        source["benchmark_model_sha256"] = sha256(benchmark_bytes)
+        source["benchmark_model_sha256"] = canonical_text_sha256(benchmark_bytes)
         source_bytes = (json.dumps(source, ensure_ascii=False, indent=2) + "\n").encode()
         (OUTPUT_DIR / f"{target_key}.benchmark.json").write_bytes(benchmark_bytes)
         (OUTPUT_DIR / f"{target_key}.source.json").write_bytes(source_bytes)

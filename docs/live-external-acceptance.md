@@ -222,8 +222,10 @@ staging environment, not the demo credentials or `latest` tag.
 
 ## Combined gate
 
-`scripts/validate-external-workflows.py` validates offline CKL/CKLB/STIG Manager
-and bounded DISA ZIP contracts in normal CI. The opt-in combined gate reruns the
+`scripts/validate-external-workflows.py` validates offline CKL/CKLB and bounded
+DISA ZIP contracts in normal CI. Selected-run handoff verification and the
+STIG Manager staging gate cover the scanner integration without reintroducing
+a general portfolio-import format. The opt-in combined gate reruns the
 hardened Viewer comparison from the raw source and GUI-saved paths; it does not
 trust a prewritten `passed` boolean. It also requires an authenticated STIG
 Manager endpoint:

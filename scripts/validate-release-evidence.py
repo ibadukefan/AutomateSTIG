@@ -32,12 +32,22 @@ EXPECTED_DEVICE_BENCHMARKS = {
     "cisco_ios_xe": ("Cisco_IOS-XE_Router_NDM_STIG", "V3R7"),
 }
 MAX_EVIDENCE_BYTES = 2 * 1024 * 1024
+MAX_FIRST_USE_STUDY_BYTES = 128 * 1024
 MAX_WORKFLOW_ARTIFACT_BYTES = 16 * 1024 * 1024
 MAX_CEREMONY_PACK_BYTES = 48_000
+MAX_HANDOFF_CEREMONY_BYTES = 16 * 1024 * 1024
+MAX_HANDOFF_SIGNATURE_BYTES = 16 * 1024
+MAX_HANDOFF_CUSTODY_BYTES = 64 * 1024
 CONTENT_CEREMONY_ARTIFACT = "content-signing-ceremony"
 CONTENT_CEREMONY_EVIDENCE = "content-signing-ceremony.json"
 CONTENT_CEREMONY_PUBLIC_KEY = "content-signing-public-key.pub"
 CONTENT_CEREMONY_TEST_PACK = "content-signing-test-pack.stigpack"
+HANDOFF_CEREMONY_ARTIFACT = "handoff-receiver-ceremony"
+HANDOFF_CEREMONY_EVIDENCE = "handoff-receiver-ceremony.json"
+HANDOFF_CEREMONY_PUBLIC_KEY = "handoff-producer-public-key.pub"
+HANDOFF_CEREMONY_ZIP = "producer-handoff.zip"
+HANDOFF_CEREMONY_SIGNATURE = "producer-handoff.zip.signature.json"
+HANDOFF_CEREMONY_CUSTODY = "handoff-key-custody-ceremony.json"
 REQUIRED_STATUS_CONTEXTS = {
     "Governance",
     "Check",
@@ -47,7 +57,7 @@ REQUIRED_STATUS_CONTEXTS = {
     "E2E acceptance",
     "Format",
     "Clippy",
-    "Frontend syntax",
+    "Scanner frontend contracts",
     "Archive fuzz smoke",
     "Coverage manifest validation",
     "Dependency audit",
@@ -173,8 +183,16 @@ def read_bound_artifact(
     expected_sha256: object,
     tag: str,
     field: str,
+    maximum_bytes: int = MAX_EVIDENCE_BYTES,
 ) -> tuple[Path, dict]:
-    relative, raw = read_bound_file(repo, reference, expected_sha256, tag, field)
+    relative, raw = read_bound_file(
+        repo,
+        reference,
+        expected_sha256,
+        tag,
+        field,
+        maximum_bytes,
+    )
     try:
         document = strict_json_loads(raw)
     except ValueError as error:
@@ -189,6 +207,214 @@ def artifact_timestamp(document: dict, field: str) -> datetime:
         if name in document:
             return timestamp(document[name], f"{field} artifact {name}")
     fail(f"{field} artifact has no execution timestamp")
+
+
+def validate_first_use_study(
+    document: object,
+    field: str,
+    expected_commit: str,
+    expected_product_version: str,
+    now: datetime,
+    require_passed: bool,
+) -> dict[str, str]:
+    """Validate the complete, bounded first-time-user cohort and its math."""
+    required_fields = {
+        "schema",
+        "passed",
+        "executed_at",
+        "source_commit",
+        "product_version",
+        "repository",
+        "workflow_run_id",
+        "protected_environment",
+        "automatestig_gui_sha256",
+        "scenario",
+        "representative_roles",
+        "study_team",
+        "participants",
+        "metrics",
+    }
+    if not isinstance(document, dict) or set(document) != required_fields:
+        fail(f"{field} must contain exactly {sorted(required_fields)}")
+    if document.get("schema") != "automatestig-first-use-ux-study/v1":
+        fail(f"{field} has the wrong first-use study schema")
+    if not isinstance(document.get("passed"), bool):
+        fail(f"{field}.passed must be a boolean")
+    if document.get("source_commit") != expected_commit or not SHA.fullmatch(
+        expected_commit
+    ):
+        fail(f"{field}.source_commit must match the exact approved commit")
+    if (
+        document.get("product_version") != expected_product_version
+        or not TAG.fullmatch(expected_product_version)
+    ):
+        fail(f"{field}.product_version must match the exact release version")
+    repository = document.get("repository")
+    if not isinstance(repository, str) or not re.fullmatch(
+        r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository
+    ):
+        fail(f"{field}.repository must be an owner/repository identity")
+    run_id = document.get("workflow_run_id")
+    if not isinstance(run_id, str) or not re.fullmatch(r"[1-9][0-9]*", run_id):
+        fail(f"{field}.workflow_run_id must be a positive decimal identifier")
+    if document.get("protected_environment") != "first-use-ux-study":
+        fail(f"{field} was not produced through the first-use study environment")
+    gui_digest = document.get("automatestig_gui_sha256")
+    if not isinstance(gui_digest, str) or not SHA256.fullmatch(gui_digest):
+        fail(f"{field}.automatestig_gui_sha256 must bind the tested GUI bytes")
+
+    executed = timestamp(document.get("executed_at"), f"{field}.executed_at")
+    if executed > now or now - executed > timedelta(days=90):
+        fail(f"{field} is in the future or older than 90 days")
+
+    scenario = document.get("scenario")
+    scenario_fields = {
+        "id",
+        "version",
+        "target_profile",
+        "prepared_scan_fixture_sha256",
+        "task_definition_sha256",
+    }
+    if not isinstance(scenario, dict) or set(scenario) != scenario_fields:
+        fail(f"{field}.scenario must contain exactly {sorted(scenario_fields)}")
+    for name in ("id", "version", "target_profile"):
+        value = scenario.get(name)
+        if not isinstance(value, str) or not POLICY_IDENTIFIER.fullmatch(value):
+            fail(f"{field}.scenario.{name} must be a bounded identifier")
+    for name in ("prepared_scan_fixture_sha256", "task_definition_sha256"):
+        value = scenario.get(name)
+        if not isinstance(value, str) or not SHA256.fullmatch(value):
+            fail(f"{field}.scenario.{name} must be a lowercase SHA-256 digest")
+
+    required_roles = {"cybersecurity_analyst", "cybersecurity_manager"}
+    representative_roles = document.get("representative_roles")
+    if (
+        not isinstance(representative_roles, list)
+        or len(representative_roles) != 2
+        or set(representative_roles) != required_roles
+    ):
+        fail(
+            f"{field}.representative_roles must contain exactly analyst and manager"
+        )
+
+    study_team = document.get("study_team")
+    team_roles = {"facilitator", "independent_observer", "independent_approver"}
+    if not isinstance(study_team, dict) or set(study_team) != team_roles:
+        fail(f"{field}.study_team must contain exactly {sorted(team_roles)}")
+    team_logins: dict[str, str] = {}
+    team_times: dict[str, datetime] = {}
+    for role in sorted(team_roles):
+        attestor = study_team.get(role)
+        if not isinstance(attestor, dict) or set(attestor) != {
+            "github_login",
+            "attested_at",
+        }:
+            fail(f"{field}.study_team.{role} must contain a login and attestation")
+        login = attestor.get("github_login")
+        if not isinstance(login, str) or not GITHUB_LOGIN.fullmatch(login):
+            fail(f"{field}.study_team.{role}.github_login is invalid")
+        attested = timestamp(
+            attestor.get("attested_at"),
+            f"{field}.study_team.{role}.attested_at",
+        )
+        if attested < executed or attested > now:
+            fail(f"{field}.study_team.{role} attestation is outside the study window")
+        team_logins[role] = login
+        team_times[role] = attested
+    if len({login.casefold() for login in team_logins.values()}) != len(team_roles):
+        fail(f"{field} facilitator, observer, and approver must be distinct people")
+    if team_times["independent_approver"] < team_times["independent_observer"]:
+        fail(f"{field} independent approval cannot predate observer attestation")
+
+    participants = document.get("participants")
+    if not isinstance(participants, list) or not 5 <= len(participants) <= 100:
+        fail(f"{field}.participants must contain between 5 and 100 users")
+    participant_fields = {
+        "participant_id",
+        "role",
+        "role_experience_band",
+        "first_time_user",
+        "completed_prepared_scan",
+        "external_documentation_used",
+        "assistance_received",
+        "outcome_notes",
+    }
+    participant_ids: set[str] = set()
+    role_counts = {role: 0 for role in required_roles}
+    experience_bands: set[str] = set()
+    unaided_completions = 0
+    for index, participant in enumerate(participants):
+        item_field = f"{field}.participants[{index}]"
+        if not isinstance(participant, dict) or set(participant) != participant_fields:
+            fail(f"{item_field} must contain exactly {sorted(participant_fields)}")
+        participant_id = participant.get("participant_id")
+        if not isinstance(participant_id, str) or not re.fullmatch(
+            r"[A-Za-z0-9][A-Za-z0-9_-]{0,31}", participant_id
+        ):
+            fail(f"{item_field}.participant_id must be a bounded pseudonym")
+        if participant_id.casefold() in participant_ids:
+            fail(f"{field}.participants contains duplicate participant IDs")
+        participant_ids.add(participant_id.casefold())
+        role = participant.get("role")
+        if role not in required_roles:
+            fail(f"{item_field}.role is not representative")
+        role_counts[role] += 1
+        experience_band = participant.get("role_experience_band")
+        if experience_band not in {
+            "less_than_2_years",
+            "2_to_5_years",
+            "more_than_5_years",
+        }:
+            fail(f"{item_field}.role_experience_band is invalid")
+        experience_bands.add(experience_band)
+        if participant.get("first_time_user") is not True:
+            fail(f"{item_field} is not a first-time user and cannot be excluded later")
+        for name in (
+            "completed_prepared_scan",
+            "external_documentation_used",
+            "assistance_received",
+        ):
+            if not isinstance(participant.get(name), bool):
+                fail(f"{item_field}.{name} must be a boolean")
+        notes = participant.get("outcome_notes")
+        if not isinstance(notes, str) or not 1 <= len(notes.strip()) <= 500:
+            fail(f"{item_field}.outcome_notes must contain 1 to 500 characters")
+        if (
+            participant["completed_prepared_scan"]
+            and not participant["external_documentation_used"]
+            and not participant["assistance_received"]
+        ):
+            unaided_completions += 1
+    if any(count < 2 for count in role_counts.values()):
+        fail(f"{field} must include at least two users from each representative role")
+    if len(experience_bands) < 2:
+        fail(f"{field} must include at least two role-experience bands")
+
+    metrics = document.get("metrics")
+    metric_fields = {"numerator", "denominator", "required_threshold_percent"}
+    if not isinstance(metrics, dict) or set(metrics) != metric_fields:
+        fail(f"{field}.metrics must contain exactly {sorted(metric_fields)}")
+    numerator = metrics.get("numerator")
+    denominator = metrics.get("denominator")
+    if (
+        not isinstance(numerator, int)
+        or isinstance(numerator, bool)
+        or not isinstance(denominator, int)
+        or isinstance(denominator, bool)
+        or denominator != len(participants)
+        or numerator != unaided_completions
+    ):
+        fail(
+            f"{field}.metrics must record the exact unaided numerator and full cohort denominator"
+        )
+    if metrics.get("required_threshold_percent") != 80:
+        fail(f"{field}.metrics.required_threshold_percent must be 80")
+    calculated_pass = numerator * 100 >= denominator * 80
+    if document["passed"] is not calculated_pass:
+        fail(f"{field}.passed must honestly reflect the exact 80 percent result")
+    if require_passed and not calculated_pass:
+        fail(f"{field} did not meet the 80 percent unaided first-use release gate")
+    return team_logins
 
 
 def validate_artifact_semantics(
@@ -222,6 +448,7 @@ def validate_artifact_semantics(
             "cisco_ios_xe": ".github/workflows/live-device-acceptance.yml",
             "stig_viewer": ".github/workflows/stig-viewer-acceptance.yml",
             "stig_manager": ".github/workflows/stigman-staging.yml",
+            "first_use_ux": ".github/workflows/first-use-ux-study.yml",
             "recovery_drill": ".github/workflows/transaction-recovery-drill.yml",
         }[gate]
         run = github_json(f"repos/{repository}/actions/runs/{run_id}")
@@ -240,7 +467,16 @@ def validate_artifact_semantics(
             run_id,
             gate,
             evidence_sha256,
-            document.get("output_sha256") if gate == "recovery_drill" else None,
+            expected_log_sha256=(
+                document.get("output_sha256")
+                if gate == "recovery_drill"
+                else None
+            ),
+            expected_handoff_sha256=(
+                (document.get("metrics") or {}).get("handoff_sha256")
+                if gate == "stig_manager"
+                else None
+            ),
         )
     if gate in {"ontap", "freebsd", "cisco_ios_xe"}:
         if document.get("protected_environment") != "live-device-acceptance":
@@ -549,6 +785,7 @@ def validate_artifact_semantics(
             or review_count != metrics.get("receiving_operator_review_writes")
             or metrics.get("automatestig_direct_review_writes") != 0
             or metrics.get("boundary") != "disconnected-selected-run-handoff"
+            or metrics.get("producer_handoff_filename") != HANDOFF_CEREMONY_ZIP
             or metrics.get("benchmark_id") != "Cisco_IOS-XE_Router_NDM_STIG"
             or metrics.get("assignment_revision") != "V3R7"
             or not isinstance(metrics.get("full_assignment_rule_count"), int)
@@ -584,6 +821,25 @@ def validate_artifact_semantics(
         ):
             fail(
                 f"{field} artifact does not bind the verified Cisco policy"
+            )
+    elif gate == "first_use_ux":
+        if expected_environment != "first-use-ux-study":
+            fail(f"{field}.environment must be first-use-ux-study")
+        team = validate_first_use_study(
+            document,
+            f"{field} artifact",
+            approved_commit,
+            expected_version,
+            datetime.now(timezone.utc),
+            True,
+        )
+        if verify_github:
+            validate_first_use_study_environment(
+                repository,
+                team["independent_observer"],
+                team["independent_approver"],
+                run,
+                field,
             )
     elif gate == "recovery_drill":
         if document.get("schema") != "automatestig-transaction-recovery-drill/v1":
@@ -627,12 +883,15 @@ def validate_gate(
     for name in ("environment", "version", "evidence_reference"):
         if not isinstance(value[name], str) or not value[name].strip():
             fail(f"{field}.{name} must be non-empty")
+    if gate == "first_use_ux" and value["version"] != tag:
+        fail(f"{field}.version must match the exact release tag {tag}")
     relative, document = read_bound_artifact(
         repo,
         value["evidence_reference"],
         value["evidence_sha256"],
         tag,
         field,
+        MAX_FIRST_USE_STUDY_BYTES if gate == "first_use_ux" else MAX_EVIDENCE_BYTES,
     )
     artifact_time = artifact_timestamp(document, field)
     if artifact_time != executed:
@@ -780,12 +1039,103 @@ def validate_live_device_environment(
         )
 
 
+def validate_first_use_study_environment(
+    repository: str,
+    observer: str,
+    approver: str,
+    run: object,
+    field: str,
+) -> None:
+    """Bind observer dispatch and independent approval to one protected run."""
+    environment = github_json(
+        f"repos/{repository}/environments/first-use-ux-study"
+    )
+    if not isinstance(environment, dict) or not isinstance(run, dict):
+        fail(f"{field} first-use environment or workflow run is invalid")
+    review_rules = [
+        rule
+        for rule in environment.get("protection_rules") or []
+        if isinstance(rule, dict) and rule.get("type") == "required_reviewers"
+    ]
+    reviewers = review_rules[0].get("reviewers") if len(review_rules) == 1 else None
+    reviewer = reviewers[0] if isinstance(reviewers, list) and len(reviewers) == 1 else {}
+    reviewer_login = (
+        ((reviewer.get("reviewer") or {}).get("login") or "")
+        if isinstance(reviewer, dict)
+        else ""
+    )
+    branch_policy = environment.get("deployment_branch_policy") or {}
+    actor = ((run.get("actor") or {}).get("login") or "")
+    triggering_actor = ((run.get("triggering_actor") or {}).get("login") or "")
+    run_id = run.get("id") or run.get("run_id")
+    approvals = github_json(f"repos/{repository}/actions/runs/{run_id}/approvals")
+    approved = [
+        review
+        for review in approvals
+        if isinstance(review, dict) and review.get("state") == "approved"
+    ] if isinstance(approvals, list) else []
+    approval = approved[0] if len(approved) == 1 and len(approvals) == 1 else {}
+    approved_environments = approval.get("environments") or []
+    approval_login = ((approval.get("user") or {}).get("login") or "")
+    jobs = github_json(
+        f"repos/{repository}/actions/runs/{run_id}/jobs?filter=latest&per_page=100"
+    )
+    job_items = jobs.get("jobs") if isinstance(jobs, dict) else None
+    job = job_items[0] if isinstance(job_items, list) and len(job_items) == 1 else {}
+    labels = {
+        str(label).casefold()
+        for label in (job.get("labels") or [])
+        if isinstance(label, str)
+    } if isinstance(job, dict) else set()
+    if (
+        environment.get("can_admins_bypass") is not False
+        or len(review_rules) != 1
+        or review_rules[0].get("prevent_self_review") is not True
+        or not isinstance(reviewer, dict)
+        or reviewer.get("type") != "User"
+        or reviewer_login.casefold() != approver.casefold()
+        or branch_policy.get("protected_branches") is not True
+        or branch_policy.get("custom_branch_policies") is not False
+        or not GITHUB_LOGIN.fullmatch(observer)
+        or not GITHUB_LOGIN.fullmatch(approver)
+        or observer.casefold() == approver.casefold()
+        or actor.casefold() != observer.casefold()
+        or triggering_actor.casefold() != observer.casefold()
+        or run.get("run_attempt") != 1
+        or not isinstance(approval, dict)
+        or approval_login.casefold() != approver.casefold()
+        or len(approved_environments) != 1
+        or not isinstance(approved_environments[0], dict)
+        or approved_environments[0].get("name") != "first-use-ux-study"
+        or not isinstance(jobs, dict)
+        or jobs.get("total_count") != 1
+        or not isinstance(job, dict)
+        or job.get("name") != "Independent first-use study attestation"
+        or job.get("conclusion") != "success"
+        or not {
+            "self-hosted",
+            "linux",
+            "x64",
+            "automatestig-first-use-study",
+        }.issubset(labels)
+        or not isinstance(job.get("runner_id"), int)
+        or job["runner_id"] <= 0
+        or not isinstance(job.get("runner_name"), str)
+        or not job["runner_name"].strip()
+    ):
+        fail(
+            f"{field} must be dispatched by the exact observer and independently "
+            "approved by the protected environment's sole exact approver"
+        )
+
+
 def validate_workflow_artifact(
     repository: str,
     run_id: str,
     gate: str,
     expected_sha256: str,
     expected_log_sha256: object = None,
+    expected_handoff_sha256: object = None,
 ) -> None:
     response = github_json(
         f"repos/{repository}/actions/runs/{run_id}/artifacts?per_page=100"
@@ -805,6 +1155,9 @@ def validate_workflow_artifact(
     elif gate == "stig_manager":
         name = re.compile(rf"^stig-manager-acceptance-{re.escape(run_id)}$")
         filename = "stig-manager-acceptance.json"
+    elif gate == "first_use_ux":
+        name = re.compile(rf"^first-use-ux-study-{re.escape(run_id)}$")
+        filename = "first-use-ux-study.json"
     elif gate == "recovery_drill":
         name = re.compile(rf"^transaction-recovery-drill-{re.escape(run_id)}$")
         filename = "transaction-recovery-drill.json"
@@ -835,12 +1188,19 @@ def validate_workflow_artifact(
             expected_files = {filename}
             if gate == "recovery_drill":
                 expected_files.add("transaction-recovery-drill.log")
+            if gate == "stig_manager":
+                expected_files.add(HANDOFF_CEREMONY_ZIP)
             by_name = {item.filename: item for item in entries}
             if (
                 len(entries) != len(expected_files)
                 or set(by_name) != expected_files
                 or by_name[filename].file_size <= 0
-                or by_name[filename].file_size > MAX_EVIDENCE_BYTES
+                or by_name[filename].file_size
+                > (
+                    MAX_FIRST_USE_STUDY_BYTES
+                    if gate == "first_use_ux"
+                    else MAX_EVIDENCE_BYTES
+                )
                 or any(
                     item.file_size <= 0
                     or item.file_size > MAX_WORKFLOW_ARTIFACT_BYTES
@@ -853,6 +1213,18 @@ def validate_workflow_artifact(
                     + ", ".join(sorted(expected_files))
                 )
             uploaded = bundle.read(by_name[filename])
+            if gate == "stig_manager":
+                staged_handoff = bundle.read(by_name[HANDOFF_CEREMONY_ZIP])
+                if (
+                    len(staged_handoff) > MAX_HANDOFF_CEREMONY_BYTES
+                    or not isinstance(expected_handoff_sha256, str)
+                    or not SHA256.fullmatch(expected_handoff_sha256)
+                    or sha256_bytes(staged_handoff) != expected_handoff_sha256
+                ):
+                    fail(
+                        "protected STIG Manager staging handoff does not match "
+                        "its recorded exact SHA-256"
+                    )
             if gate == "recovery_drill":
                 log = bundle.read(by_name["transaction-recovery-drill.log"])
                 if (
@@ -1001,6 +1373,190 @@ def validate_content_ceremony_workflow(
         )
     validate_content_ceremony_environment(repository, approver)
     validate_content_ceremony_artifact(repository, run_id, expected_files)
+
+
+def validate_handoff_ceremony_artifact(
+    repository: str,
+    run_id: str,
+    expected_files: dict[str, bytes],
+) -> None:
+    response = github_json(
+        f"repos/{repository}/actions/runs/{run_id}/artifacts?per_page=100"
+    )
+    artifacts = response.get("artifacts") if isinstance(response, dict) else None
+    if (
+        not isinstance(artifacts, list)
+        or response.get("total_count") != 1
+        or len(artifacts) != 1
+    ):
+        fail("handoff receiver ceremony workflow must upload exactly one artifact")
+    artifact = artifacts[0]
+    if (
+        not isinstance(artifact, dict)
+        or artifact.get("name") != HANDOFF_CEREMONY_ARTIFACT
+        or artifact.get("expired") is not False
+        or not isinstance(artifact.get("id"), int)
+        or not isinstance(artifact.get("size_in_bytes"), int)
+        or artifact["size_in_bytes"] <= 0
+        or artifact["size_in_bytes"] > MAX_WORKFLOW_ARTIFACT_BYTES
+    ):
+        fail("handoff receiver ceremony artifact metadata or fixed name is invalid")
+    archive = github_bytes(f"repos/{repository}/actions/artifacts/{artifact['id']}/zip")
+    try:
+        with zipfile.ZipFile(io.BytesIO(archive)) as bundle:
+            entries = bundle.infolist()
+            by_name = {item.filename: item for item in entries}
+            if (
+                len(entries) != len(expected_files)
+                or len(by_name) != len(entries)
+                or set(by_name) != set(expected_files)
+                or any(
+                    item.is_dir()
+                    or item.file_size <= 0
+                    or item.file_size != len(expected_files[item.filename])
+                    or item.file_size > MAX_HANDOFF_CEREMONY_BYTES
+                    or stat.S_ISLNK(item.external_attr >> 16)
+                    for item in entries
+                )
+            ):
+                fail(
+                    "protected handoff receiver artifact must contain exactly "
+                    + ", ".join(sorted(expected_files))
+                )
+            for name, expected in expected_files.items():
+                if bundle.read(by_name[name]) != expected:
+                    fail(
+                        f"committed {name} is not byte-for-byte identical to the "
+                        "protected handoff receiver workflow artifact"
+                    )
+    except (OSError, zipfile.BadZipFile, RuntimeError) as error:
+        fail(f"cannot read protected handoff receiver artifact: {error}")
+
+
+def validate_handoff_ceremony_environment(
+    repository: str,
+    run: dict,
+    approver: str,
+) -> None:
+    environment = github_json(
+        f"repos/{repository}/environments/handoff-receiver-ceremony"
+    )
+    if not isinstance(environment, dict):
+        fail("handoff-receiver-ceremony environment response must be an object")
+    reviewer_rules = [
+        rule
+        for rule in environment.get("protection_rules") or []
+        if isinstance(rule, dict) and rule.get("type") == "required_reviewers"
+    ]
+    rule = reviewer_rules[0] if len(reviewer_rules) == 1 else {}
+    reviewers = rule.get("reviewers") if isinstance(rule, dict) else None
+    reviewer = reviewers[0] if isinstance(reviewers, list) and len(reviewers) == 1 else {}
+    reviewer_login = (
+        ((reviewer.get("reviewer") or {}).get("login") or "")
+        if isinstance(reviewer, dict)
+        else ""
+    )
+    branch_policy = environment.get("deployment_branch_policy") or {}
+    run_id = run.get("id") or run.get("run_id")
+    approvals = github_json(f"repos/{repository}/actions/runs/{run_id}/approvals")
+    approved = [
+        item
+        for item in approvals
+        if isinstance(item, dict) and item.get("state") == "approved"
+    ] if isinstance(approvals, list) else []
+    approval = approved[0] if len(approved) == 1 and len(approvals) == 1 else {}
+    approved_environments = (
+        approval.get("environments") or [] if isinstance(approval, dict) else []
+    )
+    jobs = github_json(
+        f"repos/{repository}/actions/runs/{run_id}/jobs?filter=latest&per_page=100"
+    )
+    job_items = jobs.get("jobs") if isinstance(jobs, dict) else None
+    job = job_items[0] if isinstance(job_items, list) and len(job_items) == 1 else {}
+    labels = {
+        str(label).casefold()
+        for label in (job.get("labels") or [])
+        if isinstance(label, str)
+    } if isinstance(job, dict) else set()
+    if (
+        environment.get("can_admins_bypass") is not False
+        or len(reviewer_rules) != 1
+        or rule.get("prevent_self_review") is not True
+        or not isinstance(reviewer, dict)
+        or reviewer.get("type") != "User"
+        or reviewer_login.casefold() != approver.casefold()
+        or branch_policy.get("protected_branches") is not True
+        or branch_policy.get("custom_branch_policies") is not False
+        or run.get("run_attempt") != 1
+        or not isinstance(approval, dict)
+        or ((approval.get("user") or {}).get("login") or "").casefold()
+        != approver.casefold()
+        or len(approved_environments) != 1
+        or not isinstance(approved_environments[0], dict)
+        or approved_environments[0].get("name") != "handoff-receiver-ceremony"
+        or not isinstance(jobs, dict)
+        or jobs.get("total_count") != 1
+        or not isinstance(job, dict)
+        or job.get("name") != "Trusted receiver verifies producer signature"
+        or job.get("conclusion") != "success"
+        or not {
+            "self-hosted",
+            "linux",
+            "x64",
+            "automatestig-handoff-receiver",
+        }.issubset(labels)
+        or not isinstance(job.get("runner_id"), int)
+        or job["runner_id"] <= 0
+        or not isinstance(job.get("runner_name"), str)
+        or not job["runner_name"].strip()
+    ):
+        fail(
+            "handoff-receiver-ceremony must use one identified protected receiver, "
+            "a non-bypassable protected-branch environment, and the exact distinct "
+            "receiver approver"
+        )
+
+
+def validate_handoff_ceremony_workflow(
+    ceremony: dict,
+    approved_commit: str,
+    custodian: str,
+    approver: str,
+    expected_files: dict[str, bytes],
+) -> None:
+    repository = ceremony.get("repository")
+    expected_repository = os.environ.get("GITHUB_REPOSITORY")
+    if (
+        not isinstance(repository, str)
+        or repository != expected_repository
+    ):
+        fail("handoff receiver ceremony was produced for a different repository")
+    run_id = ceremony.get("workflow_run_id")
+    if not isinstance(run_id, str) or not run_id.isdigit():
+        fail("handoff receiver ceremony must identify its protected workflow run")
+    run = github_json(f"repos/{repository}/actions/runs/{run_id}")
+    actor = ((run.get("actor") or {}).get("login") or "") if isinstance(run, dict) else ""
+    triggering_actor = (
+        ((run.get("triggering_actor") or {}).get("login") or "")
+        if isinstance(run, dict)
+        else ""
+    )
+    if not isinstance(run, dict) or (
+        run.get("head_sha") != approved_commit
+        or run.get("name") != "Handoff Receiver Ceremony"
+        or run.get("path") != ".github/workflows/handoff-receiver-ceremony.yml"
+        or run.get("event") != "workflow_dispatch"
+        or run.get("conclusion") != "success"
+        or actor.casefold() != custodian.casefold()
+        or triggering_actor.casefold() != custodian.casefold()
+        or actor.casefold() == approver.casefold()
+    ):
+        fail(
+            "handoff receiver ceremony is not bound to a successful protected "
+            "workflow at approved_commit dispatched by the recorded key custodian"
+        )
+    validate_handoff_ceremony_environment(repository, run, approver)
+    validate_handoff_ceremony_artifact(repository, run_id, expected_files)
 
 
 def validate_required_status_bindings(checks: object) -> None:
@@ -1200,6 +1756,333 @@ def validate_github_approvals(
             fail(f"{role} reviewer @{login} approved_at does not match GitHub")
 
 
+def validate_producer_authenticated_handoff(
+    repo: Path,
+    value: object,
+    tag: str,
+    approved_commit: str,
+    now: datetime,
+    stig_manager_gate: dict,
+    verify_github: bool,
+) -> set[Path]:
+    field = "producer_authenticated_handoff"
+    required = {
+        "fingerprint_sha256",
+        "ceremony_reference",
+        "ceremony_sha256",
+        "public_key_reference",
+        "public_key_sha256",
+        "handoff_reference",
+        "handoff_sha256",
+        "signature_reference",
+        "signature_sha256",
+        "key_custody_reference",
+        "key_custody_sha256",
+    }
+    if not isinstance(value, dict) or set(value) != required:
+        fail(f"{field} must contain exactly {sorted(required)}")
+    for name in (
+        "fingerprint_sha256",
+        "ceremony_sha256",
+        "public_key_sha256",
+        "handoff_sha256",
+        "signature_sha256",
+        "key_custody_sha256",
+    ):
+        if not isinstance(value.get(name), str) or not SHA256.fullmatch(value[name]):
+            fail(f"{field}.{name} must be a lowercase SHA-256 digest")
+
+    ceremony_path, ceremony_raw = read_bound_file(
+        repo,
+        value.get("ceremony_reference"),
+        value.get("ceremony_sha256"),
+        tag,
+        field,
+    )
+    public_key_path, public_key_raw = read_bound_file(
+        repo,
+        value.get("public_key_reference"),
+        value.get("public_key_sha256"),
+        tag,
+        f"{field}.public_key",
+        32,
+    )
+    handoff_path, handoff_raw = read_bound_file(
+        repo,
+        value.get("handoff_reference"),
+        value.get("handoff_sha256"),
+        tag,
+        f"{field}.handoff",
+        MAX_HANDOFF_CEREMONY_BYTES,
+    )
+    signature_path, signature_raw = read_bound_file(
+        repo,
+        value.get("signature_reference"),
+        value.get("signature_sha256"),
+        tag,
+        f"{field}.signature",
+        MAX_HANDOFF_SIGNATURE_BYTES,
+    )
+    custody_path, custody_raw = read_bound_file(
+        repo,
+        value.get("key_custody_reference"),
+        value.get("key_custody_sha256"),
+        tag,
+        f"{field}.key_custody",
+        MAX_HANDOFF_CUSTODY_BYTES,
+    )
+    paths = {
+        ceremony_path,
+        public_key_path,
+        handoff_path,
+        signature_path,
+        custody_path,
+    }
+    if (
+        ceremony_path.name != HANDOFF_CEREMONY_EVIDENCE
+        or public_key_path.name != HANDOFF_CEREMONY_PUBLIC_KEY
+        or handoff_path.name != HANDOFF_CEREMONY_ZIP
+        or signature_path.name != HANDOFF_CEREMONY_SIGNATURE
+        or custody_path.name != HANDOFF_CEREMONY_CUSTODY
+        or len(paths) != 5
+    ):
+        fail("producer-authenticated handoff files must use the five fixed names")
+    if len(public_key_raw) != 32:
+        fail("producer-authenticated handoff public key must be exactly 32 bytes")
+
+    try:
+        ceremony = strict_json_loads(ceremony_raw)
+        signature = strict_json_loads(signature_raw)
+        custody = strict_json_loads(custody_raw)
+    except ValueError as error:
+        fail(f"producer-authenticated handoff artifact is not strict JSON: {error}")
+    if not all(isinstance(item, dict) for item in (ceremony, signature, custody)):
+        fail("producer-authenticated handoff JSON artifacts must contain objects")
+
+    manager_path, manager = read_bound_artifact(
+        repo,
+        stig_manager_gate.get("evidence_reference"),
+        stig_manager_gate.get("evidence_sha256"),
+        tag,
+        "acceptance.stig_manager",
+    )
+    paths.add(manager_path)
+    manager_metrics = manager.get("metrics") if isinstance(manager, dict) else None
+    manager_run_id = manager.get("workflow_run_id") if isinstance(manager, dict) else None
+    handoff_digest = sha256_bytes(handoff_raw)
+    key_digest = sha256_bytes(public_key_raw)
+    signature_digest = sha256_bytes(signature_raw)
+    custody_digest = sha256_bytes(custody_raw)
+
+    ceremony_fields = {
+        "schema",
+        "passed",
+        "producer_signature_verified",
+        "trusted_cli_verification_succeeded",
+        "key_custody_ceremony_verified",
+        "completed_at",
+        "source_commit",
+        "repository",
+        "workflow_run_id",
+        "staging_workflow_run_id",
+        "protected_environment",
+        "automatestig_cli_sha256",
+        "verification_output_sha256",
+        "staging_evidence_sha256",
+        "handoff_filename",
+        "handoff_sha256",
+        "signature_filename",
+        "signature_sha256",
+        "public_key_filename",
+        "public_key_sha256",
+        "producer_key_fingerprint",
+        "key_custody_filename",
+        "key_custody_sha256",
+        "participants",
+    }
+    if (
+        set(ceremony) != ceremony_fields
+        or ceremony.get("schema") != "automatestig-handoff-receiver-ceremony/v1"
+        or ceremony.get("passed") is not True
+        or ceremony.get("producer_signature_verified") is not True
+        or ceremony.get("trusted_cli_verification_succeeded") is not True
+        or ceremony.get("key_custody_ceremony_verified") is not True
+        or ceremony.get("source_commit") != approved_commit
+        or ceremony.get("protected_environment") != "handoff-receiver-ceremony"
+        or not isinstance(ceremony.get("repository"), str)
+        or not re.fullmatch(
+            r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", ceremony["repository"]
+        )
+        or not isinstance(ceremony.get("workflow_run_id"), str)
+        or not ceremony["workflow_run_id"].isdigit()
+        or ceremony.get("staging_workflow_run_id") != manager_run_id
+        or ceremony.get("staging_evidence_sha256")
+        != stig_manager_gate.get("evidence_sha256")
+        or ceremony.get("handoff_filename") != HANDOFF_CEREMONY_ZIP
+        or ceremony.get("handoff_sha256") != handoff_digest
+        or ceremony.get("signature_filename") != HANDOFF_CEREMONY_SIGNATURE
+        or ceremony.get("signature_sha256") != signature_digest
+        or ceremony.get("public_key_filename") != HANDOFF_CEREMONY_PUBLIC_KEY
+        or ceremony.get("public_key_sha256") != key_digest
+        or ceremony.get("producer_key_fingerprint") != f"SHA256:{key_digest}"
+        or ceremony.get("key_custody_filename") != HANDOFF_CEREMONY_CUSTODY
+        or ceremony.get("key_custody_sha256") != custody_digest
+        or not isinstance(ceremony.get("automatestig_cli_sha256"), str)
+        or not SHA256.fullmatch(ceremony["automatestig_cli_sha256"])
+        or not isinstance(ceremony.get("verification_output_sha256"), str)
+        or not SHA256.fullmatch(ceremony["verification_output_sha256"])
+        or not isinstance(manager_metrics, dict)
+        or manager_metrics.get("producer_handoff_filename") != HANDOFF_CEREMONY_ZIP
+        or manager_metrics.get("handoff_sha256") != handoff_digest
+        or value["fingerprint_sha256"] != key_digest
+        or value["public_key_sha256"] != key_digest
+        or value["handoff_sha256"] != handoff_digest
+        or value["signature_sha256"] != signature_digest
+        or value["key_custody_sha256"] != custody_digest
+    ):
+        fail(
+            "producer-authenticated handoff ceremony is invalid or not bound to "
+            "the exact approved commit, staging run, trust anchor, ZIP, sidecar, "
+            "custody record, and successful trusted CLI verification"
+        )
+    completed = timestamp(ceremony.get("completed_at"), f"{field}.completed_at")
+    manager_completed = artifact_timestamp(manager, "acceptance.stig_manager")
+    if (
+        completed > now
+        or now - completed > timedelta(days=90)
+        or completed < manager_completed
+    ):
+        fail("producer-authenticated handoff ceremony has an invalid execution window")
+
+    participants = ceremony.get("participants")
+    roles = {
+        item.get("role"): item.get("github_login", "")
+        for item in participants or []
+        if isinstance(item, dict)
+    }
+    if (
+        not isinstance(participants, list)
+        or len(participants) != 2
+        or set(roles) != {"key_custodian", "receiver_approver"}
+        or len({login.casefold() for login in roles.values()}) != 2
+        or any(
+            not isinstance(item, dict)
+            or set(item) != {"role", "github_login"}
+            or not isinstance(item.get("github_login"), str)
+            or len(item["github_login"]) > 39
+            or not GITHUB_LOGIN.fullmatch(item["github_login"])
+            for item in participants
+        )
+    ):
+        fail(
+            "producer-authenticated handoff requires distinct key custodian and "
+            "receiver approver identities"
+        )
+
+    signature_fields = {
+        "schema",
+        "algorithm",
+        "handoff_schema",
+        "run_id",
+        "handoff_sha256",
+        "signing_key_fingerprint",
+        "signature",
+    }
+    if (
+        set(signature) != signature_fields
+        or signature.get("schema")
+        != "automatestig.selected-run-handoff-signature.v1"
+        or signature.get("algorithm") != "ed25519-sha256"
+        or signature.get("handoff_schema") != "automatestig.selected-run-handoff.v4"
+        or not isinstance(signature.get("run_id"), str)
+        or not re.fullmatch(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-"
+            r"[89ab][0-9a-f]{3}-[0-9a-f]{12}",
+            signature["run_id"],
+        )
+        or signature.get("handoff_sha256") != handoff_digest
+        or signature.get("signing_key_fingerprint") != f"SHA256:{key_digest}"
+        or not isinstance(signature.get("signature"), str)
+        or not re.fullmatch(r"[0-9a-f]{128}", signature["signature"])
+    ):
+        fail(
+            "producer signature sidecar is not exactly bound to the current "
+            "handoff schema, ZIP, run, and trusted producer key"
+        )
+
+    custody_fields = {
+        "schema",
+        "source_commit",
+        "signed_at",
+        "producer_key_fingerprint",
+        "public_key_sha256",
+        "handoff_sha256",
+        "signature_sidecar_sha256",
+        "key_custodian",
+        "receiver_approver",
+        "signing_host_reference",
+        "primary_key_media_reference",
+        "backup_key_media_reference",
+        "private_key_entered_ci",
+        "private_key_entered_scanner_runtime",
+        "private_key_material_recorded",
+        "revocation_status_checked",
+    }
+    signed_at = timestamp(custody.get("signed_at"), f"{field}.key_custody.signed_at")
+    references = (
+        custody.get("signing_host_reference"),
+        custody.get("primary_key_media_reference"),
+        custody.get("backup_key_media_reference"),
+    )
+    reference_pattern = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/ -]{0,127}$")
+    if (
+        set(custody) != custody_fields
+        or custody.get("schema")
+        != "automatestig-handoff-key-custody-ceremony/v1"
+        or custody.get("source_commit") != approved_commit
+        or custody.get("producer_key_fingerprint") != f"SHA256:{key_digest}"
+        or custody.get("public_key_sha256") != key_digest
+        or custody.get("handoff_sha256") != handoff_digest
+        or custody.get("signature_sidecar_sha256") != signature_digest
+        or str(custody.get("key_custodian", "")).casefold()
+        != roles["key_custodian"].casefold()
+        or str(custody.get("receiver_approver", "")).casefold()
+        != roles["receiver_approver"].casefold()
+        or signed_at < manager_completed
+        or signed_at > completed
+        or now - signed_at > timedelta(days=90)
+        or len(set(references)) != 3
+        or any(
+            not isinstance(reference, str) or not reference_pattern.fullmatch(reference)
+            for reference in references
+        )
+        or custody.get("private_key_entered_ci") is not False
+        or custody.get("private_key_entered_scanner_runtime") is not False
+        or custody.get("private_key_material_recorded") is not False
+        or custody.get("revocation_status_checked") is not True
+    ):
+        fail(
+            "handoff key-custody ceremony is invalid or does not prove the exact "
+            "protected signing boundaries and artifact bindings"
+        )
+
+    if verify_github:
+        validate_handoff_ceremony_workflow(
+            ceremony,
+            approved_commit,
+            roles["key_custodian"],
+            roles["receiver_approver"],
+            {
+                HANDOFF_CEREMONY_EVIDENCE: ceremony_raw,
+                HANDOFF_CEREMONY_PUBLIC_KEY: public_key_raw,
+                HANDOFF_CEREMONY_ZIP: handoff_raw,
+                HANDOFF_CEREMONY_SIGNATURE: signature_raw,
+                HANDOFF_CEREMONY_CUSTODY: custody_raw,
+            },
+        )
+    return paths
+
+
 def validate_document(repo: Path, path: Path, expected_tag: str, offline: bool) -> None:
     try:
         data = strict_json_loads(path.read_text(encoding="utf-8"))
@@ -1264,6 +2147,18 @@ def validate_document(repo: Path, path: Path, expected_tag: str, offline: bool) 
                 not offline,
             )
         )
+    evidence_paths.add(
+        validate_gate(
+            data.get("first_use_ux"),
+            "first_use_ux",
+            "first_use_ux",
+            now,
+            repo,
+            expected_tag,
+            approved_commit,
+            not offline,
+        )
+    )
     evidence_paths.add(
         validate_gate(
             data.get("recovery_drill"),
@@ -1408,6 +2303,18 @@ def validate_document(repo: Path, path: Path, expected_tag: str, offline: bool) 
             },
         )
 
+    evidence_paths.update(
+        validate_producer_authenticated_handoff(
+            repo,
+            data.get("producer_authenticated_handoff"),
+            expected_tag,
+            approved_commit,
+            now,
+            acceptance["stig_manager"],
+            not offline,
+        )
+    )
+
     risk_acceptances = data.get("risk_acceptances")
     if not isinstance(risk_acceptances, list):
         fail("risk_acceptances must be an array (empty is allowed)")
@@ -1441,8 +2348,9 @@ def validate_document(repo: Path, path: Path, expected_tag: str, offline: bool) 
         if on_main.returncode:
             fail("the release tag must point to a commit on origin/main")
     print(
-        f"Release evidence valid for {expected_tag}: independent reviewers, five acceptance gates, "
-        "recovery drill, signing ceremony, and approved commit ancestry"
+        f"Release evidence valid for {expected_tag}: independent reviewers, five "
+        "acceptance gates, first-use UX study, recovery drill, content signing, "
+        "producer-authenticated handoff receiver ceremony, and approved commit ancestry"
     )
 
 
@@ -1451,6 +2359,12 @@ def main() -> None:
     parser.add_argument("--repo-root", default=".", type=Path)
     parser.add_argument("--tag")
     parser.add_argument("--schema-only", action="store_true")
+    parser.add_argument("--first-use-study", type=Path)
+    parser.add_argument("--source-commit")
+    parser.add_argument("--product-version")
+    parser.add_argument("--gui-binary", type=Path)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--require-passed", action="store_true")
     parser.add_argument(
         "--offline",
         action="store_true",
@@ -1458,13 +2372,101 @@ def main() -> None:
     )
     args = parser.parse_args()
     repo = args.repo_root.resolve()
-    schema = repo / "schemas/release-evidence.schema.json"
-    try:
-        document = strict_json_loads(schema.read_text(encoding="utf-8"))
-    except (OSError, ValueError) as error:
-        fail(f"cannot read release evidence schema: {error}")
-    if document.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
-        fail("release evidence schema must use JSON Schema 2020-12")
+    for schema_name in (
+        "release-evidence.schema.json",
+        "first-use-ux-study.schema.json",
+        "handoff-key-custody-ceremony.schema.json",
+        "handoff-receiver-ceremony.schema.json",
+    ):
+        schema = repo / "schemas" / schema_name
+        try:
+            document = strict_json_loads(schema.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as error:
+            fail(f"cannot read {schema_name}: {error}")
+        if document.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+            fail(f"{schema_name} must use JSON Schema 2020-12")
+    study_mode = args.first_use_study is not None
+    study_only_options = (
+        args.source_commit,
+        args.product_version,
+        args.gui_binary,
+        args.output,
+        args.require_passed,
+    )
+    if study_mode:
+        if args.tag or args.schema_only or args.offline:
+            fail("--first-use-study cannot be combined with release-document options")
+        if (
+            not isinstance(args.source_commit, str)
+            or not SHA.fullmatch(args.source_commit)
+            or not isinstance(args.product_version, str)
+            or not TAG.fullmatch(args.product_version)
+            or args.gui_binary is None
+        ):
+            fail(
+                "--first-use-study requires --source-commit, --product-version, "
+                "and --gui-binary"
+            )
+        if args.output is not None and args.require_passed:
+            fail("study normalization and --require-passed must be separate steps")
+        try:
+            raw = args.first_use_study.read_bytes()
+        except OSError as error:
+            fail(f"cannot read first-use study: {error}")
+        if not raw or len(raw) > MAX_FIRST_USE_STUDY_BYTES:
+            fail("first-use study must be non-empty and no larger than 128 KiB")
+        try:
+            study = strict_json_loads(raw)
+        except ValueError as error:
+            fail(f"first-use study is not strict JSON: {error}")
+        try:
+            gui_raw = args.gui_binary.read_bytes()
+        except OSError as error:
+            fail(f"cannot read tested GUI binary: {error}")
+        if not gui_raw:
+            fail("tested GUI binary must be non-empty")
+        if isinstance(study, dict):
+            study = dict(study)
+            workflow_run_id = os.environ.get("GITHUB_RUN_ID")
+            if workflow_run_id:
+                study["workflow_run_id"] = workflow_run_id
+            expected_repository = os.environ.get("GITHUB_REPOSITORY")
+            if expected_repository and study.get("repository") != expected_repository:
+                fail("first-use study repository differs from the protected workflow")
+        if (
+            isinstance(study, dict)
+            and study.get("automatestig_gui_sha256") != sha256_bytes(gui_raw)
+        ):
+            fail("first-use study GUI digest does not match the exact tested binary")
+        validate_first_use_study(
+            study,
+            "first-use study",
+            args.source_commit,
+            args.product_version,
+            datetime.now(timezone.utc),
+            args.require_passed,
+        )
+        if args.output is not None:
+            normalized = (
+                json.dumps(
+                    study,
+                    sort_keys=True,
+                    indent=2,
+                    ensure_ascii=False,
+                    allow_nan=False,
+                )
+                + "\n"
+            )
+            try:
+                args.output.write_text(normalized, encoding="utf-8")
+            except OSError as error:
+                fail(f"cannot write normalized first-use study: {error}")
+            print(f"First-use study record validated and written to {args.output}")
+        else:
+            print("First-use study record validated")
+        return
+    if any(option not in (None, False) for option in study_only_options):
+        fail("standalone study options require --first-use-study")
     if args.schema_only:
         if args.tag or args.offline:
             fail("--schema-only cannot be combined with --tag or --offline")

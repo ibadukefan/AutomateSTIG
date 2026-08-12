@@ -7,7 +7,6 @@
 //! - Stigpack build → verify → import pipeline
 //! - Format conversion (CKL ↔ CKLB ↔ JSON)
 //! - SQLite storage CRUD
-//! - STIG-Manager export
 //!
 //! All tests use temporary directories and are safe to run in parallel.
 //! They are platform-independent and use only temporary files.
@@ -22,7 +21,6 @@ mod integration {
     use automatestig_core::models::checklist::{Checklist, ChecklistStigInfo};
     use automatestig_core::models::finding::{FindingSource, FindingStatus};
     use automatestig_core::models::stig::*;
-    use automatestig_integrations::stig_manager;
     use automatestig_parsers::{ckl, cklb, xccdf};
     use automatestig_stigpack::builder::PackBuilder;
     use automatestig_stigpack::importer;
@@ -457,34 +455,6 @@ mod integration {
     }
 
     // ---------------------------------------------------------------------------
-    // Integrations: STIG-Manager export
-    // ---------------------------------------------------------------------------
-
-    #[test]
-    fn test_stig_manager_export() {
-        let checklist = make_checklist_with_findings();
-
-        let json =
-            stig_manager::export_to_stig_manager_json(&[checklist], "Test Collection").unwrap();
-        let import: stig_manager::StigManagerImport = serde_json::from_str(&json).unwrap();
-
-        assert_eq!(import.collection, "Test Collection");
-        assert_eq!(import.assets.len(), 1);
-        assert_eq!(import.assets[0].name, "webserver01");
-        assert_eq!(import.assets[0].stigs.len(), 1);
-        assert_eq!(import.assets[0].stigs[0].reviews.len(), 10);
-
-        // All automated results should have result_engine.
-        for review in &import.assets[0].stigs[0].reviews {
-            if review.auto_result {
-                assert!(review.result_engine.is_some());
-                let re = review.result_engine.as_ref().unwrap();
-                assert_eq!(re.product, "AutomateSTIG");
-            }
-        }
-    }
-
-    // ---------------------------------------------------------------------------
     // XCCDF parsing
     // ---------------------------------------------------------------------------
 
@@ -575,6 +545,8 @@ end"#;
             },
             expected: ExpectedResult::IsTrue,
             description: None,
+            implementation_class: ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
         };
         assert!(execute_check(&check, &data).passed);
     }
@@ -749,6 +721,8 @@ end"#;
             },
             expected: ExpectedResult::IsTrue,
             description: None,
+            implementation_class: ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
         };
 
         let result = execute_check(&check, &data);

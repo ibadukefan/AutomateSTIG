@@ -2,15 +2,38 @@
 
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs::File;
-use std::io::{Read, Seek, SeekFrom, Write};
+#[cfg(any(feature = "transition", test))]
+use std::io::Write;
+use std::io::{Read, Seek, SeekFrom};
 use std::path::{Path, PathBuf};
 
 use anyhow::{bail, Context, Result};
 use automatestig_archive_safety::{ArchivePolicy, SafeZipArchive};
-use automatestig_core::models::checklist::Checklist;
+use automatestig_core::check_packs::{canonical_json_sha256, CheckPackRegistry};
+use automatestig_core::models::checklist::{Checklist, EvaluationOrigin};
 use automatestig_core::models::finding::{FindingSource, FindingStatus};
-use automatestig_core::target_adapters::{built_in_target_adapter, AdapterEvidenceEnvelope};
-use automatestig_core::target_adapters::{DeviceFingerprint, TARGET_ADAPTER_EVIDENCE_SCHEMA};
+#[cfg(any(feature = "transition", test))]
+use automatestig_core::selected_run_handoff::serialize_handoff_signature_sidecar;
+use automatestig_core::selected_run_handoff::{
+    handoff_signature_statement, parse_handoff_manifest, parse_handoff_signature_sidecar,
+    parse_integrity_record, EvidenceState, HandoffManifest, HandoffRunRequest,
+    HandoffSignatureEnvelope, EVIDENCE_ENTRY, FALLBACK_CKLB_ENTRY, HANDOFF_SCHEMA_V2,
+    HANDOFF_SCHEMA_V3, HANDOFF_SCHEMA_V4, HANDOFF_SIGNATURE_ALGORITHM, HANDOFF_SIGNATURE_SCHEMA,
+    INTEGRITY_ALGORITHM_SHA256, INTEGRITY_ENTRY, MANIFEST_ENTRY, REQUIRED_ENTRIES_V2,
+    REQUIRED_ENTRIES_V3, REQUIRED_ENTRIES_V4, RUN_REQUEST_ENTRY, RUN_REQUEST_SCHEMA_V1,
+    SCANNER_RUN_ENTRY, SCANNER_RUN_SCHEMA_V2 as RUN_SCHEMA_V2,
+    SCANNER_RUN_SCHEMA_V3 as RUN_SCHEMA_V3, SPARSE_REVIEWS_ENTRY, XCCDF_ENTRY,
+};
+use automatestig_core::target_adapters::{
+    built_in_target_adapter, AdapterEvidenceEnvelope, AdapterRequest,
+};
+use automatestig_core::target_adapters::{
+    DeviceFingerprint, TargetAdapterContractVersion, DEVICE_FINGERPRINT_SCHEMA_V1,
+    DEVICE_FINGERPRINT_SCHEMA_V2, TARGET_ADAPTER_CONTRACT_SCHEMA_V1,
+    TARGET_ADAPTER_CONTRACT_SCHEMA_V2, TARGET_ADAPTER_EVIDENCE_SCHEMA_V1,
+    TARGET_ADAPTER_EVIDENCE_SCHEMA_V2, TARGET_ADAPTER_IMPLEMENTATION_VERSION_V1,
+    TARGET_ADAPTER_IMPLEMENTATION_VERSION_V2,
+};
 use automatestig_core::xccdf_results::{
     validate_xccdf_1_2_results, XccdfRuleOutcome, XCCDF_OWNERSHIP_SCOPE, XCCDF_RESULTS_SCHEMA,
 };
@@ -18,39 +41,15 @@ use automatestig_integrations::stig_manager::{
     sparse_scanner_reviews, ScannerReview, ScannerReviewResult,
 };
 use automatestig_parsers::cklb::CklbFile;
+use automatestig_scanner::{
+    DecisionOperationStatus, DecisionPolicyBinding, DecisionTrace, SignedPolicyReplayMaterial,
+    DECISION_TRACE_SCHEMA_V1, DECISION_TRACE_SCHEMA_V2,
+};
 use chrono::DateTime;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 use crate::ui;
-
-// v2 is the legacy CKLB-only bounded contract. v3 adds a required,
-// standards-based sparse XCCDF 1.2 result member. Verification remains strict
-// for both versions; the GUI emits v3 and a protected CLI ceremony can attest
-// either exact ZIP without exposing a signing key to the GUI process.
-const HANDOFF_SCHEMA_V2: &str = "automatestig.selected-run-handoff.v2";
-const HANDOFF_SCHEMA_V3: &str = "automatestig.selected-run-handoff.v3";
-const RUN_SCHEMA: &str = "automatestig.scanner-run.v2";
-const HANDOFF_SIGNATURE_SCHEMA: &str = "automatestig.selected-run-handoff-signature.v1";
-const HANDOFF_SIGNATURE_ALGORITHM: &str = "ed25519-sha256";
-const HANDOFF_SIGNATURE_DOMAIN: &str = "AUTOMATESTIG-SELECTED-RUN-HANDOFF-SIGNATURE-V1";
-const REQUIRED_ENTRIES_V2: [&str; 5] = [
-    "manifest.json",
-    "integrity.json",
-    "scanner-run.json",
-    "sparse-reviews.json",
-    "fallback.cklb",
-];
-const XCCDF_ENTRY: &str = "results.xccdf.xml";
-const REQUIRED_ENTRIES_V3: [&str; 6] = [
-    "manifest.json",
-    "integrity.json",
-    "scanner-run.json",
-    "sparse-reviews.json",
-    "fallback.cklb",
-    XCCDF_ENTRY,
-];
-const EVIDENCE_ENTRY: &str = "evidence-envelope.json";
 
 // Retained adapter evidence can legitimately contain the collector's bounded
 // aggregate command output. Keep the evidence ceiling aligned above that
@@ -67,100 +66,6 @@ const MAX_SIGNATURE_SIDECAR_BYTES: u64 = 16 * 1024;
 const MAX_RULES: usize = 10_000;
 const MAX_REVIEW_DETAIL_BYTES: usize = 256 * 1024;
 const MAX_REVIEW_COMMENT_BYTES: usize = 64 * 1024;
-
-#[derive(Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
-struct HandoffManifest {
-    schema: String,
-    run_id: String,
-    created_at: String,
-    scanner_version: String,
-    stig_id: String,
-    stig_revision: String,
-    files: HandoffFiles,
-    scope: HandoffScope,
-    evidence: HandoffEvidence,
-    bindings: RunBindings,
-    note: String,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
-struct HandoffFiles {
-    #[serde(rename = "scanner-run.json")]
-    scanner_run: String,
-    #[serde(rename = "sparse-reviews.json")]
-    sparse_reviews: String,
-    #[serde(rename = "fallback.cklb")]
-    fallback_cklb: String,
-    #[serde(default, rename = "results.xccdf.xml")]
-    results_xccdf: Option<String>,
-    #[serde(default, rename = "evidence-envelope.json")]
-    evidence_envelope: Option<String>,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
-struct HandoffScope {
-    scanner_owned_reviews_included: usize,
-    unreviewed_and_non_scanner_rules_excluded: usize,
-    ownership_safe_sparse_handoff: bool,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
-#[serde(rename_all = "snake_case")]
-enum EvidenceState {
-    Retained,
-    Purged,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
-#[serde(rename_all = "snake_case")]
-enum EvidencePurgeReason {
-    RetentionExpired,
-    OperatorRequested,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
-struct HandoffEvidence {
-    state: EvidenceState,
-    included: bool,
-    sha256: String,
-    expires_at: String,
-    purged_at: Option<String>,
-    purge_reason: Option<EvidencePurgeReason>,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
-struct RunBindings {
-    request_sha256: String,
-    result_sha256: String,
-    benchmark_sha256: String,
-    check_pack_sha256: String,
-    evaluation_plan_sha256: String,
-    evidence_sha256: String,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
-struct IntegrityRecord {
-    algorithm: String,
-    manifest_sha256: String,
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-struct HandoffSignatureEnvelope {
-    schema: String,
-    algorithm: String,
-    handoff_schema: String,
-    run_id: String,
-    handoff_sha256: String,
-    signing_key_fingerprint: String,
-    signature: String,
-}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -241,6 +146,10 @@ struct StoredRunArtifact {
     out_of_scope_untouched: Option<usize>,
     checklist: Checklist,
     reviews: Vec<ScannerReview>,
+    #[serde(default)]
+    decision_traces: Vec<DecisionTrace>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    signed_policy_material: Option<SignedPolicyReplayMaterial>,
     delivery_preview: DeliveryPreview,
     evidence: StoredEvidenceReference,
 }
@@ -254,6 +163,9 @@ pub struct HandoffVerification {
     pub scanner_version: String,
     pub review_count: usize,
     pub evidence_included: bool,
+    /// True only after retained evidence was deterministically evaluated again
+    /// and every trace and export projection matched.
+    pub replay_verified: bool,
     /// True only when a detached signature matches an explicitly trusted
     /// handoff-signing key and the signed identity matches this exact ZIP.
     pub producer_authenticity_verified: bool,
@@ -297,7 +209,10 @@ pub fn run(
     ui::success("Manifest and file SHA-256 integrity: valid");
     ui::success("Run provenance and sparse ownership bindings: valid");
     ui::success("CKLB supplemental projection contains scanner-owned reviewed rows only");
-    if verified.handoff_schema == HANDOFF_SCHEMA_V3 {
+    if matches!(
+        verified.handoff_schema.as_str(),
+        HANDOFF_SCHEMA_V3 | HANDOFF_SCHEMA_V4
+    ) {
         ui::success("XCCDF 1.2 results contain the same sparse scanner-owned rows");
     }
     ui::detail("Handoff schema", &verified.handoff_schema);
@@ -310,10 +225,12 @@ pub fn run(
     ui::detail("Sparse reviews", &verified.review_count.to_string());
     ui::detail(
         "Replay evidence",
-        if verified.evidence_included {
+        if verified.replay_verified {
             "included and replay-verified"
+        } else if verified.evidence_included {
+            "included; envelope integrity verified, legacy result replay unavailable"
         } else {
-            "purged; result-only handoff"
+            "purged; integrity/projection verified, deterministic replay unavailable"
         },
     );
     println!();
@@ -339,6 +256,7 @@ pub fn run(
 
 /// Create a dedicated external handoff-signing key pair. Key generation is an
 /// explicit protected-host ceremony and is never performed by the GUI.
+#[cfg(any(feature = "transition", test))]
 pub fn generate_signing_key(output_path: &str, cli: &crate::Cli) -> Result<()> {
     let private_path = PathBuf::from(output_path);
     let public_path = private_path.with_extension("pub");
@@ -371,6 +289,7 @@ pub fn generate_signing_key(output_path: &str, cli: &crate::Cli) -> Result<()> {
 /// Sign an already valid handoff on a protected CLI host. The detached
 /// signature binds the exact compressed ZIP bytes; the GUI ZIP contract
 /// remains unsigned and unchanged.
+#[cfg(any(feature = "transition", test))]
 pub fn sign_handoff(
     zip_path: &str,
     signing_key_path: &str,
@@ -417,9 +336,8 @@ pub fn sign_handoff(
     )
     .context("Failed to sign selected-run handoff identity")?;
     envelope.signature = lower_hex(&signature);
-    let mut sidecar = serde_json::to_vec_pretty(&envelope)
+    let sidecar = serialize_handoff_signature_sidecar(&envelope)
         .context("Failed to serialize detached handoff signature")?;
-    sidecar.push(b'\n');
 
     // The protected ceremony can be long enough for destination state to
     // change. Recheck aliases and managed roots immediately before create-new.
@@ -462,8 +380,8 @@ pub fn verify_handoff_with_signature(
         MAX_SIGNATURE_SIDECAR_BYTES,
         "handoff signature sidecar",
     )?;
-    let envelope: HandoffSignatureEnvelope =
-        parse_json(&sidecar_bytes, "handoff signature sidecar")?;
+    let envelope = parse_handoff_signature_sidecar(&sidecar_bytes)
+        .context("handoff signature sidecar is malformed JSON")?;
     validate_signature_envelope(&envelope)?;
 
     let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
@@ -524,7 +442,7 @@ pub fn verify_handoff_with_signature(
 fn handoff_policy() -> ArchivePolicy {
     let mut policy = ArchivePolicy::strict(
         MAX_ARCHIVE_BYTES,
-        REQUIRED_ENTRIES_V3.len() + 1,
+        REQUIRED_ENTRIES_V4.len() + 1,
         MAX_ARCHIVE_MEMBER_BYTES,
         MAX_TOTAL_BYTES,
     );
@@ -542,11 +460,11 @@ fn verify_handoff_archive<R: Read + Seek>(
         .iter()
         .map(|entry| entry.name.clone())
         .collect();
-    let bootstrap_entries: HashSet<_> = ["manifest.json", "integrity.json"]
+    let bootstrap_entries: HashSet<_> = [MANIFEST_ENTRY, INTEGRITY_ENTRY]
         .into_iter()
         .map(str::to_string)
         .collect();
-    let mut allowed_entries: HashSet<_> = REQUIRED_ENTRIES_V3
+    let mut allowed_entries: HashSet<_> = REQUIRED_ENTRIES_V4
         .into_iter()
         .map(str::to_string)
         .collect();
@@ -572,36 +490,39 @@ fn verify_handoff_archive<R: Read + Seek>(
 
     let mut budget = archive.new_read_budget();
     let manifest_bytes = archive
-        .read_named_with_limit("manifest.json", MAX_MANIFEST_BYTES, &mut budget)
+        .read_named_with_limit(MANIFEST_ENTRY, MAX_MANIFEST_BYTES, &mut budget)
         .context("Could not safely read manifest.json")?;
     let integrity_bytes = archive
-        .read_named_with_limit("integrity.json", MAX_INTEGRITY_BYTES, &mut budget)
+        .read_named_with_limit(INTEGRITY_ENTRY, MAX_INTEGRITY_BYTES, &mut budget)
         .context("Could not safely read integrity.json")?;
     let scanner_run_bytes = archive
-        .read_named_with_limit("scanner-run.json", MAX_RESULT_MEMBER_BYTES, &mut budget)
+        .read_named_with_limit(SCANNER_RUN_ENTRY, MAX_RESULT_MEMBER_BYTES, &mut budget)
         .context("Could not safely read scanner-run.json")?;
     let reviews_bytes = archive
-        .read_named_with_limit("sparse-reviews.json", MAX_REVIEWS_BYTES, &mut budget)
+        .read_named_with_limit(SPARSE_REVIEWS_ENTRY, MAX_REVIEWS_BYTES, &mut budget)
         .context("Could not safely read sparse-reviews.json")?;
     let cklb_bytes = archive
-        .read_named_with_limit("fallback.cklb", MAX_RESULT_MEMBER_BYTES, &mut budget)
+        .read_named_with_limit(FALLBACK_CKLB_ENTRY, MAX_RESULT_MEMBER_BYTES, &mut budget)
         .context("Could not safely read fallback.cklb")?;
 
-    let integrity: IntegrityRecord = parse_json(&integrity_bytes, "integrity.json")?;
-    if integrity.algorithm != "sha256" {
+    let integrity =
+        parse_integrity_record(&integrity_bytes).context("integrity.json is malformed JSON")?;
+    if integrity.algorithm != INTEGRITY_ALGORITHM_SHA256 {
         bail!(
             "integrity.json uses unsupported algorithm {:?}",
             integrity.algorithm
         );
     }
     require_sha256("integrity manifest_sha256", &integrity.manifest_sha256)?;
-    require_digest_match("manifest.json", &integrity.manifest_sha256, &manifest_bytes)?;
+    require_digest_match(MANIFEST_ENTRY, &integrity.manifest_sha256, &manifest_bytes)?;
 
-    let manifest: HandoffManifest = parse_json(&manifest_bytes, "manifest.json")?;
+    let manifest =
+        parse_handoff_manifest(&manifest_bytes).context("manifest.json is malformed JSON")?;
     validate_manifest_identity(&manifest)?;
     let required_entries: HashSet<_> = match manifest.schema.as_str() {
         HANDOFF_SCHEMA_V2 => REQUIRED_ENTRIES_V2.as_slice(),
         HANDOFF_SCHEMA_V3 => REQUIRED_ENTRIES_V3.as_slice(),
+        HANDOFF_SCHEMA_V4 => REQUIRED_ENTRIES_V4.as_slice(),
         _ => unreachable!("manifest schema was validated"),
     }
     .iter()
@@ -638,17 +559,24 @@ fn verify_handoff_archive<R: Read + Seek>(
         );
     }
     require_digest_match(
-        "scanner-run.json",
+        SCANNER_RUN_ENTRY,
         &manifest.files.scanner_run,
         &scanner_run_bytes,
     )?;
     require_digest_match(
-        "sparse-reviews.json",
+        SPARSE_REVIEWS_ENTRY,
         &manifest.files.sparse_reviews,
         &reviews_bytes,
     )?;
-    require_digest_match("fallback.cklb", &manifest.files.fallback_cklb, &cklb_bytes)?;
-    let xccdf_bytes = if manifest.schema == HANDOFF_SCHEMA_V3 {
+    require_digest_match(
+        FALLBACK_CKLB_ENTRY,
+        &manifest.files.fallback_cklb,
+        &cklb_bytes,
+    )?;
+    let xccdf_bytes = if matches!(
+        manifest.schema.as_str(),
+        HANDOFF_SCHEMA_V3 | HANDOFF_SCHEMA_V4
+    ) {
         let bytes = archive
             .read_named_with_limit(XCCDF_ENTRY, MAX_RESULT_MEMBER_BYTES, &mut budget)
             .context("Could not safely read results.xccdf.xml")?;
@@ -658,10 +586,38 @@ fn verify_handoff_archive<R: Read + Seek>(
                 .files
                 .results_xccdf
                 .as_deref()
-                .context("v3 manifest omits results.xccdf.xml digest")?,
+                .context("current manifest omits results.xccdf.xml digest")?,
             &bytes,
         )?;
         Some(bytes)
+    } else {
+        None
+    };
+    let run_request = if manifest.schema == HANDOFF_SCHEMA_V4 {
+        let bytes = archive
+            .read_named_with_limit(RUN_REQUEST_ENTRY, MAX_RESULT_MEMBER_BYTES, &mut budget)
+            .context("Could not safely read run-request.json")?;
+        require_digest_match(
+            RUN_REQUEST_ENTRY,
+            manifest
+                .files
+                .run_request
+                .as_deref()
+                .context("v4 manifest omits run-request.json digest")?,
+            &bytes,
+        )?;
+        require_digest_match(
+            "scanner-run immutable request binding",
+            &manifest.bindings.request_sha256,
+            &bytes,
+        )?;
+        let request: HandoffRunRequest = parse_json(&bytes, RUN_REQUEST_ENTRY)?;
+        let canonical = serde_json::to_vec(&request)
+            .context("Could not reconstruct canonical scanner-run request bytes")?;
+        if canonical != bytes {
+            bail!("run-request.json is not the canonical scanner-run request encoding");
+        }
+        Some(request)
     } else {
         None
     };
@@ -683,9 +639,12 @@ fn verify_handoff_archive<R: Read + Seek>(
         None
     };
 
-    let artifact: StoredRunArtifact = parse_json(&scanner_run_bytes, "scanner-run.json")?;
-    let sparse_reviews: Vec<ScannerReview> = parse_json(&reviews_bytes, "sparse-reviews.json")?;
+    let artifact: StoredRunArtifact = parse_json(&scanner_run_bytes, SCANNER_RUN_ENTRY)?;
+    let sparse_reviews: Vec<ScannerReview> = parse_json(&reviews_bytes, SPARSE_REVIEWS_ENTRY)?;
     validate_run_and_reviews(&manifest, &artifact, &sparse_reviews)?;
+    if let Some(request) = run_request.as_ref() {
+        validate_run_request(&manifest, &artifact, request)?;
+    }
 
     let compact_run = serde_json::to_vec(&artifact)
         .context("Could not reconstruct immutable scanner-run result bytes")?;
@@ -695,12 +654,19 @@ fn verify_handoff_archive<R: Read + Seek>(
         &compact_run,
     )?;
 
-    let cklb: CklbFile = parse_json(&cklb_bytes, "fallback.cklb")?;
+    let cklb: CklbFile = parse_json(&cklb_bytes, FALLBACK_CKLB_ENTRY)?;
     validate_cklb(&manifest, &artifact, &sparse_reviews, &cklb)?;
     if let Some(xccdf_bytes) = xccdf_bytes.as_deref() {
         validate_xccdf(&manifest, &artifact, &sparse_reviews, xccdf_bytes)?;
     }
-    validate_evidence_envelope(&manifest, &artifact, evidence_envelope_bytes.as_deref())?;
+    let replay_verified = validate_evidence_envelope(
+        &manifest,
+        &artifact,
+        &sparse_reviews,
+        &cklb,
+        xccdf_bytes.as_deref(),
+        evidence_envelope_bytes.as_deref(),
+    )?;
 
     Ok(HandoffVerification {
         handoff_schema: manifest.schema,
@@ -710,6 +676,7 @@ fn verify_handoff_archive<R: Read + Seek>(
         scanner_version: manifest.scanner_version,
         review_count: sparse_reviews.len(),
         evidence_included: manifest.evidence.included,
+        replay_verified,
         producer_authenticity_verified: false,
         producer_signer_label: None,
         producer_signer_fingerprint: None,
@@ -719,17 +686,40 @@ fn verify_handoff_archive<R: Read + Seek>(
 fn validate_manifest_identity(manifest: &HandoffManifest) -> Result<()> {
     if !matches!(
         manifest.schema.as_str(),
-        HANDOFF_SCHEMA_V2 | HANDOFF_SCHEMA_V3
+        HANDOFF_SCHEMA_V2 | HANDOFF_SCHEMA_V3 | HANDOFF_SCHEMA_V4
     ) {
         bail!("unsupported handoff schema {:?}", manifest.schema);
     }
     match (manifest.schema.as_str(), &manifest.files.results_xccdf) {
-        (HANDOFF_SCHEMA_V2, None) | (HANDOFF_SCHEMA_V3, Some(_)) => {}
+        (HANDOFF_SCHEMA_V2, None) | (HANDOFF_SCHEMA_V3 | HANDOFF_SCHEMA_V4, Some(_)) => {}
         (HANDOFF_SCHEMA_V2, Some(_)) => {
             bail!("v2 handoff manifest unexpectedly declares results.xccdf.xml")
         }
-        (HANDOFF_SCHEMA_V3, None) => {
-            bail!("v3 handoff manifest must declare results.xccdf.xml")
+        (HANDOFF_SCHEMA_V3 | HANDOFF_SCHEMA_V4, None) => {
+            bail!("current handoff manifest must declare results.xccdf.xml")
+        }
+        _ => unreachable!("supported schema was checked"),
+    }
+    match (
+        manifest.schema.as_str(),
+        manifest.bindings.decision_traces_sha256.as_deref(),
+    ) {
+        (HANDOFF_SCHEMA_V2, None) | (HANDOFF_SCHEMA_V3 | HANDOFF_SCHEMA_V4, Some(_)) => {}
+        (HANDOFF_SCHEMA_V2, Some(_)) => {
+            bail!("v2 handoff manifest unexpectedly declares decision trace bindings")
+        }
+        (HANDOFF_SCHEMA_V3 | HANDOFF_SCHEMA_V4, None) => {
+            bail!("current handoff manifest must bind its decision traces")
+        }
+        _ => unreachable!("supported schema was checked"),
+    }
+    match (manifest.schema.as_str(), &manifest.files.run_request) {
+        (HANDOFF_SCHEMA_V2 | HANDOFF_SCHEMA_V3, None) | (HANDOFF_SCHEMA_V4, Some(_)) => {}
+        (HANDOFF_SCHEMA_V2 | HANDOFF_SCHEMA_V3, Some(_)) => {
+            bail!("legacy handoff manifest unexpectedly declares run-request.json")
+        }
+        (HANDOFF_SCHEMA_V4, None) => {
+            bail!("v4 handoff manifest must declare run-request.json")
         }
         _ => unreachable!("supported schema was checked"),
     }
@@ -800,11 +790,17 @@ fn validate_manifest_identity(manifest: &HandoffManifest) -> Result<()> {
     ] {
         require_sha256(label, digest)?;
     }
+    if let Some(digest) = &manifest.bindings.decision_traces_sha256 {
+        require_sha256("bindings.decision_traces_sha256", digest)?;
+    }
     if let Some(digest) = &manifest.files.evidence_envelope {
         require_sha256("files.evidence-envelope.json", digest)?;
     }
     if let Some(digest) = &manifest.files.results_xccdf {
         require_sha256("files.results.xccdf.xml", digest)?;
+    }
+    if let Some(digest) = &manifest.files.run_request {
+        require_sha256("files.run-request.json", digest)?;
     }
     Ok(())
 }
@@ -814,8 +810,20 @@ fn validate_run_and_reviews(
     artifact: &StoredRunArtifact,
     sparse_reviews: &[ScannerReview],
 ) -> Result<()> {
-    if artifact.schema != RUN_SCHEMA {
-        bail!("unsupported scanner-run schema {:?}", artifact.schema);
+    match (manifest.schema.as_str(), artifact.schema.as_str()) {
+        (HANDOFF_SCHEMA_V2, RUN_SCHEMA_V2)
+        | (HANDOFF_SCHEMA_V3 | HANDOFF_SCHEMA_V4, RUN_SCHEMA_V3) => {}
+        (
+            HANDOFF_SCHEMA_V2 | HANDOFF_SCHEMA_V3 | HANDOFF_SCHEMA_V4,
+            RUN_SCHEMA_V2 | RUN_SCHEMA_V3,
+        ) => {
+            bail!(
+                "handoff/scanner-run schema version mismatch: {:?} cannot contain {:?}",
+                manifest.schema,
+                artifact.schema
+            )
+        }
+        _ => bail!("unsupported scanner-run schema {:?}", artifact.schema),
     }
     require_text("profile_id", &artifact.profile_id, 128)?;
     if !matches!(
@@ -886,7 +894,10 @@ fn validate_run_and_reviews(
     if device_sha256 != artifact.evidence.device_fingerprint_sha256 {
         bail!("scanner-run device fingerprint SHA-256 binding does not match");
     }
-    if artifact.evidence.envelope_schema != TARGET_ADAPTER_EVIDENCE_SCHEMA {
+    if !matches!(
+        artifact.evidence.envelope_schema.as_str(),
+        TARGET_ADAPTER_EVIDENCE_SCHEMA_V1 | TARGET_ADAPTER_EVIDENCE_SCHEMA_V2
+    ) {
         bail!(
             "scanner-run references unsupported evidence schema {:?}",
             artifact.evidence.envelope_schema
@@ -964,6 +975,7 @@ fn validate_run_and_reviews(
         );
     }
     validate_review_rows(sparse_reviews)?;
+    validate_decision_traces(manifest, artifact, sparse_reviews)?;
 
     let mut all_rule_ids = HashSet::with_capacity(artifact.checklist.findings.len());
     for finding in &artifact.checklist.findings {
@@ -990,23 +1002,392 @@ fn validate_run_and_reviews(
     Ok(())
 }
 
+fn validate_run_request(
+    manifest: &HandoffManifest,
+    artifact: &StoredRunArtifact,
+    request: &HandoffRunRequest,
+) -> Result<()> {
+    if manifest.schema != HANDOFF_SCHEMA_V4 {
+        bail!("run-request.json is valid only in a v4 handoff");
+    }
+    if request.schema != RUN_REQUEST_SCHEMA_V1
+        || request.profile_id != artifact.profile_id
+        || request.collection_method != artifact.collection_method
+        || !request.pilot_acknowledged
+        || request.credential_persisted
+        || request.device_fingerprint_sha256 != artifact.evidence.device_fingerprint_sha256
+        || request.plan_sha256 != artifact.evidence.collection_plan_sha256
+    {
+        bail!("run-request.json does not match the scanner-run immutable input bindings");
+    }
+    require_text("run request profile_id", &request.profile_id, 128)?;
+    require_sha256(
+        "run request device_fingerprint_sha256",
+        &request.device_fingerprint_sha256,
+    )?;
+    require_sha256("run request plan_sha256", &request.plan_sha256)?;
+    if let Some(source) = request.source_artifact_sha256.as_deref() {
+        require_sha256("run request source_artifact_sha256", source)?;
+    }
+
+    let expected_mode = match artifact.mode {
+        RunMode::Connected => "connected",
+        RunMode::Disconnected => "disconnected",
+    };
+    if request.mode != expected_mode {
+        bail!("run-request.json mode does not match scanner-run.json");
+    }
+    match (&request.destination, &artifact.destination) {
+        (Some(request), Some(artifact))
+            if request.collection_id == artifact.collection_id
+                && request.asset_id == artifact.asset_id
+                && request.assignment_id == artifact.assignment_id =>
+        {
+            require_text("run request collection_id", &request.collection_id, 256)?;
+            require_text("run request asset_id", &request.asset_id, 256)?;
+            require_text("run request assignment_id", &request.assignment_id, 1_024)?;
+        }
+        (None, None) => {}
+        _ => bail!("run-request.json destination does not match scanner-run.json"),
+    }
+    match (&request.endpoint, &artifact.endpoint) {
+        (Some(request), Some(artifact))
+            if request.host == artifact.host && request.port == artifact.port =>
+        {
+            require_text("run request endpoint host", &request.host, 253)?;
+            if request.port == 0 {
+                bail!("run request endpoint port cannot be zero");
+            }
+        }
+        (None, None) => {}
+        _ => bail!("run-request.json endpoint does not match scanner-run.json"),
+    }
+    match request.collection_method.as_str() {
+        "ssh" if request.endpoint.is_some() && request.source_artifact_sha256.is_none() => {}
+        "configuration" | "evidence"
+            if request.endpoint.is_none() && request.source_artifact_sha256.is_some() => {}
+        _ => bail!("run-request.json source/endpoint shape does not match collection method"),
+    }
+    if request.collection_method == "configuration"
+        && artifact.decision_traces.iter().any(|trace| {
+            trace.source_artifact_sha256.as_deref() != request.source_artifact_sha256.as_deref()
+        })
+    {
+        bail!("run-request.json source artifact does not match decision traces");
+    }
+    Ok(())
+}
+
+fn validate_decision_traces(
+    manifest: &HandoffManifest,
+    artifact: &StoredRunArtifact,
+    reviews: &[ScannerReview],
+) -> Result<()> {
+    if manifest.schema == HANDOFF_SCHEMA_V2 {
+        if !artifact.decision_traces.is_empty() || artifact.signed_policy_material.is_some() {
+            bail!("v2 scanner-run unexpectedly contains v3 replay trace material");
+        }
+        return Ok(());
+    }
+    if artifact.decision_traces.is_empty()
+        || artifact.decision_traces.len() != reviews.len()
+        || artifact.decision_traces.len() > MAX_RULES
+    {
+        bail!("v3 scanner-run must contain one decision trace per sparse automated review");
+    }
+    let trace_digest = canonical_json_sha256(&artifact.decision_traces)
+        .context("Could not reconstruct decision trace binding")?;
+    if manifest.bindings.decision_traces_sha256.as_deref() != Some(trace_digest.as_str()) {
+        bail!("scanner-run decision traces do not match the manifest binding");
+    }
+    let reviews_by_id: BTreeMap<_, _> = reviews
+        .iter()
+        .map(|review| (review.rule_id.as_str(), review))
+        .collect();
+    let provenance = artifact
+        .checklist
+        .evaluation_provenance
+        .as_ref()
+        .context("scanner-run checklist is missing evaluation provenance")?;
+    let adapter = built_in_target_adapter(&artifact.profile_id)
+        .with_context(|| format!("unknown scanner adapter profile {}", artifact.profile_id))?;
+    let contract_version = artifact
+        .decision_traces
+        .first()
+        .map(|trace| trace.adapter_contract_version)
+        .context("scanner-run has no decision trace contract version")?;
+    let operation_plan = adapter
+        .reconstruct_plan(&artifact.device, contract_version)
+        .context("decision trace operation plan could not be reconstructed")?;
+    if operation_plan.plan_sha256 != artifact.evidence.collection_plan_sha256 {
+        bail!("decision trace operation plan does not match scanner-run evidence binding");
+    }
+    let mut registry = CheckPackRegistry::new();
+    registry
+        .load_embedded()
+        .context("Could not load release-bundled decision definitions")?;
+    let definitions: BTreeMap<_, _> = registry
+        .checks_for_stig_release(&manifest.stig_id, &manifest.stig_revision)
+        .into_iter()
+        .map(|definition| (definition.vuln_id.as_str(), definition))
+        .collect();
+    let mut seen = HashSet::with_capacity(artifact.decision_traces.len());
+    let mut policy_bound = 0usize;
+    for trace in &artifact.decision_traces {
+        let trace_schema_valid = match manifest.schema.as_str() {
+            HANDOFF_SCHEMA_V3 => trace.schema == DECISION_TRACE_SCHEMA_V1,
+            HANDOFF_SCHEMA_V4 => trace.schema == DECISION_TRACE_SCHEMA_V2,
+            _ => false,
+        };
+        if !trace_schema_valid || !seen.insert(trace.rule_id.as_str()) {
+            bail!("scanner-run contains an unsupported or duplicate decision trace");
+        }
+        let definition = definitions.get(trace.vuln_id.as_str()).with_context(|| {
+            format!("decision trace {} has no bundled definition", trace.vuln_id)
+        })?;
+        let expected_json = serde_json::to_value(&definition.expected)
+            .context("Could not reconstruct decision expectation")?;
+        let expected_descriptor = if trace.schema == DECISION_TRACE_SCHEMA_V1 {
+            legacy_expected_descriptor(&expected_json)
+        } else {
+            serde_json::to_string(&expected_json)
+                .context("Could not serialize decision expectation")?
+        };
+        if trace.expected.safe_value.as_deref() != Some(expected_descriptor.as_str())
+            || trace.predicate_sha256
+                != canonical_json_sha256(*definition)
+                    .context("Could not reconstruct decision predicate digest")?
+        {
+            bail!("decision trace expectation or predicate differs from bundled content");
+        }
+        let review = reviews_by_id
+            .get(trace.rule_id.as_str())
+            .with_context(|| format!("decision trace {} is not scanner-owned", trace.rule_id))?;
+        let finding = artifact
+            .checklist
+            .find_by_vuln_id(&trace.vuln_id)
+            .with_context(|| {
+                format!("decision trace {} has no checklist finding", trace.vuln_id)
+            })?;
+        if finding.rule_id != trace.rule_id {
+            bail!("decision trace vulnerability/rule identity binding changed");
+        }
+        let expected_status = match review.result {
+            ScannerReviewResult::Pass => FindingStatus::NotAFinding,
+            ScannerReviewResult::Fail => FindingStatus::Open,
+            ScannerReviewResult::NotApplicable => FindingStatus::NotApplicable,
+        };
+        if trace.finding_status != expected_status
+            || trace.passed != (review.result != ScannerReviewResult::Fail)
+            || trace.stig_id != manifest.stig_id
+            || trace.stig_revision != manifest.stig_revision
+            || trace.profile_id != artifact.profile_id
+            || trace.profile_sha256 != artifact.evidence.profile_sha256
+            || trace.benchmark_sha256 != manifest.bindings.benchmark_sha256
+            || trace.check_pack_sha256 != manifest.bindings.check_pack_sha256
+            || trace.evaluation_plan_sha256 != manifest.bindings.evaluation_plan_sha256
+            || trace.collection_plan_sha256 != artifact.evidence.collection_plan_sha256
+            || trace.evidence_envelope_sha256 != manifest.bindings.evidence_sha256
+            || trace.evidence_envelope_json_sha256 != artifact.evidence.envelope_json_sha256
+            || trace.evidence_envelope_schema != artifact.evidence.envelope_schema
+            || trace.device != artifact.device
+            || trace.device_fingerprint_sha256 != artifact.evidence.device_fingerprint_sha256
+            || trace.evaluator_version != manifest.scanner_version
+            || trace.operations.is_empty()
+            || trace.evaluation_error_class.is_some()
+        {
+            bail!(
+                "decision trace {} does not match immutable run bindings",
+                trace.rule_id
+            );
+        }
+        let expected_build_identity = format!(
+            "automatestig-scanner@{};decision-trace={};parser=1",
+            trace.evaluator_version, trace.schema
+        );
+        if trace.evaluator_id != "automatestig-scanner"
+            || trace.evaluator_build_sha256 != sha256_hex(expected_build_identity.as_bytes())
+        {
+            bail!("decision trace evaluator build identity changed");
+        }
+        let legacy_adapter_contract = matches!(
+            (
+                trace.adapter_contract_version,
+                trace.adapter_contract_schema.as_str(),
+                trace.evidence_envelope_schema.as_str(),
+                trace.device.schema.as_str(),
+                trace.adapter_version.as_str(),
+            ),
+            (
+                TargetAdapterContractVersion::V1,
+                TARGET_ADAPTER_CONTRACT_SCHEMA_V1,
+                TARGET_ADAPTER_EVIDENCE_SCHEMA_V1,
+                DEVICE_FINGERPRINT_SCHEMA_V1,
+                TARGET_ADAPTER_IMPLEMENTATION_VERSION_V1,
+            )
+        );
+        let current_adapter_contract = matches!(
+            (
+                trace.adapter_contract_version,
+                trace.adapter_contract_schema.as_str(),
+                trace.evidence_envelope_schema.as_str(),
+                trace.device.schema.as_str(),
+                trace.adapter_version.as_str(),
+            ),
+            (
+                TargetAdapterContractVersion::V2,
+                TARGET_ADAPTER_CONTRACT_SCHEMA_V2,
+                TARGET_ADAPTER_EVIDENCE_SCHEMA_V2,
+                DEVICE_FINGERPRINT_SCHEMA_V2,
+                TARGET_ADAPTER_IMPLEMENTATION_VERSION_V2,
+            )
+        );
+        if !legacy_adapter_contract && !current_adapter_contract {
+            bail!(
+                "decision trace {} cross-binds adapter wire versions",
+                trace.rule_id
+            );
+        }
+        for operation in &trace.operations {
+            require_sha256("decision trace request_sha256", &operation.request_sha256)?;
+            let planned = operation_plan
+                .operations
+                .iter()
+                .find(|planned| planned.operation_id == operation.operation_id)
+                .with_context(|| {
+                    format!(
+                        "decision trace {} references unplanned operation {}",
+                        trace.rule_id, operation.operation_id
+                    )
+                })?;
+            let expected_request_sha256 = canonical_json_sha256(&planned.request)
+                .context("Could not reconstruct operation request digest")?;
+            let expected_request = request_descriptor(&planned.request)?;
+            if operation.observation_key != planned.data_key
+                || operation.request_sha256 != expected_request_sha256
+                || operation.transport != operation_plan.transport
+                || operation.privilege != planned.privilege
+                || operation.estimated_duration_ms != planned.estimated_duration_ms
+                || operation.maximum_duration_ms != planned.maximum_duration_ms
+                || (trace.schema == DECISION_TRACE_SCHEMA_V1 && !operation.request.is_empty())
+                || (trace.schema == DECISION_TRACE_SCHEMA_V2
+                    && operation.request != expected_request)
+            {
+                bail!(
+                    "decision trace {} operation differs from the release-reviewed plan",
+                    trace.rule_id
+                );
+            }
+            let timing_invalid = if legacy_adapter_contract {
+                operation.estimated_duration_ms != 0 || operation.maximum_duration_ms != 0
+            } else {
+                operation.estimated_duration_ms == 0
+                    || operation.maximum_duration_ms < operation.estimated_duration_ms
+            };
+            if timing_invalid
+                || operation.status != DecisionOperationStatus::Success
+                || operation.truncated
+                || operation.duration_ms.is_none()
+                || operation.observation_sha256.is_none()
+                || operation.error_present
+                || operation.error_class.is_some()
+            {
+                bail!(
+                    "decision trace {} contains incomplete operation linkage",
+                    trace.rule_id
+                );
+            }
+        }
+        for digest in [
+            &trace.profile_sha256,
+            &trace.benchmark_sha256,
+            &trace.benchmark_model_sha256,
+            &trace.check_pack_sha256,
+            &trace.evaluation_plan_sha256,
+            &trace.collection_plan_sha256,
+            &trace.evidence_envelope_sha256,
+            &trace.evidence_envelope_json_sha256,
+            &trace.transport_identity_sha256,
+            &trace.device_fingerprint_sha256,
+            &trace.evaluator_build_sha256,
+            &trace.predicate_sha256,
+            &trace.expected.value_sha256,
+            &trace.observed.value_sha256,
+        ] {
+            require_sha256("decision trace digest", digest)?;
+        }
+        if let Some(source) = trace.source_artifact_sha256.as_deref() {
+            require_sha256("decision trace source artifact", source)?;
+        }
+        if let Some(policy) = &trace.policy {
+            policy_bound += 1;
+            let material = artifact
+                .signed_policy_material
+                .as_ref()
+                .context("policy-bound decision trace has no signed replay material")?;
+            if policy.policy_sha256 != material.policy_sha256
+                || policy.signer_fingerprint != material.signer_fingerprint
+                || policy.signature_sha256 != material.signature_sha256
+                || policy.material_sha256
+                    != material.material_sha256().map_err(anyhow::Error::msg)?
+            {
+                bail!("decision trace signed-policy binding changed");
+            }
+            if trace.schema == DECISION_TRACE_SCHEMA_V2 {
+                validate_policy_parameter_binding(&trace.vuln_id, policy, material)?;
+            }
+        }
+    }
+    match (
+        provenance.organization_policy.as_ref(),
+        artifact.signed_policy_material.as_ref(),
+    ) {
+        (Some(policy), Some(material)) => {
+            if policy_bound == 0
+                || policy.policy_sha256 != material.policy_sha256
+                || policy.signer_fingerprint != material.signer_fingerprint
+            {
+                bail!("scanner-run signed policy provenance is not decision-bound");
+            }
+            material
+                .verify_for_replay(
+                    &manifest.stig_id,
+                    &manifest.stig_revision,
+                    &artifact.device.hostname,
+                )
+                .map_err(anyhow::Error::msg)
+                .context("scanner-run signed policy replay material failed verification")?;
+        }
+        (None, None) => {
+            if policy_bound != 0 {
+                bail!("decision trace asserts policy without checklist provenance");
+            }
+        }
+        _ => bail!("scanner-run policy provenance and replay material must be retained together"),
+    }
+    Ok(())
+}
+
 fn validate_evidence_envelope(
     manifest: &HandoffManifest,
     artifact: &StoredRunArtifact,
+    reviews: &[ScannerReview],
+    cklb: &CklbFile,
+    xccdf: Option<&[u8]>,
     evidence_bytes: Option<&[u8]>,
-) -> Result<()> {
+) -> Result<bool> {
     let Some(evidence_bytes) = evidence_bytes else {
         if manifest.evidence.state != EvidenceState::Purged {
             bail!("retained replay evidence is absent from the handoff");
         }
-        return Ok(());
+        return Ok(false);
     };
     if manifest.evidence.state != EvidenceState::Retained {
         bail!("purged handoff unexpectedly contains replay evidence");
     }
 
-    let envelope: AdapterEvidenceEnvelope = parse_json(evidence_bytes, "evidence-envelope.json")?;
-    if envelope.schema != TARGET_ADAPTER_EVIDENCE_SCHEMA
+    let envelope: AdapterEvidenceEnvelope = parse_json(evidence_bytes, EVIDENCE_ENTRY)?;
+    if envelope.schema != artifact.evidence.envelope_schema
         || envelope.evidence_sha256 != manifest.evidence.sha256
         || envelope.evidence_sha256 != artifact.evidence.evidence_sha256
         || envelope.profile_sha256 != artifact.evidence.profile_sha256
@@ -1032,6 +1413,118 @@ fn validate_evidence_envelope(
         .context("Included replay evidence failed adapter integrity verification")?;
     if !replay.completeness.complete {
         bail!("included replay evidence does not reconstruct a complete collection");
+    }
+    if manifest.schema == HANDOFF_SCHEMA_V2 {
+        // Legacy v2 can prove envelope integrity, but did not carry the trace
+        // contract required to compare a fresh evaluation deterministically.
+        return Ok(false);
+    }
+
+    let origin = match artifact.collection_method.as_str() {
+        "ssh" => EvaluationOrigin::LiveSsh,
+        "evidence" => EvaluationOrigin::EvidenceFile,
+        "configuration" => EvaluationOrigin::ConfigFile,
+        _ => unreachable!("collection method was validated"),
+    };
+    let policy = artifact
+        .signed_policy_material
+        .as_ref()
+        .map(|material| {
+            material.verify_for_replay(
+                &manifest.stig_id,
+                &manifest.stig_revision,
+                &artifact.device.hostname,
+            )
+        })
+        .transpose()
+        .map_err(anyhow::Error::msg)
+        .context("Could not reconstruct verified organization policy for replay")?;
+    let mut evaluation = automatestig_scanner::evaluate_adapter_envelope(
+        &artifact.profile_id,
+        &envelope,
+        origin,
+        policy,
+    )
+    .map_err(anyhow::Error::msg)
+    .context("Retained evidence could not be deterministically re-evaluated")?;
+    if manifest.schema == HANDOFF_SCHEMA_V3 {
+        project_replayed_traces_to_legacy_v1(
+            &mut evaluation.decision_traces,
+            &artifact.decision_traces,
+        )?;
+    }
+    if !evaluation.collection_complete
+        || evaluation.sparse_reviews != reviews
+        || evaluation.decision_traces != artifact.decision_traces
+        || evaluation.signed_policy_material != artifact.signed_policy_material
+        || evaluation.digests.benchmark_sha256 != manifest.bindings.benchmark_sha256
+        || evaluation.digests.check_pack_sha256 != manifest.bindings.check_pack_sha256
+        || evaluation.digests.evaluation_plan_sha256 != manifest.bindings.evaluation_plan_sha256
+        || evaluation.digests.evidence_sha256 != manifest.bindings.evidence_sha256
+        || evaluation.digests.plan_sha256 != artifact.evidence.collection_plan_sha256
+    {
+        bail!("retained-evidence evaluation does not exactly match immutable traces or sparse reviews");
+    }
+
+    // Checklist UUID is an artifact identity, not a predicate input. Rebind
+    // only that producer-assigned identity before comparing the two export
+    // projections semantically against the fresh evaluation.
+    evaluation.checklist.id = artifact.checklist.id;
+    let mut replayed_artifact = artifact.clone();
+    replayed_artifact.checklist = evaluation.checklist;
+    replayed_artifact.reviews = evaluation.sparse_reviews;
+    replayed_artifact.decision_traces = evaluation.decision_traces;
+    validate_cklb(manifest, &replayed_artifact, reviews, cklb)
+        .context("fallback.cklb does not match the retained-evidence replay")?;
+    let xccdf = xccdf.context("v3 retained replay has no XCCDF projection")?;
+    validate_xccdf(manifest, &replayed_artifact, reviews, xccdf)
+        .context("results.xccdf.xml does not match the retained-evidence replay")?;
+    Ok(true)
+}
+
+fn project_replayed_traces_to_legacy_v1(
+    replayed: &mut [DecisionTrace],
+    retained: &[DecisionTrace],
+) -> Result<()> {
+    if replayed.len() != retained.len() {
+        bail!("legacy decision trace replay count changed");
+    }
+    for (replayed, retained) in replayed.iter_mut().zip(retained) {
+        if retained.schema != DECISION_TRACE_SCHEMA_V1
+            || replayed.rule_id != retained.rule_id
+            || replayed.vuln_id != retained.vuln_id
+        {
+            bail!("legacy decision trace replay identity changed");
+        }
+        let current_expected = replayed
+            .expected
+            .safe_value
+            .as_deref()
+            .context("current replay omits its exact expectation")?;
+        let expected_json: serde_json::Value = serde_json::from_str(current_expected)
+            .context("current replay expectation is not canonical JSON")?;
+        replayed.schema = DECISION_TRACE_SCHEMA_V1.to_string();
+        replayed.expected.safe_value = Some(legacy_expected_descriptor(&expected_json));
+        if matches!(
+            replayed.observed.safe_value.as_deref(),
+            Some("compliant" | "finding" | "not_applicable")
+        ) {
+            replayed.observed.safe_value = None;
+        }
+        replayed.evaluator_build_sha256 = sha256_hex(
+            format!(
+                "automatestig-scanner@{};decision-trace={};parser=1",
+                replayed.evaluator_version, DECISION_TRACE_SCHEMA_V1
+            )
+            .as_bytes(),
+        );
+        for operation in &mut replayed.operations {
+            operation.request.clear();
+        }
+        if let Some(policy) = &mut replayed.policy {
+            policy.parameter_id.clear();
+            policy.parameter_value_sha256.clear();
+        }
     }
     Ok(())
 }
@@ -1317,6 +1810,85 @@ fn require_binding(label: &str, actual: Option<&str>, expected: &str) -> Result<
     Ok(())
 }
 
+fn legacy_expected_descriptor(expected: &serde_json::Value) -> String {
+    let kind = expected
+        .get("type")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("unknown");
+    if kind == "match_count_at_least" {
+        expected
+            .get("min")
+            .and_then(serde_json::Value::as_u64)
+            .map(|minimum| format!("match_count_at_least:{minimum}"))
+            .unwrap_or_else(|| kind.to_string())
+    } else {
+        kind.to_string()
+    }
+}
+
+fn request_descriptor(request: &AdapterRequest) -> Result<String> {
+    let value = match request {
+        AdapterRequest::SshCli { command } => command,
+        AdapterRequest::OfflineConfiguration { document_kind } => document_kind,
+        AdapterRequest::NetconfRpc { rpc } => rpc,
+        AdapterRequest::RestconfGet { path } | AdapterRequest::HttpsApiGet { path } => path,
+    };
+    require_text("decision trace operation request", value, 8 * 1024)?;
+    Ok(value.trim().to_string())
+}
+
+fn validate_policy_parameter_binding(
+    vuln_id: &str,
+    binding: &DecisionPolicyBinding,
+    material: &SignedPolicyReplayMaterial,
+) -> Result<()> {
+    let expected_parameter = match vuln_id {
+        "V-215807" => "max_concurrent_management_sessions",
+        "V-215836" => "minimum_logging_buffer_bytes",
+        "V-215838" => "approved_authoritative_ntp_sources",
+        _ => bail!("decision trace has an unreviewed organization-policy rule binding"),
+    };
+    if binding.parameter_id != expected_parameter {
+        bail!("decision trace organization-policy parameter ID changed");
+    }
+    require_sha256(
+        "decision trace policy parameter value",
+        &binding.parameter_value_sha256,
+    )?;
+    let raw = decode_unbounded_lower_hex(&material.policy_bytes_hex, "policy_bytes_hex")?;
+    let document: serde_json::Value =
+        parse_json(&raw, "signed organization policy replay material")?;
+    let value = document
+        .get("rules")
+        .and_then(|rules| rules.get(vuln_id))
+        .and_then(|rule| rule.get(expected_parameter))
+        .context("signed organization policy omits the decision-bound parameter")?;
+    let expected_sha256 = canonical_json_sha256(value)
+        .context("Could not reconstruct signed policy parameter digest")?;
+    if binding.parameter_value_sha256 != expected_sha256 {
+        bail!("decision trace organization-policy parameter digest changed");
+    }
+    Ok(())
+}
+
+fn decode_unbounded_lower_hex(value: &str, label: &str) -> Result<Vec<u8>> {
+    if !value.len().is_multiple_of(2)
+        || !value
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+    {
+        bail!("{label} is not lowercase hexadecimal");
+    }
+    value
+        .as_bytes()
+        .chunks_exact(2)
+        .map(|pair| {
+            let text = std::str::from_utf8(pair).expect("validated hexadecimal is ASCII");
+            u8::from_str_radix(text, 16).context("invalid hexadecimal pair")
+        })
+        .collect()
+}
+
 fn require_text(label: &str, value: &str, max_bytes: usize) -> Result<()> {
     if value.trim().is_empty() {
         bail!("{label} must not be empty");
@@ -1363,7 +1935,7 @@ fn validate_signature_envelope(envelope: &HandoffSignatureEnvelope) -> Result<()
     }
     if !matches!(
         envelope.handoff_schema.as_str(),
-        HANDOFF_SCHEMA_V2 | HANDOFF_SCHEMA_V3
+        HANDOFF_SCHEMA_V2 | HANDOFF_SCHEMA_V3 | HANDOFF_SCHEMA_V4
     ) {
         bail!(
             "handoff signature is bound to unsupported handoff schema {:?}",
@@ -1383,22 +1955,6 @@ fn validate_signature_envelope(envelope: &HandoffSignatureEnvelope) -> Result<()
     require_lower_hex("handoff signature key fingerprint", fingerprint, 32)?;
     decode_lower_hex(&envelope.signature, 64, "handoff signature")?;
     Ok(())
-}
-
-/// A fixed, domain-separated representation avoids JSON canonicalization and
-/// cross-purpose signature reuse. Every variable field has strict grammar
-/// before this statement is constructed.
-fn handoff_signature_statement(envelope: &HandoffSignatureEnvelope) -> Vec<u8> {
-    format!(
-        "{HANDOFF_SIGNATURE_DOMAIN}\nsignature_schema={}\nalgorithm={}\nhandoff_schema={}\nrun_id={}\nhandoff_sha256={}\nsigning_key_fingerprint={}\n",
-        envelope.schema,
-        envelope.algorithm,
-        envelope.handoff_schema,
-        envelope.run_id,
-        envelope.handoff_sha256,
-        envelope.signing_key_fingerprint,
-    )
-    .into_bytes()
 }
 
 fn open_and_hash_handoff(path: &Path) -> Result<(File, u64, String)> {
@@ -1489,6 +2045,7 @@ fn read_regular_file_bounded(path: &Path, max_bytes: u64, label: &str) -> Result
     Ok(bytes)
 }
 
+#[cfg(any(feature = "transition", test))]
 fn write_signature_create_new(path: &Path, bytes: &[u8]) -> Result<()> {
     let mut options = std::fs::OpenOptions::new();
     options.write(true).create_new(true);
@@ -1544,6 +2101,7 @@ fn lower_hex_nibble(byte: u8) -> u8 {
     }
 }
 
+#[cfg(any(feature = "transition", test))]
 fn lower_hex(bytes: &[u8]) -> String {
     let mut output = String::with_capacity(bytes.len() * 2);
     for byte in bytes {
@@ -1710,7 +2268,7 @@ mod tests {
         let envelope_compact = serde_json::to_vec(&envelope).unwrap();
         let envelope_pretty = serde_json::to_vec_pretty(&envelope).unwrap();
         let artifact = StoredRunArtifact {
-            schema: RUN_SCHEMA.to_string(),
+            schema: RUN_SCHEMA_V2.to_string(),
             mode: RunMode::Disconnected,
             profile_id: adapter.target_key().to_string(),
             collection_method: "evidence".to_string(),
@@ -1724,6 +2282,8 @@ mod tests {
             out_of_scope_untouched: Some(0),
             checklist: checklist.clone(),
             reviews: reviews.clone(),
+            decision_traces: Vec::new(),
+            signed_policy_material: None,
             delivery_preview: DeliveryPreview {
                 counts: DeliveryPreviewCounts::default(),
                 reviews: reviews
@@ -1740,7 +2300,7 @@ mod tests {
                 warning: Some("Ownership is checked at the destination".to_string()),
             },
             evidence: StoredEvidenceReference {
-                envelope_schema: TARGET_ADAPTER_EVIDENCE_SCHEMA.to_string(),
+                envelope_schema: TARGET_ADAPTER_EVIDENCE_SCHEMA_V2.to_string(),
                 evidence_sha256: evidence_sha256.clone(),
                 envelope_json_sha256: sha256_hex(&envelope_compact),
                 profile_sha256: plan.profile_sha256.clone(),
@@ -1835,12 +2395,126 @@ mod tests {
 
     fn valid_v3_bundle_entries() -> BTreeMap<String, Vec<u8>> {
         let mut entries = valid_bundle_entries();
-        let artifact: StoredRunArtifact =
+        let envelope: AdapterEvidenceEnvelope =
+            serde_json::from_slice(entries.get(EVIDENCE_ENTRY).unwrap()).unwrap();
+        let evaluation = automatestig_scanner::evaluate_adapter_envelope(
+            &envelope.target_key,
+            &envelope,
+            EvaluationOrigin::EvidenceFile,
+            None,
+        )
+        .unwrap();
+        assert!(evaluation.collection_complete);
+        let mut artifact: StoredRunArtifact =
             serde_json::from_slice(entries.get("scanner-run.json").unwrap()).unwrap();
-        let reviews: Vec<ScannerReview> =
-            serde_json::from_slice(entries.get("sparse-reviews.json").unwrap()).unwrap();
+        artifact.schema = RUN_SCHEMA_V3.to_string();
+        artifact.checklist = evaluation.checklist;
+        artifact.reviews = evaluation.sparse_reviews;
+        artifact.decision_traces = evaluation.decision_traces;
+        for trace in &mut artifact.decision_traces {
+            trace.schema = DECISION_TRACE_SCHEMA_V1.to_string();
+            let definition = {
+                let mut registry = CheckPackRegistry::new();
+                registry.load_embedded().unwrap();
+                registry
+                    .checks_for_stig_release(
+                        &artifact.checklist.stig_info.stig_id,
+                        &format!(
+                            "V{}R{}",
+                            artifact.checklist.stig_info.version,
+                            artifact.checklist.stig_info.release
+                        ),
+                    )
+                    .into_iter()
+                    .find(|definition| definition.vuln_id == trace.vuln_id)
+                    .unwrap()
+                    .clone()
+            };
+            let expected = serde_json::to_value(&definition.expected).unwrap();
+            trace.expected.safe_value = Some(legacy_expected_descriptor(&expected));
+            trace.evaluator_build_sha256 = sha256_hex(
+                format!(
+                    "automatestig-scanner@{};decision-trace={};parser=1",
+                    trace.evaluator_version, DECISION_TRACE_SCHEMA_V1
+                )
+                .as_bytes(),
+            );
+            for operation in &mut trace.operations {
+                operation.request.clear();
+            }
+            if let Some(policy) = &mut trace.policy {
+                policy.parameter_id.clear();
+                policy.parameter_value_sha256.clear();
+            }
+        }
+        artifact.signed_policy_material = evaluation.signed_policy_material;
+        artifact.manual_untouched = evaluation.summary.manual_not_reviewed;
+        artifact.delivery_preview = DeliveryPreview {
+            counts: DeliveryPreviewCounts::default(),
+            reviews: artifact
+                .reviews
+                .iter()
+                .map(|review| DeliveryPreviewReview {
+                    rule_id: review.rule_id.clone(),
+                    result: review.result,
+                    change: "handoff".to_string(),
+                    evidence_summary: review
+                        .detail
+                        .lines()
+                        .map(str::trim)
+                        .find(|line| !line.is_empty())
+                        .unwrap_or("Evidence-bound scanner determination")
+                        .chars()
+                        .take(240)
+                        .collect(),
+                })
+                .collect(),
+            manual_untouched: artifact.manual_untouched,
+            out_of_scope_untouched: artifact.out_of_scope_untouched,
+            warning: Some("Ownership is checked at the destination".to_string()),
+        };
+        let reviews = artifact.reviews.clone();
+        let scanner_run = serde_json::to_vec_pretty(&artifact).unwrap();
+        let compact_result = serde_json::to_vec(&artifact).unwrap();
+        let sparse_reviews = serde_json::to_vec_pretty(&reviews).unwrap();
+        let review_ids: HashSet<_> = reviews
+            .iter()
+            .map(|review| review.rule_id.as_str())
+            .collect();
+        let mut fallback_checklist = artifact.checklist.clone();
+        fallback_checklist.findings.retain(|finding| {
+            review_ids.contains(finding.rule_id.as_str())
+                && finding.status != FindingStatus::NotReviewed
+                && matches!(
+                    finding.source,
+                    FindingSource::Automated | FindingSource::Evidence
+                )
+        });
+        let fallback = automatestig_parsers::cklb::write_cklb(&fallback_checklist)
+            .unwrap()
+            .into_bytes();
+        entries.insert(SCANNER_RUN_ENTRY.to_string(), scanner_run.clone());
+        entries.insert(SPARSE_REVIEWS_ENTRY.to_string(), sparse_reviews.clone());
+        entries.insert(FALLBACK_CKLB_ENTRY.to_string(), fallback.clone());
         let mut manifest: serde_json::Value =
             serde_json::from_slice(entries.get("manifest.json").unwrap()).unwrap();
+        manifest["scanner_version"] = serde_json::json!(env!("CARGO_PKG_VERSION"));
+        manifest["scope"]["scanner_owned_reviews_included"] = serde_json::json!(reviews.len());
+        manifest["scope"]["unreviewed_and_non_scanner_rules_excluded"] =
+            serde_json::json!(artifact
+                .checklist
+                .findings
+                .len()
+                .saturating_sub(reviews.len()));
+        manifest["bindings"]["result_sha256"] = serde_json::json!(sha256_hex(&compact_result));
+        manifest["bindings"]["benchmark_sha256"] =
+            serde_json::json!(evaluation.digests.benchmark_sha256.clone());
+        manifest["bindings"]["check_pack_sha256"] =
+            serde_json::json!(evaluation.digests.check_pack_sha256.clone());
+        manifest["bindings"]["evaluation_plan_sha256"] =
+            serde_json::json!(evaluation.digests.evaluation_plan_sha256.clone());
+        manifest["bindings"]["decision_traces_sha256"] =
+            serde_json::json!(canonical_json_sha256(&artifact.decision_traces).unwrap());
         let provenance = XccdfResultsProvenance {
             run_id: manifest["run_id"].as_str().unwrap().to_string(),
             profile_id: artifact.profile_id.clone(),
@@ -1863,7 +2537,7 @@ mod tests {
                 .as_str()
                 .unwrap()
                 .to_string(),
-            benchmark_model_sha256: digest('4'),
+            benchmark_model_sha256: evaluation.digests.benchmark_model_sha256.clone(),
             source_archive_sha256: digest('5'),
             source_xccdf_sha256: digest('6'),
             check_pack_sha256: manifest["bindings"]["check_pack_sha256"]
@@ -1892,6 +2566,9 @@ mod tests {
             write_sparse_xccdf_1_2_results(&artifact.checklist, &rule_ids, &provenance).unwrap();
         entries.insert(XCCDF_ENTRY.to_string(), xccdf.clone());
         manifest["schema"] = serde_json::json!(HANDOFF_SCHEMA_V3);
+        manifest["files"][SCANNER_RUN_ENTRY] = serde_json::json!(sha256_hex(&scanner_run));
+        manifest["files"][SPARSE_REVIEWS_ENTRY] = serde_json::json!(sha256_hex(&sparse_reviews));
+        manifest["files"][FALLBACK_CKLB_ENTRY] = serde_json::json!(sha256_hex(&fallback));
         manifest["files"][XCCDF_ENTRY] = serde_json::json!(sha256_hex(&xccdf));
         let manifest = serde_json::to_vec_pretty(&manifest).unwrap();
         entries.insert("manifest.json".to_string(), manifest.clone());
@@ -1903,6 +2580,103 @@ mod tests {
             }))
             .unwrap(),
         );
+        entries
+    }
+
+    fn valid_v3_purged_bundle_entries() -> BTreeMap<String, Vec<u8>> {
+        let mut entries = valid_v3_bundle_entries();
+        entries.remove(EVIDENCE_ENTRY);
+        let mut manifest: serde_json::Value =
+            serde_json::from_slice(entries.get(MANIFEST_ENTRY).unwrap()).unwrap();
+        manifest["files"]
+            .as_object_mut()
+            .unwrap()
+            .remove(EVIDENCE_ENTRY);
+        manifest["evidence"]["state"] = serde_json::json!("purged");
+        manifest["evidence"]["included"] = serde_json::json!(false);
+        manifest["evidence"]["purged_at"] = serde_json::json!("2026-06-01T00:00:00Z");
+        manifest["evidence"]["purge_reason"] = serde_json::json!("retention_expired");
+        let manifest = serde_json::to_vec_pretty(&manifest).unwrap();
+        entries.insert(MANIFEST_ENTRY.to_string(), manifest.clone());
+        entries.insert(
+            INTEGRITY_ENTRY.to_string(),
+            serde_json::to_vec_pretty(&serde_json::json!({
+                "algorithm": "sha256",
+                "manifest_sha256": sha256_hex(&manifest),
+            }))
+            .unwrap(),
+        );
+        entries
+    }
+
+    fn valid_v4_bundle_entries() -> BTreeMap<String, Vec<u8>> {
+        let mut entries = valid_v3_bundle_entries();
+        let envelope: AdapterEvidenceEnvelope =
+            serde_json::from_slice(entries.get(EVIDENCE_ENTRY).unwrap()).unwrap();
+        let evaluation = automatestig_scanner::evaluate_adapter_envelope(
+            &envelope.target_key,
+            &envelope,
+            EvaluationOrigin::EvidenceFile,
+            None,
+        )
+        .unwrap();
+        let mut artifact: StoredRunArtifact =
+            serde_json::from_slice(entries.get(SCANNER_RUN_ENTRY).unwrap()).unwrap();
+        artifact.decision_traces = evaluation.decision_traces;
+        let scanner_run = serde_json::to_vec_pretty(&artifact).unwrap();
+        let result_sha256 = sha256_hex(&serde_json::to_vec(&artifact).unwrap());
+        entries.insert(SCANNER_RUN_ENTRY.to_string(), scanner_run);
+
+        let request = HandoffRunRequest {
+            collection_method: artifact.collection_method.clone(),
+            credential_persisted: false,
+            destination: None,
+            device_fingerprint_sha256: artifact.evidence.device_fingerprint_sha256.clone(),
+            endpoint: None,
+            mode: "disconnected".to_string(),
+            pilot_acknowledged: true,
+            plan_sha256: artifact.evidence.collection_plan_sha256.clone(),
+            profile_id: artifact.profile_id.clone(),
+            schema: RUN_REQUEST_SCHEMA_V1.to_string(),
+            source_artifact_sha256: Some(digest('d')),
+        };
+        let request_bytes = serde_json::to_vec(&request).unwrap();
+        let request_sha256 = sha256_hex(&request_bytes);
+        entries.insert(RUN_REQUEST_ENTRY.to_string(), request_bytes);
+
+        let mut manifest: serde_json::Value =
+            serde_json::from_slice(entries.get(MANIFEST_ENTRY).unwrap()).unwrap();
+        let prior_request_sha256 = manifest["bindings"]["request_sha256"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        let prior_result_sha256 = manifest["bindings"]["result_sha256"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        manifest["schema"] = serde_json::json!(HANDOFF_SCHEMA_V4);
+        manifest["bindings"]["request_sha256"] = serde_json::json!(request_sha256);
+        manifest["bindings"]["result_sha256"] = serde_json::json!(result_sha256);
+        manifest["bindings"]["decision_traces_sha256"] =
+            serde_json::json!(canonical_json_sha256(&artifact.decision_traces).unwrap());
+        entries.insert(
+            MANIFEST_ENTRY.to_string(),
+            serde_json::to_vec_pretty(&manifest).unwrap(),
+        );
+        if let Some(xccdf) = entries.get_mut(XCCDF_ENTRY) {
+            let xml = String::from_utf8(xccdf.clone()).unwrap();
+            *xccdf = xml
+                .replace(
+                    &prior_request_sha256,
+                    manifest["bindings"]["request_sha256"].as_str().unwrap(),
+                )
+                .replace(
+                    &prior_result_sha256,
+                    manifest["bindings"]["result_sha256"].as_str().unwrap(),
+                )
+                .into_bytes();
+        }
+        rebind_manifest(&mut entries);
         entries
     }
 
@@ -1942,12 +2716,10 @@ mod tests {
     }
 
     fn test_cli(root: &Path) -> crate::Cli {
-        crate::Cli {
-            verbose: false,
-            library: Some(root.join("managed-library").display().to_string()),
-            db: Some(root.join("managed-data.db").display().to_string()),
-            command: crate::Commands::Status,
-        }
+        crate::Cli::command_test_fixture(
+            root.join("managed-library").display().to_string(),
+            root.join("managed-data.db").display().to_string(),
+        )
     }
 
     fn signed_fixture(
@@ -1979,9 +2751,11 @@ mod tests {
             serde_json::from_slice(entries.get("manifest.json").unwrap()).unwrap();
         for name in [
             "scanner-run.json",
+            RUN_REQUEST_ENTRY,
             "sparse-reviews.json",
             "fallback.cklb",
             XCCDF_ENTRY,
+            EVIDENCE_ENTRY,
         ] {
             let Some(bytes) = entries.get(name) else {
                 continue;
@@ -1998,6 +2772,36 @@ mod tests {
         entries.insert("integrity.json".to_string(), integrity);
     }
 
+    fn rebind_scanner_result(entries: &mut BTreeMap<String, Vec<u8>>) {
+        let artifact: StoredRunArtifact =
+            serde_json::from_slice(entries.get(SCANNER_RUN_ENTRY).unwrap()).unwrap();
+        let scanner_run = serde_json::to_vec_pretty(&artifact).unwrap();
+        entries.insert(SCANNER_RUN_ENTRY.to_string(), scanner_run);
+        let mut manifest: serde_json::Value =
+            serde_json::from_slice(entries.get(MANIFEST_ENTRY).unwrap()).unwrap();
+        let prior_result_sha256 = manifest["bindings"]["result_sha256"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        let result_sha256 = sha256_hex(&serde_json::to_vec(&artifact).unwrap());
+        manifest["bindings"]["result_sha256"] = serde_json::json!(result_sha256);
+        if let Some(xccdf) = entries.get_mut(XCCDF_ENTRY) {
+            let xml = String::from_utf8(xccdf.clone()).unwrap();
+            *xccdf = xml
+                .replace(&prior_result_sha256, &result_sha256)
+                .into_bytes();
+        }
+        if manifest["bindings"].get("decision_traces_sha256").is_some() {
+            manifest["bindings"]["decision_traces_sha256"] =
+                serde_json::json!(canonical_json_sha256(&artifact.decision_traces).unwrap());
+        }
+        entries.insert(
+            MANIFEST_ENTRY.to_string(),
+            serde_json::to_vec_pretty(&manifest).unwrap(),
+        );
+        rebind_manifest(entries);
+    }
+
     #[test]
     fn valid_bundle_verifies_integrity_but_not_authenticity() {
         let verified = verify_entries(&valid_bundle_entries()).unwrap();
@@ -2005,21 +2809,57 @@ mod tests {
         assert_eq!(verified.review_count, 1);
         assert_eq!(verified.stig_revision, "V3R3");
         assert!(verified.evidence_included);
+        assert!(!verified.replay_verified);
         assert!(!verified.producer_authenticity_verified);
+    }
+
+    #[test]
+    fn handoff_and_scanner_run_schema_versions_must_match() {
+        let mut v2_entries = valid_bundle_entries();
+        let mut v2_artifact: StoredRunArtifact =
+            serde_json::from_slice(v2_entries.get(SCANNER_RUN_ENTRY).unwrap()).unwrap();
+        v2_artifact.schema = RUN_SCHEMA_V3.to_string();
+        v2_entries.insert(
+            SCANNER_RUN_ENTRY.to_string(),
+            serde_json::to_vec_pretty(&v2_artifact).unwrap(),
+        );
+        rebind_scanner_result(&mut v2_entries);
+        let error = verify_entries(&v2_entries).unwrap_err().to_string();
+        assert!(
+            error.contains("handoff/scanner-run schema version mismatch"),
+            "{error}"
+        );
+
+        let mut v3_entries = valid_v3_bundle_entries();
+        let mut v3_artifact: StoredRunArtifact =
+            serde_json::from_slice(v3_entries.get(SCANNER_RUN_ENTRY).unwrap()).unwrap();
+        v3_artifact.schema = RUN_SCHEMA_V2.to_string();
+        v3_entries.insert(
+            SCANNER_RUN_ENTRY.to_string(),
+            serde_json::to_vec_pretty(&v3_artifact).unwrap(),
+        );
+        rebind_scanner_result(&mut v3_entries);
+        let error = verify_entries(&v3_entries).unwrap_err().to_string();
+        assert!(
+            error.contains("handoff/scanner-run schema version mismatch"),
+            "{error}"
+        );
     }
 
     #[test]
     fn v3_bundle_verifies_sparse_xccdf_and_legacy_v2_remains_supported() {
         let verified = verify_entries(&valid_v3_bundle_entries()).unwrap();
         assert_eq!(verified.handoff_schema, HANDOFF_SCHEMA_V3);
-        assert_eq!(verified.review_count, 1);
+        assert_eq!(verified.review_count, 6);
+        assert!(verified.replay_verified);
 
         let mut entries = valid_v3_bundle_entries();
         let xml = String::from_utf8(entries.remove(XCCDF_ENTRY).unwrap())
             .unwrap()
-            .replace(
-                "<cdf:result>fail</cdf:result>",
+            .replacen(
                 "<cdf:result>pass</cdf:result>",
+                "<cdf:result>fail</cdf:result>",
+                1,
             );
         entries.insert(XCCDF_ENTRY.to_string(), xml.into_bytes());
         rebind_manifest(&mut entries);
@@ -2028,11 +2868,132 @@ mod tests {
     }
 
     #[test]
+    fn v4_recalculates_canonical_run_request_and_rejects_semantic_rebinding() {
+        let verified = verify_entries(&valid_v4_bundle_entries()).unwrap();
+        assert_eq!(verified.handoff_schema, HANDOFF_SCHEMA_V4);
+        assert!(verified.replay_verified);
+
+        let mut entries = valid_v4_bundle_entries();
+        let mut request: HandoffRunRequest =
+            serde_json::from_slice(entries.get(RUN_REQUEST_ENTRY).unwrap()).unwrap();
+        request.profile_id = "netapp_ontap9".to_string();
+        let bytes = serde_json::to_vec(&request).unwrap();
+        let digest = sha256_hex(&bytes);
+        entries.insert(RUN_REQUEST_ENTRY.to_string(), bytes);
+        let mut manifest: serde_json::Value =
+            serde_json::from_slice(entries.get(MANIFEST_ENTRY).unwrap()).unwrap();
+        let prior_digest = manifest["bindings"]["request_sha256"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        manifest["bindings"]["request_sha256"] = serde_json::json!(digest);
+        if let Some(xccdf) = entries.get_mut(XCCDF_ENTRY) {
+            *xccdf = String::from_utf8(xccdf.clone())
+                .unwrap()
+                .replace(
+                    &prior_digest,
+                    manifest["bindings"]["request_sha256"].as_str().unwrap(),
+                )
+                .into_bytes();
+        }
+        entries.insert(
+            MANIFEST_ENTRY.to_string(),
+            serde_json::to_vec_pretty(&manifest).unwrap(),
+        );
+        rebind_manifest(&mut entries);
+
+        let error = verify_entries(&entries).unwrap_err().to_string();
+        assert!(
+            error.contains("does not match the scanner-run immutable input bindings"),
+            "{error}"
+        );
+    }
+
+    #[test]
+    fn retained_v3_replay_rejects_fully_rehashed_trace_tampering() {
+        let mut entries = valid_v3_bundle_entries();
+        let mut artifact: StoredRunArtifact =
+            serde_json::from_slice(entries.get(SCANNER_RUN_ENTRY).unwrap()).unwrap();
+        let original = artifact.decision_traces[0].observed.safe_value.clone();
+        artifact.decision_traces[0].observed.safe_value = match original.as_deref() {
+            Some("true") => Some("false".to_string()),
+            Some("false") => Some("true".to_string()),
+            Some(_) => None,
+            None => Some("tampered".to_string()),
+        };
+        entries.insert(
+            SCANNER_RUN_ENTRY.to_string(),
+            serde_json::to_vec_pretty(&artifact).unwrap(),
+        );
+        rebind_scanner_result(&mut entries);
+
+        let error = verify_entries(&entries).unwrap_err().to_string();
+        assert!(
+            error.contains("does not exactly match immutable traces"),
+            "{error}"
+        );
+    }
+
+    #[test]
+    fn retained_v3_replay_rejects_incomplete_envelope_even_when_file_hash_is_rebased() {
+        let mut entries = valid_v3_bundle_entries();
+        let mut envelope: serde_json::Value =
+            serde_json::from_slice(entries.get(EVIDENCE_ENTRY).unwrap()).unwrap();
+        envelope["complete"] = serde_json::json!(false);
+        entries.insert(
+            EVIDENCE_ENTRY.to_string(),
+            serde_json::to_vec_pretty(&envelope).unwrap(),
+        );
+        rebind_manifest(&mut entries);
+        let error = verify_entries(&entries).unwrap_err().to_string();
+        assert!(
+            error.contains("included replay evidence does not match"),
+            "{error}"
+        );
+    }
+
+    #[test]
+    fn shared_producer_manifest_serialization_is_verifier_compatible() {
+        let mut entries = valid_v3_bundle_entries();
+        let original_manifest = entries.get(MANIFEST_ENTRY).unwrap().clone();
+        let manifest = parse_handoff_manifest(&original_manifest).unwrap();
+        let canonical_manifest =
+            automatestig_core::selected_run_handoff::serialize_handoff_manifest(&manifest).unwrap();
+
+        // The shared typed producer preserves the legacy json! byte ordering,
+        // so existing integrity records and detached-signature workflows do
+        // not change merely because the schema acquired a shared owner.
+        assert_eq!(canonical_manifest, original_manifest);
+        let integrity = automatestig_core::selected_run_handoff::serialize_integrity_record(
+            &automatestig_core::selected_run_handoff::IntegrityRecord {
+                algorithm: INTEGRITY_ALGORITHM_SHA256.to_string(),
+                manifest_sha256: sha256_hex(&canonical_manifest),
+            },
+        )
+        .unwrap();
+        entries.insert(MANIFEST_ENTRY.to_string(), canonical_manifest);
+        entries.insert(INTEGRITY_ENTRY.to_string(), integrity);
+
+        let verified = verify_entries(&entries).unwrap();
+        assert_eq!(verified.handoff_schema, HANDOFF_SCHEMA_V3);
+        assert_eq!(verified.review_count, 6);
+    }
+
+    #[test]
     fn purged_result_only_bundle_remains_verifiable() {
         let verified = verify_entries(&valid_purged_bundle_entries()).unwrap();
         assert_eq!(verified.review_count, 1);
         assert!(!verified.evidence_included);
         assert!(!verified.producer_authenticity_verified);
+    }
+
+    #[test]
+    fn purged_v3_verifies_integrity_and_projections_without_claiming_replay() {
+        let verified = verify_entries(&valid_v3_purged_bundle_entries()).unwrap();
+        assert_eq!(verified.handoff_schema, HANDOFF_SCHEMA_V3);
+        assert_eq!(verified.review_count, 6);
+        assert!(!verified.evidence_included);
+        assert!(!verified.replay_verified);
     }
 
     #[test]

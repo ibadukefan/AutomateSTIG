@@ -17,6 +17,14 @@ byte-for-byte identical to the bounded artifact downloaded from its recorded
 successful workflow run at `approved_commit`. A plausible run ID beside a
 self-authored `passed: true` file is not release evidence.
 
+`first_use_ux` is also mandatory. Its protected artifact records the exact
+approved commit, intended release tag, GUI digest, prepared-scenario hashes,
+complete representative cohort, and exact unaided numerator/full denominator.
+The observer must dispatch the protected workflow and a distinct named
+approver must approve its environment. Unit tests validate this gate's
+mechanics; they cannot substitute for the external human study described in
+`docs/first-use-ux-study.md`.
+
 Content signing has the same connected provenance requirement, but binds three
 fixed files: `content-signing-ceremony.json`, the exact 32-byte
 `content-signing-public-key.pub`, and
@@ -26,6 +34,27 @@ fixed-name artifact from the successful Content Signing Ceremony run at
 `approved_commit`, verifies that its actor was the recorded key custodian, and
 checks that the protected environment's sole user reviewer is the distinct
 recorded content approver.
+
+Producer-authenticated selected-run handoff is a separate mandatory release
+proof. Record the five fixed files from the successful protected Handoff
+Receiver Ceremony run in `producer_authenticated_handoff`:
+
+- `handoff-receiver-ceremony.json`;
+- the raw 32-byte `handoff-producer-public-key.pub` trust anchor;
+- the exact bounded `producer-handoff.zip` emitted by the approved-commit STIG
+  Manager staging run;
+- `producer-handoff.zip.signature.json`; and
+- `handoff-key-custody-ceremony.json`, containing non-secret custody references
+  and explicit confirmation that private key material entered neither CI nor
+  the scanner runtime.
+
+The validator re-hashes all five, binds the ZIP to the STIG Manager acceptance
+artifact and approved commit, checks the strict detached-sidecar contract and
+producer-key fingerprint, and requires a distinct key custodian and receiver
+approver. Connected validation also requires byte-for-byte equality with the
+sole protected workflow artifact, an identified protected receiver, successful
+trusted CLI verification, and the exact non-bypassable environment approval.
+An integrity-only `verify-handoff` result does not satisfy this gate.
 
 Record the merged code pull-request number and the two reviewers' exact GitHub
 logins and approval timestamps. Connected tag validation queries GitHub and
@@ -45,7 +74,10 @@ write. An exact remote no-op may be verified separately. The recovery gate
 uses `v1` and its protected artifact contains both the JSON result and the
 complete log bound by `output_sha256`.
 
-Do not invent a pass, reviewer, fingerprint, or evidence digest. ONTAP,
-FreeBSD, Cisco IOS-XE, STIG Viewer, STIG Manager, and recovery must all have
-real passing artifacts no older than 90 days. A risk acceptance documents a
-residual risk; it cannot replace a required gate.
+Do not invent a pass, reviewer, participant, fingerprint, or evidence digest.
+ONTAP, FreeBSD, Cisco IOS-XE, STIG Viewer, STIG Manager, first-use UX, and
+recovery must all have real passing artifacts no older than 90 days. The
+content and handoff signing ceremonies also require their real protected human
+roles and public artifacts; no repository fixture or offline validation makes
+a release eligible. A risk acceptance documents a residual risk; it cannot
+replace a required gate.

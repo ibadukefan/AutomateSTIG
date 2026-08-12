@@ -919,13 +919,7 @@ fn load_offline_pack_files_locked(root: &Path, directory: &str) -> Result<Vec<Of
                     ))
                 })?
                 .to_path_buf();
-            let relative = relative_path.to_str().ok_or_else(|| {
-                Error::LibraryError(format!(
-                    "offline-pack content path is not UTF-8: {}",
-                    relative_path.display()
-                ))
-            })?;
-            validate_managed_file_path(relative)?;
+            validate_managed_filesystem_path(&relative_path)?;
             let bytes = fs::read(&path)?;
             Ok(OfflinePackFile {
                 relative_path,
@@ -1384,10 +1378,39 @@ fn read_index(root: &Path) -> Result<LibraryIndex> {
 }
 
 fn validate_managed_file_path(relative: &str) -> Result<PathBuf> {
-    let path = Path::new(relative);
-    if path.is_absolute() || relative.contains('\\') || relative.contains('\0') {
+    if relative.contains('\\') || relative.contains('\0') {
         return Err(Error::LibraryError(format!(
             "unsafe ancillary library path: {relative}"
+        )));
+    }
+    validate_managed_path_components(Path::new(relative), relative)
+}
+
+/// Validate a path already resolved from the local filesystem.
+///
+/// Unlike package/import member names, native filesystem paths use the host
+/// separator (`\\` on Windows). Component validation remains identical, and a
+/// backslash is still rejected on hosts where it would be a literal filename
+/// character rather than a separator.
+fn validate_managed_filesystem_path(relative: &Path) -> Result<PathBuf> {
+    let display = relative.to_str().ok_or_else(|| {
+        Error::LibraryError(format!(
+            "offline-pack content path is not UTF-8: {}",
+            relative.display()
+        ))
+    })?;
+    if display.contains('\0') || (std::path::MAIN_SEPARATOR != '\\' && display.contains('\\')) {
+        return Err(Error::LibraryError(format!(
+            "unsafe ancillary library path: {display}"
+        )));
+    }
+    validate_managed_path_components(relative, display)
+}
+
+fn validate_managed_path_components(path: &Path, display: &str) -> Result<PathBuf> {
+    if path.is_absolute() {
+        return Err(Error::LibraryError(format!(
+            "unsafe ancillary library path: {display}"
         )));
     }
     let components = path.components().collect::<Vec<_>>();
@@ -1397,7 +1420,7 @@ fn validate_managed_file_path(relative: &str) -> Result<PathBuf> {
             .any(|component| !matches!(component, Component::Normal(value) if !value.is_empty()))
     {
         return Err(Error::LibraryError(format!(
-            "ancillary library path is not canonical: {relative}"
+            "ancillary library path is not canonical: {display}"
         )));
     }
     let Some(Component::Normal(top)) = components.first() else {
@@ -1408,7 +1431,7 @@ fn validate_managed_file_path(relative: &str) -> Result<PathBuf> {
         Some("answer_templates" | "custom_checks" | "auto_check_packs" | "reviewed_check_packs")
     ) {
         return Err(Error::LibraryError(format!(
-            "ancillary file is outside a managed content directory: {relative}"
+            "ancillary file is outside a managed content directory: {display}"
         )));
     }
     Ok(path.to_path_buf())
@@ -1528,6 +1551,18 @@ mod tests {
 
     fn injected_storage_error(message: &str) -> Error {
         Error::Io(std::io::Error::other(message.to_string()))
+    }
+
+    #[test]
+    fn managed_paths_distinguish_native_filesystem_and_portable_import_separators() {
+        let native = PathBuf::from("answer_templates").join("site.yaml");
+        assert_eq!(validate_managed_filesystem_path(&native).unwrap(), native);
+
+        let error = validate_managed_file_path(r"answer_templates\site.yaml").unwrap_err();
+        assert!(
+            error.to_string().contains("unsafe ancillary library path"),
+            "{error}"
+        );
     }
 
     #[test]

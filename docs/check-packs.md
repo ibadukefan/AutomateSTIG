@@ -36,7 +36,9 @@ Fields:
     "type": "matches",
     "pattern": "(?i)timeout[^0-9]*(1[0-5]|[1-9])\\b"
   },
-  "description": "CLI session timeout must be 15 minutes or less"
+  "description": "CLI session timeout must be 15 minutes or less",
+  "implementation_class": "legacy_declarative",
+  "introduction_release": "0.3"
 }
 ```
 
@@ -47,6 +49,14 @@ Fields:
 - `check`
 - `expected`
 - `description`, optional
+- `implementation_class`: `declarative_predicate`, `legacy_declarative`, or
+  `reviewed_imperative`; executable release content may not leave this unknown
+- `introduction_release`: numeric `MAJOR.MINOR` or `MAJOR.MINOR.PATCH`
+
+Previously reviewed legacy extension packs that omit both metadata fields still
+deserialize as `unknown` for compatibility. Scorecards do not infer their class
+or release, and supported release content cannot ship that way. All three v0.3
+bundled packs have been explicitly classified per automation.
 
 ## Platforms
 
@@ -66,6 +76,7 @@ Checks use a snake_case `type` tag.
 
 | Type | Fields |
 | --- | --- |
+| `predicate` | `program`; versioned pure AST over collected evidence |
 | `config_line` | `pattern`, optional `context`, optional `should_exist` |
 | `command` | `command`, optional `pattern` and `is_regex` |
 | `all` | `checks` |
@@ -92,6 +103,96 @@ Checks use a snake_case `type` tag.
 The three policy-bound Cisco checks fail closed unless evaluation includes a
 currently effective, asset-bound organization policy with a trusted Ed25519
 signature.
+
+## Predicate programs
+
+`predicate` is the preferred implementation for new automation that fits the
+bounded language. It consumes only an existing adapter observation or an
+operator-supplied `network_config`; it cannot open a file, invoke a process,
+run a shell command, or make a network request. Remote collection is a separate
+allowlisted adapter boundary. A predicate observation key does not itself
+authorize collection.
+
+Only `schema_version: 1` is executable. The evaluator caps input at 4 MiB,
+tables at 4,096 rows and 128 columns, parsed documents at 16,384 nodes and depth
+24, and the predicate AST at 256 nodes and depth 16. Strings, sets, selectors,
+compound children, and structured-configuration depth have smaller explicit
+limits. Numeric ordering/ranges reject non-finite values and magnitudes above
+JSON's exact-integer range (`9,007,199,254,740,991`). Missing required values,
+invalid types, duplicate fields/headers,
+malformed JSON, inconsistent tables/configuration indentation, collection
+errors, and limit violations produce an evaluation error (Not Reviewed), never
+a passing result. Evaluation also stops at 100,000 predicate steps, preventing
+nested row quantifiers from multiplying otherwise-valid inputs into unbounded
+work.
+
+The v1 AST supports:
+
+- `present`;
+- `equal` between literals and/or fields;
+- `in_set`;
+- inclusive or exclusive `numeric_range` bounds;
+- numeric or string `ordered` relationships between literals and/or fields;
+- cross-field constraints by using two field operands; and
+- `table_rows` with `every`, `any`, or `none` quantifiers and row-relative
+  selectors.
+
+Inputs may be `text`, `json`, unique `key_value` lines, a
+`delimited_table`, or `structured_config`. Structured configuration becomes a
+hierarchy of `{text, tokens, children}` nodes, so block and child-line meaning
+can be evaluated through `table_rows` rather than substring heuristics.
+
+Example: every normalized row must be enabled, use an approved role, remain in
+the idle-time range, and configure at least its required minimum:
+
+```json
+{
+  "type": "predicate",
+  "program": {
+    "schema_version": 1,
+    "source": {"type": "observation", "key": "normalized-users"},
+    "input": {"type": "json"},
+    "predicate": {
+      "op": "table_rows",
+      "rows": {"pointer": "/rows"},
+      "quantifier": "every",
+      "predicate": {
+        "op": "all",
+        "predicates": [
+          {
+            "op": "equal",
+            "left": {"type": "value", "value": {"scope": "current_row", "pointer": "/enabled"}},
+            "right": {"type": "literal", "value": true}
+          },
+          {
+            "op": "in_set",
+            "value": {"type": "value", "value": {"scope": "current_row", "pointer": "/role"}},
+            "values": ["admin", "audit"]
+          },
+          {
+            "op": "numeric_range",
+            "value": {"type": "value", "value": {"scope": "current_row", "pointer": "/idle_minutes"}},
+            "min": 1,
+            "max": 15
+          },
+          {
+            "op": "ordered",
+            "left": {"type": "value", "value": {"scope": "current_row", "pointer": "/required"}},
+            "relation": "less_than_or_equal",
+            "right": {"type": "value", "value": {"scope": "current_row", "pointer": "/configured"}},
+            "value_type": "number"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Predicate checks use `expected: {"type":"is_true"}`. Any intended negation
+must be visible in the AST. Reviewed imperative variants remain available for
+checks whose platform semantics cannot be represented safely and completely by
+v1; their `implementation_class` must say `reviewed_imperative`.
 
 ## Expected Results
 

@@ -1,0 +1,64 @@
+name: First-Use UX Study
+
+on:
+  workflow_dispatch:
+    inputs:
+      study_record:
+        description: Absolute runner path to the completed, redacted study JSON
+        required: true
+      product_version:
+        description: Exact intended release tag (for example v0.3.0)
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  first-use-ux-study:
+    name: Independent first-use study attestation
+    runs-on: [self-hosted, linux, x64, automatestig-first-use-study]
+    environment: first-use-ux-study
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30
+        with:
+          toolchain: 1.94.0
+      - name: Build the exact default-feature-free GUI under study
+        run: >-
+          cargo build --release --locked --no-default-features
+          --bin automatestig-gui
+      - name: Validate and normalize the complete study record
+        shell: bash
+        env:
+          STUDY_RECORD: ${{ inputs.study_record }}
+          PRODUCT_VERSION: ${{ inputs.product_version }}
+        run: |
+          set -euo pipefail
+          python3 scripts/validate-release-evidence.py \
+            --repo-root . \
+            --first-use-study "$STUDY_RECORD" \
+            --source-commit "$GITHUB_SHA" \
+            --product-version "$PRODUCT_VERSION" \
+            --gui-binary target/release/automatestig-gui \
+            --output first-use-ux-study.json
+      - name: Upload the honest pass or failure record
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: first-use-ux-study-${{ github.run_id }}
+          path: first-use-ux-study.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Require at least 80 percent unaided completion for release use
+        shell: bash
+        env:
+          PRODUCT_VERSION: ${{ inputs.product_version }}
+        run: |
+          set -euo pipefail
+          python3 scripts/validate-release-evidence.py \
+            --repo-root . \
+            --first-use-study first-use-ux-study.json \
+            --source-commit "$GITHUB_SHA" \
+            --product-version "$PRODUCT_VERSION" \
+            --gui-binary target/release/automatestig-gui \
+            --require-passed

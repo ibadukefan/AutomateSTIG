@@ -1,9 +1,10 @@
 # Key Management And Signing Ceremony
 
-AutomateSTIG uses three separate trust domains. Never reuse key material across
+AutomateSTIG uses four separate trust domains. Never reuse key material across
 them:
 
 - Ed25519 content keys sign `.stigpack` manifests.
+- Ed25519 handoff producer keys sign detached selected-run ZIP identities.
 - GitHub OIDC/Sigstore identities attest release archives in CI.
 - SSH host keys authenticate scanned devices; SSH user keys authenticate the
   least-privileged collector account.
@@ -32,10 +33,12 @@ The custodian and content approver must be different people for release content.
 2. Explicitly generate the key pair, then create a small test pack:
 
    ```bash
-   automatestig generate-signing-key \
+   cargo run --release --features maintainer --bin automatestig -- \
+     generate-signing-key \
      --output /secure-media/automatestig-content-2026q3.key
 
-   automatestig build-pack --id ceremony-test --name "Ceremony Test" \
+   cargo run --release --features maintainer --bin automatestig -- \
+     build-pack --id ceremony-test --name "Ceremony Test" \
      --version 1.0.0 --source ./approved-content \
      --output ceremony-test.stigpack \
      --signing-key /secure-media/automatestig-content-2026q3.key
@@ -132,3 +135,20 @@ channel. Trust-on-first-use is allowed only during a recorded enrollment window
 and is disabled afterward. Collector user keys must be dedicated, read-only,
 unshared, owner-readable only, and rotated on staff/role change. A changed host
 key stops collection until the device owner confirms it out of band.
+
+## Selected-run handoff producer keys
+
+Handoff producer keys are a fourth, independent Ed25519 trust domain. They
+authenticate a detached selected-run ZIP sidecar and must not be reused for
+STIG packs or organization policies. The protected `automatestig-transition`
+binary is built from reviewed source on the signing host; the analyst product
+archive deliberately excludes it.
+
+For release qualification, retain only a non-secret custody record with opaque
+asset/media references, the approved commit, public-key fingerprint, and exact
+ZIP/sidecar hashes. The record must explicitly state that private key material
+entered neither CI nor the scanner runtime, that private bytes were not copied
+into evidence, and that revocation status was checked. A distinct receiver
+approver authenticates the public key out of band and authorizes the protected
+receiver verification. See [Handoff Verification](handoff-verification.md) for
+the required approved-commit round trip and fixed release artifact contract.

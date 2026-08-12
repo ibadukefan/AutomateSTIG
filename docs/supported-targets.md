@@ -1,18 +1,20 @@
-# Supported Targets
+# Declared Scanner Targets
 
-AutomateSTIG v0.3 ships immutable scanner profiles for exactly three target
-families. Each profile binds the supported-target contract, exact benchmark
+AutomateSTIG v0.3 ships immutable **experimental pilot** scanner profiles for exactly three target
+families. Each profile binds the declared-target contract, exact benchmark
 subset, executable check pack, coverage manifest, target adapter, compatibility
 grammar, and integrity hashes. A fresh install does not require a normal user
 to import raw XCCDF or manage the general DISA catalog.
 
-The machine-readable contract is `content/supported-targets.json`; CI fails if
+The historical machine-readable filename is `content/supported-targets.json`; CI fails if
 an extra pack is shipped or a required pack/coverage manifest is missing.
+That filename defines the closed declared scope; it is not evidence that a
+profile has passed its external release-acceptance gates.
 
 | Target | Benchmark contract | Evidence input | Compatibility rejection boundary | Automated | Manual | Reviewed profile | Full benchmark | Release acceptance gate |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
-| NetApp ONTAP 9.x | `NetApp_ONTAP_DSC_9-x_STIG` V2R4 | Read-only SSH/native adapter evidence; legacy strict evidence v2 during migration | ONTAP major 9 | 15 | 7 | 22 | 29 | Real or licensed ONTAP target |
-| FreeBSD / DISA GPOS | `General_Purpose_Operating_System` V3R3 | Read-only SSH/native adapter evidence; legacy strict evidence v2 during migration | FreeBSD major 13–14 | 6 | 24 | 30 | 203 | Real FreeBSD host or VM kernel |
+| NetApp ONTAP 9.x | `NetApp_ONTAP_DSC_9-x_STIG` V2R4 | Read-only SSH collected into native `AdapterEvidenceEnvelope` | ONTAP major 9 | 15 | 7 | 22 | 29 | Real or licensed ONTAP target |
+| FreeBSD / DISA GPOS | `General_Purpose_Operating_System` V3R3 | Read-only SSH collected into native `AdapterEvidenceEnvelope` | FreeBSD major 13–14 | 6 | 24 | 30 | 203 | Real FreeBSD host or VM kernel |
 | Cisco IOS-XE Router NDM | `Cisco_IOS-XE_Router_NDM_STIG` V3R7 | Complete running configuration plus signed organization policy | IOS-XE major 17 | 33 | 9 | 42 | 42 | Representative IOS-XE device configuration |
 | **Total** |  |  |  | **54** | **40** | **94** | **274** |  |
 
@@ -34,9 +36,9 @@ authorized release gate records those exact versions.
 
 AutomateSTIG v0.3 does not scan general Linux distributions, AIX, Solaris,
 Windows, Cisco NX-OS, or Cisco ASA. Cisco IOS-XE is evaluated from a running
-configuration, not by the SSH collector. CKL/CKLB parsing, legacy XCCDF import,
-and STIG Manager interoperability may process content for other products, but
-those format operations are not scanner support.
+configuration, not by the SSH collector. Supplemental CKLB/XCCDF handoff
+projections, preserved-data migration parsing, and STIG Manager lookup do not
+expand scanner support to other products.
 
 STIG Manager content or assignment breadth also does not expand scanner scope.
 The GUI shows unsupported assignments with a reason and does not attempt to
@@ -53,3 +55,9 @@ contract and schema, a curated pack, exact coverage inventory, deterministic
 fixtures, a live acceptance gate, operator documentation, and independent
 software/security review. Merely adding JSON beneath `content/check_packs` is
 rejected by CI.
+
+The [target-adapter scaffolder](adapter-tooling.md) can create a deterministic
+candidate contract and fail-closed fixture skeleton, but it deliberately does
+not edit this declared-target contract or claim live acceptance. The companion
+scorecard generator inventories the current declared targets without promoting
+their source metadata into a release claim.

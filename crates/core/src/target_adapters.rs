@@ -10,7 +10,7 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use sha2::{Digest, Sha256};
 use thiserror::Error;
 
@@ -23,11 +23,17 @@ use crate::remote::{
 };
 use crate::scanner_profiles::{bundled_scanner_profile, ScannerProfile, ScannerProfileReadiness};
 
-pub const TARGET_ADAPTER_CONTRACT_SCHEMA: &str = "automatestig-target-adapter/v1";
-pub const TARGET_ADAPTER_EVIDENCE_SCHEMA: &str = "automatestig-adapter-evidence/v1";
+pub const TARGET_ADAPTER_CONTRACT_SCHEMA_V1: &str = "automatestig-target-adapter/v1";
+pub const TARGET_ADAPTER_CONTRACT_SCHEMA_V2: &str = "automatestig-target-adapter/v2";
+pub const TARGET_ADAPTER_CONTRACT_SCHEMA: &str = TARGET_ADAPTER_CONTRACT_SCHEMA_V2;
+pub const TARGET_ADAPTER_EVIDENCE_SCHEMA_V1: &str = "automatestig-adapter-evidence/v1";
+pub const TARGET_ADAPTER_EVIDENCE_SCHEMA_V2: &str = "automatestig-adapter-evidence/v2";
+pub const TARGET_ADAPTER_EVIDENCE_SCHEMA: &str = TARGET_ADAPTER_EVIDENCE_SCHEMA_V2;
 pub const NORMALIZED_OBSERVATIONS_SCHEMA: &str = "automatestig-observations/v1";
 
-const ADAPTER_IMPLEMENTATION_VERSION: &str = "1.0.0";
+pub const TARGET_ADAPTER_IMPLEMENTATION_VERSION_V1: &str = "1.0.0";
+pub const TARGET_ADAPTER_IMPLEMENTATION_VERSION_V2: &str = "2.0.0";
+pub const TARGET_ADAPTER_IMPLEMENTATION_VERSION: &str = TARGET_ADAPTER_IMPLEMENTATION_VERSION_V2;
 const OFFLINE_RUNNING_CONFIG_REQUEST: &str = "cisco_ios_xe_complete_running_configuration";
 const ENVELOPE_ERROR_KEY: &str = "__adapter_envelope__";
 
@@ -53,6 +59,7 @@ pub enum TargetAdapterError {
 #[serde(rename_all = "snake_case")]
 pub enum TargetAdapterContractVersion {
     V1,
+    V2,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -65,17 +72,177 @@ pub enum TransportKind {
     HttpsApi,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
+pub const DEVICE_FINGERPRINT_SCHEMA_V1: &str = "automatestig.device-fingerprint.v1";
+pub const DEVICE_FINGERPRINT_SCHEMA_V2: &str = "automatestig.device-fingerprint.v2";
+pub const DEVICE_FINGERPRINT_SCHEMA: &str = DEVICE_FINGERPRINT_SCHEMA_V2;
+
+fn default_device_fingerprint_schema() -> String {
+    DEVICE_FINGERPRINT_SCHEMA_V1.to_string()
+}
+
+const fn is_zero_u64(value: &u64) -> bool {
+    *value == 0
+}
+
+/// Deployment context observed strongly enough to bind into a scanner run.
+/// `UnknownOrUnsupported` is an explicit result, never an omitted guess.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum OperatingContext {
+    StandaloneSystem,
+    VirtualMachine,
+    NetworkAppliance,
+    StorageCluster,
+    ClusterMember,
+    #[default]
+    UnknownOrUnsupported,
+}
+
+/// High-availability role observed for the evaluated identity.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum HaRole {
+    Known,
+    Standalone,
+    Active,
+    Passive,
+    ClusterMember,
+    #[default]
+    UnknownOrUnsupported,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DeviceFingerprint {
+    pub schema: String,
     pub hostname: String,
     pub vendor: String,
     pub product_family: String,
     pub software_version: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub model: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub serial_number: Option<String>,
+    pub operating_context: OperatingContext,
+    pub ha_role: HaRole,
+}
+
+/// Exact legacy wire/hash DTO. V1 fingerprints predate an explicit schema,
+/// operating context, and HA role, so none of those fields may enter a V1
+/// digest merely because a newer reader supplied defaults.
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct DeviceFingerprintV1 {
+    hostname: String,
+    vendor: String,
+    product_family: String,
+    software_version: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    model: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    serial_number: Option<String>,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct DeviceFingerprintV2 {
+    schema: String,
+    hostname: String,
+    vendor: String,
+    product_family: String,
+    software_version: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    model: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    serial_number: Option<String>,
+    operating_context: OperatingContext,
+    ha_role: HaRole,
+}
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum DeviceFingerprintWire {
+    V2(DeviceFingerprintV2),
+    V1(DeviceFingerprintV1),
+}
+
+impl Serialize for DeviceFingerprint {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match self.schema.as_str() {
+            DEVICE_FINGERPRINT_SCHEMA_V1 => {
+                if self.operating_context != OperatingContext::UnknownOrUnsupported
+                    || self.ha_role != HaRole::UnknownOrUnsupported
+                {
+                    return Err(serde::ser::Error::custom(
+                        "v1 device fingerprints cannot serialize v2 context fields",
+                    ));
+                }
+                DeviceFingerprintV1 {
+                    hostname: self.hostname.clone(),
+                    vendor: self.vendor.clone(),
+                    product_family: self.product_family.clone(),
+                    software_version: self.software_version.clone(),
+                    model: self.model.clone(),
+                    serial_number: self.serial_number.clone(),
+                }
+                .serialize(serializer)
+            }
+            DEVICE_FINGERPRINT_SCHEMA_V2 => DeviceFingerprintV2 {
+                schema: self.schema.clone(),
+                hostname: self.hostname.clone(),
+                vendor: self.vendor.clone(),
+                product_family: self.product_family.clone(),
+                software_version: self.software_version.clone(),
+                model: self.model.clone(),
+                serial_number: self.serial_number.clone(),
+                operating_context: self.operating_context,
+                ha_role: self.ha_role,
+            }
+            .serialize(serializer),
+            _ => Err(serde::ser::Error::custom(
+                "unsupported device fingerprint schema",
+            )),
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for DeviceFingerprint {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Ok(match DeviceFingerprintWire::deserialize(deserializer)? {
+            DeviceFingerprintWire::V1(v1) => Self {
+                schema: default_device_fingerprint_schema(),
+                hostname: v1.hostname,
+                vendor: v1.vendor,
+                product_family: v1.product_family,
+                software_version: v1.software_version,
+                model: v1.model,
+                serial_number: v1.serial_number,
+                operating_context: OperatingContext::UnknownOrUnsupported,
+                ha_role: HaRole::UnknownOrUnsupported,
+            },
+            DeviceFingerprintWire::V2(v2) => {
+                if v2.schema != DEVICE_FINGERPRINT_SCHEMA_V2 {
+                    return Err(serde::de::Error::custom(
+                        "explicit device fingerprint schema must be v2",
+                    ));
+                }
+                Self {
+                    schema: v2.schema,
+                    hostname: v2.hostname,
+                    vendor: v2.vendor,
+                    product_family: v2.product_family,
+                    software_version: v2.software_version,
+                    model: v2.model,
+                    serial_number: v2.serial_number,
+                    operating_context: v2.operating_context,
+                    ha_role: v2.ha_role,
+                }
+            }
+        })
+    }
 }
 
 impl DeviceFingerprint {
@@ -86,13 +253,22 @@ impl DeviceFingerprint {
         software_version: impl Into<String>,
     ) -> Self {
         Self {
+            schema: DEVICE_FINGERPRINT_SCHEMA.to_string(),
             hostname: hostname.into(),
             vendor: vendor.into(),
             product_family: product_family.into(),
             software_version: software_version.into(),
             model: None,
             serial_number: None,
+            operating_context: OperatingContext::UnknownOrUnsupported,
+            ha_role: HaRole::UnknownOrUnsupported,
         }
+    }
+
+    pub fn with_context(mut self, operating_context: OperatingContext, ha_role: HaRole) -> Self {
+        self.operating_context = operating_context;
+        self.ha_role = ha_role;
+        self
     }
 
     pub fn sha256(&self) -> AdapterResult<String> {
@@ -137,6 +313,12 @@ pub struct CompatibilityMatrix {
     /// broad testing; profile readiness remains authoritative.
     #[serde(default)]
     pub accepted_tested_versions: Vec<String>,
+    /// Fail before an operation plan is issued when the adapter contract
+    /// cannot safely evaluate an unknown deployment context or HA role.
+    #[serde(default)]
+    pub requires_known_operating_context: bool,
+    #[serde(default)]
+    pub requires_known_ha_role: bool,
 }
 
 impl CompatibilityMatrix {
@@ -176,6 +358,20 @@ impl CompatibilityMatrix {
                 ),
             });
         }
+        if self.requires_known_operating_context
+            && fingerprint.operating_context == OperatingContext::UnknownOrUnsupported
+        {
+            return Err(TargetAdapterError::UnsupportedDevice {
+                target_key: self.target_key.clone(),
+                reason: "the adapter contract requires a known operating context".to_string(),
+            });
+        }
+        if self.requires_known_ha_role && fingerprint.ha_role == HaRole::UnknownOrUnsupported {
+            return Err(TargetAdapterError::UnsupportedDevice {
+                target_key: self.target_key.clone(),
+                reason: "the adapter contract requires a known HA role".to_string(),
+            });
+        }
         Ok(())
     }
 }
@@ -208,6 +404,13 @@ pub struct ReadOnlyOperation {
     pub accepted_status_codes: Vec<u32>,
     pub output_policy: OutputPolicy,
     pub description: String,
+    /// Expected steady-state duration shown during preflight. This is not a
+    /// timeout and is covered by the immutable plan digest.
+    #[serde(default, skip_serializing_if = "is_zero_u64")]
+    pub estimated_duration_ms: u64,
+    /// Hard per-operation collection ceiling applied by the transport owner.
+    #[serde(default, skip_serializing_if = "is_zero_u64")]
+    pub maximum_duration_ms: u64,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -225,11 +428,13 @@ pub struct ReadOnlyOperationPlan {
     pub check_pack_sha256: String,
     pub legacy_collection_plan_sha256: String,
     pub operations: Vec<ReadOnlyOperation>,
+    #[serde(default, skip_serializing_if = "is_zero_u64")]
+    pub total_expected_duration_ms: u64,
     pub plan_sha256: String,
 }
 
 #[derive(Serialize)]
-struct PlanDigestBinding<'a> {
+struct PlanDigestBindingV2<'a> {
     schema: &'a str,
     contract_version: TargetAdapterContractVersion,
     adapter_id: &'a str,
@@ -242,28 +447,151 @@ struct PlanDigestBinding<'a> {
     check_pack_sha256: &'a str,
     legacy_collection_plan_sha256: &'a str,
     operations: &'a [ReadOnlyOperation],
+    total_expected_duration_ms: u64,
+}
+
+#[derive(Serialize)]
+struct ReadOnlyOperationV1<'a> {
+    operation_id: &'a str,
+    data_key: &'a str,
+    request: &'a AdapterRequest,
+    privilege: AdapterPrivilege,
+    accepted_status_codes: &'a [u32],
+    output_policy: OutputPolicy,
+    description: &'a str,
+}
+
+#[derive(Serialize)]
+struct PlanDigestBindingV1<'a> {
+    schema: &'a str,
+    contract_version: TargetAdapterContractVersion,
+    adapter_id: &'a str,
+    adapter_version: &'a str,
+    target_key: &'a str,
+    transport: TransportKind,
+    read_only: bool,
+    device_fingerprint_sha256: &'a str,
+    profile_sha256: &'a str,
+    check_pack_sha256: &'a str,
+    legacy_collection_plan_sha256: &'a str,
+    operations: Vec<ReadOnlyOperationV1<'a>>,
 }
 
 impl ReadOnlyOperationPlan {
     fn compute_sha256(&self) -> AdapterResult<String> {
-        canonical_json_sha256(&PlanDigestBinding {
-            schema: &self.schema,
-            contract_version: self.contract_version,
-            adapter_id: &self.adapter_id,
-            adapter_version: &self.adapter_version,
-            target_key: &self.target_key,
-            transport: self.transport,
-            read_only: self.read_only,
-            device_fingerprint_sha256: &self.device_fingerprint_sha256,
-            profile_sha256: &self.profile_sha256,
-            check_pack_sha256: &self.check_pack_sha256,
-            legacy_collection_plan_sha256: &self.legacy_collection_plan_sha256,
-            operations: &self.operations,
-        })
+        match self.contract_version {
+            TargetAdapterContractVersion::V1 => canonical_json_sha256(&PlanDigestBindingV1 {
+                schema: &self.schema,
+                contract_version: self.contract_version,
+                adapter_id: &self.adapter_id,
+                adapter_version: &self.adapter_version,
+                target_key: &self.target_key,
+                transport: self.transport,
+                read_only: self.read_only,
+                device_fingerprint_sha256: &self.device_fingerprint_sha256,
+                profile_sha256: &self.profile_sha256,
+                check_pack_sha256: &self.check_pack_sha256,
+                legacy_collection_plan_sha256: &self.legacy_collection_plan_sha256,
+                operations: self
+                    .operations
+                    .iter()
+                    .map(|operation| ReadOnlyOperationV1 {
+                        operation_id: &operation.operation_id,
+                        data_key: &operation.data_key,
+                        request: &operation.request,
+                        privilege: operation.privilege,
+                        accepted_status_codes: &operation.accepted_status_codes,
+                        output_policy: operation.output_policy,
+                        description: &operation.description,
+                    })
+                    .collect(),
+            }),
+            TargetAdapterContractVersion::V2 => canonical_json_sha256(&PlanDigestBindingV2 {
+                schema: &self.schema,
+                contract_version: self.contract_version,
+                adapter_id: &self.adapter_id,
+                adapter_version: &self.adapter_version,
+                target_key: &self.target_key,
+                transport: self.transport,
+                read_only: self.read_only,
+                device_fingerprint_sha256: &self.device_fingerprint_sha256,
+                profile_sha256: &self.profile_sha256,
+                check_pack_sha256: &self.check_pack_sha256,
+                legacy_collection_plan_sha256: &self.legacy_collection_plan_sha256,
+                operations: &self.operations,
+                total_expected_duration_ms: self.total_expected_duration_ms,
+            }),
+        }
         .map_err(internal_error)
     }
 
     pub fn validate_digest(&self) -> AdapterResult<()> {
+        let version_pair_valid = matches!(
+            (
+                self.contract_version,
+                self.schema.as_str(),
+                self.adapter_version.as_str()
+            ),
+            (
+                TargetAdapterContractVersion::V1,
+                TARGET_ADAPTER_CONTRACT_SCHEMA_V1,
+                TARGET_ADAPTER_IMPLEMENTATION_VERSION_V1
+            ) | (
+                TargetAdapterContractVersion::V2,
+                TARGET_ADAPTER_CONTRACT_SCHEMA_V2,
+                TARGET_ADAPTER_IMPLEMENTATION_VERSION_V2
+            )
+        );
+        if !version_pair_valid {
+            return Err(TargetAdapterError::InvalidContract(
+                "operation-plan schema, contract version, and adapter version do not match"
+                    .to_string(),
+            ));
+        }
+        if self.operations.is_empty() {
+            return Err(TargetAdapterError::InvalidContract(
+                "operation plan contains no operations".to_string(),
+            ));
+        }
+        match self.contract_version {
+            TargetAdapterContractVersion::V1 => {
+                if self.total_expected_duration_ms != 0
+                    || self.operations.iter().any(|operation| {
+                        operation.estimated_duration_ms != 0 || operation.maximum_duration_ms != 0
+                    })
+                {
+                    return Err(TargetAdapterError::InvalidContract(
+                        "v1 operation plans must not contain v2 timing fields".to_string(),
+                    ));
+                }
+            }
+            TargetAdapterContractVersion::V2 => {
+                if self.operations.iter().any(|operation| {
+                    operation.estimated_duration_ms == 0
+                        || operation.maximum_duration_ms < operation.estimated_duration_ms
+                }) {
+                    return Err(TargetAdapterError::InvalidContract(
+                        "operation plan contains an invalid estimated/maximum duration".to_string(),
+                    ));
+                }
+                let expected_total =
+                    self.operations.iter().try_fold(0u64, |total, operation| {
+                        total
+                            .checked_add(operation.estimated_duration_ms)
+                            .ok_or_else(|| {
+                                TargetAdapterError::InvalidContract(
+                                    "operation-plan expected duration overflowed".to_string(),
+                                )
+                            })
+                    })?;
+                if self.total_expected_duration_ms != expected_total {
+                    return Err(TargetAdapterError::InvalidContract(
+                        "operation-plan total expected duration does not match its operations"
+                            .to_string(),
+                    ));
+                }
+            }
+        }
         validate_lowercase_sha256("plan_sha256", &self.plan_sha256)?;
         let actual = self.compute_sha256()?;
         if self.plan_sha256 != actual {
@@ -354,6 +682,8 @@ impl BuiltInTargetAdapter {
                 product_family: "ONTAP".to_string(),
                 software_version: SoftwareVersionConstraint::Major { major: 9 },
                 accepted_tested_versions: Vec::new(),
+                requires_known_operating_context: false,
+                requires_known_ha_role: false,
             },
             Self::FreeBsdGpos => CompatibilityMatrix {
                 target_key: self.target_key().to_string(),
@@ -364,6 +694,8 @@ impl BuiltInTargetAdapter {
                     maximum: 14,
                 },
                 accepted_tested_versions: Vec::new(),
+                requires_known_operating_context: false,
+                requires_known_ha_role: false,
             },
             Self::CiscoIosXeRouterNdm => CompatibilityMatrix {
                 target_key: self.target_key().to_string(),
@@ -371,6 +703,8 @@ impl BuiltInTargetAdapter {
                 product_family: "IOS-XE".to_string(),
                 software_version: SoftwareVersionConstraint::Major { major: 17 },
                 accepted_tested_versions: Vec::new(),
+                requires_known_operating_context: false,
+                requires_known_ha_role: false,
             },
         }
     }
@@ -379,9 +713,9 @@ impl BuiltInTargetAdapter {
         let profile = self.profile()?;
         Ok(TargetAdapterDescriptor {
             schema: TARGET_ADAPTER_CONTRACT_SCHEMA.to_string(),
-            contract_version: TargetAdapterContractVersion::V1,
+            contract_version: TargetAdapterContractVersion::V2,
             adapter_id: self.adapter_id().to_string(),
-            adapter_version: ADAPTER_IMPLEMENTATION_VERSION.to_string(),
+            adapter_version: TARGET_ADAPTER_IMPLEMENTATION_VERSION.to_string(),
             target_key: self.target_key().to_string(),
             display_name: profile.display_name().to_string(),
             platform: profile.platform(),
@@ -394,10 +728,38 @@ impl BuiltInTargetAdapter {
     }
 
     pub fn preview(self, fingerprint: &DeviceFingerprint) -> AdapterResult<ReadOnlyOperationPlan> {
+        self.preview_for_contract(fingerprint, TargetAdapterContractVersion::V2)
+    }
+
+    /// Reconstruct the exact historical operation plan needed to verify a
+    /// retained evidence envelope. New collection must use [`Self::preview`]
+    /// and therefore always emits the current contract.
+    pub fn reconstruct_plan(
+        self,
+        fingerprint: &DeviceFingerprint,
+        contract_version: TargetAdapterContractVersion,
+    ) -> AdapterResult<ReadOnlyOperationPlan> {
+        self.preview_for_contract(fingerprint, contract_version)
+    }
+
+    fn preview_for_contract(
+        self,
+        fingerprint: &DeviceFingerprint,
+        contract_version: TargetAdapterContractVersion,
+    ) -> AdapterResult<ReadOnlyOperationPlan> {
         self.compatibility().validate(fingerprint)?;
+        let expected_fingerprint_schema = match contract_version {
+            TargetAdapterContractVersion::V1 => DEVICE_FINGERPRINT_SCHEMA_V1,
+            TargetAdapterContractVersion::V2 => DEVICE_FINGERPRINT_SCHEMA_V2,
+        };
+        if fingerprint.schema != expected_fingerprint_schema {
+            return Err(TargetAdapterError::InvalidContract(format!(
+                "{contract_version:?} operation plans require {expected_fingerprint_schema}"
+            )));
+        }
         let profile = self.profile()?;
         let collection_plan = self.collection_plan(profile)?;
-        let operations = collection_plan
+        let mut operations = collection_plan
             .commands
             .iter()
             .map(|command| self.operation(command))
@@ -408,12 +770,38 @@ impl BuiltInTargetAdapter {
                 self.target_key()
             )));
         }
+        let (schema, adapter_version, total_expected_duration_ms) = match contract_version {
+            TargetAdapterContractVersion::V1 => {
+                for operation in &mut operations {
+                    operation.estimated_duration_ms = 0;
+                    operation.maximum_duration_ms = 0;
+                }
+                (
+                    TARGET_ADAPTER_CONTRACT_SCHEMA_V1,
+                    TARGET_ADAPTER_IMPLEMENTATION_VERSION_V1,
+                    0,
+                )
+            }
+            TargetAdapterContractVersion::V2 => (
+                TARGET_ADAPTER_CONTRACT_SCHEMA_V2,
+                TARGET_ADAPTER_IMPLEMENTATION_VERSION_V2,
+                operations.iter().try_fold(0u64, |total, operation| {
+                    total
+                        .checked_add(operation.estimated_duration_ms)
+                        .ok_or_else(|| {
+                            TargetAdapterError::InvalidContract(
+                                "operation-plan expected duration overflowed".to_string(),
+                            )
+                        })
+                })?,
+            ),
+        };
 
         let mut plan = ReadOnlyOperationPlan {
-            schema: TARGET_ADAPTER_CONTRACT_SCHEMA.to_string(),
-            contract_version: TargetAdapterContractVersion::V1,
+            schema: schema.to_string(),
+            contract_version,
             adapter_id: self.adapter_id().to_string(),
-            adapter_version: ADAPTER_IMPLEMENTATION_VERSION.to_string(),
+            adapter_version: adapter_version.to_string(),
             target_key: self.target_key().to_string(),
             transport: self.transport(),
             read_only: true,
@@ -422,6 +810,7 @@ impl BuiltInTargetAdapter {
             check_pack_sha256: profile.digests().check_pack_sha256().to_string(),
             legacy_collection_plan_sha256: collection_plan.digest(),
             operations,
+            total_expected_duration_ms,
             plan_sha256: String::new(),
         };
         plan.plan_sha256 = plan.compute_sha256()?;
@@ -430,7 +819,8 @@ impl BuiltInTargetAdapter {
 
     pub fn replay(self, envelope: &AdapterEvidenceEnvelope) -> AdapterResult<AdapterReplay> {
         validate_envelope_header(self, envelope)?;
-        let expected_plan = self.preview(&envelope.device)?;
+        let expected_plan =
+            self.preview_for_contract(&envelope.device, envelope.contract_version)?;
         validate_envelope_bindings(&expected_plan, envelope)?;
         validate_transport_identity(envelope.transport, &envelope.transport_identity)?;
         validate_envelope_digest(envelope)?;
@@ -593,33 +983,38 @@ impl BuiltInTargetAdapter {
     }
 
     fn operation(self, command: &CollectionCommand) -> ReadOnlyOperation {
-        let (request, privilege, description) = match self.transport() {
-            TransportKind::SshCli => {
-                let advanced = command.command.starts_with("set -privilege advanced ");
-                (
-                    AdapterRequest::SshCli {
-                        command: command.command.clone(),
+        let (request, privilege, description, estimated_duration_ms, maximum_duration_ms) =
+            match self.transport() {
+                TransportKind::SshCli => {
+                    let advanced = command.command.starts_with("set -privilege advanced ");
+                    (
+                        AdapterRequest::SshCli {
+                            command: command.command.clone(),
+                        },
+                        if advanced {
+                            AdapterPrivilege::AdvancedReadOnly
+                        } else {
+                            AdapterPrivilege::ReadOnly
+                        },
+                        format!(
+                            "Collect reviewed read-only observation '{}'",
+                            command.data_key
+                        ),
+                        2_000,
+                        30_000,
+                    )
+                }
+                TransportKind::OfflineConfig => (
+                    AdapterRequest::OfflineConfiguration {
+                        document_kind: OFFLINE_RUNNING_CONFIG_REQUEST.to_string(),
                     },
-                    if advanced {
-                        AdapterPrivilege::AdvancedReadOnly
-                    } else {
-                        AdapterPrivilege::ReadOnly
-                    },
-                    format!(
-                        "Collect reviewed read-only observation '{}'",
-                        command.data_key
-                    ),
-                )
-            }
-            TransportKind::OfflineConfig => (
-                AdapterRequest::OfflineConfiguration {
-                    document_kind: OFFLINE_RUNNING_CONFIG_REQUEST.to_string(),
-                },
-                AdapterPrivilege::OperatorProvidedArtifact,
-                "Read a complete operator-provided IOS-XE running configuration".to_string(),
-            ),
-            _ => unreachable!("built-in adapters currently use SSH CLI or offline config"),
-        };
+                    AdapterPrivilege::OperatorProvidedArtifact,
+                    "Read a complete operator-provided IOS-XE running configuration".to_string(),
+                    500,
+                    30_000,
+                ),
+                _ => unreachable!("built-in adapters currently use SSH CLI or offline config"),
+            };
         ReadOnlyOperation {
             operation_id: command.data_key.clone(),
             data_key: command.data_key.clone(),
@@ -628,6 +1023,8 @@ impl BuiltInTargetAdapter {
             accepted_status_codes: command.accepted_exit_codes.clone(),
             output_policy: command.output_policy,
             description,
+            estimated_duration_ms,
+            maximum_duration_ms,
         }
     }
 }
@@ -825,6 +1222,16 @@ impl AdapterEvidenceEnvelope {
         operations: Vec<AdapterOperationEvidence>,
     ) -> AdapterResult<Self> {
         plan.validate_digest()?;
+        let expected_fingerprint_schema = match plan.contract_version {
+            TargetAdapterContractVersion::V1 => DEVICE_FINGERPRINT_SCHEMA_V1,
+            TargetAdapterContractVersion::V2 => DEVICE_FINGERPRINT_SCHEMA_V2,
+        };
+        if device.schema != expected_fingerprint_schema {
+            return Err(TargetAdapterError::InvalidEvidence(format!(
+                "operation plan and device fingerprint schema versions do not match: {:?} requires {expected_fingerprint_schema}",
+                plan.contract_version
+            )));
+        }
         let fingerprint_sha256 = device.sha256()?;
         if fingerprint_sha256 != plan.device_fingerprint_sha256 {
             return Err(TargetAdapterError::InvalidEvidence(
@@ -841,7 +1248,11 @@ impl AdapterEvidenceEnvelope {
                     .is_some_and(|record| record_is_complete(record, operation))
             });
         let mut envelope = Self {
-            schema: TARGET_ADAPTER_EVIDENCE_SCHEMA.to_string(),
+            schema: match plan.contract_version {
+                TargetAdapterContractVersion::V1 => TARGET_ADAPTER_EVIDENCE_SCHEMA_V1,
+                TargetAdapterContractVersion::V2 => TARGET_ADAPTER_EVIDENCE_SCHEMA_V2,
+            }
+            .to_string(),
             contract_version: plan.contract_version,
             adapter_id: plan.adapter_id.clone(),
             adapter_version: plan.adapter_version.clone(),
@@ -971,6 +1382,23 @@ struct ReplayDigestBinding<'a> {
 }
 
 fn validate_fingerprint_fields(fingerprint: &DeviceFingerprint) -> AdapterResult<()> {
+    if !matches!(
+        fingerprint.schema.as_str(),
+        DEVICE_FINGERPRINT_SCHEMA_V1 | DEVICE_FINGERPRINT_SCHEMA_V2
+    ) {
+        return Err(TargetAdapterError::InvalidFingerprint(format!(
+            "unsupported device fingerprint schema {}",
+            fingerprint.schema
+        )));
+    }
+    if fingerprint.schema == DEVICE_FINGERPRINT_SCHEMA_V1
+        && (fingerprint.operating_context != OperatingContext::UnknownOrUnsupported
+            || fingerprint.ha_role != HaRole::UnknownOrUnsupported)
+    {
+        return Err(TargetAdapterError::InvalidFingerprint(
+            "v1 device fingerprints cannot assert operating context or HA role".to_string(),
+        ));
+    }
     for (label, value) in [
         ("hostname", fingerprint.hostname.as_str()),
         ("vendor", fingerprint.vendor.as_str()),
@@ -1016,20 +1444,36 @@ fn validate_envelope_header(
     adapter: BuiltInTargetAdapter,
     envelope: &AdapterEvidenceEnvelope,
 ) -> AdapterResult<()> {
-    if envelope.schema != TARGET_ADAPTER_EVIDENCE_SCHEMA {
+    let expected_versions = match envelope.contract_version {
+        TargetAdapterContractVersion::V1 => (
+            TARGET_ADAPTER_EVIDENCE_SCHEMA_V1,
+            TARGET_ADAPTER_IMPLEMENTATION_VERSION_V1,
+            DEVICE_FINGERPRINT_SCHEMA_V1,
+        ),
+        TargetAdapterContractVersion::V2 => (
+            TARGET_ADAPTER_EVIDENCE_SCHEMA_V2,
+            TARGET_ADAPTER_IMPLEMENTATION_VERSION_V2,
+            DEVICE_FINGERPRINT_SCHEMA_V2,
+        ),
+    };
+    if envelope.schema != expected_versions.0 {
         return Err(TargetAdapterError::InvalidEvidence(format!(
-            "unsupported evidence schema {}",
-            envelope.schema
+            "evidence schema {} does not match {:?}",
+            envelope.schema, envelope.contract_version
         )));
     }
-    if envelope.contract_version != TargetAdapterContractVersion::V1
-        || envelope.adapter_version != ADAPTER_IMPLEMENTATION_VERSION
+    if envelope.adapter_version != expected_versions.1
         || envelope.adapter_id != adapter.adapter_id()
         || envelope.target_key != adapter.target_key()
         || envelope.transport != adapter.transport()
     {
         return Err(TargetAdapterError::InvalidEvidence(
             "evidence adapter identity does not match the selected built-in adapter".to_string(),
+        ));
+    }
+    if envelope.device.schema != expected_versions.2 {
+        return Err(TargetAdapterError::InvalidEvidence(
+            "evidence, contract, and device fingerprint schema versions do not match".to_string(),
         ));
     }
     DateTime::parse_from_rfc3339(&envelope.collected_at).map_err(|_| {
@@ -1732,6 +2176,13 @@ mod tests {
         .unwrap()
     }
 
+    fn legacy_v1_fingerprint() -> DeviceFingerprint {
+        serde_json::from_str(
+            r#"{"hostname":"bsd01","vendor":"FreeBSD","product_family":"FreeBSD","software_version":"13.4-RELEASE-p9"}"#,
+        )
+        .unwrap()
+    }
+
     #[test]
     fn built_ins_expose_versioned_read_only_plan_previews() {
         let inputs = [
@@ -1770,6 +2221,88 @@ mod tests {
             plan.validate_digest().unwrap();
         }
         assert!(built_in_target_adapter("unsupported").is_none());
+    }
+
+    #[test]
+    fn legacy_v1_fingerprint_hash_is_golden_and_v1_envelope_replays() {
+        let adapter = BuiltInTargetAdapter::FreeBsdGpos;
+        let fingerprint = legacy_v1_fingerprint();
+        assert_eq!(fingerprint.schema, DEVICE_FINGERPRINT_SCHEMA_V1);
+        assert_eq!(
+            fingerprint.sha256().unwrap(),
+            "466c1292819acd331f72e78ad5eb2ba59cb6770b81b0a17eeda91f9349b98277"
+        );
+        assert!(serde_json::to_value(&fingerprint)
+            .unwrap()
+            .get("schema")
+            .is_none());
+
+        let plan = adapter
+            .preview_for_contract(&fingerprint, TargetAdapterContractVersion::V1)
+            .unwrap();
+        assert_eq!(plan.schema, TARGET_ADAPTER_CONTRACT_SCHEMA_V1);
+        assert_eq!(
+            plan.adapter_version,
+            TARGET_ADAPTER_IMPLEMENTATION_VERSION_V1
+        );
+        assert_eq!(plan.total_expected_duration_ms, 0);
+        assert!(plan.operations.iter().all(|operation| {
+            operation.estimated_duration_ms == 0 && operation.maximum_duration_ms == 0
+        }));
+        plan.validate_digest().unwrap();
+        assert_eq!(
+            plan.plan_sha256,
+            "21802e597f7a1637aea23b22f8bee91cb29c7e3f437b84b60922da7a7dab94ff"
+        );
+
+        let envelope = AdapterEvidenceEnvelope::seal(
+            &plan,
+            fingerprint,
+            ssh_identity(),
+            timestamp(),
+            Vec::new(),
+        )
+        .unwrap();
+        assert_eq!(envelope.schema, TARGET_ADAPTER_EVIDENCE_SCHEMA_V1);
+        assert_eq!(envelope.contract_version, TargetAdapterContractVersion::V1);
+        assert_eq!(
+            envelope.evidence_sha256,
+            "c07a7e44ac385cfdfd3c7e4b5606d26bfd6470ab8d4bd97ed3c15a6b440ee89f"
+        );
+        assert!(!adapter.replay(&envelope).unwrap().completeness.complete);
+
+        let serialized = serde_json::to_value(&envelope).unwrap();
+        assert!(serialized["device"].get("schema").is_none());
+        let round_tripped: AdapterEvidenceEnvelope = serde_json::from_value(serialized).unwrap();
+        assert_eq!(round_tripped.evidence_sha256, envelope.evidence_sha256);
+        assert!(adapter.replay(&round_tripped).is_ok());
+    }
+
+    #[test]
+    fn adapter_versions_cannot_be_cross_rebound() {
+        let adapter = BuiltInTargetAdapter::CiscoIosXeRouterNdm;
+        let mut envelope = cisco_envelope(|_| {});
+        envelope.contract_version = TargetAdapterContractVersion::V1;
+        assert!(matches!(
+            adapter.replay(&envelope),
+            Err(TargetAdapterError::InvalidEvidence(_))
+        ));
+
+        let legacy = legacy_v1_fingerprint();
+        assert!(BuiltInTargetAdapter::FreeBsdGpos
+            .preview_for_contract(&legacy, TargetAdapterContractVersion::V2)
+            .is_err());
+        assert!(BuiltInTargetAdapter::FreeBsdGpos
+            .preview_for_contract(&freebsd_fingerprint(), TargetAdapterContractVersion::V1)
+            .is_err());
+
+        let mut cross_bound = serde_json::to_value(freebsd_fingerprint()).unwrap();
+        cross_bound["schema"] = serde_json::json!(DEVICE_FINGERPRINT_SCHEMA_V1);
+        assert!(serde_json::from_value::<DeviceFingerprint>(cross_bound).is_err());
+
+        let mut invalid_legacy = legacy_v1_fingerprint();
+        invalid_legacy.operating_context = OperatingContext::StandaloneSystem;
+        assert!(serde_json::to_value(invalid_legacy).is_err());
     }
 
     #[test]
@@ -2062,5 +2595,61 @@ mod tests {
         assert!(replay.completeness.errors[0]
             .message
             .contains("does not match device fingerprint"));
+    }
+
+    #[test]
+    fn fingerprint_context_and_ha_are_explicit_and_contract_gated() {
+        let unknown = freebsd_fingerprint();
+        assert_eq!(unknown.schema, DEVICE_FINGERPRINT_SCHEMA);
+        assert_eq!(
+            unknown.operating_context,
+            OperatingContext::UnknownOrUnsupported
+        );
+        assert_eq!(unknown.ha_role, HaRole::UnknownOrUnsupported);
+        let contract = CompatibilityMatrix {
+            target_key: "freebsd_gpos".to_string(),
+            vendor: "FreeBSD".to_string(),
+            product_family: "FreeBSD".to_string(),
+            software_version: SoftwareVersionConstraint::MajorRange {
+                minimum: 13,
+                maximum: 14,
+            },
+            accepted_tested_versions: Vec::new(),
+            requires_known_operating_context: true,
+            requires_known_ha_role: true,
+        };
+        assert!(contract.validate(&unknown).is_err());
+        let known = unknown.with_context(OperatingContext::StandaloneSystem, HaRole::Standalone);
+        assert!(contract.validate(&known).is_ok());
+        let serialized = serde_json::to_value(&known).unwrap();
+        assert_eq!(serialized["schema"], DEVICE_FINGERPRINT_SCHEMA);
+        assert_eq!(serialized["operating_context"], "standalone_system");
+        assert_eq!(serialized["ha_role"], "standalone");
+    }
+
+    #[test]
+    fn preflight_plan_binds_per_operation_and_total_duration_estimates() {
+        let plan = BuiltInTargetAdapter::FreeBsdGpos
+            .preview(&freebsd_fingerprint())
+            .unwrap();
+        assert!(plan.total_expected_duration_ms > 0);
+        assert_eq!(
+            plan.total_expected_duration_ms,
+            plan.operations
+                .iter()
+                .map(|operation| operation.estimated_duration_ms)
+                .sum::<u64>()
+        );
+        assert!(plan.operations.iter().all(|operation| {
+            operation.estimated_duration_ms > 0
+                && operation.maximum_duration_ms >= operation.estimated_duration_ms
+        }));
+
+        let mut tampered = plan;
+        tampered.operations[0].maximum_duration_ms += 1;
+        assert!(matches!(
+            tampered.validate_digest(),
+            Err(TargetAdapterError::Integrity(_))
+        ));
     }
 }

@@ -4,7 +4,9 @@
 The harness consumes pre-collected results.  It never launches a scanner or
 connects to a target, and it never treats a missing comparator result as a
 zero.  Native XCCDF is preferred; a proprietary report may be represented by
-a separately hashed, independently double-reviewed decision record.
+a separately hashed, independently double-reviewed decision record.  Result
+format never implies evidence traceability; that metric requires a separately
+retained and validated per-row derivation chain.
 """
 
 import argparse
@@ -28,9 +30,15 @@ DECISION_SCHEMA = "automatestig-normalized-scanner-decisions/v1"
 DECISION_SCHEMA_URI = (
     "https://automatestig.dev/schemas/normalized-scanner-decisions.schema.json"
 )
+TRACEABILITY_SCHEMA = "automatestig-scanner-row-traceability/v1"
+TRACEABILITY_SCHEMA_URI = (
+    "https://automatestig.dev/schemas/scanner-row-traceability.schema.json"
+)
+OPERATION_BINDING_SCHEMA = "automatestig-scanner-operation-binding/v1"
 MAX_MANIFEST_BYTES = 4 * 1024 * 1024
 MAX_XCCDF_BYTES = 32 * 1024 * 1024
 MAX_DECISION_BYTES = 4 * 1024 * 1024
+MAX_TRACEABILITY_BYTES = 16 * 1024 * 1024
 MAX_PROPRIETARY_EXPORT_BYTES = 256 * 1024 * 1024
 MAX_BOUND_ARTIFACT_BYTES = 4 * 1024 * 1024 * 1024
 MAX_FAILURE_EVIDENCE_BYTES = 256 * 1024 * 1024
@@ -121,14 +129,15 @@ def _sha256(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
-def _expect_object(value, label, required):
+def _expect_object(value, label, required, optional=()):
     if not isinstance(value, dict):
         raise ComparisonError(f"{label} must be an object")
     actual = set(value)
-    expected = set(required)
-    if actual != expected:
-        missing = sorted(expected - actual)
-        extra = sorted(actual - expected)
+    required = set(required)
+    allowed = required | set(optional)
+    if not required <= actual or not actual <= allowed:
+        missing = sorted(required - actual)
+        extra = sorted(actual - allowed)
         raise ComparisonError(
             f"{label} members do not match the contract; missing={missing}, extra={extra}"
         )
@@ -693,9 +702,254 @@ def _validate_tools(value, root, bound_paths):
     return tools
 
 
-def _load_run_statuses(result, root, adjudicator_ids, benchmark, used_paths):
+def _load_row_traceability(
+    reference,
+    *,
+    result_sha256,
+    statuses,
+    root,
+    run_id,
+    source_state_sha256,
+    tool,
+    benchmark,
+    used_paths,
+    raw_evidence_owners,
+):
+    """Validate an explicit raw-evidence-to-result chain for each claimed row.
+
+    A result export, including native XCCDF, proves only that a tool emitted a
+    status.  It does not prove how that status was derived.  Traceability is
+    therefore credited only when a separate retained record binds every
+    declared row to exact raw evidence, collection operation, parser,
+    predicate, tool build/content, source state, benchmark model, and result.
+    """
+    if reference is None:
+        return set(), "not_supplied"
+    reference = _expect_object(
+        reference,
+        f"run {run_id} traceability reference",
+        {"path", "sha256"},
+    )
+    _expect_sha256(reference["sha256"], f"run {run_id} traceability sha256")
+    path = _artifact_path(root, reference["path"], f"run {run_id} traceability path")
+    if path in used_paths:
+        raise ComparisonError(f"run traceability records must be unique per run: {path.name}")
+    used_paths.add(path)
+    raw = _read_regular(path, MAX_TRACEABILITY_BYTES, f"run {run_id} traceability")
+    if _sha256(raw) != reference["sha256"]:
+        raise ComparisonError(f"run {run_id} traceability digest mismatch: {path.name}")
+    document = _strict_json(raw, f"run {run_id} traceability")
+    _expect_object(
+        document,
+        f"run {run_id} traceability",
+        {"$schema", "schema", "rows"},
+    )
+    if (
+        document["$schema"] != TRACEABILITY_SCHEMA_URI
+        or document["schema"] != TRACEABILITY_SCHEMA
+    ):
+        raise ComparisonError(f"run {run_id} traceability uses an unsupported schema")
+    rows = document["rows"]
+    if not isinstance(rows, dict) or not rows or len(rows) > 100_000:
+        raise ComparisonError(
+            f"run {run_id} traceability rows must be a non-empty object with at most 100000 rows"
+        )
+
+    traceable_vulns = set()
+    expected_provenance = {
+        "result_sha256": result_sha256,
+        "source_state_sha256": source_state_sha256,
+        "tool_artifact_sha256": tool["artifact_sha256"],
+        "tool_content_sha256": tool["content_sha256"],
+        "effective_model_sha256": benchmark["effective_model_sha256"],
+    }
+    for vuln, row in rows.items():
+        if not re.fullmatch(r"V-[0-9]+", vuln):
+            raise ComparisonError(f"run {run_id} traceability has an invalid V-ID: {vuln}")
+        if vuln not in statuses:
+            raise ComparisonError(
+                f"run {run_id} traceability references a row absent from the retained result: {vuln}"
+            )
+        row = _expect_object(
+            row,
+            f"run {run_id} traceability row {vuln}",
+            {
+                "status",
+                "raw_evidence",
+                "operation",
+                "parser",
+                "predicate",
+                "provenance",
+            },
+        )
+        if row["status"] != statuses[vuln]:
+            raise ComparisonError(
+                f"run {run_id} traceability status does not match the retained result for {vuln}"
+            )
+
+        evidence = _expect_object(
+            row["raw_evidence"],
+            f"run {run_id} traceability row {vuln} raw_evidence",
+            {"path", "sha256"},
+        )
+        _expect_sha256(
+            evidence["sha256"],
+            f"run {run_id} traceability row {vuln} raw_evidence sha256",
+        )
+        evidence_path = _artifact_path(
+            root,
+            evidence["path"],
+            f"run {run_id} traceability row {vuln} raw_evidence path",
+        )
+        owner = raw_evidence_owners.get(evidence_path)
+        if owner is None:
+            if evidence_path in used_paths:
+                raise ComparisonError(
+                    f"run {run_id} raw evidence must be distinct from result, protocol, and trace-component artifacts: {evidence_path.name}"
+                )
+            raw_evidence_owners[evidence_path] = run_id
+        elif owner != run_id:
+            raise ComparisonError(
+                f"raw evidence artifacts must not be reused across runs: {evidence_path.name}"
+            )
+        _verify_bound_artifact(
+            root,
+            evidence["path"],
+            evidence["sha256"],
+            f"run {run_id} traceability row {vuln} raw evidence",
+            used_paths,
+        )
+
+        operation = _expect_object(
+            row["operation"],
+            f"run {run_id} traceability row {vuln} operation",
+            {
+                "id",
+                "artifact_path",
+                "artifact_sha256",
+                "request_sha256",
+                "raw_evidence_sha256",
+            },
+        )
+        _expect_slug(operation["id"], f"run {run_id} traceability row {vuln} operation id")
+        _expect_sha256(
+            operation["artifact_sha256"],
+            f"run {run_id} traceability row {vuln} operation artifact_sha256",
+        )
+        _expect_sha256(
+            operation["request_sha256"],
+            f"run {run_id} traceability row {vuln} operation request_sha256",
+        )
+        _expect_sha256(
+            operation["raw_evidence_sha256"],
+            f"run {run_id} traceability row {vuln} operation raw_evidence_sha256",
+        )
+        if operation["raw_evidence_sha256"] != evidence["sha256"]:
+            raise ComparisonError(
+                f"run {run_id} traceability operation is not bound to raw evidence for {vuln}"
+            )
+        operation_path = _artifact_path(
+            root,
+            operation["artifact_path"],
+            f"run {run_id} traceability row {vuln} operation artifact_path",
+        )
+        operation_raw = _read_regular(
+            operation_path,
+            MAX_TRACEABILITY_BYTES,
+            f"run {run_id} traceability row {vuln} operation artifact",
+        )
+        if _sha256(operation_raw) != operation["artifact_sha256"]:
+            raise ComparisonError(
+                f"run {run_id} traceability row {vuln} operation artifact digest mismatch: {operation_path.name}"
+            )
+        used_paths.add(operation_path)
+        operation_document = _strict_json(
+            operation_raw,
+            f"run {run_id} traceability row {vuln} operation artifact",
+        )
+        _expect_object(
+            operation_document,
+            f"run {run_id} traceability row {vuln} operation artifact",
+            {"schema", "id", "request_sha256", "raw_evidence_sha256"},
+        )
+        if operation_document["schema"] != OPERATION_BINDING_SCHEMA:
+            raise ComparisonError(
+                f"run {run_id} traceability row {vuln} operation artifact uses an unsupported schema"
+            )
+        for member in ("id", "request_sha256", "raw_evidence_sha256"):
+            if operation_document[member] != operation[member]:
+                raise ComparisonError(
+                    f"run {run_id} traceability row {vuln} operation artifact {member} does not match its row binding"
+                )
+
+        component_paths = {evidence_path, path}
+        for component_name in ("parser", "predicate"):
+            component = _expect_object(
+                row[component_name],
+                f"run {run_id} traceability row {vuln} {component_name}",
+                {"id", "artifact_path", "artifact_sha256"},
+            )
+            _expect_slug(
+                component["id"],
+                f"run {run_id} traceability row {vuln} {component_name} id",
+            )
+            _expect_sha256(
+                component["artifact_sha256"],
+                f"run {run_id} traceability row {vuln} {component_name} artifact_sha256",
+            )
+            component_path = _artifact_path(
+                root,
+                component["artifact_path"],
+                f"run {run_id} traceability row {vuln} {component_name} artifact_path",
+            )
+            component_paths.add(component_path)
+            _verify_bound_artifact(
+                root,
+                component["artifact_path"],
+                component["artifact_sha256"],
+                f"run {run_id} traceability row {vuln} {component_name} artifact",
+                used_paths,
+            )
+        component_paths.add(operation_path)
+        if len(component_paths) != 5:
+            raise ComparisonError(
+                f"run {run_id} traceability row {vuln} must retain distinct trace, raw evidence, operation, parser, and predicate artifacts"
+            )
+
+        provenance = _expect_object(
+            row["provenance"],
+            f"run {run_id} traceability row {vuln} provenance",
+            set(expected_provenance),
+        )
+        for member, expected in expected_provenance.items():
+            _expect_sha256(
+                provenance[member],
+                f"run {run_id} traceability row {vuln} provenance {member}",
+            )
+            if provenance[member] != expected:
+                raise ComparisonError(
+                    f"run {run_id} traceability row {vuln} provenance {member} does not match the comparison manifest"
+                )
+        traceable_vulns.add(vuln)
+
+    state = "validated" if traceable_vulns == set(statuses) else "partial"
+    return traceable_vulns, state
+
+
+def _load_run_statuses(
+    result,
+    root,
+    adjudicator_ids,
+    benchmark,
+    used_paths,
+    *,
+    run_id,
+    source_state_sha256,
+    tool,
+    raw_evidence_owners,
+):
     if result is None:
-        return {}, "none"
+        return {}, "none", set(), "not_supplied"
     if not isinstance(result, dict) or "format" not in result:
         raise ComparisonError("run result must be null or an object with a format")
     result_format = result["format"]
@@ -704,6 +958,7 @@ def _load_run_statuses(result, root, adjudicator_ids, benchmark, used_paths):
             result,
             "XCCDF result",
             {"format", "path", "sha256", "test_result_id"},
+            {"traceability"},
         )
         path = _artifact_path(root, result["path"], "XCCDF result path")
         _expect_sha256(result["sha256"], "XCCDF result sha256")
@@ -714,15 +969,25 @@ def _load_run_statuses(result, root, adjudicator_ids, benchmark, used_paths):
         raw = _read_regular(path, MAX_XCCDF_BYTES, "XCCDF result")
         if _sha256(raw) != result["sha256"]:
             raise ComparisonError(f"XCCDF result digest mismatch: {path.name}")
-        return (
-            parse_xccdf(
-                raw,
-                benchmark["xccdf_benchmark_id"],
-                benchmark["release"],
-                result["test_result_id"],
-            ),
-            "native_xccdf",
+        statuses = parse_xccdf(
+            raw,
+            benchmark["xccdf_benchmark_id"],
+            benchmark["release"],
+            result["test_result_id"],
         )
+        traceable_vulns, traceability_state = _load_row_traceability(
+            result.get("traceability"),
+            result_sha256=result["sha256"],
+            statuses=statuses,
+            root=root,
+            run_id=run_id,
+            source_state_sha256=source_state_sha256,
+            tool=tool,
+            benchmark=benchmark,
+            used_paths=used_paths,
+            raw_evidence_owners=raw_evidence_owners,
+        )
+        return statuses, "native_xccdf", traceable_vulns, traceability_state
     if result_format == "normalized-json":
         _expect_object(
             result,
@@ -734,6 +999,7 @@ def _load_run_statuses(result, root, adjudicator_ids, benchmark, used_paths):
                 "source_export_path",
                 "source_export_sha256",
             },
+            {"traceability"},
         )
         decision_path = _artifact_path(root, result["path"], "normalized decision path")
         source_path = _artifact_path(root, result["source_export_path"], "proprietary export path")
@@ -752,13 +1018,28 @@ def _load_run_statuses(result, root, adjudicator_ids, benchmark, used_paths):
             raise ComparisonError(f"normalized decision digest mismatch: {decision_path.name}")
         if _sha256(source_raw) != result["source_export_sha256"]:
             raise ComparisonError(f"proprietary export digest mismatch: {source_path.name}")
+        statuses = parse_normalized_decisions(
+            decision_raw,
+            result["source_export_sha256"],
+            adjudicator_ids,
+        )
+        traceable_vulns, traceability_state = _load_row_traceability(
+            result.get("traceability"),
+            result_sha256=result["sha256"],
+            statuses=statuses,
+            root=root,
+            run_id=run_id,
+            source_state_sha256=source_state_sha256,
+            tool=tool,
+            benchmark=benchmark,
+            used_paths=used_paths,
+            raw_evidence_owners=raw_evidence_owners,
+        )
         return (
-            parse_normalized_decisions(
-                decision_raw,
-                result["source_export_sha256"],
-                adjudicator_ids,
-            ),
+            statuses,
             "double_reviewed_normalization",
+            traceable_vulns,
+            traceability_state,
         )
     raise ComparisonError(f"unsupported run result format: {result_format}")
 
@@ -963,6 +1244,7 @@ def load_manifest(path):
     run_ids = set()
     seen_slots = set()
     used_paths = set(loaded["bound_paths"])
+    raw_evidence_owners = {}
     runs = []
     for index, entry in enumerate(runs_value):
         entry = _expect_object(
@@ -1015,12 +1297,21 @@ def load_manifest(path):
         )
         if entry["collection_complete"] and entry["result"] is None:
             raise ComparisonError(f"complete run {run_id} requires a retained result")
-        statuses, result_provenance = _load_run_statuses(
+        (
+            statuses,
+            result_provenance,
+            traceable_vulns,
+            traceability_state,
+        ) = _load_run_statuses(
             entry["result"],
             path.parent,
             adjudicator_ids,
             loaded["benchmark"],
             used_paths,
+            run_id=run_id,
+            source_state_sha256=entry["source_state_sha256"],
+            tool=tools[tool_id],
+            raw_evidence_owners=raw_evidence_owners,
         )
         if entry["collection_complete"] and not statuses:
             raise ComparisonError(
@@ -1040,6 +1331,8 @@ def load_manifest(path):
                 "failure": failure,
                 "statuses": statuses,
                 "result_provenance": result_provenance,
+                "traceable_vulns": traceable_vulns,
+                "traceability_state": traceability_state,
             }
         )
     if seen_slots != set(schedule):
@@ -1087,6 +1380,10 @@ def _tool_metrics(tool_id, runs, cases):
         "incomplete_determined_rows": 0,
         "unadjudicated_decisions": 0,
         "traceable_determined_rows": 0,
+        "traceability_not_supplied_rows": 0,
+        "fully_traceable_runs": 0,
+        "partially_traceable_runs": 0,
+        "traceability_not_supplied_runs": 0,
         "determined_rows": 0,
         "native_xccdf_runs": 0,
         "double_reviewed_normalized_runs": 0,
@@ -1101,7 +1398,16 @@ def _tool_metrics(tool_id, runs, cases):
         if run["failure"] is not None:
             metrics["failed_runs"] += 1
         metrics["determined_rows"] += determined_count
-        metrics["traceable_determined_rows"] += determined_count
+        traceable_count = len(run["traceable_vulns"])
+        metrics["traceable_determined_rows"] += traceable_count
+        metrics["traceability_not_supplied_rows"] += determined_count - traceable_count
+        if determined_count:
+            if run["traceability_state"] == "validated":
+                metrics["fully_traceable_runs"] += 1
+            elif run["traceability_state"] == "partial":
+                metrics["partially_traceable_runs"] += 1
+            else:
+                metrics["traceability_not_supplied_runs"] += 1
         if run["result_provenance"] == "native_xccdf":
             metrics["native_xccdf_runs"] += 1
         elif run["result_provenance"] == "double_reviewed_normalization":
@@ -1197,10 +1503,27 @@ def _tool_metrics(tool_id, runs, cases):
         "denominator": metrics["expected_decisions"],
         "rate": _ratio(metrics["manual_tail"], metrics["expected_decisions"]),
     }
+    traceable_rows = metrics["traceable_determined_rows"]
+    determined_rows = metrics["determined_rows"]
+    if determined_rows == 0:
+        traceability_status = "not_applicable"
+        traceability_rate = None
+    elif traceable_rows == determined_rows:
+        traceability_status = "validated_complete"
+        traceability_rate = 1.0
+    elif traceable_rows == 0:
+        traceability_status = "not_supplied"
+        traceability_rate = None
+    else:
+        traceability_status = "validated_partial"
+        traceability_rate = _ratio(traceable_rows, determined_rows)
     metrics["evidence_traceability"] = {
-        "numerator": metrics["traceable_determined_rows"],
-        "denominator": metrics["determined_rows"],
-        "rate": _ratio(metrics["traceable_determined_rows"], metrics["determined_rows"]),
+        "numerator": traceable_rows,
+        "denominator": determined_rows,
+        "rate": traceability_rate,
+        "validated_rows": traceable_rows,
+        "not_supplied_rows": determined_rows - traceable_rows,
+        "validation_status": traceability_status,
     }
     metrics["median_duration_ms"] = _median(metrics.pop("duration_ms_values"))
     metrics["median_analyst_actions"] = _median(metrics.pop("analyst_action_values"))
@@ -1272,6 +1595,18 @@ def build_report(loaded):
     comparator_results_gate = not unusable_comparator_ids
     sut_results_gate = "automatestig" in usable_tool_ids
     comparison_results_gate = comparator_results_gate and sut_results_gate
+    traceability_ready_tool_ids = {
+        tool_id
+        for tool_id, metrics in tool_metrics.items()
+        if metrics["determined_rows"] > 0
+        and metrics["traceable_determined_rows"] == metrics["determined_rows"]
+    }
+    sut_traceability_gate = "automatestig" in traceability_ready_tool_ids
+    untraceable_comparator_ids = sorted(comparator_ids - traceability_ready_tool_ids)
+    comparator_traceability_gate = not untraceable_comparator_ids
+    traceability_results_gate = (
+        sut_traceability_gate and comparator_traceability_gate
+    )
     comparisons = {}
     for tool_id in sorted(comparator_ids):
         comparable = sut_results_gate and tool_id in usable_tool_ids
@@ -1293,10 +1628,18 @@ def build_report(loaded):
         claim_status = "usable_tool_results_required"
     elif not safety_gate:
         claim_status = "automatestig_safety_gate_failed"
+    elif not traceability_results_gate:
+        claim_status = "validated_traceability_required"
     else:
         claim_status = "independent_result_review_required"
+    claim_evidence_gate = (
+        protocol_gate
+        and comparison_results_gate
+        and safety_gate
+        and traceability_results_gate
+    )
     report = {
-        "schema": "automatestig-scanner-comparison-report/v2",
+        "schema": "automatestig-scanner-comparison-report/v3",
         "comparison_id": manifest["comparison_id"],
         "manifest_sha256": _sha256(loaded["raw"]),
         "created_at": manifest["created_at"],
@@ -1339,6 +1682,27 @@ def build_report(loaded):
                     for run in loaded["runs"]
                     if run["tool_id"] == tool_id and run["failure"] is not None
                 ],
+                "row_traceability": [
+                    {
+                        "run_id": run["id"],
+                        "case_id": run["case_id"],
+                        "repetition": run["repetition"],
+                        "vuln_id": vuln,
+                        "validation": (
+                            "validated"
+                            if vuln in run["traceable_vulns"]
+                            else "not_supplied"
+                        ),
+                        "traceability_record_sha256": (
+                            run["result"]["traceability"]["sha256"]
+                            if vuln in run["traceable_vulns"]
+                            else None
+                        ),
+                    }
+                    for run in loaded["runs"]
+                    if run["tool_id"] == tool_id
+                    for vuln in sorted(run["statuses"])
+                ],
                 "cases": {
                     case_id: {
                         "kind": case["kind"],
@@ -1366,13 +1730,19 @@ def build_report(loaded):
             "comparator_results_gate_passed": comparator_results_gate,
             "comparison_results_gate_passed": comparison_results_gate,
             "unusable_comparator_ids": unusable_comparator_ids,
+            "sut_traceability_gate_passed": sut_traceability_gate,
+            "comparator_traceability_gate_passed": comparator_traceability_gate,
+            "traceability_results_gate_passed": traceability_results_gate,
+            "untraceable_comparator_ids": untraceable_comparator_ids,
             "technical_report_complete": comparison_results_gate,
+            "claim_evidence_complete": claim_evidence_gate,
             "superiority_claim_automatically_authorized": False,
             "superiority_claim_status": claim_status,
             "note": (
                 "Observed deltas are target- and revision-specific measurements. "
                 "The harness does not authorize a superiority claim; the cybersecurity "
-                "SME and test owner must review variation, deviations, and retained raw artifacts."
+                "SME and test owner must review variation, deviations, and retained raw artifacts. "
+                "Evidence traceability is credited only for validated per-row trace records."
             ),
         },
     }
@@ -1384,6 +1754,15 @@ def _format_ratio(value):
     if value["rate"] is None:
         return "n/a"
     return f"{value['numerator']}/{value['denominator']} ({value['rate']:.1%})"
+
+
+def _format_traceability(value):
+    if value["validation_status"] == "not_applicable":
+        return "n/a"
+    if value["validation_status"] == "not_supplied":
+        return f"not supplied (0/{value['denominator']} validated)"
+    prefix = "partial: " if value["validation_status"] == "validated_partial" else ""
+    return prefix + _format_ratio(value)
 
 
 def render_markdown(report):
@@ -1399,8 +1778,8 @@ def render_markdown(report):
         f"Manifest SHA-256: `{report['manifest_sha256']}`  ",
         f"Report SHA-256: `{report['report_sha256']}`",
         "",
-        "| Tool | False passes | False failures | Collection success | Precision | Recall | Automation depth | Manual tail | Median setup | Median actions | Median runtime |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Tool | False passes | False failures | Collection success | Precision | Recall | Automation depth | Evidence traceability | Manual tail | Median setup | Median actions | Median runtime |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for tool in report["tools"].values():
         identity = tool["identity"]
@@ -1416,6 +1795,7 @@ def render_markdown(report):
                     _format_ratio(metrics["precision"]),
                     _format_ratio(metrics["recall"]),
                     _format_ratio(metrics["automation_depth"]),
+                    _format_traceability(metrics["evidence_traceability"]),
                     str(metrics["manual_tail"]),
                     f"{metrics['median_setup_duration_ms']} ms",
                     str(metrics["median_analyst_actions"]),
@@ -1430,6 +1810,8 @@ def render_markdown(report):
             "",
             f"AutomateSTIG safety gate: **{'PASS' if gate['automatestig_safety_gate_passed'] else 'FAIL'}**",
             f"Usable comparison-results gate: **{'PASS' if gate['comparison_results_gate_passed'] else 'FAIL'}**",
+            f"Validated row-traceability gate: **{'PASS' if gate['traceability_results_gate_passed'] else 'FAIL'}**",
+            f"Claim-evidence gate: **{'PASS' if gate['claim_evidence_complete'] else 'FAIL'}**",
             "",
             f"Claim status: **{gate['superiority_claim_status']}**. Retain the exact tool exports, manifest, normalization records, and report together.",
             "",
@@ -1493,8 +1875,8 @@ def main(argv=None):
         "--require-comparison-gate",
         action="store_true",
         help=(
-            "return non-zero unless protocol, AutomateSTIG safety, and usable result "
-            "gates pass for every declared tool"
+            "return non-zero unless protocol, AutomateSTIG safety, usable result, "
+            "and validated row-traceability gates pass for every declared tool"
         ),
     )
     arguments = parser.parse_args(argv)
@@ -1523,9 +1905,7 @@ def main(argv=None):
             print("AutomateSTIG safety gate failed", file=sys.stderr)
             return 2
         if arguments.require_comparison_gate and not (
-            report["gates"]["protocol_gate_passed"]
-            and report["gates"]["automatestig_safety_gate_passed"]
-            and report["gates"]["comparison_results_gate_passed"]
+            report["gates"]["claim_evidence_complete"]
         ):
             print("scanner comparison gate failed", file=sys.stderr)
             return 2

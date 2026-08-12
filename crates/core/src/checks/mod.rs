@@ -5,12 +5,15 @@
 //! engine interprets — no code changes needed when DISA updates STIGs.
 //!
 //! Check types:
+//! - Versioned, bounded predicates over normalized observations/configuration
 //! - Cisco IOS-XE running-configuration line checks
 //! - ONTAP and FreeBSD command-output matching
+//! - Reviewed imperative variants for semantics the predicate DSL cannot express safely
 
 pub mod executor;
 pub(crate) mod freebsd;
 pub mod network;
+pub mod predicate;
 
 use serde::{Deserialize, Serialize};
 
@@ -34,6 +37,30 @@ pub struct CheckDefinition {
 
     /// Human-readable description of what this check verifies.
     pub description: Option<String>,
+
+    /// Reviewable implementation category used by release scorecards.
+    #[serde(default)]
+    pub implementation_class: ImplementationClass,
+
+    /// Product release line that first shipped this automation (for example `0.3`).
+    /// Missing metadata remains unknown rather than being inferred.
+    #[serde(default)]
+    pub introduction_release: Option<String>,
+}
+
+/// Measurable automation implementation category.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ImplementationClass {
+    /// Versioned pure `Predicate` AST.
+    DeclarativePredicate,
+    /// Earlier reviewed data definition (`command`, `config_line`, `all`, `any`).
+    LegacyDeclarative,
+    /// Reviewed Rust implementation retained when the bounded DSL is insufficient.
+    ReviewedImperative,
+    /// No reviewed classification is available. Scorecards must preserve this unknown.
+    #[default]
+    Unknown,
 }
 
 /// Platform a check targets.
@@ -50,6 +77,11 @@ pub enum CheckPlatform {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Check {
+    /// Versioned pure predicate over already-collected evidence.
+    Predicate {
+        program: predicate::PredicateProgram,
+    },
+
     /// Check a Cisco IOS-XE running-configuration line.
     ConfigLine {
         pattern: String,
@@ -299,11 +331,30 @@ mod tests {
                 pattern: "^0$".to_string(),
             },
             description: Some("IP forwarding must be disabled".to_string()),
+            implementation_class: ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
         };
 
         let json = serde_json::to_string_pretty(&check).unwrap();
         let parsed: CheckDefinition = serde_json::from_str(&json).unwrap();
         assert_eq!(parsed.vuln_id, "V-100001");
+    }
+
+    #[test]
+    fn legacy_definition_metadata_remains_explicitly_unknown() {
+        let parsed: CheckDefinition = serde_json::from_value(serde_json::json!({
+            "vuln_id": "V-LEGACY",
+            "platform": "bsd",
+            "check": {
+                "type": "command",
+                "command": "service auditd onestatus"
+            },
+            "expected": {"type": "is_true"},
+            "description": null
+        }))
+        .unwrap();
+        assert_eq!(parsed.implementation_class, ImplementationClass::Unknown);
+        assert_eq!(parsed.introduction_release, None);
     }
 
     #[test]
@@ -327,6 +378,8 @@ mod tests {
             },
             expected: ExpectedResult::IsTrue,
             description: None,
+            implementation_class: ImplementationClass::LegacyDeclarative,
+            introduction_release: Some("0.3".to_string()),
         };
 
         let json = serde_json::to_string(&check).unwrap();
@@ -352,6 +405,8 @@ mod tests {
                     pattern: "^1$".to_string(),
                 },
                 description: None,
+                implementation_class: ImplementationClass::LegacyDeclarative,
+                introduction_release: Some("0.3".to_string()),
             }],
         };
 

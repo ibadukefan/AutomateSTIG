@@ -8,6 +8,7 @@ members = [
     "crates/storage",
     "crates/stigpack",
     "crates/integrations",
+    "crates/scanner",
     "crates/cli",
     "crates/gui",
     "crates/tests",
@@ -60,7 +61,8 @@ thiserror = "2"
 
 # Logging
 tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-appender = "0.2.5"
 
 # Time
 chrono = { version = "0.4", features = ["serde"] }
@@ -94,6 +96,7 @@ automatestig-parsers = { path = "crates/parsers" }
 automatestig-storage = { path = "crates/storage" }
 automatestig-stigpack = { path = "crates/stigpack" }
 automatestig-integrations = { path = "crates/integrations" }
+automatestig-scanner = { path = "crates/scanner" }
 
 [profile.release]
 opt-level = 3

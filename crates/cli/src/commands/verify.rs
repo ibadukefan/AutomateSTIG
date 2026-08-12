@@ -17,15 +17,7 @@ pub fn run(pack_path: &str) -> Result<()> {
     ui::detail("File", pack_path);
     println!();
 
-    let trust_dir = std::env::var("AUTOMATESTIG_TRUSTED_KEYS_DIR")
-        .map(std::path::PathBuf::from)
-        .unwrap_or_else(|_| {
-            std::env::var("HOME")
-                .or_else(|_| std::env::var("USERPROFILE"))
-                .map(std::path::PathBuf::from)
-                .unwrap_or_else(|_| std::path::PathBuf::from("."))
-                .join(".automatestig/trusted_keys")
-        });
+    let trust_dir = super::trusted_keys_dir();
     let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
     trust_store
         .load_from_directory(&trust_dir)

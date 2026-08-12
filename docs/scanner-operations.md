@@ -44,14 +44,15 @@ subsets; they are not complete benchmark-automation claims.
 3. Choose the profile and collection method. ONTAP and FreeBSD use a read-only
    SSH plan or strict evidence; IOS-XE uses an operator-provided complete
    running configuration and a trusted, asset-bound organization policy.
-4. Run preflight. Confirm target identity, observed software, privilege,
+4. Run the safety check (preflight). Confirm target identity, observed software, privilege,
    destination binding, content hashes, and every command or offline operation.
 5. Collect and evaluate. Missing, denied, timed-out, truncated, malformed, or
    semantically ambiguous evidence produces an incomplete run. It is never
    converted to a passing result.
 6. Review the read-only delivery preview: creates, scanner-owned updates,
    unchanged reviews, conflicts, evidence references, and manual/out-of-scope
-   rules that will remain untouched.
+   rules that will remain untouched. Treat automation coverage as scanner
+   scope, never as a compliance score.
 7. Continue according to the preview. An exact remote no-op can be verified
    directly and receives a technical receipt. If any review would be created
    or updated, download the selected-run handoff and reconcile it at the
@@ -60,6 +61,10 @@ subsets; they are not complete benchmark-automation claims.
 8. Use **Open in STIG Manager** to reconcile the sparse handoff and complete
    manual reviews, comments,
    submission, validation, findings analysis, and reporting.
+
+The first-open training walkthrough exercises this review vocabulary without
+creating a run or contacting a target. It cannot create a handoff and must not
+be retained as assessment evidence.
 
 The device password or key passphrase exists only for the submitted preflight
 and run. It is cleared after submission or failure and is never written into a
@@ -114,7 +119,7 @@ A cybersecurity manager uses **Deliveries** to answer operational questions:
   reconciliation?
 - Did a retry preserve the request digest?
 - Which human/manual reviews were explicitly untouched?
-- What exact-no-op or reconciliation receipt and review link identify the next action?
+- What exact-no-op or reconciliation receipt, GUI base link, and exact destination IDs identify the next action?
 
 The manager uses STIG Manager—not AutomateSTIG—for compliance posture, CAT
 rollups, assignment progress, reviewer performance, submission state, accepted
@@ -161,6 +166,21 @@ password. Treat the local data directory as sensitive assessment material.
   immutable result hashes, timestamps, audit events, attempt history, or
   receipt. A later handoff is therefore results-only and remains verifiable but
   cannot replay the original evidence.
+- The GUI's **Purge replay evidence** action requires typing the exact run ID.
+  It is irreversible. Terminal operational rows are retained only for the
+  configured `scanner.operational_retention_days`/`AUTOMATESTIG_OPERATIONAL_RETENTION_DAYS`
+  period (1–365 days, default 30), then swept in bounded batches only after an
+  exact no-op or strict receiver-reconciliation receipt. The sweep leaves an
+  append-only receipt/digest tombstone.
+- A failed SSH job may resume only from encrypted successful-operation
+  checkpoints. The operator runs a fresh preflight and supplies fresh
+  credentials; profile, collection plan, device fingerprint, host key,
+  endpoint, port, destination assignment, and saved target profile must all
+  match exactly. Credentials are never checkpointed.
+- Receiver reconciliation imports require the exact sparse payload digest,
+  sorted scanner-owned rule set, destination IDs, independent readback digest,
+  explicit operator confirmation, and the configured GUI base URL. Receipts
+  are append-only and listed through bounded pages.
 - Remember that backups and snapshots can retain deleted secrets or evidence.
   Apply the site's media-sanitization and records policy to those copies.
 - Never treat AutomateSTIG's local queue as the authoritative compliance
@@ -171,6 +191,8 @@ password. Treat the local data directory as sensitive assessment material.
 - Only the three exact profiles above are in scanner scope.
 - The profile firmware grammars have not yet been promoted to a tested live
   acceptance matrix.
+- Scanner Content displays each profile's protected-device live-acceptance and
+  measured false-pass status. `not_run` is not a pass claim.
 - IOS-XE is configuration ingestion, not a live SSH scan.
 - The current STIG Manager API does not expose an atomic conditional review
   write. Create/update proposals are handoff-only; direct confirmation is

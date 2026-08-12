@@ -3,7 +3,7 @@
 This directory is the self-contained ES-module frontend served by the
 AutomateSTIG scanner GUI. The Rust server exposes the versioned API and injects
 the loopback in-memory auth token into `scanner/index.html`. The frontend also
-accepts `window.__AUTH_TOKEN__` and otherwise offers a memory-only access-token
+accepts the server-injected `automatestig-auth-token` metadata and otherwise offers a memory-only access-token
 field under Connection for protected non-loopback deployments. Tokens and
 device secrets are never written to browser storage.
 
@@ -15,8 +15,9 @@ device secrets are never written to browser storage.
 - `router.js`: stable Scan, Deliveries, Scanner Content, and Connection hashes.
 - `scan.js`: live destination selection, collection-method inputs, preflight,
   collection/evaluation progress, and the read-only delivery preview.
-- `deliveries.js`: durable run list, result preview, sparse-review proposals,
-  handoffs, remote no-op checks, immutable receipts, and STIG Manager deep link.
+- `deliveries.js`: durable run list, fresh-preflight SSH checkpoint resume,
+  result and bounded decision-trace previews, handoffs, remote no-op checks,
+  append-only receiver receipts, and the configured STIG Manager GUI base link.
 - `content.js`: exact scanner profiles, trust, compatibility, coverage boundary,
   and acceptance status. It contains no broad benchmark catalog or imports.
 - `connection.js`: save/test/disconnect for one STIG Manager destination.
@@ -44,9 +45,12 @@ status and preferably `{ "error": { "code", "message", "details" } }`.
 | `POST` | `/api/v1/runs/evidence` | Run a multipart evidence/configuration evaluation and return its immutable run identity. |
 | `GET` | `/api/v1/runs/jobs` | List durable SSH coordination jobs without credentials. |
 | `GET` | `/api/v1/runs/jobs/{jobId}` | Read queued/running/completed/failed job state and resulting run identity. |
+| `POST` | `/api/v1/runs/jobs/{jobId}/resume` | Resume a failed checkpointed SSH job only with its exact saved coordinates, a fresh preflight, and fresh credentials. |
 | `GET` | `/api/v1/runs` | Short-lived operational run/delivery records. |
 | `GET` | `/api/v1/runs/{runId}` | Current steps, immutable result, sparse delivery preview, attempts, and receipt. |
 | `POST` | `/api/v1/runs/{runId}/deliver` | Recheck remote state and confirm only an exact no-op; changed reviews remain handoff-only. |
+| `GET` | `/api/v1/runs/{runId}/reconciliation-receipts` | List bounded append-only receiver reconciliation receipts for one run. |
+| `POST` | `/api/v1/runs/{runId}/reconciliation-receipts` | Import an exact run/destination/readback-bound, explicitly operator-confirmed receiver receipt. |
 | `GET` | `/api/v1/runs/{runId}/handoff` | Download the verified selected-run handoff for a complete run. |
 
 Collection and asset IDs are always selected before a connected preflight.
@@ -79,6 +83,11 @@ Every complete run returns a same-origin `/api/v1/...` `handoff_url`. That
 artifact is one selected-run delivery bundle, not a local checklist portfolio.
 Replay evidence is encrypted separately and expires under the configured local
 retention policy; immutable result hashes and purge metadata remain available.
+Failed SSH jobs expose resume only when a retained encrypted checkpoint exists.
+The browser repeats the job's sanitized coordinates unchanged, runs a fresh
+preflight with a fresh password or key credential, and clears password and
+passphrase fields immediately after resume submission. Neither credentials nor
+receipt drafts are written to browser storage.
 
 ## Local checks
 

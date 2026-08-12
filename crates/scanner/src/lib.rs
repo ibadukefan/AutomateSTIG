@@ -6,6 +6,19 @@
 //! receives a revision-bound checklist plus, only for a complete evaluation,
 //! the sparse scanner-owned reviews that may be delivered to STIG Manager.
 
+mod collection;
+mod decision_trace;
+
+pub use collection::{
+    collect_ssh_envelope, collect_ssh_operation, configuration_envelope, evaluate_adapter_envelope,
+    preflight_ssh, seal_resumed_ssh_envelope, validate_evidence_age, SshScannerPreflight,
+};
+pub use decision_trace::{
+    DecisionOperationStatus, DecisionPolicyBinding, DecisionTrace, EvidenceTraceContext,
+    SignedPolicyReplayMaterial, DECISION_TRACE_SCHEMA, DECISION_TRACE_SCHEMA_V1,
+    DECISION_TRACE_SCHEMA_V2, SIGNED_POLICY_REPLAY_SCHEMA,
+};
+
 #[cfg(test)]
 use std::collections::HashMap;
 
@@ -13,7 +26,7 @@ use automatestig_core::check_packs::{
     canonical_json_sha256, check_pack_vuln_ids_missing_from_benchmark, evaluation_plan_sha256,
     CheckPackRegistry,
 };
-use automatestig_core::checks::{executor::execute_check, CheckPack, SystemData};
+use automatestig_core::checks::{executor::execute_check, CheckPack, CheckPlatform, SystemData};
 use automatestig_core::engine::EvaluationEngine;
 use automatestig_core::models::asset::Asset;
 use automatestig_core::models::checklist::{
@@ -21,15 +34,20 @@ use automatestig_core::models::checklist::{
 };
 use automatestig_core::models::finding::{FindingSource, FindingStatus};
 use automatestig_core::models::Checklist;
-use automatestig_core::remote::is_openssh_sha256_fingerprint;
+use automatestig_core::remote::{
+    generate_collection_plan, is_openssh_sha256_fingerprint, CollectionCommand, CollectionPlan,
+    OutputPolicy,
+};
 use automatestig_core::scanner_benchmarks::bundled_scanner_benchmark;
-use automatestig_core::scanner_profiles::bundled_scanner_profile;
+use automatestig_core::scanner_profiles::{
+    bundled_scanner_profile, bundled_scanner_profiles, ScannerProfile,
+};
 use automatestig_core::target_adapters::DeviceFingerprint;
 use automatestig_integrations::stig_manager::{sparse_scanner_reviews, ScannerReview};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 
-#[cfg(test)]
 const RUNNING_CONFIG_KEY: &str = "running_config";
 
 /// Every in-memory input which can affect a scanner determination.
@@ -40,7 +58,7 @@ const RUNNING_CONFIG_KEY: &str = "running_config";
 /// after signature verification.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub(crate) struct EvaluationInput {
+pub struct EvaluationInput {
     pub profile_id: String,
     pub device: DeviceFingerprint,
     pub system_data: SystemData,
@@ -52,6 +70,7 @@ pub(crate) struct EvaluationInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub collector_version: Option<String>,
     pub collected_at: String,
+    pub evidence_context: EvidenceTraceContext,
     /// A durable projection of the verified policy carried by `system_data`.
     /// It is checked against that non-deserializable trusted value; it cannot
     /// independently enable policy-dependent checks.
@@ -61,7 +80,7 @@ pub(crate) struct EvaluationInput {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub(crate) struct ScannerEvaluationDigests {
+pub struct ScannerEvaluationDigests {
     pub profile_sha256: String,
     /// Semantic digest of the parsed benchmark used by the evaluator.
     pub benchmark_sha256: String,
@@ -75,7 +94,7 @@ pub(crate) struct ScannerEvaluationDigests {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub(crate) struct ScannerEvaluationSummary {
+pub struct ScannerEvaluationSummary {
     pub benchmark_rules: usize,
     pub checks_planned: usize,
     pub checks_assessed: usize,
@@ -90,7 +109,7 @@ pub(crate) struct ScannerEvaluationSummary {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub(crate) struct ScannerEvaluation {
+pub struct ScannerEvaluation {
     pub checklist: Checklist,
     pub collection_complete: bool,
     pub collection_errors: Vec<String>,
@@ -99,6 +118,168 @@ pub(crate) struct ScannerEvaluation {
     /// Canonical scanner-owned STIG Manager payload. This is always empty for
     /// an incomplete evaluation.
     pub sparse_reviews: Vec<ScannerReview>,
+    /// One strict, sanitized trace for every release-bundled automated check,
+    /// including fail-closed evaluation errors.
+    pub decision_traces: Vec<DecisionTrace>,
+    /// Public signed policy material needed to replay policy-dependent Cisco
+    /// predicates. This never contains a private key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub signed_policy_material: Option<SignedPolicyReplayMaterial>,
+}
+
+/// The immutable profile identity and exact collection plan compiled into this
+/// release. The plan is created only after the benchmark, check pack, coverage
+/// counts, platform, and content digests agree.
+#[derive(Debug, Clone)]
+pub struct BundledProfileCollectionPlan {
+    profile: &'static ScannerProfile,
+    collection_plan: CollectionPlan,
+}
+
+impl BundledProfileCollectionPlan {
+    pub fn profile(&self) -> &'static ScannerProfile {
+        self.profile
+    }
+
+    pub fn platform(&self) -> CheckPlatform {
+        self.collection_plan.platform
+    }
+
+    pub fn collection_plan(&self) -> &CollectionPlan {
+        &self.collection_plan
+    }
+
+    pub fn into_collection_plan(self) -> CollectionPlan {
+        self.collection_plan
+    }
+}
+
+/// Resolve an exact release-bundled scanner profile by its target/profile ID
+/// or by its STIG ID. Ambiguous STIG IDs fail closed instead of selecting an
+/// arbitrary revision or target.
+pub fn resolve_bundled_profile(
+    profile_id_or_stig_id: &str,
+) -> Result<&'static ScannerProfile, String> {
+    let requested = profile_id_or_stig_id.trim();
+    if requested.is_empty() {
+        return Err("scanner profile ID or STIG ID must not be empty".to_string());
+    }
+    let profiles = bundled_scanner_profiles()
+        .map_err(|error| format!("failed to load bundled scanner profiles: {error}"))?;
+    if let Some(profile) = profiles
+        .iter()
+        .find(|profile| profile.target_key() == requested)
+    {
+        return Ok(profile);
+    }
+    let mut matching_stigs = profiles
+        .iter()
+        .filter(|profile| profile.stig_id() == requested);
+    let Some(profile) = matching_stigs.next() else {
+        return Err(format!("scanner profile '{requested}' is not bundled"));
+    };
+    if matching_stigs.next().is_some() {
+        return Err(format!(
+            "STIG ID '{requested}' identifies more than one bundled scanner profile"
+        ));
+    }
+    Ok(profile)
+}
+
+/// Build the exact collection plan compiled into this release for one bundled
+/// profile. This does not consult the mutable STIG library or caller-supplied
+/// check definitions.
+pub fn bundled_profile_collection_plan(
+    profile_id_or_stig_id: &str,
+) -> Result<BundledProfileCollectionPlan, String> {
+    let profile = resolve_bundled_profile(profile_id_or_stig_id)?;
+    let bundled_benchmark = bundled_scanner_benchmark(profile.target_key())
+        .map_err(|error| format!("failed to load bundled scanner benchmark: {error}"))?
+        .ok_or_else(|| {
+            format!(
+                "scanner profile '{}' has no bundled benchmark",
+                profile.target_key()
+            )
+        })?;
+    let benchmark = bundled_benchmark.benchmark();
+    if benchmark.id != profile.stig_id() || benchmark.version_string() != profile.stig_release() {
+        return Err(format!(
+            "bundled benchmark {} {} does not match profile {} {}",
+            benchmark.id,
+            benchmark.version_string(),
+            profile.stig_id(),
+            profile.stig_release()
+        ));
+    }
+    if benchmark.rules.len() != profile.coverage().reviewed_rules() {
+        return Err(format!(
+            "bundled benchmark rule count {} does not match profile coverage {}",
+            benchmark.rules.len(),
+            profile.coverage().reviewed_rules()
+        ));
+    }
+
+    let check_packs = exact_check_packs(profile.stig_id(), profile.stig_release())?;
+    let unknown_vuln_ids = check_pack_vuln_ids_missing_from_benchmark(benchmark, &check_packs);
+    if !unknown_vuln_ids.is_empty() {
+        return Err(format!(
+            "bundled check pack contains rules outside the exact benchmark: {}",
+            unknown_vuln_ids.join(", ")
+        ));
+    }
+    let pack = check_packs
+        .first()
+        .expect("exact_check_packs returns exactly one pack");
+    if pack.platform != profile.platform() {
+        return Err(format!(
+            "bundled check-pack platform {:?} does not match profile {:?}",
+            pack.platform,
+            profile.platform()
+        ));
+    }
+    if pack.checks.len() != profile.coverage().automated_checks() {
+        return Err(format!(
+            "bundled check count {} does not match profile coverage {}",
+            pack.checks.len(),
+            profile.coverage().automated_checks()
+        ));
+    }
+    let check_pack_sha256 = canonical_json_sha256(&check_packs)
+        .map_err(|error| format!("failed to digest bundled check pack: {error}"))?;
+    if check_pack_sha256 != profile.digests().check_pack_sha256() {
+        return Err("bundled check-pack digest does not match the scanner profile".to_string());
+    }
+
+    let collection_plan = if profile.platform() == CheckPlatform::CiscoIos {
+        let check_definitions_sha256 = format!(
+            "{:x}",
+            Sha256::digest(
+                serde_json::to_vec(&pack.checks)
+                    .map_err(|error| format!("failed to hash check definitions: {error}"))?
+            )
+        );
+        CollectionPlan {
+            platform: CheckPlatform::CiscoIos,
+            commands: vec![CollectionCommand {
+                command: "cisco_ios_xe_complete_running_configuration".to_string(),
+                data_key: RUNNING_CONFIG_KEY.to_string(),
+                accepted_exit_codes: vec![0],
+                output_policy: OutputPolicy::Any,
+            }],
+            check_definitions_sha256,
+        }
+    } else {
+        generate_collection_plan(pack.platform, &pack.checks)
+            .map_err(|error| format!("failed to build bundled collection plan: {error}"))?
+    };
+    if collection_plan.platform != profile.platform() || collection_plan.commands.is_empty() {
+        return Err("bundled collection plan does not match the scanner profile".to_string());
+    }
+
+    Ok(BundledProfileCollectionPlan {
+        profile,
+        collection_plan,
+    })
 }
 
 /// Convert adapter observations into the executor's established system-data
@@ -129,7 +310,7 @@ fn system_data_from_normalized(
 /// observations remain Not Reviewed with a collection-error source. Benchmark
 /// rules without executable checks are left exactly as the engine initialized
 /// them: manual and Not Reviewed.
-pub(crate) fn evaluate_profile(input: EvaluationInput) -> Result<ScannerEvaluation, String> {
+pub fn evaluate_profile(input: EvaluationInput) -> Result<ScannerEvaluation, String> {
     validate_input(&input)?;
 
     let profile = bundled_scanner_profile(input.profile_id.trim())
@@ -196,6 +377,11 @@ pub(crate) fn evaluate_profile(input: EvaluationInput) -> Result<ScannerEvaluati
         .map_err(|error| format!("failed to digest bundled benchmark: {error}"))?;
 
     let organization_policy = verified_policy_projection(&input)?;
+    let signed_policy_material = input
+        .system_data
+        .organization_policy
+        .as_ref()
+        .map(SignedPolicyReplayMaterial::from_verified);
     let organization_policy_sha256 = organization_policy
         .as_ref()
         .map(|policy| policy.policy_sha256.as_str());
@@ -231,6 +417,7 @@ pub(crate) fn evaluate_profile(input: EvaluationInput) -> Result<ScannerEvaluati
     let mut checks_passed = 0usize;
     let mut checks_failed = 0usize;
     let mut checks_errored = 0usize;
+    let mut check_results = Vec::with_capacity(checks.len());
     for definition in &checks {
         let result = execute_check(definition, &input.system_data);
         let finding = checklist
@@ -278,6 +465,7 @@ pub(crate) fn evaluate_profile(input: EvaluationInput) -> Result<ScannerEvaluati
                 );
             }
         }
+        check_results.push(result);
     }
 
     let mut collection_errors: Vec<String> = input
@@ -309,7 +497,7 @@ pub(crate) fn evaluate_profile(input: EvaluationInput) -> Result<ScannerEvaluati
         benchmark_sha256: Some(benchmark_sha256.clone()),
         check_pack_sha256: Some(check_pack_sha256.clone()),
         evaluation_plan_sha256: Some(evaluation_plan_sha256.clone()),
-        organization_policy,
+        organization_policy: organization_policy.clone(),
         answer_file: None,
         answer_files: Vec::new(),
         unsafe_legacy_evidence: false,
@@ -345,6 +533,28 @@ pub(crate) fn evaluate_profile(input: EvaluationInput) -> Result<ScannerEvaluati
         benchmark_coverage_pct: finding_summary.benchmark_coverage_pct(),
         assessed_pass_pct: finding_summary.assessed_pass_pct_opt(),
     };
+    let check_pack = check_packs
+        .first()
+        .expect("exact_check_packs returns exactly one pack");
+    let decision_traces = decision_trace::build_decision_traces(
+        profile.target_key(),
+        profile.digests().profile_sha256(),
+        profile.stig_id(),
+        profile.stig_release(),
+        &benchmark_sha256,
+        &bundled_benchmark.source().benchmark_model_sha256,
+        &check_pack_sha256,
+        &evaluation_plan_sha256,
+        &input.plan_sha256,
+        input.origin,
+        &input.collected_at,
+        &input.evidence_context,
+        &checklist,
+        check_pack,
+        &check_results,
+        organization_policy.as_ref(),
+        signed_policy_material.as_ref(),
+    )?;
 
     Ok(ScannerEvaluation {
         checklist,
@@ -361,6 +571,8 @@ pub(crate) fn evaluate_profile(input: EvaluationInput) -> Result<ScannerEvaluati
         },
         summary,
         sparse_reviews,
+        decision_traces,
+        signed_policy_material,
     })
 }
 
@@ -466,6 +678,15 @@ fn validate_input(input: &EvaluationInput) -> Result<(), String> {
         .device
         .sha256()
         .map_err(|error| format!("invalid device fingerprint: {error}"))?;
+    if input.evidence_context.device != input.device
+        || input.evidence_context.device_fingerprint_sha256
+            != input.device.sha256().map_err(|error| error.to_string())?
+        || input.evidence_context.evidence_envelope_sha256 != input.evidence_sha256
+    {
+        return Err(
+            "decision-trace evidence context does not match the evaluation input".to_string(),
+        );
+    }
     for (label, digest) in [
         ("evidence_sha256", input.evidence_sha256.as_str()),
         ("plan_sha256", input.plan_sha256.as_str()),
@@ -515,6 +736,10 @@ fn is_lowercase_sha256(value: &str) -> bool {
 mod tests {
     use super::*;
     use automatestig_core::models::finding::FindingSource;
+    use automatestig_core::target_adapters::{
+        built_in_target_adapter, AdapterEvidenceEnvelope, AdapterOperationEvidence,
+        AdapterOperationStatus, EvidenceTransportIdentity,
+    };
 
     const PROFILE: &str = "freebsd_gpos";
 
@@ -548,16 +773,58 @@ mod tests {
     }
 
     fn input(system_data: SystemData) -> EvaluationInput {
+        let device = DeviceFingerprint::new("freebsd-test", "FreeBSD", "FreeBSD", "14.3");
+        let adapter = built_in_target_adapter(PROFILE).unwrap();
+        let plan = adapter.preview(&device).unwrap();
+        let operations = plan
+            .operations
+            .iter()
+            .map(|operation| {
+                if let Some(error) = system_data.collection_errors.get(&operation.data_key) {
+                    AdapterOperationEvidence::failed(
+                        operation,
+                        AdapterOperationStatus::SemanticError,
+                        error,
+                        1,
+                    )
+                    .unwrap()
+                } else if let Some(output) = system_data.command_outputs.get(&operation.data_key) {
+                    AdapterOperationEvidence::success(operation, output, 1)
+                } else {
+                    AdapterOperationEvidence::failed(
+                        operation,
+                        AdapterOperationStatus::ProtocolError,
+                        "missing test evidence",
+                        1,
+                    )
+                    .unwrap()
+                }
+            })
+            .collect();
+        let envelope = AdapterEvidenceEnvelope::seal(
+            &plan,
+            device.clone(),
+            EvidenceTransportIdentity::SshHostKey {
+                fingerprint: "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA".to_string(),
+            },
+            DateTime::parse_from_rfc3339("2026-08-08T12:00:00Z")
+                .unwrap()
+                .with_timezone(&Utc),
+            operations,
+        )
+        .unwrap();
+        let evidence_context = EvidenceTraceContext::from_envelope(&envelope).unwrap();
         EvaluationInput {
             profile_id: PROFILE.to_string(),
-            device: DeviceFingerprint::new("freebsd-test", "FreeBSD", "FreeBSD", "14.3"),
+            device,
             system_data,
             origin: EvaluationOrigin::EvidenceFile,
-            evidence_sha256: "a".repeat(64),
-            plan_sha256: "b".repeat(64),
+            evidence_sha256: envelope.evidence_sha256,
+            plan_sha256: envelope.plan_sha256,
             server_key_fingerprint: None,
             collector_version: Some("test-collector/1".to_string()),
             collected_at: "2026-08-08T12:00:00Z".to_string(),
+            evidence_context,
             organization_policy: None,
         }
     }
@@ -597,6 +864,16 @@ mod tests {
         assert_eq!(result.summary.checks_passed, 6);
         assert_eq!(result.summary.checks_failed, 0);
         assert_eq!(result.sparse_reviews.len(), 6);
+        assert_eq!(result.decision_traces.len(), 6);
+        assert!(result.decision_traces.iter().all(|trace| {
+            trace.schema == DECISION_TRACE_SCHEMA
+                && trace.evaluation_error_class.is_none()
+                && !trace.operations.is_empty()
+                && trace
+                    .operations
+                    .iter()
+                    .all(|operation| !operation.request.is_empty())
+        }));
         assert!(result
             .sparse_reviews
             .iter()
@@ -644,6 +921,11 @@ mod tests {
 
         assert!(!result.collection_complete);
         assert!(result.sparse_reviews.is_empty());
+        assert_eq!(result.decision_traces.len(), 6);
+        assert!(result
+            .decision_traces
+            .iter()
+            .any(|trace| trace.evaluation_error_class.is_some()));
         assert_eq!(result.summary.checks_errored, 5);
         let finding = result.checklist.find_by_vuln_id("V-203615").unwrap();
         assert_eq!(finding.status, FindingStatus::NotReviewed);
@@ -677,7 +959,17 @@ mod tests {
         assert!(!stored_projection.contains(RAW_OUTPUT));
         assert!(!stored_projection.contains("raw-stderr-SENTINEL"));
         assert!(stored_projection.contains("permission denied while collecting"));
-        assert!(stored_projection.contains(&"a".repeat(64)));
+        assert!(stored_projection.contains(DECISION_TRACE_SCHEMA));
+        assert!(result.decision_traces.iter().all(|trace| {
+            trace.operations.iter().all(|operation| {
+                !operation.request_sha256.is_empty()
+                    && !operation.request.is_empty()
+                    && operation
+                        .observation_sha256
+                        .as_deref()
+                        .is_none_or(|digest| digest.len() == 64)
+            })
+        }));
     }
 
     #[test]
@@ -722,5 +1014,52 @@ mod tests {
 
         let error = evaluate_profile(evaluation).unwrap_err();
         assert!(error.contains("cannot enable checks"));
+    }
+
+    #[test]
+    fn profiles_resolve_by_target_key_or_exact_stig_id() {
+        for (target_key, stig_id) in [
+            ("netapp_ontap9", "NetApp_ONTAP_DSC_9-x_STIG"),
+            ("freebsd_gpos", "General_Purpose_Operating_System"),
+            ("cisco_ios_xe_router_ndm", "Cisco_IOS-XE_Router_NDM_STIG"),
+        ] {
+            let by_target = resolve_bundled_profile(target_key).unwrap();
+            let by_stig = resolve_bundled_profile(stig_id).unwrap();
+            assert!(std::ptr::eq(by_target, by_stig));
+        }
+        assert!(resolve_bundled_profile("").is_err());
+        assert!(resolve_bundled_profile("unknown-profile").is_err());
+    }
+
+    #[test]
+    fn collection_plans_match_the_release_bundled_adapter_contracts() {
+        for (target_key, device) in [
+            (
+                "netapp_ontap9",
+                DeviceFingerprint::new("ontap-test", "NetApp", "ONTAP", "9.15.1"),
+            ),
+            (
+                "freebsd_gpos",
+                DeviceFingerprint::new("freebsd-test", "FreeBSD", "FreeBSD", "14.3"),
+            ),
+            (
+                "cisco_ios_xe_router_ndm",
+                DeviceFingerprint::new("router-test", "Cisco", "IOS-XE", "17.12"),
+            ),
+        ] {
+            let bundled = bundled_profile_collection_plan(target_key).unwrap();
+            let adapter_plan = built_in_target_adapter(target_key)
+                .unwrap()
+                .preview(&device)
+                .unwrap();
+
+            assert_eq!(bundled.profile().target_key(), target_key);
+            assert_eq!(bundled.platform(), bundled.profile().platform());
+            assert!(!bundled.collection_plan().commands.is_empty());
+            assert_eq!(
+                bundled.collection_plan().digest(),
+                adapter_plan.legacy_collection_plan_sha256
+            );
+        }
     }
 }

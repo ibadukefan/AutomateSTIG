@@ -34,12 +34,14 @@ Do **not** reword command output, change column spacing, or drop "N entries were
 ## Running the calibration
 
 ```bash
-automatestig evaluate --stig NetApp_ONTAP_DSC_9-x_STIG --evidence ontap-evidence.json --output filer01.ckl --format ckl
-automatestig evaluate --stig General_Purpose_Operating_System --evidence bsd-evidence.json --output bsdhost01.ckl --format ckl
-automatestig evaluate --stig Cisco_IOS-XE_Router_NDM_STIG --config router-config.txt --host rtr01 --output rtr01.ckl --format ckl
+automatestig evaluate --stig NetApp_ONTAP_DSC_9-x_STIG --evidence ontap-evidence.json --output filer01.scanner-result.json
+automatestig evaluate --stig General_Purpose_Operating_System --evidence bsd-evidence.json --output bsdhost01.scanner-result.json
+automatestig evaluate --stig Cisco_IOS-XE_Router_NDM_STIG --config router-config.txt --host rtr01 --output rtr01.scanner-result.json
 ```
 
-Review each CKL against what you know to be true about the device:
+Review each native scanner result against what you know to be true about the
+device. A complete result can additionally be written as CKLB with
+`--format cklb`; CKLB is a projection, not the authoritative scanner record.
 
 - A rule you know is compliant showing **Open** → the pattern is too strict for your output format. Report the rule ID and the relevant sanitized output block.
 - A rule you know is misconfigured showing **NotAFinding** → report immediately; false-pass patterns are treated as defects.

@@ -121,7 +121,9 @@ export function createScanPage({
           onClick: () => {
             if (session.mode === 'connected') {
               setMode('disconnected');
-              render(outlet);
+              const rendering = render(outlet);
+              focusWorkspaceHeading(outlet);
+              return rendering;
             } else {
               window.location.hash = hrefFor('connection');
             }
@@ -132,11 +134,16 @@ export function createScanPage({
     );
     const body = outlet.querySelector('#scan-body');
     try {
-      const [profiles, collections] = await Promise.all([
+      const [profiles, collections, connectionProfiles] = await Promise.all([
         loadProfiles({ signal: current.signal }),
         session.mode === 'connected'
           ? request(endpoints.collections, { signal: current.signal }).then(normalizeCollections)
           : Promise.resolve([]),
+        request(endpoints.connectionProfiles, { signal: current.signal })
+          .then(payload => Array.isArray(payload) ? payload : payload?.profiles || [])
+          // Saved target profiles are an optional local convenience. A
+          // transient read failure must not block fresh-credential scanning.
+          .catch(() => []),
       ]);
       if (current.generation !== generation || !body?.isConnected) return;
       const readyProfiles = profiles.filter(profile => profile.scannerReady);
@@ -158,7 +165,7 @@ export function createScanPage({
         );
         return;
       }
-      replace(body, buildWorkspace({ outlet, body, session, profiles, readyProfiles, collections }));
+      replace(body, buildWorkspace({ outlet, body, session, profiles, readyProfiles, collections, connectionProfiles }));
     } catch (error) {
       if (current.generation !== generation || !body?.isConnected) return;
       replace(body,
@@ -197,15 +204,53 @@ export function createScanPage({
           h('ul', {},
             h('li', {}, 'Same fail-closed collection rules'),
             h('li', {}, 'Evidence and provenance remain bound'),
-            h('li', {}, 'Import the handoff at the destination'),
+            h('li', {}, 'Verify the handoff before your approved reconciliation workflow'),
           ),
-          button('Run disconnected', { tone: 'secondary', onClick: () => { setMode('disconnected'); render(outlet); } }),
+          button('Run disconnected', { tone: 'secondary', onClick: () => {
+            setMode('disconnected');
+            const rendering = render(outlet);
+            focusWorkspaceHeading(outlet);
+            return rendering;
+          } }),
         ),
+      ),
+      readinessPanel('unselected'),
+      h('section', { className: 'card training-card' },
+        h('div', { className: 'section-heading' },
+          h('div', {},
+            h('p', { className: 'card-kicker' }, 'No device required'),
+            h('h2', {}, 'Preview the analyst workflow'),
+            h('p', {}, 'Open a synthetic, read-only result to learn the review and handoff steps. It is never saved and cannot be delivered.'),
+          ),
+          badge('Training only', 'neutral'),
+        ),
+        button('Open sample result', { tone: 'secondary', onClick: () => {
+          renderSampleWalkthrough(outlet);
+          focusWorkspaceHeading(outlet);
+        } }),
       ),
     );
   }
 
-  function buildWorkspace({ outlet, body, session, profiles, readyProfiles, collections }) {
+  function renderSampleWalkthrough(outlet) {
+    const sample = trainingRun();
+    replace(outlet,
+      pageHeader(
+        'Training walkthrough',
+        'See the result before touching a device',
+        'This browser-only example shows what an analyst reviews after collection. It creates no run, makes no network request, and cannot produce a handoff.',
+        [button('Back to start', { tone: 'secondary', onClick: () => {
+          renderWelcome(outlet);
+          focusWorkspaceHeading(outlet);
+        } })],
+      ),
+      notice('Training data only — do not use this page as assessment evidence.', 'warning'),
+      readinessPanel('training'),
+      renderRunPreview(sample, { embedded: true }),
+    );
+  }
+
+  function buildWorkspace({ outlet, body, session, profiles, readyProfiles, collections, connectionProfiles }) {
     let assets = [];
     let assignments = [];
     let preflight = null;
@@ -225,15 +270,18 @@ export function createScanPage({
     const methodSelect = h('select', { disabled: true }, h('option', { value: '' }, 'Select a profile first…'));
     const endpointInput = h('input', { type: 'text', autocomplete: 'off', placeholder: 'device.example.mil' });
     const portInput = h('input', { type: 'number', min: 1, max: 65535, value: 22 });
+    const savedTargetSelect = h('select', {},
+      h('option', { value: '' }, 'Do not use a saved target profile'),
+      connectionProfiles.map(profile => h('option', { value: profile.id }, `${profile.endpoint}:${profile.port} · ${profile.scanner_profile_id}`)),
+    );
+    const savedTargetStatus = h('div', { className: 'operation-result', role: 'status', 'aria-live': 'polite' });
     const credentialType = h('select', {},
       h('option', { value: 'password' }, 'One-time password'),
-      h('option', { value: 'key_file' }, 'Approved private-key file'),
-      h('option', { value: 'reference' }, 'Managed credential reference'));
+      h('option', { value: 'key_file' }, 'Approved private-key file'));
     const usernameInput = h('input', { type: 'text', autocomplete: 'off' });
     const passwordInput = h('input', { type: 'password', autocomplete: 'off' });
     const keyPathInput = h('input', { type: 'text', autocomplete: 'off', placeholder: '/approved/path/id_ed25519' });
     const keyPassphraseInput = h('input', { type: 'password', autocomplete: 'off' });
-    const credentialReferenceInput = h('input', { type: 'text', autocomplete: 'off', placeholder: 'vault://scanner/device-account' });
     const evidenceInput = h('input', { type: 'file', accept: '.json,application/json' });
     const policyInput = h('input', { type: 'file', accept: '.json,application/json' });
     const signatureInput = h('input', { type: 'file', accept: '.sig,application/octet-stream' });
@@ -241,9 +289,10 @@ export function createScanPage({
     const evidenceFields = h('div', { className: 'method-panel', hidden: true });
     const policyFields = h('div', { className: 'method-panel', hidden: true });
     const credentialsFields = h('div', { className: 'credential-fields' });
+    const methodStatus = h('div', { className: 'operation-result', role: 'status', 'aria-live': 'polite' });
     const pilotAcknowledgement = h('input', { type: 'checkbox' });
     const runButton = button('Collect and evaluate', { tone: 'primary', disabled: true });
-    const preflightButton = button('Run preflight', { tone: 'primary', disabled: true });
+    const preflightButton = button('Check readiness', { tone: 'primary', disabled: true });
 
     const selectedProfile = () => {
       if (session.mode === 'connected') {
@@ -256,6 +305,7 @@ export function createScanPage({
     const selectedCollection = () => collections.find(value => value.id === collectionSelect.value) || null;
     const selectedAsset = () => assets.find(value => value.id === assetSelect.value) || null;
     const selectedAssignment = () => assignments.find(value => value.id === assignmentSelect.value) || null;
+    const selectedConnectionProfile = () => connectionProfiles.find(value => value.id === savedTargetSelect.value) || null;
 
     const invalidatePreflight = () => {
       preflightRevision += 1;
@@ -280,10 +330,56 @@ export function createScanPage({
       preflightButton.disabled = !(destinationReady && profileReady && acceptanceReady && methodReady && policyReady);
     };
 
+    savedTargetSelect.addEventListener('change', () => {
+      const saved = selectedConnectionProfile();
+      if (saved) {
+        endpointInput.value = String(saved.endpoint || '');
+        portInput.value = String(saved.port || 22);
+        replace(savedTargetStatus, notice('Saved target coordinates applied. Fresh credentials are still required; the opaque credential reference is metadata only because no provider is configured.', 'info'));
+      } else {
+        replace(savedTargetStatus);
+      }
+      invalidatePreflight();
+    });
+
+    const saveTargetProfile = button('Save target profile', { tone: 'secondary', onClick: async event => {
+      const profile = selectedProfile();
+      if (!profile || selectedMethod() !== 'ssh' || !endpointInput.value.trim()) {
+        replace(savedTargetStatus, notice('Select an SSH scanner profile and enter a target endpoint before saving a thin target profile.', 'warning'));
+        return;
+      }
+      setBusy(event.currentTarget, true, 'Saving…');
+      try {
+        const saved = await request(endpoints.connectionProfiles, {
+          method: 'POST',
+          body: {
+            scanner_profile_id: profile.id,
+            adapter: profile.adapterId,
+            endpoint: endpointInput.value.trim(),
+            port: Number(portInput.value || 22),
+          },
+        });
+        const profileRecord = saved?.profile || saved;
+        if (profileRecord?.id) {
+          connectionProfiles.push(profileRecord);
+          replace(savedTargetSelect,
+            h('option', { value: '' }, 'Do not use a saved target profile'),
+            connectionProfiles.map(value => h('option', { value: value.id }, `${value.endpoint}:${value.port} · ${value.scanner_profile_id}`)),
+          );
+          savedTargetSelect.value = profileRecord.id;
+        }
+        replace(savedTargetStatus, notice('Saved thin target profile. It contains endpoint, port, adapter, and optional opaque credential-reference metadata only; no credential was saved.', 'success'));
+      } catch (error) {
+        replace(savedTargetStatus, notice(apiUnavailableMessage(error), 'danger'));
+      } finally {
+        setBusy(event.currentTarget, false);
+      }
+    }});
+
     const validCredential = () => {
       if (credentialType.value === 'password') return Boolean(passwordInput.value);
       if (credentialType.value === 'key_file') return absolutePath(keyPathInput.value);
-      return Boolean(credentialReferenceInput.value.trim());
+      return false;
     };
 
     const updateCredentialFields = () => {
@@ -298,15 +394,12 @@ export function createScanPage({
               field('scan-key-passphrase-v1', 'Key passphrase (optional)', keyPassphraseInput, 'Kept only in this form through preflight and cleared when collection starts.'),
             )
           : null,
-        credentialType.value === 'reference'
-          ? field('scan-credential-reference-v1', 'Credential reference', credentialReferenceInput, 'The reference is passed to the configured server-side credential provider.')
-          : null,
       );
       invalidatePreflight();
     };
 
     const profileMethods = profile => {
-      const methods = profile?.methods?.length ? profile.methods : inferMethods(profile);
+      const methods = profile?.methods || [];
       return methods.map(normalizeMethod).filter((value, index, list) => value && list.indexOf(value) === index);
     };
 
@@ -314,10 +407,15 @@ export function createScanPage({
       const profile = selectedProfile();
       const methods = profileMethods(profile);
       replace(methodSelect,
-        h('option', { value: '' }, profile ? 'Select a collection method…' : 'Select a profile first…'),
+        h('option', { value: '' }, profile && !methods.length
+          ? 'No collection method declared by this release'
+          : profile ? 'Select a collection method…' : 'Select a profile first…'),
         methods.map(method => h('option', { value: method }, methodLabel(method))),
       );
-      methodSelect.disabled = !profile;
+      methodSelect.disabled = !profile || !methods.length;
+      replace(methodStatus, profile && !methods.length
+        ? notice('This profile returned no recognized collection method. Open Scanner Content, preserve the release/version details, and do not infer a method from the target name.', 'danger')
+        : null);
       updateMethodFields();
     };
 
@@ -415,16 +513,19 @@ export function createScanPage({
     methodSelect.addEventListener('change', updateMethodFields);
     credentialType.addEventListener('change', updateCredentialFields);
     for (const control of [endpointInput, portInput, usernameInput, passwordInput, keyPathInput,
-      keyPassphraseInput, credentialReferenceInput, evidenceInput, policyInput, signatureInput]) {
+      keyPassphraseInput, evidenceInput, policyInput, signatureInput]) {
       control.addEventListener(control.type === 'file' ? 'change' : 'input', invalidatePreflight);
       control.addEventListener(control.type === 'file' ? 'change' : 'input', updatePreflightReady);
     }
 
     replace(sshFields,
       h('div', { className: 'form-grid' },
+        field('scan-saved-target-v1', 'Saved target profile (optional)', savedTargetSelect, 'Thin scanner-only reconnect coordinates; it never contains STIG Manager asset state or device secrets.'),
         field('scan-endpoint-v1', 'Target endpoint', endpointInput, 'Must identify the selected STIG Manager asset; preflight validates the binding.'),
         field('scan-port-v1', 'Port', portInput),
       ),
+      h('div', { className: 'button-row' }, saveTargetProfile),
+      savedTargetStatus,
       field('scan-credential-type-v1', 'Credential source', credentialType, 'Reusable plaintext credentials are never stored in the asset record.'),
       credentialsFields,
     );
@@ -440,8 +541,9 @@ export function createScanPage({
     updateCredentialFields();
 
     preflightButton.addEventListener('click', async event => {
+      const control = event.currentTarget;
       const requestRevision = preflightRevision;
-      setBusy(event.currentTarget, true, 'Running preflight…');
+      setBusy(control, true, 'Checking readiness…');
       runButton.disabled = true;
       replace(progress, progressSteps('preflight', { preflight: 'active' }));
       replace(preflightOutput, loadingState('Verifying destination, target identity, version, privilege, and collection plan…'));
@@ -460,10 +562,10 @@ export function createScanPage({
           passwordInput,
           keyPathInput,
           keyPassphraseInput,
-          credentialReferenceInput,
           evidenceInput,
           policyInput,
           signatureInput,
+          connectionProfileId: selectedConnectionProfile()?.id || null,
           pilotAcknowledged: pilotAcknowledgement.checked,
         });
         const response = await request(endpoints.preflight, { method: 'POST', body: payload, signal: controller?.signal, timeoutMs: 60_000 });
@@ -488,7 +590,7 @@ export function createScanPage({
         replace(preflightOutput, notice(apiUnavailableMessage(error), 'danger'));
         replace(progress, progressSteps('preflight', { preflight: 'failed' }));
       } finally {
-        setBusy(event.currentTarget, false);
+        setBusy(control, false);
         updatePreflightReady();
         if (preflight?.ready) runButton.disabled = false;
       }
@@ -518,7 +620,7 @@ export function createScanPage({
               passwordInput,
               keyPathInput,
               keyPassphraseInput,
-              credentialReferenceInput,
+              connectionProfileId: selectedConnectionProfile()?.id || null,
               signal: activeRunController.signal,
             })
           : await startEvidenceRun({
@@ -616,6 +718,7 @@ export function createScanPage({
 
     return h('div', { className: 'scan-workspace' },
       progress,
+      readinessPanel(session.mode),
       destination,
       h('section', { className: 'card workflow-card' },
         h('div', { className: 'section-heading' },
@@ -623,13 +726,14 @@ export function createScanPage({
             h('p', {}, 'Temporary secrets stay in this form only until the request is submitted.')),
         ),
         field('scan-method-v1', 'Collection method', methodSelect),
+        methodStatus,
         sshFields,
         evidenceFields,
         policyFields,
       ),
       h('section', { className: 'card workflow-card' },
         h('div', { className: 'section-heading' },
-          h('div', {}, h('p', { className: 'step-label' }, 'Step 3'), h('h2', {}, 'Preflight before collection'),
+          h('div', {}, h('p', { className: 'step-label' }, 'Step 3'), h('h2', {}, 'Run the safety check'),
             h('p', {}, 'Review device identity, exact version alignment, privilege, and every planned command or request.')),
           badge('Fail closed', 'success'),
         ),
@@ -674,15 +778,13 @@ export function createScanPage({
   return { render, abort: () => { controller?.abort(); activeRunController?.abort(); } };
 }
 
+function focusWorkspaceHeading(outlet) {
+  outlet?.querySelector('h1')?.focus({ preventScroll: true });
+}
+
 function absolutePath(value) {
   const path = String(value || '').trim();
   return path.startsWith('/') || /^[A-Za-z]:[\\/]/.test(path) || /^\\\\[^\\]+\\[^\\]+/.test(path);
-}
-
-function inferMethods(profile) {
-  const key = `${profile?.adapter || ''} ${profile?.id || ''}`.toLowerCase();
-  if (key.includes('cisco') || key.includes('ios')) return ['configuration'];
-  return ['ssh', 'evidence'];
 }
 
 function normalizeMethod(value) {
@@ -719,10 +821,10 @@ async function buildBasePayload({
   passwordInput,
   keyPathInput,
   keyPassphraseInput,
-  credentialReferenceInput,
   evidenceInput,
   policyInput,
   signatureInput,
+  connectionProfileId,
   pilotAcknowledged,
 }) {
   const destination = session.mode === 'connected' ? {
@@ -734,12 +836,13 @@ async function buildBasePayload({
     mode: session.mode,
     profile_id: profile?.id,
     collection_method: method,
+    connection_profile_id: method === 'ssh' ? connectionProfileId : null,
     destination,
     pilot_acknowledged: Boolean(profile?.releaseSupported || pilotAcknowledged),
   };
   if (method === 'ssh') {
     payload.target = { host: endpointInput.value.trim(), port: Number(portInput.value || 22) };
-    payload.credential = buildCredential({ credentialType, usernameInput, passwordInput, keyPathInput, keyPassphraseInput, credentialReferenceInput });
+    payload.credential = buildCredential({ credentialType, usernameInput, passwordInput, keyPathInput, keyPassphraseInput });
   } else {
     payload.input = await fileMetadata(evidenceInput.files?.[0]);
     if (method === 'configuration') {
@@ -750,14 +853,13 @@ async function buildBasePayload({
   return payload;
 }
 
-function buildCredential({ credentialType, usernameInput, passwordInput, keyPathInput, keyPassphraseInput, credentialReferenceInput }) {
+function buildCredential({ credentialType, usernameInput, passwordInput, keyPathInput, keyPassphraseInput }) {
   const credential = { type: credentialType.value, username: usernameInput.value.trim() };
   if (credential.type === 'password') credential.password = passwordInput.value;
   if (credential.type === 'key_file') {
     credential.path = keyPathInput.value.trim();
     credential.passphrase = keyPassphraseInput.value || null;
   }
-  if (credential.type === 'reference') credential.reference = credentialReferenceInput.value.trim();
   return credential;
 }
 
@@ -800,13 +902,14 @@ function normalizePreflight(payload = {}) {
     compatibility: value.compatibility || {},
     privilege: value.privilege || value.privileges || {},
     operations,
+    totalExpectedDurationMs: Number(value.total_expected_duration_ms || value.plan?.total_expected_duration_ms || 0),
     warnings: Array.isArray(value.warnings) ? value.warnings : [],
     errors: Array.isArray(value.errors) ? value.errors : [],
     reason: value.reason || value.blocked_reason || contractReason,
   };
 }
 
-function renderPreflight(preflight) {
+export function renderPreflight(preflight) {
   return h('div', { className: 'preflight-result' },
     notice(preflight.ready
       ? 'Preflight passed. Review the plan below before collection.'
@@ -815,15 +918,22 @@ function renderPreflight(preflight) {
     definitionList([
       ['Observed identity', preflight.identity.hostname || preflight.identity.name || preflight.identity.fingerprint || 'Not returned'],
       ['Observed version', preflight.identity.version || preflight.compatibility.observed_version || 'Not returned'],
+      ['Operating context', String(preflight.identity.operating_context || 'unknown_or_unsupported').replaceAll('_', ' ')],
+      ['HA role', String(preflight.identity.ha_role || 'unknown_or_unsupported').replaceAll('_', ' ')],
       ['Version grammar', preflight.compatibility.version_grammar_matched === true || preflight.compatibility.supported === true
         ? 'Observed version is inside the pilot boundary' : preflight.compatibility.message || 'Not confirmed'],
       ['Release acceptance', preflight.compatibility.release_supported === true
         ? 'Accepted live-device version' : 'Experimental pilot; live acceptance not attached'],
       ['Privilege', preflight.privilege.summary || preflight.privilege.level || String(preflight.privilege || 'Not returned')],
+      ['Expected collection time', preflight.totalExpectedDurationMs > 0
+        ? `${Math.ceil(preflight.totalExpectedDurationMs / 1000)} seconds` : 'Not returned'],
       ['Preflight expires', preflight.expiresAt || 'Bound by server policy'],
     ]),
     preflight.warnings.length ? notice(preflight.warnings.join(' · '), 'warning') : null,
-    preflight.errors.length ? h('ul', { className: 'diagnostic-list' }, preflight.errors.map(error => h('li', {}, String(error.message || error)))) : null,
+    preflight.errors.length ? h('div', { className: 'preflight-diagnostics' },
+      h('ul', { className: 'diagnostic-list' }, preflight.errors.map(error => h('li', {}, String(error.message || error)))),
+      troubleshootingPanel(preflight),
+    ) : null,
     h('div', { className: 'plan-preview' },
       h('div', { className: 'section-heading' },
         h('div', {}, h('h3', {}, 'Read-only collection plan'), h('p', {}, 'The scanner executes only the operations returned by this bound preflight.')),
@@ -836,6 +946,9 @@ function renderPreflight(preflight) {
               h('strong', {}, String(operation.label || operation.name || operation.method || 'Collection operation')),
               h('code', {}, String(operation.command || operation.request || operation.path || operation.detail || 'Details bound by adapter')),
               operation.purpose ? h('p', {}, String(operation.purpose)) : null,
+              Number(operation.estimated_duration_ms) > 0
+                ? h('p', { className: 'operation-timing' }, `Expected ${Math.ceil(Number(operation.estimated_duration_ms) / 1000)}s · maximum ${Math.ceil(Number(operation.maximum_duration_ms) / 1000)}s`)
+                : null,
             ),
           )))
         : notice('The API did not return a visible operation plan. Confirm the adapter contract before collecting.', 'warning'),
@@ -843,8 +956,110 @@ function renderPreflight(preflight) {
   );
 }
 
+export function readinessPanel(mode) {
+  const disconnected = mode === 'disconnected';
+  const training = mode === 'training';
+  const items = training
+    ? [
+        ['Review scope', 'Separate automated results from manual and out-of-profile rules.'],
+        ['Inspect changes', 'Confirm create, update, unchanged, and conflict counts before any handoff.'],
+        ['Verify transfer', 'A real handoff must pass CLI verification before reconciliation.'],
+      ]
+    : [
+        [disconnected ? 'Know the destination' : 'STIG Manager is ready', disconnected
+          ? 'Identify the existing collection, asset, and assignment that will receive the reviewed result.'
+          : 'You can read an existing collection, asset, and exact STIG assignment.'],
+        ['Scanner content matches', 'The target and assigned STIG revision have an exact runnable profile.'],
+        ['Collection input is ready', 'You have approved device access or the complete evidence/configuration file.'],
+        ['Transfer is approved', disconnected
+          ? 'You have an approved path to move and verify the selected-run ZIP at the destination.'
+          : 'You will review the sparse preview before any remote no-op verification.'],
+      ];
+  return h('section', { className: 'card readiness-card', 'aria-labelledby': `readiness-${mode}-title` },
+    h('div', { className: 'section-heading' },
+      h('div', {},
+        h('p', { className: 'card-kicker' }, training ? 'What to look for' : 'Before you begin'),
+        h('h2', { id: `readiness-${mode}-title` }, training ? 'Analyst review checklist' : 'Operator readiness checklist'),
+        h('p', {}, training
+          ? 'Use these checks when you review a real run.'
+          : 'AutomateSTIG stops safely when any binding cannot be proven.'),
+      ),
+      badge(training ? 'Walkthrough' : 'Required', training ? 'neutral' : 'accent'),
+    ),
+    h('ol', { className: 'readiness-list' }, items.map(([title, detail]) => h('li', {},
+      h('span', { className: 'readiness-marker', 'aria-hidden': 'true' }, '✓'),
+      h('div', {}, h('strong', {}, title), h('p', {}, detail)),
+    ))),
+  );
+}
+
+function troubleshootingPanel(preflight) {
+  const diagnostics = [preflight.reason, ...preflight.errors.map(error => String(error?.message || error))]
+    .join(' ')
+    .toLowerCase();
+  const steps = [];
+  if (/identity|hostname|fingerprint|asset|endpoint/.test(diagnostics)) {
+    steps.push('Compare the observed hostname or fingerprint with the selected STIG Manager asset. Correct the selection or endpoint; do not override the mismatch.');
+  }
+  if (/version|release|firmware|compatib/.test(diagnostics)) {
+    steps.push('Open Scanner Content and confirm the exact target version and STIG revision are inside this profile’s tested boundary.');
+  }
+  if (/privilege|permission|denied|authoriz/.test(diagnostics)) {
+    steps.push('Confirm the collection account can run every displayed read-only operation, then run the safety check again with fresh credentials.');
+  }
+  if (/connect|timeout|network|ssh|tls|certificate/.test(diagnostics)) {
+    steps.push('Verify routing, port, host-key or TLS trust, and the endpoint from the scanner host before retrying.');
+  }
+  if (!steps.length) {
+    steps.push('Correct the reported input or target condition, then run the safety check again. AutomateSTIG does not provide a bypass.');
+  }
+  return h('details', { className: 'troubleshooting-panel' },
+    h('summary', {}, 'How to resolve this safely'),
+    h('ol', {}, steps.map(step => h('li', {}, step))),
+    h('p', {}, 'There is no bypass. If the condition persists, preserve the error and run ID for your operator log; do not reinterpret an incomplete collection as a compliance result.'),
+  );
+}
+
+function trainingRun() {
+  return {
+    run_id: 'TRAINING-NOT-A-REAL-RUN',
+    state: 'preview_ready',
+    mode: 'disconnected',
+    created_at: '2026-01-01T12:00:00Z',
+    profile: {
+      title: 'NetApp ONTAP 9.x (sample)',
+      stig_id: 'NetApp_ONTAP_DSC_9-x_STIG',
+      revision: 'V2R4',
+    },
+    result: {
+      collection_complete: true,
+      automated_count: 15,
+      executable_coverage_pct: 51.7,
+      reviewed_rules: 22,
+      full_benchmark_rules: 29,
+      manual_untouched: 7,
+      out_of_scope_untouched: 7,
+      proposed_reviews: [
+        { rule_id: 'SV-SAMPLE-1', result: 'pass', change: 'update', evidence_summary: 'Synthetic version observation' },
+        { rule_id: 'SV-SAMPLE-2', result: 'fail', change: 'create', evidence_summary: 'Synthetic service observation' },
+      ],
+    },
+    delivery: {
+      state: 'not_started',
+      preview: {
+        manual_untouched: 7,
+        out_of_scope_untouched: 7,
+        reviews: [
+          { rule_id: 'SV-SAMPLE-1', result: 'pass', change: 'update', evidence_summary: 'Synthetic version observation' },
+          { rule_id: 'SV-SAMPLE-2', result: 'fail', change: 'create', evidence_summary: 'Synthetic service observation' },
+        ],
+      },
+    },
+  };
+}
+
 async function startSshRun({ preflight, session, profile, collection, asset, assignment, endpointInput, portInput,
-  credentialType, usernameInput, passwordInput, keyPathInput, keyPassphraseInput, credentialReferenceInput, signal }) {
+  credentialType, usernameInput, passwordInput, keyPathInput, keyPassphraseInput, connectionProfileId, signal }) {
   return request(endpoints.sshRun, {
     method: 'POST',
     signal,
@@ -853,13 +1068,14 @@ async function startSshRun({ preflight, session, profile, collection, asset, ass
       preflight_token: preflight.token,
       mode: session.mode,
       profile_id: profile.id,
+      connection_profile_id: connectionProfileId,
       destination: session.mode === 'connected' ? {
         collection_id: collection.id,
         asset_id: asset.id,
         assignment_id: assignment.id,
       } : null,
       target: { host: endpointInput.value.trim(), port: Number(portInput.value || 22) },
-      credential: buildCredential({ credentialType, usernameInput, passwordInput, keyPathInput, keyPassphraseInput, credentialReferenceInput }),
+      credential: buildCredential({ credentialType, usernameInput, passwordInput, keyPathInput, keyPassphraseInput }),
     },
   });
 }

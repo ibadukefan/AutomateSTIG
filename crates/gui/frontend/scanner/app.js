@@ -71,9 +71,37 @@ const router = createRouter({
     if (route.page === 'scan') return scanPage.render(outlet);
     if (route.page === 'deliveries') return deliveriesPage.render(outlet, route.id);
     if (route.page === 'content') return contentPage.render(outlet);
-    return connectionPage.render(outlet);
+    if (route.page === 'connection') return connectionPage.render(outlet);
+    if (route.page === 'legacy') return renderMovedWorkflow(route);
+    return renderUnknownRoute(route);
   },
 });
+
+function renderMovedWorkflow(route) {
+  replace(outlet,
+    h('p', { className: 'page-kicker' }, 'Scanner-first transition'),
+    h('h1', { tabindex: '-1' }, 'This workflow moved'),
+    notice(route.guidance, 'warning'),
+    h('p', {}, `${route.owner} owns this capability; AutomateSTIG does not recreate it as local compliance state.`),
+    route.owner === 'Transition tooling'
+      ? h('p', {}, 'Use the read-only migration inventory and create-new export from the protected transition CLI. It never changes source attribution or remote reviews.')
+      : null,
+    h('div', { className: 'page-actions' },
+      h('a', { className: 'button button-primary', href: `#${route.destination}` }, `Open ${route.destination === 'content' ? 'Scanner Content' : route.destination === 'deliveries' ? 'Deliveries' : route.destination === 'connection' ? 'Connection' : 'Scan'}`),
+      h('a', { className: 'button button-secondary', href: '#scan' }, 'Return to Scan'),
+    ),
+  );
+}
+
+function renderUnknownRoute(route) {
+  replace(outlet,
+    h('p', { className: 'page-kicker' }, 'Navigation'),
+    h('h1', { tabindex: '-1' }, 'Page not found'),
+    notice(`The scanner has no workspace named “${route.requested || 'unknown'}”.`, 'warning'),
+    h('p', {}, 'Use one of the four scanner workspaces. Unknown links are not silently treated as a new scan.'),
+    h('a', { className: 'button button-primary', href: '#scan' }, 'Open Scan'),
+  );
+}
 
 async function bootstrap() {
   renderConnectionChip('Checking scanner API…', 'checking');
@@ -142,6 +170,7 @@ function renderConnectionChip(label = null, state = null) {
     }
   }
   connectionChip.dataset.state = resolvedState || 'disconnected';
+  connectionChip.setAttribute('aria-label', resolvedLabel);
   replace(connectionChip,
     h('span', { className: 'connection-dot', 'aria-hidden': 'true' }),
     h('span', {}, resolvedLabel),

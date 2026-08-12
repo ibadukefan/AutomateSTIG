@@ -14,13 +14,16 @@ there is no independent rebuild-and-publish workflow.
 - Formatting, clippy with warnings denied, cross-platform tests, end-to-end
   acceptance, frontend syntax, exact supported-target/content validation, 100,000 fuzz
   mutations, RustSec audit, and dependency review are required gates.
-- Linux and macOS archives contain the exact gated CLI/GUI binaries. Windows
-  remains a required portability-test runner, but the release workflow,
-  required release contexts, closed manifest, and publisher intentionally
-  exclude Windows artifacts.
+- Linux and macOS archives contain the exact gated product CLI, GUI, and
+  backup/restore utility. Their closed member contract rejects the protected
+  `automatestig-transition` executable. Windows remains a required
+  portability-test runner, but the release workflow, required release
+  contexts, closed manifest, and publisher intentionally exclude Windows
+  artifacts.
 - Each archive has a SHA-256 checksum, CycloneDX SBOM, locked Cargo dependency
   inventory, source/run provenance, GitHub OIDC build attestation, and keyless
-  Sigstore bundle.
+  Sigstore bundle. The SBOM byte-binds both product executables and the recovery
+  utility and declares that protected transition tooling is absent.
 - A tag additionally requires GitHub-bound independent human review, live
   ONTAP, FreeBSD, Cisco IOS-XE, STIG Viewer, and STIG Manager acceptance, a
   recovery drill, and signing-ceremony evidence. The ceremony's JSON, raw

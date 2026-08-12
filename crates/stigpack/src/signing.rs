@@ -137,6 +137,9 @@ fn secure_parent(path: &Path) -> StigpackResult<()> {
             )));
         }
     }
+    #[cfg(windows)]
+    automatestig_core::path_safety::validate_sensitive_directory(parent, "key directory")
+        .map_err(|error| StigpackError::SignatureError(error.to_string()))?;
     Ok(())
 }
 
@@ -163,15 +166,32 @@ fn read_fixed_key(path: &Path, private: bool) -> StigpackResult<[u8; 32]> {
         }
     }
 
-    let mut options = std::fs::OpenOptions::new();
-    options.read(true);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::OpenOptionsExt;
-        options.custom_flags(libc::O_NOFOLLOW);
-    }
+    let policy = if private {
+        automatestig_core::path_safety::SensitiveFilePolicy::Private
+    } else {
+        #[cfg(windows)]
+        {
+            automatestig_core::path_safety::SensitiveFilePolicy::IntegrityProtected
+        }
+        #[cfg(not(windows))]
+        {
+            // Unix intentionally permits root-owned public trust anchors; the
+            // metadata checks above retain that policy.
+            automatestig_core::path_safety::SensitiveFilePolicy::UntrustedInput
+        }
+    };
+    let file = automatestig_core::path_safety::open_sensitive_file(
+        path,
+        if private {
+            "private signing key"
+        } else {
+            "public trust anchor"
+        },
+        policy,
+    )
+    .map_err(|error| StigpackError::SignatureError(error.to_string()))?;
     let mut bytes = Vec::with_capacity(33);
-    options.open(path)?.take(33).read_to_end(&mut bytes)?;
+    file.take(33).read_to_end(&mut bytes)?;
     if bytes.len() != 32 {
         return Err(StigpackError::SignatureError(format!(
             "signing key must contain exactly 32 bytes: {}",
@@ -186,12 +206,20 @@ fn read_fixed_key(path: &Path, private: bool) -> StigpackResult<[u8; 32]> {
 fn write_private_key(path: &Path, bytes: &[u8; 32]) -> std::io::Result<()> {
     let mut options = std::fs::OpenOptions::new();
     options.write(true).create_new(true);
+    automatestig_core::path_safety::configure_no_follow(&mut options);
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt;
         options.mode(0o600).custom_flags(libc::O_NOFOLLOW);
     }
     let mut file = options.open(path)?;
+    automatestig_core::path_safety::validate_open_sensitive_file(
+        &file,
+        path,
+        "private signing key",
+        automatestig_core::path_safety::SensitiveFilePolicy::Private,
+    )
+    .map_err(std::io::Error::other)?;
     file.write_all(bytes)?;
     file.sync_all()
 }
@@ -199,12 +227,20 @@ fn write_private_key(path: &Path, bytes: &[u8; 32]) -> std::io::Result<()> {
 fn write_public_key(path: &Path, bytes: &[u8; 32]) -> std::io::Result<()> {
     let mut options = std::fs::OpenOptions::new();
     options.write(true).create_new(true);
+    automatestig_core::path_safety::configure_no_follow(&mut options);
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt;
         options.mode(0o644).custom_flags(libc::O_NOFOLLOW);
     }
     let mut file = options.open(path)?;
+    automatestig_core::path_safety::validate_open_sensitive_file(
+        &file,
+        path,
+        "public trust anchor",
+        automatestig_core::path_safety::SensitiveFilePolicy::IntegrityProtected,
+    )
+    .map_err(std::io::Error::other)?;
     file.write_all(bytes)?;
     file.sync_all()
 }
@@ -304,6 +340,12 @@ impl TrustStore {
                 ));
             }
         }
+        #[cfg(windows)]
+        let _directory_custody =
+            automatestig_core::path_safety::validate_sensitive_directory(dir, "trust store")
+                .map_err(|error| {
+                    std::io::Error::new(std::io::ErrorKind::PermissionDenied, error.to_string())
+                })?;
 
         let mut count = 0;
         for entry in std::fs::read_dir(dir)? {

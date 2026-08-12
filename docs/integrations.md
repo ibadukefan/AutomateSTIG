@@ -11,6 +11,8 @@ The connection contains an HTTPS API URL, HTTPS OAuth token URL, client ID,
 client secret, and TLS-verification policy. The client secret is encrypted at
 rest and is never returned by the API. Device credentials are separate,
 per-run inputs and are not stored with the STIG Manager connection.
+AutomateSTIG offers a one-time password or absolute private-key path for SSH;
+it does not offer a managed device-credential reference.
 
 Connected use requires a least-privilege service account that can:
 
@@ -70,7 +72,8 @@ no-op verification. The queue's internal pending, sending, and delivered states
 describe that verification attempt; `delivered` means the identical result was
 already remote, not that AutomateSTIG wrote a changed review. A successful
 technical receipt contains the remote identifiers, response, timestamp, and a
-deep link to continue in STIG Manager.
+credential-free GUI base link plus exact destination IDs to continue in STIG
+Manager. The tested build has no supported asset/review deep-link contract.
 
 An identical result is an idempotent no-op after current remote state is read.
 AutomateSTIG does not claim create/update delivery support unless a tested STIG
@@ -82,22 +85,29 @@ Every complete selected run, connected or disconnected, may be
 packaged as one integrity-hashed handoff containing the approved sparse review
 payload, supplemental XCCDF 1.2 and CKLB projections, evidence/provenance
 manifest, and content/build hashes. This is a delivery artifact, not a locally
-managed checklist portfolio. The tested receiving path selects the existing
+managed checklist portfolio. The receiving contract selects the existing
 remote asset and exact assignment, then maps only the sparse JSON reviews to
 the STIG Manager Review API.
 
-Incomplete runs cannot be handed off as compliance results. A native GUI
-XCCDF/CKLB/CKL file-import claim remains unsupported until its semantic round
-trip passes acceptance for the declared STIG Viewer and STIG Manager versions.
+Incomplete runs cannot be handed off as compliance results. Supplemental XCCDF
+and CKLB members are verified projections of the same result, not a claim that
+a downstream product natively imports those files.
 
 ## Supported-version posture
 
-Capability discovery is version aware. A STIG Manager server/version pair is
-supported for changed writes only after initial, identical, changed,
-interrupted, partial/human-conflict, exact-revision, receipt, and deep-link
-tests pass in staging with a real atomic write guard. Until that matrix is
-published, changed reviews remain handoff-only and must not be treated as a
-direct-write interoperability claim.
+The connected adapter is intentionally exact-version, not semver-compatible.
+The retained tested API contract is STIG Manager `1.6.13+1` with adapter
+`stig-manager-1.6-scanner-read-v1`. Capability discovery checks the server's
+reported build before authenticated collection, asset, assignment, or review
+operations; a blank, nearby, newer, or older version fails closed. With an
+unsupported version, run disconnected and use a verified selected-run handoff
+with the site's authorized receiving workflow.
+
+Even on `1.6.13+1`, connected support is limited to authoritative lookup,
+ownership classification, and exact no-op verification. It is not a direct
+changed-review write claim. Changed reviews remain handoff-only unless a future
+adapter passes the separately required atomic conditional-write acceptance
+matrix.
 
 See [Scanner Operations](scanner-operations.md) for the full analyst and manager
 flows and [Scanner-First Product Plan](scanner-product-plan.md) for migration

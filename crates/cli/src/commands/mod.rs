@@ -1,17 +1,31 @@
+#[cfg(feature = "maintainer")]
+#[cfg_attr(feature = "transition", allow(dead_code))]
 pub mod build_pack;
+#[cfg_attr(feature = "transition", allow(dead_code))]
 pub mod collect;
-pub mod convert;
+#[cfg(feature = "maintainer")]
+#[cfg_attr(feature = "transition", allow(dead_code))]
 pub mod coverage;
+#[cfg(feature = "maintainer")]
+#[cfg_attr(feature = "transition", allow(dead_code))]
 pub mod disa_import;
+#[cfg_attr(feature = "transition", allow(dead_code))]
 pub mod evaluate;
-pub mod export;
-pub mod gen_answer;
+#[cfg_attr(feature = "transition", allow(dead_code))]
 pub mod handoff;
+#[cfg(feature = "maintainer")]
+#[cfg_attr(feature = "transition", allow(dead_code))]
 pub mod import;
+#[cfg(feature = "maintainer")]
+#[cfg_attr(feature = "transition", allow(dead_code))]
 pub mod library;
+#[cfg(feature = "transition")]
+#[allow(dead_code)]
 pub mod migration;
+#[cfg_attr(feature = "transition", allow(dead_code))]
 pub mod status;
-pub mod summary;
+#[cfg(feature = "maintainer")]
+#[cfg_attr(feature = "transition", allow(dead_code))]
 pub mod verify;
 
 use std::path::{Component, Path, PathBuf};
@@ -27,7 +41,13 @@ pub(crate) fn ensure_external_export_allowed(checklist: &Checklist) -> anyhow::R
 
 /// Get the default AutomateSTIG data directory.
 pub fn default_data_dir() -> PathBuf {
-    dirs_or_default().join(".automatestig")
+    default_data_dir_from(std::env::var_os("AUTOMATESTIG_DATA_DIR"), dirs_or_default())
+}
+
+fn default_data_dir_from(override_path: Option<std::ffi::OsString>, home: PathBuf) -> PathBuf {
+    override_path
+        .map(PathBuf::from)
+        .unwrap_or_else(|| home.join(".automatestig"))
 }
 
 /// Trust anchors used for both `.stigpack` import and runtime executable
@@ -232,7 +252,24 @@ mod tests {
     use automatestig_core::models::finding::{Finding, FindingSource};
     use automatestig_core::models::stig::Severity;
 
-    use super::{ensure_external_export_allowed, ensure_safe_artifact_output};
+    use super::{
+        default_data_dir_from, ensure_external_export_allowed, ensure_safe_artifact_output,
+    };
+
+    #[test]
+    fn explicit_data_directory_overrides_home_default() {
+        assert_eq!(
+            default_data_dir_from(
+                Some(std::ffi::OsString::from("/managed/automatestig")),
+                std::path::PathBuf::from("/ignored/home"),
+            ),
+            std::path::PathBuf::from("/managed/automatestig")
+        );
+        assert_eq!(
+            default_data_dir_from(None, std::path::PathBuf::from("/operator/home")),
+            std::path::PathBuf::from("/operator/home/.automatestig")
+        );
+    }
 
     fn checklist_with_source(source: FindingSource) -> Checklist {
         let mut checklist = Checklist::new(
@@ -279,12 +316,10 @@ mod tests {
         std::fs::write(&input, b"input").unwrap();
         std::fs::hard_link(&input, &output).unwrap();
 
-        let cli = crate::Cli {
-            verbose: false,
-            library: Some(root.path().join("library").display().to_string()),
-            db: Some(root.path().join("data.db").display().to_string()),
-            command: crate::Commands::Status,
-        };
+        let cli = crate::Cli::command_test_fixture(
+            root.path().join("library").display().to_string(),
+            root.path().join("data.db").display().to_string(),
+        );
         let error = ensure_safe_artifact_output(&output, &[Path::new(&input)], &cli)
             .expect_err("hard-linked output must be rejected");
         assert!(error.to_string().contains("would replace consumed input"));
@@ -331,12 +366,10 @@ mod tests {
                 .to_string()
                 .contains("inside the AutomateSTIG library"));
 
-            let unicode_cli = crate::Cli {
-                verbose: false,
-                library: cli.library.clone(),
-                db: Some(root.path().join("d\u{e9}.db").display().to_string()),
-                command: crate::Commands::Status,
-            };
+            let unicode_cli = crate::Cli::command_test_fixture(
+                cli.library.clone().unwrap(),
+                root.path().join("d\u{e9}.db").display().to_string(),
+            );
             let canonically_equivalent = root.path().join("de\u{301}.db");
             let error = ensure_safe_artifact_output(&canonically_equivalent, &[], &unicode_cli)
                 .expect_err("Unicode-equivalent database aliases must be rejected");

@@ -1,6 +1,5 @@
 import importlib.util
 import json
-import re
 import shutil
 import tempfile
 import unittest
@@ -66,15 +65,75 @@ class SupportedTargetValidationTests(unittest.TestCase):
         self.assertEqual(sum(counts[1] for counts in observed.values()), 54)
         self.assertEqual(sum(counts[2] for counts in observed.values()), 40)
 
-    def test_frontend_scanner_contract_has_only_three_benchmarks(self):
-        source = (REPO / "crates/gui/frontend/app.js").read_text(encoding="utf-8")
-        block = source.split("const SUPPORTED_SCANNER_TARGETS", 1)[1].split("});", 1)[0]
-        identifiers = {
-            quoted or bare
-            for quoted, bare in re.findall(
-                r"^  (?:'([^']+)'|([A-Za-z_][A-Za-z0-9_]*)):", block, re.MULTILINE
-            )
+    def test_every_shipped_automation_has_reviewed_implementation_metadata(self):
+        counts = {
+            "declarative_predicate": 0,
+            "legacy_declarative": 0,
+            "reviewed_imperative": 0,
         }
+        for target in MODULE.EXPECTED_TARGETS.values():
+            pack = json.loads((REPO / target["check_pack"]).read_text(encoding="utf-8"))
+            for check in pack["checks"]:
+                counts[check["implementation_class"]] += 1
+                self.assertEqual(check["introduction_release"], "0.3")
+        self.assertEqual(counts, {
+            "declarative_predicate": 0,
+            "legacy_declarative": 33,
+            "reviewed_imperative": 21,
+        })
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self._copy_contract(root)
+            path = root / "content/check_packs/freebsd_gpos.json"
+            pack = json.loads(path.read_text(encoding="utf-8"))
+            pack["checks"][0].pop("implementation_class")
+            pack["checks"][0].pop("introduction_release")
+            path.write_text(json.dumps(pack), encoding="utf-8")
+            errors = MODULE.validate(root)
+            self.assertTrue(any("implementation_class" in error for error in errors))
+            self.assertTrue(any("introduction_release" in error for error in errors))
+
+    def test_predicate_schema_is_versioned_bounded_and_has_no_execution_field(self):
+        check = {
+            "type": "predicate",
+            "program": {
+                "schema_version": 1,
+                "source": {"type": "observation", "key": "normalized-setting"},
+                "input": {"type": "json"},
+                "predicate": {
+                    "op": "equal",
+                    "left": {"type": "value", "value": {"pointer": "/enabled"}},
+                    "right": {"type": "literal", "value": True},
+                },
+            },
+        }
+        errors = []
+        MODULE._validate_check("candidate", "V-PREDICATE", check, errors)
+        self.assertEqual(errors, [])
+
+        check["program"]["shell"] = "id"
+        errors = []
+        MODULE._validate_check("candidate", "V-PREDICATE", check, errors)
+        self.assertTrue(any("program fields" in error for error in errors))
+
+        check["program"].pop("shell")
+        check["program"]["predicate"] = {
+            "op": "any",
+            "predicates": [
+                {"op": "present", "value": {"pointer": f"/{index}"}}
+                for index in range(65)
+            ],
+        }
+        errors = []
+        MODULE._validate_check("candidate", "V-PREDICATE", check, errors)
+        self.assertTrue(any("requires 1-64" in error for error in errors))
+
+    def test_scanner_frontend_uses_the_authoritative_three_profile_api(self):
+        contract = json.loads(
+            (REPO / "content/supported-targets.json").read_text(encoding="utf-8")
+        )
+        identifiers = {target["stig_id"] for target in contract["targets"].values()}
         self.assertEqual(
             identifiers,
             {
@@ -83,36 +142,47 @@ class SupportedTargetValidationTests(unittest.TestCase):
                 "Cisco_IOS-XE_Router_NDM_STIG",
             },
         )
-        self.assertEqual(block.count("remote: true"), 2)
-        self.assertEqual(block.count("remote: false"), 1)
+        modes = [target["evidence_mode"] for target in contract["targets"].values()]
+        self.assertEqual(modes.count("ssh_transcript"), 2)
+        self.assertEqual(modes.count("running_configuration"), 1)
 
-    def test_frontend_distinguishes_assessed_pass_rate_from_benchmark_coverage(self):
-        source = (REPO / "crates/gui/frontend/app.js").read_text(encoding="utf-8")
-        self.assertIn("statCard('Assessed Pass Rate'", source)
-        self.assertIn("statCard('Benchmark Coverage'", source)
-        self.assertNotIn("statCard('Compliance'", source)
-        self.assertIn("'assessed_pass_pct'", source)
-        self.assertIn("'benchmark_coverage_pct'", source)
+        frontend = REPO / "crates/gui/frontend/scanner"
+        content = (frontend / "content.js").read_text(encoding="utf-8")
+        api = (frontend / "api.js").read_text(encoding="utf-8")
+        scanner_api = (REPO / "crates/gui/src/scanner_api.rs").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("request(endpoints.profiles", content)
+        self.assertIn("profiles: '/scanner/profiles'", api)
+        self.assertIn("bundled_scanner_profiles()", scanner_api)
+        self.assertNotIn("SUPPORTED_SCANNER_TARGETS", content)
+
+    def test_frontend_labels_automation_scope_as_not_a_compliance_score(self):
+        frontend = REPO / "crates/gui/frontend/scanner"
+        deliveries = (frontend / "deliveries.js").read_text(encoding="utf-8")
+        content = (frontend / "content.js").read_text(encoding="utf-8")
+        combined = deliveries + content
+        self.assertIn("metric('Automation coverage'", deliveries)
+        self.assertIn("Not a compliance score", deliveries)
+        self.assertIn("full_benchmark_rules", deliveries)
+        self.assertIn("countBlock('Full benchmark'", content)
+        self.assertNotIn("% compliance", combined)
+        self.assertNotIn("statCard('Compliance'", combined)
+
+    def test_frontend_never_delivers_incomplete_or_training_results(self):
+        frontend = REPO / "crates/gui/frontend/scanner"
+        scan = (frontend / "scan.js").read_text(encoding="utf-8")
+        deliveries = (frontend / "deliveries.js").read_text(encoding="utf-8")
         self.assertIn(
-            "hasExplicitPassRate ? checklist.assessed_pass_pct : checklist?.compliance_pct",
-            source,
+            "Training data only — do not use this page as assessment evidence.",
+            scan,
         )
-        self.assertIn("if (score.benchmarkCoverage < 100) return 'yellow';", source)
-        self.assertNotIn("% compliance", source)
-
-    def test_frontend_never_grades_imported_or_unverified_checklists(self):
-        source = (REPO / "crates/gui/frontend/app.js").read_text(encoding="utf-8")
-        self.assertIn("origin === 'imported_checklist'", source)
-        self.assertIn("collectionComplete === false", source)
-        self.assertIn("provenance?.unsafe_legacy_evidence === true", source)
-        self.assertIn("if (!score.defensible || score.assessedPassRate == null)", source)
-        self.assertIn("verified ? 'status-naf' : 'status-na'", source)
-        self.assertIn("? { label: 'Unverified', color: 'accent' }", source)
-        self.assertIn("Unverified assessment results", source)
-        self.assertNotIn(
-            "assessment.open || assessment.score.benchmarkCoverage < 100 ? 'Needs review' : 'Fully assessed'",
-            source,
+        self.assertIn("collectionComplete === false", deliveries)
+        self.assertIn(
+            "Incomplete or ambiguous evidence is never delivered as a compliance result.",
+            deliveries,
         )
+        self.assertNotIn("Deliver to STIG Manager", deliveries)
 
     def test_unlisted_shipped_pack_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:

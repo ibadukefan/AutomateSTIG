@@ -9,12 +9,16 @@ use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use automatestig_core::network_policy::{classify_ip, normalize_mapped_ip, IpScope};
+use automatestig_core::path_safety::{
+    configure_no_follow, reject_reparse_ancestors, validate_open_sensitive_file,
+    validate_sensitive_directory, SensitiveDirectoryGuard, SensitiveFilePolicy,
+};
 use automatestig_core::remote::{
     validate_command_output, CollectionCommand, CollectionPlan, CommandEvidence, CommandStatus,
 };
 use russh::client;
 use russh::keys::{HashAlg, PrivateKeyWithHashAlg, PublicKey};
-use serde::{Deserialize, Serialize};
+use zeroize::Zeroizing;
 
 pub const MAX_COMMAND_OUTPUT: usize = 50 * 1024 * 1024;
 pub const MAX_COLLECTION_OUTPUT: usize = 256 * 1024 * 1024;
@@ -28,7 +32,7 @@ const TRUST_LOCK_TIMEOUT: Duration = Duration::from_secs(2);
 /// runs once per process, so its `--trust-on-first-use` behavior is unchanged.
 static ENV_TOFU_ARM_CONSUMED: AtomicBool = AtomicBool::new(false);
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone)]
 pub struct SshConfig {
     pub host: String,
     pub port: u16,
@@ -37,16 +41,34 @@ pub struct SshConfig {
     pub timeout_secs: u64,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
+#[derive(Clone)]
 pub enum SshAuth {
     Password {
-        password: String,
+        password: Zeroizing<String>,
     },
     KeyFile {
         path: String,
-        passphrase: Option<String>,
+        passphrase: Option<Zeroizing<String>>,
     },
+}
+
+impl SshAuth {
+    /// Wrap a one-time password in zeroizing memory. SSH credentials are
+    /// deliberately not serializable or debug-printable.
+    pub fn password(password: String) -> Self {
+        Self::Password {
+            password: Zeroizing::new(password),
+        }
+    }
+
+    /// Wrap an optional private-key passphrase in zeroizing memory while the
+    /// nonsecret key path remains available to the transport.
+    pub fn key_file(path: String, passphrase: Option<String>) -> Self {
+        Self::KeyFile {
+            path,
+            passphrase: passphrase.map(Zeroizing::new),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -399,7 +421,7 @@ pub async fn collect_plan_with_policy(
     let authenticated = match &config.auth {
         SshAuth::Password { password } => match tokio::time::timeout(
             phase_timeout,
-            session.authenticate_password(&config.username, password),
+            session.authenticate_password(&config.username, password.as_str()),
         )
         .await
         {
@@ -423,13 +445,18 @@ pub async fn collect_plan_with_policy(
             }
         },
         SshAuth::KeyFile { path, passphrase } => {
-            let key =
-                match load_private_key_for_auth(path, passphrase.as_deref(), phase_timeout).await {
-                    Ok(key) => key,
-                    Err(error) => {
-                        return transport_failure_report(plan, &fingerprint, error);
-                    }
-                };
+            let key = match load_private_key_for_auth(
+                path,
+                passphrase.as_ref().map(|value| value.as_str()),
+                phase_timeout,
+            )
+            .await
+            {
+                Ok(key) => key,
+                Err(error) => {
+                    return transport_failure_report(plan, &fingerprint, error);
+                }
+            };
             match tokio::time::timeout(
                 phase_timeout,
                 session.authenticate_publickey(
@@ -611,12 +638,13 @@ fn load_private_key_secure_with_roots(
         )
     })?;
     validate_private_key_metadata(path, &initial)?;
-    validate_private_key_parent(path)?;
+    let _parent_guard = validate_private_key_parent(path)?;
     let canonical_path = authorize_private_key_path(path, &initial, roots)?;
     let path = canonical_path.as_path();
 
     let mut options = OpenOptions::new();
     options.read(true);
+    configure_no_follow(&mut options);
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt;
@@ -632,6 +660,8 @@ fn load_private_key_secure_with_roots(
         )
     })?;
     validate_private_key_metadata(path, &opened)?;
+    validate_open_sensitive_file(&file, path, "SSH private key", SensitiveFilePolicy::Private)
+        .map_err(|error| error.to_string())?;
     ensure_same_file(&initial, &opened, path, "SSH private key")?;
 
     let mut bytes = Vec::with_capacity((opened.len().min(MAX_PRIVATE_KEY_BYTES)) as usize);
@@ -680,43 +710,16 @@ fn validate_private_key_metadata(path: &Path, metadata: &std::fs::Metadata) -> R
     Ok(())
 }
 
-fn validate_private_key_parent(path: &Path) -> Result<(), String> {
+fn validate_private_key_parent(path: &Path) -> Result<Option<SensitiveDirectoryGuard>, String> {
     let parent = path
         .parent()
         .filter(|parent| !parent.as_os_str().is_empty());
     let Some(parent) = parent else {
-        return Ok(());
+        return Ok(None);
     };
-    let metadata = std::fs::symlink_metadata(parent).map_err(|error| {
-        format!(
-            "failed to inspect SSH private-key directory {}: {error}",
-            parent.display()
-        )
-    })?;
-    if metadata.file_type().is_symlink() || !metadata.is_dir() {
-        return Err(format!(
-            "SSH private-key directory {} is not a real directory",
-            parent.display()
-        ));
-    }
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::{MetadataExt, PermissionsExt};
-        let current_uid = unsafe { libc::geteuid() };
-        if metadata.uid() != current_uid {
-            return Err(format!(
-                "SSH private-key directory {} is not owned by the current user",
-                parent.display()
-            ));
-        }
-        if metadata.permissions().mode() & 0o022 != 0 {
-            return Err(format!(
-                "SSH private-key directory {} is writable by group or other users",
-                parent.display()
-            ));
-        }
-    }
-    Ok(())
+    validate_sensitive_directory(parent, "SSH private-key directory")
+        .map(Some)
+        .map_err(|error| error.to_string())
 }
 
 fn authorize_private_key_path(
@@ -822,34 +825,14 @@ fn validate_private_key_root(path: &Path, metadata: &std::fs::Metadata) -> Resul
             ));
         }
     }
+    #[cfg(windows)]
+    validate_sensitive_directory(path, "configured SSH key root")
+        .map_err(|error| error.to_string())?;
     Ok(())
 }
 
 fn reject_symlink_components(path: &Path, label: &str) -> Result<(), String> {
-    // Reject the file itself and its containing directory. Older platforms
-    // commonly expose system aliases such as macOS `/var -> /private/var`, so
-    // rejecting every ancestor would make otherwise secure user-owned key
-    // directories unusable. The direct directory ownership/mode check below
-    // prevents another user from swapping deeper components.
-    for component_path in [Some(path), path.parent()]
-        .into_iter()
-        .flatten()
-        .filter(|part| !part.as_os_str().is_empty())
-    {
-        let metadata = std::fs::symlink_metadata(component_path).map_err(|error| {
-            format!(
-                "failed to inspect {label} component {}: {error}",
-                component_path.display()
-            )
-        })?;
-        if metadata.file_type().is_symlink() {
-            return Err(format!(
-                "{label} contains a symbolic link: {}",
-                component_path.display()
-            ));
-        }
-    }
-    Ok(())
+    reject_reparse_ancestors(path, label).map_err(|error| error.to_string())
 }
 
 #[cfg(unix)]
@@ -1134,7 +1117,7 @@ impl client::Handler for SshHandler {
         if let Ok(mut value) = self.fingerprint.lock() {
             *value = Some(key_id.clone());
         }
-        let known_hosts_path = home_dir().join(".automatestig").join("known_hosts");
+        let known_hosts_path = application_data_dir().join("known_hosts");
         let host = self.host.clone();
         let port = self.port;
         let accept_unknown = self.accept_unknown;
@@ -1335,6 +1318,9 @@ fn ensure_secure_trust_directory(path: &Path) -> Result<(), String> {
                 )?;
             }
         }
+        validate_sensitive_directory(path, "SSH trust directory")
+            .map(|_| ())
+            .map_err(|error| error.to_string())?;
         return Ok(());
     }
 
@@ -1374,6 +1360,7 @@ fn open_secure_trust_file(path: &Path, create: bool, label: &str) -> Result<Opti
 
     let mut options = OpenOptions::new();
     options.read(true).append(true).create(create);
+    configure_no_follow(&mut options);
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt;
@@ -1388,6 +1375,8 @@ fn open_secure_trust_file(path: &Path, create: bool, label: &str) -> Result<Opti
         .metadata()
         .map_err(|error| format!("failed to inspect open {label} {}: {error}", path.display()))?;
     validate_trust_file_metadata(path, &opened, label)?;
+    validate_open_sensitive_file(&file, path, label, SensitiveFilePolicy::IntegrityProtected)
+        .map_err(|error| error.to_string())?;
     if let Some(initial) = &initial {
         ensure_same_file(initial, &opened, path, label)?;
     }
@@ -1443,6 +1432,19 @@ fn home_dir() -> std::path::PathBuf {
         .unwrap_or_else(|_| std::path::PathBuf::from("."))
 }
 
+fn application_data_dir() -> std::path::PathBuf {
+    application_data_dir_from(std::env::var_os("AUTOMATESTIG_DATA_DIR"), &home_dir())
+}
+
+fn application_data_dir_from(
+    configured: Option<std::ffi::OsString>,
+    home: &Path,
+) -> std::path::PathBuf {
+    configured
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|| home.join(".automatestig"))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1462,6 +1464,7 @@ mod tests {
 
     struct EnvironmentRestore {
         home: Option<std::ffi::OsString>,
+        data_dir: Option<std::ffi::OsString>,
         tofu: Option<std::ffi::OsString>,
     }
 
@@ -1469,6 +1472,7 @@ mod tests {
         fn capture() -> Self {
             Self {
                 home: std::env::var_os("HOME"),
+                data_dir: std::env::var_os("AUTOMATESTIG_DATA_DIR"),
                 tofu: std::env::var_os("AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE"),
             }
         }
@@ -1480,6 +1484,11 @@ mod tests {
                 std::env::set_var("HOME", value);
             } else {
                 std::env::remove_var("HOME");
+            }
+            if let Some(value) = &self.data_dir {
+                std::env::set_var("AUTOMATESTIG_DATA_DIR", value);
+            } else {
+                std::env::remove_var("AUTOMATESTIG_DATA_DIR");
             }
             if let Some(value) = &self.tofu {
                 std::env::set_var("AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE", value);
@@ -1502,14 +1511,28 @@ mod tests {
         }
     }
 
+    #[test]
+    fn known_hosts_root_honors_explicit_data_directory() {
+        let home = Path::new("/operator/home");
+        assert_eq!(
+            application_data_dir_from(
+                Some(std::ffi::OsString::from("/managed/automatestig")),
+                home,
+            ),
+            PathBuf::from("/managed/automatestig")
+        );
+        assert_eq!(
+            application_data_dir_from(None, home),
+            PathBuf::from("/operator/home/.automatestig")
+        );
+    }
+
     fn password_config(port: u16) -> SshConfig {
         SshConfig {
             host: "127.0.0.1".to_string(),
             port,
             username: "scanner".to_string(),
-            auth: SshAuth::Password {
-                password: "correct-password".to_string(),
-            },
+            auth: SshAuth::password("correct-password".to_string()),
             timeout_secs: 1,
         }
     }
@@ -2064,6 +2087,7 @@ mod tests {
         let _restore_environment = EnvironmentRestore::capture();
         let home = TempDir::new().unwrap();
         std::env::set_var("HOME", home.path());
+        std::env::remove_var("AUTOMATESTIG_DATA_DIR");
         std::env::remove_var("AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE");
 
         let listener = TcpListener::bind(("127.0.0.1", 0)).await.unwrap();

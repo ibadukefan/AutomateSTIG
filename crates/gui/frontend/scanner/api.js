@@ -1,8 +1,8 @@
 const API_ROOT = '/api/v1';
 const DEFAULT_TIMEOUT_MS = 20_000;
 
-let authToken = typeof window !== 'undefined' && typeof window.__AUTH_TOKEN__ === 'string'
-  ? window.__AUTH_TOKEN__
+let authToken = typeof document !== 'undefined'
+  ? document.querySelector('meta[name="automatestig-auth-token"]')?.content || ''
   : '';
 
 export const endpoints = Object.freeze({
@@ -14,15 +14,31 @@ export const endpoints = Object.freeze({
   assignments: (collectionId, assetId) =>
     `/stig-manager/collections/${segment(collectionId)}/assets/${segment(assetId)}/assignments`,
   profiles: '/scanner/profiles',
+  retention: '/scanner/retention',
+  connectionProfiles: '/scanner/connection-profiles',
+  connectionProfile: profileId => `/scanner/connection-profiles/${segment(profileId)}`,
   preflight: '/runs/preflight',
   sshRun: '/runs/ssh',
   evidenceRun: '/runs/evidence',
   jobs: '/runs/jobs',
   job: jobId => `/runs/jobs/${segment(jobId)}`,
+  resumeJob: jobId => `/runs/jobs/${segment(jobId)}/resume`,
   runs: '/runs',
+  purgedRuns: '/runs/purged',
   run: runId => `/runs/${segment(runId)}`,
+  deliveryAttempts: runId => `/runs/${segment(runId)}/delivery-attempts`,
   deliver: runId => `/runs/${segment(runId)}/deliver`,
+  purgeEvidence: runId => `/runs/${segment(runId)}/evidence/purge`,
+  reconciliationReceipts: runId => `/runs/${segment(runId)}/reconciliation-receipts`,
 });
+
+export function pagedEndpoint(path, { offset = 0, limit = 25 } = {}) {
+  const query = new URLSearchParams({
+    offset: String(Math.max(0, Number(offset) || 0)),
+    limit: String(Math.max(1, Number(limit) || 25)),
+  });
+  return `${path}?${query}`;
+}
 
 function segment(value) {
   return encodeURIComponent(String(value ?? '').trim());
@@ -69,7 +85,7 @@ export function apiUnavailableMessage(error) {
     return 'The scanner API requires an access token. Open Connection and enter the deployment token; it is kept only in this tab.';
   }
   if (error instanceof ApiError && error.unavailable) {
-    return 'The versioned scanner API is not available in this build yet. This preview remains usable for flow review, but scans and deliveries require the /api/v1 backend.';
+    return 'The versioned scanner API is not responding. You can still review the training flow, but do not treat it as a scan; restore /api/v1 before scanning or handling a delivery.';
   }
   return error?.message || 'The scanner API request could not be completed.';
 }

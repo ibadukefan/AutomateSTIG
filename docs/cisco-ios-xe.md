@@ -101,11 +101,10 @@ automatestig evaluate \
   --organization-policy router01-policy.json \
   --organization-policy-signature router01-policy.sig \
   --host router01 \
-  --output router01.ckl \
-  --format ckl
+  --output router01.scanner-result.json
 ```
 
-This CLI evaluation/conversion path remains for transition and reproducibility.
+This CLI evaluation path remains for transition and reproducibility.
 The normal scanner GUI uses the bundled exact V3R7 benchmark subset and does
 not require broad DISA content import.
 
@@ -113,10 +112,12 @@ Create a dedicated key pair and detached signature only on the offline signing
 host:
 
 ```bash
-automatestig generate-signing-key \
+cargo run --release --features maintainer --bin automatestig -- \
+  generate-signing-key \
   --output /offline/organization-policy.key
 
-automatestig sign-organization-policy \
+cargo run --release --features maintainer --bin automatestig -- \
+  sign-organization-policy \
   --policy router01-policy.json \
   --signing-key /offline/organization-policy.key \
   --output router01-policy.sig

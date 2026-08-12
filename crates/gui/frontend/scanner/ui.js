@@ -163,7 +163,7 @@ export function safeExternalUrl(value) {
 
 export function progressSteps(activeKey, states = {}) {
   const steps = [
-    ['preflight', 'Preflight'],
+    ['preflight', 'Safety check'],
     ['collect', 'Collect'],
     ['evaluate', 'Evaluate'],
     ['delivery', 'Delivery'],

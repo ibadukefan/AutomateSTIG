@@ -11,13 +11,10 @@ enum ScoreTone {
     Red,
 }
 
-pub enum SummaryScoreDisplay<'a> {
+pub enum SummaryScoreDisplay {
     Available {
         assessed_pass_pct: Option<f64>,
         benchmark_coverage_pct: f64,
-    },
-    Withheld {
-        reason: &'a str,
     },
 }
 
@@ -59,6 +56,7 @@ pub fn section(title: &str) {
 }
 
 /// Print an info line.
+#[cfg(feature = "maintainer")]
 pub fn info(label: &str, value: &str) {
     println!("    {:<20} {}", style(label).dim(), value,);
 }
@@ -94,7 +92,7 @@ pub fn print_summary_table(
     cat_i: usize,
     cat_ii: usize,
     cat_iii: usize,
-    scores: SummaryScoreDisplay<'_>,
+    scores: SummaryScoreDisplay,
 ) {
     let open_style = if open > 0 {
         Style::new().red().bold()
@@ -170,7 +168,7 @@ pub fn print_summary_table(
         format!("{assessed}/{total}"),
         style("│").dim(),
     );
-    let withheld_reason = match scores {
+    match scores {
         SummaryScoreDisplay::Available {
             assessed_pass_pct,
             benchmark_coverage_pct,
@@ -207,74 +205,13 @@ pub fn print_summary_table(
                 coverage_style.apply_to(format!("{benchmark_coverage_pct:.1}%")),
                 style("│").dim(),
             );
-            None
         }
-        SummaryScoreDisplay::Withheld { reason } => {
-            println!(
-                "  {}  Assessed pass rate: {:<9}                   {}",
-                style("│").dim(),
-                style("WITHHELD").yellow().bold(),
-                style("│").dim(),
-            );
-            println!(
-                "  {}  Benchmark coverage: {:<9}                   {}",
-                style("│").dim(),
-                style("WITHHELD").yellow().bold(),
-                style("│").dim(),
-            );
-            Some(reason)
-        }
-    };
+    }
     println!(
         "  {}",
         style("└──────────────────────────────────────────────────┘").dim()
     );
-    if let Some(reason) = withheld_reason {
-        println!("  Scores withheld: {reason}");
-    }
     println!();
-}
-
-/// Print a findings table header.
-pub fn print_findings_header() {
-    println!(
-        "  {:<12} {:<8} {:<17} {}",
-        style("Vuln ID").bold().underlined(),
-        style("Sev").bold().underlined(),
-        style("Status").bold().underlined(),
-        style("Title").bold().underlined(),
-    );
-}
-
-/// Print a single finding row.
-pub fn print_finding_row(vuln_id: &str, severity: &str, status: &str, title: &str) {
-    let sev_styled = match severity {
-        "CAT I" => style(format!("{:<8}", severity)).red().bold().to_string(),
-        "CAT II" => style(format!("{:<8}", severity)).yellow().to_string(),
-        "CAT III" => style(format!("{:<8}", severity)).dim().to_string(),
-        _ => format!("{:<8}", severity),
-    };
-
-    let status_styled = match status {
-        "Open" => style(format!("{:<17}", status)).red().bold().to_string(),
-        "Not a Finding" | "NotAFinding" => style(format!("{:<17}", "Not a Finding"))
-            .green()
-            .to_string(),
-        "Not Applicable" | "Not_Applicable" => {
-            style(format!("{:<17}", "Not Applicable")).dim().to_string()
-        }
-        _ => style(format!("{:<17}", status)).yellow().to_string(),
-    };
-
-    let title_truncated: String = title.chars().take(44).collect();
-
-    println!(
-        "  {:<12} {} {} {}",
-        style(vuln_id).cyan(),
-        sev_styled,
-        status_styled,
-        title_truncated,
-    );
 }
 
 /// Print a file output notice.
@@ -289,6 +226,7 @@ pub fn output_file(label: &str, path: &str, format: &str) {
 }
 
 /// Print a horizontal rule.
+#[cfg(feature = "maintainer")]
 pub fn hr() {
     let term = Term::stdout();
     let width = (term.size().1 as usize).min(80);

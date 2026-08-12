@@ -122,7 +122,11 @@ remain intentionally owned by STIG Manager.
 
 The first-use UX gate is at least 80% of representative lab users completing a
 prepared scan without external documentation. Record participant experience,
-task failures, assistance, and version information alongside the result.
+task failures, assistance, and version information alongside the result. For a
+supported release, follow the protected external-study procedure in
+[`first-use-ux-study.md`](first-use-ux-study.md): assisted and
+documentation-aided completions remain in the denominator but never count in
+the numerator, and automated UI tests cannot self-certify this human gate.
 
 ## Report template
 

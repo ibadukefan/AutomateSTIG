@@ -1,18 +1,11 @@
-use std::collections::HashSet;
 use std::io::Write;
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use automatestig_collector::{collect_plan, SshAuth, SshConfig};
-use automatestig_core::checks::{CheckPack, CheckPlatform};
-use automatestig_core::library::StigLibrary;
-use automatestig_core::models::stig::StigBenchmark;
-use automatestig_parsers::evidence::EvidenceTranscript;
-
-use super::{
-    evaluate::{load_matching_check_packs, validate_check_pack_membership},
-    library_path,
-};
+use automatestig_collector::{SshAuth, SshConfig};
+use automatestig_core::scanner_profiles::ScannerEvidenceMode;
+use automatestig_core::target_adapters::AdapterOperationStatus;
+use automatestig_scanner::{bundled_profile_collection_plan, collect_ssh_envelope, preflight_ssh};
 
 pub struct CollectArgs {
     pub stig_id: String,
@@ -28,43 +21,40 @@ pub struct CollectArgs {
     pub trust_on_first_use: bool,
 }
 
-fn bind_connection_identity(host: &str, claimed_hostname: Option<&str>) -> Result<String> {
+fn bind_connection_endpoint(host: &str) -> Result<String> {
     let host = host.trim().trim_end_matches('.');
     if host.is_empty() {
         anyhow::bail!("--host must identify the SSH connection endpoint");
     }
-    if let Some(claimed_hostname) = claimed_hostname {
-        let claimed_hostname = claimed_hostname.trim().trim_end_matches('.');
-        if !claimed_hostname.eq_ignore_ascii_case(host) {
-            anyhow::bail!(
-                "--hostname cannot relabel the SSH endpoint: expected '{}', got '{}'",
-                host,
-                claimed_hostname
-            );
-        }
-    }
     Ok(host.to_string())
 }
 
-pub fn run(args: CollectArgs, cli: &crate::Cli) -> Result<()> {
-    // The asset identity is the exact endpoint name/address whose host key is
-    // verified by the collector. Do not present an unobserved OS/device
-    // hostname as though collection established it.
-    let evidence_identity = bind_connection_identity(&args.host, args.hostname.as_deref())?;
-    let library = StigLibrary::open(&library_path(cli))
-        .context("Failed to open STIG library. Run 'automatestig library init' first.")?;
-    let benchmark = library
-        .load_benchmark(&args.stig_id)
-        .with_context(|| format!("Failed to load STIG benchmark '{}'", args.stig_id))?;
-    let packs = load_matching_check_packs(&library, &benchmark.id, &benchmark.version_string())?;
-    if packs.is_empty() {
+fn corroborate_observed_hostname(observed: &str, claimed: Option<&str>) -> Result<()> {
+    let Some(claimed) = claimed else {
+        return Ok(());
+    };
+    let observed = observed.trim().trim_end_matches('.');
+    let claimed = claimed.trim().trim_end_matches('.');
+    if claimed.is_empty() {
+        anyhow::bail!("--hostname must not be blank when supplied");
+    }
+    if !claimed.eq_ignore_ascii_case(observed) {
         anyhow::bail!(
-            "no exact-release check pack is installed for {} {}",
-            benchmark.id,
-            benchmark.version_string()
+            "--hostname did not corroborate the observed device identity: expected '{}', observed '{}'",
+            claimed,
+            observed
         );
     }
-    let (platform, plan) = build_collection_plan(&benchmark, &packs)?;
+    Ok(())
+}
+
+pub fn run(args: CollectArgs, cli: &crate::Cli) -> Result<()> {
+    // Keep the network endpoint separate from the device identity observed by
+    // the adapter's read-only identity preflight.
+    let connection_endpoint = bind_connection_endpoint(&args.host)?;
+    // Resolve immutable release content and reject non-SSH profiles before
+    // reading credentials, preparing a destination, or starting a runtime.
+    let (profile_id, legacy_plan_sha256) = resolve_ssh_profile_contract(&args.stig_id)?;
     let key_input = args.key.clone();
 
     if args.output != "-" {
@@ -76,10 +66,7 @@ pub fn run(args: CollectArgs, cli: &crate::Cli) -> Result<()> {
     }
 
     let auth = if let Some(path) = args.key {
-        SshAuth::KeyFile {
-            path,
-            passphrase: std::env::var(&args.passphrase_env).ok(),
-        }
+        SshAuth::key_file(path, std::env::var(&args.passphrase_env).ok())
     } else {
         let password = std::env::var(&args.password_env).with_context(|| {
             format!(
@@ -87,24 +74,36 @@ pub fn run(args: CollectArgs, cli: &crate::Cli) -> Result<()> {
                 args.password_env
             )
         })?;
-        SshAuth::Password { password }
+        SshAuth::password(password)
     };
     if args.trust_on_first_use {
         std::env::set_var("AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE", "1");
     }
     let config = SshConfig {
-        host: args.host.clone(),
+        host: connection_endpoint,
         port: args.port,
         username: args.username,
         auth,
         timeout_secs: args.timeout_secs,
     };
     let runtime = tokio::runtime::Runtime::new().context("failed to start collection runtime")?;
-    let report = runtime.block_on(collect_plan(&config, &plan));
-    let mut evidence =
-        EvidenceTranscript::new_v2(evidence_identity, platform, plan.digest(), report.commands);
-    evidence.server_key_fingerprint = report.server_key_fingerprint;
-    let bytes = serde_json::to_vec_pretty(&evidence)?;
+    let preflight = runtime
+        .block_on(preflight_ssh(&profile_id, &config))
+        .map_err(anyhow::Error::msg)
+        .context("SSH identity preflight failed")?;
+    corroborate_observed_hostname(&preflight.device.hostname, args.hostname.as_deref())?;
+    if preflight.profile_id != profile_id
+        || preflight.plan.legacy_collection_plan_sha256 != legacy_plan_sha256
+    {
+        anyhow::bail!(
+            "SSH preflight operation plan does not match the release-bundled scanner contract"
+        );
+    }
+    let envelope = runtime
+        .block_on(collect_ssh_envelope(&config, &preflight))
+        .map_err(anyhow::Error::msg)
+        .context("SSH evidence collection failed")?;
+    let bytes = serde_json::to_vec_pretty(&envelope)?;
     if args.output != "-" {
         let consumed_inputs: Vec<&Path> = key_input.as_deref().map(Path::new).into_iter().collect();
         // Collection can take long enough for filesystem state to change.
@@ -113,46 +112,45 @@ pub fn run(args: CollectArgs, cli: &crate::Cli) -> Result<()> {
     }
     write_atomic_or_stdout(&args.output, &bytes)?;
 
-    if !evidence.complete {
+    let failed_operations = envelope
+        .operations
+        .iter()
+        .filter(|operation| operation.status != AdapterOperationStatus::Success)
+        .count();
+    if !envelope.complete {
         anyhow::bail!(
-            "collection is incomplete: {} command(s) failed; diagnostic evidence written to {}",
-            evidence.collection_error_count(),
-            args.output
+            "collection is incomplete: {} operation(s) did not succeed; native adapter evidence written to {} (SHA-256 {})",
+            failed_operations,
+            args.output,
+            envelope.evidence_sha256
         );
     }
-    eprintln!("Evidence v2 written to {}", args.output);
+    eprintln!(
+        "Native adapter evidence for {} ({}) written to {} (SHA-256 {})",
+        envelope.device.hostname, envelope.target_key, args.output, envelope.evidence_sha256
+    );
     Ok(())
 }
 
-fn build_collection_plan(
-    benchmark: &StigBenchmark,
-    packs: &[CheckPack],
-) -> Result<(CheckPlatform, automatestig_core::remote::CollectionPlan)> {
-    // This content-integrity guard intentionally precedes plan construction,
-    // credential lookup, runtime creation, and every SSH side effect.
-    validate_check_pack_membership(benchmark, packs)?;
-    let platform = packs
-        .first()
-        .context("no exact-release check pack is installed")?
-        .platform;
-    if platform == automatestig_core::checks::CheckPlatform::CiscoIos {
+fn resolve_ssh_profile_contract(profile_id_or_stig_id: &str) -> Result<(String, String)> {
+    let bundled = bundled_profile_collection_plan(profile_id_or_stig_id)
+        .map_err(anyhow::Error::msg)
+        .with_context(|| {
+            format!(
+                "failed to resolve bundled scanner profile '{}'",
+                profile_id_or_stig_id
+            )
+        })?;
+    if bundled.profile().evidence_mode() != ScannerEvidenceMode::SshTranscript {
         anyhow::bail!(
-            "Cisco IOS-XE is config-file-only; evaluate an authorized running configuration"
+            "scanner profile '{}' requires an authorized complete running configuration; SSH collection is unsupported",
+            bundled.profile().target_key()
         );
     }
-    if packs.iter().any(|pack| pack.platform != platform) {
-        anyhow::bail!("matching check packs disagree on target platform");
-    }
-    let mut seen = HashSet::new();
-    let definitions: Vec<_> = packs
-        .iter()
-        .flat_map(|pack| pack.checks.iter())
-        .filter(|definition| seen.insert(definition.vuln_id.clone()))
-        .cloned()
-        .collect();
-    let plan = automatestig_core::remote::generate_collection_plan(platform, &definitions)
-        .map_err(anyhow::Error::msg)?;
-    Ok((platform, plan))
+    Ok((
+        bundled.profile().target_key().to_string(),
+        bundled.collection_plan().digest(),
+    ))
 }
 
 fn write_atomic_or_stdout(output: &str, bytes: &[u8]) -> Result<()> {
@@ -169,53 +167,44 @@ mod tests {
     use super::*;
 
     #[test]
-    fn collection_identity_cannot_relabel_the_verified_endpoint() {
+    fn connection_endpoint_is_normalized_without_claiming_device_identity() {
         assert_eq!(
-            bind_connection_identity("Device.Example.", Some("device.example")).unwrap(),
+            bind_connection_endpoint("Device.Example.").unwrap(),
             "Device.Example"
         );
-        assert!(bind_connection_identity("10.0.0.8", Some("production-router")).is_err());
-        assert!(bind_connection_identity(" ", None).is_err());
+        assert_eq!(bind_connection_endpoint("10.0.0.8").unwrap(), "10.0.0.8");
+        assert!(bind_connection_endpoint(" ").is_err());
     }
 
     #[test]
-    fn incompatible_same_release_content_fails_before_collection_setup() {
-        let benchmark = StigBenchmark {
-            id: "TEST_STIG".to_string(),
-            title: "Test".to_string(),
-            description: "Test".to_string(),
-            version: "1".to_string(),
-            release: "1".to_string(),
-            release_date: None,
-            xccdf_id: None,
-            platform: automatestig_core::models::stig::Platform::default(),
-            rules: Vec::new(),
-        };
-        let pack = CheckPack {
-            stig_id: benchmark.id.clone(),
-            platform: CheckPlatform::Bsd,
-            version: benchmark.version_string(),
-            priority: 100,
-            checks: vec![automatestig_core::checks::CheckDefinition {
-                vuln_id: "V-NOT-IN-BENCHMARK".to_string(),
-                platform: CheckPlatform::Bsd,
-                check: automatestig_core::checks::Check::Command {
-                    command: "service auditd onestatus".to_string(),
-                    pattern: None,
-                    is_regex: false,
-                },
-                expected: automatestig_core::checks::ExpectedResult::Matches {
-                    pattern: "(?i)\\bauditd\\s+is\\s+running\\b".to_string(),
-                },
-                description: None,
-            }],
-        };
+    fn optional_hostname_must_match_the_observed_device_not_the_endpoint() {
+        assert!(corroborate_observed_hostname("Device.Example.", None).is_ok());
+        assert!(corroborate_observed_hostname("Device.Example.", Some("device.example")).is_ok());
+        assert!(
+            corroborate_observed_hostname("device.example", Some("production-router")).is_err()
+        );
+        assert!(corroborate_observed_hostname("device.example", Some(" ")).is_err());
+    }
 
-        let error = match build_collection_plan(&benchmark, &[pack]) {
-            Err(error) => error,
-            Ok(_) => panic!("incompatible content must fail before plan or SSH setup"),
-        };
-        assert!(error.to_string().contains("V-NOT-IN-BENCHMARK"));
+    #[test]
+    fn ssh_collection_uses_the_exact_release_bundled_plan() {
+        let bundled = bundled_profile_collection_plan("netapp_ontap9").unwrap();
+        let expected_digest = bundled.collection_plan().digest();
+
+        let (profile_id, plan_sha256) = resolve_ssh_profile_contract("netapp_ontap9").unwrap();
+
+        assert_eq!(profile_id, "netapp_ontap9");
+        assert_eq!(plan_sha256, expected_digest);
+    }
+
+    #[test]
+    fn running_configuration_profile_fails_before_ssh_setup() {
+        let error = resolve_ssh_profile_contract("cisco_ios_xe_router_ndm").unwrap_err();
+
+        assert!(error
+            .to_string()
+            .contains("requires an authorized complete running configuration"));
+        assert!(error.to_string().contains("SSH collection is unsupported"));
     }
 
     #[cfg(unix)]

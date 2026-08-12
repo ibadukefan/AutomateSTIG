@@ -50,9 +50,6 @@ class StigmanStagingAcceptanceTests(unittest.TestCase):
             {
                 "AUTOMATESTIG_DEMO": "1",
                 "AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST": "127.0.0.1",
-                "AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS": "1",
-                "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS": "1",
-                "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS": "1",
                 "UNRELATED_PARENT_VALUE": "retained",
             },
             clear=False,
@@ -65,9 +62,6 @@ class StigmanStagingAcceptanceTests(unittest.TestCase):
 
         for name in (
             "AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST",
-            "AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS",
-            "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_DESTINATIONS",
-            "AUTOMATESTIG_ALLOW_PRIVATE_STIGMAN_URLS",
             "AUTOMATESTIG_DEMO",
         ):
             self.assertNotIn(name, environment)

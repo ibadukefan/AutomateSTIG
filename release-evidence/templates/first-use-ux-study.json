@@ -1,0 +1,93 @@
+{
+  "schema": "automatestig-first-use-ux-study/v1",
+  "passed": false,
+  "executed_at": "2000-01-01T00:00:00Z",
+  "source_commit": "0000000000000000000000000000000000000000",
+  "product_version": "v0.0.0",
+  "repository": "owner/repository",
+  "workflow_run_id": "1",
+  "protected_environment": "first-use-ux-study",
+  "automatestig_gui_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "scenario": {
+    "id": "replace-with-scenario-id",
+    "version": "replace-with-scenario-version",
+    "target_profile": "replace-with-profile-id",
+    "prepared_scan_fixture_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "task_definition_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "representative_roles": [
+    "cybersecurity_analyst",
+    "cybersecurity_manager"
+  ],
+  "study_team": {
+    "facilitator": {
+      "github_login": "replace-facilitator",
+      "attested_at": "2000-01-01T00:00:00Z"
+    },
+    "independent_observer": {
+      "github_login": "replace-observer",
+      "attested_at": "2000-01-01T00:00:00Z"
+    },
+    "independent_approver": {
+      "github_login": "replace-approver",
+      "attested_at": "2000-01-01T00:00:00Z"
+    }
+  },
+  "participants": [
+    {
+      "participant_id": "P01",
+      "role": "cybersecurity_analyst",
+      "role_experience_band": "less_than_2_years",
+      "first_time_user": true,
+      "completed_prepared_scan": false,
+      "external_documentation_used": false,
+      "assistance_received": false,
+      "outcome_notes": "Replace with the observed outcome or failure point."
+    },
+    {
+      "participant_id": "P02",
+      "role": "cybersecurity_analyst",
+      "role_experience_band": "2_to_5_years",
+      "first_time_user": true,
+      "completed_prepared_scan": false,
+      "external_documentation_used": false,
+      "assistance_received": false,
+      "outcome_notes": "Replace with the observed outcome or failure point."
+    },
+    {
+      "participant_id": "P03",
+      "role": "cybersecurity_analyst",
+      "role_experience_band": "more_than_5_years",
+      "first_time_user": true,
+      "completed_prepared_scan": false,
+      "external_documentation_used": false,
+      "assistance_received": false,
+      "outcome_notes": "Replace with the observed outcome or failure point."
+    },
+    {
+      "participant_id": "P04",
+      "role": "cybersecurity_manager",
+      "role_experience_band": "2_to_5_years",
+      "first_time_user": true,
+      "completed_prepared_scan": false,
+      "external_documentation_used": false,
+      "assistance_received": false,
+      "outcome_notes": "Replace with the observed outcome or failure point."
+    },
+    {
+      "participant_id": "P05",
+      "role": "cybersecurity_manager",
+      "role_experience_band": "more_than_5_years",
+      "first_time_user": true,
+      "completed_prepared_scan": false,
+      "external_documentation_used": false,
+      "assistance_received": false,
+      "outcome_notes": "Replace with the observed outcome or failure point."
+    }
+  ],
+  "metrics": {
+    "numerator": 0,
+    "denominator": 5,
+    "required_threshold_percent": 80
+  }
+}
