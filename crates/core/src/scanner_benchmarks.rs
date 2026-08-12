@@ -198,6 +198,10 @@ fn is_sha256(value: &str) -> bool {
 }
 
 fn canonical_text_sha256(value: &[u8]) -> String {
+    format!("{:x}", Sha256::digest(canonical_text_bytes(value)))
+}
+
+fn canonical_text_bytes(value: &[u8]) -> Vec<u8> {
     let mut canonical = Vec::with_capacity(value.len());
     let mut index = 0;
     while index < value.len() {
@@ -211,12 +215,26 @@ fn canonical_text_sha256(value: &[u8]) -> String {
         }
         index += 1;
     }
-    format!("{:x}", Sha256::digest(&canonical))
+    canonical
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn materialize_crlf_checkout(value: &[u8]) -> Vec<u8> {
+        canonical_text_bytes(value)
+            .into_iter()
+            .flat_map(|byte| {
+                if byte == b'\n' {
+                    [Some(b'\r'), Some(b'\n')]
+                } else {
+                    [Some(byte), None]
+                }
+            })
+            .flatten()
+            .collect()
+    }
 
     #[test]
     fn all_bundled_benchmark_subsets_have_exact_official_rule_identity() {
@@ -255,33 +273,27 @@ mod tests {
             ("freebsd_gpos", FREEBSD_BENCHMARK, FREEBSD_SOURCE),
             ("cisco_ios_xe_router_ndm", CISCO_BENCHMARK, CISCO_SOURCE),
         ] {
-            let benchmark_crlf = benchmark
-                .iter()
-                .flat_map(|byte| {
-                    if *byte == b'\n' {
-                        [Some(b'\r'), Some(b'\n')]
-                    } else {
-                        [Some(*byte), None]
-                    }
-                })
-                .flatten()
-                .collect::<Vec<_>>();
-            let source_crlf = source
-                .iter()
-                .flat_map(|byte| {
-                    if *byte == b'\n' {
-                        [Some(b'\r'), Some(b'\n')]
-                    } else {
-                        [Some(*byte), None]
-                    }
-                })
-                .flatten()
-                .collect::<Vec<_>>();
+            // `include_bytes!` reflects the checked-out file, so it may
+            // already contain CRLF on Windows. Normalize first, then
+            // materialize exactly one CRLF per logical newline.
+            let benchmark_crlf = materialize_crlf_checkout(benchmark);
+            let source_crlf = materialize_crlf_checkout(source);
 
             let parsed = parse_bundled_benchmark(target_key, &benchmark_crlf, &source_crlf)
                 .unwrap_or_else(|error| panic!("{target_key}: {error}"));
             assert_eq!(parsed.target_key(), target_key);
         }
+    }
+
+    #[test]
+    fn crlf_checkout_materialization_is_idempotent() {
+        let mixed = b"first\nsecond\r\nthird\rfourth";
+        let once = materialize_crlf_checkout(mixed);
+        let twice = materialize_crlf_checkout(&once);
+
+        assert_eq!(once, b"first\r\nsecond\r\nthird\r\nfourth");
+        assert_eq!(twice, once);
+        assert!(!twice.windows(3).any(|window| window == b"\r\r\n"));
     }
 
     #[test]
