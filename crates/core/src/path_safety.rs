@@ -10,8 +10,10 @@ use crate::{Error, Result};
 /// the opened handle, but intentionally permits a system- or group-owned input
 /// (for example, a benchmark supplied by an administrator). The other modes
 /// require current-user ownership. On Unix, `Private` additionally rejects all
-/// group/other access; on Windows both protected modes reject broad-principal
-/// write, delete, ownership, and DACL-control rights.
+/// group/other access. On Windows, protected objects must be owned by either
+/// the current token's user SID or its exact default-owner SID, and both
+/// protected modes reject broad-principal write, delete, ownership, and
+/// DACL-control rights.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SensitiveFilePolicy {
     UntrustedInput,
@@ -324,7 +326,7 @@ pub fn ensure_same_open_file(
     Ok(())
 }
 
-/// Validate a current-user-controlled sensitive directory.
+/// Validate a sensitive directory controlled by the current security context.
 pub fn validate_sensitive_directory(path: &Path, label: &str) -> Result<SensitiveDirectoryGuard> {
     reject_reparse_ancestors(path, label)?;
     let metadata = std::fs::symlink_metadata(path).map_err(|error| {
@@ -391,9 +393,10 @@ mod windows {
         TRUSTEE_IS_SID, TRUSTEE_IS_WELL_KNOWN_GROUP, TRUSTEE_W,
     };
     use windows_sys::Win32::Security::{
-        CreateWellKnownSid, EqualSid, GetTokenInformation, TokenUser, WinAuthenticatedUserSid,
-        WinBuiltinUsersSid, WinWorldSid, ACL, DACL_SECURITY_INFORMATION,
-        OWNER_SECURITY_INFORMATION, PSECURITY_DESCRIPTOR, PSID, TOKEN_QUERY, TOKEN_USER,
+        CreateWellKnownSid, EqualSid, GetTokenInformation, TokenOwner, TokenUser,
+        WinAuthenticatedUserSid, WinBuiltinUsersSid, WinWorldSid, ACL, DACL_SECURITY_INFORMATION,
+        OWNER_SECURITY_INFORMATION, PSECURITY_DESCRIPTOR, PSID, TOKEN_INFORMATION_CLASS,
+        TOKEN_OWNER, TOKEN_QUERY, TOKEN_USER,
     };
     use windows_sys::Win32::Storage::FileSystem::{
         FileAttributeTagInfo, FileIdInfo, GetFileInformationByHandleEx, DELETE, FILE_APPEND_DATA,
@@ -436,6 +439,17 @@ mod windows {
         fn as_ptr(&self) -> PSID {
             let user = unsafe { &*(self.storage.as_ptr().cast::<TOKEN_USER>()) };
             user.User.Sid
+        }
+    }
+
+    struct CurrentDefaultOwnerSid {
+        storage: Vec<usize>,
+    }
+
+    impl CurrentDefaultOwnerSid {
+        fn as_ptr(&self) -> PSID {
+            let owner = unsafe { &*(self.storage.as_ptr().cast::<TOKEN_OWNER>()) };
+            owner.Owner
         }
     }
 
@@ -584,10 +598,9 @@ mod windows {
                 path.display()
             )));
         }
-        let current_user = current_user_sid()?;
-        if unsafe { EqualSid(owner, current_user.as_ptr()) } == 0 {
+        if !owner_matches_current_token(owner)? {
             return Err(Error::Other(format!(
-                "{label} {} is not owned by the current Windows user",
+                "{label} {} is not owned by the current Windows user or token default owner",
                 path.display()
             )));
         }
@@ -641,9 +654,52 @@ mod windows {
         Ok(())
     }
 
+    fn owner_matches_current_token(owner: PSID) -> Result<bool> {
+        let current_user = current_user_sid()?;
+        if unsafe { EqualSid(owner, current_user.as_ptr()) } != 0 {
+            return Ok(true);
+        }
+
+        // Windows assigns a newly created object's owner from TokenOwner, not
+        // necessarily TokenUser. Elevated tokens commonly use the exact
+        // BUILTIN\Administrators SID here. Comparing against the token value
+        // preserves an exact security-principal binding without accepting an
+        // arbitrary administrator, group, account name, or path owner.
+        let default_owner = current_default_owner_sid()?;
+        Ok(unsafe { EqualSid(owner, default_owner.as_ptr()) } != 0)
+    }
+
     fn current_user_sid() -> Result<CurrentUserSid> {
         // Keep an aligned token-information buffer alive for the duration of
         // the caller's EqualSid comparison.
+        let buffer = current_token_information(TokenUser, "user")?;
+        let user = unsafe { &*(buffer.as_ptr().cast::<TOKEN_USER>()) };
+        if user.User.Sid.is_null() {
+            return Err(Error::Other(
+                "current Windows process token has no user SID".to_string(),
+            ));
+        }
+        Ok(CurrentUserSid { storage: buffer })
+    }
+
+    fn current_default_owner_sid() -> Result<CurrentDefaultOwnerSid> {
+        // TokenOwner is the exact SID Windows uses as the default owner for
+        // objects created by this security context. Keep the aligned token
+        // information buffer alive for the caller's EqualSid comparison.
+        let buffer = current_token_information(TokenOwner, "default-owner")?;
+        let owner = unsafe { &*(buffer.as_ptr().cast::<TOKEN_OWNER>()) };
+        if owner.Owner.is_null() {
+            return Err(Error::Other(
+                "current Windows process token has no default-owner SID".to_string(),
+            ));
+        }
+        Ok(CurrentDefaultOwnerSid { storage: buffer })
+    }
+
+    fn current_token_information(
+        information_class: TOKEN_INFORMATION_CLASS,
+        label: &str,
+    ) -> Result<Vec<usize>> {
         let mut token: HANDLE = null_mut();
         if unsafe { OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &mut token) } == 0 {
             return Err(Error::Other(format!(
@@ -654,11 +710,11 @@ mod windows {
         let token = OwnedHandle(token);
         let mut required = 0u32;
         unsafe {
-            GetTokenInformation(token.0, TokenUser, null_mut(), 0, &mut required);
+            GetTokenInformation(token.0, information_class, null_mut(), 0, &mut required);
         }
         if required == 0 {
             return Err(Error::Other(format!(
-                "failed to size the current Windows user token: {}",
+                "failed to size the current Windows {label} token: {}",
                 std::io::Error::last_os_error()
             )));
         }
@@ -667,7 +723,7 @@ mod windows {
         if unsafe {
             GetTokenInformation(
                 token.0,
-                TokenUser,
+                information_class,
                 buffer.as_mut_ptr().cast(),
                 required,
                 &mut required,
@@ -675,17 +731,11 @@ mod windows {
         } == 0
         {
             return Err(Error::Other(format!(
-                "failed to read the current Windows user token: {}",
+                "failed to read the current Windows {label} token: {}",
                 std::io::Error::last_os_error()
             )));
         }
-        let user = unsafe { &*(buffer.as_ptr().cast::<TOKEN_USER>()) };
-        if user.User.Sid.is_null() {
-            return Err(Error::Other(
-                "current Windows process token has no user SID".to_string(),
-            ));
-        }
-        Ok(CurrentUserSid { storage: buffer })
+        Ok(buffer)
     }
 
     fn well_known_sid(sid_type: i32) -> Result<WellKnownSid> {
@@ -718,6 +768,20 @@ mod windows {
             )));
         }
         Ok(WellKnownSid { storage })
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[test]
+        fn owner_matching_accepts_only_exact_current_token_principals() {
+            let default_owner = current_default_owner_sid().unwrap();
+            assert!(owner_matches_current_token(default_owner.as_ptr()).unwrap());
+
+            let world = well_known_sid(WinWorldSid).unwrap();
+            assert!(!owner_matches_current_token(world.as_ptr()).unwrap());
+        }
     }
 }
 
@@ -805,6 +869,20 @@ pub fn ensure_under_base(base: &Path, candidate: &Path) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(windows)]
+    #[test]
+    fn protected_temp_objects_validate_under_current_windows_security_context() {
+        let directory = tempfile::tempdir().unwrap();
+        let _directory_guard =
+            validate_sensitive_directory(directory.path(), "test directory").unwrap();
+
+        let path = directory.path().join("protected.txt");
+        std::fs::write(&path, b"protected").unwrap();
+        let _file =
+            open_sensitive_file(&path, "test file", SensitiveFilePolicy::IntegrityProtected)
+                .unwrap();
+    }
 
     #[test]
     fn safe_filename_allows_expected_identifiers() {
