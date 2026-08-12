@@ -6,7 +6,7 @@ AutomateSTIG is safest as a localhost desktop/offline evaluator. Connected mode 
 
 | Feature | Boundary | Default control |
 | --- | --- | --- |
-| DISA content fetch | Outbound HTTPS to public DISA hosts | Parsed URL allowlist for exact DISA hosts; redirects revalidated; response body streamed with hard byte cap; ZIP member/path/size limits before XML parsing. |
+| Maintainer DISA corpus fetch (not the end-user GUI) | Outbound HTTPS to public DISA hosts | Parsed URL allowlist for exact DISA hosts; redirects revalidated; response body streamed with hard byte cap; ZIP member/path/size limits before XML parsing. |
 | STIG Manager OAuth/API | Outbound HTTPS to operator-configured API and token endpoints | HTTPS-only; no embedded credentials; local/metadata hostnames rejected; non-global special-use/private/local/link-local addresses require explicit authorization; invalid/reserved/multicast/documentation addresses are always rejected. |
 | SSH scan | Outbound SSH to operator-selected assets | Host syntax validation, optional exact host/IP/CIDR allowlist, non-global special-use/private/local/link-local addresses blocked by default, invalid addresses always rejected, and host-key pinning/changed-key rejection. |
 
@@ -14,7 +14,8 @@ AutomateSTIG is safest as a localhost desktop/offline evaluator. Connected mode 
 
 - Prefer explicit allowlists over broad lab overrides.
 - Use `AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST` and `AUTOMATESTIG_SSH_TARGET_ALLOWLIST` for connected deployments.
-- Treat `AUTOMATESTIG_ALLOW_PRIVATE_*` overrides as temporary isolated-lab settings only.
+- Treat `AUTOMATESTIG_ALLOW_PRIVATE_SSH_SCAN` as a temporary isolated-lab
+  setting only.
 - Pre-populate SSH `known_hosts` for high-assurance scans instead of relying on trust-on-first-use.
 - Keep the GUI localhost-only unless a separate front-door/auth/audit layer is provided.
 

@@ -1,6 +1,8 @@
 # Architecture
 
-AutomateSTIG is a Rust workspace with 11 crates and two binaries.
+AutomateSTIG is a Rust workspace with 11 crates, two end-user Rust binaries,
+and one separately feature-gated transition binary. Release archives also
+include the Python-based `automatestig-backup-restore` operational utility.
 
 ## Crate Map
 
@@ -22,6 +24,10 @@ AutomateSTIG is a Rust workspace with 11 crates and two binaries.
 
 - `automatestig` - CLI.
 - `automatestig-gui` - local web GUI.
+
+`automatestig-transition` is a source-built, non-default custody utility for
+migration and handoff signing. It is not included in the analyst release
+archive or exposed as a normal product workflow.
 
 ## Scanner application flow
 
@@ -90,8 +96,9 @@ connected and opt-in:
   exact assignment.
 - Remote SSH collection.
 
-Broad DISA fetch/import is maintainer or legacy transition tooling, not a
-normal scanner GUI workflow.
+Broad DISA fetch/import is maintainer tooling, not a normal scanner GUI or
+transition-binary workflow. The transition binary can inventory and export
+preserved legacy content, but it cannot fetch or import catalog content.
 
 The connected STIG Manager boundary selects the exact retained adapter for
 server build `1.6.13+1`. Other reported versions fail capability discovery and

@@ -2,7 +2,11 @@
 
 ## Supported Release Hosts
 
-AutomateSTIG publishes and supports release binaries for Linux and macOS only.
+AutomateSTIG publishes release binaries for macOS and GNU/Linux, but the pilot
+has not published a complete minimum distro/glibc matrix. Do not infer RHEL or
+musl compatibility from the presence of a Linux archive. The installer
+executes the authenticated staged CLI and changes no installed file if that
+binary cannot run on the host.
 Windows remains in CI as a portability-test platform, but source-built Windows
 binaries are not supported for security-sensitive use. The release pipeline
 will not build, attest, manifest, or publish a Windows archive until Windows
@@ -131,8 +135,8 @@ inputs rather than device evidence; their presence cannot satisfy a native
 adapter-evidence requirement or replace a collection error.
 
 Some legacy parser and model code remains for lossless migration, backwards
-compatibility tests, and the separately feature-gated content-maintainer
-binary. Its presence does not expand the supported scanner surface.
+compatibility tests, and a non-default maintainer build. Its presence does not
+expand the supported scanner surface.
 
 ## Remote Transport Hardening
 
@@ -179,13 +183,13 @@ Evidence v2 is strict JSON bound to the target platform and current collection-p
 
 STIG-Manager API and OAuth endpoints must use HTTPS; there is no HTTP exception.
 Redirects are disabled so bearer tokens and client credentials are never
-forwarded to a second endpoint. `Save` persists validated settings but does not
-test connectivity. `Test These Values` exercises the unsaved values currently
-shown and does not persist them. A blank secret may reuse the stored secret only
-when the API URL, token URL, and client ID are unchanged; changing any of those
-requires re-entering the secret. TLS verification is mandatory. The scanner
-has no invalid-certificate override; install the correct CA trust before
-configuring the connection.
+forwarded to a second endpoint. **Test and save connection** first exercises
+the values currently in the form; it persists them only after the live test
+succeeds. A blank secret may reuse the stored secret only when the API URL,
+token URL, and client ID are unchanged; changing any of those requires
+re-entering the secret. TLS verification is mandatory. The scanner has no
+invalid-certificate override; install the correct CA trust before configuring
+the connection.
 
 ## STIG Pack Trust
 
@@ -216,7 +220,7 @@ ownership/permissions.
 
 DISA ZIP/XML import parses the complete selected batch before changing the
 library and never derives executable checks from prose. A library-scoped
-operating-system file lock serializes writers across GUI and CLI processes.
+operating-system file lock serializes protected maintainer writers.
 Benchmarks, reviewed signed check packs, ancillary content,
 the transaction journal, and the future index are staged and synchronized;
 artifacts are replaced with backups and the index is replaced last. Startup

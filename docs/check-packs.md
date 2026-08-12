@@ -4,6 +4,11 @@ Check packs are deterministic JSON definitions for automated rule evaluation.
 
 Code reference: `crates/core/src/checks`.
 
+The end-user scanner resolves only the immutable check pack bound into its
+release-bundled profile. The mutable library paths below exist for protected
+maintainer and legacy-compatibility work; importing there does not alter the
+installed product's scanner scope.
+
 ## CheckPack
 
 ```json
@@ -60,7 +65,7 @@ bundled packs have been explicitly classified per automation.
 
 ## Platforms
 
-The v0.3 shipped platform identifiers are:
+The v0.3 candidate's platform identifiers are:
 
 - `ontap`
 - `bsd`
@@ -205,9 +210,10 @@ Expected results also use a snake_case `type` tag.
 | `is_true` | none |
 | `match_count_at_least` | `pattern`, `min` |
 
-## Load Locations
+## Maintainer Load Locations
 
-Packs load in deterministic priority order from:
+Protected maintainer/legacy library code loads packs in deterministic priority
+order from:
 
 - `content/check_packs` or the equivalent packs embedded in the binary
 - `<library>/custom_checks`
@@ -221,7 +227,7 @@ the journaled import. Runtime verifies those proofs against the current trust
 directory. Bare files, changed bytes, changed proofs, and revoked keys are
 rejected before parsing or execution.
 
-The three packs shipped by v0.3 are listed in
+The three packs bound into the v0.3 candidate are listed in
 `content/supported-targets.json`. `scripts/validate-check-packs.py` rejects an
 extra shipped pack, a missing pack, target metadata drift, or coverage/check ID
 mismatches.
@@ -234,5 +240,7 @@ Raw XCCDF/DISA import never generates executable checks from prose. Signed
 `.stigpack` archives retain the compatible `auto_check_packs/` member name, but
 trusted import validates those definitions and promotes them into
 `<library>/reviewed_check_packs`; legacy local `auto_check_packs` files are never
-loaded. ONTAP and FreeBSD use their reviewed curated packs unless an operator
-explicitly imports a trusted reviewed extension.
+loaded. ONTAP and FreeBSD product scans always use their release-bundled
+reviewed packs. A trusted reviewed extension imported during content
+preparation does not enter the product runtime until it passes release review
+and is bound into a new signed scanner profile.

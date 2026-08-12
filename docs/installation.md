@@ -1,112 +1,152 @@
 # Installation
 
-## Download & Install (prebuilt)
+This page covers supported prebuilt installation, upgrades, removal, manual
+verification, and source builds. For the complete first-use flow, follow the
+[Quickstart](quickstart.md).
 
-AutomateSTIG publishes release archives that contain both application binaries
-and the protected-state recovery utility:
+> **Current status:** scanner-first `v0.3.x` is an unreleased pilot candidate.
+> The public `v0.2.x` release is legacy and does not contain this scanner,
+> unified installer, or release-integrity contract. Do not install `v0.2.x`
+> expecting the workflow below.
 
-- `automatestig`
-- `automatestig-gui`
-- `automatestig-backup-restore`
+## Supported release hosts
 
-The separately feature-gated `automatestig-transition` migration and handoff
-producer-signing executable is not part of the analyst product archive. Build
-it only from reviewed, version-pinned source on the applicable controlled host;
-see [Migration and Transition](migration-transition.md) and
-[Handoff Verification](handoff-verification.md).
+Prebuilt pilot archives are produced for:
 
-Prebuilt, supported releases are published for Linux and macOS only. Windows
-remains in CI for source-portability testing, but no Windows archive is
-published or supported until Windows filesystem ownership, ACL, and
-reparse-point custody controls match the Unix release boundary.
-
-### Version-pinned installers
-
-macOS:
-
-```bash
-version=v0.3.0
-gh release verify "$version" --repo ibadukefan/AutomateSTIG
-curl --proto '=https' --proto-redir '=https' -fsSL \
-  "https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/$version/install-macos.sh" \
-  -o install-macos.sh
-AUTOMATESTIG_VERSION="$version" sh ./install-macos.sh
-```
-
-Linux:
-
-```bash
-version=v0.3.0
-gh release verify "$version" --repo ibadukefan/AutomateSTIG
-curl --proto '=https' --proto-redir '=https' -fsSL \
-  "https://raw.githubusercontent.com/ibadukefan/AutomateSTIG/$version/install-linux.sh" \
-  -o install-linux.sh
-AUTOMATESTIG_VERSION="$version" sh ./install-linux.sh
-```
-
-Each supported installer picks the right build for your CPU (Intel/x86_64 or
-Apple Silicon/arm64) automatically. The installers require
-[Cosign](https://docs.sigstore.dev/cosign/system_config/installation/) and
-Python 3.10 or newer. Python is the runtime for the installed protected-state
-recovery entrypoint. The installers stop
-unless both the exact archive checksum and its keyless Sigstore signature from
-this repository's tagged CI workflow verify. `gh release verify` authenticates
-the immutable release before the installer is downloaded from that same exact
-tag; do not substitute a mutable branch such as `main`. Inspect the downloaded
-script before running it when required by local policy.
-
-Set `AUTOMATESTIG_VERSION` to pin a specific release tag, such as `v0.3.0`.
-On macOS and Linux, set `AUTOMATESTIG_INSTALL_DIR` to choose a different
-install directory. The installer stages both binaries and the recovery utility
-inside that destination, moves the complete old toolset aside, and rolls back
-on an error or catchable interruption. It never publishes a mixed-version CLI,
-GUI, and recovery toolset.
-
-### Manual download
-
-Download the archive for your platform from the [latest GitHub Release](https://github.com/ibadukefan/AutomateSTIG/releases/latest):
-
-| Platform | Target | Archive |
+| Host | CPU | Release target |
 | --- | --- | --- |
-| Linux x86_64 | `x86_64-unknown-linux-gnu` | `automatestig-<tag>-x86_64-unknown-linux-gnu.tar.gz` |
-| Linux arm64 | `aarch64-unknown-linux-gnu` | `automatestig-<tag>-aarch64-unknown-linux-gnu.tar.gz` |
-| macOS Intel | `x86_64-apple-darwin` | `automatestig-<tag>-x86_64-apple-darwin.tar.gz` |
-| macOS Apple Silicon | `aarch64-apple-darwin` | `automatestig-<tag>-aarch64-apple-darwin.tar.gz` |
+| GNU/Linux | x86-64 | `x86_64-unknown-linux-gnu` |
+| GNU/Linux | arm64 | `aarch64-unknown-linux-gnu` |
+| macOS | Intel | `x86_64-apple-darwin` |
+| macOS | Apple Silicon | `aarch64-apple-darwin` |
 
-For macOS and Linux:
+Windows deployment is unsupported. Windows remains in CI for source
+portability only, and no Windows release archive is published until equivalent
+filesystem ownership, ACL, and reparse-point custody controls exist.
+
+The pilot has not yet published a complete minimum macOS or GNU/Linux
+distro/glibc qualification matrix. In particular, do not infer RHEL or musl
+compatibility merely from the presence of a Linux archive. Tagged CI executes
+each packaged binary on its declared native release runner. The installer also
+executes the authenticated staged CLI before replacing any installed file and
+stops without changing the existing installation if the binary cannot run.
+
+## One installer for macOS and Linux
+
+The normal path requires a current GitHub CLI with `gh release verify`, plus
+standard `curl`, `tar`, and SHA-256 tooling. Set `version` to the exact release
+approved by the site:
 
 ```bash
-tar -xzf automatestig-<tag>-<target>.tar.gz
-chmod +x automatestig automatestig-gui automatestig-backup-restore
-./automatestig-gui
+version=v0.3.0
+gh release verify "$version" --repo ibadukefan/AutomateSTIG
+gh release download "$version" --repo ibadukefan/AutomateSTIG \
+  --pattern install.sh --output automatestig-install.sh
+sh ./automatestig-install.sh --version "$version"
 ```
 
-Move all three `automatestig*` entry points to a directory on `PATH`, such as
-`$HOME/.local/bin` or `/usr/local/bin`. Manual installation also requires a
-`python3` command at version 3.10 or newer for
-`automatestig-backup-restore`.
+The installer asks no questions. It:
 
-### Launching
+- is cryptographically bound to the tag that published it and rejects a
+  different `--version`;
+- detects macOS or GNU/Linux and Intel/x86-64 or arm64 automatically;
+- downloads the matching CLI, GUI, and recovery-tool archive;
+- verifies its one-record SHA-256 checksum and exact tagged-workflow Sigstore
+  identity;
+- uses an existing Cosign command or temporarily downloads a pinned,
+  checksum-verified Cosign verifier;
+- rejects links, duplicate names, or any member outside the closed seven-file
+  release archive;
+- stages and executes the verified CLI before touching an old installation;
+- atomically installs or repairs all three entry points in `~/.local/bin`,
+  rolling back the entire transaction on a failure; and
+- starts the localhost GUI and prints absolute commands for future use.
 
-Run `automatestig-gui` to open the local web GUI. Run `automatestig --help` for the CLI.
+It never uses `sudo`, edits a shell startup file, disables Gatekeeper, or asks
+the user to choose an archive. Python is not required to install, launch, scan,
+or verify a handoff. The optional `automatestig-backup-restore` entry point
+requires Python 3.10 or newer when it is used.
 
-### macOS Gatekeeper
+Until an approved `v0.3.x` release is published, the commands above fail at
+release verification and make no installation changes. They never substitute
+the legacy `v0.2.x` release.
 
-The release binaries are not notarized. The installer deliberately does not
-remove macOS quarantine metadata or bypass Gatekeeper. If Gatekeeper blocks a
-verified binary, use your organization's approved exception process or build
-from reviewed source. Do not clear quarantine merely to make an unfamiliar
-download run.
+### Launch, upgrade, repair, and uninstall
 
-### Verification and provenance
-
-Tagged release CI publishes `<archive>.sha256` and
-`<archive>.sigstore.bundle` next to every archive. A checksum detects accidental
-or post-download changes but does not authenticate the publisher, so verify the
-bundle against the exact workflow identity before extracting:
+The default absolute launch command is:
 
 ```bash
-archive=automatestig-v0.3.0-x86_64-unknown-linux-gnu.tar.gz
+"$HOME/.local/bin/automatestig-gui"
+```
+
+Adding `~/.local/bin` to `PATH` is optional and remains a site or shell
+configuration decision. The installer does not change it.
+
+To upgrade, set `version` to the newly approved tag and repeat the four normal
+installation commands. Re-running the same verified release safely repairs
+that version. A published installer is tag-bound, so it cannot silently switch
+versions.
+
+Install without opening the GUI, or choose another absolute user-owned
+destination:
+
+```bash
+sh ./automatestig-install.sh --version "$version" --no-launch
+sh ./automatestig-install.sh --version "$version" \
+  --install-dir "$HOME/Applications/AutomateSTIG/bin"
+```
+
+Show all options without installing:
+
+```bash
+sh ./automatestig-install.sh --help
+```
+
+Remove the three installed entry points while deliberately retaining assessment
+state:
+
+```bash
+sh ./automatestig-install.sh --uninstall
+```
+
+The uninstall leaves `~/.automatestig` intact. Remove that directory only
+after following the site's evidence-retention and media-sanitization process.
+
+The old `install-linux.sh` and `install-macos.sh` files are compatibility
+wrappers when shipped beside `install.sh`; new installations should use only
+the unified installer. `install-windows.ps1` is a no-change explanation of the
+unsupported Windows boundary.
+
+## macOS Gatekeeper
+
+The pilot binaries are not notarized. The installer deliberately does not
+clear quarantine metadata or bypass Gatekeeper. If an organization blocks the
+verified binary, use its approved Gatekeeper exception process or build the
+reviewed source. Notarization remains a prerequisite for a genuinely
+decision-free general macOS installation.
+
+## Manual archive installation
+
+Use the exact approved release, not the mutable source branch or the legacy
+“latest” release. Download these assets for the applicable target:
+
+- `automatestig-<tag>-<target>.tar.gz`
+- `automatestig-<tag>-<target>.tar.gz.sha256`
+- `automatestig-<tag>-<target>.tar.gz.sigstore.bundle`
+
+Authenticate the immutable release first:
+
+```bash
+version=v0.3.0
+gh release verify "$version" --repo ibadukefan/AutomateSTIG
+gh release download "$version" --repo ibadukefan/AutomateSTIG \
+  --pattern 'automatestig-*<target>.tar.gz*'
+```
+
+Then verify the exact tagged workflow identity and checksum before extraction:
+
+```bash
+archive=automatestig-v0.3.0-<target>.tar.gz
 cosign verify-blob \
   --bundle "$archive.sigstore.bundle" \
   --certificate-identity \
@@ -114,91 +154,77 @@ cosign verify-blob \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
   "$archive"
 sha256sum -c "$archive.sha256"
+tar -xzf "$archive"
+chmod +x automatestig automatestig-gui automatestig-backup-restore
+./automatestig --version
+./automatestig-gui
 ```
 
-Each archive also has a target-specific `release-equivalence-<target>.json`.
-That manifest records the SHA-256 and size of both binaries and the recovery
-utility before packaging, the same values after extraction, the archive
-SHA-256, package version, target, and source commit. Tagged CI executes the
-exact extracted CLI and GUI on a native runner for all four supported targets.
-The same native job executes the exact extracted recovery entrypoint through a
-real backup/restore round trip, verifies state preservation and credential
-removal, and provenance binds that utility's exact bytes.
+On macOS, use `shasum -a 256 -c` if `sha256sum` is unavailable. Manual
+installation puts the operator in charge of archive-member review, destination
+permissions, atomic replacement, and rollback; the unified installer is the
+safer normal path.
 
-The release also includes a CycloneDX SBOM with locked Cargo component
-checksums, source references, dependency relationships, and hashes for both
-release executables and the recovery utility. Its metadata identifies the
-archive as the analyst product and records that the protected transition CLI
-is absent. The complete Cargo metadata inventory, provenance record, and signed
-hash-complete release manifest bind those shipped hashes to the archive, source
-commit, workflow run, checksum, and attestations.
-With GitHub CLI installed, verify the independent GitHub attestation using the
-same repository, workflow identity, tag ref, and source commit recorded by the
-release.
+## Release provenance
 
-## Prerequisites
+Tagged CI publishes a checksum and keyless Sigstore bundle for the unified
+installer and each target archive. The installer is rendered from the reviewed
+source with the exact release tag embedded, syntax-checked, attested, signed,
+and included in the closed release manifest before publication.
 
-- Rust toolchain, stable channel.
-- Python 3.10 or newer for protected-state recovery.
+Each target also has:
 
-## Build
+- `release-equivalence-<target>.json`, binding the tested pre-package CLI, GUI,
+  and recovery-tool bytes to the archived bytes;
+- a CycloneDX SBOM with locked Cargo dependencies and release-executable
+  hashes;
+- a Cargo metadata inventory;
+- a provenance record binding the archive, commit, workflow run, companions,
+  and executable bytes; and
+- GitHub attestations plus a signed, checksum-protected
+  `release-manifest.json` covering the complete publishable set.
 
-From the repository root:
+Native release jobs execute the exact extracted CLI and GUI on all four release
+targets. The recovery entry point also completes a real backup/restore round
+trip. These checks establish artifact identity and executable equivalence; they
+do not replace the documented live-device or host-compatibility acceptance
+gates.
+
+## Build from source
+
+Source builds are for developers and explicitly reviewed pilot commits. Install
+the repository-pinned Rust toolchain and Python 3.10 or newer, then from the
+repository root run:
 
 ```bash
 cargo build --release --workspace
 ```
 
-This source build is supported for Linux and macOS. A Windows build may compile
-for portability testing, but is not a supported deployment artifact and must
-not be used for security-sensitive operation.
+The default product binaries are:
 
-The default workspace build produces the two product binaries:
+- `target/release/automatestig`
+- `target/release/automatestig-gui`
 
-- `automatestig`
-- `automatestig-gui`
+Run them with:
 
-To compile the separately named protected transition executable without adding
-its operations to the product CLI:
+```bash
+cargo run --release --bin automatestig -- status
+cargo run --release --bin automatestig-gui
+```
+
+The separately named transition executable is intentionally absent from
+analyst release archives. On an applicable controlled host, build it only from
+reviewed, version-pinned source:
 
 ```bash
 cargo build --release --locked --no-default-features \
   --features transition --bin automatestig-transition
 ```
 
-## Run The GUI
+See [Migration and Transition](migration-transition.md) and
+[Handoff Verification](handoff-verification.md) for that protected workflow.
 
-```bash
-cargo run --release --bin automatestig-gui
-```
-
-Or run the built `automatestig-gui` binary from the release target directory.
-
-The GUI:
-
-- Binds to `127.0.0.1` on a random port, or uses the `PORT` environment variable.
-- Opens the browser automatically.
-- Stores local data under `~/.automatestig`.
-
-The data directory contains:
-
-- `data.db`
-- `library/`
-
-Use `automatestig-backup-restore` for protected state backup and restore from an
-installed release (`python3 scripts/backup-restore.py` in a source checkout);
-it captures committed WAL frames and keeps database, encryption key, scanner
-library, SSH trust, and public-key trust stores in one verified recovery unit.
-
-## Run The CLI
-
-```bash
-cargo run --release --bin automatestig -- --help
-cargo run --release --bin automatestig -- status
-```
-
-Use the built binary directly after a release build:
-
-```bash
-./target/release/automatestig status
-```
+The GUI binds to `127.0.0.1` on a random port, opens a browser, and stores
+sensitive local state under `~/.automatestig`. Use the installed
+`automatestig-backup-restore` command for a verified recovery unit; from a
+source checkout use `python3 scripts/backup-restore.py`.

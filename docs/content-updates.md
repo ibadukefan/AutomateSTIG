@@ -13,7 +13,8 @@ the project itself tracks DISA releases.
 End-user scanner content is updated with a signed AutomateSTIG release that
 contains the exact immutable benchmark subset, check pack, adapter,
 compatibility matrix, coverage manifest, and hashes. **Scanner Content** reports
-update readiness; it does not browse or fetch the general DISA catalog.
+the readiness of profiles in the installed release; it does not check for
+updates or browse or fetch the general DISA catalog.
 
 ### Historical connected catalog behavior
 
@@ -41,7 +42,7 @@ Updates are manual by design:
 3. Use the maintainer generator/release process to rebuild and validate the
    exact scanner profile. Do not install raw XCCDF through the end-user GUI.
 
-The protected transition import surfaces share the
+The protected maintainer import surfaces share the
 bounded parser and atomic batch commit described in [DISA Import](disa-import.md).
 
 For curated internal distribution, build signed `.stigpack` files (see [STIG Pack Files](stigpack.md)). Field systems refuse unsigned packs unless `AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1` is set explicitly for lab use; trusted Ed25519 public keys go in `AUTOMATESTIG_TRUSTED_KEYS_DIR`.

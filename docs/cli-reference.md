@@ -110,11 +110,11 @@ The verifier accepts current v4 handoffs and the exact legacy v2/v3 contracts fo
 already-issued bundles, in both retained-evidence and purged result-only
 states. It fails closed on unsafe or undeclared ZIP members, validates all
 hashes and run/content/evidence bindings, enforces sparse ownership safety,
-checks the CKLB projection, validates the v3 XCCDF 1.2 projection and its
+checks the CKLB projection, validates the v3/v4 XCCDF 1.2 projection and its
 target/rule/provenance bindings, and deterministically re-evaluates retained
 adapter evidence. Fresh traces and sparse reviews must exactly match the
 immutable result; CKLB and XCCDF are compared to that fresh result. A purged
-v3 package remains integrity/projection-verifiable but is explicitly reported
+v3/v4 package remains integrity/projection-verifiable but is explicitly reported
 as not replayed. With no
 sidecar, success proves internal integrity but not producer identity. With
 `--signature`, verification requires a matching key from the dedicated

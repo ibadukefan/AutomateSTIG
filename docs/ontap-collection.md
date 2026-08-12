@@ -58,7 +58,11 @@ The collector wraps those commands with:
 set -privilege advanced -confirmations off -stop-on-error true
 ```
 
-Evidence is strict JSON with schema identifier `automatestig-evidence/v2`; see `schemas/evidence-v2.schema.json`. It separates stdout, stderr, exit status, duration, and typed error for every command and records the platform, exact collection-plan digest, collector version, and observed SSH server-key fingerprint. Target-controlled output cannot create command records.
+The wrapper emits strict native `automatestig-adapter-evidence/v2` JSON. It
+separates stdout, stderr, exit status, duration, and typed error for every
+operation and records the observed device identity, exact profile and
+collection-plan bindings, collector version, and SSH server-key fingerprint.
+Target-controlled output cannot create operation records.
 
 The evaluator rejects duplicate records, incomplete JSON, missing statuses, an unexpected command, a different platform, and a stale plan digest. Marker-based plain-text evidence is rejected by the product CLI, GUI, and API with no unsafe override.
 
@@ -66,12 +70,14 @@ If automated collection is unavailable, record the needed evidence for manual re
 
 ## Evaluating
 
-The scanner GUI uses its release-bundled exact benchmark subset. The following
-raw-content import is a legacy CLI/maintainer transition path, not a normal GUI
-prerequisite:
+The scanner GUI and installed CLI use the release-bundled exact benchmark
+subset. No content import is required for a supported scan. A content
+maintainer working from reviewed source may import raw reference content with
+the explicit non-default feature:
 
 ```bash
-automatestig disa-import --input U_NetApp_ONTAP_DSC_9-x_V2R4_STIG.zip
+cargo run --release --features maintainer --bin automatestig -- \
+  disa-import --input U_NetApp_ONTAP_DSC_9-x_V2R4_STIG.zip
 ```
 
 Then evaluate the evidence document:

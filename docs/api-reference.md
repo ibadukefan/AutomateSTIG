@@ -43,6 +43,7 @@ ASCII characters and no whitespace or the server refuses to start.
 | GET | `/v1/stig-manager/collections/{collection_id}/assets` | Read live existing assets. |
 | GET | `/v1/stig-manager/collections/{collection_id}/assets/{asset_id}/assignments` | Read exact assignments and scanner readiness reasons. |
 | GET | `/v1/scanner/profiles` | List exact release-bundled profiles, hashes, compatibility, coverage, and readiness. |
+| GET/PUT | `/v1/scanner/retention` | Read or update bounded evidence and operational-retention policy. |
 | GET/POST | `/v1/scanner/connection-profiles` | List or create thin scanner-only SSH target profiles (endpoint, port, adapter, optional opaque provider reference; never credentials). |
 | PUT/DELETE | `/v1/scanner/connection-profiles/{profile_id}` | Update or remove one thin target profile. |
 | POST | `/v1/runs/preflight` | Bind destination, target fingerprint, exact profile, privilege, and read-only operation plan. |
@@ -51,7 +52,9 @@ ASCII characters and no whitespace or the server refuses to start.
 | GET | `/v1/runs/jobs` | List durable SSH coordination jobs; submitted credentials are never returned or persisted. |
 | GET | `/v1/runs/jobs/{job_id}` | Read queued/running/completed/failed SSH job state and its resulting run ID, when complete. |
 | GET | `/v1/runs` | List short-lived technical scan and handoff records. |
+| GET | `/v1/runs/purged` | List append-only tombstones for retention-purged terminal run history. |
 | GET | `/v1/runs/{run_id}` | Read run steps, immutable result/provenance, sparse preview, attempts, and receipt. |
+| GET | `/v1/runs/{run_id}/delivery-attempts` | Page the run's typed remote-verification attempt history. |
 | POST | `/v1/runs/{run_id}/deliver` | Recheck remote ownership/state; confirm an exact no-op or return an actionable handoff/conflict result. |
 | GET | `/v1/runs/{run_id}/handoff` | Download the selected-run handoff for any complete run. |
 | POST | `/v1/runs/{run_id}/evidence/purge` | Irreversibly remove retained replay evidence after exact run-ID confirmation; provenance metadata remains. |

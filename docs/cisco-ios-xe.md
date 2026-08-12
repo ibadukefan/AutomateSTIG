@@ -1,7 +1,8 @@
 # Cisco IOS-XE Router NDM Evaluation
 
-AutomateSTIG v0.3 evaluates Cisco IOS-XE Router NDM from an operator-supplied
-running configuration. It does not log in to the router or execute collection
+The unreleased AutomateSTIG v0.3 pilot candidate evaluates Cisco IOS-XE Router
+NDM from an operator-supplied running configuration. It does not log in to the
+router or execute collection
 commands. Capture `show running-config` through the organization's authorized
 device-management process and handle the file as sensitive configuration data.
 
@@ -104,7 +105,7 @@ automatestig evaluate \
   --output router01.scanner-result.json
 ```
 
-This CLI evaluation path remains for transition and reproducibility.
+This CLI evaluation path is the supported disconnected and reproducible path.
 The normal scanner GUI uses the bundled exact V3R7 benchmark subset and does
 not require broad DISA content import.
 

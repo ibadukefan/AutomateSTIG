@@ -1,6 +1,10 @@
 # STIG Coverage Policy
 
-AutomateSTIG v0.3 covers deterministic evidence collection and evaluation for NetApp ONTAP 9.x and FreeBSD over SSH, plus Cisco IOS-XE Router NDM running configurations. It does not claim to replace a general-purpose host scanner. The exact target, benchmark, input, pack, and acceptance-gate mappings live in `content/supported-targets.json`.
+The unreleased AutomateSTIG v0.3 pilot candidate contains deterministic
+evidence collection and evaluation for NetApp ONTAP 9.x and FreeBSD over SSH,
+plus Cisco IOS-XE Router NDM running configurations. It does not claim to
+replace a general-purpose host scanner. The exact target, benchmark, input,
+pack, and acceptance-gate mappings live in `content/supported-targets.json`.
 
 AutomateSTIG must not advertise a STIG/platform as comprehensive unless every DISA rule for that release is represented in a coverage manifest.
 
@@ -27,10 +31,12 @@ A check pack without this proof is **experimental** even if it contains useful c
 
 ## Validation Command
 
-Coverage manifests are validated with:
+Coverage validation is protected maintainer tooling and is not compiled into
+the installed analyst CLI. From a reviewed source checkout, run:
 
 ```bash
-automatestig coverage validate --manifest content/coverage/<manifest>.json
+cargo run --release --features maintainer --bin automatestig -- \
+  coverage validate --manifest content/coverage/<manifest>.json
 ```
 
 The validator fails closed for internal inconsistencies, duplicate rule IDs, missing reasons, missing automation metadata, unsupported entries without `tracking_issue`, and automated entries that lack validation evidence references.

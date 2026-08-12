@@ -1,7 +1,8 @@
 # Declared Scanner Targets
 
-AutomateSTIG v0.3 ships immutable **experimental pilot** scanner profiles for exactly three target
-families. Each profile binds the declared-target contract, exact benchmark
+The unreleased AutomateSTIG v0.3 candidate contains immutable **experimental
+pilot** scanner profiles for exactly three target families. Each profile binds
+the declared-target contract, exact benchmark
 subset, executable check pack, coverage manifest, target adapter, compatibility
 grammar, and integrity hashes. A fresh install does not require a normal user
 to import raw XCCDF or manage the general DISA catalog.
@@ -34,7 +35,7 @@ authorized release gate records those exact versions.
 
 ## Scope Boundary
 
-AutomateSTIG v0.3 does not scan general Linux distributions, AIX, Solaris,
+The AutomateSTIG v0.3 candidate does not scan general Linux distributions, AIX, Solaris,
 Windows, Cisco NX-OS, or Cisco ASA. Cisco IOS-XE is evaluated from a running
 configuration, not by the SSH collector. Supplemental CKLB/XCCDF handoff
 projections, preserved-data migration parsing, and STIG Manager lookup do not

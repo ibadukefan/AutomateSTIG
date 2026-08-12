@@ -1,6 +1,7 @@
 # STIG Pack Files
 
-> `.stigpack` build/import is protected maintainer and transition tooling. The
+> `.stigpack` build/import is protected maintainer tooling. The separate
+> transition binary does not build, verify, or import content packs. The
 > scanner-first GUI ships exact immutable scanner profiles and does not expose
 > general pack import or signing to an everyday analyst.
 
@@ -65,8 +66,8 @@ cargo run --release --features maintainer --bin automatestig -- \
   import --pack site-content.stigpack
 ```
 
-The scanner-first GUI has no pack-import action. Use the protected
-maintainer/transition CLI only. The former unversioned
+The scanner-first GUI has no pack-import action. Use a protected maintainer
+build from reviewed source only. The former unversioned
 `/api/library/import-stigpack` route is an HTTP `410 Gone` tombstone and does
 not accept uploads.
 
@@ -107,7 +108,9 @@ Trusted keys are loaded from:
 Unsigned import is blocked unless explicitly allowed:
 
 ```bash
-AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1 automatestig import --pack lab-only.stigpack
+AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1 \
+  cargo run --release --features maintainer --bin automatestig -- \
+  import --pack lab-only.stigpack
 ```
 
 Use unsigned import only for explicit lab benchmark/template workflows.

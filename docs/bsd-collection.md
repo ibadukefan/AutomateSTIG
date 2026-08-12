@@ -69,12 +69,14 @@ unsafe override.
 
 ## Evaluating
 
-The scanner GUI uses its release-bundled exact benchmark subset. The following
-raw-content import is a legacy CLI/maintainer transition path, not a normal GUI
-prerequisite:
+The scanner GUI and installed CLI use the release-bundled exact benchmark
+subset. No content import is required for a supported scan. A content
+maintainer working from reviewed source may import raw reference content with
+the explicit non-default feature:
 
 ```bash
-automatestig disa-import --input U_GPOS_V3R3_SRG.zip
+cargo run --release --features maintainer --bin automatestig -- \
+  disa-import --input U_GPOS_V3R3_SRG.zip
 ```
 
 Then evaluate the evidence document:

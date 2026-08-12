@@ -1,6 +1,11 @@
 # Field Calibration Checklist
 
-The ONTAP, FreeBSD, and Cisco check packs are written against canonical device output and are marked **experimental** until validated against your real devices. Calibration needs exactly three sanitized artifacts, collected once. Everything below is read-only.
+The ONTAP, FreeBSD, and Cisco check packs are written against canonical device
+output and are marked **experimental** until validated against your real
+devices. Calibration needs three sanitized device captures, collected once;
+Cisco evaluation additionally requires its approved organization-policy JSON,
+detached signature, and independently distributed public trust anchor.
+Everything below is read-only.
 
 ## What to capture
 
@@ -36,7 +41,11 @@ Do **not** reword command output, change column spacing, or drop "N entries were
 ```bash
 automatestig evaluate --stig NetApp_ONTAP_DSC_9-x_STIG --evidence ontap-evidence.json --output filer01.scanner-result.json
 automatestig evaluate --stig General_Purpose_Operating_System --evidence bsd-evidence.json --output bsdhost01.scanner-result.json
-automatestig evaluate --stig Cisco_IOS-XE_Router_NDM_STIG --config router-config.txt --host rtr01 --output rtr01.scanner-result.json
+automatestig evaluate --stig Cisco_IOS-XE_Router_NDM_STIG \
+  --config router-config.txt --host rtr01 \
+  --organization-policy rtr01-policy.json \
+  --organization-policy-signature rtr01-policy.sig \
+  --output rtr01.scanner-result.json
 ```
 
 Review each native scanner result against what you know to be true about the

@@ -4,14 +4,16 @@
 > release-bundled ONTAP V2R4, GPOS V3R3, and IOS-XE Router NDM V3R7 profiles.
 > Broad XCCDF import and catalog management are not in the scanner-first GUI.
 
-The legacy CLI and protected content-maintainer tooling can import DISA STIG
-content from XCCDF XML files or ZIP archives.
+Protected content-maintainer tooling can import DISA STIG content from XCCDF
+XML files or ZIP archives. The installed analyst product cannot.
 
 ## CLI
 
 ```bash
-automatestig disa-import --input U_STIG.zip
-automatestig disa-import --input U_STIG-xccdf.xml
+cargo run --release --features maintainer --bin automatestig -- \
+  disa-import --input U_STIG.zip
+cargo run --release --features maintainer --bin automatestig -- \
+  disa-import --input U_STIG-xccdf.xml
 ```
 
 A ZIP is treated as one import transaction: every selected XCCDF member is
@@ -45,8 +47,8 @@ link that workspace. Every former unversioned content route—including
 HTTP `410 Gone` tombstone with migration guidance. There is no operational
 curl or browser workflow for these routes.
 
-Release maintainers use the protected content pipeline or the hidden,
-transition-only CLI described above. Normal users select an immutable bundled
+Release maintainers use the protected content pipeline or the explicit
+maintainer source build described above. Normal users select an immutable bundled
 scanner profile; they do not import or refresh a general DISA catalog. Existing
 pre-scanner data can be inventoried and preserved with
 `automatestig-transition migration inventory` and

@@ -1,10 +1,14 @@
 # Scanner GUI Guide
 
-Run the local GUI with:
+After a supported installation, start the local GUI with:
 
 ```bash
-cargo run --release --bin automatestig-gui
+automatestig-gui
 ```
+
+The installer prints an absolute command when its user-local destination is
+not yet on `PATH`. From a reviewed source checkout, use
+`cargo run --release --bin automatestig-gui` instead.
 
 The browser opens on localhost and uses four workspaces: **Scan**,
 **Deliveries**, **Scanner Content**, and **Connection**. STIG Manager remains
@@ -89,7 +93,7 @@ a create or update, download and verify the selected-run handoff, then reconcile
 it in STIG Manager. AutomateSTIG does not directly write those changes because
 the current STIG Manager API cannot atomically protect the preview from a
 concurrent human edit. A conflict blocks no-op verification and remains visible
-with the handoff and **Open in STIG Manager** link.
+with the handoff and **Open STIG Manager** link.
 
 For changed reviews, the GUI shows the exact receiving command:
 
@@ -131,11 +135,12 @@ STIG assignment, and GUI content signing are not part of the scanner workflow.
 
 ## Connection
 
-Connection saves or tests one STIG Manager destination. **Test these values**
-uses the values currently in the form without silently persisting them. A blank
-secret may reuse the saved secret only when the API URL, token URL, and client
-ID are unchanged. **Disconnect** removes the active destination configuration
-from the local database but cannot erase secrets from backups or snapshots.
+Connection manages one STIG Manager destination. **Test and save connection**
+uses the values currently in the form, performs the live OAuth/API capability
+test first, and persists them only after that test succeeds. A blank secret may
+reuse the saved secret only when the API URL, token URL, and client ID are
+unchanged. **Disconnect** removes the active destination configuration from
+the local database but cannot erase secrets from backups or snapshots.
 
 The connection response shows sanitized server identity, version,
 capabilities, and effective privileges. It never echoes the client secret.

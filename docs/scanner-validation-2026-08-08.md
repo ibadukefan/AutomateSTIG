@@ -1,5 +1,11 @@
 # Scanner Validation Report — 2026-08-08
 
+> Historical record: this report captures the named 2026-08-08 validation
+> session. It is not the current release status and does not satisfy the
+> outstanding live-device, Evaluate-STIG comparison, receiver-signing, or
+> first-use human gates. Start with the [README](../README.md) and
+> [Supported Targets](supported-targets.md) for the current pilot boundary.
+
 > Historical evidence snapshot: the coverage and bundle counts below describe
 > the 2026-08-08 validation run. Current scanner profiles and handoff schema may
 > be newer; use [Supported Targets](supported-targets.md) and rerun the current
@@ -74,8 +80,9 @@ The retired direct-push route returned HTTP 410.
 | Result-only post-purge handoff | Useful audit fallback | Preserves immutable result, hashes, sparse reviews, CKLB, purge time, and purge reason after replay evidence is destroyed. | Original evidence can no longer be replayed. |
 | STIG Manager CKL after reconcile | Authoritative downstream export | Preserved the full 42-rule Cisco assignment: 21 received reviews and 21 untouched rows. | Produced and governed by STIG Manager, not AutomateSTIG. |
 
-The retained localhost ZIPs had six declared members; the result-only ZIP had
-five. Every file and manifest digest verified. The tested artifact hashes are:
+The current v4 retained-evidence handoff contract has eight declared members;
+the post-purge result-only contract has seven. Every file and manifest digest
+verified. The tested artifact hashes are:
 
 - FreeBSD retained handoff:
   `12b08f600117e6214b54433590c36ca9031b05c2a66bd27fbdfe6c5227e077cd`

@@ -442,7 +442,7 @@ Deliverables:
 - Add live STIG Manager collection/asset/assignment selection.
 - Replace local assets with thin target connection profiles.
 - Add command/request preflight, tested-version checks, expected duration, and privilege diagnostics.
-- Add a read-only evidence/result preview and “Open in STIG Manager.”
+- Add a read-only evidence/result preview and “Open STIG Manager.”
 - Remove Findings, asset governance, answer-file editing, historical checklist import, and portfolio export from the GUI.
 - Ship the exact supported scanner profiles so first use does not require importing raw DISA XCCDF.
 

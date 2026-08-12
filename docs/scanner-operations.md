@@ -58,7 +58,7 @@ subsets; they are not complete benchmark-automation claims.
    or updated, download the selected-run handoff and reconcile it at the
    destination. Direct changes are safety-gated because the current STIG
    Manager review API has no atomic conditional-write contract.
-8. Use **Open in STIG Manager** to reconcile the sparse handoff and complete
+8. Use **Open STIG Manager** to reconcile the sparse handoff and complete
    manual reviews, comments,
    submission, validation, findings analysis, and reporting.
 

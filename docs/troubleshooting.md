@@ -1,17 +1,55 @@
 # Troubleshooting
 
+## Install Or Launch Fails
+
+Start with the [Installation](installation.md) checklist. The supported
+installer is non-interactive: it detects Linux or macOS and CPU architecture,
+verifies the release, installs all three entry points together, and prints the
+exact GUI command.
+
+Common causes:
+
+- GitHub Releases still shows only `v0.2.x`. The scanner-first `v0.3.0` pilot
+  has not been published; do not substitute the legacy release.
+- The host is Windows. Windows is tested for source portability but has no
+  supported scanner release artifact.
+- `curl`, `tar`, or SHA-256 tooling is missing. Install the named standard
+  utility and run the same installer again. Cosign is used when present or a
+  pinned checksum-verified copy is downloaded temporarily. Python 3.10+ is
+  needed only when the optional recovery utility is used.
+- The default user-local directory is not on `PATH`. Run the absolute GUI path
+  printed by the installer, then add that directory to `PATH` for future
+  shells.
+- macOS Gatekeeper blocks the unnotarized binary. Use the site's approved
+  exception process or a reviewed source build; the installer never removes
+  quarantine metadata.
+
+Do not use `sudo`, clear quarantine, disable TLS, skip signature verification,
+or install a different release merely to get past an error.
+
+## The GUI Starts But The Browser Does Not Open
+
+The GUI prints `GUI running at: http://127.0.0.1:<port>`. Open that exact
+address in a browser on the same workstation. The port is intentionally chosen
+at startup unless `PORT` is set. If you launched the GUI directly in a
+terminal, keep that process running while using the app. The installer starts
+the first launch in the background.
+
+If the page still does not load, confirm a local security product is not
+blocking loopback connections and that another process did not terminate the
+GUI. Do not expose the built-in HTTP listener to a network merely to work
+around a local browser problem.
+
 ## DISA XML Or ZIP Is Rejected As A `.stigpack`
 
 Cause: a maintainer/legacy import command received the wrong format. Ordinary
 DISA XCCDF and an AutomateSTIG signed pack are different formats. Neither is a
 normal scanner-first GUI action because exact profiles ship with the release.
 
-Fix:
-
-- Use transition `automatestig disa-import --input <file>` for raw XCCDF or a
-  DISA ZIP.
-- Use protected `automatestig import --pack <file.stigpack>` only for a curated
-  AutomateSTIG pack.
+Normal analysts do not fix this by importing content: supported scanner
+profiles are bundled with the release. A content maintainer may use an
+explicit `maintainer` source build for raw DISA import or curated `.stigpack`
+import. Those hidden commands are absent from the installed analyst product.
 
 Renaming a DISA ZIP to `.stigpack` does not convert or sign it.
 
@@ -19,10 +57,17 @@ Renaming a DISA ZIP to `.stigpack` does not convert or sign it.
 
 Cause: unsigned packs are blocked by default.
 
-Fix for explicit lab-only import:
+This is a content-maintainer error, not a normal scan setup step. The supported
+analyst release contains only trusted, release-bundled scanner profiles.
+
+For an explicit isolated content-development lab, use a reviewed source build
+with the `maintainer` feature. The lab-only override remains intentionally
+outside the installed product:
 
 ```bash
-AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1 automatestig import --pack lab-only.stigpack
+AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1 \
+  cargo run --release --features maintainer --bin automatestig -- \
+  import --pack lab-only.stigpack
 ```
 
 Preferred fix: import a signed pack and configure trusted keys.
@@ -31,31 +76,29 @@ Preferred fix: import a signed pack and configure trusted keys.
 
 Cause: `.stigpack` import requires a trusted Ed25519 public key.
 
-Fix:
+This is also a maintainer-only path. For a reviewed maintainer build:
 
 1. Place trusted `.pub` files in `~/.automatestig/trusted_keys`, or set `AUTOMATESTIG_TRUSTED_KEYS_DIR`.
 2. Re-run verification or import.
 
 ```bash
-AUTOMATESTIG_TRUSTED_KEYS_DIR=/path/to/trusted_keys automatestig verify --pack content.stigpack
+AUTOMATESTIG_TRUSTED_KEYS_DIR=/path/to/trusted_keys \
+  cargo run --release --features maintainer --bin automatestig -- \
+  verify --pack content.stigpack
 ```
 
 This trust store is only for signed content packs. Cisco organization policies
 use the separate `AUTOMATESTIG_ORGANIZATION_POLICY_KEYS_DIR` trust store.
 
-## Benchmark Not Found
+## A Supported Scanner Profile Is Missing
 
-Cause: the requested `--stig <ID>` is not installed in the local library.
+Cause: the requested target/STIG/revision is outside the release-bundled
+scanner contract, or the installed files are not one coherent release.
 
-Fix:
-
-```bash
-automatestig library list
-automatestig disa-import --input U_STIG.zip
-automatestig library show <STIG_ID>
-```
-
-Then rerun evaluation with the installed benchmark ID.
+Fix: run `automatestig status`, compare the requested exact revision with
+[Supported Targets](supported-targets.md), and reinstall the same verified
+release if its bundled-content check fails. Do not import a nearby benchmark
+or general DISA catalog to make an unsupported target appear runnable.
 
 ## Non-Loopback Server Refuses To Start
 
@@ -186,15 +229,15 @@ Fix:
 Do not put the organization-policy key in the `.stigpack` trust directory, and
 do not use a policy written for another benchmark release or hostname.
 
-## STIG Manager Save And Test Behave Differently
+## STIG Manager Connection Test Fails
 
-`Save` validates and stores the form values; it does not prove that OAuth or the
-API is reachable. `Test These Values` tests the values currently shown in
-memory and does not save them.
+**Test and save connection** validates the values currently shown, performs a
+live OAuth/API capability test, and saves only after that test succeeds. A
+failed test does not replace the working saved connection.
 
-If the client-secret field is blank, either action may reuse the saved secret
-only while the API URL, token URL, and client ID are unchanged. Re-enter the
-secret after changing any of those identity fields.
+If the client-secret field is blank, the action may reuse the saved secret only
+while the API URL, token URL, and client ID are unchanged. Re-enter the secret
+after changing any of those identity fields.
 
 Both endpoints must use `https://`, and TLS certificate verification cannot be
 disabled. Install the correct CA trust instead of bypassing validation. Private

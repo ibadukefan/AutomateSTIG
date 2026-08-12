@@ -19,8 +19,7 @@ Do not manually remove it.
 
 1. Stop every AutomateSTIG CLI/GUI process using the library and preserve a
    filesystem snapshot.
-2. Restart a single process and run `automatestig library list`. Normal startup
-   recovery either completes or returns a transaction path and error.
+2. From the same reviewed source, start one maintainer process with the `library list` command (`cargo run --release --features maintainer --bin automatestig -- library list`). Library startup recovery either completes or returns a transaction path and error. The installed analyst CLI deliberately has no `library` command.
 3. If recovery succeeds, load every indexed benchmark and run the content and
    evaluation smoke tests. Retain the snapshot until validation completes.
 4. If recovery fails, leave the transaction directory untouched. Give the
