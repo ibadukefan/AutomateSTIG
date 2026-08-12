@@ -425,27 +425,49 @@ class ReleaseGovernanceTests(unittest.TestCase):
                 self.assertIn("output.json", result.stderr)
 
     def test_supported_installers_bind_archive_name_and_tagged_workflow_identity(self):
-        for name in ("install-linux.sh", "install-macos.sh"):
+        for name in ("install.sh", "install-linux.sh", "install-macos.sh"):
             with self.subTest(installer=name):
-                path = REPO / name
-                syntax = run(["sh", "-n", path], REPO)
+                syntax = run(["sh", "-n", REPO / name], REPO)
                 self.assertEqual(syntax.returncode, 0, syntax.stderr)
-                text = path.read_text()
-                self.assertIn('CHECKSUM_NAME="$ARCHIVE_NAME.sha256"', text)
-                self.assertIn('BUNDLE_NAME="$ARCHIVE_NAME.sigstore.bundle"', text)
-                self.assertIn('--certificate-identity "$IDENTITY"', text)
-                self.assertIn("https://token.actions.githubusercontent.com", text)
-                self.assertIn("refs/tags/$TAG", text)
 
-        macos = (REPO / "install-macos.sh").read_text()
-        self.assertNotIn("xattr -d", macos)
+        installer = (REPO / "install.sh").read_text()
+        self.assertIn('CHECKSUM_NAME="$ARCHIVE_NAME.sha256"', installer)
+        self.assertIn('BUNDLE_NAME="$ARCHIVE_NAME.sigstore.bundle"', installer)
+        self.assertIn('--certificate-identity "$IDENTITY"', installer)
+        self.assertIn("https://token.actions.githubusercontent.com", installer)
+        self.assertIn("refs/tags/$TAG", installer)
+        self.assertIn("--no-launch", installer)
+        self.assertIn("--uninstall", installer)
+        self.assertIn('SCRIPT_RELEASE_TAG="@AUTOMATESTIG_RELEASE_TAG@"', installer)
+        self.assertIn("this installer is bound to", installer)
+        self.assertIn('ulimit -f "$MAX_PROGRAM_BLOCKS"', installer)
+        self.assertIn("MAX_TOTAL_PROGRAM_BYTES", installer)
+        self.assertNotIn(".zprofile", installer)
+        self.assertNotIn(".bash_profile", installer)
+        self.assertNotIn("xattr -d", installer)
+
+        unpublished = run(["sh", REPO / "install.sh", "--no-launch"], REPO)
+        self.assertNotEqual(unpublished.returncode, 0)
+        self.assertIn("not a published installer", unpublished.stderr)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            rendered = pathlib.Path(temporary) / "install.sh"
+            rendered.write_text(
+                installer.replace("@AUTOMATESTIG_RELEASE_TAG@", "v0.3.0")
+            )
+            cross_tag = run(
+                ["sh", rendered, "--version", "v0.3.1", "--no-launch"],
+                REPO,
+            )
+            self.assertNotEqual(cross_tag.returncode, 0)
+            self.assertIn("bound to v0.3.0", cross_tag.stderr)
 
         windows = (REPO / "install-windows.ps1").read_text()
         self.assertIn(
-            "does not currently publish or support Windows release binaries",
+            "Windows release binaries are not currently",
             windows,
         )
-        self.assertIn("source-portability testing only", windows)
+        self.assertIn("source-portability testing", windows)
         self.assertNotIn("Invoke-WebRequest", windows)
 
         for documentation in (REPO / "README.md", REPO / "docs/installation.md"):
@@ -456,15 +478,16 @@ class ReleaseGovernanceTests(unittest.TestCase):
                     text,
                 )
                 self.assertIn("gh release verify", text)
-                self.assertIn("AutomateSTIG/$version/install-", text)
+                self.assertIn("gh release download", text)
+                self.assertIn("--pattern install.sh", text)
 
     def test_posix_installers_verify_before_installing(self):
         cases = (
-            ("install-linux.sh", "Linux", "x86_64-unknown-linux-gnu"),
-            ("install-macos.sh", "Darwin", "x86_64-apple-darwin"),
+            ("Linux", "x86_64-unknown-linux-gnu"),
+            ("Darwin", "x86_64-apple-darwin"),
         )
-        for installer, system, target in cases:
-            with self.subTest(installer=installer), tempfile.TemporaryDirectory() as temporary:
+        for system, target in cases:
+            with self.subTest(system=system), tempfile.TemporaryDirectory() as temporary:
                 root = pathlib.Path(temporary)
                 fixture = root / "fixture"
                 payload = root / "payload"
@@ -550,7 +573,12 @@ printf '%s\\n' "$*" >> "$COSIGN_LOG"
                     "FIXTURE_DIR": str(fixture),
                     "COSIGN_LOG": str(log),
                 }
-                installed = run(["sh", REPO / installer], root, env)
+                command = [
+                    "sh",
+                    REPO / "install.sh",
+                    "--no-launch",
+                ]
+                installed = run(command, root, env)
                 self.assertEqual(installed.returncode, 0, installed.stderr)
                 self.assertTrue((install_dir / "automatestig").is_file())
                 self.assertTrue((install_dir / "automatestig-gui").is_file())
@@ -592,7 +620,7 @@ exec "$REAL_MV" "$@"
                 mv_wrapper.chmod(0o755)
                 marker = root / "mv-failed-once"
                 interrupted = run(
-                    ["sh", REPO / installer],
+                    command,
                     root,
                     {
                         **env,
@@ -618,7 +646,7 @@ exec "$REAL_MV" "$@"
 
                 signal_marker = root / "mv-signaled-once"
                 signaled = run(
-                    ["sh", REPO / installer],
+                    command,
                     root,
                     {
                         **env,
@@ -643,7 +671,7 @@ exec "$REAL_MV" "$@"
 
                 rejected_dir = root / "rejected"
                 rejected = run(
-                    ["sh", REPO / installer],
+                    command,
                     root,
                     {
                         **env,
@@ -676,7 +704,7 @@ exec "$REAL_MV" "$@"
                 )
                 unsafe_dir = root / "unsafe-archive-install"
                 unsafe = run(
-                    ["sh", REPO / installer],
+                    command,
                     root,
                     {**env, "AUTOMATESTIG_INSTALL_DIR": str(unsafe_dir)},
                 )
@@ -684,24 +712,52 @@ exec "$REAL_MV" "$@"
                 self.assertIn("unsafe or unexpected members", unsafe.stderr)
                 self.assertFalse(unsafe_dir.exists())
 
+                # Restore the valid fixture after the unexpected-member case.
+                restored = run(
+                    ["tar", "-czf", archive, "-C", payload, *members], root
+                )
+                self.assertEqual(restored.returncode, 0, restored.stderr)
+                archive_hash = hashlib.sha256(archive.read_bytes()).hexdigest()
+                (fixture / f"{archive_name}.sha256").write_text(
+                    f"{archive_hash}  {archive_name}\n"
+                )
+
+                # Python is optional at install time: the product GUI and CLI
+                # must remain one-command installable when the recovery helper
+                # is not needed yet.
                 python_wrapper = fake_bin / "python3"
                 python_wrapper.write_text("#!/bin/sh\nexit 1\n")
                 python_wrapper.chmod(0o755)
-                unsupported_dir = root / "unsupported-python"
-                unsupported = run(
-                    ["sh", REPO / installer],
+                no_python_dir = root / "no-python"
+                no_python = run(
+                    command,
                     root,
                     {
                         **env,
-                        "AUTOMATESTIG_INSTALL_DIR": str(unsupported_dir),
+                        "AUTOMATESTIG_INSTALL_DIR": str(no_python_dir),
+                        "REAL_MV": real_mv,
                     },
                 )
-                self.assertNotEqual(unsupported.returncode, 0)
-                self.assertIn(
-                    "Python 3.10 or newer is required",
-                    unsupported.stderr,
+                self.assertEqual(no_python.returncode, 0, no_python.stderr)
+                self.assertIn("requires Python 3.10 or newer", no_python.stdout)
+
+                uninstalled = run(
+                    [
+                        "sh",
+                        REPO / "install.sh",
+                        "--uninstall",
+                        "--install-dir",
+                        no_python_dir,
+                    ],
+                    root,
+                    env,
                 )
-                self.assertFalse(unsupported_dir.exists())
+                self.assertEqual(uninstalled.returncode, 0, uninstalled.stderr)
+                self.assertFalse((no_python_dir / "automatestig").exists())
+                self.assertFalse((no_python_dir / "automatestig-gui").exists())
+                self.assertFalse(
+                    (no_python_dir / "automatestig-backup-restore").exists()
+                )
 
     def test_workflow_evidence_must_match_the_uploaded_artifact(self):
         import importlib.util
@@ -1687,6 +1743,12 @@ checksum = "abababababababababababababababababababababababababababababababab"
             "needs: [build-release, release-artifact-equivalence]",
             publication,
         )
+        self.assertIn("sh -n install.sh install-linux.sh install-macos.sh", workflow)
+        self.assertIn('sed "s/@AUTOMATESTIG_RELEASE_TAG@/${GITHUB_REF_NAME}/g"', publication)
+        self.assertIn("scripts/add-release-installer.py", publication)
+        self.assertIn("subject-path: release-artifacts/install.sh", publication)
+        self.assertIn('--bundle "$installer.sigstore.bundle"', publication)
+        self.assertIn('--notes-file "$notes"', publication)
 
     def test_ci_isolates_maintainer_cli_from_product_and_release_binaries(self):
         workflow = (REPO / ".github/workflows/ci.yml").read_text()
@@ -2492,6 +2554,46 @@ checksum = "abababababababababababababababababababababababababababababababab"
                     self.assertIn("automatestig_cli_sha256", result.stderr)
                 else:
                     self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_release_installer_extension_is_tag_and_checksum_bound(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            manifest = root / "release-manifest.json"
+            manifest.write_text(json.dumps({
+                "schema": "automatestig-release-manifest/v1",
+                "tag": "v0.3.0",
+                "artifacts": [],
+            }))
+            installer = root / "install.sh"
+            installer.write_text(
+                '#!/bin/sh\nSCRIPT_RELEASE_TAG="v0.3.0"\nprintf ok\\n\n'
+            )
+            installer_digest = hashlib.sha256(installer.read_bytes()).hexdigest()
+            (root / "install.sh.sha256").write_text(
+                f"{installer_digest}  install.sh\n"
+            )
+            (root / "install.sh.sigstore.bundle").write_text("{}\n")
+            command = [
+                "python3", REPO / "scripts/add-release-installer.py",
+                "--artifact-dir", root,
+                "--tag", "v0.3.0",
+                "--manifest", manifest,
+            ]
+            accepted = run(command, root)
+            self.assertEqual(accepted.returncode, 0, accepted.stderr)
+            record = json.loads(manifest.read_text())["installer"]
+            self.assertEqual(record["script"]["name"], "install.sh")
+            self.assertEqual(record["script"]["sha256"], installer_digest)
+
+            manifest.write_text(json.dumps({
+                "schema": "automatestig-release-manifest/v1",
+                "tag": "v0.3.0",
+                "artifacts": [],
+            }))
+            installer.write_text('#!/bin/sh\nSCRIPT_RELEASE_TAG="v0.3.1"\n')
+            rejected = run(command, root)
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertIn("not bound exclusively", rejected.stderr)
 
     def test_release_manifest_validates_bound_companions(self):
         targets = {

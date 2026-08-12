@@ -125,7 +125,7 @@ jobs:
       - run: cargo test --workspace
       - name: Validate POSIX installer syntax
         if: runner.os != 'Windows'
-        run: sh -n install-linux.sh install-macos.sh
+        run: sh -n install.sh install-linux.sh install-macos.sh
       - name: Validate Windows unsupported-installer stub syntax
         if: runner.os == 'Windows'
         shell: pwsh
@@ -249,9 +249,12 @@ jobs:
           scripts/compare-commercial-scanners.py
           scripts/backup-restore.py
           scripts/generate-cyclonedx-sbom.py
+          scripts/add-release-installer.py
           scripts/generate-release-manifest.py
           scripts/generate-release-provenance.py
           scripts/validate-release-binary-equivalence.py
+          scripts/validate-documentation.py
+      - run: python3 scripts/validate-documentation.py --repo-root .
       - run: python3 scripts/validate-check-packs.py
       - run: python3 -m unittest discover -s scripts/disa_corpus/tests -v
       - run: python3 scripts/disa_corpus/index_disa_downloads.py --seed-only --output /tmp/disa-download-index.json
@@ -562,6 +565,55 @@ jobs:
             --run-id "$GITHUB_RUN_ID" \
             --output release-artifacts/release-manifest.json
           (cd release-artifacts && sha256sum release-manifest.json > release-manifest.json.sha256)
+      - name: Render, attest, sign, and verify the tag-bound installer
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          installer=release-artifacts/install.sh
+          identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/ci.yml@${GITHUB_REF}"
+          sed "s/@AUTOMATESTIG_RELEASE_TAG@/${GITHUB_REF_NAME}/g" install.sh > "$installer"
+          chmod 0755 "$installer"
+          sh -n "$installer"
+          grep -F "SCRIPT_RELEASE_TAG=\"${GITHUB_REF_NAME}\"" "$installer"
+          if grep -F '@AUTOMATESTIG_RELEASE_TAG@' "$installer"; then
+            echo "published installer still contains the release-tag token" >&2
+            exit 1
+          fi
+          (cd release-artifacts && sha256sum install.sh > install.sh.sha256)
+          cosign sign-blob --yes \
+            --bundle "$installer.sigstore.bundle" \
+            "$installer"
+          cosign verify-blob \
+            --bundle "$installer.sigstore.bundle" \
+            --certificate-identity "$identity" \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            "$installer"
+      - name: Attest the tag-bound installer
+        uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
+        with:
+          subject-path: release-artifacts/install.sh
+      - name: Verify the tag-bound installer attestation
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/ci.yml@${GITHUB_REF}"
+          gh attestation verify release-artifacts/install.sh \
+            --repo "$GITHUB_REPOSITORY" \
+            --cert-identity "$identity" \
+            --source-ref "$GITHUB_REF" \
+            --source-digest "$GITHUB_SHA"
+      - name: Add the installer to the closed release manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/add-release-installer.py \
+            --artifact-dir release-artifacts \
+            --tag "$GITHUB_REF_NAME" \
+            --manifest release-artifacts/release-manifest.json
+          (cd release-artifacts && sha256sum release-manifest.json > release-manifest.json.sha256)
       - name: Attest the final release manifest
         uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
         with:
@@ -595,10 +647,16 @@ jobs:
             echo "release $GITHUB_REF_NAME already exists; refusing to replace assets" >&2
             exit 1
           fi
+          notes="docs/releases/${GITHUB_REF_NAME}.md"
+          [[ -f "$notes" ]] || {
+            echo "reviewed release notes are missing: $notes" >&2
+            exit 1
+          }
           gh release create "$GITHUB_REF_NAME" release-artifacts/* \
             --repo "$GITHUB_REPOSITORY" \
             --verify-tag \
-            --generate-notes \
+            --title "AutomateSTIG $GITHUB_REF_NAME — difficult-device scanner pilot" \
+            --notes-file "$notes" \
             --draft
           gh release edit "$GITHUB_REF_NAME" \
             --repo "$GITHUB_REPOSITORY" \
