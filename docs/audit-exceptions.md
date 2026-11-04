@@ -17,15 +17,10 @@ Warnings that do not make `cargo audit` fail are still tracked during release re
 
 ## Recently cleared advisory backlog
 
+- 2026-11: refreshed the lockfile (rustls, rustls-webpki, webpki-roots, h2, quinn-proto, tokio, anyhow, crypto-bigint, ctutils, zstd family and others) and moved `zip` 2 to 9, clearing 22 advisories and all warning-only items. ZIP entry guards now also reject symlink entries and absolute names, because `zip` 9's `enclosed_name()` rewrites absolute names instead of rejecting them.
 - Removed the GUI dependency on `scraper`, which removed the transitive unmaintained `fxhash` warning from the audit graph.
 - Updated the lockfile to `rand 0.8.6`, clearing the prior `rand 0.8.5` RustSec warning.
 
 ## Current warning backlog
 
-`cargo audit --ignore RUSTSEC-2023-0071` may still report warning-only dependency hygiene items. These do not currently fail CI, but they must be reviewed before release:
-
-- `proc-macro-error2` unmaintained via `include-flate`/`rust-embed`.
-- `anyhow` unsound advisory `RUSTSEC-2026-0190`; monitor for upstream fixed release and upgrade promptly.
-- `spin 0.9.8` yanked via the current Axum/multipart dependency graph.
-
-These warnings are tracked separately from failing vulnerability advisories because the current supported AutomateSTIG modes do not expose a practical exploit path for them.
+`cargo audit --ignore RUSTSEC-2023-0071` currently reports no warnings. Re-review before each release.

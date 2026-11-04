@@ -65,7 +65,7 @@ fn import_zip(zip_path: &Path, library: &mut StigLibrary) -> Result<()> {
     let xccdf_files: Vec<String> = (0..archive.len())
         .filter_map(|i| {
             let file = archive.by_index(i).ok()?;
-            let name = file.name().to_string();
+            let name = file.name().ok()?.to_string();
             if is_xccdf_benchmark(&name) {
                 Some(name)
             } else {

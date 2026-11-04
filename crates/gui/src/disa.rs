@@ -239,6 +239,20 @@ pub(crate) fn validate_xccdf_zip_limits<R: std::io::Read + std::io::Seek>(
     )
 }
 
+/// Reject ZIP entry names that are not plain relative paths. `zip` 9's
+/// `enclosed_name()` silently rewrites absolute names (`/tmp/x` becomes
+/// `tmp/x`), so the raw name must be checked as well.
+fn is_confined_zip_name(name: &str) -> bool {
+    if name.is_empty() || name.contains('\\') || name.contains('\0') || name.starts_with('/') {
+        return false;
+    }
+    let bytes = name.as_bytes();
+    if bytes.len() >= 2 && bytes[1] == b':' && bytes[0].is_ascii_alphabetic() {
+        return false;
+    }
+    !name.split('/').any(|part| part == "..")
+}
+
 fn validate_xccdf_zip_limits_with_caps<R: std::io::Read + std::io::Seek>(
     archive: &mut zip::ZipArchive<R>,
     max_entries: usize,
@@ -258,9 +272,15 @@ fn validate_xccdf_zip_limits_with_caps<R: std::io::Read + std::io::Seek>(
         let file = archive
             .by_index(i)
             .map_err(|e| format!("Failed to inspect ZIP entry {}: {}", i, e))?;
-        let name = file.name().to_string();
-        if name.contains('\\') || name.contains('\0') || file.enclosed_name().is_none() {
+        let name = file
+            .name()
+            .map_err(|e| format!("ZIP entry {} has an invalid name: {}", i, e))?
+            .to_string();
+        if !is_confined_zip_name(&name) || file.enclosed_name().is_none() {
             return Err(format!("ZIP entry has unsafe path: {}", name));
+        }
+        if file.is_symlink() {
+            return Err(format!("ZIP entry is a symlink: {}", name));
         }
         total_uncompressed = total_uncompressed
             .checked_add(file.size())
@@ -386,7 +406,7 @@ fn import_zip_bytes(data: &[u8], state: &AppState) -> Result<FetchResult, String
     let xccdf_names: Vec<String> = (0..archive.len())
         .filter_map(|i| {
             let file = archive.by_index(i).ok()?;
-            let name = file.name().to_string();
+            let name = file.name().ok()?.to_string();
             let lower = name.to_lowercase();
             if lower.ends_with("-xccdf.xml") || lower.ends_with("_xccdf.xml") {
                 Some(name)
@@ -565,6 +585,23 @@ mod tests {
             let options = zip::write::SimpleFileOptions::default();
             writer.start_file("../evil-xccdf.xml", options).unwrap();
             std::io::Write::write_all(&mut writer, b"<Benchmark/>").unwrap();
+            writer.finish().unwrap();
+        }
+
+        let cursor = std::io::Cursor::new(bytes.into_inner());
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        assert!(validate_xccdf_zip_limits(&mut archive).is_err());
+    }
+
+    #[test]
+    fn validates_xccdf_zip_limits_reject_escaping_symlink() {
+        let mut bytes = std::io::Cursor::new(Vec::new());
+        {
+            let mut writer = zip::ZipWriter::new(&mut bytes);
+            let options = zip::write::SimpleFileOptions::default();
+            writer
+                .add_symlink("safe/link-xccdf.xml", "../../../../etc/passwd", options)
+                .unwrap();
             writer.finish().unwrap();
         }
 
