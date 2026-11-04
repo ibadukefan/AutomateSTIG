@@ -34,5 +34,6 @@ docker compose -f staging/stigman/docker-compose.yml down -v
 
 CI runs this weekly and on demand via `.github/workflows/stigman-staging.yml`.
 
-Note: the STIG Manager images publish linux/amd64 only; the compose file pins
+Note: all images are pinned to exact tags (see the header of
+`docker-compose.yml`); STIG Manager 1.6.x requires MySQL 8.4.x. The STIG Manager images publish linux/amd64 only; the compose file pins
 `platform: linux/amd64`, so Apple Silicon hosts run them under emulation.

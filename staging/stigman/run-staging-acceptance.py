@@ -42,6 +42,11 @@ SCC_XML = f"{REPO}/fixtures/scc-results/windows_server_2022_scc_results.xml"
 
 KC = os.environ.get("STAGING_AUTH_URL", "http://localhost:8080")
 SM = os.environ.get("STAGING_API_URL", "http://localhost:54000/api")
+# AutomateSTIG refuses plain-http STIG Manager/OIDC URLs, so it reaches the rig
+# through the Caddy TLS front (self-signed; lab-only overrides are set below).
+AS_SM = os.environ.get("STAGING_AS_API_URL", "https://127.0.0.1:8443/api")
+AS_TOKEN_URL = os.environ.get(
+    "STAGING_AS_TOKEN_URL", "https://127.0.0.1:8444/realms/stigman/protocol/openid-connect/token")
 KC_ADMIN_USER, KC_ADMIN_PASS = "admin", "Pa55w0rd"
 CLIENT_ID = "automatestig-staging"
 CLIENT_SECRET = "automatestig-staging-secret-0001"
@@ -76,14 +81,41 @@ def req(url, method="GET", data=None, headers=None, form=None, timeout=60):
         return -1, str(e)
 
 
-def wait_for(name, url, ok_statuses=(200,), tries=120, sleep=2):
-    for _ in range(tries):
-        st, _ = req(url, timeout=10)
+COMPOSE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docker-compose.yml")
+
+
+def dump_rig_logs(tail=200):
+    """Print container logs so a readiness timeout is diagnosable from one run."""
+    for svc in ("api", "db", "auth"):
+        print(f"\n----- docker compose logs {svc} (last {tail}) -----", flush=True)
+        try:
+            p = subprocess.run(["docker", "compose", "-f", COMPOSE_FILE, "logs",
+                                "--no-color", "--tail", str(tail), svc],
+                               capture_output=True, text=True, timeout=60)
+            print((p.stdout + p.stderr)[-20000:], flush=True)
+        except Exception as e:  # docker missing / rig not compose-managed
+            print(f"(could not read {svc} logs: {e})", flush=True)
+    try:
+        p = subprocess.run(["docker", "compose", "-f", COMPOSE_FILE, "ps", "-a"],
+                           capture_output=True, text=True, timeout=60)
+        print("----- docker compose ps -----\n" + p.stdout + p.stderr, flush=True)
+    except Exception:
+        pass
+
+
+def wait_for(name, url, ok_statuses=(200,), timeout_s=600, sleep=3):
+    """Poll until `url` returns an accepted status; bounded by timeout_s."""
+    deadline = time.time() + timeout_s
+    last = None
+    while time.time() < deadline:
+        st, body = req(url, timeout=10)
         if st in ok_statuses:
             print(f"  {name} is up ({url})")
             return True
-    # fallthrough retry loop sleeps
+        last = (st, body[:200])
         time.sleep(sleep)
+    print(f"{name} did not come up at {url} within {timeout_s}s (last: {last})", flush=True)
+    dump_rig_logs()
     sys.exit(f"{name} did not come up at {url}")
 
 
@@ -224,7 +256,9 @@ def unwrap(body):
 def start_automatestig(home):
     env = dict(os.environ)
     env.update({"HOME": home, "USERPROFILE": home, "PORT": str(AS_PORT),
-                "AUTOMATESTIG_AUTH_TOKEN": AS_TOKEN})
+                "AUTOMATESTIG_AUTH_TOKEN": AS_TOKEN,
+                "AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST": "127.0.0.1",
+                "AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS": "1"})
     env.pop("AUTOMATESTIG_DEMO", None)
     os.makedirs(home, exist_ok=True)
     proc = subprocess.Popen([GUI_BIN], env=env, cwd=REPO,
@@ -276,8 +310,8 @@ def main():
         check("AutomateSTIG evaluates SCC scan", bool(cid), out[:300])
 
         st, body = as_req("/api/stigman/config", method="POST", data={
-            "api_url": SM,
-            "token_url": f"{KC}/realms/stigman/protocol/openid-connect/token",
+            "api_url": AS_SM,
+            "token_url": AS_TOKEN_URL,
             "client_id": CLIENT_ID,
             "client_secret": CLIENT_SECRET,
             "default_collection_id": str(collection_id),
