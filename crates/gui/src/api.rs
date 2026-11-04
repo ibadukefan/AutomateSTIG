@@ -324,7 +324,10 @@ async fn import_disa(
                             Ok(f) => f,
                             Err(_) => continue,
                         };
-                        let name = file.name().to_string();
+                        let name = match file.name() {
+                            Ok(n) => n.to_string(),
+                            Err(_) => continue,
+                        };
                         let lower = name.to_lowercase();
                         if lower.ends_with("-xccdf.xml") || lower.ends_with("_xccdf.xml") {
                             let mut xml = String::new();

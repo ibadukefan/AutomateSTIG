@@ -235,12 +235,20 @@ pub(crate) fn validate_archive_resource_limits(
     let mut total_uncompressed = 0u64;
     for idx in 0..archive.len() {
         let file = archive.by_index(idx).map_err(StigpackError::Zip)?;
-        validate_pack_member_path(file.name())?;
+        let member_name = file.name().map_err(StigpackError::Zip)?.into_owned();
+        validate_pack_member_path(&member_name)?;
+        // Symlink entries are never legitimate in a .stigpack; refuse them so
+        // no future extraction path can be tricked into following one.
+        if file.is_symlink() {
+            return Err(StigpackError::ManifestError(format!(
+                "symlink entries are not allowed in .stigpack: {}",
+                member_name
+            )));
+        }
         if file.size() > MAX_STIGPACK_MEMBER_BYTES {
             return Err(StigpackError::ManifestError(format!(
                 ".stigpack member exceeds {} byte limit: {}",
-                MAX_STIGPACK_MEMBER_BYTES,
-                file.name()
+                MAX_STIGPACK_MEMBER_BYTES, member_name
             )));
         }
         total_uncompressed = total_uncompressed.saturating_add(file.size());
@@ -305,6 +313,57 @@ mod tests {
                 remediation_ids: vec![],
             }],
         }
+    }
+
+    fn zip_bytes_with(
+        build: impl FnOnce(&mut zip::ZipWriter<std::io::Cursor<Vec<u8>>>),
+    ) -> Vec<u8> {
+        let mut writer = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
+        build(&mut writer);
+        writer.finish().unwrap().into_inner()
+    }
+
+    fn open_zip_file(bytes: &[u8]) -> zip::ZipArchive<std::fs::File> {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("t.zip");
+        std::fs::write(&path, bytes).unwrap();
+        let file = std::fs::File::open(&path).unwrap();
+        // The open handle keeps the data readable after the temp dir is removed.
+        zip::ZipArchive::new(file).unwrap()
+    }
+
+    #[test]
+    fn archive_guard_rejects_traversal_entry() {
+        let bytes = zip_bytes_with(|w| {
+            let o = zip::write::SimpleFileOptions::default();
+            w.start_file("../escape.json", o).unwrap();
+            std::io::Write::write_all(w, b"{}").unwrap();
+        });
+        let mut archive = open_zip_file(&bytes);
+        assert!(validate_archive_resource_limits(&mut archive).is_err());
+    }
+
+    #[test]
+    fn archive_guard_rejects_escaping_symlink_entry() {
+        let bytes = zip_bytes_with(|w| {
+            let o = zip::write::SimpleFileOptions::default();
+            w.add_symlink("answer_templates/link", "../../../../etc", o)
+                .unwrap();
+        });
+        let mut archive = open_zip_file(&bytes);
+        assert!(archive.by_index(0).unwrap().is_symlink());
+        assert!(validate_archive_resource_limits(&mut archive).is_err());
+    }
+
+    #[test]
+    fn archive_guard_accepts_regular_entries() {
+        let bytes = zip_bytes_with(|w| {
+            let o = zip::write::SimpleFileOptions::default();
+            w.start_file("benchmarks/a.json", o).unwrap();
+            std::io::Write::write_all(w, b"{}").unwrap();
+        });
+        let mut archive = open_zip_file(&bytes);
+        validate_archive_resource_limits(&mut archive).unwrap();
     }
 
     #[test]
