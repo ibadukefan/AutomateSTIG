@@ -76,14 +76,41 @@ def req(url, method="GET", data=None, headers=None, form=None, timeout=60):
         return -1, str(e)
 
 
-def wait_for(name, url, ok_statuses=(200,), tries=120, sleep=2):
-    for _ in range(tries):
-        st, _ = req(url, timeout=10)
+COMPOSE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docker-compose.yml")
+
+
+def dump_rig_logs(tail=200):
+    """Print container logs so a readiness timeout is diagnosable from one run."""
+    for svc in ("api", "db", "auth"):
+        print(f"\n----- docker compose logs {svc} (last {tail}) -----", flush=True)
+        try:
+            p = subprocess.run(["docker", "compose", "-f", COMPOSE_FILE, "logs",
+                                "--no-color", "--tail", str(tail), svc],
+                               capture_output=True, text=True, timeout=60)
+            print((p.stdout + p.stderr)[-20000:], flush=True)
+        except Exception as e:  # docker missing / rig not compose-managed
+            print(f"(could not read {svc} logs: {e})", flush=True)
+    try:
+        p = subprocess.run(["docker", "compose", "-f", COMPOSE_FILE, "ps", "-a"],
+                           capture_output=True, text=True, timeout=60)
+        print("----- docker compose ps -----\n" + p.stdout + p.stderr, flush=True)
+    except Exception:
+        pass
+
+
+def wait_for(name, url, ok_statuses=(200,), timeout_s=600, sleep=3):
+    """Poll until `url` returns an accepted status; bounded by timeout_s."""
+    deadline = time.time() + timeout_s
+    last = None
+    while time.time() < deadline:
+        st, body = req(url, timeout=10)
         if st in ok_statuses:
             print(f"  {name} is up ({url})")
             return True
-    # fallthrough retry loop sleeps
+        last = (st, body[:200])
         time.sleep(sleep)
+    print(f"{name} did not come up at {url} within {timeout_s}s (last: {last})", flush=True)
+    dump_rig_logs()
     sys.exit(f"{name} did not come up at {url}")
 
 
