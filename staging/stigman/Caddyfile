@@ -1,0 +1,23 @@
+# TLS front for the staging rig. AutomateSTIG (correctly) refuses plain-http
+# STIG Manager / OIDC URLs, so the acceptance run reaches the rig over HTTPS via
+# this proxy using Caddy's internal CA (self-signed; the run sets
+# AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS=1 + verify_tls=false for the lab).
+{
+	auto_https disable_redirects
+	default_sni 127.0.0.1
+	skip_install_trust
+}
+
+https://127.0.0.1:8443 {
+	tls internal
+	reverse_proxy api:54000
+}
+
+https://127.0.0.1:8444 {
+	tls internal
+	# Present Keycloak the same Host the direct http://localhost:8080 path uses,
+	# so tokens carry the same issuer STIG Manager already accepts.
+	reverse_proxy auth:8080 {
+		header_up Host localhost:8080
+	}
+}

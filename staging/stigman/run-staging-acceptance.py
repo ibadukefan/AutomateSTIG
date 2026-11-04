@@ -42,6 +42,11 @@ SCC_XML = f"{REPO}/fixtures/scc-results/windows_server_2022_scc_results.xml"
 
 KC = os.environ.get("STAGING_AUTH_URL", "http://localhost:8080")
 SM = os.environ.get("STAGING_API_URL", "http://localhost:54000/api")
+# AutomateSTIG refuses plain-http STIG Manager/OIDC URLs, so it reaches the rig
+# through the Caddy TLS front (self-signed; lab-only overrides are set below).
+AS_SM = os.environ.get("STAGING_AS_API_URL", "https://127.0.0.1:8443/api")
+AS_TOKEN_URL = os.environ.get(
+    "STAGING_AS_TOKEN_URL", "https://127.0.0.1:8444/realms/stigman/protocol/openid-connect/token")
 KC_ADMIN_USER, KC_ADMIN_PASS = "admin", "Pa55w0rd"
 CLIENT_ID = "automatestig-staging"
 CLIENT_SECRET = "automatestig-staging-secret-0001"
@@ -251,7 +256,9 @@ def unwrap(body):
 def start_automatestig(home):
     env = dict(os.environ)
     env.update({"HOME": home, "USERPROFILE": home, "PORT": str(AS_PORT),
-                "AUTOMATESTIG_AUTH_TOKEN": AS_TOKEN})
+                "AUTOMATESTIG_AUTH_TOKEN": AS_TOKEN,
+                "AUTOMATESTIG_STIGMAN_TARGET_ALLOWLIST": "127.0.0.1",
+                "AUTOMATESTIG_ALLOW_INVALID_STIGMAN_CERTS": "1"})
     env.pop("AUTOMATESTIG_DEMO", None)
     os.makedirs(home, exist_ok=True)
     proc = subprocess.Popen([GUI_BIN], env=env, cwd=REPO,
@@ -303,8 +310,8 @@ def main():
         check("AutomateSTIG evaluates SCC scan", bool(cid), out[:300])
 
         st, body = as_req("/api/stigman/config", method="POST", data={
-            "api_url": SM,
-            "token_url": f"{KC}/realms/stigman/protocol/openid-connect/token",
+            "api_url": AS_SM,
+            "token_url": AS_TOKEN_URL,
             "client_id": CLIENT_ID,
             "client_secret": CLIENT_SECRET,
             "default_collection_id": str(collection_id),

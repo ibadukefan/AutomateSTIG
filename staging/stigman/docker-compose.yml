@@ -54,3 +54,14 @@ services:
         condition: service_healthy
       auth:
         condition: service_healthy
+
+  tls:
+    image: caddy:2.8.4
+    ports:
+      - "8443:8443"
+      - "8444:8444"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - api
+      - auth
